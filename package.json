@@ -50,7 +50,7 @@
     "postman:collection": "npm run openapi:serve"
   },
   "dependencies": {
-    "@keyv/redis": "^2.8.5",
+    "@keyv/redis": "^5.0.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^11.0.1",
