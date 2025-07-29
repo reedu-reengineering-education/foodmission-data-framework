@@ -1,0 +1,19 @@
+# Backup Directory
+
+This directory stores database backup files created by the backup scripts.
+
+Backup files are automatically compressed and timestamped.
+
+## File Naming Convention
+
+- `foodmission_full_YYYYMMDD_HHMMSS.sql.gz` - Full database backups
+- `foodmission_data_YYYYMMDD_HHMMSS.sql.gz` - Data-only backups  
+- `foodmission_schema_YYYYMMDD_HHMMSS.sql.gz` - Schema-only backups
+
+## Cleanup
+
+Old backups are automatically cleaned up by the backup script, keeping the 10 most recent files.
+
+## Security Note
+
+Backup files may contain sensitive data. Ensure proper access controls and secure storage.

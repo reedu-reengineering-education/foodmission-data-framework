@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: foodmission-api
+  namespace: foodmission
+  labels:
+    app.kubernetes.io/name: foodmission-data-framework
+    app.kubernetes.io/component: serviceaccount
+automountServiceAccountToken: false
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: foodmission-api-role
+  namespace: foodmission
+  labels:
+    app.kubernetes.io/name: foodmission-data-framework
+    app.kubernetes.io/component: role
+rules:
+# Allow reading ConfigMaps and Secrets
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list"]
+# Allow reading pods for health checks
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+# Allow reading services for service discovery
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: foodmission-api-rolebinding
+  namespace: foodmission
+  labels:
+    app.kubernetes.io/name: foodmission-data-framework
+    app.kubernetes.io/component: rolebinding
+subjects:
+- kind: ServiceAccount
+  name: foodmission-api
+  namespace: foodmission
+roleRef:
+  kind: Role
+  name: foodmission-api-role
+  apiGroup: rbac.authorization.k8s.io
