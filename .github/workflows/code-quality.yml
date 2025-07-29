@@ -1,0 +1,192 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  code-quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run ESLint with detailed output
+        run: |
+          npx eslint "{src,apps,libs,test}/**/*.ts" --format=json --output-file=eslint-results.json || true
+          npx eslint "{src,apps,libs,test}/**/*.ts" --format=stylish
+
+      - name: Run Prettier check
+        run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
+
+      - name: TypeScript compilation check
+        run: npx tsc --noEmit --pretty
+
+      - name: Check for circular dependencies
+        run: |
+          npx madge --circular --extensions ts src/
+          if [ $? -eq 0 ]; then
+            echo "✅ No circular dependencies found"
+          else
+            echo "❌ Circular dependencies detected"
+            exit 1
+          fi
+
+      - name: Check for unused dependencies
+        run: |
+          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics"
+
+      - name: Analyze bundle size
+        run: |
+          npm run build
+          npx bundlesize
+
+      - name: Generate complexity report
+        run: |
+          npx complexity-report --format json --output complexity-report.json src/ || true
+          npx complexity-report src/
+
+      - name: Upload code quality artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-reports
+          path: |
+            eslint-results.json
+            complexity-report.json
+
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run tests with coverage
+        run: npm run test:cov
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  commitlint:
+    name: Commit Message Lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install commitlint
+        run: |
+          npm install --save-dev @commitlint/config-conventional @commitlint/cli
+
+      - name: Validate current commit (last commit) with commitlint
+        if: github.event_name == 'push'
+        run: npx commitlint --from HEAD~1 --to HEAD --verbose
+
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to HEAD --verbose
+
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Build application
+        run: npm run build
+
+      - name: Generate OpenAPI documentation
+        run: npm run docs:generate
+
+      - name: Check for outdated documentation
+        run: |
+          # Check if generated docs differ from committed docs
+          if ! git diff --quiet docs/; then
+            echo "❌ Documentation is outdated. Please run 'npm run docs:generate' and commit the changes."
+            git diff docs/
+            exit 1
+          else
+            echo "✅ Documentation is up to date"
+          fi
+
+      - name: Validate OpenAPI spec
+        run: |
+          npx swagger-codegen-cli validate -i docs/openapi.yaml
+
+      - name: Check README completeness
+        run: |
+          # Check if README contains required sections
+          required_sections=("Installation" "Usage" "API Documentation" "Development" "Testing" "Deployment")
+          
+          for section in "${required_sections[@]}"; do
+            if ! grep -q "# $section\|## $section" README.md; then
+              echo "❌ README is missing required section: $section"
+              exit 1
+            fi
+          done
+          
+          echo "✅ README contains all required sections"

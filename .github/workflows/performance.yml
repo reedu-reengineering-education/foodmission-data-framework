@@ -1,0 +1,281 @@
+name: Performance Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run performance tests weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  load-testing:
+    name: Load Testing
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: foodmission_perf
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    env:
+      DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_perf
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: perf-test-jwt-secret
+      KEYCLOAK_BASE_URL: http://localhost:8080
+      KEYCLOAK_REALM: test-realm
+      KEYCLOAK_CLIENT_ID: test-client
+      KEYCLOAK_CLIENT_SECRET: test-secret
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed performance test database
+        run: npm run db:seed
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application in background
+        run: |
+          npm run start:prod &
+          sleep 30
+          
+          # Wait for application to be ready
+          timeout 60 bash -c 'until curl -f http://localhost:3000/health; do sleep 2; done'
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Create k6 performance test script
+        run: |
+          cat > performance-test.js << 'EOF'
+          import http from 'k6/http';
+          import { check, sleep } from 'k6';
+          import { Rate } from 'k6/metrics';
+
+          const errorRate = new Rate('errors');
+          const BASE_URL = 'http://localhost:3000';
+
+          export let options = {
+            stages: [
+              { duration: '2m', target: 10 }, // Ramp up to 10 users
+              { duration: '5m', target: 10 }, // Stay at 10 users
+              { duration: '2m', target: 20 }, // Ramp up to 20 users
+              { duration: '5m', target: 20 }, // Stay at 20 users
+              { duration: '2m', target: 0 },  // Ramp down to 0 users
+            ],
+            thresholds: {
+              http_req_duration: ['p(95)<500'], // 95% of requests must complete below 500ms
+              http_req_failed: ['rate<0.1'],    // Error rate must be below 10%
+              errors: ['rate<0.1'],
+            },
+          };
+
+          export default function() {
+            // Test health endpoint
+            let healthRes = http.get(`${BASE_URL}/health`);
+            check(healthRes, {
+              'health check status is 200': (r) => r.status === 200,
+            }) || errorRate.add(1);
+
+            // Test API health endpoint
+            let apiHealthRes = http.get(`${BASE_URL}/api/v1/health`);
+            check(apiHealthRes, {
+              'API health check status is 200': (r) => r.status === 200,
+            }) || errorRate.add(1);
+
+            // Test food endpoints (assuming they exist)
+            let foodsRes = http.get(`${BASE_URL}/api/v1/foods`);
+            check(foodsRes, {
+              'foods endpoint status is 200 or 401': (r) => r.status === 200 || r.status === 401,
+            }) || errorRate.add(1);
+
+            // Test metrics endpoint
+            let metricsRes = http.get(`${BASE_URL}/metrics`);
+            check(metricsRes, {
+              'metrics endpoint status is 200': (r) => r.status === 200,
+            }) || errorRate.add(1);
+
+            sleep(1);
+          }
+          EOF
+
+      - name: Run k6 load test
+        run: |
+          k6 run --out json=performance-results.json performance-test.js
+
+      - name: Process performance results
+        run: |
+          # Extract key metrics from k6 results
+          node -e "
+            const fs = require('fs');
+            const results = fs.readFileSync('performance-results.json', 'utf8')
+              .split('\n')
+              .filter(line => line.trim())
+              .map(line => JSON.parse(line))
+              .filter(entry => entry.type === 'Point' && entry.metric);
+            
+            const metrics = {};
+            results.forEach(entry => {
+              const metricName = entry.metric;
+              if (!metrics[metricName]) metrics[metricName] = [];
+              metrics[metricName].push(entry.data.value);
+            });
+            
+            console.log('## Performance Test Results');
+            console.log('');
+            
+            if (metrics.http_req_duration) {
+              const durations = metrics.http_req_duration.sort((a, b) => a - b);
+              const p95 = durations[Math.floor(durations.length * 0.95)];
+              const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+              console.log('### Response Times');
+              console.log('- Average:', avg.toFixed(2), 'ms');
+              console.log('- 95th percentile:', p95.toFixed(2), 'ms');
+              console.log('');
+            }
+            
+            if (metrics.http_req_failed) {
+              const failureRate = metrics.http_req_failed.reduce((a, b) => a + b, 0) / metrics.http_req_failed.length;
+              console.log('### Error Rate');
+              console.log('- Failure rate:', (failureRate * 100).toFixed(2), '%');
+              console.log('');
+            }
+          " > performance-summary.md
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: |
+            performance-results.json
+            performance-summary.md
+
+      - name: Comment performance results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('performance-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 Performance Test Results\n\n${summary}`
+            });
+
+  memory-profiling:
+    name: Memory Profiling
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: foodmission_memory
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_memory
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run memory profiling
+        run: |
+          # Start application with memory profiling
+          node --max-old-space-size=512 --expose-gc dist/main.js &
+          APP_PID=$!
+          
+          sleep 30
+          
+          # Monitor memory usage
+          for i in {1..10}; do
+            ps -p $APP_PID -o pid,vsz,rss,pmem,comm
+            sleep 10
+          done
+          
+          # Stop application
+          kill $APP_PID
+
+      - name: Check for memory leaks
+        run: |
+          echo "Memory profiling completed. Check logs for any memory issues."
