@@ -109,7 +109,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.1.0",
-    "@types/pg": "^8.15.4",
+    "@types/pg": "^8.15.5",
     "@types/sanitize-html": "^2.16.0",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
