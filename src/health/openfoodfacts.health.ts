@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
+import {
+  HealthIndicator,
+  HealthIndicatorResult,
+  HealthCheckError,
+} from '@nestjs/terminus';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout } from 'rxjs';
 
@@ -14,19 +18,23 @@ export class OpenFoodFactsHealthIndicator extends HealthIndicator {
     private configService: ConfigService,
   ) {
     super();
-    this.baseUrl = this.configService.get<string>('OPENFOODFACTS_API_URL', 'https://world.openfoodfacts.org');
+    this.baseUrl = this.configService.get<string>(
+      'OPENFOODFACTS_API_URL',
+      'https://world.openfoodfacts.org',
+    );
   }
 
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
     try {
       // Check if OpenFoodFacts API is accessible
       const response = await firstValueFrom(
-        this.httpService.get(`${this.baseUrl}/api/v0/product/737628064502.json`)
-          .pipe(timeout(this.timeoutMs))
+        this.httpService
+          .get(`${this.baseUrl}/api/v0/product/737628064502.json`)
+          .pipe(timeout(this.timeoutMs)),
       );
 
       const isHealthy = response.status === 200 && response.data;
-      
+
       if (isHealthy) {
         return this.getStatus(key, true, {
           message: 'OpenFoodFacts API is accessible',
@@ -41,7 +49,7 @@ export class OpenFoodFactsHealthIndicator extends HealthIndicator {
         error: error.message,
         timeout: this.timeoutMs,
       });
-      
+
       throw new HealthCheckError('OpenFoodFacts check failed', result);
     }
   }

@@ -29,10 +29,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     // Extract error information
     const errorInfo = this.processException(exception);
-    
+
     // Get correlation ID from request or generate one
     const correlationId = this.getCorrelationId(request);
-    
+
     // Log the error
     this.logError(exception, errorInfo, request, correlationId);
 
@@ -40,7 +40,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const errorResponse = this.buildErrorResponse(
       errorInfo,
       request.url,
-      correlationId
+      correlationId,
     );
 
     // Send response
@@ -83,7 +83,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     );
   }
 
-  private isValidationError(exception: unknown): exception is { message: string[] } {
+  private isValidationError(
+    exception: unknown,
+  ): exception is { message: string[] } {
     return (
       exception !== null &&
       typeof exception === 'object' &&
@@ -121,17 +123,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     exception: unknown,
     errorInfo: any,
     request: Request,
-    correlationId: string
+    correlationId: string,
   ): void {
-    const logMessage = formatErrorForLogging(exception, 'GlobalExceptionFilter');
-    
+    const logMessage = formatErrorForLogging(
+      exception,
+      'GlobalExceptionFilter',
+    );
+
     // Set correlation ID for logging context (safely)
     try {
       this.loggingService.setCorrelationId(correlationId);
     } catch (error) {
       // Ignore CLS context errors - they don't affect functionality
     }
-    
+
     // Set request context
     this.loggingService.setRequestContext({
       method: request.method,
@@ -145,7 +150,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       this.loggingService.error(
         logMessage,
         exception instanceof Error ? exception.stack : undefined,
-        'GlobalExceptionFilter'
+        'GlobalExceptionFilter',
       );
     } else {
       this.loggingService.warn(logMessage, 'GlobalExceptionFilter');
@@ -166,11 +171,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   private buildErrorResponse(
     errorInfo: any,
     path: string,
-    correlationId: string
+    correlationId: string,
   ): any {
     const sanitizedError = sanitizeErrorForClient(
       errorInfo,
-      process.env.NODE_ENV === 'development'
+      process.env.NODE_ENV === 'development',
     );
 
     return {

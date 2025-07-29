@@ -8,7 +8,7 @@ export interface UserProfile {
   lastName: string;
   keycloakId: string;
   preferences?: any; // App-specific user preferences
-  settings?: any;    // App-specific user settings
+  settings?: any; // App-specific user settings
 }
 
 @Injectable()
@@ -55,7 +55,10 @@ export class UserProfileService {
   /**
    * Update user preferences (app-specific data)
    */
-  async updatePreferences(keycloakId: string, preferences: any): Promise<UserProfile> {
+  async updatePreferences(
+    keycloakId: string,
+    preferences: any,
+  ): Promise<UserProfile> {
     const user = await this.prisma.user.update({
       where: { keycloakId },
       data: { preferences },
@@ -75,7 +78,10 @@ export class UserProfileService {
   /**
    * Update user settings (app-specific data)
    */
-  async updateSettings(keycloakId: string, settings: any): Promise<UserProfile> {
+  async updateSettings(
+    keycloakId: string,
+    settings: any,
+  ): Promise<UserProfile> {
     const user = await this.prisma.user.update({
       where: { keycloakId },
       data: { settings },

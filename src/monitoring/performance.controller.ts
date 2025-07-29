@@ -13,7 +13,10 @@ export class PerformanceController {
 
   @Get('summary')
   @ApiOperation({ summary: 'Get performance summary' })
-  @ApiResponse({ status: 200, description: 'Performance summary retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Performance summary retrieved successfully',
+  })
   async getPerformanceSummary() {
     const [performanceSummary, cacheStats] = await Promise.all([
       this.performanceService.getPerformanceSummary(),
@@ -29,14 +32,20 @@ export class PerformanceController {
 
   @Get('cache/stats')
   @ApiOperation({ summary: 'Get cache statistics' })
-  @ApiResponse({ status: 200, description: 'Cache statistics retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cache statistics retrieved successfully',
+  })
   async getCacheStats() {
     return this.cacheService.getStats();
   }
 
   @Get('cache/hit-rate')
   @ApiOperation({ summary: 'Get cache hit rates by prefix' })
-  @ApiResponse({ status: 200, description: 'Cache hit rates retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cache hit rates retrieved successfully',
+  })
   async getCacheHitRates() {
     const prefixes = ['foods', 'users', 'food_categories', 'api'];
     const hitRates = await Promise.all(
@@ -54,7 +63,10 @@ export class PerformanceController {
 
   @Get('database/stats')
   @ApiOperation({ summary: 'Get database performance statistics' })
-  @ApiResponse({ status: 200, description: 'Database statistics retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Database statistics retrieved successfully',
+  })
   async getDatabaseStats() {
     // This would typically come from database monitoring
     return {

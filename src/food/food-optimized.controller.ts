@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Query,
+  Body,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { OptimizedDatabaseService } from '../database/optimized-database.service';
 import { CacheInterceptor } from '../cache/cache.interceptor';
@@ -50,7 +60,10 @@ export class FoodOptimizedController {
   @ApiQuery({ name: 'q', required: true, type: String })
   @ApiQuery({ name: 'skip', required: false, type: Number })
   @ApiQuery({ name: 'take', required: false, type: Number })
-  @ApiResponse({ status: 200, description: 'Search results retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Search results retrieved successfully',
+  })
   async searchFoods(
     @Query('q') query: string,
     @Query('skip') skip?: number,
@@ -67,7 +80,10 @@ export class FoodOptimizedController {
   @Get('categories')
   @Cacheable('food_categories:all', 1800) // Cache for 30 minutes
   @ApiOperation({ summary: 'Get all food categories with caching' })
-  @ApiResponse({ status: 200, description: 'Categories retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Categories retrieved successfully',
+  })
   async getCategories() {
     return this.optimizedDb.getFoodCategories();
   }
@@ -75,7 +91,10 @@ export class FoodOptimizedController {
   @Get('by-category/:categoryId')
   @Cacheable('foods:by_category', 300) // Cache for 5 minutes
   @ApiOperation({ summary: 'Get foods by category with caching' })
-  @ApiResponse({ status: 200, description: 'Foods by category retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Foods by category retrieved successfully',
+  })
   async getFoodsByCategory(
     @Param('categoryId') categoryId: string,
     @Query('skip') skip?: number,
@@ -144,7 +163,10 @@ export class FoodOptimizedController {
 
   @Get('stats/database')
   @ApiOperation({ summary: 'Get database statistics' })
-  @ApiResponse({ status: 200, description: 'Database statistics retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Database statistics retrieved successfully',
+  })
   async getDatabaseStats() {
     return this.optimizedDb.getDatabaseStats();
   }

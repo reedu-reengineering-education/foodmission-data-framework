@@ -15,7 +15,7 @@ describe('Monitoring (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     prismaService = moduleFixture.get<PrismaService>(PrismaService);
-    
+
     await app.init();
   });
 

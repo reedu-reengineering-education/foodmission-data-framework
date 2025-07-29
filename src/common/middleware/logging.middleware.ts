@@ -17,7 +17,7 @@ export class LoggingMiddleware implements NestMiddleware {
     // Generate IDs for request tracking
     const correlationId = this.getOrGenerateCorrelationId(req);
     const requestId = uuidv4();
-    
+
     // Set timing
     req.startTime = Date.now();
     req.correlationId = correlationId;
@@ -43,7 +43,7 @@ export class LoggingMiddleware implements NestMiddleware {
 
     // Override res.end to log response
     const originalEnd = res.end;
-    res.end = function(chunk?: any, encoding?: any, cb?: any) {
+    res.end = function (chunk?: any, encoding?: any, cb?: any) {
       // Log outgoing response
       const responseTime = Date.now() - (req.startTime || Date.now());
       this.logOutgoingResponse(req, res, responseTime);
@@ -70,11 +70,11 @@ export class LoggingMiddleware implements NestMiddleware {
       if (authHeader && authHeader.startsWith('Bearer ')) {
         const token = authHeader.substring(7);
         const payload = this.decodeJwtPayload(token);
-        
+
         if (payload && payload.sub) {
           this.loggingService.setUserContext(
             payload.sub,
-            payload.email || payload.preferred_username
+            payload.email || payload.preferred_username,
           );
         }
       }
@@ -87,7 +87,7 @@ export class LoggingMiddleware implements NestMiddleware {
     try {
       const parts = token.split('.');
       if (parts.length !== 3) return null;
-      
+
       const payload = parts[1];
       const decoded = Buffer.from(payload, 'base64').toString('utf8');
       return JSON.parse(decoded);
@@ -98,7 +98,7 @@ export class LoggingMiddleware implements NestMiddleware {
 
   private logIncomingRequest(req: RequestWithLogging): void {
     const message = `Incoming ${req.method} ${req.url}`;
-    
+
     this.loggingService.http(message, {
       type: 'request',
       method: req.method,
@@ -114,10 +114,10 @@ export class LoggingMiddleware implements NestMiddleware {
   private logOutgoingResponse(
     req: RequestWithLogging,
     res: Response,
-    responseTime: number
+    responseTime: number,
   ): void {
     const message = `Outgoing ${req.method} ${req.url} ${res.statusCode} - ${responseTime}ms`;
-    
+
     this.loggingService.http(message, {
       type: 'response',
       method: req.method,
@@ -133,7 +133,7 @@ export class LoggingMiddleware implements NestMiddleware {
     if (responseTime > 5000) {
       this.loggingService.warn(
         `Slow request detected: ${req.method} ${req.url} took ${responseTime}ms`,
-        'LoggingMiddleware'
+        'LoggingMiddleware',
       );
     }
 
@@ -152,7 +152,7 @@ export class LoggingMiddleware implements NestMiddleware {
 
   private sanitizeHeaders(headers: any): any {
     const sanitized = { ...headers };
-    
+
     // Remove sensitive headers
     const sensitiveHeaders = [
       'authorization',
@@ -160,13 +160,13 @@ export class LoggingMiddleware implements NestMiddleware {
       'x-api-key',
       'x-auth-token',
     ];
-    
-    sensitiveHeaders.forEach(header => {
+
+    sensitiveHeaders.forEach((header) => {
       if (sanitized[header]) {
         sanitized[header] = '[REDACTED]';
       }
     });
-    
+
     return sanitized;
   }
 
@@ -176,7 +176,7 @@ export class LoggingMiddleware implements NestMiddleware {
     }
 
     const sanitized = { ...body };
-    
+
     // Remove sensitive fields
     const sensitiveFields = [
       'password',
@@ -185,13 +185,13 @@ export class LoggingMiddleware implements NestMiddleware {
       'key',
       'authorization',
     ];
-    
-    sensitiveFields.forEach(field => {
+
+    sensitiveFields.forEach((field) => {
       if (sanitized[field]) {
         sanitized[field] = '[REDACTED]';
       }
     });
-    
+
     return sanitized;
   }
 }

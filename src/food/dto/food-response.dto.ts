@@ -193,7 +193,8 @@ export class OpenFoodFactsInfoDto {
 
   @ApiProperty({
     description: 'Ingredients list as text',
-    example: 'Sugar, palm oil, hazelnuts, skimmed milk powder, fat-reduced cocoa, lecithin, vanillin',
+    example:
+      'Sugar, palm oil, hazelnuts, skimmed milk powder, fat-reduced cocoa, lecithin, vanillin',
     required: false,
   })
   @Expose()
@@ -218,7 +219,8 @@ export class OpenFoodFactsInfoDto {
   nutritionGrade?: string;
 
   @ApiProperty({
-    description: 'NOVA group classification (1-4, where 1 is unprocessed and 4 is ultra-processed)',
+    description:
+      'NOVA group classification (1-4, where 1 is unprocessed and 4 is ultra-processed)',
     example: 4,
     minimum: 1,
     maximum: 4,
@@ -238,7 +240,8 @@ export class OpenFoodFactsInfoDto {
 
   @ApiProperty({
     description: 'URL to product image',
-    example: 'https://static.openfoodfacts.org/images/products/301/762/042/2003/front_fr.4.400.jpg',
+    example:
+      'https://static.openfoodfacts.org/images/products/301/762/042/2003/front_fr.4.400.jpg',
     required: false,
   })
   @Expose()

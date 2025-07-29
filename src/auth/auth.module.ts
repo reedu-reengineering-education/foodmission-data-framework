@@ -16,13 +16,14 @@ import { DatabaseModule } from '../database/database.module';
     DatabaseModule,
     ConfigModule,
     KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080',
+      authServerUrl:
+        process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080',
       realm: process.env.KEYCLOAK_REALM || 'foodmission',
       clientId: process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api',
       secret: process.env.KEYCLOAK_CLIENT_SECRET || '',
       // Stateless configuration - bearer tokens only, no sessions
       bearerOnly: true,
-      verifyTokenAudience: false
+      verifyTokenAudience: false,
     }),
   ],
   controllers: [AuthController],
@@ -44,4 +45,4 @@ import { DatabaseModule } from '../database/database.module';
   ],
   exports: [UserProfileService],
 })
-export class AuthModule { }
+export class AuthModule {}

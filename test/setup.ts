@@ -31,49 +31,60 @@ afterAll(() => {
 // Global test utilities
 global.testUtils = {
   // Helper to create mock dates
-  createMockDate: function(dateString) {
-    return dateString ? new Date(dateString) : new Date('2024-01-01T00:00:00.000Z');
+  createMockDate: function (dateString) {
+    return dateString
+      ? new Date(dateString)
+      : new Date('2024-01-01T00:00:00.000Z');
   },
-  
+
   // Helper to create mock user
-  createMockUser: function(overrides) {
+  createMockUser: function (overrides) {
     overrides = overrides || {};
-    return Object.assign({
-      id: 'test-user-id',
-      keycloakId: 'test-keycloak-id',
-      email: 'test@example.com',
-      firstName: 'Test',
-      lastName: 'User',
-      createdAt: new Date('2024-01-01T00:00:00.000Z'),
-      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-    }, overrides);
+    return Object.assign(
+      {
+        id: 'test-user-id',
+        keycloakId: 'test-keycloak-id',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      },
+      overrides,
+    );
   },
-  
+
   // Helper to create mock food
-  createMockFood: function(overrides) {
+  createMockFood: function (overrides) {
     overrides = overrides || {};
-    return Object.assign({
-      id: 'test-food-id',
-      name: 'Test Food',
-      description: 'Test Description',
-      barcode: 'TEST123456',
-      openFoodFactsId: null,
-      categoryId: 'test-category-id',
-      createdBy: 'test-user-id',
-      createdAt: new Date('2024-01-01T00:00:00.000Z'),
-      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-    }, overrides);
+    return Object.assign(
+      {
+        id: 'test-food-id',
+        name: 'Test Food',
+        description: 'Test Description',
+        barcode: 'TEST123456',
+        openFoodFactsId: null,
+        categoryId: 'test-category-id',
+        createdBy: 'test-user-id',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      },
+      overrides,
+    );
   },
-  
+
   // Helper to create mock category
-  createMockCategory: function(overrides) {
+  createMockCategory: function (overrides) {
     overrides = overrides || {};
-    return Object.assign({
-      id: 'test-category-id',
-      name: 'Test Category',
-      description: 'Test Category Description',
-      createdAt: new Date('2024-01-01T00:00:00.000Z'),
-    }, overrides);
+    return Object.assign(
+      {
+        id: 'test-category-id',
+        name: 'Test Category',
+        description: 'Test Category Description',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      },
+      overrides,
+    );
   },
 };
 
@@ -93,9 +104,10 @@ expect.extend({
       };
     }
   },
-  
+
   toBeValidUUID(received) {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     const pass = typeof received === 'string' && uuidRegex.test(received);
     if (pass) {
       return {
@@ -119,7 +131,7 @@ declare global {
       toBeValidUUID(): R;
     }
   }
-  
+
   var testUtils: {
     createMockDate: (dateString?: string) => Date;
     createMockUser: (overrides?: any) => any;

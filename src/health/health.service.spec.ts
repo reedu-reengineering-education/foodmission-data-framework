@@ -31,16 +31,16 @@ describe('HealthService', () => {
     // Reset mocks
     jest.clearAllMocks();
     (fetch as jest.Mock).mockClear();
-    
+
     // Wait a bit to ensure service has some uptime
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   });
 
   describe('getHealth', () => {
     it('should return healthy status when all checks pass', async () => {
       // Mock successful database check
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
-      
+
       // Mock successful external service checks
       (fetch as jest.Mock)
         .mockResolvedValueOnce({ ok: true }) // Keycloak
@@ -60,14 +60,18 @@ describe('HealthService', () => {
 
     it('should throw ServiceUnavailableException when database check fails', async () => {
       // Mock failed database check
-      mockPrismaService.$queryRaw.mockRejectedValueOnce(new Error('Database error'));
-      
+      mockPrismaService.$queryRaw.mockRejectedValueOnce(
+        new Error('Database error'),
+      );
+
       // Mock successful external service checks
       (fetch as jest.Mock)
         .mockResolvedValueOnce({ ok: true }) // Keycloak
         .mockResolvedValueOnce({ ok: true }); // OpenFoodFacts
 
-      await expect(service.getHealth()).rejects.toThrow(ServiceUnavailableException);
+      await expect(service.getHealth()).rejects.toThrow(
+        ServiceUnavailableException,
+      );
     });
 
     it('should throw ServiceUnavailableException when keycloak check fails in non-test environment', async () => {
@@ -76,13 +80,15 @@ describe('HealthService', () => {
 
       // Mock successful database check
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
-      
+
       // Mock failed keycloak check
       (fetch as jest.Mock)
         .mockResolvedValueOnce({ ok: false }) // Keycloak
         .mockResolvedValueOnce({ ok: true }); // OpenFoodFacts
 
-      await expect(service.getHealth()).rejects.toThrow(ServiceUnavailableException);
+      await expect(service.getHealth()).rejects.toThrow(
+        ServiceUnavailableException,
+      );
 
       process.env.NODE_ENV = originalEnv;
     });
@@ -93,7 +99,7 @@ describe('HealthService', () => {
 
       // Mock successful database check
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
-      
+
       // Mock failed external service checks (should be ignored in test env)
       (fetch as jest.Mock)
         .mockResolvedValueOnce({ ok: false }) // Keycloak
@@ -119,17 +125,21 @@ describe('HealthService', () => {
     });
 
     it('should throw ServiceUnavailableException when database is not ready', async () => {
-      mockPrismaService.$queryRaw.mockRejectedValueOnce(new Error('Database error'));
+      mockPrismaService.$queryRaw.mockRejectedValueOnce(
+        new Error('Database error'),
+      );
 
-      await expect(service.getReadiness()).rejects.toThrow(ServiceUnavailableException);
+      await expect(service.getReadiness()).rejects.toThrow(
+        ServiceUnavailableException,
+      );
     });
   });
 
   describe('getLiveness', () => {
     it('should always return alive status', async () => {
       // Wait a bit to ensure uptime is greater than 0
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       const result = await service.getLiveness();
 
       expect(result.status).toBe('alive');
@@ -141,8 +151,8 @@ describe('HealthService', () => {
   describe('getMetrics', () => {
     it('should return system metrics', async () => {
       // Wait a bit to ensure uptime is greater than 0
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       const result = await service.getMetrics();
 
       expect(result.uptime).toBeGreaterThanOrEqual(0);
@@ -194,7 +204,9 @@ describe('HealthService', () => {
     });
 
     it('should return error status when database query fails', async () => {
-      mockPrismaService.$queryRaw.mockRejectedValueOnce(new Error('Database error'));
+      mockPrismaService.$queryRaw.mockRejectedValueOnce(
+        new Error('Database error'),
+      );
 
       const result = await (service as any).checkDatabase();
 
@@ -215,8 +227,8 @@ describe('HealthService', () => {
         expect.stringContaining('/.well-known/openid_configuration'),
         expect.objectContaining({
           method: 'GET',
-          headers: { 'Accept': 'application/json' },
-        })
+          headers: { Accept: 'application/json' },
+        }),
       );
     });
 
@@ -241,7 +253,7 @@ describe('HealthService', () => {
     it('should use environment variables for keycloak URL', async () => {
       const originalUrl = process.env.KEYCLOAK_AUTH_SERVER_URL;
       const originalRealm = process.env.KEYCLOAK_REALM;
-      
+
       process.env.KEYCLOAK_AUTH_SERVER_URL = 'https://custom-keycloak.com';
       process.env.KEYCLOAK_REALM = 'custom-realm';
 
@@ -251,7 +263,7 @@ describe('HealthService', () => {
 
       expect(fetch).toHaveBeenCalledWith(
         'https://custom-keycloak.com/realms/custom-realm/.well-known/openid_configuration',
-        expect.any(Object)
+        expect.any(Object),
       );
 
       process.env.KEYCLOAK_AUTH_SERVER_URL = originalUrl;
@@ -271,8 +283,8 @@ describe('HealthService', () => {
         'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
         expect.objectContaining({
           method: 'GET',
-          headers: { 'Accept': 'application/json' },
-        })
+          headers: { Accept: 'application/json' },
+        }),
       );
     });
 

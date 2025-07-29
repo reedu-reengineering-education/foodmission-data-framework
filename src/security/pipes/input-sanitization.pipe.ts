@@ -1,4 +1,9 @@
-import { Injectable, PipeTransform, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  PipeTransform,
+  ArgumentMetadata,
+  BadRequestException,
+} from '@nestjs/common';
 import { SecurityService } from '../security.service';
 
 @Injectable()
@@ -22,7 +27,7 @@ export class InputSanitizationPipe implements PipeTransform {
 
       // Sanitize the input to prevent XSS and injection attacks
       const sanitized = this.securityService.sanitizeInput(value);
-      
+
       return sanitized;
     } catch (error) {
       // If it's already a BadRequestException, re-throw it
@@ -35,7 +40,7 @@ export class InputSanitizationPipe implements PipeTransform {
         value: typeof value === 'object' ? JSON.stringify(value) : value,
         metadata,
       });
-      
+
       throw new BadRequestException('Invalid input data');
     }
   }

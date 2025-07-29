@@ -18,8 +18,11 @@ export class SecurityMiddleware implements NestMiddleware {
     this.helmetMiddleware(req, res, () => {
       // Add custom security headers
       res.setHeader('X-API-Version', '1.0.0');
-      res.setHeader('X-Request-ID', req.headers['x-correlation-id'] || 'unknown');
-      
+      res.setHeader(
+        'X-Request-ID',
+        req.headers['x-correlation-id'] || 'unknown',
+      );
+
       // Remove sensitive headers that might leak information
       res.removeHeader('X-Powered-By');
       res.removeHeader('Server');
@@ -33,13 +36,13 @@ export class SecurityMiddleware implements NestMiddleware {
 
   private logSuspiciousActivity(req: Request) {
     const suspiciousPatterns = [
-      /\.\./,  // Directory traversal
-      /<script/i,  // XSS attempts
-      /union.*select/i,  // SQL injection
-      /javascript:/i,  // JavaScript injection
-      /vbscript:/i,  // VBScript injection
-      /onload=/i,  // Event handler injection
-      /onerror=/i,  // Error handler injection
+      /\.\./, // Directory traversal
+      /<script/i, // XSS attempts
+      /union.*select/i, // SQL injection
+      /javascript:/i, // JavaScript injection
+      /vbscript:/i, // VBScript injection
+      /onload=/i, // Event handler injection
+      /onerror=/i, // Error handler injection
     ];
 
     const url = req.url;
@@ -47,11 +50,12 @@ export class SecurityMiddleware implements NestMiddleware {
     const body = JSON.stringify(req.body || {});
     const query = JSON.stringify(req.query || {});
 
-    const isSuspicious = suspiciousPatterns.some(pattern => 
-      pattern.test(url) || 
-      pattern.test(userAgent) || 
-      pattern.test(body) || 
-      pattern.test(query)
+    const isSuspicious = suspiciousPatterns.some(
+      (pattern) =>
+        pattern.test(url) ||
+        pattern.test(userAgent) ||
+        pattern.test(body) ||
+        pattern.test(query),
     );
 
     if (isSuspicious) {

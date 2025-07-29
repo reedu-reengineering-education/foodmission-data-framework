@@ -61,14 +61,18 @@ describe('Stateless Authentication', () => {
       const req = { user: mockUser };
       const result = await controller.getProfile(req);
 
-      expect(userProfileService.getOrCreateProfile).toHaveBeenCalledWith(mockUser);
+      expect(userProfileService.getOrCreateProfile).toHaveBeenCalledWith(
+        mockUser,
+      );
       expect(result).toEqual(mockProfile);
     });
 
     it('should throw UnauthorizedException if user not authenticated', async () => {
       const req = { user: null };
 
-      await expect(controller.getProfile(req)).rejects.toThrow('User not authenticated');
+      await expect(controller.getProfile(req)).rejects.toThrow(
+        'User not authenticated',
+      );
     });
   });
 
@@ -83,7 +87,7 @@ describe('Stateless Authentication', () => {
         lastName: 'Doe',
         keycloakId: 'keycloak-user-id',
         preferences,
-        settings: {}
+        settings: {},
       };
 
       userProfileService.updatePreferences.mockResolvedValue(updatedProfile);
@@ -93,7 +97,7 @@ describe('Stateless Authentication', () => {
 
       expect(userProfileService.updatePreferences).toHaveBeenCalledWith(
         mockUser.sub,
-        preferences
+        preferences,
       );
       expect(result).toEqual(updatedProfile);
     });
@@ -110,7 +114,7 @@ describe('Stateless Authentication', () => {
         lastName: 'Doe',
         keycloakId: 'keycloak-user-id',
         preferences: {},
-        settings
+        settings,
       };
 
       userProfileService.updateSettings.mockResolvedValue(updatedProfile);
@@ -120,7 +124,7 @@ describe('Stateless Authentication', () => {
 
       expect(userProfileService.updateSettings).toHaveBeenCalledWith(
         mockUser.sub,
-        settings
+        settings,
       );
       expect(result).toEqual(updatedProfile);
     });

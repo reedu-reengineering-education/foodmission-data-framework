@@ -129,7 +129,7 @@ describe('RateLimitGuard', () => {
 
     it('should skip rate limiting in test environment', async () => {
       process.env.NODE_ENV = 'test';
-      
+
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -185,8 +185,9 @@ describe('RateLimitGuard', () => {
       await guard.canActivate(context);
 
       // This should exceed the limit
-      await expect(guard.canActivate(context))
-        .rejects.toThrow(ThrottlerException);
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        ThrottlerException,
+      );
 
       expect(logSpy).toHaveBeenCalledWith('RATE_LIMIT_EXCEEDED', {
         ip: '192.168.1.1',
@@ -221,7 +222,7 @@ describe('RateLimitGuard', () => {
       await guard.canActivate(context);
 
       // Wait for TTL to expire
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
       // Should allow requests again
       const result = await guard.canActivate(context);

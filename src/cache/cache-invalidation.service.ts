@@ -62,10 +62,16 @@ export class CacheInvalidationService {
   /**
    * Invalidate cache based on operation
    */
-  async invalidate(operation: string, entityId?: string, additionalKeys?: string[]): Promise<void> {
+  async invalidate(
+    operation: string,
+    entityId?: string,
+    additionalKeys?: string[],
+  ): Promise<void> {
     const strategy = this.strategies.get(operation);
     if (!strategy) {
-      this.logger.warn(`No invalidation strategy found for operation: ${operation}`);
+      this.logger.warn(
+        `No invalidation strategy found for operation: ${operation}`,
+      );
       return;
     }
 
@@ -89,7 +95,9 @@ export class CacheInvalidationService {
     // Execute invalidation
     await this.executeInvalidation(keysToInvalidate);
 
-    this.logger.debug(`Cache invalidated for operation ${operation}: ${keysToInvalidate.join(', ')}`);
+    this.logger.debug(
+      `Cache invalidated for operation ${operation}: ${keysToInvalidate.join(', ')}`,
+    );
   }
 
   /**
@@ -101,7 +109,9 @@ export class CacheInvalidationService {
     const keysToInvalidate = await this.getKeysByPattern(pattern);
     await this.executeInvalidation(keysToInvalidate);
 
-    this.logger.debug(`Cache invalidated by pattern ${pattern}: ${keysToInvalidate.length} keys`);
+    this.logger.debug(
+      `Cache invalidated by pattern ${pattern}: ${keysToInvalidate.length} keys`,
+    );
   }
 
   /**
@@ -123,7 +133,9 @@ export class CacheInvalidationService {
 
     await this.executeInvalidation(keysToInvalidate);
 
-    this.logger.debug(`Entity cache invalidated for ${entityType}${entityId ? `:${entityId}` : ''}`);
+    this.logger.debug(
+      `Entity cache invalidated for ${entityType}${entityId ? `:${entityId}` : ''}`,
+    );
   }
 
   /**
@@ -132,7 +144,9 @@ export class CacheInvalidationService {
   async scheduleInvalidation(keys: string[], delayMs: number): Promise<void> {
     setTimeout(async () => {
       await this.executeInvalidation(keys);
-      this.logger.debug(`Scheduled cache invalidation executed for: ${keys.join(', ')}`);
+      this.logger.debug(
+        `Scheduled cache invalidation executed for: ${keys.join(', ')}`,
+      );
     }, delayMs);
   }
 
@@ -145,18 +159,22 @@ export class CacheInvalidationService {
   ): Promise<void> {
     if (await condition()) {
       await this.executeInvalidation(keys);
-      this.logger.debug(`Conditional cache invalidation executed for: ${keys.join(', ')}`);
+      this.logger.debug(
+        `Conditional cache invalidation executed for: ${keys.join(', ')}`,
+      );
     }
   }
 
   /**
    * Bulk invalidation for multiple operations
    */
-  async bulkInvalidate(operations: Array<{
-    operation: string;
-    entityId?: string;
-    additionalKeys?: string[];
-  }>): Promise<void> {
+  async bulkInvalidate(
+    operations: Array<{
+      operation: string;
+      entityId?: string;
+      additionalKeys?: string[];
+    }>,
+  ): Promise<void> {
     const allKeys = new Set<string>();
 
     for (const op of operations) {
@@ -166,17 +184,19 @@ export class CacheInvalidationService {
           allKeys.add(`${strategy.pattern}:${op.entityId}`);
         }
         if (strategy.dependencies) {
-          strategy.dependencies.forEach(key => allKeys.add(key));
+          strategy.dependencies.forEach((key) => allKeys.add(key));
         }
         if (op.additionalKeys) {
-          op.additionalKeys.forEach(key => allKeys.add(key));
+          op.additionalKeys.forEach((key) => allKeys.add(key));
         }
       }
     }
 
     await this.executeInvalidation(Array.from(allKeys));
 
-    this.logger.debug(`Bulk cache invalidation executed for ${allKeys.size} keys`);
+    this.logger.debug(
+      `Bulk cache invalidation executed for ${allKeys.size} keys`,
+    );
   }
 
   /**
@@ -197,8 +217,8 @@ export class CacheInvalidationService {
 
     try {
       // Filter out pattern keys (ending with *) and handle them separately
-      const exactKeys = keys.filter(key => !key.includes('*'));
-      const patternKeys = keys.filter(key => key.includes('*'));
+      const exactKeys = keys.filter((key) => !key.includes('*'));
+      const patternKeys = keys.filter((key) => key.includes('*'));
 
       // Delete exact keys
       if (exactKeys.length > 0) {

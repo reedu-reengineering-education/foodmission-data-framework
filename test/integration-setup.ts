@@ -13,7 +13,9 @@ beforeAll(async () => {
   prisma = new PrismaClient({
     datasources: {
       db: {
-        url: process.env.TEST_DATABASE_URL || 'postgresql://postgres:password@localhost:5432/foodmission_test_db',
+        url:
+          process.env.TEST_DATABASE_URL ||
+          'postgresql://postgres:password@localhost:5432/foodmission_test_db',
       },
     },
   });
@@ -55,7 +57,7 @@ beforeEach(async () => {
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
   await prisma.foodCategory.deleteMany();
-  
+
   // Re-seed basic test data
   await seedBasicTestData();
 });

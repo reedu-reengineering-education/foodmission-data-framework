@@ -40,7 +40,7 @@ describe('PerformanceService', () => {
       service.recordQueryPerformance('findMany', 'foods', 1.5, 'success');
 
       expect(loggingService.warn).toHaveBeenCalledWith(
-        'Slow query detected: findMany on foods took 1.5s'
+        'Slow query detected: findMany on foods took 1.5s',
       );
     });
   });
@@ -66,9 +66,9 @@ describe('PerformanceService', () => {
   describe('createTimer', () => {
     it('should create a timer function', () => {
       const timer = service.createTimer();
-      
+
       expect(typeof timer).toBe('function');
-      
+
       // Wait a bit and measure
       setTimeout(() => {
         const duration = timer();
@@ -80,20 +80,26 @@ describe('PerformanceService', () => {
   describe('measureQuery', () => {
     it('should measure successful query execution', async () => {
       const mockQuery = jest.fn().mockResolvedValue({ id: 1, name: 'test' });
-      
-      const result = await service.measureQuery('findUnique', 'foods', mockQuery);
-      
+
+      const result = await service.measureQuery(
+        'findUnique',
+        'foods',
+        mockQuery,
+      );
+
       expect(result).toEqual({ id: 1, name: 'test' });
       expect(mockQuery).toHaveBeenCalled();
     });
 
     it('should measure failed query execution', async () => {
-      const mockQuery = jest.fn().mockRejectedValue(new Error('Database error'));
-      
+      const mockQuery = jest
+        .fn()
+        .mockRejectedValue(new Error('Database error'));
+
       await expect(
-        service.measureQuery('findUnique', 'foods', mockQuery)
+        service.measureQuery('findUnique', 'foods', mockQuery),
       ).rejects.toThrow('Database error');
-      
+
       expect(mockQuery).toHaveBeenCalled();
     });
   });

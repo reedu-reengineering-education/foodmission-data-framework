@@ -1,5 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library';
 import {
   handlePrismaError,
   extractErrorInfo,
@@ -28,7 +31,7 @@ describe('ErrorUtils', () => {
           code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
           clientVersion: '4.0.0',
           meta: { target: ['email'] },
-        }
+        },
       );
 
       const result = handlePrismaError(prismaError, 'CREATE', 'users');
@@ -45,7 +48,7 @@ describe('ErrorUtils', () => {
           code: ERROR_CODES.PRISMA_RECORD_NOT_FOUND,
           clientVersion: '4.0.0',
           meta: { cause: 'Record to update not found.' },
-        }
+        },
       );
 
       const result = handlePrismaError(prismaError, 'UPDATE', 'users');
@@ -61,7 +64,7 @@ describe('ErrorUtils', () => {
           code: ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT,
           clientVersion: '4.0.0',
           meta: { field_name: 'categoryId' },
-        }
+        },
       );
 
       const result = handlePrismaError(prismaError, 'CREATE', 'foods');
@@ -73,7 +76,7 @@ describe('ErrorUtils', () => {
     it('should handle validation errors', () => {
       const prismaError = new PrismaClientValidationError(
         'Validation error in query',
-        { clientVersion: '4.0.0' }
+        { clientVersion: '4.0.0' },
       );
 
       const result = handlePrismaError(prismaError, 'CREATE', 'users');
@@ -83,14 +86,11 @@ describe('ErrorUtils', () => {
     });
 
     it('should handle unknown Prisma errors', () => {
-      const prismaError = new PrismaClientKnownRequestError(
-        'Unknown error',
-        {
-          code: 'P9999',
-          clientVersion: '4.0.0',
-          meta: {},
-        }
-      );
+      const prismaError = new PrismaClientKnownRequestError('Unknown error', {
+        code: 'P9999',
+        clientVersion: '4.0.0',
+        meta: {},
+      });
 
       const result = handlePrismaError(prismaError, 'SELECT', 'users');
 
@@ -147,7 +147,7 @@ describe('ErrorUtils', () => {
           code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
           clientVersion: '4.0.0',
           meta: { target: ['email'] },
-        }
+        },
       );
 
       const info = extractErrorInfo(prismaError);
@@ -305,7 +305,9 @@ describe('ErrorUtils', () => {
       const error = new ResourceNotFoundException('User', '123');
       const formatted = formatErrorForLogging(error, 'TestContext');
 
-      expect(formatted).toBe("[TestContext] RESOURCE_NOT_FOUND: User with identifier '123' not found");
+      expect(formatted).toBe(
+        "[TestContext] RESOURCE_NOT_FOUND: User with identifier '123' not found",
+      );
     });
 
     it('should format error without context', () => {

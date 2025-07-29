@@ -16,42 +16,46 @@ export class PerformanceService {
       'database_query_duration_seconds',
       'Duration of database queries in seconds',
       ['operation', 'table', 'status'],
-      [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5]
+      [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5],
     );
 
     this.queryCounter = this.getOrCreateCounter(
       'database_queries_total',
       'Total number of database queries',
-      ['operation', 'table', 'status']
+      ['operation', 'table', 'status'],
     );
 
     // Cache performance metrics
     this.cacheHitCounter = this.getOrCreateCounter(
       'cache_hits_total',
       'Total number of cache hits',
-      ['key_prefix']
+      ['key_prefix'],
     );
 
     this.cacheMissCounter = this.getOrCreateCounter(
       'cache_misses_total',
       'Total number of cache misses',
-      ['key_prefix']
+      ['key_prefix'],
     );
 
     // Connection metrics
     this.activeConnectionsGauge = this.getOrCreateGauge(
       'database_connections_active',
       'Number of active database connections',
-      []
+      [],
     );
   }
 
-  private getOrCreateCounter(name: string, help: string, labelNames: string[]): Counter<string> {
+  private getOrCreateCounter(
+    name: string,
+    help: string,
+    labelNames: string[],
+  ): Counter<string> {
     const existingMetric = register.getSingleMetric(name);
     if (existingMetric && existingMetric instanceof Counter) {
-      return existingMetric as Counter<string>;
+      return existingMetric;
     }
-    
+
     return new Counter({
       name,
       help,
@@ -60,12 +64,17 @@ export class PerformanceService {
     });
   }
 
-  private getOrCreateHistogram(name: string, help: string, labelNames: string[], buckets: number[]): Histogram<string> {
+  private getOrCreateHistogram(
+    name: string,
+    help: string,
+    labelNames: string[],
+    buckets: number[],
+  ): Histogram<string> {
     const existingMetric = register.getSingleMetric(name);
     if (existingMetric && existingMetric instanceof Histogram) {
-      return existingMetric as Histogram<string>;
+      return existingMetric;
     }
-    
+
     return new Histogram({
       name,
       help,
@@ -75,12 +84,16 @@ export class PerformanceService {
     });
   }
 
-  private getOrCreateGauge(name: string, help: string, labelNames: string[]): Gauge<string> {
+  private getOrCreateGauge(
+    name: string,
+    help: string,
+    labelNames: string[],
+  ): Gauge<string> {
     const existingMetric = register.getSingleMetric(name);
     if (existingMetric && existingMetric instanceof Gauge) {
-      return existingMetric as Gauge<string>;
+      return existingMetric;
     }
-    
+
     return new Gauge({
       name,
       help,
@@ -102,9 +115,7 @@ export class PerformanceService {
       .labels(operation, table, status)
       .observe(duration);
 
-    this.queryCounter
-      .labels(operation, table, status)
-      .inc();
+    this.queryCounter.labels(operation, table, status).inc();
 
     if (duration > 1) {
       this.logger.warn(

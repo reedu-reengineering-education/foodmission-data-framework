@@ -21,7 +21,9 @@ beforeAll(async () => {
   prisma = new PrismaClient({
     datasources: {
       db: {
-        url: process.env.TEST_DATABASE_URL || 'postgresql://postgres:password@localhost:5432/foodmission_test_db',
+        url:
+          process.env.TEST_DATABASE_URL ||
+          'postgresql://postgres:password@localhost:5432/foodmission_test_db',
       },
     },
   });
@@ -32,7 +34,7 @@ beforeAll(async () => {
       env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
       stdio: 'inherit',
     });
-    
+
     execSync('npx prisma migrate deploy', {
       env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
       stdio: 'inherit',
@@ -72,7 +74,7 @@ beforeEach(async () => {
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
   await prisma.foodCategory.deleteMany();
-  
+
   // Seed basic test data
   await seedE2ETestData();
 });
@@ -179,7 +181,7 @@ global.e2eTestUtils = {
   moduleFixture,
   mockAuthGuard,
   mockRolesGuard,
-  
+
   // Helper to create authenticated request context
   createAuthContext: (userId = 'e2e-user-1', roles = ['user']) => ({
     user: {
@@ -189,13 +191,15 @@ global.e2eTestUtils = {
       roles,
     },
   }),
-  
+
   // Helper to get test data
   getTestData: async () => {
     const categories = await prisma.foodCategory.findMany();
     const foods = await prisma.food.findMany({ include: { category: true } });
-    const users = await prisma.user.findMany({ include: { preferences: true } });
-    
+    const users = await prisma.user.findMany({
+      include: { preferences: true },
+    });
+
     return { categories, foods, users };
   },
 };

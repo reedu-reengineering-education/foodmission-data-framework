@@ -179,7 +179,12 @@ export interface OpenFoodFactsSearchOptions {
   countries?: string[];
   page?: number;
   pageSize?: number;
-  sortBy?: 'product_name' | 'created_t' | 'last_modified_t' | 'completeness' | 'popularity';
+  sortBy?:
+    | 'product_name'
+    | 'created_t'
+    | 'last_modified_t'
+    | 'completeness'
+    | 'popularity';
   fields?: string[];
 }
 

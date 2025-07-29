@@ -12,11 +12,11 @@ export class ApiErrorResponseDto {
     description: 'Error message or array of validation errors',
     oneOf: [
       { type: 'string', example: 'Bad Request' },
-      { 
-        type: 'array', 
+      {
+        type: 'array',
         items: { type: 'string' },
-        example: ['name should not be empty', 'email must be a valid email']
-      }
+        example: ['name should not be empty', 'email must be a valid email'],
+      },
     ],
   })
   message: string | string[];

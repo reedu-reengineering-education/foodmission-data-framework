@@ -29,7 +29,9 @@ describe('Security (e2e)', () => {
       expect(response.headers['x-content-type-options']).toBe('nosniff');
       expect(response.headers['x-frame-options']).toBe('DENY');
       expect(response.headers['x-xss-protection']).toBe('1; mode=block');
-      expect(response.headers['strict-transport-security']).toContain('max-age=31536000');
+      expect(response.headers['strict-transport-security']).toContain(
+        'max-age=31536000',
+      );
       expect(response.headers['referrer-policy']).toBe('no-referrer');
 
       // Check that sensitive headers are removed
@@ -43,8 +45,12 @@ describe('Security (e2e)', () => {
         .expect(200);
 
       expect(response.headers['content-security-policy']).toBeDefined();
-      expect(response.headers['content-security-policy']).toContain("default-src 'self'");
-      expect(response.headers['content-security-policy']).toContain("object-src 'none'");
+      expect(response.headers['content-security-policy']).toContain(
+        "default-src 'self'",
+      );
+      expect(response.headers['content-security-policy']).toContain(
+        "object-src 'none'",
+      );
     });
 
     it('should include custom security headers', async () => {
@@ -93,9 +99,7 @@ describe('Security (e2e)', () => {
     it('should allow requests within rate limits', async () => {
       // Make a few requests that should be within limits
       for (let i = 0; i < 5; i++) {
-        await request(app.getHttpServer())
-          .get('/api/v1/health')
-          .expect(200);
+        await request(app.getHttpServer()).get('/api/v1/health').expect(200);
       }
     });
 
@@ -104,9 +108,7 @@ describe('Security (e2e)', () => {
       const promises = [];
       for (let i = 0; i < 20; i++) {
         promises.push(
-          request(app.getHttpServer())
-            .get('/api/v1/health')
-            .expect(200)
+          request(app.getHttpServer()).get('/api/v1/health').expect(200),
         );
       }
 
@@ -118,9 +120,7 @@ describe('Security (e2e)', () => {
       const promises = [];
       for (let i = 0; i < 20; i++) {
         promises.push(
-          request(app.getHttpServer())
-            .get('/api/v1/metrics')
-            .expect(200)
+          request(app.getHttpServer()).get('/api/v1/metrics').expect(200),
         );
       }
 
@@ -148,7 +148,9 @@ describe('Security (e2e)', () => {
         .set('Origin', 'http://localhost:3000')
         .expect(200);
 
-      expect(response.headers['access-control-allow-origin']).toBe('http://localhost:3000');
+      expect(response.headers['access-control-allow-origin']).toBe(
+        'http://localhost:3000',
+      );
       expect(response.headers['access-control-allow-credentials']).toBe('true');
     });
   });
@@ -176,9 +178,7 @@ describe('Security (e2e)', () => {
     });
 
     it('should allow access to public endpoints', async () => {
-      await request(app.getHttpServer())
-        .get('/api/v1/foods')
-        .expect(200);
+      await request(app.getHttpServer()).get('/api/v1/foods').expect(200);
     });
 
     it('should provide auth info endpoint', async () => {

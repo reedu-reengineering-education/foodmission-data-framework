@@ -10,16 +10,17 @@ export class AppController {
 
   @Get()
   @Public()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Application health check',
-    description: 'Returns a simple health check message to verify the application is running.'
+    description:
+      'Returns a simple health check message to verify the application is running.',
   })
   @ApiOkResponse({
     description: 'Application is running',
     schema: {
       type: 'string',
-      example: 'Hello World!'
-    }
+      example: 'Hello World!',
+    },
   })
   getHello(): string {
     return this.appService.getHello();

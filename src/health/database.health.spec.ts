@@ -49,7 +49,9 @@ describe('DatabaseHealthIndicator', () => {
       const dbError = new Error('Connection failed');
       prismaService.$queryRaw.mockRejectedValue(dbError);
 
-      await expect(indicator.isHealthy('database')).rejects.toThrow(HealthCheckError);
+      await expect(indicator.isHealthy('database')).rejects.toThrow(
+        HealthCheckError,
+      );
 
       try {
         await indicator.isHealthy('database');
@@ -70,7 +72,9 @@ describe('DatabaseHealthIndicator', () => {
       const dbError = new Error('Timeout');
       prismaService.$queryRaw.mockRejectedValue(dbError);
 
-      await expect(indicator.isHealthy('database')).rejects.toThrow(HealthCheckError);
+      await expect(indicator.isHealthy('database')).rejects.toThrow(
+        HealthCheckError,
+      );
 
       try {
         await indicator.isHealthy('database');

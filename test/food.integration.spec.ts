@@ -18,16 +18,14 @@ describe('Food Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PrismaService,
-        FoodRepository,
-        FoodCategoryRepository,
-      ],
+      providers: [PrismaService, FoodRepository, FoodCategoryRepository],
     }).compile();
 
     prisma = module.get<PrismaService>(PrismaService);
     foodRepository = module.get<FoodRepository>(FoodRepository);
-    categoryRepository = module.get<FoodCategoryRepository>(FoodCategoryRepository);
+    categoryRepository = module.get<FoodCategoryRepository>(
+      FoodCategoryRepository,
+    );
 
     // Create test category
     testCategory = await prisma.foodCategory.create({
@@ -146,7 +144,9 @@ describe('Food Integration Tests', () => {
       });
 
       it('should return null for non-existent barcode', async () => {
-        const found = await foodRepository.findByBarcode('non-existent-barcode');
+        const found = await foodRepository.findByBarcode(
+          'non-existent-barcode',
+        );
         expect(found).toBeNull();
       });
     });
@@ -198,7 +198,11 @@ describe('Food Integration Tests', () => {
         });
 
         expect(result.data).toHaveLength(3);
-        expect(result.data.every(food => food.name.toLowerCase().includes('juice'))).toBe(true);
+        expect(
+          result.data.every((food) =>
+            food.name.toLowerCase().includes('juice'),
+          ),
+        ).toBe(true);
       });
 
       it('should sort results', async () => {
@@ -208,7 +212,7 @@ describe('Food Integration Tests', () => {
           orderBy: { name: 'desc' },
         });
 
-        const names = result.data.map(food => food.name);
+        const names = result.data.map((food) => food.name);
         const sortedNames = [...names].sort().reverse();
         expect(names).toEqual(sortedNames);
       });
@@ -224,7 +228,7 @@ describe('Food Integration Tests', () => {
         };
 
         const created = await foodRepository.create(createDto);
-        
+
         const updateDto: UpdateFoodDto = {
           name: 'Updated Name',
           description: 'Updated description',
@@ -235,7 +239,9 @@ describe('Food Integration Tests', () => {
         expect(updated).toBeDefined();
         expect(updated.name).toBe(updateDto.name);
         expect(updated.description).toBe(updateDto.description);
-        expect(updated.updatedAt.getTime()).toBeGreaterThan(created.updatedAt.getTime());
+        expect(updated.updatedAt.getTime()).toBeGreaterThan(
+          created.updatedAt.getTime(),
+        );
       });
     });
 
@@ -310,7 +316,7 @@ describe('Food Integration Tests', () => {
   describe('Database Constraints', () => {
     it('should enforce unique barcode constraint', async () => {
       const barcode = 'UNIQUE123456';
-      
+
       await foodRepository.create({
         name: 'First Food',
         barcode,
@@ -324,7 +330,7 @@ describe('Food Integration Tests', () => {
           barcode,
           categoryId: testCategory.id,
           createdBy: 'integration-test-user',
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -334,7 +340,7 @@ describe('Food Integration Tests', () => {
           name: 'Invalid Category Food',
           categoryId: 'non-existent-category-id',
           createdBy: 'integration-test-user',
-        })
+        }),
       ).rejects.toThrow();
     });
   });

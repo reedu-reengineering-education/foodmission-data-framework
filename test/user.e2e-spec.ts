@@ -35,11 +35,13 @@ describe('User E2E Tests', () => {
       .compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
 
     await app.init();
     prisma = app.get<PrismaService>(PrismaService);
@@ -113,15 +115,13 @@ describe('User E2E Tests', () => {
   describe('Authentication Tests', () => {
     it('should return 401 when no token provided', () => {
       mockAuthGuard.canActivate.mockReturnValueOnce(false);
-      
-      return request(app.getHttpServer())
-        .get('/users/profile')
-        .expect(401);
+
+      return request(app.getHttpServer()).get('/users/profile').expect(401);
     });
 
     it('should return 401 when invalid token provided', () => {
       mockAuthGuard.canActivate.mockReturnValueOnce(false);
-      
+
       return request(app.getHttpServer())
         .get('/users/profile')
         .set('Authorization', 'Bearer invalid-token')
@@ -162,7 +162,9 @@ describe('User E2E Tests', () => {
         .expect(200);
 
       expect(response.body.preferences).toBeDefined();
-      expect(response.body.preferences.dietaryRestrictions).toEqual(['vegetarian']);
+      expect(response.body.preferences.dietaryRestrictions).toEqual([
+        'vegetarian',
+      ]);
       expect(response.body.preferences.allergies).toEqual(['nuts']);
       expect(response.body.preferences.preferredCategories).toEqual(['Fruits']);
     });
@@ -270,9 +272,13 @@ describe('User E2E Tests', () => {
       const dbPreferences = await prisma.userPreferences.findUnique({
         where: { userId: testUser.id },
       });
-      expect(dbPreferences!.dietaryRestrictions).toEqual(preferencesData.dietaryRestrictions);
+      expect(dbPreferences!.dietaryRestrictions).toEqual(
+        preferencesData.dietaryRestrictions,
+      );
       expect(dbPreferences!.allergies).toEqual(preferencesData.allergies);
-      expect(dbPreferences!.preferredCategories).toEqual(preferencesData.preferredCategories);
+      expect(dbPreferences!.preferredCategories).toEqual(
+        preferencesData.preferredCategories,
+      );
     });
 
     it('should update existing preferences', async () => {
@@ -366,7 +372,9 @@ describe('User E2E Tests', () => {
         .get('/users/profile')
         .expect(200);
 
-      expect(finalProfileResponse.body.firstName).toBe(updatedProfile.firstName);
+      expect(finalProfileResponse.body.firstName).toBe(
+        updatedProfile.firstName,
+      );
       expect(finalProfileResponse.body.lastName).toBe(updatedProfile.lastName);
       expect(finalProfileResponse.body.preferences).toMatchObject(preferences);
     });
@@ -444,15 +452,13 @@ describe('User E2E Tests', () => {
 
     it('should return 401 when no token provided (admin only)', () => {
       mockAuthGuard.canActivate.mockReturnValueOnce(false);
-      
-      return request(app.getHttpServer())
-        .get('/users')
-        .expect(401);
+
+      return request(app.getHttpServer()).get('/users').expect(401);
     });
 
     it('should return 401 when invalid token provided (admin only)', () => {
       mockAuthGuard.canActivate.mockReturnValueOnce(false);
-      
+
       return request(app.getHttpServer())
         .get('/users')
         .set('Authorization', 'Bearer invalid-token')
@@ -461,7 +467,7 @@ describe('User E2E Tests', () => {
 
     it('should return 401 when no token provided for POST', () => {
       mockAuthGuard.canActivate.mockReturnValueOnce(false);
-      
+
       return request(app.getHttpServer())
         .post('/users')
         .send({

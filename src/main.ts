@@ -35,7 +35,8 @@ async function bootstrap() {
   // Configure Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('FOODMISSION Data Framework API')
-    .setDescription(`
+    .setDescription(
+      `
       A comprehensive backend system for managing food-related data and operations.
       
       ## Features
@@ -62,17 +63,15 @@ async function bootstrap() {
       
       ## Support
       For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
-    `)
+    `,
+    )
     .setVersion('1.0.0')
     .setContact(
       'FOODMISSION Team',
       'https://github.com/reedu-reengineering-education/foodmission-data-framework',
-      'support@foodmission.dev'
+      'support@foodmission.dev',
     )
-    .setLicense(
-      'MIT',
-      'https://opensource.org/licenses/MIT'
-    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addBearerAuth(
       {
         type: 'http',
@@ -84,10 +83,22 @@ async function bootstrap() {
       },
       'JWT-auth',
     )
-    .addTag('auth', 'Authentication and authorization endpoints for Keycloak integration')
-    .addTag('foods', 'Food item management with OpenFoodFacts integration for nutritional data')
-    .addTag('users', 'User profile management and dietary preferences configuration')
-    .addTag('health', 'Application health checks, readiness probes, and monitoring metrics')
+    .addTag(
+      'auth',
+      'Authentication and authorization endpoints for Keycloak integration',
+    )
+    .addTag(
+      'foods',
+      'Food item management with OpenFoodFacts integration for nutritional data',
+    )
+    .addTag(
+      'users',
+      'User profile management and dietary preferences configuration',
+    )
+    .addTag(
+      'health',
+      'Application health checks, readiness probes, and monitoring metrics',
+    )
     .addServer('http://localhost:3000/api/v1', 'Development server')
     .addServer('https://api.foodmission.dev/api/v1', 'Production server')
     .addServer('https://staging-api.foodmission.dev/api/v1', 'Staging server')
@@ -97,7 +108,7 @@ async function bootstrap() {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     deepScanRoutes: true,
   });
-  
+
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
@@ -110,7 +121,9 @@ async function bootstrap() {
       tryItOutEnabled: true,
       requestInterceptor: (req: any) => {
         // Add correlation ID to requests for tracing
-        req.headers['X-Correlation-ID'] = Math.random().toString(36).substring(2, 15);
+        req.headers['X-Correlation-ID'] = Math.random()
+          .toString(36)
+          .substring(2, 15);
         return req;
       },
     },
@@ -136,6 +149,8 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log(`Swagger documentation available at: ${await app.getUrl()}/api/docs`);
+  console.log(
+    `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
+  );
 }
 bootstrap();

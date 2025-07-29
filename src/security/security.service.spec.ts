@@ -120,7 +120,7 @@ describe('SecurityService', () => {
       });
 
       expect(() => service.validateEnvironmentVariables()).toThrow(
-        'Missing required environment variables: DATABASE_URL'
+        'Missing required environment variables: DATABASE_URL',
       );
     });
 
@@ -139,7 +139,7 @@ describe('SecurityService', () => {
 
       service.validateEnvironmentVariables();
       expect(loggerSpy).toHaveBeenCalledWith(
-        'JWT_SECRET should be at least 32 characters long for security'
+        'JWT_SECRET should be at least 32 characters long for security',
       );
     });
   });
@@ -211,30 +211,30 @@ describe('SecurityService', () => {
   describe('logSecurityEvent', () => {
     it('should log security events', () => {
       const loggerSpy = jest.spyOn(service['logger'], 'warn');
-      
+
       service.logSecurityEvent('TEST_EVENT', { detail: 'test' });
-      
+
       expect(loggerSpy).toHaveBeenCalledWith(
         'Security Event: TEST_EVENT',
         expect.objectContaining({
           event: 'TEST_EVENT',
           detail: 'test',
           timestamp: expect.any(String),
-        })
+        }),
       );
     });
 
     it('should log security events without details', () => {
       const loggerSpy = jest.spyOn(service['logger'], 'warn');
-      
+
       service.logSecurityEvent('SIMPLE_EVENT');
-      
+
       expect(loggerSpy).toHaveBeenCalledWith(
         'Security Event: SIMPLE_EVENT',
         expect.objectContaining({
           event: 'SIMPLE_EVENT',
           timestamp: expect.any(String),
-        })
+        }),
       );
     });
   });

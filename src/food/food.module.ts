@@ -8,10 +8,7 @@ import { FoodRepository } from './repositories/food.repository';
 import { FoodCategoryRepository } from './repositories/food-category.repository';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    HttpModule,
-  ],
+  imports: [DatabaseModule, HttpModule],
   controllers: [FoodController],
   providers: [
     FoodService,

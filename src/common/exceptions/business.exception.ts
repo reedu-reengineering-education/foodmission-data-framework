@@ -99,7 +99,12 @@ export class BusinessValidationException extends BusinessException {
  * External service exception
  */
 export class ExternalServiceException extends BusinessException {
-  constructor(service: string, operation: string, reason: string, details?: any) {
+  constructor(
+    service: string,
+    operation: string,
+    reason: string,
+    details?: any,
+  ) {
     super(
       `External service '${service}' failed during '${operation}': ${reason}`,
       'EXTERNAL_SERVICE_ERROR',

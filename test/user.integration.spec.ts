@@ -18,16 +18,14 @@ describe('User Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PrismaService,
-        UserRepository,
-        UserPreferencesRepository,
-      ],
+      providers: [PrismaService, UserRepository, UserPreferencesRepository],
     }).compile();
 
     prisma = module.get<PrismaService>(PrismaService);
     userRepository = module.get<UserRepository>(UserRepository);
-    userPreferencesRepository = module.get<UserPreferencesRepository>(UserPreferencesRepository);
+    userPreferencesRepository = module.get<UserPreferencesRepository>(
+      UserPreferencesRepository,
+    );
   });
 
   beforeEach(async () => {
@@ -136,7 +134,9 @@ describe('User Integration Tests', () => {
       });
 
       it('should return null for non-existent keycloak id', async () => {
-        const found = await userRepository.findByKeycloakId('non-existent-keycloak-id');
+        const found = await userRepository.findByKeycloakId(
+          'non-existent-keycloak-id',
+        );
         expect(found).toBeNull();
       });
     });
@@ -159,7 +159,9 @@ describe('User Integration Tests', () => {
       });
 
       it('should return null for non-existent email', async () => {
-        const found = await userRepository.findByEmail('non-existent@example.com');
+        const found = await userRepository.findByEmail(
+          'non-existent@example.com',
+        );
         expect(found).toBeNull();
       });
     });
@@ -174,7 +176,7 @@ describe('User Integration Tests', () => {
         };
 
         const created = await userRepository.create(createDto);
-        
+
         const updateDto: UpdateUserDto = {
           firstName: 'Updated',
           lastName: 'Name',
@@ -186,7 +188,9 @@ describe('User Integration Tests', () => {
         expect(updated.firstName).toBe(updateDto.firstName);
         expect(updated.lastName).toBe(updateDto.lastName);
         expect(updated.email).toBe(created.email); // Unchanged
-        expect(updated.updatedAt.getTime()).toBeGreaterThan(created.updatedAt.getTime());
+        expect(updated.updatedAt.getTime()).toBeGreaterThan(
+          created.updatedAt.getTime(),
+        );
       });
     });
 
@@ -229,13 +233,20 @@ describe('User Integration Tests', () => {
           preferredCategories: ['Fruits', 'Vegetables'],
         };
 
-        const result = await userPreferencesRepository.create(testUser.id, preferencesDto);
+        const result = await userPreferencesRepository.create(
+          testUser.id,
+          preferencesDto,
+        );
 
         expect(result).toBeDefined();
         expect(result.userId).toBe(testUser.id);
-        expect(result.dietaryRestrictions).toEqual(preferencesDto.dietaryRestrictions);
+        expect(result.dietaryRestrictions).toEqual(
+          preferencesDto.dietaryRestrictions,
+        );
         expect(result.allergies).toEqual(preferencesDto.allergies);
-        expect(result.preferredCategories).toEqual(preferencesDto.preferredCategories);
+        expect(result.preferredCategories).toEqual(
+          preferencesDto.preferredCategories,
+        );
       });
     });
 
@@ -252,9 +263,13 @@ describe('User Integration Tests', () => {
 
         expect(found).toBeDefined();
         expect(found!.userId).toBe(testUser.id);
-        expect(found!.dietaryRestrictions).toEqual(preferencesDto.dietaryRestrictions);
+        expect(found!.dietaryRestrictions).toEqual(
+          preferencesDto.dietaryRestrictions,
+        );
         expect(found!.allergies).toEqual(preferencesDto.allergies);
-        expect(found!.preferredCategories).toEqual(preferencesDto.preferredCategories);
+        expect(found!.preferredCategories).toEqual(
+          preferencesDto.preferredCategories,
+        );
       });
 
       it('should return null for user without preferences', async () => {
@@ -279,12 +294,19 @@ describe('User Integration Tests', () => {
           preferredCategories: ['Fruits', 'Vegetables'],
         };
 
-        const updated = await userPreferencesRepository.update(testUser.id, updatePreferences);
+        const updated = await userPreferencesRepository.update(
+          testUser.id,
+          updatePreferences,
+        );
 
         expect(updated).toBeDefined();
-        expect(updated.dietaryRestrictions).toEqual(updatePreferences.dietaryRestrictions);
+        expect(updated.dietaryRestrictions).toEqual(
+          updatePreferences.dietaryRestrictions,
+        );
         expect(updated.allergies).toEqual(updatePreferences.allergies);
-        expect(updated.preferredCategories).toEqual(updatePreferences.preferredCategories);
+        expect(updated.preferredCategories).toEqual(
+          updatePreferences.preferredCategories,
+        );
       });
     });
 
@@ -308,7 +330,7 @@ describe('User Integration Tests', () => {
   describe('Database Constraints', () => {
     it('should enforce unique keycloak id constraint', async () => {
       const keycloakId = 'unique-keycloak-id';
-      
+
       await userRepository.create({
         keycloakId,
         email: 'integration-test-unique-1@example.com',
@@ -322,13 +344,13 @@ describe('User Integration Tests', () => {
           email: 'integration-test-unique-2@example.com',
           firstName: 'Second',
           lastName: 'User',
-        })
+        }),
       ).rejects.toThrow();
     });
 
     it('should enforce unique email constraint', async () => {
       const email = 'integration-test-unique@example.com';
-      
+
       await userRepository.create({
         keycloakId: 'unique-keycloak-1',
         email,
@@ -342,7 +364,7 @@ describe('User Integration Tests', () => {
           email,
           firstName: 'Second',
           lastName: 'User',
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -387,7 +409,9 @@ describe('User Integration Tests', () => {
       expect(userWithPreferences).toBeDefined();
       expect(userWithPreferences!.preferences).toBeDefined();
       expect(userWithPreferences!.preferences!.id).toBe(preferences.id);
-      expect(userWithPreferences!.preferences!.dietaryRestrictions).toEqual(preferences.dietaryRestrictions);
+      expect(userWithPreferences!.preferences!.dietaryRestrictions).toEqual(
+        preferences.dietaryRestrictions,
+      );
     });
   });
 });

@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Food, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { BaseRepository, FindAllOptions, PaginatedResult } from '../../common/interfaces/base-repository.interface';
+import {
+  BaseRepository,
+  FindAllOptions,
+  PaginatedResult,
+} from '../../common/interfaces/base-repository.interface';
 
 export interface CreateFoodDto {
   name: string;
@@ -29,7 +33,9 @@ export interface FoodWithCategory extends Food {
 }
 
 @Injectable()
-export class FoodRepository implements BaseRepository<Food, CreateFoodDto, UpdateFoodDto> {
+export class FoodRepository
+  implements BaseRepository<Food, CreateFoodDto, UpdateFoodDto>
+{
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(options: FindAllOptions = {}): Promise<Food[]> {
@@ -89,10 +95,12 @@ export class FoodRepository implements BaseRepository<Food, CreateFoodDto, Updat
     }
   }
 
-  async findWithPagination(options: FindAllOptions): Promise<PaginatedResult<FoodWithCategory>> {
+  async findWithPagination(
+    options: FindAllOptions,
+  ): Promise<PaginatedResult<FoodWithCategory>> {
     try {
       const { skip = 0, take = 10, where, orderBy } = options;
-      
+
       const [data, total] = await Promise.all([
         this.prisma.food.findMany({
           skip,
@@ -122,7 +130,10 @@ export class FoodRepository implements BaseRepository<Food, CreateFoodDto, Updat
     }
   }
 
-  async searchByName(name: string, options: FindAllOptions = {}): Promise<Food[]> {
+  async searchByName(
+    name: string,
+    options: FindAllOptions = {},
+  ): Promise<Food[]> {
     try {
       return await this.prisma.food.findMany({
         where: {
@@ -143,7 +154,10 @@ export class FoodRepository implements BaseRepository<Food, CreateFoodDto, Updat
     }
   }
 
-  async findByCategory(categoryId: string, options: FindAllOptions = {}): Promise<Food[]> {
+  async findByCategory(
+    categoryId: string,
+    options: FindAllOptions = {},
+  ): Promise<Food[]> {
     try {
       return await this.prisma.food.findMany({
         where: {
@@ -173,7 +187,9 @@ export class FoodRepository implements BaseRepository<Food, CreateFoodDto, Updat
       console.error('Error creating food:', error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new Error('Food with this barcode or OpenFoodFacts ID already exists');
+          throw new Error(
+            'Food with this barcode or OpenFoodFacts ID already exists',
+          );
         }
         if (error.code === 'P2003') {
           throw new Error('Invalid category ID provided');
@@ -199,7 +215,9 @@ export class FoodRepository implements BaseRepository<Food, CreateFoodDto, Updat
           throw new Error('Food not found');
         }
         if (error.code === 'P2002') {
-          throw new Error('Food with this barcode or OpenFoodFacts ID already exists');
+          throw new Error(
+            'Food with this barcode or OpenFoodFacts ID already exists',
+          );
         }
         if (error.code === 'P2003') {
           throw new Error('Invalid category ID provided');

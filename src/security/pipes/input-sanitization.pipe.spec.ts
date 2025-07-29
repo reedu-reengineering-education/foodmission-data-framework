@@ -34,14 +34,14 @@ describe('InputSanitizationPipe', () => {
     it('should sanitize input using SecurityService', () => {
       const input = '<script>alert("xss")</script>Hello';
       const metadata = { type: 'body' } as any;
-      
+
       const result = pipe.transform(input, metadata);
       expect(result).toBe('Hello');
     });
 
     it('should handle null/undefined input', () => {
       const metadata = { type: 'body' } as any;
-      
+
       expect(pipe.transform(null, metadata)).toBeNull();
       expect(pipe.transform(undefined, metadata)).toBeUndefined();
     });
@@ -49,9 +49,13 @@ describe('InputSanitizationPipe', () => {
     it('should validate body size', () => {
       const largeObject = { data: 'x'.repeat(2 * 1024 * 1024) }; // 2MB
       const metadata = { type: 'body' } as any;
-      
-      expect(() => pipe.transform(largeObject, metadata)).toThrow(BadRequestException);
-      expect(() => pipe.transform(largeObject, metadata)).toThrow('Request body too large');
+
+      expect(() => pipe.transform(largeObject, metadata)).toThrow(
+        BadRequestException,
+      );
+      expect(() => pipe.transform(largeObject, metadata)).toThrow(
+        'Request body too large',
+      );
     });
 
     it('should validate query parameters count', () => {
@@ -60,18 +64,26 @@ describe('InputSanitizationPipe', () => {
         manyParams[`param${i}`] = 'value';
       }
       const metadata = { type: 'query' } as any;
-      
-      expect(() => pipe.transform(manyParams, metadata)).toThrow(BadRequestException);
-      expect(() => pipe.transform(manyParams, metadata)).toThrow('Too many query parameters');
+
+      expect(() => pipe.transform(manyParams, metadata)).toThrow(
+        BadRequestException,
+      );
+      expect(() => pipe.transform(manyParams, metadata)).toThrow(
+        'Too many query parameters',
+      );
     });
 
     it('should validate query parameter value length', () => {
       const longValue = 'x'.repeat(1500);
       const queryParams = { longParam: longValue };
       const metadata = { type: 'query' } as any;
-      
-      expect(() => pipe.transform(queryParams, metadata)).toThrow(BadRequestException);
-      expect(() => pipe.transform(queryParams, metadata)).toThrow("Query parameter 'longParam' is too long");
+
+      expect(() => pipe.transform(queryParams, metadata)).toThrow(
+        BadRequestException,
+      );
+      expect(() => pipe.transform(queryParams, metadata)).toThrow(
+        "Query parameter 'longParam' is too long",
+      );
     });
 
     it('should allow valid query parameters', () => {
@@ -81,7 +93,7 @@ describe('InputSanitizationPipe', () => {
         limit: '10',
       };
       const metadata = { type: 'query' } as any;
-      
+
       expect(() => pipe.transform(validParams, metadata)).not.toThrow();
     });
 
@@ -92,7 +104,7 @@ describe('InputSanitizationPipe', () => {
         category: 'fruit',
       };
       const metadata = { type: 'body' } as any;
-      
+
       expect(() => pipe.transform(validBody, metadata)).not.toThrow();
     });
 
@@ -104,9 +116,13 @@ describe('InputSanitizationPipe', () => {
 
       const input = 'test input';
       const metadata = { type: 'body' } as any;
-      
-      expect(() => pipe.transform(input, metadata)).toThrow(BadRequestException);
-      expect(() => pipe.transform(input, metadata)).toThrow('Invalid input data');
+
+      expect(() => pipe.transform(input, metadata)).toThrow(
+        BadRequestException,
+      );
+      expect(() => pipe.transform(input, metadata)).toThrow(
+        'Invalid input data',
+      );
       expect(logSpy).toHaveBeenCalledWith('INPUT_SANITIZATION_ERROR', {
         error: 'Sanitization failed',
         value: 'test input',
@@ -122,8 +138,10 @@ describe('InputSanitizationPipe', () => {
 
       const input = { name: 'test' };
       const metadata = { type: 'body' } as any;
-      
-      expect(() => pipe.transform(input, metadata)).toThrow(BadRequestException);
+
+      expect(() => pipe.transform(input, metadata)).toThrow(
+        BadRequestException,
+      );
       expect(logSpy).toHaveBeenCalledWith('INPUT_SANITIZATION_ERROR', {
         error: 'Sanitization failed',
         value: JSON.stringify(input),
@@ -134,7 +152,7 @@ describe('InputSanitizationPipe', () => {
     it('should not validate size for non-body/query types', () => {
       const largeInput = 'x'.repeat(2 * 1024 * 1024);
       const metadata = { type: 'param' } as any;
-      
+
       expect(() => pipe.transform(largeInput, metadata)).not.toThrow();
     });
   });

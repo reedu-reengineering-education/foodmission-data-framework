@@ -43,13 +43,16 @@ export class MonitoringMiddleware implements NestMiddleware {
       );
 
       // Log response
-      this.loggingService.http(`${req.method} ${route} ${res.statusCode} - ${duration}ms`, {
-        statusCode: res.statusCode,
-        duration: duration,
-        contentLength: res.get('Content-Length'),
-        method: req.method,
-        route: route,
-      });
+      this.loggingService.http(
+        `${req.method} ${route} ${res.statusCode} - ${duration}ms`,
+        {
+          statusCode: res.statusCode,
+          duration: duration,
+          contentLength: res.get('Content-Length'),
+          method: req.method,
+          route: route,
+        },
+      );
     });
 
     next();
@@ -67,14 +70,17 @@ export class MonitoringMiddleware implements NestMiddleware {
 
     // Fallback: try to normalize common patterns
     let route = req.path;
-    
+
     // Replace UUIDs and numeric IDs with parameter placeholders
-    route = route.replace(/\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, '/:id');
+    route = route.replace(
+      /\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
+      '/:id',
+    );
     route = route.replace(/\/\d+/g, '/:id');
-    
+
     // Replace other common patterns
     route = route.replace(/\/[a-zA-Z0-9_-]{20,}/g, '/:token');
-    
+
     return route || req.path;
   }
 }

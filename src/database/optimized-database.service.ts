@@ -55,10 +55,7 @@ export class OptimizedDatabaseService {
     orderBy?: any;
     include?: any;
   }) {
-    const cacheKey = this.cache.generateKey(
-      'foods',
-      JSON.stringify(params),
-    );
+    const cacheKey = this.cache.generateKey('foods', JSON.stringify(params));
 
     return this.executeWithCache(
       'findMany',
@@ -73,16 +70,21 @@ export class OptimizedDatabaseService {
    * Find food by ID with caching
    */
   async findFoodById(id: string, include?: any) {
-    const cacheKey = this.cache.generateKey('food', id, JSON.stringify(include || {}));
+    const cacheKey = this.cache.generateKey(
+      'food',
+      id,
+      JSON.stringify(include || {}),
+    );
 
     return this.executeWithCache(
       'findUnique',
       'foods',
       cacheKey,
-      () => this.prisma.food.findUnique({
-        where: { id },
-        include,
-      }),
+      () =>
+        this.prisma.food.findUnique({
+          where: { id },
+          include,
+        }),
       600, // 10 minutes
     );
   }
@@ -90,11 +92,14 @@ export class OptimizedDatabaseService {
   /**
    * Find foods by category with caching
    */
-  async findFoodsByCategory(categoryId: string, params?: {
-    skip?: number;
-    take?: number;
-    orderBy?: any;
-  }) {
+  async findFoodsByCategory(
+    categoryId: string,
+    params?: {
+      skip?: number;
+      take?: number;
+      orderBy?: any;
+    },
+  ) {
     const cacheKey = this.cache.generateKey(
       'foods_by_category',
       categoryId,
@@ -105,10 +110,11 @@ export class OptimizedDatabaseService {
       'findMany',
       'foods',
       cacheKey,
-      () => this.prisma.food.findMany({
-        where: { categoryId },
-        ...params,
-      }),
+      () =>
+        this.prisma.food.findMany({
+          where: { categoryId },
+          ...params,
+        }),
       300, // 5 minutes
     );
   }
@@ -116,10 +122,13 @@ export class OptimizedDatabaseService {
   /**
    * Search foods with full-text search and caching
    */
-  async searchFoods(query: string, params?: {
-    skip?: number;
-    take?: number;
-  }) {
+  async searchFoods(
+    query: string,
+    params?: {
+      skip?: number;
+      take?: number;
+    },
+  ) {
     const cacheKey = this.cache.generateKey(
       'food_search',
       query,
@@ -130,18 +139,19 @@ export class OptimizedDatabaseService {
       'findMany',
       'foods',
       cacheKey,
-      () => this.prisma.food.findMany({
-        where: {
-          OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { description: { contains: query, mode: 'insensitive' } },
-          ],
-        },
-        include: {
-          category: true,
-        },
-        ...params,
-      }),
+      () =>
+        this.prisma.food.findMany({
+          where: {
+            OR: [
+              { name: { contains: query, mode: 'insensitive' } },
+              { description: { contains: query, mode: 'insensitive' } },
+            ],
+          },
+          include: {
+            category: true,
+          },
+          ...params,
+        }),
       180, // 3 minutes (shorter for search results)
     );
   }
@@ -156,14 +166,15 @@ export class OptimizedDatabaseService {
       'findMany',
       'food_categories',
       cacheKey,
-      () => this.prisma.foodCategory.findMany({
-        orderBy: { name: 'asc' },
-        include: {
-          _count: {
-            select: { foods: true },
+      () =>
+        this.prisma.foodCategory.findMany({
+          orderBy: { name: 'asc' },
+          include: {
+            _count: {
+              select: { foods: true },
+            },
           },
-        },
-      }),
+        }),
       1800, // 30 minutes (categories change less frequently)
     );
   }
@@ -178,9 +189,10 @@ export class OptimizedDatabaseService {
       'findUnique',
       'users',
       cacheKey,
-      () => this.prisma.user.findUnique({
-        where: { id: userId },
-      }),
+      () =>
+        this.prisma.user.findUnique({
+          where: { id: userId },
+        }),
       900, // 15 minutes
     );
   }
@@ -189,10 +201,8 @@ export class OptimizedDatabaseService {
    * Create food and invalidate related caches
    */
   async createFood(data: any) {
-    const result = await this.performance.measureQuery(
-      'create',
-      'foods',
-      () => this.prisma.food.create({ data }),
+    const result = await this.performance.measureQuery('create', 'foods', () =>
+      this.prisma.food.create({ data }),
     );
 
     // Invalidate related caches
@@ -205,10 +215,8 @@ export class OptimizedDatabaseService {
    * Update food and invalidate related caches
    */
   async updateFood(id: string, data: any) {
-    const result = await this.performance.measureQuery(
-      'update',
-      'foods',
-      () => this.prisma.food.update({
+    const result = await this.performance.measureQuery('update', 'foods', () =>
+      this.prisma.food.update({
         where: { id },
         data,
       }),
@@ -230,10 +238,8 @@ export class OptimizedDatabaseService {
       select: { categoryId: true },
     });
 
-    const result = await this.performance.measureQuery(
-      'delete',
-      'foods',
-      () => this.prisma.food.delete({ where: { id } }),
+    const result = await this.performance.measureQuery('delete', 'foods', () =>
+      this.prisma.food.delete({ where: { id } }),
     );
 
     // Invalidate related caches
@@ -264,17 +270,17 @@ export class OptimizedDatabaseService {
 
     // For now, we'll delete specific patterns
     // In a production environment, you might want to use Redis SCAN for pattern matching
-    const specificKeys = [
-      'food_categories:all',
-    ];
+    const specificKeys = ['food_categories:all'];
 
     if (foodId) {
       specificKeys.push(`food:${foodId}:`);
     }
 
     await this.cache.delMany(specificKeys);
-    
-    this.logger.debug(`Invalidated caches for food operation: ${keysToInvalidate.join(', ')}`);
+
+    this.logger.debug(
+      `Invalidated caches for food operation: ${keysToInvalidate.join(', ')}`,
+    );
   }
 
   /**
@@ -298,10 +304,8 @@ export class OptimizedDatabaseService {
    * Execute raw query with performance monitoring
    */
   async executeRawQuery<T>(query: string, params?: any[]): Promise<T> {
-    return this.performance.measureQuery(
-      'raw',
-      'database',
-      () => this.prisma.$queryRawUnsafe<T>(query, ...(params || [])),
+    return this.performance.measureQuery('raw', 'database', () =>
+      this.prisma.$queryRawUnsafe<T>(query, ...(params || [])),
     );
   }
 }

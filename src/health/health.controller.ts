@@ -91,9 +91,7 @@ export class HealthController {
   })
   @HealthCheck()
   readiness(): Promise<HealthCheckResult> {
-    return this.health.check([
-      () => this.db.isHealthy('database'),
-    ]);
+    return this.health.check([() => this.db.isHealthy('database')]);
   }
 
   @Get('live')

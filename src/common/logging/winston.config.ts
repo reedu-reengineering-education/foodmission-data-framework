@@ -9,12 +9,14 @@ const developmentFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(({ timestamp, level, message, context, stack, correlationId }) => {
-    const correlationInfo = correlationId ? `[${correlationId}] ` : '';
-    const contextInfo = context ? ` ${JSON.stringify(context)}` : '';
-    const stackInfo = stack ? `\n${stack}` : '';
-    return `${timestamp} ${level}: ${correlationInfo}${message}${contextInfo}${stackInfo}`;
-  }),
+  winston.format.printf(
+    ({ timestamp, level, message, context, stack, correlationId }) => {
+      const correlationInfo = correlationId ? `[${correlationId}] ` : '';
+      const contextInfo = context ? ` ${JSON.stringify(context)}` : '';
+      const stackInfo = stack ? `\n${stack}` : '';
+      return `${timestamp} ${level}: ${correlationInfo}${message}${contextInfo}${stackInfo}`;
+    },
+  ),
 );
 
 // Custom format for production (structured JSON)
@@ -23,7 +25,15 @@ const productionFormat = winston.format.combine(
   winston.format.errors({ stack: true }),
   winston.format.json(),
   winston.format.printf((info) => {
-    const { timestamp, level, message, context, stack, correlationId, ...meta } = info;
+    const {
+      timestamp,
+      level,
+      message,
+      context,
+      stack,
+      correlationId,
+      ...meta
+    } = info;
     return JSON.stringify({
       timestamp,
       level,

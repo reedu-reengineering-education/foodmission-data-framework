@@ -52,7 +52,9 @@ describe('CacheService', () => {
 
       expect(result).toEqual(testData);
       expect(mockCacheManager.get).toHaveBeenCalledWith('test-key');
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache hit for key: test-key');
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache hit for key: test-key',
+      );
     });
 
     it('should return undefined when key does not exist', async () => {
@@ -61,7 +63,9 @@ describe('CacheService', () => {
       const result = await service.get('non-existent-key');
 
       expect(result).toBeUndefined();
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache miss for key: non-existent-key');
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache miss for key: non-existent-key',
+      );
     });
 
     it('should handle errors gracefully', async () => {
@@ -81,8 +85,14 @@ describe('CacheService', () => {
 
       await service.set('test-key', testData);
 
-      expect(mockCacheManager.set).toHaveBeenCalledWith('test-key', testData, undefined);
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache set for key: test-key, TTL: default');
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        'test-key',
+        testData,
+        undefined,
+      );
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache set for key: test-key, TTL: default',
+      );
     });
 
     it('should set value with TTL', async () => {
@@ -91,8 +101,14 @@ describe('CacheService', () => {
 
       await service.set('test-key', testData, 300);
 
-      expect(mockCacheManager.set).toHaveBeenCalledWith('test-key', testData, 300000); // TTL in ms
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache set for key: test-key, TTL: 300');
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        'test-key',
+        testData,
+        300000,
+      ); // TTL in ms
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache set for key: test-key, TTL: 300',
+      );
     });
   });
 
@@ -103,7 +119,9 @@ describe('CacheService', () => {
       await service.del('test-key');
 
       expect(mockCacheManager.del).toHaveBeenCalledWith('test-key');
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache deleted for key: test-key');
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache deleted for key: test-key',
+      );
     });
   });
 
@@ -115,7 +133,9 @@ describe('CacheService', () => {
       await service.delMany(keys);
 
       expect(mockCacheManager.del).toHaveBeenCalledTimes(3);
-      expect(loggingService.debug).toHaveBeenCalledWith('Cache deleted for keys: key1, key2, key3');
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Cache deleted for keys: key1, key2, key3',
+      );
     });
 
     it('should handle empty keys array', async () => {
@@ -147,7 +167,11 @@ describe('CacheService', () => {
 
       expect(result).toEqual(testData);
       expect(factory).toHaveBeenCalled();
-      expect(mockCacheManager.set).toHaveBeenCalledWith('test-key', testData, undefined);
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        'test-key',
+        testData,
+        undefined,
+      );
     });
   });
 

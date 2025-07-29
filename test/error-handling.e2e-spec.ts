@@ -17,13 +17,15 @@ describe('Error Handling (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     // Enable validation pipes globally (same as in main.ts)
-    app.useGlobalPipes(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
 
     // Set global prefix for API routes (same as in main.ts)
     app.setGlobalPrefix('api/v1');
@@ -55,7 +57,7 @@ describe('Error Handling (e2e)', () => {
 
       // Validate timestamp format
       expect(new Date(response.body.timestamp)).toBeInstanceOf(Date);
-      
+
       // Validate correlation ID format
       expect(response.body.correlationId).toMatch(/^[\w-]+$/);
     });
@@ -91,7 +93,7 @@ describe('Error Handling (e2e)', () => {
 
     it('should preserve correlation ID from request headers', async () => {
       const correlationId = 'test-correlation-123';
-      
+
       const response = await request(app.getHttpServer())
         .get('/api/v1/foods/550e8400-e29b-41d4-a716-446655440000')
         .set('x-correlation-id', correlationId)
@@ -102,7 +104,7 @@ describe('Error Handling (e2e)', () => {
 
     it('should handle x-request-id header as correlation ID', async () => {
       const requestId = 'request-id-456';
-      
+
       const response = await request(app.getHttpServer())
         .get('/api/v1/foods/550e8400-e29b-41d4-a716-446655440000')
         .set('x-request-id', requestId)
@@ -137,10 +139,8 @@ describe('Error Handling (e2e)', () => {
   describe('Request/Response Logging', () => {
     it('should log requests and responses', async () => {
       const logSpy = jest.spyOn(loggingService, 'http');
-      
-      await request(app.getHttpServer())
-        .get('/api/v1/auth/health')
-        .expect(200);
+
+      await request(app.getHttpServer()).get('/api/v1/auth/health').expect(200);
 
       // Should have logged both request and response
       expect(logSpy).toHaveBeenCalledWith(
@@ -149,7 +149,7 @@ describe('Error Handling (e2e)', () => {
           type: 'request',
           method: 'GET',
           url: '/api/v1/auth/health',
-        })
+        }),
       );
 
       expect(logSpy).toHaveBeenCalledWith(
@@ -159,7 +159,7 @@ describe('Error Handling (e2e)', () => {
           method: 'GET',
           url: '/api/v1/auth/health',
           statusCode: 200,
-        })
+        }),
       );
 
       logSpy.mockRestore();
@@ -167,15 +167,15 @@ describe('Error Handling (e2e)', () => {
 
     it('should sanitize sensitive headers in logs', async () => {
       const logSpy = jest.spyOn(loggingService, 'http');
-      
+
       await request(app.getHttpServer())
         .get('/api/v1/auth/health')
         .set('Authorization', 'Bearer secret-token')
         .set('Cookie', 'session=secret-session')
         .expect(200);
 
-      const requestLog = logSpy.mock.calls.find(call => 
-        call[0].includes('Incoming') && call[1].type === 'request'
+      const requestLog = logSpy.mock.calls.find(
+        (call) => call[0].includes('Incoming') && call[1].type === 'request',
       );
 
       expect(requestLog).toBeDefined();
@@ -189,7 +189,7 @@ describe('Error Handling (e2e)', () => {
 
     it('should log error responses with appropriate level', async () => {
       const logSpy = jest.spyOn(loggingService, 'logWithMeta');
-      
+
       await request(app.getHttpServer())
         .get('/api/v1/foods/550e8400-e29b-41d4-a716-446655440000')
         .expect(404);
@@ -201,7 +201,7 @@ describe('Error Handling (e2e)', () => {
           statusCode: 404,
           method: 'GET',
           url: '/api/v1/foods/550e8400-e29b-41d4-a716-446655440000',
-        })
+        }),
       );
 
       logSpy.mockRestore();
@@ -211,7 +211,7 @@ describe('Error Handling (e2e)', () => {
   describe('Correlation ID Tracking', () => {
     it('should maintain correlation ID throughout request lifecycle', async () => {
       const correlationId = 'test-correlation-lifecycle';
-      
+
       const response = await request(app.getHttpServer())
         .get('/api/v1/auth/health')
         .set('x-correlation-id', correlationId)
@@ -280,12 +280,10 @@ describe('Error Handling (e2e)', () => {
         request(app.getHttpServer())
           .get('/api/v1/foods?page=invalid')
           .expect(400),
-        request(app.getHttpServer())
-          .get('/api/v1/auth/profile')
-          .expect(401),
+        request(app.getHttpServer()).get('/api/v1/auth/profile').expect(401),
       ]);
 
-      responses.forEach(response => {
+      responses.forEach((response) => {
         expect(response.body).toMatchObject({
           statusCode: expect.any(Number),
           message: expect.any(String),
@@ -296,7 +294,7 @@ describe('Error Handling (e2e)', () => {
 
         // Validate timestamp is a valid ISO string
         expect(new Date(response.body.timestamp)).toBeInstanceOf(Date);
-        
+
         // Validate status code matches the HTTP response status
         expect(response.body.statusCode).toBe(response.status);
       });

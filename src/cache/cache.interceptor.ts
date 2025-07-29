@@ -73,7 +73,10 @@ export class CacheInterceptor implements NestInterceptor {
         }),
       );
     } catch (error) {
-      this.logger.error(`Cache interceptor error for key ${fullCacheKey}:`, error);
+      this.logger.error(
+        `Cache interceptor error for key ${fullCacheKey}:`,
+        error,
+      );
       return next.handle();
     }
   }
@@ -81,7 +84,7 @@ export class CacheInterceptor implements NestInterceptor {
   private generateCacheKey(baseKey: string, request: any): string {
     const queryString = new URLSearchParams(request.query).toString();
     const userId = request.user?.id || 'anonymous';
-    
+
     return queryString
       ? `${baseKey}:${userId}:${Buffer.from(queryString).toString('base64')}`
       : `${baseKey}:${userId}`;

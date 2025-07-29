@@ -23,21 +23,32 @@ export const createLoggerConfig = (): LoggerConfig => ({
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.errors({ stack: true }),
     winston.format.json(),
-    winston.format.printf(({ timestamp, level, message, context, trace, correlationId, userId, ...meta }) => {
-      const logEntry: any = {
+    winston.format.printf(
+      ({
         timestamp,
         level,
         message,
-        ...meta,
-      };
-      
-      if (context) logEntry.context = context;
-      if (correlationId) logEntry.correlationId = correlationId;
-      if (userId) logEntry.userId = userId;
-      if (trace) logEntry.trace = trace;
-      
-      return JSON.stringify(logEntry);
-    }),
+        context,
+        trace,
+        correlationId,
+        userId,
+        ...meta
+      }) => {
+        const logEntry: any = {
+          timestamp,
+          level,
+          message,
+          ...meta,
+        };
+
+        if (context) logEntry.context = context;
+        if (correlationId) logEntry.correlationId = correlationId;
+        if (userId) logEntry.userId = userId;
+        if (trace) logEntry.trace = trace;
+
+        return JSON.stringify(logEntry);
+      },
+    ),
   ),
 });
 

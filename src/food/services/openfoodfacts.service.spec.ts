@@ -121,7 +121,7 @@ describe('OpenFoodFactsService', () => {
       expect(result?.brands).toEqual(['Ferrero']);
       expect(result?.nutritionalInfo?.energyKcal).toBe(539);
       expect(httpService.get).toHaveBeenCalledWith(
-        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json'
+        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
       );
     });
 
@@ -159,7 +159,7 @@ describe('OpenFoodFactsService', () => {
 
       // First request
       const result1 = await service.getProductByBarcode('3017620422003');
-      
+
       // Second request (should use cache)
       const result2 = await service.getProductByBarcode('3017620422003');
 
@@ -184,7 +184,9 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
-      await expect(service.getProductByBarcode('3017620422003')).rejects.toThrow(HttpException);
+      await expect(
+        service.getProductByBarcode('3017620422003'),
+      ).rejects.toThrow(HttpException);
     });
 
     it('should handle rate limiting', async () => {
@@ -204,8 +206,13 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
-      await expect(service.getProductByBarcode('3017620422003')).rejects.toThrow(
-        new HttpException('Rate limit exceeded. Please try again later.', HttpStatus.TOO_MANY_REQUESTS)
+      await expect(
+        service.getProductByBarcode('3017620422003'),
+      ).rejects.toThrow(
+        new HttpException(
+          'Rate limit exceeded. Please try again later.',
+          HttpStatus.TOO_MANY_REQUESTS,
+        ),
       );
     });
 
@@ -220,8 +227,13 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
-      await expect(service.getProductByBarcode('3017620422003')).rejects.toThrow(
-        new HttpException('No response from OpenFoodFacts API', HttpStatus.SERVICE_UNAVAILABLE)
+      await expect(
+        service.getProductByBarcode('3017620422003'),
+      ).rejects.toThrow(
+        new HttpException(
+          'No response from OpenFoodFacts API',
+          HttpStatus.SERVICE_UNAVAILABLE,
+        ),
       );
     });
   });
@@ -260,7 +272,7 @@ describe('OpenFoodFactsService', () => {
             search_terms: 'nutella',
             page_size: 20,
           }),
-        })
+        }),
       );
     });
 
@@ -291,7 +303,7 @@ describe('OpenFoodFactsService', () => {
             tag_contains_0: 'contains',
             tag_0: 'sweet-spreads',
           }),
-        })
+        }),
       );
     });
 
@@ -312,7 +324,7 @@ describe('OpenFoodFactsService', () => {
 
       // First search
       const result1 = await service.searchProducts(options);
-      
+
       // Second search (should use cache)
       const result2 = await service.searchProducts(options);
 
@@ -341,7 +353,9 @@ describe('OpenFoodFactsService', () => {
         query: 'invalid query',
       };
 
-      await expect(service.searchProducts(options)).rejects.toThrow(HttpException);
+      await expect(service.searchProducts(options)).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 
@@ -469,7 +483,7 @@ describe('OpenFoodFactsService', () => {
             page_size: 5,
             sort_by: 'popularity',
           }),
-        })
+        }),
       );
     });
   });

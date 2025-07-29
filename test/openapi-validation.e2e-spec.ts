@@ -15,13 +15,15 @@ describe('OpenAPI Schema Validation (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     // Enable validation pipes globally (same as in main.ts)
-    app.useGlobalPipes(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
 
     // Set global prefix for API routes (same as in main.ts)
     app.setGlobalPrefix('api/v1');
@@ -29,7 +31,9 @@ describe('OpenAPI Schema Validation (e2e)', () => {
     // Generate OpenAPI document (same config as in main.ts)
     const config = new DocumentBuilder()
       .setTitle('FOODMISSION Data Framework API')
-      .setDescription('A comprehensive backend system for managing food-related data and operations. Built with NestJS, Prisma ORM, and PostgreSQL, featuring Keycloak authentication and OpenFoodFacts integration.')
+      .setDescription(
+        'A comprehensive backend system for managing food-related data and operations. Built with NestJS, Prisma ORM, and PostgreSQL, featuring Keycloak authentication and OpenFoodFacts integration.',
+      )
       .setVersion('1.0')
       .addBearerAuth(
         {
@@ -70,26 +74,33 @@ describe('OpenAPI Schema Validation (e2e)', () => {
 
     it('should have all expected tags', () => {
       const expectedTags = ['auth', 'foods', 'users', 'health'];
-      const actualTags = openApiDocument.tags?.map((tag: any) => tag.name) || [];
-      
-      expectedTags.forEach(expectedTag => {
+      const actualTags =
+        openApiDocument.tags?.map((tag: any) => tag.name) || [];
+
+      expectedTags.forEach((expectedTag) => {
         expect(actualTags).toContain(expectedTag);
       });
     });
 
     it('should have security schemes defined', () => {
       expect(openApiDocument.components?.securitySchemes).toBeDefined();
-      expect(openApiDocument.components.securitySchemes['JWT-auth']).toBeDefined();
-      expect(openApiDocument.components.securitySchemes['JWT-auth'].type).toBe('http');
-      expect(openApiDocument.components.securitySchemes['JWT-auth'].scheme).toBe('bearer');
+      expect(
+        openApiDocument.components.securitySchemes['JWT-auth'],
+      ).toBeDefined();
+      expect(openApiDocument.components.securitySchemes['JWT-auth'].type).toBe(
+        'http',
+      );
+      expect(
+        openApiDocument.components.securitySchemes['JWT-auth'].scheme,
+      ).toBe('bearer');
     });
 
     it('should have schemas defined for DTOs', () => {
       const schemas = openApiDocument.components?.schemas || {};
-      
+
       // Log available schemas for debugging
       console.log('Available schemas:', Object.keys(schemas));
-      
+
       // Check for key DTO schemas that should exist
       const expectedSchemas = [
         'CreateFoodDto',
@@ -98,10 +109,10 @@ describe('OpenAPI Schema Validation (e2e)', () => {
         'UserResponseDto',
       ];
 
-      expectedSchemas.forEach(schemaName => {
+      expectedSchemas.forEach((schemaName) => {
         expect(schemas[schemaName]).toBeDefined();
       });
-      
+
       // Verify we have some schemas
       expect(Object.keys(schemas).length).toBeGreaterThan(0);
     });
@@ -110,7 +121,7 @@ describe('OpenAPI Schema Validation (e2e)', () => {
   describe('API Endpoints Documentation', () => {
     it('should document all auth endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
+
       const expectedAuthPaths = [
         '/api/v1/auth/info',
         '/api/v1/auth/profile',
@@ -119,14 +130,14 @@ describe('OpenAPI Schema Validation (e2e)', () => {
         '/api/v1/auth/admin-only',
       ];
 
-      expectedAuthPaths.forEach(path => {
+      expectedAuthPaths.forEach((path) => {
         expect(paths[path]).toBeDefined();
       });
     });
 
     it('should document all health endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
+
       const expectedHealthPaths = [
         '/api/v1/health',
         '/api/v1/health/ready',
@@ -134,14 +145,14 @@ describe('OpenAPI Schema Validation (e2e)', () => {
         '/api/v1/health/metrics',
       ];
 
-      expectedHealthPaths.forEach(path => {
+      expectedHealthPaths.forEach((path) => {
         expect(paths[path]).toBeDefined();
       });
     });
 
     it('should document all food endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
+
       const expectedFoodPaths = [
         '/api/v1/foods',
         '/api/v1/foods/{id}',
@@ -151,14 +162,14 @@ describe('OpenAPI Schema Validation (e2e)', () => {
         '/api/v1/foods/{id}/openfoodfacts',
       ];
 
-      expectedFoodPaths.forEach(path => {
+      expectedFoodPaths.forEach((path) => {
         expect(paths[path]).toBeDefined();
       });
     });
 
     it('should document all user endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
+
       const expectedUserPaths = [
         '/api/v1/users',
         '/api/v1/users/{id}',
@@ -169,14 +180,14 @@ describe('OpenAPI Schema Validation (e2e)', () => {
         '/api/v1/users/{id}/preferences',
       ];
 
-      expectedUserPaths.forEach(path => {
+      expectedUserPaths.forEach((path) => {
         expect(paths[path]).toBeDefined();
       });
     });
 
     it('should have proper HTTP methods documented', () => {
       const paths = openApiDocument.paths || {};
-      
+
       // Check foods endpoints
       expect(paths['/api/v1/foods']?.get).toBeDefined();
       expect(paths['/api/v1/foods']?.post).toBeDefined();
@@ -258,7 +269,7 @@ describe('OpenAPI Schema Validation (e2e)', () => {
       expect(response.body).toHaveProperty('page');
       expect(response.body).toHaveProperty('limit');
       expect(response.body).toHaveProperty('totalPages');
-      
+
       expect(Array.isArray(response.body.data)).toBe(true);
       expect(typeof response.body.total).toBe('number');
       expect(typeof response.body.page).toBe('number');
@@ -276,7 +287,7 @@ describe('OpenAPI Schema Validation (e2e)', () => {
       expect(response.body).toHaveProperty('totalCount');
       expect(response.body).toHaveProperty('page');
       expect(response.body).toHaveProperty('pageSize');
-      
+
       expect(Array.isArray(response.body.products)).toBe(true);
       expect(typeof response.body.totalCount).toBe('number');
       expect(typeof response.body.page).toBe('number');
@@ -284,8 +295,7 @@ describe('OpenAPI Schema Validation (e2e)', () => {
     });
 
     it('should validate health check response schema', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/api/v1/health');
+      const response = await request(app.getHttpServer()).get('/api/v1/health');
 
       // Health check might return 200 or 503 depending on external services
       expect([200, 503]).toContain(response.status);
@@ -296,17 +306,17 @@ describe('OpenAPI Schema Validation (e2e)', () => {
       expect(response.body).toHaveProperty('version');
       expect(response.body).toHaveProperty('environment');
       expect(response.body).toHaveProperty('checks');
-      
+
       expect(['ok', 'error']).toContain(response.body.status);
       expect(typeof response.body.uptime).toBe('number');
       expect(typeof response.body.timestamp).toBe('string');
       expect(typeof response.body.checks).toBe('object');
-      
+
       // Validate checks structure
       expect(response.body.checks).toHaveProperty('database');
       expect(response.body.checks).toHaveProperty('keycloak');
       expect(response.body.checks).toHaveProperty('openFoodFacts');
-      
+
       // Database should be healthy in test environment
       expect(response.body.checks.database.status).toBe('ok');
     });
@@ -345,18 +355,18 @@ describe('OpenAPI Schema Validation (e2e)', () => {
       expect(response.body).toHaveProperty('cpu');
       expect(response.body).toHaveProperty('requests');
       expect(response.body).toHaveProperty('database');
-      
+
       expect(typeof response.body.uptime).toBe('number');
       expect(typeof response.body.memory).toBe('object');
       expect(typeof response.body.cpu).toBe('object');
       expect(typeof response.body.requests).toBe('object');
       expect(typeof response.body.database).toBe('object');
-      
+
       // Validate memory structure
       expect(response.body.memory).toHaveProperty('used');
       expect(response.body.memory).toHaveProperty('total');
       expect(response.body.memory).toHaveProperty('percentage');
-      
+
       // Validate requests structure
       expect(response.body.requests).toHaveProperty('total');
       expect(response.body.requests).toHaveProperty('errors');
@@ -460,10 +470,10 @@ describe('OpenAPI Schema Validation (e2e)', () => {
   describe('OpenAPI Documentation Completeness', () => {
     it('should have operation summaries for all endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
-      Object.keys(paths).forEach(path => {
+
+      Object.keys(paths).forEach((path) => {
         const pathItem = paths[path];
-        Object.keys(pathItem).forEach(method => {
+        Object.keys(pathItem).forEach((method) => {
           if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             const operation = pathItem[method];
             expect(operation.summary).toBeDefined();
@@ -475,10 +485,10 @@ describe('OpenAPI Schema Validation (e2e)', () => {
 
     it('should have operation descriptions for all endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
-      Object.keys(paths).forEach(path => {
+
+      Object.keys(paths).forEach((path) => {
         const pathItem = paths[path];
-        Object.keys(pathItem).forEach(method => {
+        Object.keys(pathItem).forEach((method) => {
           if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             const operation = pathItem[method];
             expect(operation.description).toBeDefined();
@@ -490,17 +500,17 @@ describe('OpenAPI Schema Validation (e2e)', () => {
 
     it('should have proper response schemas for all endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
-      Object.keys(paths).forEach(path => {
+
+      Object.keys(paths).forEach((path) => {
         const pathItem = paths[path];
-        Object.keys(pathItem).forEach(method => {
+        Object.keys(pathItem).forEach((method) => {
           if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             const operation = pathItem[method];
             expect(operation.responses).toBeDefined();
             expect(Object.keys(operation.responses).length).toBeGreaterThan(0);
-            
+
             // Check that success responses have content defined
-            Object.keys(operation.responses).forEach(statusCode => {
+            Object.keys(operation.responses).forEach((statusCode) => {
               const response = operation.responses[statusCode];
               if (statusCode.startsWith('2') && statusCode !== '204') {
                 // 2xx responses (except 204 No Content) should have content
@@ -514,10 +524,10 @@ describe('OpenAPI Schema Validation (e2e)', () => {
 
     it('should have proper tags for all endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
-      Object.keys(paths).forEach(path => {
+
+      Object.keys(paths).forEach((path) => {
         const pathItem = paths[path];
-        Object.keys(pathItem).forEach(method => {
+        Object.keys(pathItem).forEach((method) => {
           if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             const operation = pathItem[method];
             expect(operation.tags).toBeDefined();
@@ -529,13 +539,13 @@ describe('OpenAPI Schema Validation (e2e)', () => {
 
     it('should have security requirements for protected endpoints', () => {
       const paths = openApiDocument.paths || {};
-      
-      Object.keys(paths).forEach(path => {
+
+      Object.keys(paths).forEach((path) => {
         const pathItem = paths[path];
-        Object.keys(pathItem).forEach(method => {
+        Object.keys(pathItem).forEach((method) => {
           if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             const operation = pathItem[method];
-            
+
             // Check if endpoint is protected (has security requirements)
             if (operation.security && operation.security.length > 0) {
               expect(operation.security[0]['JWT-auth']).toBeDefined();

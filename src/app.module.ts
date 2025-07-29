@@ -21,10 +21,10 @@ import { SecurityMiddleware } from './security/middleware/security.middleware';
     DatabaseModule,
     CacheModule,
     SecurityModule,
-    AuthModule, 
-    FoodModule, 
+    AuthModule,
+    FoodModule,
     HealthModule,
-    MonitoringModule
+    MonitoringModule,
   ],
   controllers: [AppController],
   providers: [AppService],

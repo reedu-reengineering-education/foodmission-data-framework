@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, HealthCheckResult, HealthCheckStatus } from '@nestjs/terminus';
+import {
+  HealthCheckService,
+  HealthCheckResult,
+  HealthCheckStatus,
+} from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
 import { OpenFoodFactsHealthIndicator } from './openfoodfacts.health';
@@ -80,17 +84,23 @@ describe('HealthController', () => {
     it('should call database and openfoodfacts health indicators', async () => {
       healthCheckService.check.mockImplementation(async (checks) => {
         // Execute the health check functions
-        await Promise.all(checks.map(check => check()));
+        await Promise.all(checks.map((check) => check()));
         return mockHealthResult;
       });
 
-      databaseHealth.isHealthy.mockResolvedValue({ database: { status: 'up' } });
-      openFoodFactsHealth.isHealthy.mockResolvedValue({ openfoodfacts: { status: 'up' } });
+      databaseHealth.isHealthy.mockResolvedValue({
+        database: { status: 'up' },
+      });
+      openFoodFactsHealth.isHealthy.mockResolvedValue({
+        openfoodfacts: { status: 'up' },
+      });
 
       await controller.check();
 
       expect(databaseHealth.isHealthy).toHaveBeenCalledWith('database');
-      expect(openFoodFactsHealth.isHealthy).toHaveBeenCalledWith('openfoodfacts');
+      expect(openFoodFactsHealth.isHealthy).toHaveBeenCalledWith(
+        'openfoodfacts',
+      );
     });
   });
 

@@ -125,32 +125,47 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.name).toBe(mockFood.name);
-      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(createFoodDto.categoryId);
-      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith(createFoodDto.barcode);
+      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(
+        createFoodDto.categoryId,
+      );
+      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith(
+        createFoodDto.barcode,
+      );
       expect(mockFoodRepository.create).toHaveBeenCalledWith(createFoodDto);
     });
 
     it('should throw BadRequestException if category not found', async () => {
       mockCategoryRepository.findById.mockResolvedValueOnce(null);
 
-      await expect(service.create(createFoodDto)).rejects.toThrow(BadRequestException);
-      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(createFoodDto.categoryId);
+      await expect(service.create(createFoodDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(
+        createFoodDto.categoryId,
+      );
     });
 
     it('should throw BadRequestException if barcode already exists', async () => {
       mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
       mockFoodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
-      await expect(service.create(createFoodDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createFoodDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException if OpenFoodFacts ID already exists', async () => {
-      const createDtoWithOffId = { ...createFoodDto, openFoodFactsId: 'off-123' };
+      const createDtoWithOffId = {
+        ...createFoodDto,
+        openFoodFactsId: 'off-123',
+      };
       mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
       mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
       mockFoodRepository.findByOpenFoodFactsId.mockResolvedValueOnce(mockFood);
 
-      await expect(service.create(createDtoWithOffId)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createDtoWithOffId)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -172,7 +187,9 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockFoodRepository.findWithPagination.mockResolvedValueOnce(mockPaginatedResult);
+      mockFoodRepository.findWithPagination.mockResolvedValueOnce(
+        mockPaginatedResult,
+      );
 
       const result = await service.findAll(query);
 
@@ -202,13 +219,19 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockFoodRepository.findWithPagination.mockResolvedValueOnce(mockPaginatedResult);
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(mockOpenFoodFactsProduct);
+      mockFoodRepository.findWithPagination.mockResolvedValueOnce(
+        mockPaginatedResult,
+      );
+      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+        mockOpenFoodFactsProduct,
+      );
 
       const result = await service.findAll(queryWithOff);
 
       expect(result.data[0].openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(mockFood.barcode);
+      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+        mockFood.barcode,
+      );
     });
   });
 
@@ -226,17 +249,23 @@ describe('FoodService', () => {
     it('should throw NotFoundException if food not found', async () => {
       mockFoodRepository.findById.mockResolvedValueOnce(null);
 
-      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should include OpenFoodFacts data when requested', async () => {
       mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(mockOpenFoodFactsProduct);
+      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+        mockOpenFoodFactsProduct,
+      );
 
       const result = await service.findOne('food-1', true);
 
       expect(result.openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(mockFood.barcode);
+      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+        mockFood.barcode,
+      );
     });
   });
 
@@ -248,13 +277,17 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.barcode).toBe(mockFood.barcode);
-      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith('1234567890');
+      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith(
+        '1234567890',
+      );
     });
 
     it('should throw NotFoundException if food not found', async () => {
       mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
 
-      await expect(service.findByBarcode('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findByBarcode('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -273,21 +306,31 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.name).toBe(updateFoodDto.name);
-      expect(mockFoodRepository.update).toHaveBeenCalledWith('food-1', updateFoodDto);
+      expect(mockFoodRepository.update).toHaveBeenCalledWith(
+        'food-1',
+        updateFoodDto,
+      );
     });
 
     it('should throw NotFoundException if food not found', async () => {
       mockFoodRepository.findById.mockResolvedValueOnce(null);
 
-      await expect(service.update('nonexistent', updateFoodDto)).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update('nonexistent', updateFoodDto),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should validate category if provided', async () => {
-      const updateWithCategory = { ...updateFoodDto, categoryId: 'new-category' };
+      const updateWithCategory = {
+        ...updateFoodDto,
+        categoryId: 'new-category',
+      };
       mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
       mockCategoryRepository.findById.mockResolvedValueOnce(null);
 
-      await expect(service.update('food-1', updateWithCategory)).rejects.toThrow(BadRequestException);
+      await expect(
+        service.update('food-1', updateWithCategory),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -304,7 +347,9 @@ describe('FoodService', () => {
     it('should throw NotFoundException if food not found', async () => {
       mockFoodRepository.findById.mockResolvedValueOnce(null);
 
-      await expect(service.remove('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.remove('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -317,27 +362,35 @@ describe('FoodService', () => {
       mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
       mockFoodRepository.create.mockResolvedValueOnce(mockFood);
 
-      const result = await service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1');
+      const result = await service.importFromOpenFoodFacts(
+        '1234567890',
+        'category-1',
+        'user-1',
+      );
 
       expect(result).toBeDefined();
       expect(result.openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith('1234567890');
+      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+        '1234567890',
+      );
       expect(mockFoodRepository.create).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if food already exists', async () => {
       mockFoodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
-      await expect(service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'))
-        .rejects.toThrow(BadRequestException);
+      await expect(
+        service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw NotFoundException if product not found in OpenFoodFacts', async () => {
       mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
       mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
 
-      await expect(service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -352,7 +405,9 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockOpenFoodFactsService.searchProducts.mockResolvedValueOnce(mockSearchResult);
+      mockOpenFoodFactsService.searchProducts.mockResolvedValueOnce(
+        mockSearchResult,
+      );
 
       const result = await service.searchOpenFoodFacts(searchDto);
 
@@ -369,13 +424,17 @@ describe('FoodService', () => {
 
   describe('getOpenFoodFactsInfo', () => {
     it('should return OpenFoodFacts info for valid barcode', async () => {
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(mockOpenFoodFactsProduct);
+      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+        mockOpenFoodFactsProduct,
+      );
 
       const result = await service.getOpenFoodFactsInfo('1234567890');
 
       expect(result).toBeDefined();
       expect(result?.barcode).toBe(mockOpenFoodFactsProduct.barcode);
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith('1234567890');
+      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+        '1234567890',
+      );
     });
 
     it('should return null if product not found', async () => {
@@ -387,7 +446,9 @@ describe('FoodService', () => {
     });
 
     it('should return null on error', async () => {
-      mockOpenFoodFactsService.getProductByBarcode.mockRejectedValueOnce(new Error('API Error'));
+      mockOpenFoodFactsService.getProductByBarcode.mockRejectedValueOnce(
+        new Error('API Error'),
+      );
 
       const result = await service.getOpenFoodFactsInfo('1234567890');
 

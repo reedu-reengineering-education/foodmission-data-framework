@@ -32,7 +32,7 @@ export class SecurityService {
     }
 
     if (Array.isArray(input)) {
-      return input.map(item => this.sanitizeInput(item));
+      return input.map((item) => this.sanitizeInput(item));
     }
 
     if (input && typeof input === 'object') {
@@ -59,18 +59,24 @@ export class SecurityService {
     ];
 
     const missingVars = requiredVars.filter(
-      varName => !this.configService.get(varName)
+      (varName) => !this.configService.get(varName),
     );
 
     if (missingVars.length > 0) {
-      this.logger.error(`Missing required environment variables: ${missingVars.join(', ')}`);
-      throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+      this.logger.error(
+        `Missing required environment variables: ${missingVars.join(', ')}`,
+      );
+      throw new Error(
+        `Missing required environment variables: ${missingVars.join(', ')}`,
+      );
     }
 
     // Validate JWT secret strength
     const jwtSecret = this.configService.get('JWT_SECRET');
     if (jwtSecret && jwtSecret.length < 32) {
-      this.logger.warn('JWT_SECRET should be at least 32 characters long for security');
+      this.logger.warn(
+        'JWT_SECRET should be at least 32 characters long for security',
+      );
     }
 
     this.logger.log('Environment variables validation completed');
@@ -84,7 +90,11 @@ export class SecurityService {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdnjs.cloudflare.com',
+          ],
           scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
           imgSrc: ["'self'", 'data:', 'https:'],
           connectSrc: ["'self'"],
@@ -118,7 +128,9 @@ export class SecurityService {
    * Get CORS configuration
    */
   getCorsConfiguration() {
-    const allowedOrigins = this.configService.get('ALLOWED_ORIGINS')?.split(',') || [
+    const allowedOrigins = this.configService
+      .get('ALLOWED_ORIGINS')
+      ?.split(',') || [
       'http://localhost:3000',
       'http://localhost:3001',
       'https://foodmission.dev',
@@ -126,10 +138,13 @@ export class SecurityService {
     ];
 
     return {
-      origin: (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+      origin: (
+        origin: string,
+        callback: (err: Error | null, allow?: boolean) => void,
+      ) => {
         // Allow requests with no origin (mobile apps, Postman, etc.)
         if (!origin) return callback(null, true);
-        
+
         if (allowedOrigins.includes(origin)) {
           callback(null, true);
         } else {

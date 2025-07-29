@@ -63,10 +63,13 @@ export class CacheService {
    */
   async delMany(keys: string[]): Promise<void> {
     try {
-      await Promise.all(keys.map(key => this.cacheManager.del(key)));
+      await Promise.all(keys.map((key) => this.cacheManager.del(key)));
       this.logger.debug(`Cache deleted for keys: ${keys.join(', ')}`);
     } catch (error) {
-      this.logger.error(`Cache delete many error for keys ${keys.join(', ')}:`, error);
+      this.logger.error(
+        `Cache delete many error for keys ${keys.join(', ')}:`,
+        error,
+      );
     }
   }
 
@@ -111,10 +114,7 @@ export class CacheService {
    * Generate cache keys for invalidation patterns
    */
   generateInvalidationKeys(pattern: string, id?: string): string[] {
-    const keys = [
-      `${pattern}:list`,
-      `${pattern}:count`,
-    ];
+    const keys = [`${pattern}:list`, `${pattern}:count`];
 
     if (id) {
       keys.push(`${pattern}:${id}`);
@@ -126,11 +126,7 @@ export class CacheService {
   /**
    * Wrap a function with caching
    */
-  async wrap<T>(
-    key: string,
-    fn: () => Promise<T>,
-    ttl?: number,
-  ): Promise<T> {
+  async wrap<T>(key: string, fn: () => Promise<T>, ttl?: number): Promise<T> {
     try {
       const ttlMs = ttl ? ttl * 1000 : undefined;
       return await this.cacheManager.wrap(key, fn, ttlMs);

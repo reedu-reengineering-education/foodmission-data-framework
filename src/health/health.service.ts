@@ -13,7 +13,7 @@ export class HealthService {
   async getHealth() {
     const timestamp = new Date().toISOString();
     const uptime = (Date.now() - this.startTime) / 1000;
-    
+
     const checks = {
       database: await this.checkDatabase(),
       keycloak: await this.checkKeycloak(),
@@ -22,10 +22,14 @@ export class HealthService {
 
     // In test environment, only require database to be healthy
     const isTestEnv = process.env.NODE_ENV === 'test';
-    const requiredChecks = isTestEnv ? ['database'] : ['database', 'keycloak', 'openFoodFacts'];
-    
-    const allHealthy = requiredChecks.every(checkName => checks[checkName]?.status === 'ok');
-    
+    const requiredChecks = isTestEnv
+      ? ['database']
+      : ['database', 'keycloak', 'openFoodFacts'];
+
+    const allHealthy = requiredChecks.every(
+      (checkName) => checks[checkName]?.status === 'ok',
+    );
+
     const result = {
       status: allHealthy ? 'ok' : 'error',
       timestamp,
@@ -44,10 +48,10 @@ export class HealthService {
 
   async getReadiness() {
     const timestamp = new Date().toISOString();
-    
+
     // Check if database is ready
     const dbCheck = await this.checkDatabase();
-    
+
     if (dbCheck.status !== 'ok') {
       throw new ServiceUnavailableException({
         status: 'not ready',
@@ -76,13 +80,15 @@ export class HealthService {
   async getMetrics() {
     const uptime = (Date.now() - this.startTime) / 1000;
     const memoryUsage = process.memoryUsage();
-    
+
     return {
       uptime,
       memory: {
         used: memoryUsage.heapUsed,
         total: memoryUsage.heapTotal,
-        percentage: Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100),
+        percentage: Math.round(
+          (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100,
+        ),
       },
       cpu: {
         usage: process.cpuUsage().user / 1000000, // Convert to seconds
@@ -90,7 +96,10 @@ export class HealthService {
       requests: {
         total: this.requestCount,
         errors: this.errorCount,
-        averageResponseTime: this.requestCount > 0 ? this.totalResponseTime / this.requestCount : 0,
+        averageResponseTime:
+          this.requestCount > 0
+            ? this.totalResponseTime / this.requestCount
+            : 0,
       },
       database: {
         connections: 1, // Prisma manages connection pooling internally
@@ -108,7 +117,10 @@ export class HealthService {
     }
   }
 
-  private async checkDatabase(): Promise<{ status: string; responseTime: number }> {
+  private async checkDatabase(): Promise<{
+    status: string;
+    responseTime: number;
+  }> {
     const start = Date.now();
     try {
       await this.prisma.$queryRaw`SELECT 1`;
@@ -124,17 +136,24 @@ export class HealthService {
     }
   }
 
-  private async checkKeycloak(): Promise<{ status: string; responseTime: number }> {
+  private async checkKeycloak(): Promise<{
+    status: string;
+    responseTime: number;
+  }> {
     const start = Date.now();
     try {
-      const keycloakUrl = process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080';
+      const keycloakUrl =
+        process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080';
       const realm = process.env.KEYCLOAK_REALM || 'foodmission';
-      
-      const response = await fetch(`${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(5000), // 5 second timeout
-      });
+
+      const response = await fetch(
+        `${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          signal: AbortSignal.timeout(5000), // 5 second timeout
+        },
+      );
 
       if (response.ok) {
         return {
@@ -155,14 +174,20 @@ export class HealthService {
     }
   }
 
-  private async checkOpenFoodFacts(): Promise<{ status: string; responseTime: number }> {
+  private async checkOpenFoodFacts(): Promise<{
+    status: string;
+    responseTime: number;
+  }> {
     const start = Date.now();
     try {
-      const response = await fetch('https://world.openfoodfacts.org/api/v0/product/3017620422003.json', {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        signal: AbortSignal.timeout(5000), // 5 second timeout
-      });
+      const response = await fetch(
+        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          signal: AbortSignal.timeout(5000), // 5 second timeout
+        },
+      );
 
       if (response.ok) {
         return {

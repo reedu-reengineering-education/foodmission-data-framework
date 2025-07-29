@@ -21,9 +21,7 @@ describe('Stateless Authentication (e2e)', () => {
 
   describe('Public Endpoints', () => {
     it('should allow access to health endpoints without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/api/v1/health')
-        .expect(200);
+      await request(app.getHttpServer()).get('/api/v1/health').expect(200);
     });
 
     it('should allow access to auth info endpoint', async () => {
@@ -44,14 +42,12 @@ describe('Stateless Authentication (e2e)', () => {
 
       expect(response.body).toEqual({
         status: 'ok',
-        service: 'auth'
+        service: 'auth',
       });
     });
 
     it('should allow access to public food endpoints', async () => {
-      await request(app.getHttpServer())
-        .get('/api/v1/foods')
-        .expect(200);
+      await request(app.getHttpServer()).get('/api/v1/foods').expect(200);
     });
 
     it('should allow access to OpenFoodFacts search without authentication', async () => {
@@ -128,7 +124,8 @@ describe('Stateless Authentication (e2e)', () => {
     it('should reject requests with expired tokens', async () => {
       // This would require a properly expired JWT token
       // In a real test, you'd generate an expired token
-      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.invalid';
+      const expiredToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.invalid';
 
       await request(app.getHttpServer())
         .get('/api/v1/auth/profile')
@@ -210,17 +207,16 @@ describe('Stateless Authentication (e2e)', () => {
       // Make multiple requests quickly to profile endpoint
       const promises: Promise<any>[] = [];
       for (let i = 0; i < 35; i++) {
-        promises.push(
-          request(app.getHttpServer())
-            .get('/api/v1/auth/profile')
-        );
+        promises.push(request(app.getHttpServer()).get('/api/v1/auth/profile'));
       }
 
       const responses = await Promise.all(promises);
 
       // All should return 401 (unauthorized) or 429 (rate limited)
-      const unauthorizedCount = responses.filter(r => r.status === 401).length;
-      const rateLimitedCount = responses.filter(r => r.status === 429).length;
+      const unauthorizedCount = responses.filter(
+        (r) => r.status === 401,
+      ).length;
+      const rateLimitedCount = responses.filter((r) => r.status === 429).length;
 
       expect(unauthorizedCount + rateLimitedCount).toBe(35);
       // Most should be unauthorized (no token provided)
@@ -235,7 +231,9 @@ describe('Stateless Authentication (e2e)', () => {
         .set('Origin', 'http://localhost:3000')
         .expect(200);
 
-      expect(response.headers['access-control-allow-origin']).toBe('http://localhost:3000');
+      expect(response.headers['access-control-allow-origin']).toBe(
+        'http://localhost:3000',
+      );
     });
 
     it('should handle CORS preflight on auth endpoints', async () => {

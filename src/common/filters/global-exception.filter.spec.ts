@@ -3,7 +3,10 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ArgumentsHost } from '@nestjs/common';
 import { GlobalExceptionFilter } from './global-exception.filter';
 import { LoggingService } from '../logging/logging.service';
-import { BusinessException, ResourceNotFoundException } from '../exceptions/business.exception';
+import {
+  BusinessException,
+  ResourceNotFoundException,
+} from '../exceptions/business.exception';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 describe('GlobalExceptionFilter', () => {
@@ -63,7 +66,7 @@ describe('GlobalExceptionFilter', () => {
   describe('catch', () => {
     it('should handle business exceptions', () => {
       const exception = new ResourceNotFoundException('User', '123');
-      
+
       filter.catch(exception, mockHost);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
@@ -82,8 +85,11 @@ describe('GlobalExceptionFilter', () => {
     });
 
     it('should handle HTTP exceptions', () => {
-      const exception = new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-      
+      const exception = new HttpException(
+        'Bad Request',
+        HttpStatus.BAD_REQUEST,
+      );
+
       filter.catch(exception, mockHost);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
@@ -104,9 +110,9 @@ describe('GlobalExceptionFilter', () => {
           code: 'P2002',
           clientVersion: '4.0.0',
           meta: { target: ['email'] },
-        }
+        },
       );
-      
+
       filter.catch(prismaError, mockHost);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
@@ -117,7 +123,7 @@ describe('GlobalExceptionFilter', () => {
       const validationError = {
         message: ['email must be a valid email', 'name should not be empty'],
       };
-      
+
       filter.catch(validationError, mockHost);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
@@ -136,10 +142,12 @@ describe('GlobalExceptionFilter', () => {
 
     it('should handle generic errors', () => {
       const genericError = new Error('Something went wrong');
-      
+
       filter.catch(genericError, mockHost);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.status).toHaveBeenCalledWith(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
       expect(mockResponse.json).toHaveBeenCalledWith({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Something went wrong',
@@ -153,7 +161,7 @@ describe('GlobalExceptionFilter', () => {
     it('should generate correlation ID if not present', () => {
       mockRequest.headers = {};
       loggingService.getCorrelationId.mockReturnValue(undefined);
-      
+
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
@@ -164,7 +172,7 @@ describe('GlobalExceptionFilter', () => {
     it('should use correlation ID from logging service', () => {
       mockRequest.headers = {};
       loggingService.getCorrelationId.mockReturnValue('service-correlation-id');
-      
+
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
@@ -174,7 +182,7 @@ describe('GlobalExceptionFilter', () => {
 
     it('should use x-request-id header as correlation ID', () => {
       mockRequest.headers = { 'x-request-id': 'request-id-123' };
-      
+
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
@@ -184,33 +192,38 @@ describe('GlobalExceptionFilter', () => {
 
     it('should log server errors as errors', () => {
       const serverError = new Error('Internal server error');
-      
+
       filter.catch(serverError, mockHost);
 
       expect(loggingService.error).toHaveBeenCalledWith(
         '[GlobalExceptionFilter] Error: Internal server error',
         serverError.stack,
-        'GlobalExceptionFilter'
+        'GlobalExceptionFilter',
       );
     });
 
     it('should log client errors as warnings', () => {
-      const clientError = new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-      
+      const clientError = new HttpException(
+        'Bad Request',
+        HttpStatus.BAD_REQUEST,
+      );
+
       filter.catch(clientError, mockHost);
 
       expect(loggingService.warn).toHaveBeenCalledWith(
         '[GlobalExceptionFilter] HttpException: Bad Request',
-        'GlobalExceptionFilter'
+        'GlobalExceptionFilter',
       );
     });
 
     it('should set request context in logging service', () => {
       const exception = new Error('Test error');
-      
+
       filter.catch(exception, mockHost);
 
-      expect(loggingService.setCorrelationId).toHaveBeenCalledWith('test-correlation-id');
+      expect(loggingService.setCorrelationId).toHaveBeenCalledWith(
+        'test-correlation-id',
+      );
       expect(loggingService.setRequestContext).toHaveBeenCalledWith({
         method: 'GET',
         url: '/api/test',
@@ -221,18 +234,22 @@ describe('GlobalExceptionFilter', () => {
 
     it('should log debug information', () => {
       const exception = new ResourceNotFoundException('User', '123');
-      
+
       filter.catch(exception, mockHost);
 
-      expect(loggingService.logWithMeta).toHaveBeenCalledWith('debug', 'Exception details', {
-        exceptionType: 'ResourceNotFoundException',
-        statusCode: HttpStatus.NOT_FOUND,
-        errorCode: 'RESOURCE_NOT_FOUND',
-        requestMethod: 'GET',
-        requestUrl: '/api/test',
-        userAgent: 'test-agent',
-        correlationId: 'test-correlation-id',
-      });
+      expect(loggingService.logWithMeta).toHaveBeenCalledWith(
+        'debug',
+        'Exception details',
+        {
+          exceptionType: 'ResourceNotFoundException',
+          statusCode: HttpStatus.NOT_FOUND,
+          errorCode: 'RESOURCE_NOT_FOUND',
+          requestMethod: 'GET',
+          requestUrl: '/api/test',
+          userAgent: 'test-agent',
+          correlationId: 'test-correlation-id',
+        },
+      );
     });
 
     it('should handle missing request properties gracefully', () => {
@@ -248,9 +265,11 @@ describe('GlobalExceptionFilter', () => {
       });
 
       const exception = new Error('Test error');
-      
+
       expect(() => filter.catch(exception, mockHost)).not.toThrow();
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.status).toHaveBeenCalledWith(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     });
   });
 });

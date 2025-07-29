@@ -11,9 +11,10 @@ export class MetricsController {
   @Get()
   @Public()
   @Header('Content-Type', 'text/plain')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get Prometheus metrics',
-    description: 'Returns application metrics in Prometheus format for scraping'
+    description:
+      'Returns application metrics in Prometheus format for scraping',
   })
   @ApiResponse({
     status: 200,
@@ -31,9 +32,9 @@ http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code
 http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.5"} 35
 http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="+Inf"} 42
 http_request_duration_seconds_sum{method="GET",route="/api/foods",status_code="200"} 8.2
-http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"} 42`
-      }
-    }
+http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"} 42`,
+      },
+    },
   })
   async getMetrics(): Promise<string> {
     return this.metricsService.getMetrics();

@@ -1,6 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
-import { BusinessException, DatabaseOperationException, ResourceNotFoundException, ResourceAlreadyExistsException } from '../exceptions/business.exception';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library';
+import {
+  BusinessException,
+  DatabaseOperationException,
+  ResourceNotFoundException,
+  ResourceAlreadyExistsException,
+} from '../exceptions/business.exception';
 
 /**
  * Error code mappings for different error types
@@ -41,7 +50,11 @@ export interface ErrorInfo {
 /**
  * Convert Prisma errors to business exceptions
  */
-export function handlePrismaError(error: any, operation: string, table?: string): BusinessException {
+export function handlePrismaError(
+  error: any,
+  operation: string,
+  table?: string,
+): BusinessException {
   if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
       case ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT:
@@ -50,22 +63,21 @@ export function handlePrismaError(error: any, operation: string, table?: string)
         return new ResourceAlreadyExistsException(
           table || 'Resource',
           `${field}=${error.meta?.target}`,
-          { prismaCode: error.code, field, target }
+          { prismaCode: error.code, field, target },
         );
 
       case ERROR_CODES.PRISMA_RECORD_NOT_FOUND:
-        return new ResourceNotFoundException(
-          table || 'Resource',
-          'unknown',
-          { prismaCode: error.code, cause: error.meta?.cause }
-        );
+        return new ResourceNotFoundException(table || 'Resource', 'unknown', {
+          prismaCode: error.code,
+          cause: error.meta?.cause,
+        });
 
       case ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT:
         return new DatabaseOperationException(
           operation,
           table || 'unknown',
           'Foreign key constraint violation',
-          { prismaCode: error.code, field: error.meta?.field_name }
+          { prismaCode: error.code, field: error.meta?.field_name },
         );
 
       case ERROR_CODES.PRISMA_REQUIRED_FIELD_MISSING:
@@ -73,7 +85,7 @@ export function handlePrismaError(error: any, operation: string, table?: string)
           operation,
           table || 'unknown',
           `Required field missing: ${error.meta?.field_name}`,
-          { prismaCode: error.code, field: error.meta?.field_name }
+          { prismaCode: error.code, field: error.meta?.field_name },
         );
 
       case ERROR_CODES.PRISMA_VALUE_TOO_LONG:
@@ -81,7 +93,7 @@ export function handlePrismaError(error: any, operation: string, table?: string)
           operation,
           table || 'unknown',
           'Value too long for database field',
-          { prismaCode: error.code, column: error.meta?.column_name }
+          { prismaCode: error.code, column: error.meta?.column_name },
         );
 
       default:
@@ -89,7 +101,7 @@ export function handlePrismaError(error: any, operation: string, table?: string)
           operation,
           table || 'unknown',
           `Prisma error: ${error.message}`,
-          { prismaCode: error.code, meta: error.meta }
+          { prismaCode: error.code, meta: error.meta },
         );
     }
   }
@@ -99,7 +111,7 @@ export function handlePrismaError(error: any, operation: string, table?: string)
       operation,
       table || 'unknown',
       'Validation error in database query',
-      { type: 'PrismaClientValidationError', originalMessage: error.message }
+      { type: 'PrismaClientValidationError', originalMessage: error.message },
     );
   }
 
@@ -108,7 +120,10 @@ export function handlePrismaError(error: any, operation: string, table?: string)
       operation,
       table || 'unknown',
       'Unknown database error',
-      { type: 'PrismaClientUnknownRequestError', originalMessage: error.message }
+      {
+        type: 'PrismaClientUnknownRequestError',
+        originalMessage: error.message,
+      },
     );
   }
 
@@ -117,7 +132,7 @@ export function handlePrismaError(error: any, operation: string, table?: string)
     operation,
     table || 'unknown',
     error.message || 'Unknown database error',
-    { type: error.constructor.name, originalError: error }
+    { type: error.constructor.name, originalError: error },
   );
 }
 
@@ -183,7 +198,10 @@ export function isServerError(statusCode: number): boolean {
 /**
  * Sanitize error details for client response
  */
-export function sanitizeErrorForClient(error: ErrorInfo, includeStack: boolean = false): any {
+export function sanitizeErrorForClient(
+  error: ErrorInfo,
+  includeStack: boolean = false,
+): any {
   const sanitized: any = {
     statusCode: error.statusCode,
     message: error.message,
@@ -192,7 +210,10 @@ export function sanitizeErrorForClient(error: ErrorInfo, includeStack: boolean =
   };
 
   // Only include details for client errors or in development
-  if (isClientError(error.statusCode) || process.env.NODE_ENV === 'development') {
+  if (
+    isClientError(error.statusCode) ||
+    process.env.NODE_ENV === 'development'
+  ) {
     if (error.details) {
       sanitized.details = error.details;
     }
@@ -227,7 +248,7 @@ export function formatErrorForLogging(error: any, context?: string): string {
  */
 export function isRetryableError(error: any): boolean {
   const errorInfo = extractErrorInfo(error);
-  
+
   // Retry server errors but not client errors
   if (isServerError(errorInfo.statusCode)) {
     return true;
@@ -253,15 +274,19 @@ export function getUserFriendlyMessage(error: any): string {
 
   // Map technical errors to user-friendly messages
   const friendlyMessages: Record<string, string> = {
-    'RESOURCE_NOT_FOUND': 'The requested item could not be found.',
-    'RESOURCE_ALREADY_EXISTS': 'This item already exists.',
-    'AUTHENTICATION_FAILED': 'Please check your login credentials.',
-    'AUTHORIZATION_FAILED': 'You do not have permission to perform this action.',
-    'BUSINESS_VALIDATION_FAILED': 'Please check your input and try again.',
-    'EXTERNAL_SERVICE_ERROR': 'An external service is currently unavailable. Please try again later.',
-    'DATABASE_OPERATION_FAILED': 'A database error occurred. Please try again.',
-    'RATE_LIMIT_EXCEEDED': 'Too many requests. Please wait before trying again.',
+    RESOURCE_NOT_FOUND: 'The requested item could not be found.',
+    RESOURCE_ALREADY_EXISTS: 'This item already exists.',
+    AUTHENTICATION_FAILED: 'Please check your login credentials.',
+    AUTHORIZATION_FAILED: 'You do not have permission to perform this action.',
+    BUSINESS_VALIDATION_FAILED: 'Please check your input and try again.',
+    EXTERNAL_SERVICE_ERROR:
+      'An external service is currently unavailable. Please try again later.',
+    DATABASE_OPERATION_FAILED: 'A database error occurred. Please try again.',
+    RATE_LIMIT_EXCEEDED: 'Too many requests. Please wait before trying again.',
   };
 
-  return friendlyMessages[errorInfo.code] || 'An unexpected error occurred. Please try again.';
+  return (
+    friendlyMessages[errorInfo.code] ||
+    'An unexpected error occurred. Please try again.'
+  );
 }

@@ -7,15 +7,8 @@ import { DatabaseModule } from '../database/database.module';
 import { DatabaseHealthIndicator } from './database.health';
 
 @Module({
-  imports: [
-    TerminusModule,
-    HttpModule,
-    DatabaseModule,
-  ],
+  imports: [TerminusModule, HttpModule, DatabaseModule],
   controllers: [HealthController],
-  providers: [
-    DatabaseHealthIndicator,
-    OpenFoodFactsHealthIndicator,
-  ],
+  providers: [DatabaseHealthIndicator, OpenFoodFactsHealthIndicator],
 })
 export class HealthModule {}

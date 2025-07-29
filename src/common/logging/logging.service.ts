@@ -72,7 +72,7 @@ export class LoggingService implements LoggerService {
    */
   setRequestContext(context: Partial<LogContext>): void {
     try {
-      Object.keys(context).forEach(key => {
+      Object.keys(context).forEach((key) => {
         this.namespace.set(key, context[key]);
       });
     } catch (error) {
@@ -85,7 +85,7 @@ export class LoggingService implements LoggerService {
    */
   private getContext(): LogContext {
     const context: LogContext = {};
-    
+
     const correlationId = this.getCorrelationId();
     if (correlationId) context.correlationId = correlationId;
 
@@ -182,11 +182,17 @@ export class LoggingService implements LoggerService {
   /**
    * Log database operations
    */
-  logDatabaseOperation(operation: string, table: string, duration: number, success: boolean, error?: Error): void {
+  logDatabaseOperation(
+    operation: string,
+    table: string,
+    duration: number,
+    success: boolean,
+    error?: Error,
+  ): void {
     const logContext = this.getContext();
     const level = success ? 'debug' : 'error';
     const message = `Database ${operation} on ${table} ${success ? 'completed' : 'failed'} in ${duration}ms`;
-    
+
     this.logger.log(level, message, {
       ...logContext,
       operation,
@@ -200,11 +206,16 @@ export class LoggingService implements LoggerService {
   /**
    * Log authentication events
    */
-  logAuthEvent(event: string, userId?: string, success: boolean = true, details?: any): void {
+  logAuthEvent(
+    event: string,
+    userId?: string,
+    success: boolean = true,
+    details?: any,
+  ): void {
     const logContext = this.getContext();
     const level = success ? 'info' : 'warn';
     const message = `Authentication event: ${event} ${success ? 'succeeded' : 'failed'}`;
-    
+
     this.logger.log(level, message, {
       ...logContext,
       event,
@@ -217,10 +228,15 @@ export class LoggingService implements LoggerService {
   /**
    * Log business logic events
    */
-  logBusinessEvent(event: string, entityType: string, entityId: string, details?: any): void {
+  logBusinessEvent(
+    event: string,
+    entityType: string,
+    entityId: string,
+    details?: any,
+  ): void {
     const logContext = this.getContext();
     const message = `Business event: ${event} for ${entityType}:${entityId}`;
-    
+
     this.logger.info(message, {
       ...logContext,
       businessEvent: event,
@@ -233,11 +249,18 @@ export class LoggingService implements LoggerService {
   /**
    * Log external API calls
    */
-  logExternalApiCall(service: string, endpoint: string, method: string, duration: number, statusCode: number, success: boolean): void {
+  logExternalApiCall(
+    service: string,
+    endpoint: string,
+    method: string,
+    duration: number,
+    statusCode: number,
+    success: boolean,
+  ): void {
     const logContext = this.getContext();
     const level = success ? 'info' : 'warn';
     const message = `External API call to ${service} ${method} ${endpoint} ${success ? 'succeeded' : 'failed'} (${statusCode}) in ${duration}ms`;
-    
+
     this.logger.log(level, message, {
       ...logContext,
       externalService: service,
@@ -262,7 +285,11 @@ export class LoggingService implements LoggerService {
   /**
    * Run a function within a user context
    */
-  runWithUserContext<T>(userId: string, userEmail: string | undefined, fn: () => T): T {
+  runWithUserContext<T>(
+    userId: string,
+    userEmail: string | undefined,
+    fn: () => T,
+  ): T {
     return this.namespace.runAndReturn(() => {
       this.setUserContext(userId, userEmail);
       return fn();

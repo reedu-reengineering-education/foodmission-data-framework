@@ -7,145 +7,153 @@ import { AxiosResponse } from 'axios';
 import { OpenFoodFactsHealthIndicator } from './openfoodfacts.health';
 
 describe('OpenFoodFactsHealthIndicator', () => {
-    let indicator: OpenFoodFactsHealthIndicator;
-    let httpService: jest.Mocked<HttpService>;
-    let configService: jest.Mocked<ConfigService>;
+  let indicator: OpenFoodFactsHealthIndicator;
+  let httpService: jest.Mocked<HttpService>;
+  let configService: jest.Mocked<ConfigService>;
 
-    beforeEach(async () => {
-        const mockHttpService = {
-            get: jest.fn(),
-        };
+  beforeEach(async () => {
+    const mockHttpService = {
+      get: jest.fn(),
+    };
 
-        const mockConfigService = {
-            get: jest.fn(),
-        };
+    const mockConfigService = {
+      get: jest.fn(),
+    };
 
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                OpenFoodFactsHealthIndicator,
-                {
-                    provide: HttpService,
-                    useValue: mockHttpService,
-                },
-                {
-                    provide: ConfigService,
-                    useValue: mockConfigService,
-                },
-            ],
-        }).compile();
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        OpenFoodFactsHealthIndicator,
+        {
+          provide: HttpService,
+          useValue: mockHttpService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
+      ],
+    }).compile();
 
-        indicator = module.get<OpenFoodFactsHealthIndicator>(OpenFoodFactsHealthIndicator);
-        httpService = module.get(HttpService);
-        configService = module.get(ConfigService);
+    indicator = module.get<OpenFoodFactsHealthIndicator>(
+      OpenFoodFactsHealthIndicator,
+    );
+    httpService = module.get(HttpService);
+    configService = module.get(ConfigService);
 
-        // Setup default config
-        configService.get.mockReturnValue('https://world.openfoodfacts.org');
+    // Setup default config
+    configService.get.mockReturnValue('https://world.openfoodfacts.org');
+  });
+
+  it('should be defined', () => {
+    expect(indicator).toBeDefined();
+  });
+
+  describe('isHealthy', () => {
+    it('should return healthy status when OpenFoodFacts API is accessible', async () => {
+      const mockResponse: AxiosResponse = {
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+        data: { product: { product_name: 'Test Product' } },
+      };
+
+      httpService.get.mockReturnValue(of(mockResponse));
+
+      const result = await indicator.isHealthy('openfoodfacts');
+
+      expect(result).toEqual({
+        openfoodfacts: {
+          status: 'up',
+          message: 'OpenFoodFacts API is accessible',
+          responseTime: expect.any(Number),
+        },
+      });
+
+      expect(httpService.get).toHaveBeenCalledWith(
+        'https://world.openfoodfacts.org/api/v0/product/737628064502.json',
+      );
     });
 
-    it('should be defined', () => {
-        expect(indicator).toBeDefined();
+    it('should throw HealthCheckError when API returns non-200 status', async () => {
+      const mockResponse: AxiosResponse = {
+        status: 500,
+        statusText: 'Internal Server Error',
+        headers: {},
+        config: {} as any,
+        data: null,
+      };
+
+      httpService.get.mockReturnValue(of(mockResponse));
+
+      await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(
+        HealthCheckError,
+      );
+
+      try {
+        await indicator.isHealthy('openfoodfacts');
+      } catch (error) {
+        expect(error).toBeInstanceOf(HealthCheckError);
+        expect(error.message).toBe('OpenFoodFacts check failed');
+        expect(error.causes).toEqual({
+          openfoodfacts: {
+            status: 'down',
+            message: 'OpenFoodFacts API is not accessible',
+            error: 'Invalid response from OpenFoodFacts API',
+            timeout: 5000,
+          },
+        });
+      }
     });
 
-    describe('isHealthy', () => {
-        it('should return healthy status when OpenFoodFacts API is accessible', async () => {
-            const mockResponse: AxiosResponse = {
-                status: 200,
-                statusText: 'OK',
-                headers: {},
-                config: {} as any,
-                data: { product: { product_name: 'Test Product' } },
-            };
+    it('should throw HealthCheckError when API request fails', async () => {
+      const error = new Error('Network error');
+      httpService.get.mockReturnValue(throwError(() => error));
 
-            httpService.get.mockReturnValue(of(mockResponse));
+      await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(
+        HealthCheckError,
+      );
 
-            const result = await indicator.isHealthy('openfoodfacts');
-
-            expect(result).toEqual({
-                openfoodfacts: {
-                    status: 'up',
-                    message: 'OpenFoodFacts API is accessible',
-                    responseTime: expect.any(Number),
-                },
-            });
-
-            expect(httpService.get).toHaveBeenCalledWith(
-                'https://world.openfoodfacts.org/api/v0/product/737628064502.json'
-            );
-        });
-
-        it('should throw HealthCheckError when API returns non-200 status', async () => {
-            const mockResponse: AxiosResponse = {
-                status: 500,
-                statusText: 'Internal Server Error',
-                headers: {},
-                config: {} as any,
-                data: null,
-            };
-
-            httpService.get.mockReturnValue(of(mockResponse));
-
-            await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(HealthCheckError);
-
-            try {
-                await indicator.isHealthy('openfoodfacts');
-            } catch (error) {
-                expect(error).toBeInstanceOf(HealthCheckError);
-                expect(error.message).toBe('OpenFoodFacts check failed');
-                expect(error.causes).toEqual({
-                    openfoodfacts: {
-                        status: 'down',
-                        message: 'OpenFoodFacts API is not accessible',
-                        error: 'Invalid response from OpenFoodFacts API',
-                        timeout: 5000,
-                    },
-                });
-            }
-        });
-
-        it('should throw HealthCheckError when API request fails', async () => {
-            const error = new Error('Network error');
-            httpService.get.mockReturnValue(throwError(() => error));
-
-            await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(HealthCheckError);
-
-            try {
-                await indicator.isHealthy('openfoodfacts');
-            } catch (healthError) {
-                expect(healthError.causes.openfoodfacts.error).toBe('Network error');
-            }
-        });
-
-        it('should use custom API URL from config', async () => {
-            configService.get.mockReturnValue('https://custom.openfoodfacts.org');
-
-            const mockResponse: AxiosResponse = {
-                status: 200,
-                statusText: 'OK',
-                headers: {},
-                config: {} as any,
-                data: { product: { product_name: 'Test Product' } },
-            };
-
-            httpService.get.mockReturnValue(of(mockResponse));
-
-            await indicator.isHealthy('openfoodfacts');
-
-            expect(httpService.get).toHaveBeenCalledWith(
-                'https://custom.openfoodfacts.org/api/v0/product/737628064502.json'
-            );
-        });
-
-        it('should handle timeout errors', async () => {
-            const timeoutError = new Error('Timeout');
-            httpService.get.mockReturnValue(throwError(() => timeoutError));
-
-            await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(HealthCheckError);
-
-            try {
-                await indicator.isHealthy('openfoodfacts');
-            } catch (error) {
-                expect(error.causes.openfoodfacts.timeout).toBe(5000);
-            }
-        });
+      try {
+        await indicator.isHealthy('openfoodfacts');
+      } catch (healthError) {
+        expect(healthError.causes.openfoodfacts.error).toBe('Network error');
+      }
     });
+
+    it('should use custom API URL from config', async () => {
+      configService.get.mockReturnValue('https://custom.openfoodfacts.org');
+
+      const mockResponse: AxiosResponse = {
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+        data: { product: { product_name: 'Test Product' } },
+      };
+
+      httpService.get.mockReturnValue(of(mockResponse));
+
+      await indicator.isHealthy('openfoodfacts');
+
+      expect(httpService.get).toHaveBeenCalledWith(
+        'https://custom.openfoodfacts.org/api/v0/product/737628064502.json',
+      );
+    });
+
+    it('should handle timeout errors', async () => {
+      const timeoutError = new Error('Timeout');
+      httpService.get.mockReturnValue(throwError(() => timeoutError));
+
+      await expect(indicator.isHealthy('openfoodfacts')).rejects.toThrow(
+        HealthCheckError,
+      );
+
+      try {
+        await indicator.isHealthy('openfoodfacts');
+      } catch (error) {
+        expect(error.causes.openfoodfacts.timeout).toBe(5000);
+      }
+    });
+  });
 });

@@ -19,12 +19,12 @@ export class CacheMiddleware implements NestMiddleware {
 
     // Skip caching for certain paths
     const skipPaths = ['/health', '/metrics', '/api-docs'];
-    if (skipPaths.some(path => req.path.startsWith(path))) {
+    if (skipPaths.some((path) => req.path.startsWith(path))) {
       return next();
     }
 
     const cacheKey = this.generateCacheKey(req);
-    
+
     try {
       // Try to get cached response
       const cachedResponse = await this.cache.get(cacheKey);
@@ -37,17 +37,17 @@ export class CacheMiddleware implements NestMiddleware {
       // Intercept the response
       const originalSend = res.json;
       const self = this;
-      res.json = function(body: any) {
+      res.json = function (body: any) {
         // Cache successful responses
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // Cache for 5 minutes by default
-          const ttl = req.headers['cache-control'] 
-            ? self.parseCacheControl(req.headers['cache-control'] as string)
+          const ttl = req.headers['cache-control']
+            ? self.parseCacheControl(req.headers['cache-control'])
             : 300;
-          
+
           if (ttl > 0) {
             const ttlMs = ttl * 1000; // Convert to milliseconds
-            self.cache.set(cacheKey, body, ttlMs).catch(err => {
+            self.cache.set(cacheKey, body, ttlMs).catch((err) => {
               self.logger.error('Error caching response:', err);
             });
           }
@@ -56,7 +56,6 @@ export class CacheMiddleware implements NestMiddleware {
         res.set('X-Cache', 'MISS');
         return originalSend.call(this, body);
       };
-
     } catch (error) {
       this.logger.error('Cache middleware error:', error);
     }
@@ -68,8 +67,8 @@ export class CacheMiddleware implements NestMiddleware {
     const userId = (req as any).user?.id || 'anonymous';
     const queryString = new URLSearchParams(req.query as any).toString();
     const baseKey = `api:${req.path}:${userId}`;
-    
-    return queryString 
+
+    return queryString
       ? `${baseKey}:${Buffer.from(queryString).toString('base64')}`
       : baseKey;
   }

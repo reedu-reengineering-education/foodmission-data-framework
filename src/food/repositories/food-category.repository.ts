@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { FoodCategory, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { BaseRepository, FindAllOptions, PaginatedResult } from '../../common/interfaces/base-repository.interface';
+import {
+  BaseRepository,
+  FindAllOptions,
+  PaginatedResult,
+} from '../../common/interfaces/base-repository.interface';
 
 export interface CreateFoodCategoryDto {
   name: string;
@@ -20,7 +24,10 @@ export interface FoodCategoryWithCount extends FoodCategory {
 }
 
 @Injectable()
-export class FoodCategoryRepository implements BaseRepository<FoodCategory, CreateFoodCategoryDto, UpdateFoodCategoryDto> {
+export class FoodCategoryRepository
+  implements
+    BaseRepository<FoodCategory, CreateFoodCategoryDto, UpdateFoodCategoryDto>
+{
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(options: FindAllOptions = {}): Promise<FoodCategory[]> {
@@ -85,10 +92,12 @@ export class FoodCategoryRepository implements BaseRepository<FoodCategory, Crea
     }
   }
 
-  async findWithPagination(options: FindAllOptions): Promise<PaginatedResult<FoodCategoryWithCount>> {
+  async findWithPagination(
+    options: FindAllOptions,
+  ): Promise<PaginatedResult<FoodCategoryWithCount>> {
     try {
       const { skip = 0, take = 10, where, orderBy } = options;
-      
+
       const [data, total] = await Promise.all([
         this.prisma.foodCategory.findMany({
           skip,
@@ -122,7 +131,10 @@ export class FoodCategoryRepository implements BaseRepository<FoodCategory, Crea
     }
   }
 
-  async searchByName(name: string, options: FindAllOptions = {}): Promise<FoodCategory[]> {
+  async searchByName(
+    name: string,
+    options: FindAllOptions = {},
+  ): Promise<FoodCategory[]> {
     try {
       return await this.prisma.foodCategory.findMany({
         where: {
