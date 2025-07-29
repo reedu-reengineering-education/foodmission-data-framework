@@ -27,6 +27,7 @@ export class HealthService {
       : ['database', 'keycloak', 'openFoodFacts'];
 
     const allHealthy = requiredChecks.every(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (checkName) => checks[checkName]?.status === 'ok',
     );
 
@@ -66,7 +67,7 @@ export class HealthService {
     };
   }
 
-  async getLiveness() {
+  getLiveness() {
     const timestamp = new Date().toISOString();
     const uptime = (Date.now() - this.startTime) / 1000;
 
@@ -77,7 +78,7 @@ export class HealthService {
     };
   }
 
-  async getMetrics() {
+  getMetrics() {
     const uptime = (Date.now() - this.startTime) / 1000;
     const memoryUsage = process.memoryUsage();
 
@@ -128,6 +129,7 @@ export class HealthService {
         status: 'ok',
         responseTime: Date.now() - start,
       };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         status: 'error',
@@ -166,6 +168,7 @@ export class HealthService {
           responseTime: Date.now() - start,
         };
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         status: 'error',
@@ -200,6 +203,7 @@ export class HealthService {
           responseTime: Date.now() - start,
         };
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         status: 'error',

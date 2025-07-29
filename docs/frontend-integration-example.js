@@ -12,19 +12,19 @@ class AuthService {
     try {
       // Get auth configuration from backend
       this.authConfig = await this.getAuthConfig();
-      
+
       // Initialize Keycloak client
       this.keycloak = new Keycloak({
         url: this.authConfig.authServerUrl,
         realm: this.authConfig.realm,
-        clientId: this.authConfig.clientId
+        clientId: this.authConfig.clientId,
       });
 
       // Initialize with login required
       const authenticated = await this.keycloak.init({
         onLoad: 'login-required',
         checkLoginIframe: false,
-        pkceMethod: 'S256' // Use PKCE for security
+        pkceMethod: 'S256', // Use PKCE for security
       });
 
       if (authenticated) {
@@ -52,13 +52,14 @@ class AuthService {
   setupTokenRefresh() {
     // Refresh token 30 seconds before expiration
     setInterval(() => {
-      this.keycloak.updateToken(30)
-        .then(refreshed => {
+      this.keycloak
+        .updateToken(30)
+        .then((refreshed) => {
           if (refreshed) {
             console.log('Token refreshed');
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Token refresh failed:', error);
           this.login();
         });
@@ -68,14 +69,14 @@ class AuthService {
   // Login
   async login() {
     return this.keycloak.login({
-      redirectUri: window.location.origin
+      redirectUri: window.location.origin,
     });
   }
 
   // Logout
   async logout() {
     return this.keycloak.logout({
-      redirectUri: window.location.origin
+      redirectUri: window.location.origin,
     });
   }
 
@@ -92,14 +93,14 @@ class AuthService {
   // Get user info from token
   getUserInfo() {
     if (!this.keycloak?.tokenParsed) return null;
-    
+
     return {
       id: this.keycloak.tokenParsed.sub,
       email: this.keycloak.tokenParsed.email,
       name: this.keycloak.tokenParsed.name,
       firstName: this.keycloak.tokenParsed.given_name,
       lastName: this.keycloak.tokenParsed.family_name,
-      roles: this.keycloak.tokenParsed.realm_access?.roles || []
+      roles: this.keycloak.tokenParsed.realm_access?.roles || [],
     };
   }
 
@@ -117,13 +118,13 @@ class AuthService {
     const token = this.getToken();
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
     };
 
     const response = await fetch(url, {
       ...options,
-      headers
+      headers,
     });
 
     if (response.status === 401) {
@@ -156,7 +157,7 @@ class AuthService {
   async updatePreferences(preferences) {
     const response = await this.apiRequest('/api/auth/profile/preferences', {
       method: 'PUT',
-      body: JSON.stringify(preferences)
+      body: JSON.stringify(preferences),
     });
     if (!response.ok) {
       throw new Error('Failed to update preferences');
@@ -168,7 +169,7 @@ class AuthService {
   async updateSettings(settings) {
     const response = await this.apiRequest('/api/auth/profile/settings', {
       method: 'PUT',
-      body: JSON.stringify(settings)
+      body: JSON.stringify(settings),
     });
     if (!response.ok) {
       throw new Error('Failed to update settings');
@@ -181,21 +182,22 @@ class AuthService {
 const authService = new AuthService();
 
 // Initialize authentication when app starts
-authService.init()
+authService
+  .init()
   .then(() => {
     console.log('Authentication initialized');
-    
+
     // Get user info
     const userInfo = authService.getUserInfo();
     console.log('User:', userInfo);
-    
+
     // Get user profile from backend
     return authService.getUserProfile();
   })
-  .then(profile => {
+  .then((profile) => {
     console.log('User profile:', profile);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Authentication error:', error);
   });
 
@@ -205,12 +207,13 @@ function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    authService.init()
+    authService
+      .init()
       .then(() => {
         const userInfo = authService.getUserInfo();
         setUser(userInfo);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Auth error:', error);
       })
       .finally(() => {
@@ -230,7 +233,7 @@ function useAuth() {
     login,
     logout,
     hasRole,
-    apiRequest
+    apiRequest,
   };
 }
 
@@ -257,7 +260,7 @@ function useAuth() {
     login: () => authService.login(),
     logout: () => authService.logout(),
     hasRole: (role) => authService.hasRole(role),
-    apiRequest: (url, options) => authService.apiRequest(url, options)
+    apiRequest: (url, options) => authService.apiRequest(url, options),
   };
 }
 

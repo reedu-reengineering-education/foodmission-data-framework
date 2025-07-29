@@ -9,11 +9,13 @@ async function generateOpenApiSpec() {
   const app = await NestFactory.create(AppModule, { logger: false });
 
   // Enable validation pipes globally (same as in main.ts)
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidNonWhitelisted: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   // Set global prefix for API routes (same as in main.ts)
   app.setGlobalPrefix('api/v1');
@@ -21,7 +23,8 @@ async function generateOpenApiSpec() {
   // Configure Swagger/OpenAPI (same config as in main.ts)
   const config = new DocumentBuilder()
     .setTitle('FOODMISSION Data Framework API')
-    .setDescription(`
+    .setDescription(
+      `
       A comprehensive backend system for managing food-related data and operations.
       
       ## Features
@@ -48,17 +51,15 @@ async function generateOpenApiSpec() {
       
       ## Support
       For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
-    `)
+    `,
+    )
     .setVersion('1.0.0')
     .setContact(
       'FOODMISSION Team',
       'https://github.com/reedu-reengineering-education/foodmission-data-framework',
-      'support@foodmission.dev'
+      'support@foodmission.dev',
     )
-    .setLicense(
-      'MIT',
-      'https://opensource.org/licenses/MIT'
-    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addBearerAuth(
       {
         type: 'http',
@@ -70,10 +71,22 @@ async function generateOpenApiSpec() {
       },
       'JWT-auth',
     )
-    .addTag('auth', 'Authentication and authorization endpoints for Keycloak integration')
-    .addTag('foods', 'Food item management with OpenFoodFacts integration for nutritional data')
-    .addTag('users', 'User profile management and dietary preferences configuration')
-    .addTag('health', 'Application health checks, readiness probes, and monitoring metrics')
+    .addTag(
+      'auth',
+      'Authentication and authorization endpoints for Keycloak integration',
+    )
+    .addTag(
+      'foods',
+      'Food item management with OpenFoodFacts integration for nutritional data',
+    )
+    .addTag(
+      'users',
+      'User profile management and dietary preferences configuration',
+    )
+    .addTag(
+      'health',
+      'Application health checks, readiness probes, and monitoring metrics',
+    )
     .addServer('http://localhost:3000/api/v1', 'Development server')
     .addServer('https://api.foodmission.dev/api/v1', 'Production server')
     .addServer('https://staging-api.foodmission.dev/api/v1', 'Staging server')
@@ -86,12 +99,12 @@ async function generateOpenApiSpec() {
 
   // Write OpenAPI spec to files
   const outputDir = join(__dirname, '..', 'docs');
-  
+
   // JSON format
   writeFileSync(
     join(outputDir, 'openapi.json'),
     JSON.stringify(document, null, 2),
-    'utf8'
+    'utf8',
   );
 
   // YAML format (basic conversion)
@@ -99,7 +112,7 @@ async function generateOpenApiSpec() {
   writeFileSync(
     join(outputDir, 'openapi.yaml'),
     yaml.dump(document, { indent: 2 }),
-    'utf8'
+    'utf8',
   );
 
   console.log('✅ OpenAPI specification generated successfully!');
@@ -108,9 +121,13 @@ async function generateOpenApiSpec() {
   console.log('');
   console.log('📊 Statistics:');
   console.log(`   Paths: ${Object.keys(document.paths || {}).length}`);
-  console.log(`   Schemas: ${Object.keys(document.components?.schemas || {}).length}`);
+  console.log(
+    `   Schemas: ${Object.keys(document.components?.schemas || {}).length}`,
+  );
   console.log(`   Tags: ${(document.tags || []).length}`);
-  console.log(`   Security Schemes: ${Object.keys(document.components?.securitySchemes || {}).length}`);
+  console.log(
+    `   Security Schemes: ${Object.keys(document.components?.securitySchemes || {}).length}`,
+  );
 
   await app.close();
 }

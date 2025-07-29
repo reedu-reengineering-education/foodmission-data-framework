@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 
 export interface UserSeedData {
   keycloakId: string;
@@ -65,16 +65,22 @@ export const userData: UserSeedData[] = [
     preferences: {
       dietaryRestrictions: [],
       allergies: [],
-      preferredCategories: ['Fruits', 'Vegetables', 'Proteins', 'Grains', 'Dairy'],
+      preferredCategories: [
+        'Fruits',
+        'Vegetables',
+        'Proteins',
+        'Grains',
+        'Dairy',
+      ],
     },
   },
 ];
 
 export async function seedUsers(prisma: PrismaClient) {
   console.log('👥 Seeding users...');
-  
-  const users: any[] = [];
-  
+
+  const users: User[] = [];
+
   for (const userInfo of userData) {
     const user = await prisma.user.upsert({
       where: { keycloakId: userInfo.keycloakId },
@@ -90,7 +96,7 @@ export async function seedUsers(prisma: PrismaClient) {
         lastName: userInfo.lastName,
       },
     });
-    
+
     // Update user with preferences if provided
     if (userInfo.preferences) {
       await prisma.user.update({
@@ -100,10 +106,10 @@ export async function seedUsers(prisma: PrismaClient) {
         },
       });
     }
-    
+
     users.push(user);
   }
-  
+
   console.log(`✅ Created/updated ${users.length} users with preferences`);
   return users;
 }

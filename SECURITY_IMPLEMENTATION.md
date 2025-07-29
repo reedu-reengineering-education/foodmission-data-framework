@@ -130,6 +130,7 @@ This document summarizes the security features implemented for Task 17: Security
 ### Configuration
 
 Security features are configured through environment variables:
+
 - `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
 - `RATE_LIMIT_TTL`: Rate limit time window (default: 60000ms)
 - `RATE_LIMIT_MAX`: Maximum requests per window (default: 100)

@@ -27,17 +27,20 @@ The FOODMISSION Data Framework supports multiple deployment strategies:
 ## Prerequisites
 
 ### General Requirements
+
 - Docker 20.10+
 - Docker Compose 2.0+
 - Node.js 18+ (for local builds)
 - Git
 
 ### Kubernetes Requirements
+
 - Kubernetes 1.24+
 - kubectl configured
 - Helm 3.0+ (optional)
 
 ### Cloud Requirements
+
 - Cloud CLI tools (aws-cli, gcloud, az)
 - Appropriate cloud permissions
 - Container registry access
@@ -49,6 +52,7 @@ The FOODMISSION Data Framework supports multiple deployment strategies:
 Create environment-specific configuration files:
 
 #### Development (.env.dev)
+
 ```env
 NODE_ENV=development
 PORT=3000
@@ -81,6 +85,7 @@ METRICS_PORT=9090
 ```
 
 #### Staging (.env.staging)
+
 ```env
 NODE_ENV=staging
 PORT=3000
@@ -113,6 +118,7 @@ SENTRY_DSN=${SENTRY_DSN}
 ```
 
 #### Production (.env.prod)
+
 ```env
 NODE_ENV=production
 PORT=3000
@@ -166,6 +172,7 @@ docker run -d \
 ### Docker Compose Deployment
 
 #### Development
+
 ```yaml
 # docker-compose.dev.yml
 version: '3.8'
@@ -174,7 +181,7 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env.dev
     depends_on:
@@ -192,14 +199,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
 
@@ -209,6 +216,7 @@ volumes:
 ```
 
 #### Production
+
 ```yaml
 # docker-compose.prod.yml
 version: '3.8'
@@ -217,12 +225,12 @@ services:
   app:
     image: foodmission-data-framework:latest
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env.prod
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/v1/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -239,8 +247,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/nginx/ssl
@@ -284,12 +292,12 @@ metadata:
   name: foodmission-config
   namespace: foodmission
 data:
-  NODE_ENV: "production"
-  PORT: "3000"
-  LOG_LEVEL: "info"
-  OPENFOODFACTS_API_URL: "https://world.openfoodfacts.org"
-  ENABLE_METRICS: "true"
-  METRICS_PORT: "9090"
+  NODE_ENV: 'production'
+  PORT: '3000'
+  LOG_LEVEL: 'info'
+  OPENFOODFACTS_API_URL: 'https://world.openfoodfacts.org'
+  ENABLE_METRICS: 'true'
+  METRICS_PORT: '9090'
 ```
 
 ```yaml
@@ -329,40 +337,40 @@ spec:
         app: foodmission-api
     spec:
       containers:
-      - name: api
-        image: foodmission-data-framework:latest
-        ports:
-        - containerPort: 3000
-        - containerPort: 9090
-        envFrom:
-        - configMapRef:
-            name: foodmission-config
-        - secretRef:
-            name: foodmission-secrets
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /api/v1/health/liveness
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/v1/health/readiness
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
+        - name: api
+          image: foodmission-data-framework:latest
+          ports:
+            - containerPort: 3000
+            - containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: foodmission-config
+            - secretRef:
+                name: foodmission-secrets
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/liveness
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/readiness
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
 ```
 
 ### Service and Ingress
@@ -380,12 +388,12 @@ spec:
   selector:
     app: foodmission-api
   ports:
-  - name: http
-    port: 80
-    targetPort: 3000
-  - name: metrics
-    port: 9090
-    targetPort: 9090
+    - name: http
+      port: 80
+      targetPort: 3000
+    - name: metrics
+      port: 9090
+      targetPort: 9090
   type: ClusterIP
 ```
 
@@ -399,24 +407,24 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/rate-limit: '100'
+    nginx.ingress.kubernetes.io/rate-limit-window: '1m'
 spec:
   tls:
-  - hosts:
-    - api.example.com
-    secretName: foodmission-api-tls
+    - hosts:
+        - api.example.com
+      secretName: foodmission-api-tls
   rules:
-  - host: api.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: foodmission-api-service
-            port:
-              number: 80
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: foodmission-api-service
+                port:
+                  number: 80
 ```
 
 ### Horizontal Pod Autoscaler
@@ -436,18 +444,18 @@ spec:
   minReplicas: 3
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
 ```
 
 ### Deploy to Kubernetes
@@ -517,7 +525,10 @@ kubectl scale deployment foodmission-api --replicas=5 -n foodmission
         }
       },
       "healthCheck": {
-        "command": ["CMD-SHELL", "curl -f http://localhost:3000/api/v1/health || exit 1"],
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/api/v1/health || exit 1"
+        ],
         "interval": 30,
         "timeout": 5,
         "retries": 3
@@ -559,31 +570,31 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/maxScale: "10"
-        run.googleapis.com/cpu-throttling: "false"
+        autoscaling.knative.dev/maxScale: '10'
+        run.googleapis.com/cpu-throttling: 'false'
     spec:
       containerConcurrency: 100
       containers:
-      - image: gcr.io/project-id/foodmission-api:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: production
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: database-url
-              key: url
-        resources:
-          limits:
-            cpu: 1000m
-            memory: 512Mi
-        livenessProbe:
-          httpGet:
-            path: /api/v1/health/liveness
-            port: 3000
-          initialDelaySeconds: 30
+        - image: gcr.io/project-id/foodmission-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-url
+                  key: url
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/liveness
+              port: 3000
+            initialDelaySeconds: 30
 ```
 
 ```bash
@@ -691,90 +702,90 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run tests
-      run: npm run test:all
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
-        REDIS_URL: redis://localhost:6379
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:all
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+          REDIS_URL: redis://localhost:6379
 
   build:
     needs: test
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.image.outputs.image }}
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Log in to Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha,prefix={{branch}}-
-    
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-    
-    - name: Output image
-      id: image
-      run: echo "image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Output image
+        id: image
+        run: echo "image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> $GITHUB_OUTPUT
 
   deploy-staging:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment: staging
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Deploy to staging
-      run: |
-        # Update Kubernetes deployment
-        kubectl set image deployment/foodmission-api api=${{ needs.build.outputs.image }} -n foodmission-staging
-        kubectl rollout status deployment/foodmission-api -n foodmission-staging
+      - uses: actions/checkout@v3
+
+      - name: Deploy to staging
+        run: |
+          # Update Kubernetes deployment
+          kubectl set image deployment/foodmission-api api=${{ needs.build.outputs.image }} -n foodmission-staging
+          kubectl rollout status deployment/foodmission-api -n foodmission-staging
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
     needs: [build, deploy-staging]
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Deploy to production
-      run: |
-        # Update Kubernetes deployment
-        kubectl set image deployment/foodmission-api api=${{ needs.build.outputs.image }} -n foodmission-prod
-        kubectl rollout status deployment/foodmission-api -n foodmission-prod
+      - uses: actions/checkout@v3
+
+      - name: Deploy to production
+        run: |
+          # Update Kubernetes deployment
+          kubectl set image deployment/foodmission-api api=${{ needs.build.outputs.image }} -n foodmission-prod
+          kubectl rollout status deployment/foodmission-api -n foodmission-prod
 ```
 
 ### Deployment Scripts
@@ -907,17 +918,17 @@ scrape_configs:
 ```yaml
 # logging/fluentd.conf
 <source>
-  @type forward
-  port 24224
-  bind 0.0.0.0
+@type forward
+port 24224
+bind 0.0.0.0
 </source>
 
 <match foodmission.**>
-  @type elasticsearch
-  host elasticsearch
-  port 9200
-  index_name foodmission
-  type_name _doc
+@type elasticsearch
+host elasticsearch
+port 9200
+index_name foodmission
+type_name _doc
 </match>
 ```
 
@@ -937,25 +948,25 @@ spec:
     matchLabels:
       app: foodmission-api
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: ingress-nginx
-    ports:
-    - protocol: TCP
-      port: 3000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
   egress:
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 5432  # PostgreSQL
-    - protocol: TCP
-      port: 6379  # Redis
-    - protocol: TCP
-      port: 443   # HTTPS
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 5432 # PostgreSQL
+        - protocol: TCP
+          port: 6379 # Redis
+        - protocol: TCP
+          port: 443 # HTTPS
 ```
 
 ### Pod Security Policy

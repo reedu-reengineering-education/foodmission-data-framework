@@ -1,67 +1,67 @@
 version: 2
 updates:
   # Enable version updates for npm
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
     open-pull-requests-limit: 10
     reviewers:
-      - "foodmission-team"
+      - 'foodmission-team'
     assignees:
-      - "foodmission-team"
+      - 'foodmission-team'
     commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
-      include: "scope"
+      prefix: 'chore'
+      prefix-development: 'chore'
+      include: 'scope'
     labels:
-      - "dependencies"
-      - "automated"
+      - 'dependencies'
+      - 'automated'
     ignore:
       # Ignore major version updates for critical dependencies
-      - dependency-name: "@nestjs/*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "prisma"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@prisma/client"
-        update-types: ["version-update:semver-major"]
+      - dependency-name: '@nestjs/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'prisma'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@prisma/client'
+        update-types: ['version-update:semver-major']
 
   # Enable version updates for Docker
-  - package-ecosystem: "docker"
-    directory: "/"
+  - package-ecosystem: 'docker'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "tuesday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'tuesday'
+      time: '09:00'
     reviewers:
-      - "foodmission-team"
+      - 'foodmission-team'
     assignees:
-      - "foodmission-team"
+      - 'foodmission-team'
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     labels:
-      - "docker"
-      - "dependencies"
-      - "automated"
+      - 'docker'
+      - 'dependencies'
+      - 'automated'
 
   # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "wednesday"
-      time: "09:00"
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '09:00'
     reviewers:
-      - "foodmission-team"
+      - 'foodmission-team'
     assignees:
-      - "foodmission-team"
+      - 'foodmission-team'
     commit-message:
-      prefix: "chore"
-      include: "scope"
+      prefix: 'chore'
+      include: 'scope'
     labels:
-      - "github-actions"
-      - "dependencies"
-      - "automated"
+      - 'github-actions'
+      - 'dependencies'
+      - 'automated'

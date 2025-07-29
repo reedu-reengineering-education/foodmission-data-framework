@@ -27,23 +27,25 @@ function checkCoverage() {
 
   console.log('📊 Test Coverage Report');
   console.log('========================');
-  
+
   let passed = true;
-  
-  Object.keys(REQUIRED_COVERAGE).forEach(metric => {
+
+  Object.keys(REQUIRED_COVERAGE).forEach((metric) => {
     const actual = total[metric].pct;
     const required = REQUIRED_COVERAGE[metric];
     const status = actual >= required ? '✅' : '❌';
-    
+
     if (actual < required) {
       passed = false;
     }
-    
-    console.log(`${status} ${metric.padEnd(12)}: ${actual.toFixed(2)}% (required: ${required}%)`);
+
+    console.log(
+      `${status} ${metric.padEnd(12)}: ${actual.toFixed(2)}% (required: ${required}%)`,
+    );
   });
-  
+
   console.log('========================');
-  
+
   if (passed) {
     console.log('✅ All coverage thresholds met!');
     process.exit(0);

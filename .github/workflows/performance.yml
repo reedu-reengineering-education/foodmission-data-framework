@@ -2,9 +2,9 @@ name: Performance Testing
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     # Run performance tests weekly on Sundays at 3 AM UTC
     - cron: '0 3 * * 0'
@@ -17,7 +17,7 @@ jobs:
   load-testing:
     name: Load Testing
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -82,7 +82,7 @@ jobs:
         run: |
           npm run start:prod &
           sleep 30
-          
+
           # Wait for application to be ready
           timeout 60 bash -c 'until curl -f http://localhost:3000/health; do sleep 2; done'
 
@@ -206,7 +206,7 @@ jobs:
           script: |
             const fs = require('fs');
             const summary = fs.readFileSync('performance-summary.md', 'utf8');
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -217,7 +217,7 @@ jobs:
   memory-profiling:
     name: Memory Profiling
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -264,15 +264,15 @@ jobs:
           # Start application with memory profiling
           node --max-old-space-size=512 --expose-gc dist/main.js &
           APP_PID=$!
-          
+
           sleep 30
-          
+
           # Monitor memory usage
           for i in {1..10}; do
             ps -p $APP_PID -o pid,vsz,rss,pmem,comm
             sleep 10
           done
-          
+
           # Stop application
           kill $APP_PID
 

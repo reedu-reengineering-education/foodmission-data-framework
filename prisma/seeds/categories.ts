@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { FoodCategory, PrismaClient } from '@prisma/client';
 
 export interface CategorySeedData {
   name: string;
@@ -8,7 +8,8 @@ export interface CategorySeedData {
 export const categoryData: CategorySeedData[] = [
   {
     name: 'Fruits',
-    description: 'Fresh and dried fruits, including tropical and seasonal varieties',
+    description:
+      'Fresh and dried fruits, including tropical and seasonal varieties',
   },
   {
     name: 'Vegetables',
@@ -50,9 +51,9 @@ export const categoryData: CategorySeedData[] = [
 
 export async function seedCategories(prisma: PrismaClient) {
   console.log('🏷️  Seeding food categories...');
-  
-  const categories: any[] = [];
-  
+
+  const categories: FoodCategory[] = [];
+
   for (const categoryInfo of categoryData) {
     const category = await prisma.foodCategory.upsert({
       where: { name: categoryInfo.name },
@@ -66,7 +67,7 @@ export async function seedCategories(prisma: PrismaClient) {
     });
     categories.push(category);
   }
-  
+
   console.log(`✅ Created/updated ${categories.length} categories`);
   return categories;
 }

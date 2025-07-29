@@ -19,11 +19,11 @@ jobs:
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
-    
+
     outputs:
       version: ${{ steps.version.outputs.version }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,11 +50,11 @@ jobs:
           else
             CHANGELOG=$(git log --pretty=format:"- %s (%h)" HEAD)
           fi
-          
+
           # Save changelog to file
           echo "## Changes" > changelog.md
           echo "$CHANGELOG" >> changelog.md
-          
+
           # Set output for GitHub release
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           cat changelog.md >> $GITHUB_OUTPUT
@@ -76,11 +76,11 @@ jobs:
     name: Build Release Artifacts
     runs-on: ubuntu-latest
     needs: create-release
-    
+
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -154,7 +154,7 @@ jobs:
     needs: [create-release, build-release-artifacts]
     environment: production
     if: ${{ !contains(needs.create-release.outputs.version, '-') }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -174,10 +174,10 @@ jobs:
         run: |
           # Update deployment with release tag
           sed -i "s|IMAGE_TAG|${{ needs.create-release.outputs.version }}|g" k8s/production/deployment.yaml
-          
+
           # Apply Kubernetes manifests
           kubectl apply -f k8s/production/
-          
+
           # Wait for deployment to be ready
           kubectl rollout status deployment/foodmission-data-framework -n foodmission-production --timeout=600s
 
@@ -185,10 +185,10 @@ jobs:
         run: |
           # Wait for service to be ready
           sleep 60
-          
+
           # Get service URL
           SERVICE_URL=$(kubectl get ingress foodmission-data-framework -n foodmission-production -o jsonpath='{.spec.rules[0].host}')
-          
+
           # Run comprehensive health checks
           curl -f https://$SERVICE_URL/health || exit 1
           curl -f https://$SERVICE_URL/api/v1/health || exit 1

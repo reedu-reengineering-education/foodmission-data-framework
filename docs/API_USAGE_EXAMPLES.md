@@ -26,6 +26,7 @@ curl -X POST http://localhost:3000/api/v1/auth/login \
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -48,6 +49,7 @@ curl -X GET http://localhost:3000/api/v1/auth/profile \
 ```
 
 **Response:**
+
 ```json
 {
   "id": "user-uuid",
@@ -79,6 +81,7 @@ curl -X GET "http://localhost:3000/api/v1/foods?includeNutrition=true" \
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -133,6 +136,7 @@ curl -X POST http://localhost:3000/api/v1/foods \
 ```
 
 **Response:**
+
 ```json
 {
   "id": "food-uuid",
@@ -194,6 +198,7 @@ curl -X GET http://localhost:3000/api/v1/categories \
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -248,6 +253,7 @@ curl -X GET http://localhost:3000/api/v1/users/preferences \
 ```
 
 **Response:**
+
 ```json
 {
   "id": "preferences-uuid",
@@ -286,6 +292,7 @@ curl -X POST http://localhost:3000/api/v1/foods/import/openfoodfacts \
 ```
 
 **Response:**
+
 ```json
 {
   "id": "food-uuid",
@@ -318,6 +325,7 @@ curl -X GET "http://localhost:3000/api/v1/foods/search/openfoodfacts?query=choco
 ```
 
 **Response:**
+
 ```json
 {
   "products": [
@@ -348,6 +356,7 @@ curl -X GET http://localhost:3000/api/v1/health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -394,6 +403,7 @@ curl -X GET http://localhost:3000/api/v1/metrics
 ```
 
 **Response (Prometheus format):**
+
 ```
 # HELP http_requests_total Total number of HTTP requests
 # TYPE http_requests_total counter
@@ -419,13 +429,11 @@ curl -X POST http://localhost:3000/api/v1/foods \
 ```
 
 **Response (400 Bad Request):**
+
 ```json
 {
   "statusCode": 400,
-  "message": [
-    "name should not be empty",
-    "categoryId must be a valid UUID"
-  ],
+  "message": ["name should not be empty", "categoryId must be a valid UUID"],
   "error": "Bad Request",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods",
@@ -441,6 +449,7 @@ curl -X GET http://localhost:3000/api/v1/foods/non-existent-uuid \
 ```
 
 **Response (404 Not Found):**
+
 ```json
 {
   "statusCode": 404,
@@ -459,6 +468,7 @@ curl -X GET http://localhost:3000/api/v1/foods
 ```
 
 **Response (401 Unauthorized):**
+
 ```json
 {
   "statusCode": 401,
@@ -473,6 +483,7 @@ curl -X GET http://localhost:3000/api/v1/foods
 ### Server Errors
 
 **Response (500 Internal Server Error):**
+
 ```json
 {
   "statusCode": 500,
@@ -500,6 +511,7 @@ curl -I http://localhost:3000/api/v1/foods \
 ```
 
 **Response Headers:**
+
 ```
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
@@ -509,6 +521,7 @@ X-RateLimit-Reset: 1640995200
 ### Rate Limit Exceeded
 
 **Response (429 Too Many Requests):**
+
 ```json
 {
   "statusCode": 429,
@@ -535,8 +548,8 @@ class FOODMISSIONAPI {
 
   private get headers() {
     return {
-      'Authorization': `Bearer ${this.token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${this.token}`,
+      'Content-Type': 'application/json',
     };
   }
 
@@ -549,7 +562,7 @@ class FOODMISSIONAPI {
   }) {
     const response = await axios.get(`${this.baseURL}/foods`, {
       headers: this.headers,
-      params
+      params,
     });
     return response.data;
   }
@@ -562,7 +575,7 @@ class FOODMISSIONAPI {
     categoryId: string;
   }) {
     const response = await axios.post(`${this.baseURL}/foods`, food, {
-      headers: this.headers
+      headers: this.headers,
     });
     return response.data;
   }
@@ -571,7 +584,7 @@ class FOODMISSIONAPI {
     const response = await axios.post(
       `${this.baseURL}/foods/import/openfoodfacts`,
       { barcode, categoryId },
-      { headers: this.headers }
+      { headers: this.headers },
     );
     return response.data;
   }
@@ -581,24 +594,24 @@ class FOODMISSIONAPI {
 const api = new FOODMISSIONAPI('your-jwt-token');
 
 // Get foods
-const foods = await api.getFoods({ 
-  page: 1, 
-  limit: 10, 
+const foods = await api.getFoods({
+  page: 1,
+  limit: 10,
   search: 'banana',
-  includeNutrition: true 
+  includeNutrition: true,
 });
 
 // Create food
 const newFood = await api.createFood({
   name: 'Organic Apple',
   description: 'Fresh organic apple',
-  categoryId: 'category-uuid'
+  categoryId: 'category-uuid',
 });
 
 // Import from OpenFoodFacts
 const importedFood = await api.importFromOpenFoodFacts(
-  '3017620422003', 
-  'category-uuid'
+  '3017620422003',
+  'category-uuid',
 );
 ```
 

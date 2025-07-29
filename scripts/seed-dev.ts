@@ -2,7 +2,7 @@
 
 /**
  * Development Environment Seeding Script
- * 
+ *
  * This script seeds the database with comprehensive development data
  * including additional test users, sample foods, and realistic data
  * for development and testing purposes.
@@ -24,10 +24,10 @@ async function seedDevelopmentData() {
     await seedCategories(prisma);
     await seedFoods(prisma);
     await seedUsers(prisma);
-    
+
     // Add additional development-specific data
     console.log('🔧 Adding development-specific data...');
-    
+
     // Add more test foods with various states
     const devFoods = [
       {
@@ -44,21 +44,24 @@ async function seedDevelopmentData() {
       },
       {
         name: 'Test Food - Long Description',
-        description: 'This is a test food item with a very long description that should test how the system handles longer text content and ensure proper validation and display of extended descriptions in the user interface.',
+        description:
+          'This is a test food item with a very long description that should test how the system handles longer text content and ensure proper validation and display of extended descriptions in the user interface.',
         categoryName: 'Condiments',
         barcode: '8888888888888',
       },
     ];
-    
+
     const categories = await prisma.foodCategory.findMany();
-    const categoryMap = new Map(categories.map(cat => [cat.name, cat.id]));
-    
+    const categoryMap = new Map(categories.map((cat) => [cat.name, cat.id]));
+
     for (const foodInfo of devFoods) {
       const categoryId = categoryMap.get(foodInfo.categoryName);
       if (categoryId) {
         await prisma.food.upsert({
-          where: { 
-            barcode: foodInfo.barcode || `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}` 
+          where: {
+            barcode:
+              foodInfo.barcode ||
+              `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`,
           },
           update: {
             name: foodInfo.name,
@@ -76,7 +79,7 @@ async function seedDevelopmentData() {
         });
       }
     }
-    
+
     // Add test users with edge cases
     const devUsers = [
       {
@@ -97,7 +100,7 @@ async function seedDevelopmentData() {
         },
       },
     ];
-    
+
     for (const userInfo of devUsers) {
       const user = await prisma.user.upsert({
         where: { keycloakId: userInfo.keycloakId },
@@ -113,7 +116,7 @@ async function seedDevelopmentData() {
           lastName: userInfo.lastName,
         },
       });
-      
+
       if ((userInfo as any).preferences) {
         await prisma.user.update({
           where: { id: user.id },
@@ -123,10 +126,9 @@ async function seedDevelopmentData() {
         });
       }
     }
-    
+
     console.log('✅ Development seeding completed!');
     console.log('🎯 Development environment is ready for testing');
-    
   } catch (error) {
     console.error('❌ Development seeding failed:', error);
     process.exit(1);

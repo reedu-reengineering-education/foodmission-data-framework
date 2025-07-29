@@ -47,6 +47,7 @@ KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"
 ### Keycloak Setup
 
 1. Start Keycloak using Docker Compose:
+
    ```bash
    npm run docker:up
    ```
@@ -77,36 +78,36 @@ KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"
 
 ```typescript
 // Client sends Keycloak token to login endpoint
-POST /auth/login
-Authorization: Bearer <keycloak-token>
-
-// Response includes internal JWT token
-{
-  "access_token": "internal-jwt-token",
-  "user": {
-    "id": "user-id",
-    "email": "user@example.com",
-    "firstName": "John",
-    "lastName": "Doe"
-  }
-}
+POST / auth / login;
+Authorization: Bearer <
+  keycloak - token >
+  // Response includes internal JWT token
+  {
+    access_token: 'internal-jwt-token',
+    user: {
+      id: 'user-id',
+      email: 'user@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+    },
+  };
 ```
 
 ### Accessing Protected Resources
 
 ```typescript
 // Use internal JWT token for subsequent requests
-GET /auth/profile
-Authorization: Bearer <internal-jwt-token>
-
-// Response
-{
-  "id": "user-id",
-  "email": "user@example.com",
-  "firstName": "John",
-  "lastName": "Doe",
-  "keycloakId": "keycloak-user-id"
-}
+GET / auth / profile;
+Authorization: Bearer <
+  internal - jwt - token >
+  // Response
+  {
+    id: 'user-id',
+    email: 'user@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    keycloakId: 'keycloak-user-id',
+  };
 ```
 
 ### Role-Based Access
@@ -154,6 +155,7 @@ The authentication system includes comprehensive tests:
 - End-to-end tests for authentication endpoints
 
 Run tests with:
+
 ```bash
 npm test
 npm run test:e2e
@@ -164,6 +166,7 @@ npm run test:e2e
 ### Local Development
 
 1. Start the development environment:
+
    ```bash
    npm run docker:up
    npm run start:dev
@@ -201,6 +204,7 @@ export class ApiController {
 ### Debug Mode
 
 Enable debug logging by setting:
+
 ```bash
 NODE_ENV=development
 ```

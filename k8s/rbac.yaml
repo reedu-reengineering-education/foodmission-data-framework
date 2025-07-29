@@ -18,18 +18,18 @@ metadata:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: role
 rules:
-# Allow reading ConfigMaps and Secrets
-- apiGroups: [""]
-  resources: ["configmaps", "secrets"]
-  verbs: ["get", "list"]
-# Allow reading pods for health checks
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list"]
-# Allow reading services for service discovery
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "list"]
+  # Allow reading ConfigMaps and Secrets
+  - apiGroups: ['']
+    resources: ['configmaps', 'secrets']
+    verbs: ['get', 'list']
+  # Allow reading pods for health checks
+  - apiGroups: ['']
+    resources: ['pods']
+    verbs: ['get', 'list']
+  # Allow reading services for service discovery
+  - apiGroups: ['']
+    resources: ['services']
+    verbs: ['get', 'list']
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -41,9 +41,9 @@ metadata:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: rolebinding
 subjects:
-- kind: ServiceAccount
-  name: foodmission-api
-  namespace: foodmission
+  - kind: ServiceAccount
+    name: foodmission-api
+    namespace: foodmission
 roleRef:
   kind: Role
   name: foodmission-api-role

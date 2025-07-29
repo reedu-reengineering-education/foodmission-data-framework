@@ -14,54 +14,54 @@ spec:
   minReplicas: 3
   maxReplicas: 10
   metrics:
-  # CPU utilization scaling
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  
-  # Memory utilization scaling
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
-  
-  # Custom metrics scaling (requests per second)
-  - type: Pods
-    pods:
-      metric:
-        name: http_requests_per_second
-      target:
-        type: AverageValue
-        averageValue: "100"
-  
+    # CPU utilization scaling
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+    # Memory utilization scaling
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+    # Custom metrics scaling (requests per second)
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: '100'
+
   # Scale down behavior
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
-      - type: Pods
-        value: 2
-        periodSeconds: 60
+        - type: Percent
+          value: 50
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
       selectPolicy: Min
-    
+
     # Scale up behavior
     scaleUp:
       stabilizationWindowSeconds: 60
       policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 60
-      - type: Pods
-        value: 4
-        periodSeconds: 60
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 60
       selectPolicy: Max
 
 ---
@@ -80,14 +80,14 @@ spec:
     kind: Deployment
     name: foodmission-api
   updatePolicy:
-    updateMode: "Off"  # Only provide recommendations, don't auto-update
+    updateMode: 'Off' # Only provide recommendations, don't auto-update
   resourcePolicy:
     containerPolicies:
-    - containerName: api
-      minAllowed:
-        cpu: 100m
-        memory: 128Mi
-      maxAllowed:
-        cpu: 1000m
-        memory: 1Gi
-      controlledResources: ["cpu", "memory"]
+      - containerName: api
+        minAllowed:
+          cpu: 100m
+          memory: 128Mi
+        maxAllowed:
+          cpu: 1000m
+          memory: 1Gi
+        controlledResources: ['cpu', 'memory']

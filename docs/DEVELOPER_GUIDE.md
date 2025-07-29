@@ -29,12 +29,14 @@ This guide provides comprehensive information for developers working on the FOOD
 #### Option 1: DevContainer (Recommended)
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd foodmission-data-framework
    ```
 
 2. Open in VSCode and reopen in container:
+
    ```bash
    code .
    # Press Ctrl+Shift+P and select "Dev Containers: Reopen in Container"
@@ -49,6 +51,7 @@ This guide provides comprehensive information for developers working on the FOOD
 #### Option 2: Manual Setup
 
 1. Clone and install dependencies:
+
    ```bash
    git clone <repository-url>
    cd foodmission-data-framework
@@ -56,11 +59,13 @@ This guide provides comprehensive information for developers working on the FOOD
    ```
 
 2. Start services:
+
    ```bash
    npm run docker:up
    ```
 
 3. Set up database:
+
    ```bash
    npm run db:generate
    npm run db:migrate:deploy
@@ -148,11 +153,13 @@ src/module-name/
 ### Daily Development
 
 1. **Start development environment:**
+
    ```bash
    npm run start:dev
    ```
 
 2. **Run tests in watch mode:**
+
    ```bash
    npm run test:watch
    ```
@@ -166,6 +173,7 @@ src/module-name/
 ### Feature Development
 
 1. **Create feature branch:**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -176,6 +184,7 @@ src/module-name/
    - Write e2e tests for controllers
 
 3. **Run full test suite:**
+
    ```bash
    npm run test:all
    ```
@@ -188,6 +197,7 @@ src/module-name/
 ### Database Changes
 
 1. **Modify Prisma schema:**
+
    ```typescript
    // prisma/schema.prisma
    model NewEntity {
@@ -198,6 +208,7 @@ src/module-name/
    ```
 
 2. **Generate migration:**
+
    ```bash
    npm run db:migrate
    ```
@@ -304,7 +315,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const errorInfo = ErrorUtils.extractErrorInfo(exception);
-    
+
     response.status(errorInfo.statusCode).json({
       statusCode: errorInfo.statusCode,
       message: errorInfo.message,
@@ -370,13 +381,13 @@ npm run db:migrate:reset
 // prisma/seeds/foods.ts
 export async function seedFoods(prisma: PrismaClient) {
   const categories = await prisma.foodCategory.findMany();
-  
+
   const foods = [
     {
       name: 'Organic Banana',
       description: 'Fresh organic banana',
       barcode: '1234567890123',
-      categoryId: categories.find(c => c.name === 'Fruits')?.id,
+      categoryId: categories.find((c) => c.name === 'Fruits')?.id,
     },
     // More foods...
   ];
@@ -468,7 +479,7 @@ describe('Food Integration', () => {
 
     app = moduleFixture.createNestApplication();
     prisma = app.get<PrismaService>(PrismaService);
-    
+
     await app.init();
   });
 
@@ -681,7 +692,7 @@ export class FoodService {
 
   async create(createFoodDto: CreateFoodDto): Promise<Food> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
-    
+
     try {
       const food = await this.foodRepository.create(createFoodDto);
       this.logger.log(`Food created successfully: ${food.id}`);
@@ -699,6 +710,7 @@ export class FoodService {
 ### Pull Request Process
 
 1. **Create feature branch:**
+
    ```bash
    git checkout -b feature/your-feature
    ```
@@ -709,6 +721,7 @@ export class FoodService {
    - Add e2e tests for new endpoints
 
 3. **Run quality checks:**
+
    ```bash
    npm run lint
    npm run format
@@ -716,6 +729,7 @@ export class FoodService {
    ```
 
 4. **Commit with conventional format:**
+
    ```bash
    git commit -m "feat: add food barcode scanning"
    git commit -m "fix: resolve database connection issue"
@@ -869,7 +883,7 @@ const foods = await this.prisma.food.findMany({
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
+
   // Connection pooling
   connection_limit = 20
   pool_timeout = 20
@@ -891,10 +905,10 @@ export class FoodService {
 
   async create(createFoodDto: CreateFoodDto): Promise<Food> {
     const food = await this.foodRepository.create(createFoodDto);
-    
+
     // Invalidate cache
     await this.cacheService.del('foods:*');
-    
+
     return food;
   }
 }
@@ -911,14 +925,14 @@ export class CacheService {
     ttl: number = 300,
   ): Promise<T> {
     const cached = await this.redis.get(key);
-    
+
     if (cached) {
       return JSON.parse(cached);
     }
 
     const result = await factory();
     await this.redis.setex(key, ttl, JSON.stringify(result));
-    
+
     return result;
   }
 }
@@ -937,15 +951,15 @@ async findAllStream(): Promise<Readable> {
         skip: this.offset,
         take: 100,
       });
-      
+
       for (const food of batch) {
         this.push(food);
       }
-      
+
       if (batch.length === 0) {
         this.push(null); // End stream
       }
-      
+
       this.offset += batch.length;
     },
   });

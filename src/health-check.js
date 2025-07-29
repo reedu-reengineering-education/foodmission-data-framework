@@ -6,7 +6,7 @@ const options = {
   port: 3000,
   path: '/health',
   method: 'GET',
-  timeout: 2000
+  timeout: 2000,
 };
 
 const req = http.request(options, (res) => {

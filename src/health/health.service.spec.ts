@@ -8,7 +8,6 @@ global.fetch = jest.fn();
 
 describe('HealthService', () => {
   let service: HealthService;
-  let prismaService: jest.Mocked<PrismaService>;
 
   const mockPrismaService = {
     $queryRaw: jest.fn(),
@@ -26,7 +25,6 @@ describe('HealthService', () => {
     }).compile();
 
     service = module.get<HealthService>(HealthService);
-    prismaService = module.get(PrismaService);
 
     // Reset mocks
     jest.clearAllMocks();
@@ -140,7 +138,7 @@ describe('HealthService', () => {
       // Wait a bit to ensure uptime is greater than 0
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const result = await service.getLiveness();
+      const result = service.getLiveness();
 
       expect(result.status).toBe('alive');
       expect(result.timestamp).toBeDefined();
@@ -153,7 +151,7 @@ describe('HealthService', () => {
       // Wait a bit to ensure uptime is greater than 0
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const result = await service.getMetrics();
+      const result = service.getMetrics();
 
       expect(result.uptime).toBeGreaterThanOrEqual(0);
       expect(result.memory).toBeDefined();
@@ -169,22 +167,22 @@ describe('HealthService', () => {
   });
 
   describe('trackRequest', () => {
-    it('should track successful requests', async () => {
+    it('should track successful requests', () => {
       service.trackRequest(100, false);
       service.trackRequest(200, false);
 
-      const metrics = await service.getMetrics();
+      const metrics = service.getMetrics();
 
       expect(metrics.requests.total).toBe(2);
       expect(metrics.requests.errors).toBe(0);
       expect(metrics.requests.averageResponseTime).toBe(150);
     });
 
-    it('should track error requests', async () => {
+    it('should track error requests', () => {
       service.trackRequest(100, false);
       service.trackRequest(200, true);
 
-      const metrics = await service.getMetrics();
+      const metrics = service.getMetrics();
 
       expect(metrics.requests.total).toBe(2);
       expect(metrics.requests.errors).toBe(1);
@@ -197,7 +195,7 @@ describe('HealthService', () => {
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
 
       // Access private method for testing
-      const result = await (service as any).checkDatabase();
+      const result = await service['checkDatabase']();
 
       expect(result.status).toBe('ok');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -208,7 +206,7 @@ describe('HealthService', () => {
         new Error('Database error'),
       );
 
-      const result = await (service as any).checkDatabase();
+      const result = await service['checkDatabase']();
 
       expect(result.status).toBe('error');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -219,7 +217,7 @@ describe('HealthService', () => {
     it('should return ok status when keycloak is accessible', async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
 
-      const result = await (service as any).checkKeycloak();
+      const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('ok');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -235,7 +233,7 @@ describe('HealthService', () => {
     it('should return error status when keycloak is not accessible', async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({ ok: false });
 
-      const result = await (service as any).checkKeycloak();
+      const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('error');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -244,7 +242,7 @@ describe('HealthService', () => {
     it('should return error status when keycloak request throws', async () => {
       (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-      const result = await (service as any).checkKeycloak();
+      const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('error');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -259,7 +257,7 @@ describe('HealthService', () => {
 
       (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
 
-      await (service as any).checkKeycloak();
+      await service['checkKeycloak']();
 
       expect(fetch).toHaveBeenCalledWith(
         'https://custom-keycloak.com/realms/custom-realm/.well-known/openid_configuration',
@@ -275,7 +273,7 @@ describe('HealthService', () => {
     it('should return ok status when OpenFoodFacts is accessible', async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
 
-      const result = await (service as any).checkOpenFoodFacts();
+      const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('ok');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -291,7 +289,7 @@ describe('HealthService', () => {
     it('should return error status when OpenFoodFacts is not accessible', async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({ ok: false });
 
-      const result = await (service as any).checkOpenFoodFacts();
+      const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('error');
       expect(result.responseTime).toBeGreaterThan(0);
@@ -300,7 +298,7 @@ describe('HealthService', () => {
     it('should return error status when OpenFoodFacts request throws', async () => {
       (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
-      const result = await (service as any).checkOpenFoodFacts();
+      const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('error');
       expect(result.responseTime).toBeGreaterThan(0);

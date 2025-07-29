@@ -7,6 +7,7 @@ This guide shows you how to generate and use a Postman collection from your Nest
 ### Method 1: Import from Running API (Recommended)
 
 1. **Start your API:**
+
    ```bash
    npm run start:dev
    ```
@@ -20,6 +21,7 @@ This guide shows you how to generate and use a Postman collection from your Nest
 ### Method 2: Generate Static File
 
 1. **Generate OpenAPI spec:**
+
    ```bash
    npm run build
    npm run postman:collection
@@ -33,17 +35,18 @@ This guide shows you how to generate and use a Postman collection from your Nest
 
 ## 🔧 Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run openapi:generate` | Generate OpenAPI spec file |
-| `npm run openapi:serve` | Build + generate spec |
-| `npm run postman:collection` | Alias for openapi:serve |
+| Script                       | Description                |
+| ---------------------------- | -------------------------- |
+| `npm run openapi:generate`   | Generate OpenAPI spec file |
+| `npm run openapi:serve`      | Build + generate spec      |
+| `npm run postman:collection` | Alias for openapi:serve    |
 
 ## 🎯 What You'll Get
 
 The generated Postman collection includes:
 
 ### 📁 **Authentication Endpoints**
+
 - `GET /auth/info` - Keycloak configuration
 - `GET /auth/health` - Health check
 - `GET /auth/profile` - User profile (requires JWT)
@@ -53,14 +56,17 @@ The generated Postman collection includes:
 - `GET /auth/admin-only` - Admin-only test endpoint
 
 ### 📁 **Food Management** (if implemented)
+
 - Food CRUD operations
 - OpenFoodFacts integration endpoints
 
 ### 📁 **User Management** (if implemented)
+
 - User profile management
 - Dietary preferences
 
 ### 📁 **Health Monitoring**
+
 - Health check endpoints
 - Metrics and monitoring
 
@@ -89,11 +95,13 @@ Create a new request to get a JWT token:
 **Request:** `POST {{keycloakUrl}}/realms/{{realm}}/protocol/openid-connect/token`
 
 **Headers:**
+
 ```
 Content-Type: application/x-www-form-urlencoded
 ```
 
 **Body (x-www-form-urlencoded):**
+
 ```
 grant_type: password
 client_id: {{clientId}}
@@ -102,17 +110,19 @@ password: {{password}}
 ```
 
 **Tests Script (to auto-save token):**
+
 ```javascript
 if (pm.response.code === 200) {
-    const response = pm.response.json();
-    pm.environment.set("accessToken", response.access_token);
-    console.log("Access token saved to environment");
+  const response = pm.response.json();
+  pm.environment.set('accessToken', response.access_token);
+  console.log('Access token saved to environment');
 }
 ```
 
 ### Step 3: Use Token in Protected Endpoints
 
 For protected endpoints, add this header:
+
 ```
 Authorization: Bearer {{accessToken}}
 ```
@@ -122,19 +132,23 @@ Authorization: Bearer {{accessToken}}
 The generated collection includes:
 
 ### ✅ **Pre-configured Authentication**
+
 - Bearer token authentication setup
 - Environment variable placeholders
 
 ### ✅ **Request Examples**
+
 - Sample request bodies
 - Response schemas
 - Parameter descriptions
 
 ### ✅ **Environment Support**
+
 - Development, staging, production servers
 - Configurable base URLs
 
 ### ✅ **Documentation**
+
 - Endpoint descriptions
 - Parameter explanations
 - Response examples
@@ -155,21 +169,21 @@ Add test scripts to validate responses:
 
 ```javascript
 // Test for successful response
-pm.test("Status code is 200", function () {
-    pm.response.to.have.status(200);
+pm.test('Status code is 200', function () {
+  pm.response.to.have.status(200);
 });
 
 // Test response structure
-pm.test("Response has required fields", function () {
-    const jsonData = pm.response.json();
-    pm.expect(jsonData).to.have.property('id');
-    pm.expect(jsonData).to.have.property('email');
+pm.test('Response has required fields', function () {
+  const jsonData = pm.response.json();
+  pm.expect(jsonData).to.have.property('id');
+  pm.expect(jsonData).to.have.property('email');
 });
 
 // Save data for next request
-pm.test("Save user ID", function () {
-    const jsonData = pm.response.json();
-    pm.environment.set("userId", jsonData.id);
+pm.test('Save user ID', function () {
+  const jsonData = pm.response.json();
+  pm.environment.set('userId', jsonData.id);
 });
 ```
 
@@ -178,9 +192,11 @@ pm.test("Save user ID", function () {
 ### Auto-sync with API Changes
 
 1. **During Development:**
+
    ```bash
    npm run start:dev
    ```
+
    Re-import from `http://localhost:3000/api/docs-json`
 
 2. **For CI/CD:**
@@ -235,6 +251,6 @@ Test your setup with these endpoints:
 
 ## 🎉 Success!
 
-You now have a fully functional Postman collection that stays in sync with your API! 
+You now have a fully functional Postman collection that stays in sync with your API!
 
 The collection includes all your endpoints with proper authentication, request examples, and documentation. Happy testing! 🚀

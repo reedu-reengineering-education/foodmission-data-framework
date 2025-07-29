@@ -40,6 +40,7 @@ The framework implements a comprehensive caching and performance optimization sy
 ### Multi-Store Configuration
 
 The cache uses a two-tier approach following NestJS documentation:
+
 - **L1 Cache**: In-memory cache (CacheableMemory) for ultra-fast access
 - **L2 Cache**: Redis for persistence and distributed caching
 
@@ -56,11 +57,11 @@ export class MyService {
 
   async getData(id: string) {
     const cacheKey = this.cache.generateKey('data', id);
-    
+
     return this.cache.getOrSet(
       cacheKey,
       () => this.fetchDataFromDatabase(id),
-      300 // 5 minutes TTL
+      300, // 5 minutes TTL
     );
   }
 }
@@ -75,7 +76,6 @@ import { CacheInterceptor } from '../cache/cache.interceptor';
 @Controller('foods')
 @UseInterceptors(CacheInterceptor)
 export class FoodController {
-  
   @Get()
   @Cacheable('foods:list', 300) // Cache for 5 minutes
   async getFoods() {
@@ -127,11 +127,11 @@ export class MyService {
 
   async updateData(id: string, data: any) {
     await this.dataService.update(id, data);
-    
+
     // Invalidate specific caches
     await this.cacheInvalidation.invalidate('data:update', id, [
       'data:list',
-      'data:count'
+      'data:count',
     ]);
   }
 }
@@ -188,12 +188,14 @@ GET /performance/database/stats
 The following indexes have been added for optimal query performance:
 
 **Foods Table:**
+
 - `name` - For name-based searches
 - `categoryId` - For category filtering
 - `createdAt` - For date-based sorting
 - `(name, categoryId)` - Composite index for combined queries
 
 **Users Table:**
+
 - `email` - For email lookups
 - `createdAt` - For date-based sorting
 
@@ -201,7 +203,7 @@ The following indexes have been added for optimal query performance:
 
 1. **Use indexed fields** in WHERE clauses
 2. **Limit result sets** with LIMIT/OFFSET
-3. **Use specific selects** instead of SELECT *
+3. **Use specific selects** instead of SELECT \*
 4. **Leverage composite indexes** for multi-field queries
 
 ## Configuration
@@ -227,8 +229,11 @@ The cache module follows the exact NestJS documentation pattern:
   imports: [
     CacheModule.registerAsync({
       useFactory: async (configService: ConfigService) => {
-        const redisUrl = configService.get<string>('REDIS_URL', 'redis://localhost:6379');
-        
+        const redisUrl = configService.get<string>(
+          'REDIS_URL',
+          'redis://localhost:6379',
+        );
+
         return {
           stores: [
             new Keyv({
@@ -269,14 +274,14 @@ export class CacheModule {}
 
 ```typescript
 // Good: Hierarchical and descriptive
-'foods:list:category:123:page:1'
-'user:profile:456'
-'search:foods:query:abc123'
+'foods:list:category:123:page:1';
+'user:profile:456';
+'search:foods:query:abc123';
 
 // Bad: Flat and unclear
-'foodslist'
-'user456'
-'search1'
+'foodslist';
+'user456';
+'search1';
 ```
 
 ### Invalidation Strategy
@@ -305,13 +310,14 @@ const stats = await this.cacheService.getStats();
 const result = await this.performanceService.measureQuery(
   'findMany',
   'foods',
-  () => this.prisma.food.findMany()
+  () => this.prisma.food.findMany(),
 );
 ```
 
 ### Logging
 
 The system provides detailed logging for:
+
 - Cache hits/misses
 - Slow queries (>1 second)
 - Cache invalidation events
@@ -339,6 +345,7 @@ The system provides detailed logging for:
 ### Health Checks
 
 The system includes health checks for:
+
 - Redis connection status
 - Cache operation performance
 - Database query performance

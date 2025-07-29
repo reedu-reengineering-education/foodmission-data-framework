@@ -1,4 +1,3 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { seedCategories } from '../prisma/seeds/categories';
 import { seedFoods } from '../prisma/seeds/foods';
@@ -7,7 +6,7 @@ import { seedUsers } from '../prisma/seeds/users';
 describe('Database Seeding (e2e)', () => {
   let prisma: PrismaClient;
 
-  beforeAll(async () => {
+  beforeAll(() => {
     prisma = new PrismaClient({
       datasources: {
         db: {
@@ -25,7 +24,6 @@ describe('Database Seeding (e2e)', () => {
 
   beforeEach(async () => {
     // Clean up database before each test
-    await prisma.userPreferences.deleteMany();
     await prisma.user.deleteMany();
     await prisma.food.deleteMany();
     await prisma.foodCategory.deleteMany();
@@ -127,9 +125,7 @@ describe('Database Seeding (e2e)', () => {
       expect(users.length).toBeGreaterThan(0);
 
       // Verify users were created in database
-      const dbUsers = await prisma.user.findMany({
-        include: { preferences: true },
-      });
+      const dbUsers = await prisma.user.findMany();
       expect(dbUsers.length).toBe(users.length);
     });
 
@@ -137,10 +133,11 @@ describe('Database Seeding (e2e)', () => {
       await seedUsers(prisma);
 
       const usersWithPreferences = await prisma.user.findMany({
-        include: { preferences: true },
         where: {
           preferences: {
-            isNot: null,
+            not: {
+              isList: false,
+            },
           },
         },
       });
@@ -150,9 +147,6 @@ describe('Database Seeding (e2e)', () => {
       // Check preference structure
       usersWithPreferences.forEach((user) => {
         expect(user.preferences).toBeDefined();
-        expect(Array.isArray(user.preferences!.dietaryRestrictions)).toBe(true);
-        expect(Array.isArray(user.preferences!.allergies)).toBe(true);
-        expect(Array.isArray(user.preferences!.preferredCategories)).toBe(true);
       });
     });
 

@@ -2,9 +2,9 @@ name: Security Scanning
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
     # Run security scans daily at 2 AM UTC
     - cron: '0 2 * * *'
@@ -17,7 +17,7 @@ jobs:
   dependency-scan:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
     name: Container Security Scan
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -84,7 +84,7 @@ jobs:
   secret-scan:
     name: Secret Detection
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -102,7 +102,7 @@ jobs:
   license-scan:
     name: License Compliance
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -123,7 +123,7 @@ jobs:
   sast-scan:
     name: Static Application Security Testing
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -148,7 +148,7 @@ jobs:
             p/secrets
             p/owasp-top-ten
             p/nodejs
-          generateSarif: "1"
+          generateSarif: '1'
 
       - name: Upload Semgrep results
         uses: github/codeql-action/upload-sarif@v3

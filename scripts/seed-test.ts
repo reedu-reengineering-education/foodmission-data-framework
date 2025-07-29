@@ -2,7 +2,7 @@
 
 /**
  * Test Environment Seeding Script
- * 
+ *
  * This script seeds the database with minimal, predictable data
  * specifically designed for automated testing. Data is consistent
  * and deterministic to ensure reliable test execution.
@@ -23,8 +23,13 @@ async function seedTestData() {
       { name: 'Test-Vegetables', description: 'Test vegetables category' },
       { name: 'Test-Proteins', description: 'Test proteins category' },
     ];
-    
-    const categories: Array<{ id: string; name: string; description: string | null; createdAt: Date }> = [];
+
+    const categories: Array<{
+      id: string;
+      name: string;
+      description: string | null;
+      createdAt: Date;
+    }> = [];
     for (const cat of testCategories) {
       const category = await prisma.foodCategory.upsert({
         where: { name: cat.name },
@@ -33,7 +38,7 @@ async function seedTestData() {
       });
       categories.push(category);
     }
-    
+
     // Create minimal, predictable foods for testing
     const testFoods = [
       {
@@ -55,9 +60,9 @@ async function seedTestData() {
         barcode: 'TEST003',
       },
     ];
-    
-    const categoryMap = new Map(categories.map(cat => [cat.name, cat.id]));
-    
+
+    const categoryMap = new Map(categories.map((cat) => [cat.name, cat.id]));
+
     for (const foodInfo of testFoods) {
       const categoryId = categoryMap.get(foodInfo.categoryName);
       if (categoryId) {
@@ -78,7 +83,7 @@ async function seedTestData() {
         });
       }
     }
-    
+
     // Create predictable test users
     const testUsers = [
       {
@@ -104,7 +109,7 @@ async function seedTestData() {
         },
       },
     ];
-    
+
     for (const userInfo of testUsers) {
       const user = await prisma.user.upsert({
         where: { keycloakId: userInfo.keycloakId },
@@ -120,7 +125,7 @@ async function seedTestData() {
           lastName: userInfo.lastName,
         },
       });
-      
+
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -128,10 +133,9 @@ async function seedTestData() {
         },
       });
     }
-    
+
     console.log('✅ Test seeding completed!');
     console.log('🧪 Test environment is ready for automated testing');
-    
   } catch (error) {
     console.error('❌ Test seeding failed:', error);
     process.exit(1);

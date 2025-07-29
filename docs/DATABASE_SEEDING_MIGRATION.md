@@ -5,6 +5,7 @@ This document provides comprehensive information about the database seeding and 
 ## Overview
 
 The FOODMISSION Data Framework includes a robust set of tools for:
+
 - Database seeding with sample data for different environments
 - Data migration utilities for schema changes
 - Database backup and restore operations
@@ -39,6 +40,7 @@ npm run db:seed
 ```
 
 This creates:
+
 - 10 food categories (Fruits, Vegetables, Dairy, etc.)
 - 20+ sample food items with barcodes
 - 5 sample users with preferences
@@ -53,6 +55,7 @@ npm run db:seed:dev
 ```
 
 Additional features:
+
 - Extended food catalog with edge cases
 - Test users with various preference combinations
 - Foods with and without barcodes/OpenFoodFacts IDs
@@ -68,6 +71,7 @@ npm run db:seed:test
 ```
 
 Features:
+
 - Minimal, consistent data set
 - Predictable IDs and values
 - Designed for automated test reliability
@@ -183,6 +187,7 @@ npm run dev:reset
 ### Food Categories
 
 Standard categories included in all environments:
+
 - Fruits
 - Vegetables
 - Dairy
@@ -197,6 +202,7 @@ Standard categories included in all environments:
 ### Sample Foods
 
 Each environment includes foods with:
+
 - Unique names and descriptions
 - Category associations
 - Barcodes (where applicable)
@@ -206,6 +212,7 @@ Each environment includes foods with:
 ### User Data
 
 Sample users include:
+
 - Keycloak integration IDs
 - Email addresses and names
 - Dietary restrictions (vegetarian, vegan, keto, etc.)
@@ -240,6 +247,7 @@ Sample users include:
 ### Common Issues
 
 **Seeding fails with constraint errors:**
+
 ```bash
 # Reset database and try again
 npm run db:migrate:reset
@@ -247,12 +255,14 @@ npm run db:seed
 ```
 
 **Backup fails with permission errors:**
+
 ```bash
 # Check PostgreSQL permissions
 # Ensure user has backup privileges
 ```
 
 **Restore fails with version mismatch:**
+
 ```bash
 # Use schema-only backup for structure
 # Then seed with appropriate data
@@ -261,6 +271,7 @@ npm run db:seed
 ### Debugging
 
 Enable verbose output:
+
 ```bash
 # For seeding
 DEBUG=* npm run db:seed:dev

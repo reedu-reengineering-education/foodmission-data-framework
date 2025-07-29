@@ -2,7 +2,7 @@
 
 /**
  * Database Migration Utilities
- * 
+ *
  * This module provides utilities for handling database schema changes,
  * data migrations, and version management beyond Prisma's built-in
  * migration system.
@@ -24,11 +24,11 @@ export interface MigrationScript {
 
 export class MigrationManager {
   private migrations: MigrationScript[] = [];
-  
+
   constructor() {
     this.loadMigrations();
   }
-  
+
   private loadMigrations() {
     // Example migration scripts - these would be loaded from files in a real implementation
     this.migrations = [
@@ -56,22 +56,24 @@ export class MigrationManager {
           await this.enhanceFoodDescriptions(prisma);
         },
         down: async (prisma: PrismaClient) => {
-          console.log('Rolling back migration: update_food_descriptions (down)');
+          console.log(
+            'Rolling back migration: update_food_descriptions (down)',
+          );
           await this.revertFoodDescriptions(prisma);
         },
       },
     ];
   }
-  
+
   async runMigration(version: string) {
-    const migration = this.migrations.find(m => m.version === version);
+    const migration = this.migrations.find((m) => m.version === version);
     if (!migration) {
       throw new Error(`Migration ${version} not found`);
     }
-    
+
     console.log(`🔄 Running migration ${version}: ${migration.name}`);
     console.log(`📝 ${migration.description}`);
-    
+
     try {
       await migration.up(prisma);
       await this.recordMigration(migration);
@@ -81,15 +83,15 @@ export class MigrationManager {
       throw error;
     }
   }
-  
+
   async rollbackMigration(version: string) {
-    const migration = this.migrations.find(m => m.version === version);
+    const migration = this.migrations.find((m) => m.version === version);
     if (!migration) {
       throw new Error(`Migration ${version} not found`);
     }
-    
+
     console.log(`⏪ Rolling back migration ${version}: ${migration.name}`);
-    
+
     try {
       await migration.down(prisma);
       await this.removeMigrationRecord(version);
@@ -99,31 +101,33 @@ export class MigrationManager {
       throw error;
     }
   }
-  
+
   async listMigrations() {
     console.log('📋 Available migrations:');
-    this.migrations.forEach(migration => {
-      console.log(`  ${migration.version}: ${migration.name} - ${migration.description}`);
+    this.migrations.forEach((migration) => {
+      console.log(
+        `  ${migration.version}: ${migration.name} - ${migration.description}`,
+      );
     });
   }
-  
+
   private async recordMigration(migration: MigrationScript) {
     // In a real implementation, this would record the migration in a tracking table
     console.log(`📝 Recording migration ${migration.version} as completed`);
   }
-  
+
   private async removeMigrationRecord(version: string) {
     // In a real implementation, this would remove the migration record
     console.log(`🗑️  Removing migration record for ${version}`);
   }
-  
+
   // Example migration methods
   private async addSampleCategories(prisma: PrismaClient) {
     const sampleCategories = [
       { name: 'Organic', description: 'Organic and natural food products' },
       { name: 'Gluten-Free', description: 'Gluten-free food products' },
     ];
-    
+
     for (const category of sampleCategories) {
       await prisma.foodCategory.upsert({
         where: { name: category.name },
@@ -132,7 +136,7 @@ export class MigrationManager {
       });
     }
   }
-  
+
   private async removeSampleCategories(prisma: PrismaClient) {
     await prisma.foodCategory.deleteMany({
       where: {
@@ -142,10 +146,10 @@ export class MigrationManager {
       },
     });
   }
-  
+
   private async enhanceFoodDescriptions(prisma: PrismaClient) {
     const foods = await prisma.food.findMany();
-    
+
     for (const food of foods) {
       if (food.description && !food.description.includes('Enhanced:')) {
         await prisma.food.update({
@@ -157,7 +161,7 @@ export class MigrationManager {
       }
     }
   }
-  
+
   private async revertFoodDescriptions(prisma: PrismaClient) {
     const foods = await prisma.food.findMany({
       where: {
@@ -166,7 +170,7 @@ export class MigrationManager {
         },
       },
     });
-    
+
     for (const food of foods) {
       if (food.description) {
         await prisma.food.update({
@@ -185,9 +189,9 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const version = args[1];
-  
+
   const migrationManager = new MigrationManager();
-  
+
   try {
     switch (command) {
       case 'list':
@@ -209,9 +213,15 @@ async function main() {
         break;
       default:
         console.log('📖 Usage:');
-        console.log('  npm run migrate list                 # List available migrations');
-        console.log('  npm run migrate run <version>        # Run a specific migration');
-        console.log('  npm run migrate rollback <version>   # Rollback a specific migration');
+        console.log(
+          '  npm run migrate list                 # List available migrations',
+        );
+        console.log(
+          '  npm run migrate run <version>        # Run a specific migration',
+        );
+        console.log(
+          '  npm run migrate rollback <version>   # Rollback a specific migration',
+        );
         break;
     }
   } catch (error) {

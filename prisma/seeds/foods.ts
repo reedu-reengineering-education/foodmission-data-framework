@@ -34,7 +34,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Fruits',
     barcode: '1234567890126',
   },
-  
+
   // Vegetables
   {
     name: 'Carrot',
@@ -60,7 +60,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Vegetables',
     barcode: '2234567890126',
   },
-  
+
   // Dairy
   {
     name: 'Whole Milk',
@@ -80,7 +80,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Dairy',
     barcode: '3234567890125',
   },
-  
+
   // Grains
   {
     name: 'White Bread',
@@ -100,7 +100,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Grains',
     barcode: '4234567890125',
   },
-  
+
   // Proteins
   {
     name: 'Chicken Breast',
@@ -126,7 +126,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Proteins',
     barcode: '5234567890126',
   },
-  
+
   // Beverages
   {
     name: 'Orange Juice',
@@ -140,7 +140,7 @@ export const foodData: FoodSeedData[] = [
     categoryName: 'Beverages',
     barcode: '6234567890124',
   },
-  
+
   // Snacks
   {
     name: 'Almonds',
@@ -158,23 +158,27 @@ export const foodData: FoodSeedData[] = [
 
 export async function seedFoods(prisma: PrismaClient) {
   console.log('🍎 Seeding food items...');
-  
+
   // Get all categories first
   const categories = await prisma.foodCategory.findMany();
-  const categoryMap = new Map(categories.map(cat => [cat.name, cat.id]));
-  
+  const categoryMap = new Map(categories.map((cat) => [cat.name, cat.id]));
+
   const foods: any[] = [];
-  
+
   for (const foodInfo of foodData) {
     const categoryId = categoryMap.get(foodInfo.categoryName);
     if (!categoryId) {
-      console.warn(`⚠️  Category '${foodInfo.categoryName}' not found for food '${foodInfo.name}'`);
+      console.warn(
+        `⚠️  Category '${foodInfo.categoryName}' not found for food '${foodInfo.name}'`,
+      );
       continue;
     }
-    
+
     const food = await prisma.food.upsert({
-      where: { 
-        barcode: foodInfo.barcode || `generated-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}` 
+      where: {
+        barcode:
+          foodInfo.barcode ||
+          `generated-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`,
       },
       update: {
         name: foodInfo.name,
@@ -193,7 +197,7 @@ export async function seedFoods(prisma: PrismaClient) {
     });
     foods.push(food);
   }
-  
+
   console.log(`✅ Created/updated ${foods.length} food items`);
   return foods;
 }

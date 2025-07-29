@@ -26,7 +26,7 @@ export class CacheService {
       } else {
         this.logger.debug(`Cache miss for key: ${key}`);
       }
-      return value;
+      return value as T;
     } catch (error) {
       this.logger.error(`Cache get error for key ${key}:`, error);
       return undefined;
@@ -78,7 +78,7 @@ export class CacheService {
    */
   async reset(): Promise<void> {
     try {
-      await this.cacheManager.reset();
+      await this.cacheManager.clear();
       this.logger.debug('Cache cleared');
     } catch (error) {
       this.logger.error('Cache reset error:', error);

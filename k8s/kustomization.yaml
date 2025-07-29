@@ -7,15 +7,15 @@ metadata:
 
 # Resources to include in the deployment
 resources:
-- namespace.yaml
-- configmap.yaml
-- secrets.yaml
-- rbac.yaml
-- deployment.yaml
-- service.yaml
-- ingress.yaml
-- hpa.yaml
-- pdb.yaml
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - rbac.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+  - pdb.yaml
 
 # Common labels applied to all resources
 commonLabels:
@@ -25,35 +25,35 @@ commonLabels:
 
 # Common annotations
 commonAnnotations:
-  deployment.kubernetes.io/revision: "1"
+  deployment.kubernetes.io/revision: '1'
 
 # Namespace for all resources
 namespace: foodmission
 
 # Images to replace
 images:
-- name: foodmission/data-framework
-  newTag: latest
+  - name: foodmission/data-framework
+    newTag: latest
 
 # ConfigMap generator for additional configuration
 configMapGenerator:
-- name: foodmission-deployment-config
-  literals:
-  - DEPLOYMENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  - DEPLOYMENT_VERSION=0.0.1
-  - KUBERNETES_NAMESPACE=foodmission
+  - name: foodmission-deployment-config
+    literals:
+      - DEPLOYMENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+      - DEPLOYMENT_VERSION=0.0.1
+      - KUBERNETES_NAMESPACE=foodmission
 
 # Secret generator for additional secrets (if needed)
 secretGenerator:
-- name: foodmission-deployment-secrets
-  literals:
-  - DEPLOYMENT_KEY=changeme
+  - name: foodmission-deployment-secrets
+    literals:
+      - DEPLOYMENT_KEY=changeme
 
 # Patches for different environments
 patchesStrategicMerge:
-- patches/production.yaml
+  - patches/production.yaml
 
 # Replicas for different environments
 replicas:
-- name: foodmission-api
-  count: 3
+  - name: foodmission-api
+    count: 3

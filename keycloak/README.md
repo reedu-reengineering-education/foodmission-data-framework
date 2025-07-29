@@ -38,12 +38,14 @@ npm run start:dev
 The realm comes with three test users:
 
 ### Admin User
+
 - **Username**: `admin`
 - **Password**: `admin123`
 - **Email**: `admin@foodmission.dev`
 - **Roles**: `admin`, `user`
 
 ### Developer User
+
 - **Username**: `developer`
 - **Password**: `dev123`
 - **Email**: `dev@foodmission.dev`
@@ -52,14 +54,15 @@ The realm comes with three test users:
 ## 🔧 Pre-configured Client
 
 ### FOODMISSION API Client
+
 - **Client ID**: `foodmission-api`
 - **Client Secret**: `foodmission-dev-secret-2025` (already in your .env)
-- **Valid Redirect URIs**: 
+- **Valid Redirect URIs**:
   - `http://localhost:3000/*`
   - `http://localhost:3001/*`
   - `http://127.0.0.1:3000/*`
   - `http://127.0.0.1:3001/*`
-- **Web Origins**: 
+- **Web Origins**:
   - `http://localhost:3000`
   - `http://localhost:3001`
   - `http://127.0.0.1:3000`
@@ -68,19 +71,23 @@ The realm comes with three test users:
 ## 🧪 Testing Authentication
 
 ### 1. Get Auth Configuration
+
 ```bash
 curl http://localhost:3000/api/v1/auth/info
 ```
 
 ### 2. Test Stateless Authentication
+
 1. Use the configuration to set up frontend authentication
 2. Authenticate directly with Keycloak using OAuth2/OIDC
 3. Use JWT tokens for API requests:
+
 ```bash
 curl -H "Authorization: Bearer <jwt-token>" http://localhost:3000/api/v1/auth/profile
 ```
 
 ### 3. Test Protected Endpoints
+
 ```bash
 # Get user profile (requires authentication)
 curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -94,22 +101,26 @@ curl -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
 ## 📋 What's Included in the Configuration
 
 ### Realm Settings
+
 - **Realm Name**: `foodmission`
 - **Display Name**: `FOODMISSION`
 - **Token Lifespans**: Configured for development
 - **Security Settings**: Basic security enabled
 
 ### Roles
+
 - `admin`: Administrator role with full access
 - `user`: Regular user role (default)
 
 ### Client Configuration
+
 - **Authentication Flow**: Standard flow enabled
 - **Direct Access Grants**: Enabled for testing
 - **Service Accounts**: Disabled
 - **Protocol Mappers**: Username, email, names, and roles
 
 ### Security Features
+
 - **Brute Force Protection**: Disabled for development
 - **Email Verification**: Disabled for development
 - **Remember Me**: Disabled
@@ -141,7 +152,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - keycloak_data:/opt/keycloak/data
 
@@ -150,6 +161,7 @@ volumes:
 ```
 
 Run with:
+
 ```bash
 docker-compose -f docker-compose.keycloak.yml up -d
 ```

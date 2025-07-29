@@ -7,16 +7,16 @@ metadata:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: api
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
-    prometheus.io/path: "/metrics"
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '3000'
+    prometheus.io/path: '/metrics'
 spec:
   type: ClusterIP
   ports:
-  - name: http
-    port: 80
-    targetPort: http
-    protocol: TCP
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
   selector:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: api
@@ -35,10 +35,10 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-  - name: http
-    port: 3000
-    targetPort: http
-    protocol: TCP
+    - name: http
+      port: 3000
+      targetPort: http
+      protocol: TCP
   selector:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: api

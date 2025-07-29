@@ -9,12 +9,13 @@ import { FoodRepository } from '../src/food/repositories/food.repository';
 import { FoodCategoryRepository } from '../src/food/repositories/food-category.repository';
 import { CreateFoodDto } from '../src/food/dto/create-food.dto';
 import { UpdateFoodDto } from '../src/food/dto/update-food.dto';
+import { FoodCategory } from '@prisma/client';
 
 describe('Food Integration Tests', () => {
   let prisma: PrismaService;
   let foodRepository: FoodRepository;
   let categoryRepository: FoodCategoryRepository;
-  let testCategory: any;
+  let testCategory: FoodCategory;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -114,9 +115,8 @@ describe('Food Integration Tests', () => {
 
         expect(found).toBeDefined();
         expect(found!.id).toBe(created.id);
-        expect(found!.category).toBeDefined();
-        expect(found!.category.id).toBe(testCategory.id);
-        expect(found!.category.name).toBe(testCategory.name);
+        expect(found!.categoryId).toBeDefined();
+        expect(found!.categoryId).toBe(testCategory.id);
       });
 
       it('should return null for non-existent id', async () => {
@@ -140,7 +140,7 @@ describe('Food Integration Tests', () => {
 
         expect(found).toBeDefined();
         expect(found!.barcode).toBe(barcode);
-        expect(found!.category).toBeDefined();
+        expect(found!.categoryId).toBeDefined();
       });
 
       it('should return null for non-existent barcode', async () => {
@@ -363,6 +363,7 @@ describe('Food Integration Tests', () => {
           // Force an error
           throw new Error('Forced transaction error');
         });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Expected error
       }

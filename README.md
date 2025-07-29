@@ -1,7 +1,9 @@
 # FOODMISSION Data Framework
 
 [![CI](https://github.com/reedu-reengineering-education/foodmission-data-framework/workflows/CI/badge.svg)](https://github.com/reedu-reengineering-education/foodmission-data-framework/actions)
+
 <!-- [![Coverage](https://img.shields.io/badge/coverage-85%25-green.svg)](https://github.com/reedu-reengineering-education/foodmission-data-framework) -->
+
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
 A comprehensive, production-ready backend system for managing food-related data built with NestJS, Prisma, and PostgreSQL. The system provides secure API endpoints, OpenFoodFacts integration, user authentication via Keycloak, and is fully containerized for consistent deployment across environments.
@@ -33,7 +35,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 
 ## 🔧 Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **Docker** and Docker Compose
 - **npm** or **yarn**
 - **Git**
@@ -142,12 +144,14 @@ npm run start:dev
 ### Available Scripts
 
 #### Development
+
 - `npm run start:dev` - Start in development mode with hot reload
 - `npm run start:debug` - Start in debug mode
 - `npm run dev:setup` - Set up development environment
 - `npm run dev:reset` - Reset development database
 
 #### Database
+
 - `npm run db:generate` - Generate Prisma client
 - `npm run db:migrate` - Create and apply new migration
 - `npm run db:migrate:deploy` - Apply existing migrations
@@ -158,6 +162,7 @@ npm run start:dev
 - `npm run db:restore` - Restore database from backup
 
 #### Testing
+
 - `npm run test` - Run unit tests
 - `npm run test:unit` - Run unit tests only
 - `npm run test:integration` - Run integration tests
@@ -166,12 +171,14 @@ npm run start:dev
 - `npm run ci:test` - Run all tests in CI mode
 
 #### Build & Deploy
+
 - `npm run build` - Build the application
 - `npm run start:prod` - Start in production mode
 - `npm run docker:up` - Start Docker services
 - `npm run docker:down` - Stop Docker services
 
 #### Code Quality
+
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 
@@ -180,17 +187,20 @@ npm run start:dev
 ### Swagger/OpenAPI
 
 The API documentation is automatically generated and available at:
+
 - **Development**: http://localhost:3000/api/docs
 - **Production**: https://your-domain.com/api/docs
 
 ### API Endpoints
 
 #### Authentication
+
 - `POST /api/v1/auth/login` - User login
 - `POST /api/v1/auth/logout` - User logout
 - `GET /api/v1/auth/profile` - Get user profile
 
 #### Food Management
+
 - `GET /api/v1/foods` - List foods with pagination and filtering
 - `POST /api/v1/foods` - Create new food item
 - `GET /api/v1/foods/:id` - Get food by ID
@@ -200,16 +210,19 @@ The API documentation is automatically generated and available at:
 - `POST /api/v1/foods/import/openfoodfacts` - Import from OpenFoodFacts
 
 #### Categories
+
 - `GET /api/v1/categories` - List food categories
 - `POST /api/v1/categories` - Create new category
 
 #### User Management
+
 - `GET /api/v1/users/profile` - Get user profile
 - `PUT /api/v1/users/profile` - Update user profile
 - `GET /api/v1/users/preferences` - Get user preferences
 - `PUT /api/v1/users/preferences` - Update user preferences
 
 #### Health & Monitoring
+
 - `GET /api/v1/health` - Health check
 - `GET /api/v1/health/readiness` - Readiness probe
 - `GET /api/v1/health/liveness` - Liveness probe
@@ -283,6 +296,7 @@ npm run ci:test
 ### Test Coverage
 
 The project maintains high test coverage:
+
 - **Unit Tests**: 85%+ coverage
 - **Integration Tests**: Critical paths covered
 - **E2E Tests**: Main user workflows covered
@@ -290,6 +304,7 @@ The project maintains high test coverage:
 ### Writing Tests
 
 Tests are located in:
+
 - `src/**/*.spec.ts` - Unit tests
 - `test/**/*.integration.spec.ts` - Integration tests
 - `test/**/*.e2e-spec.ts` - End-to-end tests
@@ -358,18 +373,21 @@ The project uses GitHub Actions for automated CI/CD:
 ### Environment Configuration
 
 #### Development
+
 - Local database and Redis
 - Hot reloading enabled
 - Debug logging
 - Mock external services
 
 #### Staging
+
 - Shared database instance
 - Production-like configuration
 - Integration with external services
 - Performance monitoring
 
 #### Production
+
 - High-availability database cluster
 - Redis cluster for caching
 - Full monitoring and alerting

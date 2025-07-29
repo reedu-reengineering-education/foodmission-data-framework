@@ -15,11 +15,13 @@ Add these scripts to your `package.json` for easy OpenAPI generation:
 ## Usage
 
 ### Generate OpenAPI spec file:
+
 ```bash
 npm run openapi:generate
 ```
 
 ### Build and generate (recommended):
+
 ```bash
 npm run openapi:serve
 ```

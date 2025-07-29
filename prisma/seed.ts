@@ -12,20 +12,19 @@ async function main() {
   try {
     // Seed categories first (required for foods)
     const categories = await seedCategories(prisma);
-    
+
     // Seed foods (depends on categories)
     const foods = await seedFoods(prisma);
-    
+
     // Seed users and preferences
     const users = await seedUsers(prisma);
-    
+
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
     console.log(`   - Categories: ${categories.length}`);
     console.log(`   - Foods: ${foods.length}`);
     console.log(`   - Users: ${users.length}`);
-    
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;
@@ -37,6 +36,6 @@ main()
     console.error('Error during seeding:', e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    void prisma.$disconnect();
   });

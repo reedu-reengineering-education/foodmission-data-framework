@@ -77,12 +77,14 @@ The following services must be available:
 Configuration is managed through ConfigMaps and Secrets:
 
 #### ConfigMap (`configmap.yaml`)
+
 - Application settings
 - Database connection parameters
 - External service URLs
 - Feature flags
 
 #### Secrets (`secrets.yaml`)
+
 - Database passwords
 - JWT secrets
 - API keys
@@ -96,8 +98,8 @@ Update the image reference in `kustomization.yaml`:
 
 ```yaml
 images:
-- name: foodmission/data-framework
-  newTag: v1.0.0  # Update to your desired version
+  - name: foodmission/data-framework
+    newTag: v1.0.0 # Update to your desired version
 ```
 
 ### Ingress Configuration
@@ -106,7 +108,7 @@ Update the hostname in `ingress.yaml`:
 
 ```yaml
 rules:
-- host: api.your-domain.com  # Update to your domain
+  - host: api.your-domain.com # Update to your domain
 ```
 
 ## Deployment
@@ -154,11 +156,13 @@ kubectl rollout status deployment/foodmission-api -n foodmission
 ### Horizontal Pod Autoscaler (HPA)
 
 The application automatically scales based on:
+
 - CPU utilization (target: 70%)
 - Memory utilization (target: 80%)
 - Custom metrics (requests per second)
 
 Configuration:
+
 - **Min replicas**: 3
 - **Max replicas**: 10
 - **Scale down**: Conservative (5 minutes stabilization)
@@ -187,6 +191,7 @@ The application provides three health check endpoints:
 ### Prometheus Metrics
 
 Metrics are exposed at `/metrics` endpoint and include:
+
 - HTTP request metrics
 - Database connection metrics
 - Custom business metrics
@@ -195,6 +200,7 @@ Metrics are exposed at `/metrics` endpoint and include:
 ### Alerts
 
 Prometheus alerts are configured for:
+
 - High error rates (>10% 5xx responses)
 - High latency (>1s 95th percentile)
 - Application downtime
@@ -205,12 +211,14 @@ Prometheus alerts are configured for:
 ### Network Policies
 
 Network policies restrict traffic to:
+
 - **Ingress**: Only from ingress controller and monitoring
 - **Egress**: Only to required services (database, cache, external APIs)
 
 ### RBAC
 
 Service account with minimal permissions:
+
 - Read ConfigMaps and Secrets
 - Read Pods for health checks
 - Read Services for service discovery
@@ -227,6 +235,7 @@ Service account with minimal permissions:
 ### Common Issues
 
 #### Pods not starting
+
 ```bash
 # Check pod status
 kubectl get pods -n foodmission
@@ -239,6 +248,7 @@ kubectl describe pod <pod-name> -n foodmission
 ```
 
 #### Database connection issues
+
 ```bash
 # Check database connectivity
 kubectl exec -it deployment/foodmission-api -n foodmission -- nc -zv postgres-service 5432
@@ -248,6 +258,7 @@ kubectl get secret foodmission-secrets -n foodmission -o yaml
 ```
 
 #### Ingress not working
+
 ```bash
 # Check ingress status
 kubectl get ingress -n foodmission
@@ -284,6 +295,7 @@ kubectl get events -n foodmission --sort-by='.lastTimestamp'
 ### Backup
 
 Ensure regular backups of:
+
 - Database (PostgreSQL)
 - Configuration (ConfigMaps and Secrets)
 - Persistent volumes (if any)
@@ -291,6 +303,7 @@ Ensure regular backups of:
 ### Monitoring
 
 Regular monitoring should include:
+
 - Application metrics and alerts
 - Resource usage trends
 - Error rates and latency
@@ -299,18 +312,21 @@ Regular monitoring should include:
 ## Environment-Specific Configurations
 
 ### Development
+
 - Single replica
 - Relaxed resource limits
 - Debug logging enabled
 - Development ingress hostname
 
 ### Staging
+
 - 2 replicas
 - Production-like resources
 - Staging database
 - Staging ingress hostname
 
 ### Production
+
 - 3+ replicas with HPA
 - Strict resource limits
 - Production database
@@ -320,6 +336,7 @@ Regular monitoring should include:
 ## Support
 
 For issues and questions:
+
 1. Check application logs
 2. Review Kubernetes events
 3. Consult monitoring dashboards

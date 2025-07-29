@@ -7,16 +7,16 @@ metadata:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: metrics
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
-    prometheus.io/path: "/metrics"
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '3000'
+    prometheus.io/path: '/metrics'
 spec:
   type: ClusterIP
   ports:
-  - name: metrics
-    port: 3000
-    targetPort: http
-    protocol: TCP
+    - name: metrics
+      port: 3000
+      targetPort: http
+      protocol: TCP
   selector:
     app.kubernetes.io/name: foodmission-data-framework
     app.kubernetes.io/component: api
@@ -36,11 +36,11 @@ spec:
       app.kubernetes.io/name: foodmission-data-framework
       app.kubernetes.io/component: metrics
   endpoints:
-  - port: metrics
-    path: /metrics
-    interval: 30s
-    scrapeTimeout: 10s
-    honorLabels: true
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      honorLabels: true
 
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -53,49 +53,49 @@ metadata:
     app.kubernetes.io/component: alerts
 spec:
   groups:
-  - name: foodmission-api.rules
-    rules:
-    - alert: FOODMISSIONAPIHighErrorRate
-      expr: rate(http_requests_total{job="foodmission-api-metrics",status=~"5.."}[5m]) > 0.1
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "High error rate detected for FOODMISSION API"
-        description: "Error rate is {{ $value }} errors per second"
-    
-    - alert: FOODMISSIONAPIHighLatency
-      expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="foodmission-api-metrics"}[5m])) > 1
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "High latency detected for FOODMISSION API"
-        description: "95th percentile latency is {{ $value }} seconds"
-    
-    - alert: FOODMISSIONAPIDown
-      expr: up{job="foodmission-api-metrics"} == 0
-      for: 1m
-      labels:
-        severity: critical
-      annotations:
-        summary: "FOODMISSION API is down"
-        description: "FOODMISSION API has been down for more than 1 minute"
-    
-    - alert: FOODMISSIONAPIHighMemoryUsage
-      expr: container_memory_usage_bytes{pod=~"foodmission-api-.*"} / container_spec_memory_limit_bytes > 0.9
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "High memory usage for FOODMISSION API"
-        description: "Memory usage is {{ $value | humanizePercentage }} of limit"
-    
-    - alert: FOODMISSIONAPIHighCPUUsage
-      expr: rate(container_cpu_usage_seconds_total{pod=~"foodmission-api-.*"}[5m]) / container_spec_cpu_quota * 100 > 80
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "High CPU usage for FOODMISSION API"
-        description: "CPU usage is {{ $value }}% of limit"
+    - name: foodmission-api.rules
+      rules:
+        - alert: FOODMISSIONAPIHighErrorRate
+          expr: rate(http_requests_total{job="foodmission-api-metrics",status=~"5.."}[5m]) > 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High error rate detected for FOODMISSION API'
+            description: 'Error rate is {{ $value }} errors per second'
+
+        - alert: FOODMISSIONAPIHighLatency
+          expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="foodmission-api-metrics"}[5m])) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High latency detected for FOODMISSION API'
+            description: '95th percentile latency is {{ $value }} seconds'
+
+        - alert: FOODMISSIONAPIDown
+          expr: up{job="foodmission-api-metrics"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: 'FOODMISSION API is down'
+            description: 'FOODMISSION API has been down for more than 1 minute'
+
+        - alert: FOODMISSIONAPIHighMemoryUsage
+          expr: container_memory_usage_bytes{pod=~"foodmission-api-.*"} / container_spec_memory_limit_bytes > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High memory usage for FOODMISSION API'
+            description: 'Memory usage is {{ $value | humanizePercentage }} of limit'
+
+        - alert: FOODMISSIONAPIHighCPUUsage
+          expr: rate(container_cpu_usage_seconds_total{pod=~"foodmission-api-.*"}[5m]) / container_spec_cpu_quota * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: 'High CPU usage for FOODMISSION API'
+            description: 'CPU usage is {{ $value }}% of limit'

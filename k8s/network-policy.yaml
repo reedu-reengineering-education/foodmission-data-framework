@@ -12,80 +12,80 @@ spec:
       app.kubernetes.io/name: foodmission-data-framework
       app.kubernetes.io/component: api
   policyTypes:
-  - Ingress
-  - Egress
-  
+    - Ingress
+    - Egress
+
   ingress:
-  # Allow ingress from ingress controller
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: ingress-nginx
-    ports:
-    - protocol: TCP
-      port: 3000
-  
-  # Allow ingress from monitoring namespace
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: monitoring
-    ports:
-    - protocol: TCP
-      port: 3000
-  
-  # Allow ingress from same namespace (for service discovery)
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: foodmission
-    ports:
-    - protocol: TCP
-      port: 3000
-  
+    # Allow ingress from ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+
+    # Allow ingress from monitoring namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+      ports:
+        - protocol: TCP
+          port: 3000
+
+    # Allow ingress from same namespace (for service discovery)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: foodmission
+      ports:
+        - protocol: TCP
+          port: 3000
+
   egress:
-  # Allow egress to DNS
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-  
-  # Allow egress to PostgreSQL
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: database
-    ports:
-    - protocol: TCP
-      port: 5432
-  
-  # Allow egress to Redis
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: cache
-    ports:
-    - protocol: TCP
-      port: 6379
-  
-  # Allow egress to Keycloak
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: auth
-    ports:
-    - protocol: TCP
-      port: 8080
-  
-  # Allow egress to external APIs (OpenFoodFacts)
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 80
-    - protocol: TCP
-      port: 443
+    # Allow egress to DNS
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+    # Allow egress to PostgreSQL
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: database
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Allow egress to Redis
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: cache
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow egress to Keycloak
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              name: auth
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Allow egress to external APIs (OpenFoodFacts)
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
 
 ---
 # Network policy for database access
@@ -102,15 +102,15 @@ spec:
     matchLabels:
       app: postgres
   policyTypes:
-  - Ingress
-  
+    - Ingress
+
   ingress:
-  # Allow ingress from API pods only
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: foodmission-data-framework
-          app.kubernetes.io/component: api
-    ports:
-    - protocol: TCP
-      port: 5432
+    # Allow ingress from API pods only
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: foodmission-data-framework
+              app.kubernetes.io/component: api
+      ports:
+        - protocol: TCP
+          port: 5432
