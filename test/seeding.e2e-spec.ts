@@ -23,10 +23,15 @@ describe('Database Seeding (e2e)', () => {
   });
 
   beforeEach(async () => {
-    // Clean up database before each test
-    await prisma.user.deleteMany();
-    await prisma.food.deleteMany();
-    await prisma.foodCategory.deleteMany();
+    // Clean up database before each test in the correct order
+    try {
+      await prisma.user.deleteMany();
+      await prisma.food.deleteMany();
+      await prisma.foodCategory.deleteMany();
+    } catch (error) {
+      // If there are constraint issues, try to clean up more thoroughly
+      await prisma.$executeRaw`TRUNCATE TABLE "users", "foods", "food_categories" RESTART IDENTITY CASCADE`;
+    }
   });
 
   describe('Category Seeding', () => {

@@ -70,7 +70,6 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   // Clean database between tests
-  await prisma.userPreferences.deleteMany();
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
   await prisma.foodCategory.deleteMany();
@@ -146,22 +145,27 @@ async function seedE2ETestData() {
     },
   });
 
-  // Create user preferences
-  await prisma.userPreferences.createMany({
-    data: [
-      {
-        userId: user1.id,
+  // Update users with preferences
+  await prisma.user.update({
+    where: { id: user1.id },
+    data: {
+      preferences: {
         dietaryRestrictions: ['vegetarian'],
         allergies: ['nuts'],
         preferredCategories: ['Fruits'],
       },
-      {
-        userId: user2.id,
+    },
+  });
+
+  await prisma.user.update({
+    where: { id: user2.id },
+    data: {
+      preferences: {
         dietaryRestrictions: [],
         allergies: ['dairy'],
         preferredCategories: ['Vegetables'],
       },
-    ],
+    },
   });
 }
 

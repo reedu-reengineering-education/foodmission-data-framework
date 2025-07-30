@@ -17,7 +17,12 @@ describe('OpenFoodFactsHealthIndicator', () => {
     };
 
     const mockConfigService = {
-      get: jest.fn(),
+      get: jest.fn().mockImplementation((key: string, defaultValue?: string) => {
+        if (key === 'OPENFOODFACTS_API_URL') {
+          return 'https://world.openfoodfacts.org';
+        }
+        return defaultValue;
+      }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -39,9 +44,6 @@ describe('OpenFoodFactsHealthIndicator', () => {
     );
     httpService = module.get(HttpService);
     configService = module.get(ConfigService);
-
-    // Setup default config
-    configService.get.mockReturnValue('https://world.openfoodfacts.org');
   });
 
   it('should be defined', () => {
@@ -122,7 +124,16 @@ describe('OpenFoodFactsHealthIndicator', () => {
     });
 
     it('should use custom API URL from config', async () => {
-      configService.get.mockReturnValue('https://custom.openfoodfacts.org');
+      // Create a new indicator instance with custom config
+      configService.get.mockImplementation((key: string, defaultValue?: string) => {
+        if (key === 'OPENFOODFACTS_API_URL') {
+          return 'https://custom.openfoodfacts.org';
+        }
+        return defaultValue;
+      });
+
+      // Create new instance to pick up the new config
+      const customIndicator = new (OpenFoodFactsHealthIndicator as any)(httpService, configService);
 
       const mockResponse: AxiosResponse = {
         status: 200,
@@ -134,7 +145,7 @@ describe('OpenFoodFactsHealthIndicator', () => {
 
       httpService.get.mockReturnValue(of(mockResponse));
 
-      await indicator.isHealthy('openfoodfacts');
+      await customIndicator.isHealthy('openfoodfacts');
 
       expect(httpService.get).toHaveBeenCalledWith(
         'https://custom.openfoodfacts.org/api/v0/product/737628064502.json',

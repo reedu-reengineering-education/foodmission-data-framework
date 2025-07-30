@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service';
+import { UserRepository } from '../user/repositories/user.repository';
 
 export interface UserProfile {
   id: string;
@@ -13,7 +13,9 @@ export interface UserProfile {
 
 @Injectable()
 export class UserProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+  ) {}
 
   /**
    * Get or create user profile based on Keycloak token
@@ -26,20 +28,16 @@ export class UserProfileService {
     family_name?: string;
   }): Promise<UserProfile> {
     // Try to find existing user by Keycloak ID
-    let user = await this.prisma.user.findUnique({
-      where: { keycloakId: keycloakUser.sub },
-    });
+    let user = await this.userRepository.findByKeycloakId(keycloakUser.sub);
 
     // If not found, create new user record
     if (!user) {
-      user = await this.prisma.user.create({
-        data: {
-          keycloakId: keycloakUser.sub,
-          email: keycloakUser.email,
-          firstName: keycloakUser.given_name || '',
-          lastName: keycloakUser.family_name || '',
-          preferences: {}, // Initialize empty preferences
-        },
+      user = await this.userRepository.create({
+        keycloakId: keycloakUser.sub,
+        email: keycloakUser.email,
+        firstName: keycloakUser.given_name || '',
+        lastName: keycloakUser.family_name || '',
+        preferences: {}, // Initialize empty preferences
       });
     }
 
@@ -49,6 +47,8 @@ export class UserProfileService {
       firstName: user.firstName,
       lastName: user.lastName,
       keycloakId: user.keycloakId,
+      preferences: user.preferences as any,
+      settings: user.settings as any,
     };
   }
 
@@ -59,19 +59,21 @@ export class UserProfileService {
     keycloakId: string,
     preferences: any,
   ): Promise<UserProfile> {
-    const user = await this.prisma.user.update({
-      where: { keycloakId },
-      data: { preferences },
-    });
+    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const updatedUser = await this.userRepository.update(user.id, { preferences });
 
     return {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      keycloakId: user.keycloakId,
-      preferences: user.preferences as any,
-      settings: user.settings as any,
+      id: updatedUser.id,
+      email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      keycloakId: updatedUser.keycloakId,
+      preferences: updatedUser.preferences as any,
+      settings: updatedUser.settings as any,
     };
   }
 
@@ -82,19 +84,21 @@ export class UserProfileService {
     keycloakId: string,
     settings: any,
   ): Promise<UserProfile> {
-    const user = await this.prisma.user.update({
-      where: { keycloakId },
-      data: { settings },
-    });
+    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const updatedUser = await this.userRepository.update(user.id, { settings });
 
     return {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      keycloakId: user.keycloakId,
-      preferences: user.preferences as any,
-      settings: user.settings as any,
+      id: updatedUser.id,
+      email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      keycloakId: updatedUser.keycloakId,
+      preferences: updatedUser.preferences as any,
+      settings: updatedUser.settings as any,
     };
   }
 }

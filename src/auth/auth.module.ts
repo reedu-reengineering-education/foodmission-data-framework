@@ -5,15 +5,16 @@ import {
   ResourceGuard,
   RoleGuard,
   AuthGuard,
-  RoleMerge,
 } from 'nest-keycloak-connect';
 import { AuthController } from './auth.controller';
 import { UserProfileService } from './user-profile.service';
 import { DatabaseModule } from '../database/database.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    UserModule,
     ConfigModule,
     KeycloakConnectModule.register({
       authServerUrl:

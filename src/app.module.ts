@@ -5,6 +5,7 @@ import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { FoodModule } from './food/food.module';
+import { UserModule } from './user/user.module';
 
 import { HealthModule } from './health/health.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
@@ -22,6 +23,7 @@ import { SecurityMiddleware } from './security/middleware/security.middleware';
     CacheModule,
     SecurityModule,
     AuthModule,
+    UserModule,
     FoodModule,
     HealthModule,
     MonitoringModule,

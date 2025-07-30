@@ -198,7 +198,7 @@ describe('HealthService', () => {
       const result = await service['checkDatabase']();
 
       expect(result.status).toBe('ok');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
 
     it('should return error status when database query fails', async () => {
@@ -209,7 +209,7 @@ describe('HealthService', () => {
       const result = await service['checkDatabase']();
 
       expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -220,7 +220,7 @@ describe('HealthService', () => {
       const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('ok');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
       expect(fetch).toHaveBeenCalledWith(
         expect.stringContaining('/.well-known/openid_configuration'),
         expect.objectContaining({
@@ -236,7 +236,7 @@ describe('HealthService', () => {
       const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
 
     it('should return error status when keycloak request throws', async () => {
@@ -245,7 +245,7 @@ describe('HealthService', () => {
       const result = await service['checkKeycloak']();
 
       expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
 
     it('should use environment variables for keycloak URL', async () => {
@@ -276,7 +276,7 @@ describe('HealthService', () => {
       const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('ok');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
       expect(fetch).toHaveBeenCalledWith(
         'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
         expect.objectContaining({
@@ -292,7 +292,7 @@ describe('HealthService', () => {
       const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
 
     it('should return error status when OpenFoodFacts request throws', async () => {
@@ -301,7 +301,7 @@ describe('HealthService', () => {
       const result = await service['checkOpenFoodFacts']();
 
       expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThan(0);
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
   });
 });

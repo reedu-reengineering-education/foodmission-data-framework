@@ -138,7 +138,11 @@ describe('Stateless Authentication', () => {
         name: 'John Doe',
         given_name: 'John',
         family_name: 'Doe',
-        realm_access: { roles: ['user', 'admin'] },
+        resource_access: {
+          'foodmission-api': {
+            roles: ['user', 'admin']
+          }
+        },
         exp: 1640995200,
         iat: 1640991600,
       };
@@ -152,7 +156,7 @@ describe('Stateless Authentication', () => {
         name: mockUser.name,
         given_name: mockUser.given_name,
         family_name: mockUser.family_name,
-        roles: mockUser.realm_access.roles,
+        roles: ['user', 'admin'],
         exp: mockUser.exp,
         iat: mockUser.iat,
       });

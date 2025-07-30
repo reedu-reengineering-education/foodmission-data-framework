@@ -53,7 +53,6 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   // Clean up data between tests but keep schema and seed data
-  await prisma.userPreferences.deleteMany();
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
   await prisma.foodCategory.deleteMany();
@@ -96,13 +95,15 @@ async function seedBasicTestData() {
     },
   });
 
-  // Create test user preferences
-  await prisma.userPreferences.create({
+  // Update test user with preferences
+  await prisma.user.update({
+    where: { id: testUser.id },
     data: {
-      userId: testUser.id,
-      dietaryRestrictions: ['vegetarian'],
-      allergies: ['nuts'],
-      preferredCategories: ['Test-Category'],
+      preferences: {
+        dietaryRestrictions: ['vegetarian'],
+        allergies: ['nuts'],
+        preferredCategories: ['Test-Category'],
+      },
     },
   });
 }
