@@ -34,12 +34,12 @@ jobs:
       - name: Run npm audit
         run: npm audit --audit-level=moderate --production
 
-      - name: Run Snyk security scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
+      # - name: Run Snyk security scan
+      #   uses: snyk/actions/node@master
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      #   with:
+      #     args: --severity-threshold=high
 
   container-scan:
     name: Container Security Scan

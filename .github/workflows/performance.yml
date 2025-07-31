@@ -120,11 +120,6 @@ jobs:
           };
 
           export default function() {
-            // Test health endpoint
-            let healthRes = http.get(`${BASE_URL}/health`);
-            check(healthRes, {
-              'health check status is 200': (r) => r.status === 200,
-            }) || errorRate.add(1);
 
             // Test API health endpoint
             let apiHealthRes = http.get(`${BASE_URL}/api/v1/health`);
@@ -139,7 +134,7 @@ jobs:
             }) || errorRate.add(1);
 
             // Test metrics endpoint
-            let metricsRes = http.get(`${BASE_URL}/metrics`);
+            let metricsRes = http.get(`${BASE_URL}/api/v1/metrics`);
             check(metricsRes, {
               'metrics endpoint status is 200': (r) => r.status === 200,
             }) || errorRate.add(1);

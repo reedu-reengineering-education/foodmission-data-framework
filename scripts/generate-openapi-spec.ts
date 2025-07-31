@@ -3,28 +3,64 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
+import * as yaml from 'js-yaml';
 import { AppModule } from '../src/app.module';
 
 async function generateOpenApiSpec() {
-  const app = await NestFactory.create(AppModule, { logger: false });
+  console.log('🚀 Starting OpenAPI spec generation...');
+  console.log('📋 Environment:', process.env.NODE_ENV);
 
-  // Enable validation pipes globally (same as in main.ts)
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
+  // Set required environment variables for documentation generation
+  if (!process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = 'postgresql://mock:mock@localhost:5432/mock_db';
+    console.log('🔧 Set mock DATABASE_URL for documentation generation');
+  }
 
-  // Set global prefix for API routes (same as in main.ts)
-  app.setGlobalPrefix('api/v1');
+  if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET =
+      'mock-jwt-secret-for-docs-generation-32-chars-minimum';
+    console.log('🔧 Set mock JWT_SECRET for documentation generation');
+  }
 
-  // Configure Swagger/OpenAPI (same config as in main.ts)
-  const config = new DocumentBuilder()
-    .setTitle('FOODMISSION Data Framework API')
-    .setDescription(
-      `
+  if (!process.env.KEYCLOAK_BASE_URL) {
+    process.env.KEYCLOAK_BASE_URL = 'http://localhost:8080';
+    console.log('🔧 Set mock KEYCLOAK_BASE_URL for documentation generation');
+  }
+
+  if (!process.env.KEYCLOAK_REALM) {
+    process.env.KEYCLOAK_REALM = 'mock-realm';
+    console.log('🔧 Set mock KEYCLOAK_REALM for documentation generation');
+  }
+
+  if (!process.env.KEYCLOAK_CLIENT_ID) {
+    process.env.KEYCLOAK_CLIENT_ID = 'mock-client-id';
+    console.log('🔧 Set mock KEYCLOAK_CLIENT_ID for documentation generation');
+  }
+
+  try {
+    console.log('🏗️  Creating NestJS application...');
+    const app = await NestFactory.create(AppModule, {
+      logger: false,
+      abortOnError: false,
+    });
+
+    // Enable validation pipes globally (same as in main.ts)
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
+
+    // Set global prefix for API routes (same as in main.ts)
+    app.setGlobalPrefix('api/v1');
+
+    // Configure Swagger/OpenAPI (same config as in main.ts)
+    const config = new DocumentBuilder()
+      .setTitle('FOODMISSION Data Framework API')
+      .setDescription(
+        `
       A comprehensive backend system for managing food-related data and operations.
       
       ## Features
@@ -52,84 +88,96 @@ async function generateOpenApiSpec() {
       ## Support
       For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
     `,
-    )
-    .setVersion('1.0.0')
-    .setContact(
-      'FOODMISSION Team',
-      'https://github.com/reedu-reengineering-education/foodmission-data-framework',
-      'support@foodmission.dev',
-    )
-    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token obtained from Keycloak authentication',
-        in: 'header',
-      },
-      'JWT-auth',
-    )
-    .addTag(
-      'auth',
-      'Authentication and authorization endpoints for Keycloak integration',
-    )
-    .addTag(
-      'foods',
-      'Food item management with OpenFoodFacts integration for nutritional data',
-    )
-    .addTag(
-      'users',
-      'User profile management and dietary preferences configuration',
-    )
-    .addTag(
-      'health',
-      'Application health checks, readiness probes, and monitoring metrics',
-    )
-    .addServer('http://localhost:3000/api/v1', 'Development server')
-    .addServer('https://api.foodmission.dev/api/v1', 'Production server')
-    .addServer('https://staging-api.foodmission.dev/api/v1', 'Staging server')
-    .build();
+      )
+      .setVersion('1.0.0')
+      .setContact(
+        'FOODMISSION Team',
+        'https://github.com/reedu-reengineering-education/foodmission-data-framework',
+        'support@foodmission.dev',
+      )
+      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT',
+          description: 'Enter JWT token obtained from Keycloak authentication',
+          in: 'header',
+        },
+        'JWT-auth',
+      )
+      .addTag(
+        'auth',
+        'Authentication and authorization endpoints for Keycloak integration',
+      )
+      .addTag(
+        'foods',
+        'Food item management with OpenFoodFacts integration for nutritional data',
+      )
+      .addTag(
+        'users',
+        'User profile management and dietary preferences configuration',
+      )
+      .addTag(
+        'health',
+        'Application health checks, readiness probes, and monitoring metrics',
+      )
+      .addServer('http://localhost:3000/api/v1', 'Development server')
+      .addServer('https://api.foodmission.dev/api/v1', 'Production server')
+      .addServer('https://staging-api.foodmission.dev/api/v1', 'Staging server')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
-    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
-    deepScanRoutes: true,
-  });
+    const document = SwaggerModule.createDocument(app, config, {
+      operationIdFactory: (controllerKey: string, methodKey: string) =>
+        methodKey,
+      deepScanRoutes: true,
+    });
 
-  // Write OpenAPI spec to files
-  const outputDir = join(__dirname, '..', 'docs');
+    console.log('📝 Creating OpenAPI document...');
 
-  // JSON format
-  writeFileSync(
-    join(outputDir, 'openapi.json'),
-    JSON.stringify(document, null, 2),
-    'utf8',
-  );
+    // Write OpenAPI spec to files
+    const outputDir = join(__dirname, '..', 'docs');
+    console.log('📁 Output directory:', outputDir);
 
-  // YAML format (basic conversion)
-  const yaml = require('js-yaml');
-  writeFileSync(
-    join(outputDir, 'openapi.yaml'),
-    yaml.dump(document, { indent: 2 }),
-    'utf8',
-  );
+    // JSON format
+    console.log('💾 Writing JSON file...');
+    writeFileSync(
+      join(outputDir, 'openapi.json'),
+      JSON.stringify(document, null, 2),
+      'utf8',
+    );
 
-  console.log('✅ OpenAPI specification generated successfully!');
-  console.log(`📄 JSON: ${join(outputDir, 'openapi.json')}`);
-  console.log(`📄 YAML: ${join(outputDir, 'openapi.yaml')}`);
-  console.log('');
-  console.log('📊 Statistics:');
-  console.log(`   Paths: ${Object.keys(document.paths || {}).length}`);
-  console.log(
-    `   Schemas: ${Object.keys(document.components?.schemas || {}).length}`,
-  );
-  console.log(`   Tags: ${(document.tags || []).length}`);
-  console.log(
-    `   Security Schemes: ${Object.keys(document.components?.securitySchemes || {}).length}`,
-  );
+    // YAML format (basic conversion)
+    console.log('💾 Writing YAML file...');
+    writeFileSync(
+      join(outputDir, 'openapi.yaml'),
+      yaml.dump(document, { indent: 2 }),
+      'utf8',
+    );
 
-  await app.close();
+    console.log('✅ OpenAPI specification generated successfully!');
+    console.log(`📄 JSON: ${join(outputDir, 'openapi.json')}`);
+    console.log(`📄 YAML: ${join(outputDir, 'openapi.yaml')}`);
+    console.log('');
+    console.log('📊 Statistics:');
+    console.log(`   Paths: ${Object.keys(document.paths || {}).length}`);
+    console.log(
+      `   Schemas: ${Object.keys(document.components?.schemas || {}).length}`,
+    );
+    console.log(`   Tags: ${(document.tags || []).length}`);
+    console.log(
+      `   Security Schemes: ${Object.keys(document.components?.securitySchemes || {}).length}`,
+    );
+
+    console.log('🔄 Closing application...');
+    await app.close();
+    console.log('✨ Process completed successfully!');
+    process.exit(0);
+  } catch (error) {
+    console.error('💥 Error during app creation or processing:', error);
+    throw error;
+  }
 }
 
 // Run the script

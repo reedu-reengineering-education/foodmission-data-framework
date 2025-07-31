@@ -45,6 +45,7 @@
     "docker:down": "docker compose -f docker-compose.dev.yml down",
     "docker:logs": "docker compose -f docker-compose.dev.yml logs -f",
     "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
+    "docs:generate:ci": "./scripts/ci-docs-generate.sh",
     "openapi:generate": "node scripts/generate-openapi.js",
     "openapi:serve": "npm run build && npm run openapi:generate && echo 'OpenAPI spec generated! Import docs/openapi.json into Postman'",
     "postman:collection": "npm run openapi:serve"

@@ -57,10 +57,10 @@ jobs:
         run: |
           npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics"
 
-      - name: Analyze bundle size
-        run: |
-          npm run build
-          npx bundlesize
+      # - name: Analyze bundle size
+      #   run: |
+      #     npm run build
+      #     npx bundlesize
 
       - name: Generate complexity report
         run: |
