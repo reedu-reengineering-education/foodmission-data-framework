@@ -84,7 +84,7 @@ jobs:
           sleep 30
 
           # Wait for application to be ready
-          timeout 60 bash -c 'until curl -f http://localhost:3000/health; do sleep 2; done'
+          timeout 60 bash -c 'until curl -f http://localhost:3000/api/v1/health; do sleep 2; done'
 
       - name: Install k6
         run: |
@@ -225,6 +225,11 @@ jobs:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
           POSTGRES_DB: foodmission_memory
+          JWT_SECRET: perf-test-jwt-secret-which-is-at-least-thirty-two-characters-long
+          KEYCLOAK_BASE_URL: http://localhost:8080
+          KEYCLOAK_REALM: test-realm
+          KEYCLOAK_CLIENT_ID: foodmission-api
+          KEYCLOAK_CLIENT_SECRET: test-secret
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
