@@ -27,7 +27,7 @@ describe('FoodRepository', () => {
     },
   };
 
-  let mockPrismaService: jest.Mocked<Pick<PrismaService, 'food'>>;
+  let mockPrismaService: any;
 
   beforeAll(() => {
     mockPrismaService = {

@@ -205,7 +205,7 @@ export class PerformanceService {
     try {
       // For now, return mock values since the metrics API access is complex
       // In a real implementation, you'd need to properly access the metric registry
-      const overallCacheHitRate = await this.getCacheHitRate('overall');
+      const overallCacheHitRate = await this.getCacheHitRate();
 
       return {
         slowQueries: 0,

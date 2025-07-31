@@ -126,7 +126,7 @@ describe('PerformanceService', () => {
 
   describe('getCacheHitRate', () => {
     it('should calculate cache hit rate', async () => {
-      const hitRate = await service.getCacheHitRate('foods');
+      const hitRate = await service.getCacheHitRate();
 
       expect(typeof hitRate).toBe('number');
       expect(hitRate).toBeGreaterThanOrEqual(0);

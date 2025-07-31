@@ -46,8 +46,8 @@ export class CacheMiddleware implements NestMiddleware {
 
           if (ttl > 0) {
             const ttlMs = ttl * 1000; // Convert to milliseconds
-            self.cache.set(cacheKey, body, ttlMs).catch((err) => {
-              self.logger.error('Error caching response:', err);
+            this.cache.set(cacheKey, body, ttlMs).catch((err) => {
+              this.logger.error('Error caching response:', err);
             });
           }
         }

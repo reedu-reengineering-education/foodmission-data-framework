@@ -10,9 +10,9 @@ import { FoodQueryDto } from '../dto/food-query.dto';
 
 describe('FoodService', () => {
   let service: FoodService;
-  let mockFoodRepository: jest.Mocked<FoodRepository>;
-  let mockCategoryRepository: jest.Mocked<FoodCategoryRepository>;
-  let mockOpenFoodFactsService: jest.Mocked<OpenFoodFactsService>;
+  let foodRepository: jest.Mocked<FoodRepository>;
+  let categoryRepository: jest.Mocked<FoodCategoryRepository>;
+  let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
   const mockFood = {
     id: 'food-1',
@@ -58,7 +58,7 @@ describe('FoodService', () => {
     completeness: 85,
   };
 
-  const mockFoodRepository = {
+  const mockFoodRepositoryMethods = {
     create: jest.fn(),
     findById: jest.fn(),
     findByBarcode: jest.fn(),
@@ -69,11 +69,11 @@ describe('FoodService', () => {
     count: jest.fn(),
   };
 
-  const mockCategoryRepository = {
+  const mockCategoryRepositoryMethods = {
     findById: jest.fn(),
   };
 
-  const mockOpenFoodFactsService = {
+  const mockOpenFoodFactsServiceMethods = {
     getProductByBarcode: jest.fn(),
     searchProducts: jest.fn(),
   };
@@ -84,23 +84,23 @@ describe('FoodService', () => {
         FoodService,
         {
           provide: FoodRepository,
-          useValue: mockFoodRepository,
+          useValue: mockFoodRepositoryMethods,
         },
         {
           provide: FoodCategoryRepository,
-          useValue: mockCategoryRepository,
+          useValue: mockCategoryRepositoryMethods,
         },
         {
           provide: OpenFoodFactsService,
-          useValue: mockOpenFoodFactsService,
+          useValue: mockOpenFoodFactsServiceMethods,
         },
       ],
     }).compile();
 
     service = module.get<FoodService>(FoodService);
-    mockFoodRepository = module.get(FoodRepository);
-    mockCategoryRepository = module.get(FoodCategoryRepository);
-    mockOpenFoodFactsService = module.get(OpenFoodFactsService);
+    foodRepository = module.get(FoodRepository);
+    categoryRepository = module.get(FoodCategoryRepository);
+    openFoodFactsService = module.get(OpenFoodFactsService);
   });
 
   afterEach(() => {
@@ -117,37 +117,37 @@ describe('FoodService', () => {
     };
 
     it('should create a new food successfully', async () => {
-      mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
-      mockFoodRepository.create.mockResolvedValueOnce(mockFood);
+      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
+      foodRepository.findByBarcode.mockResolvedValueOnce(null);
+      foodRepository.create.mockResolvedValueOnce(mockFood);
 
       const result = await service.create(createFoodDto);
 
       expect(result).toBeDefined();
       expect(result.name).toBe(mockFood.name);
-      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(
+      expect(categoryRepository.findById).toHaveBeenCalledWith(
         createFoodDto.categoryId,
       );
-      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith(
+      expect(foodRepository.findByBarcode).toHaveBeenCalledWith(
         createFoodDto.barcode,
       );
-      expect(mockFoodRepository.create).toHaveBeenCalledWith(createFoodDto);
+      expect(foodRepository.create).toHaveBeenCalledWith(createFoodDto);
     });
 
     it('should throw BadRequestException if category not found', async () => {
-      mockCategoryRepository.findById.mockResolvedValueOnce(null);
+      categoryRepository.findById.mockResolvedValueOnce(null);
 
       await expect(service.create(createFoodDto)).rejects.toThrow(
         BadRequestException,
       );
-      expect(mockCategoryRepository.findById).toHaveBeenCalledWith(
+      expect(categoryRepository.findById).toHaveBeenCalledWith(
         createFoodDto.categoryId,
       );
     });
 
     it('should throw BadRequestException if barcode already exists', async () => {
-      mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
+      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
+      foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       await expect(service.create(createFoodDto)).rejects.toThrow(
         BadRequestException,
@@ -159,9 +159,9 @@ describe('FoodService', () => {
         ...createFoodDto,
         openFoodFactsId: 'off-123',
       };
-      mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
-      mockFoodRepository.findByOpenFoodFactsId.mockResolvedValueOnce(mockFood);
+      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
+      foodRepository.findByBarcode.mockResolvedValueOnce(null);
+      foodRepository.findByOpenFoodFactsId.mockResolvedValueOnce(mockFood);
 
       await expect(service.create(createDtoWithOffId)).rejects.toThrow(
         BadRequestException,
@@ -187,7 +187,7 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockFoodRepository.findWithPagination.mockResolvedValueOnce(
+      foodRepository.findWithPagination.mockResolvedValueOnce(
         mockPaginatedResult,
       );
 
@@ -196,7 +196,7 @@ describe('FoodService', () => {
       expect(result).toBeDefined();
       expect(result.data).toHaveLength(1);
       expect(result.total).toBe(1);
-      expect(mockFoodRepository.findWithPagination).toHaveBeenCalledWith({
+      expect(foodRepository.findWithPagination).toHaveBeenCalledWith({
         skip: 0,
         take: 10,
         where: {
@@ -219,17 +219,17 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockFoodRepository.findWithPagination.mockResolvedValueOnce(
+      foodRepository.findWithPagination.mockResolvedValueOnce(
         mockPaginatedResult,
       );
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
         mockOpenFoodFactsProduct,
       );
 
       const result = await service.findAll(queryWithOff);
 
       expect(result.data[0].openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+      expect(openFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
         mockFood.barcode,
       );
     });
@@ -237,17 +237,17 @@ describe('FoodService', () => {
 
   describe('findOne', () => {
     it('should return a food by id', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
 
       const result = await service.findOne('food-1');
 
       expect(result).toBeDefined();
       expect(result.id).toBe(mockFood.id);
-      expect(mockFoodRepository.findById).toHaveBeenCalledWith('food-1');
+      expect(foodRepository.findById).toHaveBeenCalledWith('food-1');
     });
 
     it('should throw NotFoundException if food not found', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(null);
+      foodRepository.findById.mockResolvedValueOnce(null);
 
       await expect(service.findOne('nonexistent')).rejects.toThrow(
         NotFoundException,
@@ -255,15 +255,15 @@ describe('FoodService', () => {
     });
 
     it('should include OpenFoodFacts data when requested', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
         mockOpenFoodFactsProduct,
       );
 
       const result = await service.findOne('food-1', true);
 
       expect(result.openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+      expect(openFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
         mockFood.barcode,
       );
     });
@@ -271,19 +271,17 @@ describe('FoodService', () => {
 
   describe('findByBarcode', () => {
     it('should return a food by barcode', async () => {
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
+      foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       const result = await service.findByBarcode('1234567890');
 
       expect(result).toBeDefined();
       expect(result.barcode).toBe(mockFood.barcode);
-      expect(mockFoodRepository.findByBarcode).toHaveBeenCalledWith(
-        '1234567890',
-      );
+      expect(foodRepository.findByBarcode).toHaveBeenCalledWith('1234567890');
     });
 
     it('should throw NotFoundException if food not found', async () => {
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
+      foodRepository.findByBarcode.mockResolvedValueOnce(null);
 
       await expect(service.findByBarcode('nonexistent')).rejects.toThrow(
         NotFoundException,
@@ -299,21 +297,21 @@ describe('FoodService', () => {
 
     it('should update a food successfully', async () => {
       const updatedFood = { ...mockFood, ...updateFoodDto };
-      mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
-      mockFoodRepository.update.mockResolvedValueOnce(updatedFood);
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+      foodRepository.update.mockResolvedValueOnce(updatedFood);
 
       const result = await service.update('food-1', updateFoodDto);
 
       expect(result).toBeDefined();
       expect(result.name).toBe(updateFoodDto.name);
-      expect(mockFoodRepository.update).toHaveBeenCalledWith(
+      expect(foodRepository.update).toHaveBeenCalledWith(
         'food-1',
         updateFoodDto,
       );
     });
 
     it('should throw NotFoundException if food not found', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(null);
+      foodRepository.findById.mockResolvedValueOnce(null);
 
       await expect(
         service.update('nonexistent', updateFoodDto),
@@ -325,8 +323,8 @@ describe('FoodService', () => {
         ...updateFoodDto,
         categoryId: 'new-category',
       };
-      mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
-      mockCategoryRepository.findById.mockResolvedValueOnce(null);
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+      categoryRepository.findById.mockResolvedValueOnce(null);
 
       await expect(
         service.update('food-1', updateWithCategory),
@@ -336,16 +334,16 @@ describe('FoodService', () => {
 
   describe('remove', () => {
     it('should remove a food successfully', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(mockFood);
-      mockFoodRepository.delete.mockResolvedValueOnce(undefined);
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+      foodRepository.delete.mockResolvedValueOnce(undefined);
 
       await service.remove('food-1');
 
-      expect(mockFoodRepository.delete).toHaveBeenCalledWith('food-1');
+      expect(foodRepository.delete).toHaveBeenCalledWith('food-1');
     });
 
     it('should throw NotFoundException if food not found', async () => {
-      mockFoodRepository.findById.mockResolvedValueOnce(null);
+      foodRepository.findById.mockResolvedValueOnce(null);
 
       await expect(service.remove('nonexistent')).rejects.toThrow(
         NotFoundException,
@@ -355,12 +353,12 @@ describe('FoodService', () => {
 
   describe('importFromOpenFoodFacts', () => {
     it('should import food from OpenFoodFacts successfully', async () => {
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
-      mockOpenFoodFactsService.getProductByBarcode
+      foodRepository.findByBarcode.mockResolvedValueOnce(null);
+      openFoodFactsService.getProductByBarcode
         .mockResolvedValueOnce(mockOpenFoodFactsProduct) // First call for import
         .mockResolvedValueOnce(mockOpenFoodFactsProduct); // Second call for getting info
-      mockCategoryRepository.findById.mockResolvedValueOnce(mockCategory);
-      mockFoodRepository.create.mockResolvedValueOnce(mockFood);
+      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
+      foodRepository.create.mockResolvedValueOnce(mockFood);
 
       const result = await service.importFromOpenFoodFacts(
         '1234567890',
@@ -370,14 +368,14 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.openFoodFactsInfo).toBeDefined();
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+      expect(openFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
         '1234567890',
       );
-      expect(mockFoodRepository.create).toHaveBeenCalled();
+      expect(foodRepository.create).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if food already exists', async () => {
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
+      foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       await expect(
         service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
@@ -385,8 +383,8 @@ describe('FoodService', () => {
     });
 
     it('should throw NotFoundException if product not found in OpenFoodFacts', async () => {
-      mockFoodRepository.findByBarcode.mockResolvedValueOnce(null);
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
+      foodRepository.findByBarcode.mockResolvedValueOnce(null);
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
 
       await expect(
         service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
@@ -405,7 +403,7 @@ describe('FoodService', () => {
         totalPages: 1,
       };
 
-      mockOpenFoodFactsService.searchProducts.mockResolvedValueOnce(
+      openFoodFactsService.searchProducts.mockResolvedValueOnce(
         mockSearchResult,
       );
 
@@ -413,7 +411,7 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.products).toHaveLength(1);
-      expect(mockOpenFoodFactsService.searchProducts).toHaveBeenCalledWith({
+      expect(openFoodFactsService.searchProducts).toHaveBeenCalledWith({
         query: 'nutella',
         categories: undefined,
         brands: undefined,
@@ -424,7 +422,7 @@ describe('FoodService', () => {
 
   describe('getOpenFoodFactsInfo', () => {
     it('should return OpenFoodFacts info for valid barcode', async () => {
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
         mockOpenFoodFactsProduct,
       );
 
@@ -432,13 +430,13 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result?.barcode).toBe(mockOpenFoodFactsProduct.barcode);
-      expect(mockOpenFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
+      expect(openFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
         '1234567890',
       );
     });
 
     it('should return null if product not found', async () => {
-      mockOpenFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
 
       const result = await service.getOpenFoodFactsInfo('1234567890');
 
@@ -446,7 +444,7 @@ describe('FoodService', () => {
     });
 
     it('should return null on error', async () => {
-      mockOpenFoodFactsService.getProductByBarcode.mockRejectedValueOnce(
+      openFoodFactsService.getProductByBarcode.mockRejectedValueOnce(
         new Error('API Error'),
       );
 

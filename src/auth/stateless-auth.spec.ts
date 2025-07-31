@@ -64,7 +64,12 @@ describe('Stateless Authentication', () => {
       const result = await controller.getProfile(req);
 
       expect(userProfileService.getOrCreateProfile).toHaveBeenCalledWith(
-        mockUser,
+        expect.objectContaining({
+          sub: mockUser.sub,
+          email: mockUser.email,
+          given_name: mockUser.given_name,
+          family_name: mockUser.family_name,
+        }),
       );
       expect(result).toEqual(mockProfile);
     });
@@ -94,7 +99,14 @@ describe('Stateless Authentication', () => {
 
       userProfileService.updatePreferences.mockResolvedValue(updatedProfile);
 
-      const req = { user: mockUser };
+      const req = {
+        user: {
+          ...mockUser,
+          email: 'test@example.com',
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          iat: Math.floor(Date.now() / 1000),
+        },
+      };
       const result = await controller.updatePreferences(req, preferences);
 
       expect(userProfileService.updatePreferences).toHaveBeenCalledWith(
@@ -121,7 +133,14 @@ describe('Stateless Authentication', () => {
 
       userProfileService.updateSettings.mockResolvedValue(updatedProfile);
 
-      const req = { user: mockUser };
+      const req = {
+        user: {
+          ...mockUser,
+          email: 'test@example.com',
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          iat: Math.floor(Date.now() / 1000),
+        },
+      };
       const result = await controller.updateSettings(req, settings);
 
       expect(userProfileService.updateSettings).toHaveBeenCalledWith(

@@ -51,7 +51,7 @@ export class PerformanceController {
     const hitRates = await Promise.all(
       prefixes.map(async (prefix) => ({
         prefix,
-        hitRate: await this.performanceService.getCacheHitRate(prefix),
+        hitRate: await this.performanceService.getCacheHitRate(),
       })),
     );
 
