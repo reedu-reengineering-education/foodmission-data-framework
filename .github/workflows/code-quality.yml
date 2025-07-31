@@ -160,7 +160,7 @@ jobs:
         run: npm run build
 
       - name: Generate OpenAPI documentation
-        run: npm run docs:generate
+        run: npm run docs:generate:ci
 
       - name: Check for outdated documentation
         run: |
