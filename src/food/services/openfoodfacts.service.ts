@@ -1,15 +1,14 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Observable, throwError, of } from 'rxjs';
-import { map, catchError, timeout, retry, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError, timeout, retry } from 'rxjs/operators';
 import {
   OpenFoodFactsProduct,
   OpenFoodFactsSearchResponse,
   ProductInfo,
   NutritionalInfo,
   OpenFoodFactsSearchOptions,
-  OpenFoodFactsError,
   OpenFoodFactsNutriments,
 } from '../interfaces/openfoodfacts.interface';
 

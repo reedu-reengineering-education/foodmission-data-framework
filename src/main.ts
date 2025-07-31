@@ -153,4 +153,4 @@ async function bootstrap() {
     `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
   );
 }
-bootstrap();
+void bootstrap();

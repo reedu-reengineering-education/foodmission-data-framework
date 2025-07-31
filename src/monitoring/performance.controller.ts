@@ -67,7 +67,7 @@ export class PerformanceController {
     status: 200,
     description: 'Database statistics retrieved successfully',
   })
-  async getDatabaseStats() {
+  getDatabaseStats() {
     // This would typically come from database monitoring
     return {
       activeConnections: 5, // This would be dynamic

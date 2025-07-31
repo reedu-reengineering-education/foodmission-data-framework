@@ -17,12 +17,14 @@ describe('OpenFoodFactsHealthIndicator', () => {
     };
 
     const mockConfigService = {
-      get: jest.fn().mockImplementation((key: string, defaultValue?: string) => {
-        if (key === 'OPENFOODFACTS_API_URL') {
-          return 'https://world.openfoodfacts.org';
-        }
-        return defaultValue;
-      }),
+      get: jest
+        .fn()
+        .mockImplementation((key: string, defaultValue?: string) => {
+          if (key === 'OPENFOODFACTS_API_URL') {
+            return 'https://world.openfoodfacts.org';
+          }
+          return defaultValue;
+        }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -125,15 +127,20 @@ describe('OpenFoodFactsHealthIndicator', () => {
 
     it('should use custom API URL from config', async () => {
       // Create a new indicator instance with custom config
-      configService.get.mockImplementation((key: string, defaultValue?: string) => {
-        if (key === 'OPENFOODFACTS_API_URL') {
-          return 'https://custom.openfoodfacts.org';
-        }
-        return defaultValue;
-      });
+      configService.get.mockImplementation(
+        (key: string, defaultValue?: string) => {
+          if (key === 'OPENFOODFACTS_API_URL') {
+            return 'https://custom.openfoodfacts.org';
+          }
+          return defaultValue;
+        },
+      );
 
       // Create new instance to pick up the new config
-      const customIndicator = new (OpenFoodFactsHealthIndicator as any)(httpService, configService);
+      const customIndicator = new (OpenFoodFactsHealthIndicator as any)(
+        httpService,
+        configService,
+      );
 
       const mockResponse: AxiosResponse = {
         status: 200,

@@ -13,7 +13,6 @@ import {
   Request,
   UnauthorizedException,
   UseGuards,
-  Logger,
 } from '@nestjs/common';
 import {
   ApiTags,

@@ -182,14 +182,14 @@ export class PerformanceService {
   /**
    * Get cache hit rate for a key prefix
    */
-  async getCacheHitRate(keyPrefix: string): Promise<number> {
+  getCacheHitRate(): Promise<number> {
     try {
       // For now, return a mock value since the metrics API is complex
       // In a real implementation, you'd need to properly access the metric values
-      return 0.85; // Mock 85% hit rate
+      return Promise.resolve(0.85); // Mock 85% hit rate
     } catch (error) {
       this.logger.error('Error calculating cache hit rate:', error);
-      return 0;
+      return Promise.resolve(0);
     }
   }
 

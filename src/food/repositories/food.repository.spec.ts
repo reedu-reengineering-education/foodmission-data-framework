@@ -9,7 +9,6 @@ import { PrismaService } from '../../database/prisma.service';
 
 describe('FoodRepository', () => {
   let repository: FoodRepository;
-  let prismaService: jest.Mocked<PrismaService>;
 
   const mockFood = {
     id: 'food-1',
@@ -28,16 +27,20 @@ describe('FoodRepository', () => {
     },
   };
 
-  const mockPrismaService = {
-    food: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      count: jest.fn(),
-    },
-  };
+  let mockPrismaService: jest.Mocked<Pick<PrismaService, 'food'>>;
+
+  beforeAll(() => {
+    mockPrismaService = {
+      food: {
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+        count: jest.fn(),
+      },
+    };
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,7 +54,6 @@ describe('FoodRepository', () => {
     }).compile();
 
     repository = module.get<FoodRepository>(FoodRepository);
-    prismaService = module.get(PrismaService);
   });
 
   afterEach(() => {

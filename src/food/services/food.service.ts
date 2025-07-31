@@ -16,7 +16,7 @@ import {
   OpenFoodFactsInfoDto,
 } from '../dto/food-response.dto';
 import { plainToClass } from 'class-transformer';
-import { Food } from '@prisma/client';
+// import { Food } from '@prisma/client';
 
 @Injectable()
 export class FoodService {

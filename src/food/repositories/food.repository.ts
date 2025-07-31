@@ -47,7 +47,7 @@ export class FoodRepository
         orderBy: options.orderBy || { createdAt: 'desc' },
         include: options.include,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error finding foods:', error);
       throw new Error('Failed to retrieve foods');
     }
@@ -61,7 +61,7 @@ export class FoodRepository
           category: true,
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error finding food by id:', error);
       throw new Error('Failed to retrieve food');
     }
@@ -75,7 +75,7 @@ export class FoodRepository
           category: true,
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error finding food by barcode:', error);
       throw new Error('Failed to retrieve food by barcode');
     }
@@ -89,7 +89,7 @@ export class FoodRepository
           category: true,
         },
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error finding food by OpenFoodFacts ID:', error);
       throw new Error('Failed to retrieve food by OpenFoodFacts ID');
     }
@@ -124,7 +124,7 @@ export class FoodRepository
         limit: take,
         totalPages,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error finding foods with pagination:', error);
       throw new Error('Failed to retrieve paginated foods');
     }
@@ -148,7 +148,7 @@ export class FoodRepository
         orderBy: options.orderBy || { createdAt: 'desc' },
         include: options.include,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error searching foods by name:', error);
       throw new Error('Failed to search foods');
     }

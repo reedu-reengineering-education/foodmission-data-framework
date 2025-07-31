@@ -17,9 +17,7 @@ import { UserPreferencesDto } from '../dto/user-preferences.dto';
 @ApiTags('users')
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userRepository: UserRepository,
-  ) { }
+  constructor(private readonly userRepository: UserRepository) {}
 
   @Post()
   @Roles('admin')

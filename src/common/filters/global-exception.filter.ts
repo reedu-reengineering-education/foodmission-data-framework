@@ -133,7 +133,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Set correlation ID for logging context (safely)
     try {
       this.loggingService.setCorrelationId(correlationId);
-    } catch (error) {
+    } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
 

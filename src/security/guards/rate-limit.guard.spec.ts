@@ -84,7 +84,7 @@ describe('RateLimitGuard', () => {
       guard['store'] = {};
     });
 
-    it('should allow first request', async () => {
+    it('should allow first request', () => {
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -97,11 +97,11 @@ describe('RateLimitGuard', () => {
         }),
       } as ExecutionContext;
 
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
       expect(result).toBe(true);
     });
 
-    it('should skip health check endpoints', async () => {
+    it('should skip health check endpoints', () => {
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -110,11 +110,11 @@ describe('RateLimitGuard', () => {
         }),
       } as ExecutionContext;
 
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
       expect(result).toBe(true);
     });
 
-    it('should skip metrics endpoints', async () => {
+    it('should skip metrics endpoints', () => {
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -123,11 +123,11 @@ describe('RateLimitGuard', () => {
         }),
       } as ExecutionContext;
 
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
       expect(result).toBe(true);
     });
 
-    it('should skip rate limiting in test environment', async () => {
+    it('should skip rate limiting in test environment', () => {
       process.env.NODE_ENV = 'test';
 
       const context = {
@@ -139,11 +139,11 @@ describe('RateLimitGuard', () => {
         }),
       } as ExecutionContext;
 
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
       expect(result).toBe(true);
     });
 
-    it('should allow requests within rate limit', async () => {
+    it('should allow requests within rate limit', () => {
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -158,12 +158,12 @@ describe('RateLimitGuard', () => {
 
       // Make several requests within limit
       for (let i = 0; i < 5; i++) {
-        const result = await guard.canActivate(context);
+        const result = guard.canActivate(context);
         expect(result).toBe(true);
       }
     });
 
-    it('should throw ThrottlerException when rate limit exceeded', async () => {
+    it('should throw ThrottlerException when rate limit exceeded', () => {
       const logSpy = jest.spyOn(securityService, 'logSecurityEvent');
       const context = {
         switchToHttp: () => ({
@@ -181,13 +181,11 @@ describe('RateLimitGuard', () => {
       guard['defaultLimit'] = 2;
 
       // Make requests up to the limit
-      await guard.canActivate(context);
-      await guard.canActivate(context);
+      guard.canActivate(context);
+      guard.canActivate(context);
 
       // This should exceed the limit
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        ThrottlerException,
-      );
+      expect(() => guard.canActivate(context)).toThrow(ThrottlerException);
 
       expect(logSpy).toHaveBeenCalledWith('RATE_LIMIT_EXCEEDED', {
         ip: '192.168.1.1',
@@ -218,14 +216,14 @@ describe('RateLimitGuard', () => {
       guard['defaultTtl'] = 100; // 100ms
 
       // Make requests up to the limit
-      await guard.canActivate(context);
-      await guard.canActivate(context);
+      guard.canActivate(context);
+      guard.canActivate(context);
 
       // Wait for TTL to expire
       await new Promise((resolve) => setTimeout(resolve, 150));
 
       // Should allow requests again
-      const result = await guard.canActivate(context);
+      const result = guard.canActivate(context);
       expect(result).toBe(true);
     });
   });

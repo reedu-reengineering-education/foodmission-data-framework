@@ -7,15 +7,13 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   keycloakId: string;
-  preferences?: any; // App-specific user preferences
-  settings?: any; // App-specific user settings
+  preferences?: Record<string, unknown>; // App-specific user preferences
+  settings?: Record<string, unknown>; // App-specific user settings
 }
 
 @Injectable()
 export class UserProfileService {
-  constructor(
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   /**
    * Get or create user profile based on Keycloak token
@@ -47,8 +45,8 @@ export class UserProfileService {
       firstName: user.firstName,
       lastName: user.lastName,
       keycloakId: user.keycloakId,
-      preferences: user.preferences as any,
-      settings: user.settings as any,
+      preferences: user.preferences as Record<string, unknown>,
+      settings: user.settings as Record<string, unknown>,
     };
   }
 
@@ -57,14 +55,16 @@ export class UserProfileService {
    */
   async updatePreferences(
     keycloakId: string,
-    preferences: any,
+    preferences: Record<string, unknown>,
   ): Promise<UserProfile> {
     const user = await this.userRepository.findByKeycloakId(keycloakId);
     if (!user) {
       throw new Error('User not found');
     }
 
-    const updatedUser = await this.userRepository.update(user.id, { preferences });
+    const updatedUser = await this.userRepository.update(user.id, {
+      preferences,
+    });
 
     return {
       id: updatedUser.id,
@@ -72,8 +72,8 @@ export class UserProfileService {
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
       keycloakId: updatedUser.keycloakId,
-      preferences: updatedUser.preferences as any,
-      settings: updatedUser.settings as any,
+      preferences: updatedUser.preferences as Record<string, unknown>,
+      settings: updatedUser.settings as Record<string, unknown>,
     };
   }
 
@@ -82,7 +82,7 @@ export class UserProfileService {
    */
   async updateSettings(
     keycloakId: string,
-    settings: any,
+    settings: Record<string, unknown>,
   ): Promise<UserProfile> {
     const user = await this.userRepository.findByKeycloakId(keycloakId);
     if (!user) {
@@ -97,8 +97,8 @@ export class UserProfileService {
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
       keycloakId: updatedUser.keycloakId,
-      preferences: updatedUser.preferences as any,
-      settings: updatedUser.settings as any,
+      preferences: updatedUser.preferences as Record<string, unknown>,
+      settings: updatedUser.settings as Record<string, unknown>,
     };
   }
 }

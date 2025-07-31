@@ -11,7 +11,7 @@ import { InputSanitizationPipe } from './pipes/input-sanitization.pipe';
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: () => ({
         throttlers: [
           {
             name: 'short',

@@ -16,7 +16,6 @@ import {
   ERROR_CODES,
 } from './error.utils';
 import {
-  BusinessException,
   ResourceNotFoundException,
   ResourceAlreadyExistsException,
   DatabaseOperationException,

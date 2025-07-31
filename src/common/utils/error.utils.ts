@@ -57,20 +57,22 @@ export function handlePrismaError(
 ): BusinessException {
   if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
-      case ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT:
+      case ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT: {
         const target = error.meta?.target as string[] | undefined;
         const field = target?.[0] || 'unknown';
         return new ResourceAlreadyExistsException(
           table || 'Resource',
-          `${field}=${error.meta?.target}`,
+          `${field}=${String(error.meta?.target)}`,
           { prismaCode: error.code, field, target },
         );
+      }
 
-      case ERROR_CODES.PRISMA_RECORD_NOT_FOUND:
+      case ERROR_CODES.PRISMA_RECORD_NOT_FOUND: {
         return new ResourceNotFoundException(table || 'Resource', 'unknown', {
           prismaCode: error.code,
           cause: error.meta?.cause,
         });
+      }
 
       case ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT:
         return new DatabaseOperationException(
@@ -84,7 +86,7 @@ export function handlePrismaError(
         return new DatabaseOperationException(
           operation,
           table || 'unknown',
-          `Required field missing: ${error.meta?.field_name}`,
+          `Required field missing: ${String(error.meta?.field_name)}`,
           { prismaCode: error.code, field: error.meta?.field_name },
         );
 

@@ -6,9 +6,9 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 
-let prisma: PrismaClient;
+let prisma: PrismaClient | undefined;
 
-beforeAll(async () => {
+beforeAll(() => {
   // Initialize test database
   prisma = new PrismaClient({
     datasources: {
@@ -26,7 +26,7 @@ beforeAll(async () => {
       env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
       stdio: 'inherit',
     });
-  } catch (error) {
+  } catch {
     console.warn('Database reset failed, continuing with existing schema');
   }
 
@@ -46,12 +46,14 @@ beforeAll(async () => {
       env: { ...process.env, DATABASE_URL: process.env.TEST_DATABASE_URL },
       stdio: 'inherit',
     });
-  } catch (error) {
+  } catch {
     console.warn('Test seeding failed, continuing without seed data');
   }
 });
 
 beforeEach(async () => {
+  if (!prisma) return;
+
   // Clean up data between tests but keep schema and seed data
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
@@ -62,10 +64,14 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-  await prisma.$disconnect();
+  if (prisma) {
+    await prisma.$disconnect();
+  }
 });
 
 async function seedBasicTestData() {
+  if (!prisma) return;
+
   // Create test categories
   const testCategory = await prisma.foodCategory.create({
     data: {
@@ -109,7 +115,9 @@ async function seedBasicTestData() {
 }
 
 // Export prisma instance for use in integration tests
-global.testPrisma = prisma;
+if (prisma) {
+  global.testPrisma = prisma;
+}
 
 declare global {
   var testPrisma: PrismaClient;

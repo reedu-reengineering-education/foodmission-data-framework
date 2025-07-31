@@ -94,12 +94,12 @@ expect.extend({
     const pass = received instanceof Date && !isNaN(received.getTime());
     if (pass) {
       return {
-        message: () => `expected ${received} not to be a valid date`,
+        message: () => `expected ${String(received)} not to be a valid date`,
         pass: true,
       };
     } else {
       return {
-        message: () => `expected ${received} to be a valid date`,
+        message: () => `expected ${String(received)} to be a valid date`,
         pass: false,
       };
     }
@@ -125,6 +125,7 @@ expect.extend({
 
 // Declare global types for TypeScript
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toBeValidDate(): R;

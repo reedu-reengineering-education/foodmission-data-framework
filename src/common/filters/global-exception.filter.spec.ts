@@ -3,10 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ArgumentsHost } from '@nestjs/common';
 import { GlobalExceptionFilter } from './global-exception.filter';
 import { LoggingService } from '../logging/logging.service';
-import {
-  BusinessException,
-  ResourceNotFoundException,
-} from '../exceptions/business.exception';
+import { ResourceNotFoundException } from '../exceptions/business.exception';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 describe('GlobalExceptionFilter', () => {

@@ -10,9 +10,9 @@ import { FoodQueryDto } from '../dto/food-query.dto';
 
 describe('FoodService', () => {
   let service: FoodService;
-  let foodRepository: jest.Mocked<FoodRepository>;
-  let categoryRepository: jest.Mocked<FoodCategoryRepository>;
-  let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
+  let mockFoodRepository: jest.Mocked<FoodRepository>;
+  let mockCategoryRepository: jest.Mocked<FoodCategoryRepository>;
+  let mockOpenFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
   const mockFood = {
     id: 'food-1',
@@ -98,9 +98,9 @@ describe('FoodService', () => {
     }).compile();
 
     service = module.get<FoodService>(FoodService);
-    foodRepository = module.get(FoodRepository);
-    categoryRepository = module.get(FoodCategoryRepository);
-    openFoodFactsService = module.get(OpenFoodFactsService);
+    mockFoodRepository = module.get(FoodRepository);
+    mockCategoryRepository = module.get(FoodCategoryRepository);
+    mockOpenFoodFactsService = module.get(OpenFoodFactsService);
   });
 
   afterEach(() => {

@@ -20,6 +20,26 @@ import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UserProfileService } from './user-profile.service';
 
+interface KeycloakUser {
+  sub: string;
+  email: string;
+  name?: string;
+  given_name?: string;
+  family_name?: string;
+  preferred_username?: string;
+  resource_access?: {
+    [key: string]: {
+      roles: string[];
+    };
+  };
+  exp: number;
+  iat: number;
+}
+
+interface AuthenticatedRequest {
+  user: KeycloakUser;
+}
+
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
@@ -78,7 +98,7 @@ export class AuthController {
       },
     },
   })
-  async getProfile(@Request() req: any) {
+  async getProfile(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
@@ -102,7 +122,10 @@ export class AuthController {
     description: 'User preferences object',
     schema: { type: 'object' },
   })
-  async updatePreferences(@Request() req: any, @Body() preferences: any) {
+  async updatePreferences(
+    @Request() req: AuthenticatedRequest,
+    @Body() preferences: Record<string, unknown>,
+  ) {
     const user = req.user;
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
@@ -124,7 +147,10 @@ export class AuthController {
     description: 'User settings object',
     schema: { type: 'object' },
   })
-  async updateSettings(@Request() req: any, @Body() settings: any) {
+  async updateSettings(
+    @Request() req: AuthenticatedRequest,
+    @Body() settings: Record<string, unknown>,
+  ) {
     const user = req.user;
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
@@ -156,7 +182,7 @@ export class AuthController {
       },
     },
   })
-  async healthCheck() {
+  healthCheck() {
     return { status: 'ok', service: 'auth' };
   }
 
@@ -215,7 +241,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: 'User not authenticated - JWT token required',
   })
-  async getTokenInfo(@Request() req: any) {
+  getTokenInfo(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
@@ -263,7 +289,7 @@ export class AuthController {
     status: 403,
     description: 'Forbidden - admin role required',
   })
-  async adminEndpoint() {
+  adminEndpoint() {
     return { message: 'This endpoint is only accessible to admins' };
   }
 }

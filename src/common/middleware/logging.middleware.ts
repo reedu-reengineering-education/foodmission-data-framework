@@ -78,7 +78,7 @@ export class LoggingMiddleware implements NestMiddleware {
           );
         }
       }
-    } catch (error) {
+    } catch {
       // Ignore JWT parsing errors - user context is optional
     }
   }

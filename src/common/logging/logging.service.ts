@@ -1,7 +1,7 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import * as winston from 'winston';
 import { createLoggerConfig, createWinstonLogger } from './logger.config';
-import * as cls from 'cls-hooked';
+import cls from 'cls-hooked';
 
 export interface LogContext {
   correlationId?: string;
@@ -31,7 +31,7 @@ export class LoggingService implements LoggerService {
   setCorrelationId(correlationId: string): void {
     try {
       this.namespace.set('correlationId', correlationId);
-    } catch (error) {
+    } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
   }
@@ -52,7 +52,7 @@ export class LoggingService implements LoggerService {
       if (userEmail) {
         this.namespace.set('userEmail', userEmail);
       }
-    } catch (error) {
+    } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
   }
@@ -75,7 +75,7 @@ export class LoggingService implements LoggerService {
       Object.keys(context).forEach((key) => {
         this.namespace.set(key, context[key]);
       });
-    } catch (error) {
+    } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
   }

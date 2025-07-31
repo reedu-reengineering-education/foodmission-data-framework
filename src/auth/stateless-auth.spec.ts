@@ -44,6 +44,8 @@ describe('Stateless Authentication', () => {
         email: 'test@example.com',
         given_name: 'John',
         family_name: 'Doe',
+        exp: Math.floor(Date.now() / 1000) + 3600,
+        iat: Math.floor(Date.now() / 1000),
       };
 
       const mockProfile = {
@@ -68,7 +70,7 @@ describe('Stateless Authentication', () => {
     });
 
     it('should throw UnauthorizedException if user not authenticated', async () => {
-      const req = { user: null };
+      const req = { user: null } as any;
 
       await expect(controller.getProfile(req)).rejects.toThrow(
         'User not authenticated',
@@ -131,7 +133,7 @@ describe('Stateless Authentication', () => {
   });
 
   describe('getTokenInfo', () => {
-    it('should return JWT token information', async () => {
+    it('should return JWT token information', () => {
       const mockUser = {
         sub: 'keycloak-user-id',
         email: 'test@example.com',
@@ -140,15 +142,15 @@ describe('Stateless Authentication', () => {
         family_name: 'Doe',
         resource_access: {
           'foodmission-api': {
-            roles: ['user', 'admin']
-          }
+            roles: ['user', 'admin'],
+          },
         },
         exp: 1640995200,
         iat: 1640991600,
       };
 
       const req = { user: mockUser };
-      const result = await controller.getTokenInfo(req);
+      const result = controller.getTokenInfo(req);
 
       expect(result).toEqual({
         sub: mockUser.sub,
@@ -164,8 +166,8 @@ describe('Stateless Authentication', () => {
   });
 
   describe('healthCheck', () => {
-    it('should return health status', async () => {
-      const result = await controller.healthCheck();
+    it('should return health status', () => {
+      const result = controller.healthCheck();
 
       expect(result).toEqual({
         status: 'ok',
@@ -175,8 +177,8 @@ describe('Stateless Authentication', () => {
   });
 
   describe('adminEndpoint', () => {
-    it('should return admin message', async () => {
-      const result = await controller.adminEndpoint();
+    it('should return admin message', () => {
+      const result = controller.adminEndpoint();
 
       expect(result).toEqual({
         message: 'This endpoint is only accessible to admins',

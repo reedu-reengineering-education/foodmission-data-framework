@@ -106,7 +106,7 @@ export class CacheInvalidationService {
   async invalidateByPattern(pattern: string): Promise<void> {
     // For Redis pattern matching, we would use SCAN command
     // For now, we'll implement specific pattern handling
-    const keysToInvalidate = await this.getKeysByPattern(pattern);
+    const keysToInvalidate = this.getKeysByPattern(pattern);
     await this.executeInvalidation(keysToInvalidate);
 
     this.logger.debug(
@@ -141,9 +141,9 @@ export class CacheInvalidationService {
   /**
    * Time-based cache invalidation
    */
-  async scheduleInvalidation(keys: string[], delayMs: number): Promise<void> {
-    setTimeout(async () => {
-      await this.executeInvalidation(keys);
+  scheduleInvalidation(keys: string[], delayMs: number): void {
+    setTimeout(() => {
+      void this.executeInvalidation(keys);
       this.logger.debug(
         `Scheduled cache invalidation executed for: ${keys.join(', ')}`,
       );
@@ -202,10 +202,10 @@ export class CacheInvalidationService {
   /**
    * Get cache invalidation statistics
    */
-  async getInvalidationStats(): Promise<{
+  getInvalidationStats(): {
     strategiesCount: number;
     strategies: string[];
-  }> {
+  } {
     return {
       strategiesCount: this.strategies.size,
       strategies: Array.from(this.strategies.keys()),
@@ -227,7 +227,7 @@ export class CacheInvalidationService {
 
       // Handle pattern keys (in a real implementation, you'd use Redis SCAN)
       for (const patternKey of patternKeys) {
-        const matchingKeys = await this.getKeysByPattern(patternKey);
+        const matchingKeys = this.getKeysByPattern(patternKey);
         if (matchingKeys.length > 0) {
           await this.cache.delMany(matchingKeys);
         }
@@ -237,7 +237,7 @@ export class CacheInvalidationService {
     }
   }
 
-  private async getKeysByPattern(pattern: string): Promise<string[]> {
+  private getKeysByPattern(pattern: string): string[] {
     // In a real implementation, you would use Redis SCAN command
     // For now, return empty array as we don't have pattern matching implemented
     this.logger.debug(`Pattern matching not implemented for: ${pattern}`);

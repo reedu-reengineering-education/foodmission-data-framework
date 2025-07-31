@@ -28,7 +28,7 @@ describe('Database Seeding (e2e)', () => {
       await prisma.user.deleteMany();
       await prisma.food.deleteMany();
       await prisma.foodCategory.deleteMany();
-    } catch (error) {
+    } catch {
       // If there are constraint issues, try to clean up more thoroughly
       await prisma.$executeRaw`TRUNCATE TABLE "users", "foods", "food_categories" RESTART IDENTITY CASCADE`;
     }

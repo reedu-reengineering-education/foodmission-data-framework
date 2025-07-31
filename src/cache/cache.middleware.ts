@@ -36,13 +36,12 @@ export class CacheMiddleware implements NestMiddleware {
 
       // Intercept the response
       const originalSend = res.json;
-      const self = this;
-      res.json = function (body: any) {
+      res.json = (body: any) => {
         // Cache successful responses
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // Cache for 5 minutes by default
           const ttl = req.headers['cache-control']
-            ? self.parseCacheControl(req.headers['cache-control'])
+            ? this.parseCacheControl(req.headers['cache-control'])
             : 300;
 
           if (ttl > 0) {

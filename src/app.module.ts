@@ -13,7 +13,7 @@ import { CacheModule } from './cache/cache.module';
 import { SecurityModule } from './security/security.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
-import { CacheMiddleware } from './cache/cache.middleware';
+
 import { SecurityMiddleware } from './security/middleware/security.middleware';
 
 @Module({

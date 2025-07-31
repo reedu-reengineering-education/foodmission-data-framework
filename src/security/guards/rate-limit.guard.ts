@@ -17,7 +17,7 @@ export class RateLimitGuard implements CanActivate {
 
   constructor(private readonly securityService: SecurityService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
 
     // Skip rate limiting for health checks

@@ -27,7 +27,6 @@ export class HealthService {
       : ['database', 'keycloak', 'openFoodFacts'];
 
     const allHealthy = requiredChecks.every(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (checkName) => checks[checkName]?.status === 'ok',
     );
 

@@ -64,10 +64,10 @@ export class CacheInterceptor implements NestInterceptor {
 
       // Execute handler and cache result
       return next.handle().pipe(
-        tap(async (response) => {
+        tap((response) => {
           if (response && !response.error) {
             const ttlMs = cacheTTL ? cacheTTL * 1000 : undefined;
-            await this.cacheManager.set(fullCacheKey, response, ttlMs);
+            void this.cacheManager.set(fullCacheKey, response, ttlMs);
             this.logger.debug(`Cached response for key: ${fullCacheKey}`);
           }
         }),

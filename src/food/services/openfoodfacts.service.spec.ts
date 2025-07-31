@@ -7,7 +7,6 @@ import { OpenFoodFactsService } from './openfoodfacts.service';
 import {
   OpenFoodFactsProduct,
   OpenFoodFactsSearchResponse,
-  ProductInfo,
   OpenFoodFactsSearchOptions,
 } from '../interfaces/openfoodfacts.interface';
 

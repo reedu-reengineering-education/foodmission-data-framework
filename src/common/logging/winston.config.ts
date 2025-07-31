@@ -11,10 +11,12 @@ const developmentFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
   winston.format.printf(
     ({ timestamp, level, message, context, stack, correlationId }) => {
-      const correlationInfo = correlationId ? `[${correlationId}] ` : '';
+      const correlationInfo = correlationId
+        ? `[${JSON.stringify(correlationId)}] `
+        : '';
       const contextInfo = context ? ` ${JSON.stringify(context)}` : '';
-      const stackInfo = stack ? `\n${stack}` : '';
-      return `${timestamp} ${level}: ${correlationInfo}${message}${contextInfo}${stackInfo}`;
+      const stackInfo = stack ? `\n${JSON.stringify(stack)}` : '';
+      return `${String(timestamp)} ${String(level)}: ${correlationInfo}${String(message)}${contextInfo}${stackInfo}`;
     },
   ),
 );
