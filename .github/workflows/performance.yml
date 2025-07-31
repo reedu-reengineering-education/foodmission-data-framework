@@ -46,10 +46,10 @@ jobs:
     env:
       DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_perf
       REDIS_URL: redis://localhost:6379
-      JWT_SECRET: perf-test-jwt-secret
+      JWT_SECRET: perf-test-jwt-secret-which-is-at-least-thirty-two-characters-long
       KEYCLOAK_BASE_URL: http://localhost:8080
       KEYCLOAK_REALM: test-realm
-      KEYCLOAK_CLIENT_ID: test-client
+      KEYCLOAK_CLIENT_ID: foodmission-api
       KEYCLOAK_CLIENT_SECRET: test-secret
       NODE_ENV: test
 
@@ -262,7 +262,7 @@ jobs:
       - name: Run memory profiling
         run: |
           # Start application with memory profiling
-          node --max-old-space-size=512 --expose-gc dist/main.js &
+          node --max-old-space-size=512 --expose-gc dist/src/main.js &
           APP_PID=$!
 
           sleep 30
