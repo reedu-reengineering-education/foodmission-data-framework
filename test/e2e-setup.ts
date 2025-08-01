@@ -11,6 +11,7 @@ import { PrismaService } from '../src/database/prisma.service';
 import { GlobalExceptionFilter } from '../src/common/filters/global-exception.filter';
 import { LoggingService } from '../src/common/logging/logging.service';
 import { execSync } from 'child_process';
+import 'reflect-metadata';
 
 let app: INestApplication | undefined;
 let prisma: PrismaClient | undefined;
@@ -66,6 +67,45 @@ beforeAll(async () => {
   app.useGlobalFilters(new GlobalExceptionFilter(loggingService));
 
   await app.init();
+
+  // Set up global test utilities
+  global.e2eTestUtils = {
+    app,
+    prisma,
+    moduleFixture,
+    mockAuthGuard,
+    mockRolesGuard,
+
+    // Helper to create authenticated request context
+    createAuthContext: (userId = 'e2e-user-1', roles = ['user']) => ({
+      user: {
+        sub: userId,
+        preferred_username: 'testuser',
+        email: 'test@example.com',
+        roles,
+      },
+    }),
+
+    // Helper to get test data
+    getTestData: async () => {
+      if (!prisma) return { foods: [], users: [] };
+
+      const foods = await prisma.food.findMany({
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          barcode: true,
+          createdBy: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      const users = await prisma.user.findMany();
+
+      return { foods, users };
+    },
+  };
 });
 
 beforeEach(async () => {
@@ -164,47 +204,6 @@ const mockAuthGuard = {
 const mockRolesGuard = {
   canActivate: jest.fn(() => true),
 };
-
-// Export test utilities
-if (app && prisma && moduleFixture) {
-  global.e2eTestUtils = {
-    app,
-    prisma,
-    moduleFixture,
-    mockAuthGuard,
-    mockRolesGuard,
-
-    // Helper to create authenticated request context
-    createAuthContext: (userId = 'e2e-user-1', roles = ['user']) => ({
-      user: {
-        sub: userId,
-        preferred_username: 'testuser',
-        email: 'test@example.com',
-        roles,
-      },
-    }),
-
-    // Helper to get test data
-    getTestData: async () => {
-      if (!prisma) return { foods: [], users: [] };
-
-      const foods = await prisma.food.findMany({
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          barcode: true,
-          createdBy: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-      const users = await prisma.user.findMany();
-
-      return { foods, users };
-    },
-  };
-}
 
 declare global {
   var e2eTestUtils: {

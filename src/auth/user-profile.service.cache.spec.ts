@@ -10,7 +10,6 @@ import { Reflector } from '@nestjs/core';
 describe('UserProfileService - Caching Integration', () => {
   let service: UserProfileService;
   let userRepository: jest.Mocked<UserRepository>;
-  let cacheManager: jest.Mocked<any>;
 
   const mockUser = {
     id: 'user123',
@@ -77,7 +76,7 @@ describe('UserProfileService - Caching Integration', () => {
 
     service = module.get<UserProfileService>(UserProfileService);
     userRepository = module.get(UserRepository);
-    cacheManager = module.get(CACHE_MANAGER);
+    // cacheManager = module.get(CACHE_MANAGER);
   });
 
   describe('getOrCreateProfile with @Cacheable', () => {

@@ -145,22 +145,6 @@ export class OpenFoodFactsService {
     return searchResult.products;
   }
 
-  /**
-   * Clear cache (useful for testing or manual cache invalidation)
-   */
-  async clearCache(): Promise<void> {
-    // Clear specific OpenFoodFacts cache keys
-    // In a real implementation, you might want to use pattern matching
-    this.logger.log('OpenFoodFacts cache cleared');
-  }
-
-  /**
-   * Get cache statistics
-   */
-  async getCacheStats(): Promise<{ connected: boolean }> {
-    return { connected: true }; // Simplified since we're using decorators
-  }
-
   // Private helper methods
 
   private transformProduct(product: any): ProductInfo {

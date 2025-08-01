@@ -21,12 +21,13 @@ export class CacheService {
   async get<T>(key: string): Promise<T | undefined> {
     try {
       const value = await this.cacheManager.get<T>(key);
-      if (value !== undefined) {
+      if (value !== undefined && value !== null) {
         this.logger.debug(`Cache hit for key: ${key}`);
+        return value as T;
       } else {
         this.logger.debug(`Cache miss for key: ${key}`);
+        return undefined;
       }
-      return value as T;
     } catch (error) {
       this.logger.error(`Cache get error for key ${key}:`, error);
       return undefined;

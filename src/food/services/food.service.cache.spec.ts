@@ -13,7 +13,6 @@ describe('FoodService - Caching Integration', () => {
   let service: FoodService;
   let foodRepository: jest.Mocked<FoodRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
-  let cacheManager: jest.Mocked<any>;
 
   const mockFood = {
     id: '123',
@@ -85,7 +84,7 @@ describe('FoodService - Caching Integration', () => {
     service = module.get<FoodService>(FoodService);
     foodRepository = module.get(FoodRepository);
     openFoodFactsService = module.get(OpenFoodFactsService);
-    cacheManager = module.get(CACHE_MANAGER);
+    // cacheManager = module.get(CACHE_MANAGER);
   });
 
   describe('findOne with @Cacheable', () => {

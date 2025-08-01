@@ -18,7 +18,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:unit": "jest --testPathPatterns=\"src/.*\\.spec\\.ts$\"",
     "test:integration": "jest --testPathPatterns=\"test/.*\\.integration\\.spec\\.ts$\"",
-    "test:e2e": "jest --testPathPatterns=\"test/.*\\.e2e-spec\\.ts$\"",
+    "test:e2e": "jest --config test/jest-e2e.json",
     "test:all": "jest --coverage --testPathPatterns=\"(src/.*\\.spec\\.ts$|test/.*\\.(integration|e2e)-spec\\.ts$)\"",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",

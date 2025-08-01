@@ -5,7 +5,7 @@ import {
   CallHandler,
   Inject,
 } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -20,10 +20,7 @@ export class CacheEvictInterceptor implements NestInterceptor {
     private readonly logger: LoggingService,
   ) {}
 
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const handler = context.getHandler();
     const controller = context.getClass();
     const request = context.switchToHttp().getRequest();
@@ -42,26 +39,18 @@ export class CacheEvictInterceptor implements NestInterceptor {
     return next.handle().pipe(
       mergeMap(async (response) => {
         if (response && !response.error) {
-          await this.evictCacheKeys(evictKeys, request, response);
+          await this.evictCacheKeys(evictKeys, request);
         }
         return response;
       }),
     );
   }
 
-  private async evictCacheKeys(
-    keys: string[],
-    request: any,
-    response: any,
-  ): Promise<void> {
+  private async evictCacheKeys(keys: string[], request: any): Promise<void> {
     for (const keyPattern of keys) {
       try {
         // Replace placeholders in key pattern with actual values
-        const resolvedKey = this.resolveKeyPattern(
-          keyPattern,
-          request,
-          response,
-        );
+        const resolvedKey = this.resolveKeyPattern(keyPattern, request);
         await this.cacheManager.del(resolvedKey);
         this.logger.debug(`Evicted cache key: ${resolvedKey}`);
       } catch (error) {
@@ -70,11 +59,7 @@ export class CacheEvictInterceptor implements NestInterceptor {
     }
   }
 
-  private resolveKeyPattern(
-    pattern: string,
-    request: any,
-    response: any,
-  ): string {
+  private resolveKeyPattern(pattern: string, request: any): string {
     const userId = request.user?.id || 'anonymous';
 
     // Replace common placeholders

@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsString, IsOptional, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateFoodDto } from './create-food.dto';
 

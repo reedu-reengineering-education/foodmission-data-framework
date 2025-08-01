@@ -79,7 +79,7 @@ describe('CacheEvictInterceptor', () => {
 
       reflector.getAllAndOverride.mockReturnValue(null);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('result');
@@ -92,7 +92,7 @@ describe('CacheEvictInterceptor', () => {
 
       reflector.getAllAndOverride.mockReturnValue([]);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('result');
@@ -112,7 +112,7 @@ describe('CacheEvictInterceptor', () => {
         'foods:list',
       ]);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('success-result');
@@ -140,9 +140,9 @@ describe('CacheEvictInterceptor', () => {
       reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
 
       try {
-        const result = await interceptor.intercept(context, next);
+        const result = interceptor.intercept(context, next);
         await result.toPromise();
-      } catch (error) {
+      } catch {
         // Expected to throw
       }
 
@@ -155,7 +155,7 @@ describe('CacheEvictInterceptor', () => {
 
       reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       await result.toPromise();
 
       expect(cacheManager.del).not.toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe('CacheEvictInterceptor', () => {
         'barcode:{barcode}',
       ]);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       await result.toPromise();
 
       expect(cacheManager.del).toHaveBeenCalledWith('food:123');
@@ -195,7 +195,7 @@ describe('CacheEvictInterceptor', () => {
         'barcode:{barcode}',
       ]);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       await result.toPromise();
 
       expect(cacheManager.del).toHaveBeenCalledWith('food:');
@@ -211,7 +211,7 @@ describe('CacheEvictInterceptor', () => {
       reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
       cacheManager.del.mockRejectedValue(new Error('Cache deletion failed'));
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('result');
@@ -231,7 +231,7 @@ describe('CacheEvictInterceptor', () => {
         'static:key',
       ]);
 
-      const result = await interceptor.intercept(context, next);
+      const result = interceptor.intercept(context, next);
       await result.toPromise();
 
       expect(cacheManager.del).toHaveBeenCalledWith('foods:list');

@@ -10,8 +10,8 @@ describe('Database Seeding (e2e)', () => {
       datasources: {
         db: {
           url:
-            process.env.DATABASE_URL ||
-            'postgresql://postgres:postgres@localhost:5432/foodmission_test',
+            process.env.TEST_DATABASE_URL ||
+            'postgresql://postgres:password@localhost:5432/foodmission_test_db',
         },
       },
     });

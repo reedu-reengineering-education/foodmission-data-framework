@@ -98,7 +98,6 @@ describe('OpenFoodFactsService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    service.clearCache();
   });
 
   describe('getProductByBarcode', () => {
@@ -478,31 +477,6 @@ describe('OpenFoodFactsService', () => {
           }),
         }),
       );
-    });
-  });
-
-  describe('cache management', () => {
-    it('should clear cache', async () => {
-      await service.clearCache();
-      const stats = await service.getCacheStats();
-      expect(stats.connected).toBe(true);
-    });
-
-    it('should provide cache statistics', async () => {
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: mockProduct,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
-
-      httpService.get.mockReturnValueOnce(of(mockResponse));
-
-      await service.getProductByBarcode('3017620422003');
-
-      const stats = await service.getCacheStats();
-      expect(stats.connected).toBe(true);
     });
   });
 });
