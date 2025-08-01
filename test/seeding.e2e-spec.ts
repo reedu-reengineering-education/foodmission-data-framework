@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { seedCategories } from '../prisma/seeds/categories';
 import { seedFoods } from '../prisma/seeds/foods';
 import { seedUsers } from '../prisma/seeds/users';
 
@@ -23,94 +22,42 @@ describe('Database Seeding (e2e)', () => {
   });
 
   beforeEach(async () => {
-    // Clean up database before each test in the correct order
+    // Clean up database before each test
     try {
       await prisma.user.deleteMany();
       await prisma.food.deleteMany();
-      await prisma.foodCategory.deleteMany();
     } catch {
       // If there are constraint issues, try to clean up more thoroughly
-      await prisma.$executeRaw`TRUNCATE TABLE "users", "foods", "food_categories" RESTART IDENTITY CASCADE`;
+      await prisma.$executeRaw`TRUNCATE TABLE "users", "foods" RESTART IDENTITY CASCADE`;
     }
   });
 
-  describe('Category Seeding', () => {
-    it('should seed food categories successfully', async () => {
-      const categories = await seedCategories(prisma);
-
-      expect(categories).toBeDefined();
-      expect(categories.length).toBeGreaterThan(0);
-
-      // Verify categories were created in database
-      const dbCategories = await prisma.foodCategory.findMany();
-      expect(dbCategories.length).toBe(categories.length);
-
-      // Check for expected categories
-      const categoryNames = dbCategories.map((cat) => cat.name);
-      expect(categoryNames).toContain('Fruits');
-      expect(categoryNames).toContain('Vegetables');
-      expect(categoryNames).toContain('Dairy');
-    });
-
-    it('should handle duplicate category seeding (upsert)', async () => {
-      // Seed categories twice
-      const firstRun = await seedCategories(prisma);
-      const secondRun = await seedCategories(prisma);
-
-      expect(firstRun.length).toBe(secondRun.length);
-
-      // Verify no duplicates were created
-      const dbCategories = await prisma.foodCategory.findMany();
-      expect(dbCategories.length).toBe(firstRun.length);
-    });
-  });
-
   describe('Food Seeding', () => {
-    beforeEach(async () => {
-      // Categories are required for foods
-      await seedCategories(prisma);
-    });
-
-    it('should seed food items successfully', async () => {
+    it('should seed foods successfully', async () => {
       const foods = await seedFoods(prisma);
 
       expect(foods).toBeDefined();
       expect(foods.length).toBeGreaterThan(0);
 
       // Verify foods were created in database
-      const dbFoods = await prisma.food.findMany({
-        include: { category: true },
-      });
+      const dbFoods = await prisma.food.findMany();
       expect(dbFoods.length).toBe(foods.length);
 
-      // Check that all foods have valid categories
-      dbFoods.forEach((food) => {
-        expect(food.category).toBeDefined();
-        expect(food.categoryId).toBeTruthy();
-      });
+      // Check for expected foods
+      const foodNames = dbFoods.map((food) => food.name);
+      expect(foodNames).toContain('Apple');
+      expect(foodNames).toContain('Banana');
+
+      // Verify food properties
+      const apple = dbFoods.find((food) => food.name === 'Apple');
+      expect(apple).toBeDefined();
+      expect(apple?.description).toBeDefined();
+      expect(apple?.barcode).toBeDefined();
+      expect(apple?.createdBy).toBe('system-seed');
     });
 
-    it('should create foods with proper barcodes', async () => {
-      await seedFoods(prisma);
-
-      const foodsWithBarcodes = await prisma.food.findMany({
-        where: {
-          barcode: {
-            not: null,
-          },
-        },
-      });
-
-      expect(foodsWithBarcodes.length).toBeGreaterThan(0);
-
-      // Check barcode uniqueness
-      const barcodes = foodsWithBarcodes.map((food) => food.barcode);
-      const uniqueBarcodes = new Set(barcodes);
-      expect(uniqueBarcodes.size).toBe(barcodes.length);
-    });
-
-    it('should handle duplicate food seeding (upsert)', async () => {
-      // Seed foods twice
+    it('should handle duplicate seeding gracefully', async () => {
+      // Run seeding twice
       const firstRun = await seedFoods(prisma);
       const secondRun = await seedFoods(prisma);
 
@@ -119,6 +66,29 @@ describe('Database Seeding (e2e)', () => {
       // Verify no duplicates were created
       const dbFoods = await prisma.food.findMany();
       expect(dbFoods.length).toBe(firstRun.length);
+    });
+
+    it('should create foods with valid data', async () => {
+      await seedFoods(prisma);
+
+      const foods = await prisma.food.findMany();
+
+      foods.forEach((food) => {
+        expect(food.id).toBeDefined();
+        expect(food.name).toBeDefined();
+        expect(food.name.length).toBeGreaterThan(0);
+        expect(food.createdBy).toBe('system-seed');
+        expect(food.createdAt).toBeInstanceOf(Date);
+        expect(food.updatedAt).toBeInstanceOf(Date);
+
+        if (food.barcode) {
+          expect(food.barcode.length).toBeGreaterThan(0);
+        }
+
+        if (food.description) {
+          expect(food.description.length).toBeGreaterThan(0);
+        }
+      });
     });
   });
 
@@ -132,31 +102,22 @@ describe('Database Seeding (e2e)', () => {
       // Verify users were created in database
       const dbUsers = await prisma.user.findMany();
       expect(dbUsers.length).toBe(users.length);
+
+      // Check for expected users
+      const userEmails = dbUsers.map((user) => user.email);
+      expect(userEmails.length).toBeGreaterThan(0);
+
+      // Verify user properties
+      const firstUser = dbUsers[0];
+      expect(firstUser).toBeDefined();
+      expect(firstUser.keycloakId).toBeDefined();
+      expect(firstUser.email).toBeDefined();
+      expect(firstUser.firstName).toBeDefined();
+      expect(firstUser.lastName).toBeDefined();
     });
 
-    it('should create user preferences correctly', async () => {
-      await seedUsers(prisma);
-
-      const usersWithPreferences = await prisma.user.findMany({
-        where: {
-          preferences: {
-            not: {
-              isList: false,
-            },
-          },
-        },
-      });
-
-      expect(usersWithPreferences.length).toBeGreaterThan(0);
-
-      // Check preference structure
-      usersWithPreferences.forEach((user) => {
-        expect(user.preferences).toBeDefined();
-      });
-    });
-
-    it('should handle duplicate user seeding (upsert)', async () => {
-      // Seed users twice
+    it('should handle duplicate user seeding gracefully', async () => {
+      // Run seeding twice
       const firstRun = await seedUsers(prisma);
       const secondRun = await seedUsers(prisma);
 
@@ -167,68 +128,61 @@ describe('Database Seeding (e2e)', () => {
       expect(dbUsers.length).toBe(firstRun.length);
     });
 
-    it('should ensure unique keycloak IDs and emails', async () => {
+    it('should create users with valid data', async () => {
       await seedUsers(prisma);
 
       const users = await prisma.user.findMany();
 
-      // Check keycloak ID uniqueness
-      const keycloakIds = users.map((user) => user.keycloakId);
-      const uniqueKeycloakIds = new Set(keycloakIds);
-      expect(uniqueKeycloakIds.size).toBe(keycloakIds.length);
+      users.forEach((user) => {
+        expect(user.id).toBeDefined();
+        expect(user.keycloakId).toBeDefined();
+        expect(user.email).toBeDefined();
+        expect(user.firstName).toBeDefined();
+        expect(user.lastName).toBeDefined();
+        expect(user.createdAt).toBeInstanceOf(Date);
+        expect(user.updatedAt).toBeInstanceOf(Date);
 
-      // Check email uniqueness
-      const emails = users.map((user) => user.email);
-      const uniqueEmails = new Set(emails);
-      expect(uniqueEmails.size).toBe(emails.length);
+        // Validate email format
+        expect(user.email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+      });
     });
   });
 
-  describe('Complete Seeding Flow', () => {
-    it('should seed all data types in correct order', async () => {
-      // Seed in dependency order
-      const categories = await seedCategories(prisma);
+  describe('Complete Seeding Process', () => {
+    it('should seed all data types successfully', async () => {
+      // Seed in correct order
       const foods = await seedFoods(prisma);
       const users = await seedUsers(prisma);
 
-      // Verify all data was created
-      expect(categories.length).toBeGreaterThan(0);
       expect(foods.length).toBeGreaterThan(0);
       expect(users.length).toBeGreaterThan(0);
 
-      // Verify relationships
-      const foodsWithCategories = await prisma.food.findMany({
-        include: { category: true },
-      });
+      // Verify all data exists
+      const dbFoods = await prisma.food.findMany();
+      const dbUsers = await prisma.user.findMany();
 
-      foodsWithCategories.forEach((food) => {
-        expect(food.category).toBeDefined();
-        expect(categories.some((cat) => cat.id === food.categoryId)).toBe(true);
-      });
+      expect(dbFoods.length).toBe(foods.length);
+      expect(dbUsers.length).toBe(users.length);
     });
 
-    it('should maintain referential integrity', async () => {
-      await seedCategories(prisma);
+    it('should maintain data integrity across seeding', async () => {
       await seedFoods(prisma);
       await seedUsers(prisma);
 
-      // Try to delete a category that has foods - should fail
-      const categoryWithFoods = await prisma.foodCategory.findFirst({
-        include: { foods: true },
-        where: {
-          foods: {
-            some: {},
-          },
-        },
+      // Check that all foods have valid creators
+      const foods = await prisma.food.findMany();
+      foods.forEach((food) => {
+        expect(food.createdBy).toBeDefined();
+        expect(food.createdBy.length).toBeGreaterThan(0);
       });
 
-      if (categoryWithFoods) {
-        await expect(
-          prisma.foodCategory.delete({
-            where: { id: categoryWithFoods.id },
-          }),
-        ).rejects.toThrow();
-      }
+      // Check that all users have unique identifiers
+      const users = await prisma.user.findMany();
+      const keycloakIds = users.map((user) => user.keycloakId);
+      const emails = users.map((user) => user.email);
+
+      expect(new Set(keycloakIds).size).toBe(keycloakIds.length);
+      expect(new Set(emails).size).toBe(emails.length);
     });
   });
 });

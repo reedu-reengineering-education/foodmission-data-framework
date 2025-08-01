@@ -16,15 +16,9 @@ describe('FoodRepository', () => {
     description: 'Test Description',
     barcode: '1234567890',
     openFoodFactsId: 'off-123',
-    categoryId: 'category-1',
     createdBy: 'user-1',
     createdAt: new Date(),
     updatedAt: new Date(),
-    category: {
-      id: 'category-1',
-      name: 'Test Category',
-      description: 'Test Category Description',
-    },
   };
 
   let mockPrismaService: any;
@@ -117,7 +111,6 @@ describe('FoodRepository', () => {
       expect(result).toEqual(mockFood);
       expect(mockPrismaService.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
-        include: { category: true },
       });
     });
 
@@ -149,7 +142,6 @@ describe('FoodRepository', () => {
       expect(result).toEqual(mockFood);
       expect(mockPrismaService.food.findUnique).toHaveBeenCalledWith({
         where: { barcode: '1234567890' },
-        include: { category: true },
       });
     });
 
@@ -170,7 +162,6 @@ describe('FoodRepository', () => {
         name: 'New Food',
         description: 'New Description',
         barcode: '9876543210',
-        categoryId: 'category-1',
         createdBy: 'user-1',
       };
       mockPrismaService.food.create.mockResolvedValueOnce(mockFood);
@@ -180,14 +171,12 @@ describe('FoodRepository', () => {
       expect(result).toEqual(mockFood);
       expect(mockPrismaService.food.create).toHaveBeenCalledWith({
         data: createDto,
-        include: { category: true },
       });
     });
 
     it('should throw error for duplicate barcode', async () => {
       const createDto: CreateFoodDto = {
         name: 'New Food',
-        categoryId: 'category-1',
         createdBy: 'user-1',
       };
       const prismaError = new Prisma.PrismaClientKnownRequestError(
@@ -198,23 +187,6 @@ describe('FoodRepository', () => {
 
       await expect(repository.create(createDto)).rejects.toThrow(
         'Food with this barcode or OpenFoodFacts ID already exists',
-      );
-    });
-
-    it('should throw error for invalid category', async () => {
-      const createDto: CreateFoodDto = {
-        name: 'New Food',
-        categoryId: 'invalid-category',
-        createdBy: 'user-1',
-      };
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Foreign key constraint failed',
-        { code: 'P2003', clientVersion: '4.0.0' },
-      );
-      mockPrismaService.food.create.mockRejectedValueOnce(prismaError);
-
-      await expect(repository.create(createDto)).rejects.toThrow(
-        'Invalid category ID provided',
       );
     });
   });
@@ -236,7 +208,6 @@ describe('FoodRepository', () => {
       expect(mockPrismaService.food.update).toHaveBeenCalledWith({
         where: { id: 'food-1' },
         data: updateDto,
-        include: { category: true },
       });
     });
 
@@ -313,7 +284,7 @@ describe('FoodRepository', () => {
     });
 
     it('should count foods with filter', async () => {
-      const where = { categoryId: 'category-1' };
+      const where = { name: 'test' };
       mockPrismaService.food.count.mockResolvedValueOnce(3);
 
       const result = await repository.count(where);

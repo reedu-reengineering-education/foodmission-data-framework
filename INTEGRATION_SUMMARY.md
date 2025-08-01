@@ -25,7 +25,6 @@ The FOODMISSION Data Framework is a production-ready, scalable backend system fo
 ### Data Management
 
 - ✅ **Food Management**: Complete CRUD operations for food items
-- ✅ **Category Management**: Food categorization system
 - ✅ **User Management**: User profiles and preferences
 - ✅ **OpenFoodFacts Integration**: External API integration for nutritional data
 
@@ -217,11 +216,6 @@ src/
 - `DELETE /api/v1/foods/:id` - Delete food item
 - `GET /api/v1/foods/barcode/:barcode` - Get food by barcode
 - `POST /api/v1/foods/import/openfoodfacts` - Import from OpenFoodFacts
-
-### Category Management
-
-- `GET /api/v1/categories` - List food categories
-- `POST /api/v1/categories` - Create new category
 
 ### User Management
 

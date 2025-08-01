@@ -74,7 +74,6 @@ beforeEach(async () => {
   // Clean database between tests
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
-  await prisma.foodCategory.deleteMany();
 
   // Seed basic test data
   await seedE2ETestData();
@@ -92,21 +91,6 @@ afterAll(async () => {
 async function seedE2ETestData() {
   if (!prisma) return;
 
-  // Create test categories
-  const fruitCategory = await prisma.foodCategory.create({
-    data: {
-      name: 'Fruits',
-      description: 'Fresh fruits category',
-    },
-  });
-
-  const vegetableCategory = await prisma.foodCategory.create({
-    data: {
-      name: 'Vegetables',
-      description: 'Fresh vegetables category',
-    },
-  });
-
   // Create test foods
   await prisma.food.createMany({
     data: [
@@ -114,21 +98,18 @@ async function seedE2ETestData() {
         name: 'Apple',
         description: 'Fresh red apple',
         barcode: '1234567890',
-        categoryId: fruitCategory.id,
         createdBy: 'test-user',
       },
       {
         name: 'Banana',
         description: 'Yellow banana',
         barcode: '0987654321',
-        categoryId: fruitCategory.id,
         createdBy: 'test-user',
       },
       {
         name: 'Carrot',
         description: 'Orange carrot',
         barcode: '1122334455',
-        categoryId: vegetableCategory.id,
         createdBy: 'test-user',
       },
     ],
@@ -160,7 +141,6 @@ async function seedE2ETestData() {
       preferences: {
         dietaryRestrictions: ['vegetarian'],
         allergies: ['nuts'],
-        preferredCategories: ['Fruits'],
       },
     },
   });
@@ -171,7 +151,6 @@ async function seedE2ETestData() {
       preferences: {
         dietaryRestrictions: [],
         allergies: ['dairy'],
-        preferredCategories: ['Vegetables'],
       },
     },
   });
@@ -207,25 +186,22 @@ if (app && prisma && moduleFixture) {
 
     // Helper to get test data
     getTestData: async () => {
-      if (!prisma) return { categories: [], foods: [], users: [] };
+      if (!prisma) return { foods: [], users: [] };
 
-      const categories = await prisma.foodCategory.findMany();
       const foods = await prisma.food.findMany({
         select: {
           id: true,
           name: true,
           description: true,
           barcode: true,
-          categoryId: true,
           createdBy: true,
           createdAt: true,
           updatedAt: true,
-          category: true,
         },
       });
       const users = await prisma.user.findMany();
 
-      return { categories, foods, users };
+      return { foods, users };
     },
   };
 }

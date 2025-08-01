@@ -16,28 +16,16 @@ model Food {
   description       String?
   barcode           String?  @unique
   openFoodFactsId   String?  @unique
-  categoryId        String
-  category          FoodCategory @relation(fields: [categoryId], references: [id])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   createdBy         String
   
   @@index([name])
-  @@index([categoryId])
   @@index([createdAt])
-  @@index([name, categoryId])
   @@map("foods")
 }
 
-model FoodCategory {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  foods       Food[]
-  createdAt   DateTime @default(now())
-  
-  @@map("food_categories")
-}
+
 
 model User {
   id          String   @id @default(uuid())

@@ -11,7 +11,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 ## 🚀 Features
 
 - **Modern Architecture**: Built with NestJS, TypeScript, and Prisma ORM
-- **Food Data Management**: Complete CRUD operations for food items and categories
+- **Food Data Management**: Complete CRUD operations for food items
 - **OpenFoodFacts Integration**: Automatic nutritional data retrieval from external API
 - **User Management**: User profiles, preferences, and dietary restrictions
 - **Authentication & Authorization**: Keycloak integration with JWT tokens and role-based access control
@@ -209,11 +209,6 @@ The API documentation is automatically generated and available at:
 - `GET /api/v1/foods/barcode/:barcode` - Get food by barcode
 - `POST /api/v1/foods/import/openfoodfacts` - Import from OpenFoodFacts
 
-#### Categories
-
-- `GET /api/v1/categories` - List food categories
-- `POST /api/v1/categories` - Create new category
-
 #### User Management
 
 - `GET /api/v1/users/profile` - Get user profile
@@ -239,8 +234,7 @@ curl -X POST http://localhost:3000/api/v1/foods \
   -d '{
     "name": "Organic Banana",
     "description": "Fresh organic banana",
-    "barcode": "1234567890123",
-    "categoryId": "category-uuid"
+    "barcode": "1234567890123"
   }'
 ```
 
@@ -452,8 +446,7 @@ src/
 
 ```sql
 -- Core entities
-Food (id, name, description, barcode, openFoodFactsId, categoryId, createdBy)
-FoodCategory (id, name, description)
+Food (id, name, description, barcode, openFoodFactsId, createdBy)
 User (id, keycloakId, email, firstName, lastName)
 UserPreferences (id, userId, dietaryRestrictions, allergies, preferredCategories)
 ```

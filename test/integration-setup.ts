@@ -57,7 +57,6 @@ beforeEach(async () => {
   // Clean up data between tests but keep schema and seed data
   await prisma.user.deleteMany();
   await prisma.food.deleteMany();
-  await prisma.foodCategory.deleteMany();
 
   // Re-seed basic test data
   await seedBasicTestData();
@@ -72,21 +71,12 @@ afterAll(async () => {
 async function seedBasicTestData() {
   if (!prisma) return;
 
-  // Create test categories
-  const testCategory = await prisma.foodCategory.create({
-    data: {
-      name: 'Test-Category',
-      description: 'Test category for integration tests',
-    },
-  });
-
   // Create test food
   await prisma.food.create({
     data: {
       name: 'Test Food',
       description: 'Test food for integration tests',
       barcode: 'TEST123456',
-      categoryId: testCategory.id,
       createdBy: 'test-user',
     },
   });
@@ -108,7 +98,6 @@ async function seedBasicTestData() {
       preferences: {
         dietaryRestrictions: ['vegetarian'],
         allergies: ['nuts'],
-        preferredCategories: ['Test-Category'],
       },
     },
   });

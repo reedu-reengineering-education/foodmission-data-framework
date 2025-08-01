@@ -26,3 +26,13 @@ export const CacheTTL = (ttl: number) => SetMetadata(CACHE_TTL_METADATA, ttl);
  * @param key - Cache key prefix
  */
 export const CacheKey = (key: string) => SetMetadata(CACHE_KEY_METADATA, key);
+
+/**
+ * Decorator to evict cache entries after method execution
+ * @param keys - Array of cache key patterns to evict
+ */
+export const CacheEvict = (keys: string[]) => {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    SetMetadata('cache_evict_keys', keys)(target, propertyKey, descriptor);
+  };
+};

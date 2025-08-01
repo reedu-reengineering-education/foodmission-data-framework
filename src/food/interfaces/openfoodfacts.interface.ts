@@ -2,6 +2,7 @@
 export interface OpenFoodFactsProduct {
   code: string;
   product: {
+    _id?: string;
     product_name?: string;
     product_name_en?: string;
     generic_name?: string;
@@ -143,6 +144,7 @@ export interface NutritionalInfo {
 }
 
 export interface ProductInfo {
+  id: string;
   barcode: string;
   name: string;
   genericName?: string;

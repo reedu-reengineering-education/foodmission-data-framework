@@ -17,7 +17,6 @@ The FOODMISSION Data Framework includes a robust set of tools for:
 prisma/
 ├── seed.ts                 # Main seeding script
 ├── seeds/
-│   ├── categories.ts       # Food category seed data
 │   ├── foods.ts           # Food item seed data
 │   └── users.ts           # User and preferences seed data
 scripts/
@@ -41,7 +40,6 @@ npm run db:seed
 
 This creates:
 
-- 10 food categories (Fruits, Vegetables, Dairy, etc.)
 - 20+ sample food items with barcodes
 - 5 sample users with preferences
 
@@ -183,21 +181,6 @@ npm run dev:reset
 ```
 
 ## Data Structure
-
-### Food Categories
-
-Standard categories included in all environments:
-
-- Fruits
-- Vegetables
-- Dairy
-- Grains
-- Proteins
-- Beverages
-- Snacks
-- Condiments
-- Frozen Foods
-- Bakery
 
 ### Sample Foods
 

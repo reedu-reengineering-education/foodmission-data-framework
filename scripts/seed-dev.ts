@@ -9,7 +9,6 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { seedCategories } from '../prisma/seeds/categories';
 import { seedFoods } from '../prisma/seeds/foods';
 import { seedUsers } from '../prisma/seeds/users';
 
@@ -21,7 +20,6 @@ async function seedDevelopmentData() {
 
   try {
     // Run standard seeding
-    await seedCategories(prisma);
     await seedFoods(prisma);
     await seedUsers(prisma);
 
@@ -33,12 +31,10 @@ async function seedDevelopmentData() {
       {
         name: 'Test Food - No Barcode',
         description: 'Test food item without barcode for testing',
-        categoryName: 'Snacks',
       },
       {
         name: 'Test Food - With OpenFoodFacts',
         description: 'Test food with OpenFoodFacts integration',
-        categoryName: 'Beverages',
         barcode: '9999999999999',
         openFoodFactsId: 'test-off-id-123',
       },
@@ -46,38 +42,29 @@ async function seedDevelopmentData() {
         name: 'Test Food - Long Description',
         description:
           'This is a test food item with a very long description that should test how the system handles longer text content and ensure proper validation and display of extended descriptions in the user interface.',
-        categoryName: 'Condiments',
         barcode: '8888888888888',
       },
     ];
 
-    const categories = await prisma.foodCategory.findMany();
-    const categoryMap = new Map(categories.map((cat) => [cat.name, cat.id]));
-
     for (const foodInfo of devFoods) {
-      const categoryId = categoryMap.get(foodInfo.categoryName);
-      if (categoryId) {
-        await prisma.food.upsert({
-          where: {
-            barcode:
-              foodInfo.barcode ||
-              `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`,
-          },
-          update: {
-            name: foodInfo.name,
-            description: foodInfo.description,
-            categoryId,
-          },
-          create: {
-            name: foodInfo.name,
-            description: foodInfo.description,
-            categoryId,
-            barcode: foodInfo.barcode,
-            openFoodFactsId: (foodInfo as any).openFoodFactsId,
-            createdBy: 'dev-seed',
-          },
-        });
-      }
+      await prisma.food.upsert({
+        where: {
+          barcode:
+            foodInfo.barcode ||
+            `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`,
+        },
+        update: {
+          name: foodInfo.name,
+          description: foodInfo.description,
+        },
+        create: {
+          name: foodInfo.name,
+          description: foodInfo.description,
+          barcode: foodInfo.barcode,
+          openFoodFactsId: (foodInfo as any).openFoodFactsId,
+          createdBy: 'dev-seed',
+        },
+      });
     }
 
     // Add test users with edge cases
@@ -96,7 +83,6 @@ async function seedDevelopmentData() {
         preferences: {
           dietaryRestrictions: ['vegetarian', 'gluten-free', 'low-sodium'],
           allergies: ['nuts', 'dairy', 'eggs', 'soy', 'shellfish'],
-          preferredCategories: ['Fruits', 'Vegetables'],
         },
       },
     ];

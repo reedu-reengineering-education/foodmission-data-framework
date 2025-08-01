@@ -12,7 +12,6 @@ export interface CreateFoodDto {
   description?: string;
   barcode?: string;
   openFoodFactsId?: string;
-  categoryId: string;
   createdBy: string;
 }
 
@@ -21,15 +20,6 @@ export interface UpdateFoodDto {
   description?: string;
   barcode?: string;
   openFoodFactsId?: string;
-  categoryId?: string;
-}
-
-export interface FoodWithCategory extends Food {
-  category: {
-    id: string;
-    name: string;
-    description: string | null;
-  };
 }
 
 @Injectable()
@@ -45,7 +35,6 @@ export class FoodRepository
         take: options.take,
         where: options.where,
         orderBy: options.orderBy || { createdAt: 'desc' },
-        include: options.include,
       });
     } catch (error: unknown) {
       console.error('Error finding foods:', error);
@@ -57,9 +46,6 @@ export class FoodRepository
     try {
       return await this.prisma.food.findUnique({
         where: { id },
-        include: {
-          category: true,
-        },
       });
     } catch (error: unknown) {
       console.error('Error finding food by id:', error);
@@ -71,9 +57,6 @@ export class FoodRepository
     try {
       return await this.prisma.food.findUnique({
         where: { barcode },
-        include: {
-          category: true,
-        },
       });
     } catch (error: unknown) {
       console.error('Error finding food by barcode:', error);
@@ -85,9 +68,6 @@ export class FoodRepository
     try {
       return await this.prisma.food.findUnique({
         where: { openFoodFactsId },
-        include: {
-          category: true,
-        },
       });
     } catch (error: unknown) {
       console.error('Error finding food by OpenFoodFacts ID:', error);
@@ -97,7 +77,7 @@ export class FoodRepository
 
   async findWithPagination(
     options: FindAllOptions,
-  ): Promise<PaginatedResult<FoodWithCategory>> {
+  ): Promise<PaginatedResult<Food>> {
     try {
       const { skip = 0, take = 10, where, orderBy } = options;
 
@@ -107,9 +87,6 @@ export class FoodRepository
           take,
           where,
           orderBy: orderBy || { createdAt: 'desc' },
-          include: {
-            category: true,
-          },
         }),
         this.count(where),
       ]);
@@ -118,7 +95,7 @@ export class FoodRepository
       const totalPages = Math.ceil(total / take);
 
       return {
-        data: data as FoodWithCategory[],
+        data,
         total,
         page,
         limit: take,
@@ -146,7 +123,6 @@ export class FoodRepository
         skip: options.skip,
         take: options.take,
         orderBy: options.orderBy || { createdAt: 'desc' },
-        include: options.include,
       });
     } catch (error: unknown) {
       console.error('Error searching foods by name:', error);
@@ -154,34 +130,10 @@ export class FoodRepository
     }
   }
 
-  async findByCategory(
-    categoryId: string,
-    options: FindAllOptions = {},
-  ): Promise<Food[]> {
-    try {
-      return await this.prisma.food.findMany({
-        where: {
-          categoryId,
-          ...options.where,
-        },
-        skip: options.skip,
-        take: options.take,
-        orderBy: options.orderBy || { createdAt: 'desc' },
-        include: options.include,
-      });
-    } catch (error) {
-      console.error('Error finding foods by category:', error);
-      throw new Error('Failed to retrieve foods by category');
-    }
-  }
-
   async create(data: CreateFoodDto): Promise<Food> {
     try {
       return await this.prisma.food.create({
         data,
-        include: {
-          category: true,
-        },
       });
     } catch (error) {
       console.error('Error creating food:', error);
@@ -190,9 +142,6 @@ export class FoodRepository
           throw new Error(
             'Food with this barcode or OpenFoodFacts ID already exists',
           );
-        }
-        if (error.code === 'P2003') {
-          throw new Error('Invalid category ID provided');
         }
       }
       throw new Error('Failed to create food');
@@ -204,9 +153,6 @@ export class FoodRepository
       return await this.prisma.food.update({
         where: { id },
         data,
-        include: {
-          category: true,
-        },
       });
     } catch (error) {
       console.error('Error updating food:', error);
@@ -218,9 +164,6 @@ export class FoodRepository
           throw new Error(
             'Food with this barcode or OpenFoodFacts ID already exists',
           );
-        }
-        if (error.code === 'P2003') {
-          throw new Error('Invalid category ID provided');
         }
       }
       throw new Error('Failed to update food');

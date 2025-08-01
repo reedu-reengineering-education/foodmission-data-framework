@@ -109,7 +109,7 @@ The system provides automatic cache invalidation for common operations:
 ```typescript
 // Creating a food automatically invalidates related caches
 await this.optimizedDb.createFood(data);
-// Invalidates: foods:list, foods:count, food_categories:all
+// Invalidates: foods:list, foods:count
 
 // Updating a food invalidates specific caches
 await this.optimizedDb.updateFood(id, data);
@@ -190,9 +190,8 @@ The following indexes have been added for optimal query performance:
 **Foods Table:**
 
 - `name` - For name-based searches
-- `categoryId` - For category filtering
 - `createdAt` - For date-based sorting
-- `(name, categoryId)` - Composite index for combined queries
+- `barcode` - For barcode lookups
 
 **Users Table:**
 
@@ -255,7 +254,6 @@ export class CacheModule {}
 
 ### Cache TTL Guidelines
 
-- **Static data** (categories): 30 minutes (1800s)
 - **Dynamic data** (foods list): 5 minutes (300s)
 - **Search results**: 3 minutes (180s)
 - **User data**: 15 minutes (900s)

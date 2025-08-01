@@ -47,15 +47,4 @@ export class UpdateFoodDto extends PartialType(CreateFoodDto) {
   @IsString()
   @MaxLength(100)
   openFoodFactsId?: string;
-
-  @ApiProperty({
-    description: 'UUID of the food category this item belongs to',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-    format: 'uuid',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @IsUUID()
-  categoryId?: string;
 }

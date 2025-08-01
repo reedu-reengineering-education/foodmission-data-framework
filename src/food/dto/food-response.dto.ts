@@ -1,31 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FoodCategoryResponseDto {
-  @ApiProperty({
-    description: 'Unique identifier for the food category',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-    format: 'uuid',
-  })
-  @Expose()
-  id: string;
-
-  @ApiProperty({
-    description: 'Name of the food category',
-    example: 'Dairy Products',
-  })
-  @Expose()
-  name: string;
-
-  @ApiProperty({
-    description: 'Description of the food category',
-    example: 'Milk, cheese, yogurt and other dairy products',
-    required: false,
-  })
-  @Expose()
-  description?: string;
-}
-
 export class NutritionalInfoDto {
   @ApiProperty({
     description: 'Energy content in kilocalories per 100g',
@@ -297,14 +272,6 @@ export class FoodResponseDto {
   })
   @Expose()
   openFoodFactsId?: string;
-
-  @ApiProperty({
-    description: 'Food category information',
-    type: () => FoodCategoryResponseDto,
-  })
-  @Expose()
-  @Type(() => FoodCategoryResponseDto)
-  category: FoodCategoryResponseDto;
 
   @ApiProperty({
     description: 'Additional information from OpenFoodFacts database',

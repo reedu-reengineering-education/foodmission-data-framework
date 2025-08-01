@@ -15,10 +15,6 @@ export class FoodQueryDto {
   search?: string;
 
   @IsOptional()
-  @IsUUID()
-  categoryId?: string;
-
-  @IsOptional()
   @IsString()
   barcode?: string;
 

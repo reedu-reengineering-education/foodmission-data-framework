@@ -37,9 +37,7 @@
           }
         },
         "summary": "Get Keycloak authentication info",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/profile": {
@@ -90,9 +88,7 @@
           }
         ],
         "summary": "Get authenticated user profile",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/profile/preferences": {
@@ -122,9 +118,7 @@
           }
         ],
         "summary": "Update user preferences",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/profile/settings": {
@@ -154,9 +148,7 @@
           }
         ],
         "summary": "Update user settings",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/health": {
@@ -187,9 +179,7 @@
           }
         },
         "summary": "Authentication service health check",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/token-info": {
@@ -232,10 +222,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "example": [
-                        "user",
-                        "admin"
-                      ]
+                      "example": ["user", "admin"]
                     },
                     "exp": {
                       "type": "number",
@@ -262,9 +249,7 @@
           }
         ],
         "summary": "Get JWT token information",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/admin-only": {
@@ -302,9 +287,7 @@
           }
         ],
         "summary": "Admin-only test endpoint",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/users": {
@@ -327,9 +310,7 @@
           }
         },
         "summary": "Create a new user",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       },
       "get": {
         "operationId": "findAll",
@@ -340,9 +321,7 @@
           }
         },
         "summary": "Get all users",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       }
     },
     "/api/v1/users/{id}": {
@@ -367,9 +346,7 @@
           }
         },
         "summary": "Get user by ID",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       },
       "patch": {
         "operationId": "update",
@@ -402,9 +379,7 @@
           }
         },
         "summary": "Update user",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       },
       "delete": {
         "operationId": "remove",
@@ -427,9 +402,7 @@
           }
         },
         "summary": "Delete user",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       }
     },
     "/api/v1/users/{id}/preferences": {
@@ -451,9 +424,7 @@
           }
         },
         "summary": "Get user preferences",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       },
       "patch": {
         "operationId": "updatePreferences",
@@ -483,9 +454,7 @@
           }
         },
         "summary": "Update user preferences",
-        "tags": [
-          "users"
-        ]
+        "tags": ["users"]
       }
     },
     "/api/v1/foods": {
@@ -530,9 +499,7 @@
           }
         ],
         "summary": "Create a new food item",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       },
       "get": {
         "description": "Retrieves a paginated list of food items with optional filtering and sorting.",
@@ -554,9 +521,7 @@
           }
         },
         "summary": "Get all food items",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/foods/search/openfoodfacts": {
@@ -600,9 +565,7 @@
           }
         },
         "summary": "Search OpenFoodFacts database",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/foods/import/openfoodfacts/{barcode}": {
@@ -633,9 +596,7 @@
                     "description": "UUID of the food category to assign the imported food to"
                   }
                 },
-                "required": [
-                  "categoryId"
-                ]
+                "required": ["categoryId"]
               }
             }
           }
@@ -673,9 +634,7 @@
           }
         ],
         "summary": "Import food from OpenFoodFacts",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/foods/barcode/{barcode}": {
@@ -718,9 +677,7 @@
           }
         },
         "summary": "Find food by barcode",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/foods/{id}": {
@@ -764,9 +721,7 @@
           }
         },
         "summary": "Find food by ID",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       },
       "patch": {
         "description": "Updates a food item by its ID. Requires user or admin role.",
@@ -823,9 +778,7 @@
           }
         ],
         "summary": "Update food item",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       },
       "delete": {
         "description": "Deletes a food item by its ID. Requires admin role.",
@@ -862,9 +815,7 @@
           }
         ],
         "summary": "Delete food item",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/foods/{id}/openfoodfacts": {
@@ -909,9 +860,7 @@
           }
         },
         "summary": "Get OpenFoodFacts information for food item",
-        "tags": [
-          "foods"
-        ]
+        "tags": ["foods"]
       }
     },
     "/api/v1/health": {
@@ -989,9 +938,7 @@
           }
         },
         "summary": "Get application health status",
-        "tags": [
-          "Health"
-        ]
+        "tags": ["Health"]
       }
     },
     "/api/v1/health/ready": {
@@ -1007,9 +954,7 @@
           }
         },
         "summary": "Get readiness probe status",
-        "tags": [
-          "Health"
-        ]
+        "tags": ["Health"]
       }
     },
     "/api/v1/health/live": {
@@ -1040,9 +985,7 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": [
-                          "status"
-                        ],
+                        "required": ["status"],
                         "properties": {
                           "status": {
                             "type": "string"
@@ -1062,9 +1005,7 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": [
-                          "status"
-                        ],
+                        "required": ["status"],
                         "properties": {
                           "status": {
                             "type": "string"
@@ -1087,9 +1028,7 @@
                       },
                       "additionalProperties": {
                         "type": "object",
-                        "required": [
-                          "status"
-                        ],
+                        "required": ["status"],
                         "properties": {
                           "status": {
                             "type": "string"
@@ -1105,9 +1044,7 @@
           }
         },
         "summary": "Get liveness probe status",
-        "tags": [
-          "Health"
-        ]
+        "tags": ["Health"]
       }
     },
     "/api/v1/metrics": {
@@ -1126,9 +1063,7 @@
           }
         },
         "summary": "Get Prometheus metrics",
-        "tags": [
-          "Monitoring"
-        ]
+        "tags": ["Monitoring"]
       }
     },
     "/api/v1/performance/summary": {
@@ -1141,9 +1076,7 @@
           }
         },
         "summary": "Get performance summary",
-        "tags": [
-          "Performance"
-        ]
+        "tags": ["Performance"]
       }
     },
     "/api/v1/performance/cache/stats": {
@@ -1156,9 +1089,7 @@
           }
         },
         "summary": "Get cache statistics",
-        "tags": [
-          "Performance"
-        ]
+        "tags": ["Performance"]
       }
     },
     "/api/v1/performance/cache/hit-rate": {
@@ -1171,9 +1102,7 @@
           }
         },
         "summary": "Get cache hit rates by prefix",
-        "tags": [
-          "Performance"
-        ]
+        "tags": ["Performance"]
       }
     },
     "/api/v1/performance/database/stats": {
@@ -1186,9 +1115,7 @@
           }
         },
         "summary": "Get database performance statistics",
-        "tags": [
-          "Performance"
-        ]
+        "tags": ["Performance"]
       }
     },
     "/api/v1": {
@@ -1210,9 +1137,7 @@
           }
         },
         "summary": "Application health check",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     }
   },
@@ -1302,12 +1227,7 @@
             "description": "User settings"
           }
         },
-        "required": [
-          "keycloakId",
-          "email",
-          "firstName",
-          "lastName"
-        ]
+        "required": ["keycloakId", "email", "firstName", "lastName"]
       },
       "UpdateUserDto": {
         "type": "object",
@@ -1404,11 +1324,7 @@
             "format": "uuid"
           }
         },
-        "required": [
-          "name",
-          "categoryId",
-          "createdBy"
-        ]
+        "required": ["name", "categoryId", "createdBy"]
       },
       "FoodCategoryResponseDto": {
         "type": "object",
@@ -1430,10 +1346,7 @@
             "example": "Milk, cheese, yogurt and other dairy products"
           }
         },
-        "required": [
-          "id",
-          "name"
-        ]
+        "required": ["id", "name"]
       },
       "NutritionalInfoDto": {
         "type": "object",
@@ -1535,9 +1448,7 @@
           },
           "brands": {
             "description": "List of brands associated with the product",
-            "example": [
-              "Ferrero"
-            ],
+            "example": ["Ferrero"],
             "type": "array",
             "items": {
               "type": "string"
@@ -1562,10 +1473,7 @@
           },
           "allergens": {
             "description": "List of allergens present in the product",
-            "example": [
-              "Milk",
-              "Nuts"
-            ],
+            "example": ["Milk", "Nuts"],
             "type": "array",
             "items": {
               "type": "string"
@@ -1575,13 +1483,7 @@
             "type": "string",
             "description": "Nutri-Score grade (A, B, C, D, E)",
             "example": "D",
-            "enum": [
-              "A",
-              "B",
-              "C",
-              "D",
-              "E"
-            ]
+            "enum": ["A", "B", "C", "D", "E"]
           },
           "novaGroup": {
             "type": "number",
@@ -1716,13 +1618,7 @@
             "example": 15
           }
         },
-        "required": [
-          "data",
-          "total",
-          "page",
-          "limit",
-          "totalPages"
-        ]
+        "required": ["data", "total", "page", "limit", "totalPages"]
       },
       "UpdateFoodDto": {
         "type": "object",

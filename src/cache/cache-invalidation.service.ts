@@ -23,7 +23,7 @@ export class CacheInvalidationService {
     // Food-related invalidation strategies
     this.strategies.set('food:create', {
       pattern: 'foods',
-      dependencies: ['foods:list', 'foods:count', 'food_categories:all'],
+      dependencies: ['foods:list', 'foods:count'],
     });
 
     this.strategies.set('food:update', {
@@ -33,18 +33,7 @@ export class CacheInvalidationService {
 
     this.strategies.set('food:delete', {
       pattern: 'foods',
-      dependencies: ['foods:list', 'foods:count', 'food_categories:all'],
-    });
-
-    // Category-related invalidation strategies
-    this.strategies.set('category:create', {
-      pattern: 'food_categories',
-      dependencies: ['food_categories:all', 'food_categories:list'],
-    });
-
-    this.strategies.set('category:update', {
-      pattern: 'food_categories',
-      dependencies: ['food_categories:all', 'foods_by_category:*'],
+      dependencies: ['foods:list', 'foods:count'],
     });
 
     // User-related invalidation strategies

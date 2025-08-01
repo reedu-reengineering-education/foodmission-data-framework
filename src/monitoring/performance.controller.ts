@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PerformanceService } from './performance.service';
 import { CacheService } from '../cache/cache.service';
+import { Public } from 'nest-keycloak-connect';
 
 @ApiTags('Performance')
 @Controller('performance')
@@ -12,6 +13,7 @@ export class PerformanceController {
   ) {}
 
   @Get('summary')
+  @Public()
   @ApiOperation({ summary: 'Get performance summary' })
   @ApiResponse({
     status: 200,
@@ -31,6 +33,7 @@ export class PerformanceController {
   }
 
   @Get('cache/stats')
+  @Public()
   @ApiOperation({ summary: 'Get cache statistics' })
   @ApiResponse({
     status: 200,
@@ -41,13 +44,14 @@ export class PerformanceController {
   }
 
   @Get('cache/hit-rate')
+  @Public()
   @ApiOperation({ summary: 'Get cache hit rates by prefix' })
   @ApiResponse({
     status: 200,
     description: 'Cache hit rates retrieved successfully',
   })
   async getCacheHitRates() {
-    const prefixes = ['foods', 'users', 'food_categories', 'api'];
+    const prefixes = ['foods', 'users', 'api'];
     const hitRates = await Promise.all(
       prefixes.map(async (prefix) => ({
         prefix,
@@ -62,6 +66,7 @@ export class PerformanceController {
   }
 
   @Get('database/stats')
+  @Public()
   @ApiOperation({ summary: 'Get database performance statistics' })
   @ApiResponse({
     status: 200,

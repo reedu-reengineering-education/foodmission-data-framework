@@ -72,7 +72,7 @@ curl -X GET http://localhost:3000/api/v1/foods \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # With pagination and search
-curl -X GET "http://localhost:3000/api/v1/foods?page=1&limit=10&search=banana&categoryId=category-uuid" \
+curl -X GET "http://localhost:3000/api/v1/foods?page=1&limit=10&search=banana" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # With OpenFoodFacts data
@@ -186,42 +186,6 @@ curl -X PUT http://localhost:3000/api/v1/foods/food-uuid \
 ```bash
 curl -X DELETE http://localhost:3000/api/v1/foods/food-uuid \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-## Category Management
-
-### List Categories
-
-```bash
-curl -X GET http://localhost:3000/api/v1/categories \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**Response:**
-
-```json
-{
-  "data": [
-    {
-      "id": "category-uuid",
-      "name": "Fruits",
-      "description": "Fresh fruits and fruit products",
-      "createdAt": "2025-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
-
-### Create Category
-
-```bash
-curl -X POST http://localhost:3000/api/v1/categories \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "Vegetables",
-    "description": "Fresh vegetables and vegetable products"
-  }'
 ```
 
 ## User Management

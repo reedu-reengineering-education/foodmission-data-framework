@@ -2,9 +2,9 @@ import { Module, Global } from '@nestjs/common';
 import { CacheModule as NestCacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheService } from './cache.service';
-import { CacheInvalidationService } from './cache-invalidation.service';
+import { CacheInterceptor } from './cache.interceptor';
+import { CacheEvictInterceptor } from './cache-evict.interceptor';
 import Keyv from 'keyv';
-import { CacheableMemory } from 'cacheable';
 import KeyvRedis from '@keyv/redis';
 
 @Global()
@@ -19,14 +19,7 @@ import KeyvRedis from '@keyv/redis';
         );
 
         return {
-          stores: [
-            new Keyv({
-              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 }),
-            }),
-            new Keyv({
-              store: new KeyvRedis(redisUrl),
-            }),
-          ],
+          stores: [new Keyv(new KeyvRedis(redisUrl))],
         };
       },
       inject: [ConfigService],
@@ -34,7 +27,12 @@ import KeyvRedis from '@keyv/redis';
     }),
     ConfigModule,
   ],
-  providers: [CacheService, CacheInvalidationService],
-  exports: [CacheService, CacheInvalidationService, NestCacheModule],
+  providers: [CacheService, CacheInterceptor, CacheEvictInterceptor],
+  exports: [
+    CacheService,
+    NestCacheModule,
+    CacheInterceptor,
+    CacheEvictInterceptor,
+  ],
 })
 export class CacheModule {}

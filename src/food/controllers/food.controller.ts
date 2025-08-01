@@ -148,21 +148,13 @@ export class FoodController {
   @ApiOperation({
     summary: 'Import food from OpenFoodFacts',
     description:
-      'Imports a food item from OpenFoodFacts database using barcode and assigns it to a category.',
+      'Imports a food item from OpenFoodFacts database using barcode.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
   @ApiBody({
     schema: {
       type: 'object',
-      properties: {
-        categoryId: {
-          type: 'string',
-          format: 'uuid',
-          description:
-            'UUID of the food category to assign the imported food to',
-        },
-      },
-      required: ['categoryId'],
+      properties: {},
     },
   })
   @ApiResponse({
@@ -172,7 +164,7 @@ export class FoodController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid barcode or category ID',
+    description: 'Invalid barcode',
   })
   @ApiResponse({
     status: 401,
@@ -192,18 +184,13 @@ export class FoodController {
   })
   async importFromOpenFoodFacts(
     @Param('barcode') barcode: string,
-    @Body('categoryId') categoryId: string,
     @Request() req: any,
   ): Promise<FoodResponseDto> {
     const userId = req.user?.sub;
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.foodService.importFromOpenFoodFacts(
-      barcode,
-      categoryId,
-      userId,
-    );
+    return this.foodService.importFromOpenFoodFacts(barcode, userId);
   }
 
   @Get('barcode/:barcode')

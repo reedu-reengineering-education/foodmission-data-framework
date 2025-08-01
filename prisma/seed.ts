@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { seedCategories } from './seeds/categories';
 import { seedFoods } from './seeds/foods';
 import { seedUsers } from './seeds/users';
 
@@ -10,10 +9,7 @@ async function main() {
   console.log('=====================================');
 
   try {
-    // Seed categories first (required for foods)
-    const categories = await seedCategories(prisma);
-
-    // Seed foods (depends on categories)
+    // Seed foods
     const foods = await seedFoods(prisma);
 
     // Seed users and preferences
@@ -22,7 +18,6 @@ async function main() {
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
-    console.log(`   - Categories: ${categories.length}`);
     console.log(`   - Foods: ${foods.length}`);
     console.log(`   - Users: ${users.length}`);
   } catch (error) {

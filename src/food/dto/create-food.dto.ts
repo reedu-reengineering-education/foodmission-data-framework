@@ -52,16 +52,6 @@ export class CreateFoodDto {
   openFoodFactsId?: string;
 
   @ApiProperty({
-    description: 'UUID of the food category this item belongs to',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-    format: 'uuid',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
-  categoryId: string;
-
-  @ApiProperty({
     description: 'UUID of the user who created this food item',
     example: '550e8400-e29b-41d4-a716-446655440001',
     format: 'uuid',

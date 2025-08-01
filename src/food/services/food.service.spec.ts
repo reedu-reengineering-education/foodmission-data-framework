@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { FoodService } from './food.service';
 import { FoodRepository } from '../repositories/food.repository';
-import { FoodCategoryRepository } from '../repositories/food-category.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
@@ -11,7 +10,6 @@ import { FoodQueryDto } from '../dto/food-query.dto';
 describe('FoodService', () => {
   let service: FoodService;
   let foodRepository: jest.Mocked<FoodRepository>;
-  let categoryRepository: jest.Mocked<FoodCategoryRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
   const mockFood = {
@@ -20,25 +18,13 @@ describe('FoodService', () => {
     description: 'Test Description',
     barcode: '1234567890',
     openFoodFactsId: 'off-123',
-    categoryId: 'category-1',
     createdBy: 'user-1',
     createdAt: new Date(),
     updatedAt: new Date(),
-    category: {
-      id: 'category-1',
-      name: 'Test Category',
-      description: 'Test Category Description',
-    },
-  };
-
-  const mockCategory = {
-    id: 'category-1',
-    name: 'Test Category',
-    description: 'Test Category Description',
-    createdAt: new Date(),
   };
 
   const mockOpenFoodFactsProduct = {
+    id: 'off-product-1',
     barcode: '1234567890',
     name: 'OpenFoodFacts Product',
     genericName: 'Generic Name',
@@ -69,10 +55,6 @@ describe('FoodService', () => {
     count: jest.fn(),
   };
 
-  const mockCategoryRepositoryMethods = {
-    findById: jest.fn(),
-  };
-
   const mockOpenFoodFactsServiceMethods = {
     getProductByBarcode: jest.fn(),
     searchProducts: jest.fn(),
@@ -87,10 +69,6 @@ describe('FoodService', () => {
           useValue: mockFoodRepositoryMethods,
         },
         {
-          provide: FoodCategoryRepository,
-          useValue: mockCategoryRepositoryMethods,
-        },
-        {
           provide: OpenFoodFactsService,
           useValue: mockOpenFoodFactsServiceMethods,
         },
@@ -99,7 +77,6 @@ describe('FoodService', () => {
 
     service = module.get<FoodService>(FoodService);
     foodRepository = module.get(FoodRepository);
-    categoryRepository = module.get(FoodCategoryRepository);
     openFoodFactsService = module.get(OpenFoodFactsService);
   });
 
@@ -112,12 +89,10 @@ describe('FoodService', () => {
       name: 'New Food',
       description: 'New Description',
       barcode: '9876543210',
-      categoryId: 'category-1',
       createdBy: 'user-1',
     };
 
     it('should create a new food successfully', async () => {
-      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
       foodRepository.findByBarcode.mockResolvedValueOnce(null);
       foodRepository.create.mockResolvedValueOnce(mockFood);
 
@@ -125,28 +100,13 @@ describe('FoodService', () => {
 
       expect(result).toBeDefined();
       expect(result.name).toBe(mockFood.name);
-      expect(categoryRepository.findById).toHaveBeenCalledWith(
-        createFoodDto.categoryId,
-      );
       expect(foodRepository.findByBarcode).toHaveBeenCalledWith(
         createFoodDto.barcode,
       );
       expect(foodRepository.create).toHaveBeenCalledWith(createFoodDto);
     });
 
-    it('should throw BadRequestException if category not found', async () => {
-      categoryRepository.findById.mockResolvedValueOnce(null);
-
-      await expect(service.create(createFoodDto)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(categoryRepository.findById).toHaveBeenCalledWith(
-        createFoodDto.categoryId,
-      );
-    });
-
     it('should throw BadRequestException if barcode already exists', async () => {
-      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
       foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       await expect(service.create(createFoodDto)).rejects.toThrow(
@@ -159,7 +119,6 @@ describe('FoodService', () => {
         ...createFoodDto,
         openFoodFactsId: 'off-123',
       };
-      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
       foodRepository.findByBarcode.mockResolvedValueOnce(null);
       foodRepository.findByOpenFoodFactsId.mockResolvedValueOnce(mockFood);
 
@@ -317,19 +276,6 @@ describe('FoodService', () => {
         service.update('nonexistent', updateFoodDto),
       ).rejects.toThrow(NotFoundException);
     });
-
-    it('should validate category if provided', async () => {
-      const updateWithCategory = {
-        ...updateFoodDto,
-        categoryId: 'new-category',
-      };
-      foodRepository.findById.mockResolvedValueOnce(mockFood);
-      categoryRepository.findById.mockResolvedValueOnce(null);
-
-      await expect(
-        service.update('food-1', updateWithCategory),
-      ).rejects.toThrow(BadRequestException);
-    });
   });
 
   describe('remove', () => {
@@ -357,12 +303,10 @@ describe('FoodService', () => {
       openFoodFactsService.getProductByBarcode
         .mockResolvedValueOnce(mockOpenFoodFactsProduct) // First call for import
         .mockResolvedValueOnce(mockOpenFoodFactsProduct); // Second call for getting info
-      categoryRepository.findById.mockResolvedValueOnce(mockCategory);
       foodRepository.create.mockResolvedValueOnce(mockFood);
 
       const result = await service.importFromOpenFoodFacts(
         '1234567890',
-        'category-1',
         'user-1',
       );
 
@@ -378,7 +322,7 @@ describe('FoodService', () => {
       foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       await expect(
-        service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
+        service.importFromOpenFoodFacts('1234567890', 'user-1'),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -387,7 +331,7 @@ describe('FoodService', () => {
       openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(null);
 
       await expect(
-        service.importFromOpenFoodFacts('1234567890', 'category-1', 'user-1'),
+        service.importFromOpenFoodFacts('1234567890', 'user-1'),
       ).rejects.toThrow(NotFoundException);
     });
   });

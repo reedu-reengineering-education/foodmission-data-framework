@@ -17,71 +17,39 @@ async function seedTestData() {
   console.log('=====================================');
 
   try {
-    // Create minimal, predictable categories for testing
-    const testCategories = [
-      { name: 'Test-Fruits', description: 'Test fruits category' },
-      { name: 'Test-Vegetables', description: 'Test vegetables category' },
-      { name: 'Test-Proteins', description: 'Test proteins category' },
-    ];
-
-    const categories: Array<{
-      id: string;
-      name: string;
-      description: string | null;
-      createdAt: Date;
-    }> = [];
-    for (const cat of testCategories) {
-      const category = await prisma.foodCategory.upsert({
-        where: { name: cat.name },
-        update: cat,
-        create: cat,
-      });
-      categories.push(category);
-    }
-
     // Create minimal, predictable foods for testing
     const testFoods = [
       {
         name: 'Test Apple',
         description: 'Test apple for automated testing',
-        categoryName: 'Test-Fruits',
         barcode: 'TEST001',
       },
       {
         name: 'Test Carrot',
         description: 'Test carrot for automated testing',
-        categoryName: 'Test-Vegetables',
         barcode: 'TEST002',
       },
       {
         name: 'Test Chicken',
         description: 'Test chicken for automated testing',
-        categoryName: 'Test-Proteins',
         barcode: 'TEST003',
       },
     ];
 
-    const categoryMap = new Map(categories.map((cat) => [cat.name, cat.id]));
-
     for (const foodInfo of testFoods) {
-      const categoryId = categoryMap.get(foodInfo.categoryName);
-      if (categoryId) {
-        await prisma.food.upsert({
-          where: { barcode: foodInfo.barcode },
-          update: {
-            name: foodInfo.name,
-            description: foodInfo.description,
-            categoryId,
-          },
-          create: {
-            name: foodInfo.name,
-            description: foodInfo.description,
-            categoryId,
-            barcode: foodInfo.barcode,
-            createdBy: 'test-seed',
-          },
-        });
-      }
+      await prisma.food.upsert({
+        where: { barcode: foodInfo.barcode },
+        update: {
+          name: foodInfo.name,
+          description: foodInfo.description,
+        },
+        create: {
+          name: foodInfo.name,
+          description: foodInfo.description,
+          barcode: foodInfo.barcode,
+          createdBy: 'test-seed',
+        },
+      });
     }
 
     // Create predictable test users
@@ -94,7 +62,6 @@ async function seedTestData() {
         preferences: {
           dietaryRestrictions: ['vegetarian'],
           allergies: ['nuts'],
-          preferredCategories: ['Test-Fruits'],
         },
       },
       {
@@ -105,7 +72,6 @@ async function seedTestData() {
         preferences: {
           dietaryRestrictions: [],
           allergies: [],
-          preferredCategories: ['Test-Proteins'],
         },
       },
     ];

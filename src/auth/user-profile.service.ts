@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../user/repositories/user.repository';
+import { Cacheable, CacheEvict } from '../cache/decorators/cache.decorator';
 
 export interface UserProfile {
   id: string;
@@ -19,6 +20,7 @@ export class UserProfileService {
    * Get or create user profile based on Keycloak token
    * This is called automatically when a user accesses protected endpoints
    */
+  @Cacheable('user_profile', 900) // Cache for 15 minutes
   async getOrCreateProfile(keycloakUser: {
     sub: string;
     email: string;
@@ -53,6 +55,7 @@ export class UserProfileService {
   /**
    * Update user preferences (app-specific data)
    */
+  @CacheEvict(['user_profile:{keycloakId}'])
   async updatePreferences(
     keycloakId: string,
     preferences: Record<string, unknown>,
@@ -80,6 +83,7 @@ export class UserProfileService {
   /**
    * Update user settings (app-specific data)
    */
+  @CacheEvict(['user_profile:{keycloakId}'])
   async updateSettings(
     keycloakId: string,
     settings: Record<string, unknown>,

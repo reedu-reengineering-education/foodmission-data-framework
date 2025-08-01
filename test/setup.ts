@@ -64,24 +64,10 @@ global.testUtils = {
         description: 'Test Description',
         barcode: 'TEST123456',
         openFoodFactsId: null,
-        categoryId: 'test-category-id',
+
         createdBy: 'test-user-id',
         createdAt: new Date('2024-01-01T00:00:00.000Z'),
         updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-      },
-      overrides,
-    );
-  },
-
-  // Helper to create mock category
-  createMockCategory: function (overrides) {
-    overrides = overrides || {};
-    return Object.assign(
-      {
-        id: 'test-category-id',
-        name: 'Test Category',
-        description: 'Test Category Description',
-        createdAt: new Date('2024-01-01T00:00:00.000Z'),
       },
       overrides,
     );
@@ -137,6 +123,5 @@ declare global {
     createMockDate: (dateString?: string) => Date;
     createMockUser: (overrides?: any) => any;
     createMockFood: (overrides?: any) => any;
-    createMockCategory: (overrides?: any) => any;
   };
 }

@@ -341,8 +341,6 @@ model Food {
   description       String?
   barcode           String?  @unique
   openFoodFactsId   String?  @unique
-  categoryId        String
-  category          FoodCategory @relation(fields: [categoryId], references: [id])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   createdBy         String
@@ -380,14 +378,11 @@ npm run db:migrate:reset
 ```typescript
 // prisma/seeds/foods.ts
 export async function seedFoods(prisma: PrismaClient) {
-  const categories = await prisma.foodCategory.findMany();
-
   const foods = [
     {
       name: 'Organic Banana',
       description: 'Fresh organic banana',
       barcode: '1234567890123',
-      categoryId: categories.find((c) => c.name === 'Fruits')?.id,
     },
     // More foods...
   ];

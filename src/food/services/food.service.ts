@@ -5,7 +5,6 @@ import {
   Logger,
 } from '@nestjs/common';
 import { FoodRepository } from '../repositories/food.repository';
-import { FoodCategoryRepository } from '../repositories/food-category.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
@@ -16,7 +15,7 @@ import {
   OpenFoodFactsInfoDto,
 } from '../dto/food-response.dto';
 import { plainToClass } from 'class-transformer';
-// import { Food } from '@prisma/client';
+import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 
 @Injectable()
 export class FoodService {
@@ -24,20 +23,12 @@ export class FoodService {
 
   constructor(
     private readonly foodRepository: FoodRepository,
-    private readonly categoryRepository: FoodCategoryRepository,
     private readonly openFoodFactsService: OpenFoodFactsService,
   ) {}
 
+  @CacheEvict(['foods:list', 'foods:count'])
   async create(createFoodDto: CreateFoodDto): Promise<FoodResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
-
-    // Validate category exists
-    const category = await this.categoryRepository.findById(
-      createFoodDto.categoryId,
-    );
-    if (!category) {
-      throw new BadRequestException('Category not found');
-    }
 
     // Check if barcode already exists
     if (createFoodDto.barcode) {
@@ -72,7 +63,6 @@ export class FoodService {
       page = 1,
       limit = 10,
       search,
-      categoryId,
       barcode,
       sortBy = 'createdAt',
       sortOrder = 'desc',
@@ -87,10 +77,6 @@ export class FoodService {
         contains: search,
         mode: 'insensitive',
       };
-    }
-
-    if (categoryId) {
-      where.categoryId = categoryId;
     }
 
     if (barcode) {
@@ -131,6 +117,7 @@ export class FoodService {
     });
   }
 
+  @Cacheable('food', 300) // Cache for 5 minutes
   async findOne(
     id: string,
     includeOpenFoodFacts: boolean = false,
@@ -144,8 +131,13 @@ export class FoodService {
 
     const responseDto = this.transformToResponseDto(food);
 
+    this.logger.debug(`includeOpenFoodFacts: ${includeOpenFoodFacts}`);
+
     // Include OpenFoodFacts data if requested
     if (includeOpenFoodFacts && food.barcode) {
+      this.logger.debug(
+        `Fetching OpenFoodFacts info for barcode: ${food.barcode}`,
+      );
       const offInfo = await this.getOpenFoodFactsInfo(food.barcode);
       responseDto.openFoodFactsInfo = offInfo || undefined;
     }
@@ -153,6 +145,7 @@ export class FoodService {
     return responseDto;
   }
 
+  @Cacheable('food_barcode', 300) // Cache for 5 minutes
   async findByBarcode(
     barcode: string,
     includeOpenFoodFacts: boolean = false,
@@ -176,6 +169,7 @@ export class FoodService {
     return responseDto;
   }
 
+  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   async update(
     id: string,
     updateFoodDto: UpdateFoodDto,
@@ -186,16 +180,6 @@ export class FoodService {
     const existingFood = await this.foodRepository.findById(id);
     if (!existingFood) {
       throw new NotFoundException('Food not found');
-    }
-
-    // Validate category if provided
-    if (updateFoodDto.categoryId) {
-      const category = await this.categoryRepository.findById(
-        updateFoodDto.categoryId,
-      );
-      if (!category) {
-        throw new BadRequestException('Category not found');
-      }
     }
 
     // Check if barcode already exists (excluding current food)
@@ -231,6 +215,7 @@ export class FoodService {
     return this.transformToResponseDto(updatedFood);
   }
 
+  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   async remove(id: string): Promise<void> {
     this.logger.log(`Removing food: ${id}`);
 
@@ -257,7 +242,6 @@ export class FoodService {
 
   async importFromOpenFoodFacts(
     barcode: string,
-    categoryId: string,
     createdBy: string,
   ): Promise<FoodResponseDto> {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
@@ -275,19 +259,12 @@ export class FoodService {
       throw new NotFoundException('Product not found in OpenFoodFacts');
     }
 
-    // Validate category exists
-    const category = await this.categoryRepository.findById(categoryId);
-    if (!category) {
-      throw new BadRequestException('Category not found');
-    }
-
     // Create food from OpenFoodFacts data
     const createFoodDto: CreateFoodDto = {
       name: productInfo.name,
       description: productInfo.genericName,
       barcode: productInfo.barcode,
       openFoodFactsId: productInfo.barcode, // Use barcode as OpenFoodFacts ID
-      categoryId,
       createdBy,
     };
 
@@ -301,6 +278,7 @@ export class FoodService {
     return responseDto;
   }
 
+  @Cacheable('openfoodfacts', 3600) // Cache for 1 hour
   async getOpenFoodFactsInfo(
     barcode: string,
   ): Promise<OpenFoodFactsInfoDto | null> {
@@ -340,7 +318,6 @@ export class FoodService {
       description: food.description,
       barcode: food.barcode,
       openFoodFactsId: food.openFoodFactsId,
-      category: food.category,
       createdAt: food.createdAt,
       updatedAt: food.updatedAt,
       createdBy: food.createdBy,

@@ -62,7 +62,7 @@ describe('ErrorUtils', () => {
         {
           code: ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT,
           clientVersion: '4.0.0',
-          meta: { field_name: 'categoryId' },
+          meta: { field_name: 'userId' },
         },
       );
 

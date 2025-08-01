@@ -193,12 +193,6 @@ export class FoodNotFoundException extends ResourceNotFoundException {
   }
 }
 
-export class FoodCategoryNotFoundException extends ResourceNotFoundException {
-  constructor(identifier: string) {
-    super('Food Category', identifier);
-  }
-}
-
 export class InvalidBarcodeException extends BusinessValidationException {
   constructor(barcode: string) {
     super('barcode', barcode, 'Invalid barcode format or checksum');
