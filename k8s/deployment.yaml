@@ -1,0 +1,311 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foodmission-api
+  namespace: foodmission
+  labels:
+    app.kubernetes.io/name: foodmission-data-framework
+    app.kubernetes.io/component: api
+    app.kubernetes.io/version: '0.0.1'
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: foodmission-data-framework
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: foodmission-data-framework
+        app.kubernetes.io/component: api
+        app.kubernetes.io/version: '0.0.1'
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '3000'
+        prometheus.io/path: '/metrics'
+    spec:
+      serviceAccountName: foodmission-api
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: api
+          image: foodmission/data-framework:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            # Environment variables from ConfigMap
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: NODE_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: PORT
+            - name: API_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: API_PREFIX
+            - name: API_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: API_VERSION
+            - name: SWAGGER_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: SWAGGER_ENABLED
+            - name: SWAGGER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: SWAGGER_PATH
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: DATABASE_URL
+            - name: DATABASE_POOL_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: DATABASE_POOL_SIZE
+            - name: DATABASE_CONNECTION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: DATABASE_CONNECTION_TIMEOUT
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: REDIS_PORT
+            - name: REDIS_TTL
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: REDIS_TTL
+            - name: KEYCLOAK_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: KEYCLOAK_BASE_URL
+            - name: KEYCLOAK_REALM
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: KEYCLOAK_REALM
+            - name: KEYCLOAK_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: KEYCLOAK_CLIENT_ID
+            - name: OPENFOODFACTS_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: OPENFOODFACTS_BASE_URL
+            - name: OPENFOODFACTS_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: OPENFOODFACTS_TIMEOUT
+            - name: OPENFOODFACTS_RETRY_ATTEMPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: OPENFOODFACTS_RETRY_ATTEMPTS
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: LOG_LEVEL
+            - name: LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: LOG_FORMAT
+            - name: HEALTH_CHECK_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: HEALTH_CHECK_TIMEOUT
+            - name: REQUEST_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: REQUEST_TIMEOUT
+            - name: BODY_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: BODY_LIMIT
+            - name: CORS_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: CORS_ENABLED
+            - name: CORS_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: CORS_ORIGIN
+            - name: HELMET_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: HELMET_ENABLED
+            - name: METRICS_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: METRICS_ENABLED
+            - name: METRICS_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: foodmission-config
+                  key: METRICS_PATH
+
+            # Environment variables from Secrets
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: DATABASE_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: JWT_SECRET
+            - name: JWT_EXPIRES_IN
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: JWT_EXPIRES_IN
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: REDIS_PASSWORD
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: OPENFOODFACTS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: OPENFOODFACTS_API_KEY
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: foodmission-secrets
+                  key: ENCRYPTION_KEY
+
+          # Resource limits and requests
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+
+          # Startup probe for slow starting applications
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+            successThreshold: 1
+
+          # Security context
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            capabilities:
+              drop:
+                - ALL
+
+          # Volume mounts for temporary files
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: logs
+              mountPath: /app/logs
+
+      # Volumes
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+
+      # Pod disruption settings
+      terminationGracePeriodSeconds: 30
+
+      # Node selection and affinity
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - foodmission-data-framework
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - api
+                topologyKey: kubernetes.io/hostname

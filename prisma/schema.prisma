@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Food {
+  id                String   @id @default(uuid())
+  name              String
+  description       String?
+  barcode           String?  @unique
+  openFoodFactsId   String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  createdBy         String
+  
+  @@index([name])
+  @@index([createdAt])
+  @@map("foods")
+}
+
+
+
+model User {
+  id          String   @id @default(uuid())
+  keycloakId  String   @unique
+  email       String   @unique
+  firstName   String
+  lastName    String
+  preferences Json     @default("{}")  // Flexible JSON for app-specific preferences
+  settings    Json     @default("{}")  // Flexible JSON for app-specific settings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([email])
+  @@index([createdAt])
+  @@map("users")
+}

@@ -1,0 +1,113 @@
+services:
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: builder
+  #   container_name: foodmission-app-dev
+  #   working_dir: /workspace
+  #   volumes:
+  #     - .:/workspace:cached
+  #     - /workspace/node_modules
+  #   ports:
+  #     - "3000:3000"
+  #     - "9229:9229" # Debug port
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DATABASE_URL=postgresql://postgres:password@postgres:5432/foodmission_db?schema=public
+  #     - DATABASE_URL_TEST=postgresql://postgres:password@postgres:5432/foodmission_test_db?schema=public
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   command: npm run start:dev
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: foodmission-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: foodmission_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: foodmission-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # docker run --rm --name mykeycloak -p 127.0.0.1:8080:8080 \
+  #       -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=change_me \
+  #       quay.io/keycloak/keycloak:latest \
+  #       start-dev
+
+  # keycloak:
+  #   image: quay.io/keycloak/keycloak:26.03
+  #   container_name: foodmission-keycloak
+  #   environment:
+  #     KC_BOOTSTRAP_ADMIN_USERNAME: admin
+  #     KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+  #     KC_DB: postgres
+  #     KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+  #     KC_DB_USERNAME: postgres
+  #     KC_DB_PASSWORD: password
+  #   ports:
+  #     - "127.0.0.1:8080:8080"
+  #   command: start-dev
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: foodmission-keycloak
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: password
+      KC_LOG_LEVEL: DEBUG
+      # # KC_HOSTNAME_STRICT: false #deactivate fixed hostname
+      # # KC_HOSTNAME_STRICT_HTTPS: false #For local access to console admin in start mode
+      # KEYCLOAK_HTTP_ENABLED: true
+      # HTTP_ENABLED: true
+      # # strict https false
+      # # KC_PROXY: none
+      # # KC_HOSTNAME_URL: http://localhost:8080
+      # # KC_PROXY_HEADERS: xforwarded
+      # # KC_HTTP_ENABLED: true
+      # # KC_PROXY_ADDRESS_FORWARDING: true
+    ports:
+      - '127.0.0.1:8080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: start-dev
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'curl -f http://localhost:8080/health/ready || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  postgres_data:
+  redis_data:

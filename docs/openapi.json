@@ -1,0 +1,1714 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/auth/info": {
+      "get": {
+        "description": "Returns Keycloak server information for client-side authentication setup.",
+        "operationId": "getAuthInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Authentication info retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "authServerUrl": {
+                      "type": "string",
+                      "example": "http://localhost:8080"
+                    },
+                    "realm": {
+                      "type": "string",
+                      "example": "foodmission"
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "example": "foodmission-web"
+                    },
+                    "redirectUri": {
+                      "type": "string",
+                      "example": "http://localhost:3000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get Keycloak authentication info",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/profile": {
+      "get": {
+        "description": "Returns the profile information of the currently authenticated user. Automatically creates user record if not exists.",
+        "operationId": "getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "keycloakId": {
+                      "type": "string"
+                    },
+                    "preferences": {
+                      "type": "object"
+                    },
+                    "settings": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get authenticated user profile",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/profile/preferences": {
+      "put": {
+        "description": "Update app-specific user preferences.",
+        "operationId": "updatePreferences",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "User preferences object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update user preferences",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/profile/settings": {
+      "put": {
+        "description": "Update app-specific user settings.",
+        "operationId": "updateSettings",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "User settings object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update user settings",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/health": {
+      "get": {
+        "description": "Returns the health status of the authentication service. This endpoint is public.",
+        "operationId": "healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "auth"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Authentication service health check",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/token-info": {
+      "get": {
+        "description": "Returns detailed information about the current JWT token. Requires valid JWT token.",
+        "operationId": "getTokenInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Token information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sub": {
+                      "type": "string",
+                      "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                      "description": "Subject (user ID) from token"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "john.doe@example.com"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    },
+                    "given_name": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "family_name": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "user",
+                        "admin"
+                      ]
+                    },
+                    "exp": {
+                      "type": "number",
+                      "example": 1640995200,
+                      "description": "Token expiration timestamp"
+                    },
+                    "iat": {
+                      "type": "number",
+                      "example": 1640991600,
+                      "description": "Token issued at timestamp"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated - JWT token required"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get JWT token information",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/admin-only": {
+      "get": {
+        "description": "Test endpoint that requires admin role. Used for testing role-based access control.",
+        "operationId": "adminEndpoint",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Admin access confirmed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "This endpoint is only accessible to admins"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - admin role required"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Admin-only test endpoint",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          }
+        },
+        "summary": "Create a new user",
+        "tags": [
+          "users"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all users"
+          }
+        },
+        "summary": "Get all users",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Get user by ID",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Update user",
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Delete user",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/preferences": {
+      "get": {
+        "operationId": "getPreferences",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User preferences"
+          }
+        },
+        "summary": "Get user preferences",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "updatePreferences",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preferences updated successfully"
+          }
+        },
+        "summary": "Update user preferences",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/foods": {
+      "post": {
+        "description": "Creates a new food item in the database. Requires user or admin role.",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFoodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Food item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a new food item",
+        "tags": [
+          "foods"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a paginated list of food items with optional filtering and sorting.",
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of food items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFoodResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          }
+        },
+        "summary": "Get all food items",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/foods/search/openfoodfacts": {
+      "get": {
+        "description": "Search for products in the OpenFoodFacts database by name, category, or brand.",
+        "operationId": "searchOpenFoodFacts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Search results from OpenFoodFacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OpenFoodFactsInfoDto"
+                      }
+                    },
+                    "count": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "page_size": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search parameters"
+          },
+          "503": {
+            "description": "OpenFoodFacts service unavailable"
+          }
+        },
+        "summary": "Search OpenFoodFacts database",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/foods/import/openfoodfacts/{barcode}": {
+      "post": {
+        "description": "Imports a food item from OpenFoodFacts database using barcode.",
+        "operationId": "importFromOpenFoodFacts",
+        "parameters": [
+          {
+            "name": "barcode",
+            "required": true,
+            "in": "path",
+            "description": "Product barcode",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Food imported successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid barcode"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Product not found in OpenFoodFacts"
+          },
+          "503": {
+            "description": "OpenFoodFacts service unavailable"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Import food from OpenFoodFacts",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/foods/barcode/{barcode}": {
+      "get": {
+        "description": "Retrieves a food item by its barcode. Optionally includes OpenFoodFacts information.",
+        "operationId": "findByBarcode",
+        "parameters": [
+          {
+            "name": "barcode",
+            "required": true,
+            "in": "path",
+            "description": "Product barcode",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeOpenFoodFacts",
+            "required": false,
+            "in": "query",
+            "description": "Include OpenFoodFacts information in response",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food item found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Food item not found"
+          }
+        },
+        "summary": "Find food by barcode",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/foods/{id}": {
+      "get": {
+        "description": "Retrieves a food item by its ID. Optionally includes OpenFoodFacts information.",
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Food item ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeOpenFoodFacts",
+            "required": false,
+            "in": "query",
+            "description": "Include OpenFoodFacts information in response",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food item found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Food item not found"
+          }
+        },
+        "summary": "Find food by ID",
+        "tags": [
+          "foods"
+        ]
+      },
+      "patch": {
+        "description": "Updates a food item by its ID. Requires user or admin role.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Food item ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFoodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Food item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Food item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update food item",
+        "tags": [
+          "foods"
+        ]
+      },
+      "delete": {
+        "description": "Deletes a food item by its ID. Requires admin role.",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Food item ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Food item deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - admin role required"
+          },
+          "404": {
+            "description": "Food item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete food item",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/foods/{id}/openfoodfacts": {
+      "get": {
+        "description": "Retrieves OpenFoodFacts information for a food item by its ID, if the food has a barcode.",
+        "operationId": "getOpenFoodFactsInfo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Food item ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OpenFoodFacts information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OpenFoodFactsInfoDto"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Food item not found"
+          },
+          "503": {
+            "description": "OpenFoodFacts service unavailable"
+          }
+        },
+        "summary": "Get OpenFoodFacts information for food item",
+        "tags": [
+          "foods"
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Health check passed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "database": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "example": "up"
+                            }
+                          }
+                        },
+                        "openfoodfacts": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "example": "up"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "error": {
+                      "type": "object"
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "database": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "example": "up"
+                            }
+                          }
+                        },
+                        "openfoodfacts": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "example": "up"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Health check failed"
+          }
+        },
+        "summary": "Get application health status",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Application is ready"
+          },
+          "503": {
+            "description": "Application is not ready"
+          }
+        },
+        "summary": "Get readiness probe status",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "liveness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Application is alive"
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get liveness probe status",
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/metrics": {
+      "get": {
+        "description": "Returns application metrics in Prometheus format for scraping",
+        "operationId": "getMetrics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Metrics in Prometheus format",
+            "content": {
+              "text/plain": {
+                "example": "# HELP http_requests_total Total number of HTTP requests\n# TYPE http_requests_total counter\nhttp_requests_total{method=\"GET\",route=\"/api/foods\",status_code=\"200\"} 42\n\n# HELP http_request_duration_seconds Duration of HTTP requests in seconds\n# TYPE http_request_duration_seconds histogram\nhttp_request_duration_seconds_bucket{method=\"GET\",route=\"/api/foods\",status_code=\"200\",le=\"0.1\"} 10\nhttp_request_duration_seconds_bucket{method=\"GET\",route=\"/api/foods\",status_code=\"200\",le=\"0.3\"} 25\nhttp_request_duration_seconds_bucket{method=\"GET\",route=\"/api/foods\",status_code=\"200\",le=\"0.5\"} 35\nhttp_request_duration_seconds_bucket{method=\"GET\",route=\"/api/foods\",status_code=\"200\",le=\"+Inf\"} 42\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/api/foods\",status_code=\"200\"} 8.2\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/api/foods\",status_code=\"200\"} 42"
+              }
+            }
+          }
+        },
+        "summary": "Get Prometheus metrics",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/api/v1/performance/summary": {
+      "get": {
+        "operationId": "getPerformanceSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Performance summary retrieved successfully"
+          }
+        },
+        "summary": "Get performance summary",
+        "tags": [
+          "Performance"
+        ]
+      }
+    },
+    "/api/v1/performance/cache/stats": {
+      "get": {
+        "operationId": "getCacheStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Cache statistics retrieved successfully"
+          }
+        },
+        "summary": "Get cache statistics",
+        "tags": [
+          "Performance"
+        ]
+      }
+    },
+    "/api/v1/performance/cache/hit-rate": {
+      "get": {
+        "operationId": "getCacheHitRates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Cache hit rates retrieved successfully"
+          }
+        },
+        "summary": "Get cache hit rates by prefix",
+        "tags": [
+          "Performance"
+        ]
+      }
+    },
+    "/api/v1/performance/database/stats": {
+      "get": {
+        "operationId": "getDatabaseStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Database statistics retrieved successfully"
+          }
+        },
+        "summary": "Get database performance statistics",
+        "tags": [
+          "Performance"
+        ]
+      }
+    },
+    "/api/v1": {
+      "get": {
+        "description": "Returns a simple health check message to verify the application is running.",
+        "operationId": "getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Application is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Hello World!"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Application health check",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "FOODMISSION Data Framework API",
+    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
+    "version": "1.0.0",
+    "contact": {
+      "name": "FOODMISSION Team",
+      "url": "https://github.com/reedu-reengineering-education/foodmission-data-framework",
+      "email": "support@foodmission.dev"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication and authorization endpoints for Keycloak integration"
+    },
+    {
+      "name": "foods",
+      "description": "Food item management with OpenFoodFacts integration for nutritional data"
+    },
+    {
+      "name": "users",
+      "description": "User profile management and dietary preferences configuration"
+    },
+    {
+      "name": "health",
+      "description": "Application health checks, readiness probes, and monitoring metrics"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.foodmission.dev/api/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging-api.foodmission.dev/api/v1",
+      "description": "Staging server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "JWT-auth": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "JWT",
+        "description": "Enter JWT token obtained from Keycloak authentication",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "keycloakId": {
+            "type": "string",
+            "description": "Keycloak user ID"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences"
+          },
+          "settings": {
+            "type": "object",
+            "description": "User settings"
+          }
+        },
+        "required": [
+          "keycloakId",
+          "email",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "keycloakId": {
+            "type": "string",
+            "description": "Keycloak user ID"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences"
+          },
+          "settings": {
+            "type": "object",
+            "description": "User settings"
+          }
+        }
+      },
+      "UserPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "dietaryRestrictions": {
+            "description": "Dietary restrictions",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allergies": {
+            "description": "Food allergies",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferredCategories": {
+            "description": "Preferred food categories",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateFoodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the food item",
+            "example": "Organic Whole Milk",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the food item",
+            "example": "Fresh organic whole milk from grass-fed cows",
+            "maxLength": 1000
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Product barcode (EAN, UPC, etc.)",
+            "example": "3017620422003",
+            "maxLength": 50
+          },
+          "openFoodFactsId": {
+            "type": "string",
+            "description": "OpenFoodFacts product identifier",
+            "example": "3017620422003",
+            "maxLength": 100
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "UUID of the user who created this food item",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "name",
+          "createdBy"
+        ]
+      },
+      "NutritionalInfoDto": {
+        "type": "object",
+        "properties": {
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy content in kilocalories per 100g",
+            "example": 64
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy content in kilojoules per 100g",
+            "example": 268
+          },
+          "fat": {
+            "type": "number",
+            "description": "Fat content in grams per 100g",
+            "example": 3.25
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat content in grams per 100g",
+            "example": 1.9
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat content in grams per 100g",
+            "example": 0.1
+          },
+          "cholesterol": {
+            "type": "number",
+            "description": "Cholesterol content in milligrams per 100g",
+            "example": 10
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Carbohydrates content in grams per 100g",
+            "example": 4.8
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars content in grams per 100g",
+            "example": 4.8
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Fiber content in grams per 100g",
+            "example": 0
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Proteins content in grams per 100g",
+            "example": 3.4
+          },
+          "salt": {
+            "type": "number",
+            "description": "Salt content in grams per 100g",
+            "example": 0.1
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium content in milligrams per 100g",
+            "example": 44
+          },
+          "vitaminA": {
+            "type": "number",
+            "description": "Vitamin A content in micrograms per 100g",
+            "example": 46
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C content in milligrams per 100g",
+            "example": 0
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium content in milligrams per 100g",
+            "example": 113
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron content in milligrams per 100g",
+            "example": 0.03
+          }
+        }
+      },
+      "OpenFoodFactsInfoDto": {
+        "type": "object",
+        "properties": {
+          "barcode": {
+            "type": "string",
+            "description": "Product barcode from OpenFoodFacts",
+            "example": "3017620422003"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name from OpenFoodFacts",
+            "example": "Nutella"
+          },
+          "brands": {
+            "description": "List of brands associated with the product",
+            "example": [
+              "Ferrero"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categories": {
+            "description": "List of categories the product belongs to",
+            "example": [
+              "Spreads",
+              "Sweet spreads",
+              "Cocoa and hazelnuts spreads"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ingredients": {
+            "type": "string",
+            "description": "Ingredients list as text",
+            "example": "Sugar, palm oil, hazelnuts, skimmed milk powder, fat-reduced cocoa, lecithin, vanillin"
+          },
+          "allergens": {
+            "description": "List of allergens present in the product",
+            "example": [
+              "Milk",
+              "Nuts"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nutritionGrade": {
+            "type": "string",
+            "description": "Nutri-Score grade (A, B, C, D, E)",
+            "example": "D",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "novaGroup": {
+            "type": "number",
+            "description": "NOVA group classification (1-4, where 1 is unprocessed and 4 is ultra-processed)",
+            "example": 4,
+            "minimum": 1,
+            "maximum": 4
+          },
+          "nutritionalInfo": {
+            "description": "Nutritional information from OpenFoodFacts",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NutritionalInfoDto"
+              }
+            ]
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "URL to product image",
+            "example": "https://static.openfoodfacts.org/images/products/301/762/042/2003/front_fr.4.400.jpg"
+          },
+          "completeness": {
+            "type": "number",
+            "description": "Data completeness percentage (0-100)",
+            "example": 85,
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "FoodResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the food item",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the food item",
+            "example": "Organic Whole Milk"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the food item",
+            "example": "Fresh organic whole milk from grass-fed cows"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Product barcode",
+            "example": "3017620422003"
+          },
+          "openFoodFactsId": {
+            "type": "string",
+            "description": "OpenFoodFacts product identifier",
+            "example": "3017620422003"
+          },
+          "openFoodFactsInfo": {
+            "description": "Additional information from OpenFoodFacts database",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OpenFoodFactsInfoDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Timestamp when the food item was created",
+            "example": "2024-01-15T10:30:00Z",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Timestamp when the food item was last updated",
+            "example": "2024-01-15T10:30:00Z",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "UUID of the user who created this food item",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "createdAt",
+          "updatedAt",
+          "createdBy"
+        ]
+      },
+      "PaginatedFoodResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Array of food items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FoodResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of food items matching the query",
+            "example": 150
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of items per page",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total number of pages",
+            "example": 15
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
+      "UpdateFoodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the food item",
+            "example": "Organic Whole Milk",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the food item",
+            "example": "Fresh organic whole milk from grass-fed cows",
+            "maxLength": 1000
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Product barcode (EAN, UPC, etc.)",
+            "example": "3017620422003",
+            "maxLength": 50
+          },
+          "openFoodFactsId": {
+            "type": "string",
+            "description": "OpenFoodFacts product identifier",
+            "example": "3017620422003",
+            "maxLength": 100
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "UUID of the user who created this food item",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}
