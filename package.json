@@ -71,7 +71,7 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
-    "joi": "^17.13.3",
+    "joi": "^18.0.0",
     "keycloak-connect": "^26.1.1",
     "keyv": "^5.4.0",
     "nest-keycloak-connect": "^2.0.0-alpha.2",
