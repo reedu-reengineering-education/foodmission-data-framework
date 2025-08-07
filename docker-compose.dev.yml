@@ -84,18 +84,10 @@ services:
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: password
       KC_LOG_LEVEL: DEBUG
-      # # KC_HOSTNAME_STRICT: false #deactivate fixed hostname
-      # # KC_HOSTNAME_STRICT_HTTPS: false #For local access to console admin in start mode
-      # KEYCLOAK_HTTP_ENABLED: true
-      # HTTP_ENABLED: true
-      # # strict https false
-      # # KC_PROXY: none
-      # # KC_HOSTNAME_URL: http://localhost:8080
-      # # KC_PROXY_HEADERS: xforwarded
-      # # KC_HTTP_ENABLED: true
-      # # KC_PROXY_ADDRESS_FORWARDING: true
     ports:
       - '127.0.0.1:8080:8080'
+    volumes:
+      - ./keycloak/themes:/opt/keycloak/providers:ro
     depends_on:
       postgres:
         condition: service_healthy
