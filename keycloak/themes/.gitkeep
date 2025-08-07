@@ -1,0 +1,8 @@
+# Place your custom theme .jar files here
+# 
+# For development:
+# 1. Download the .jar file from your theme repository releases
+# 2. Place it in this directory
+# 3. Restart the Keycloak container
+#
+# The .jar file will be automatically mounted to /opt/keycloak/providers/ in the container

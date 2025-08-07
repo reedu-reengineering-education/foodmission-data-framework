@@ -78,7 +78,7 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 #### Quality Assurance
 
 - ✅ **SonarCloud Configuration**: Code quality metrics and analysis
-- ✅ **Commitlint Configuration**: Conventional commit enforcement
+
 - ✅ **Local Testing Script**: Pre-commit validation script
 
 ### 3. Security Implementation

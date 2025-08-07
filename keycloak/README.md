@@ -51,6 +51,44 @@ The realm comes with three test users:
 - **Email**: `dev@foodmission.dev`
 - **Roles**: `user`
 
+## 🎨 Custom Theme Setup
+
+This project supports custom Keycloak themes via .jar files from external repositories.
+
+### Option 1: Automatic Theme Download (Recommended)
+
+1. **Configure the theme repository** in `download-theme.sh`:
+
+   ```bash
+   # Edit these variables
+   GITHUB_REPO="your-org/your-keycloak-theme-repo"
+   THEME_VERSION="latest"  # or specific version like "v1.0.0"
+   ```
+
+2. **Download the theme**:
+
+   ```bash
+   ./download-theme.sh
+   ```
+
+3. **Restart Keycloak**:
+   ```bash
+   docker-compose -f docker-compose.dev.yml restart keycloak
+   ```
+
+### Option 2: Manual Theme Installation
+
+1. **Download the .jar file** from your theme repository releases
+2. **Place it in** `keycloak/themes/` directory
+3. **Restart Keycloak container**
+
+### Applying the Theme
+
+1. **Access Keycloak Admin Console**: http://localhost:8080
+2. **Go to Realm Settings** → **Themes**
+3. **Select your custom theme** from the dropdown
+4. **Save** the configuration
+
 ## 🔧 Pre-configured Client
 
 ### FOODMISSION API Client
