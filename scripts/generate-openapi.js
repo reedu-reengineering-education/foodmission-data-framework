@@ -15,7 +15,7 @@ async function generateOpenApiSpec() {
     console.log('🚀 Starting OpenAPI spec generation...');
 
     // Import the AppModule (using dynamic import for ES modules)
-    const { AppModule } = await import('../dist/app.module.js');
+    const { AppModule } = await import('../dist/src/app.module.js');
 
     // Create NestJS application
     const app = await NestFactory.create(AppModule, { logger: false });

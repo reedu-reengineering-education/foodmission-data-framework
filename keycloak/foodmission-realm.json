@@ -2,6 +2,18 @@
   "id": "foodmission",
   "realm": "foodmission",
   "displayName": "FOODMISSION",
+  "loginTheme": "keycloakify-foodmission-ui",
+  "supportedLocales": [
+    "en",
+    "no",
+    "es",
+    "it",
+    "sl",
+    "pl",
+    "nl",
+    "el"
+  ],
+  "internationalizationEnabled": true,
   "enabled": true,
   "sslRequired": "external",
   "registrationAllowed": true,

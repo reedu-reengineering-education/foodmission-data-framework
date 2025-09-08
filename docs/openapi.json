@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/v1/auth/info": {
+    "/auth/info": {
       "get": {
         "description": "Returns Keycloak server information for client-side authentication setup.",
         "operationId": "getAuthInfo",
@@ -42,7 +42,7 @@
         ]
       }
     },
-    "/api/v1/auth/profile": {
+    "/auth/profile": {
       "get": {
         "description": "Returns the profile information of the currently authenticated user. Automatically creates user record if not exists.",
         "operationId": "getProfile",
@@ -95,7 +95,7 @@
         ]
       }
     },
-    "/api/v1/auth/profile/preferences": {
+    "/auth/profile/preferences": {
       "put": {
         "description": "Update app-specific user preferences.",
         "operationId": "updatePreferences",
@@ -127,7 +127,7 @@
         ]
       }
     },
-    "/api/v1/auth/profile/settings": {
+    "/auth/profile/settings": {
       "put": {
         "description": "Update app-specific user settings.",
         "operationId": "updateSettings",
@@ -159,7 +159,7 @@
         ]
       }
     },
-    "/api/v1/auth/health": {
+    "/auth/health": {
       "get": {
         "description": "Returns the health status of the authentication service. This endpoint is public.",
         "operationId": "healthCheck",
@@ -192,7 +192,7 @@
         ]
       }
     },
-    "/api/v1/auth/token-info": {
+    "/auth/token-info": {
       "get": {
         "description": "Returns detailed information about the current JWT token. Requires valid JWT token.",
         "operationId": "getTokenInfo",
@@ -267,7 +267,7 @@
         ]
       }
     },
-    "/api/v1/auth/admin-only": {
+    "/auth/admin-only": {
       "get": {
         "description": "Test endpoint that requires admin role. Used for testing role-based access control.",
         "operationId": "adminEndpoint",
@@ -307,7 +307,7 @@
         ]
       }
     },
-    "/api/v1/users": {
+    "/users": {
       "post": {
         "operationId": "create",
         "parameters": [],
@@ -345,7 +345,7 @@
         ]
       }
     },
-    "/api/v1/users/{id}": {
+    "/users/{id}": {
       "get": {
         "operationId": "findOne",
         "parameters": [
@@ -432,7 +432,7 @@
         ]
       }
     },
-    "/api/v1/users/{id}/preferences": {
+    "/users/{id}/preferences": {
       "get": {
         "operationId": "getPreferences",
         "parameters": [
@@ -488,7 +488,7 @@
         ]
       }
     },
-    "/api/v1/foods": {
+    "/foods": {
       "post": {
         "description": "Creates a new food item in the database. Requires user or admin role.",
         "operationId": "create",
@@ -559,7 +559,7 @@
         ]
       }
     },
-    "/api/v1/foods/search/openfoodfacts": {
+    "/foods/search/openfoodfacts": {
       "get": {
         "description": "Search for products in the OpenFoodFacts database by name, category, or brand.",
         "operationId": "searchOpenFoodFacts",
@@ -605,7 +605,7 @@
         ]
       }
     },
-    "/api/v1/foods/import/openfoodfacts/{barcode}": {
+    "/foods/import/openfoodfacts/{barcode}": {
       "post": {
         "description": "Imports a food item from OpenFoodFacts database using barcode.",
         "operationId": "importFromOpenFoodFacts",
@@ -669,7 +669,7 @@
         ]
       }
     },
-    "/api/v1/foods/barcode/{barcode}": {
+    "/foods/barcode/{barcode}": {
       "get": {
         "description": "Retrieves a food item by its barcode. Optionally includes OpenFoodFacts information.",
         "operationId": "findByBarcode",
@@ -714,7 +714,7 @@
         ]
       }
     },
-    "/api/v1/foods/{id}": {
+    "/foods/{id}": {
       "get": {
         "description": "Retrieves a food item by its ID. Optionally includes OpenFoodFacts information.",
         "operationId": "findOne",
@@ -858,7 +858,7 @@
         ]
       }
     },
-    "/api/v1/foods/{id}/openfoodfacts": {
+    "/foods/{id}/openfoodfacts": {
       "get": {
         "description": "Retrieves OpenFoodFacts information for a food item by its ID, if the food has a barcode.",
         "operationId": "getOpenFoodFactsInfo",
@@ -905,7 +905,7 @@
         ]
       }
     },
-    "/api/v1/health": {
+    "/health": {
       "get": {
         "operationId": "check",
         "parameters": [],
@@ -985,7 +985,7 @@
         ]
       }
     },
-    "/api/v1/health/ready": {
+    "/health/ready": {
       "get": {
         "operationId": "readiness",
         "parameters": [],
@@ -1003,7 +1003,7 @@
         ]
       }
     },
-    "/api/v1/health/live": {
+    "/health/live": {
       "get": {
         "operationId": "liveness",
         "parameters": [],
@@ -1101,7 +1101,7 @@
         ]
       }
     },
-    "/api/v1/metrics": {
+    "/metrics": {
       "get": {
         "description": "Returns application metrics in Prometheus format for scraping",
         "operationId": "getMetrics",
@@ -1122,7 +1122,7 @@
         ]
       }
     },
-    "/api/v1/performance/summary": {
+    "/performance/summary": {
       "get": {
         "operationId": "getPerformanceSummary",
         "parameters": [],
@@ -1137,7 +1137,7 @@
         ]
       }
     },
-    "/api/v1/performance/cache/stats": {
+    "/performance/cache/stats": {
       "get": {
         "operationId": "getCacheStats",
         "parameters": [],
@@ -1152,7 +1152,7 @@
         ]
       }
     },
-    "/api/v1/performance/cache/hit-rate": {
+    "/performance/cache/hit-rate": {
       "get": {
         "operationId": "getCacheHitRates",
         "parameters": [],
@@ -1167,7 +1167,7 @@
         ]
       }
     },
-    "/api/v1/performance/database/stats": {
+    "/performance/database/stats": {
       "get": {
         "operationId": "getDatabaseStats",
         "parameters": [],
@@ -1182,7 +1182,7 @@
         ]
       }
     },
-    "/api/v1": {
+    "/": {
       "get": {
         "description": "Returns a simple health check message to verify the application is running.",
         "operationId": "getHello",
@@ -1209,7 +1209,7 @@
   },
   "info": {
     "title": "FOODMISSION Data Framework API",
-    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
+    "description": "\n        A comprehensive backend system for managing food-related data and operations.\n        \n        ## Features\n        - **Authentication**: Secure JWT-based authentication via Keycloak\n        - **Food Management**: CRUD operations for food items with categorization\n        - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n        - **User Management**: User profiles and dietary preferences\n        - **Health Monitoring**: Comprehensive health checks and metrics\n        \n        ## Getting Started\n        1. Obtain a JWT token from the authentication endpoints\n        2. Include the token in the Authorization header: `Bearer <token>`\n        3. Use the interactive documentation below to explore available endpoints\n        \n        ## Authentication\n        This API uses stateless JWT authentication via Keycloak. \n        \n        1. Get Keycloak configuration from `/auth/info`\n        2. Authenticate directly with Keycloak using OAuth2/OIDC\n        3. Include JWT tokens in the Authorization header: `Bearer <token>`\n        \n        ## Rate Limiting\n        API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      ",
     "version": "1.0.0",
     "contact": {
       "name": "FOODMISSION Team",
