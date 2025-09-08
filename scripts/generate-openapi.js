@@ -84,9 +84,9 @@ async function generateOpenApiSpec() {
         'health',
         'Application health checks, readiness probes, and monitoring metrics',
       )
-      .addServer('http://localhost:3000/api/v1', 'Development server')
-      .addServer('https://api.foodmission.dev/api/v1', 'Production server')
-      .addServer('https://staging-api.foodmission.dev/api/v1', 'Staging server')
+      .addServer('http://localhost:3000/', 'Development server')
+      .addServer('https://api.foodmission.dev/', 'Production server')
+      .addServer('https://staging-api.foodmission.dev/', 'Staging server')
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {

@@ -853,11 +853,11 @@ tags:
   - name: health
     description: Application health checks, readiness probes, and monitoring metrics
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000
     description: Development server
-  - url: https://api.foodmission.dev/api/v1
+  - url: https://api.foodmission.dev
     description: Production server
-  - url: https://staging-api.foodmission.dev/api/v1
+  - url: https://staging-api.foodmission.dev
     description: Staging server
 components:
   securitySchemes:
