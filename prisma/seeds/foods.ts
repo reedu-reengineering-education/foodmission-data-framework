@@ -38,7 +38,7 @@ export const openFoodFactsBarcodes: string[] = [
 // Smaller set for testing to speed up test execution - all verified working
 export const testOpenFoodFactsBarcodes: string[] = [
   '3017620422003', // Nutella 400g
-  '5449000000996', // Coca-Cola
+  '4017074053166', // Töftes Sport
   '4000417025005', // Milka Chocolate (verified working)
   '8712100849084', // Magnum Ice Cream (verified working)
   '8000500037560', // Kinder Bueno (verified working)

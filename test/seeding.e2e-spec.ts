@@ -47,7 +47,7 @@ describe('Database Seeding (e2e)', () => {
       // Check for expected foods from OpenFoodFacts
       const foodNames = dbFoods.map((food) => food.name);
       expect(foodNames).toContain('Nutella');
-      expect(foodNames).toContain('Coca-Cola Can');
+      expect(foodNames).toContain('ISO-SPORTIV-DRINK'); // Töftes Sport
 
       // Verify food properties
       const nutella = dbFoods.find((food) => food.name === 'Nutella');
