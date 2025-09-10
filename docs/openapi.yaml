@@ -785,6 +785,35 @@ paths:
           description: Database statistics retrieved successfully
       summary: Get database performance statistics
       tags: *ref_6
+  /api/v1/shoppinglist:
+    post:
+      description: Creates a new ShoppingList in the database. Requires user or admin role.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShoppingListDto'
+      responses:
+        '201':
+          description: Shopping list created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Create a new Shopping List
+      tags:
+        - shoppinglist
   /api/v1:
     get:
       description: >-
@@ -1213,3 +1242,40 @@ components:
           description: UUID of the user who created this food item
           example: 550e8400-e29b-41d4-a716-446655440001
           format: uuid
+    CreateShoppingListDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: UUID of the user who created this shopping list
+          example: 550e8400-e29b-41d4-a716-446655440001
+          format: uuid
+        title:
+          type: string
+          description: The name of the shopping list
+          example: Family-Shopping-List
+          maxLength: 255
+      required:
+        - userId
+        - title
+    ShoppingListResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the shopping list
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+        userId:
+          type: string
+          description: UUID of the user who created this shopping list
+          example: 550e8400-e29b-41d4-a716-446655440001
+          format: uuid
+        name:
+          type: string
+          description: Name of the shopping list
+          example: Family shopping list
+      required:
+        - id
+        - userId
+        - name
