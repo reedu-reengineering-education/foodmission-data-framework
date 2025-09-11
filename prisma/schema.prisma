@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Food {
-  id              String   @id @default(uuid())
-  name            String
-  description     String?
-  barcode         String?  @unique
-  openFoodFactsId String?  @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  createdBy       String
+  id               String             @id @default(uuid())
+  name             String
+  description      String?
+  barcode          String?            @unique
+  openFoodFactsId  String?            @unique
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  createdBy        String
+  ShoppingListItem ShoppingListItem[]
 
   @@index([name])
   @@index([createdAt])
@@ -44,7 +45,32 @@ model User {
 
 model ShoppingList {
   id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id])
   userId String
   title  String
+
+  user  User               @relation(fields: [userId], references: [id])
+  items ShoppingListItem[]
+
+  @@unique([userId, title])
+  @@index([userId])
+}
+
+model ShoppingListItem {
+  id             String  @id @default(uuid())
+  quantity       Int     @default(1)
+  unit           String  @default("pieces")
+  notes          String?
+  checked        Boolean @default(false)
+  shoppingListId String
+  foodId         String
+
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  food         Food         @relation(fields: [foodId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([shoppingListId, foodId])
+  @@index([shoppingListId])
+  @@map("shopping_list_items")
 }

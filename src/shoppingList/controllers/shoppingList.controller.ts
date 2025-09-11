@@ -28,8 +28,10 @@ import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shoppingList.service';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import {
+  PaginatedShoppingListResponseDto,
   ShoppingListResponseDto,
 } from '../dto/shoppingList-response.dto';
+import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 
 
 @ApiTags('shoppinglist')
@@ -80,5 +82,33 @@ export class ShoppingListController {
     return this.shoppingListService.create(createShoppingListDto);
   }
 
+
+  @Get()
+  @Public()
+  @ApiOperation({
+    summary: 'Get All Shoppinglists'
+  })
+  @ApiQuery({ name: 'search', required: false})
+  @ApiResponse({
+    status: 200,
+    description: 'Shopping lists retrieved successfully',
+    type: ShoppingListResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT token required',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
+  })
+  async findAll(@Query() query: ShoppingListQueryDto, 
+): Promise<PaginatedShoppingListResponseDto> {
+  return this.shoppingListService.findAll(query);
+}
  
 }
