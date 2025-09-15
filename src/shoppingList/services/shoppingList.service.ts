@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
@@ -9,6 +11,8 @@ import { PaginatedShoppingListResponseDto, ShoppingListResponseDto } from '../dt
 import { plainToClass } from 'class-transformer';
 import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 import { contains } from 'class-validator';
+import { identity } from 'rxjs';
+import { shoppingListData } from 'prisma/seeds/shoppingList';
 
 
 @Injectable()
@@ -88,6 +92,20 @@ export class ShoppingListService {
       limit: result.limit,
       totalPages: result.totalPages,
     });
+  }
+
+  async findById(id: string, userId?: string): Promise<ShoppingListResponseDto> {
+
+   const shoppingList = await this.shoppingListRepository.findById(id);
+
+   if(!shoppingList){
+    throw new NotFoundException('Shopping list dosent exist');
+   }
+
+   if(shoppingList.userId !== userId) {
+    throw new ForbiddenException('No premission');
+  }
+  return this.transformToResponseDto(shoppingList);
   }
   
 

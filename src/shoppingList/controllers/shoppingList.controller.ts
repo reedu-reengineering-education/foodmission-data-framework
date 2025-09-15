@@ -41,8 +41,6 @@ export class ShoppingListController {
   constructor(private readonly shoppingListService: ShoppingListService) {}
 
   @Post()
-//  @Roles('user', 'admin')
- // @ApiBearerAuth('JWT-auth')
   @Throttle({ default: { limit: 5, ttl: 60000 } }) 
   @ApiOperation({
     summary: 'Create a new Shopping List',
@@ -72,12 +70,6 @@ export class ShoppingListController {
     @Request() req: any,
   ): Promise<ShoppingListResponseDto> {
 
-    // const userId = req.user?.sub;
-    // if (!userId) {
-    //   throw new UnauthorizedException('User not authenticated');
-    // }
-
- //   createShoppingListDto.userId = userId;
 
     return this.shoppingListService.create(createShoppingListDto);
   }
@@ -110,5 +102,26 @@ export class ShoppingListController {
 ): Promise<PaginatedShoppingListResponseDto> {
   return this.shoppingListService.findAll(query);
 }
- 
+
+
+@Get(':id')
+@Roles('user', 'admin')
+@ApiBearerAuth('JWT-auth')
+@ApiOperation({
+  summary: 'Get specific shopping list by ID'
+})
+@ApiParam({ name: 'id', type: 'string', format: 'uuid' }) 
+@ApiResponse({
+  status: 200,
+  description: 'Shopping list found',
+  type: ShoppingListResponseDto,
+})
+async findById(
+  @Param('id', ParseUUIDPipe) id: string,  
+  @Request() req: any
+): Promise<ShoppingListResponseDto> {
+  const userId = req.user?.sub;  
+  return this.shoppingListService.findById(id, userId);
+}
+
 }

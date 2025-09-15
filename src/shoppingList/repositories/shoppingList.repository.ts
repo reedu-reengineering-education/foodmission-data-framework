@@ -23,6 +23,7 @@ export class ShoppingListRepository
 {
 
     constructor(private readonly prisma: PrismaService) {}
+
   findAll(options?: FindAllOptions): Promise<{ id: string; userId: string; title: string; }[]> {
     throw new Error('Method not implemented.');
   }
@@ -61,8 +62,21 @@ async findWithPagination(
   }
 
 
-  findById(id: string): Promise<{ id: string; userId: string; title: string; } | null> {
-    throw new Error('Method not implemented.');
+  async findById(id: string): Promise<ShoppingList | null> {
+    try{
+      return await this.prisma.shoppingList.findUnique({
+        where: {id},
+        include: {
+          items: {
+            include: {
+              food: true
+            }
+          }
+        }
+      });
+    } catch (error: unknown) {
+         throw new Error('Cloudnt find shopping list.');
+    }
   }
 
 
