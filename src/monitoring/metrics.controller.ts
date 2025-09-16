@@ -1,14 +1,18 @@
-import { Controller, Get, Header } from '@nestjs/common';
+import { Controller, Get, Header, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { MetricsService } from './metrics.service';
+import { CacheInterceptor } from '../cache/cache.interceptor';
+import { Cacheable } from '../cache/decorators/cache.decorator';
 
 @ApiTags('Monitoring')
 @Controller('metrics')
+@UseInterceptors(CacheInterceptor)
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
   @Get()
+  @Cacheable('metrics_prometheus', 30) // Cache for 30 seconds
   @Public()
   @Header('Content-Type', 'text/plain')
   @ApiOperation({

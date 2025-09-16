@@ -15,7 +15,6 @@ import {
   OpenFoodFactsInfoDto,
 } from '../dto/food-response.dto';
 import { plainToClass } from 'class-transformer';
-import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 
 @Injectable()
 export class FoodService {
@@ -26,7 +25,6 @@ export class FoodService {
     private readonly openFoodFactsService: OpenFoodFactsService,
   ) {}
 
-  @CacheEvict(['foods:list', 'foods:count'])
   async create(createFoodDto: CreateFoodDto): Promise<FoodResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
 
@@ -117,7 +115,6 @@ export class FoodService {
     });
   }
 
-  @Cacheable('food', 300) // Cache for 5 minutes
   async findOne(
     id: string,
     includeOpenFoodFacts: boolean = false,
@@ -145,7 +142,6 @@ export class FoodService {
     return responseDto;
   }
 
-  @Cacheable('food_barcode', 300) // Cache for 5 minutes
   async findByBarcode(
     barcode: string,
     includeOpenFoodFacts: boolean = false,
@@ -169,7 +165,6 @@ export class FoodService {
     return responseDto;
   }
 
-  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   async update(
     id: string,
     updateFoodDto: UpdateFoodDto,
@@ -215,7 +210,6 @@ export class FoodService {
     return this.transformToResponseDto(updatedFood);
   }
 
-  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   async remove(id: string): Promise<void> {
     this.logger.log(`Removing food: ${id}`);
 
@@ -278,7 +272,6 @@ export class FoodService {
     return responseDto;
   }
 
-  @Cacheable('openfoodfacts', 3600) // Cache for 1 hour
   async getOpenFoodFactsInfo(
     barcode: string,
   ): Promise<OpenFoodFactsInfoDto | null> {
