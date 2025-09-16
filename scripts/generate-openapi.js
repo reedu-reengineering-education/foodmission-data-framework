@@ -19,6 +19,7 @@ async function generateOpenApiSpec() {
 
     // Create NestJS application
     const app = await NestFactory.create(AppModule, { logger: false });
+    app.setGlobalPrefix('api/v1');
 
     // Configure Swagger/OpenAPI (same as main.ts)
     const config = new DocumentBuilder()

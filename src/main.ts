@@ -32,6 +32,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api/v1');
+
   // Configure Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('FOODMISSION Data Framework API')
