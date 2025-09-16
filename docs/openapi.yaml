@@ -62,6 +62,10 @@ paths:
                   settings:
                     type: object
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - email
         - JWT-auth: []
       summary: Get authenticated user profile
       tags: *ref_0
@@ -81,6 +85,9 @@ paths:
         '200':
           description: ''
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
         - JWT-auth: []
       summary: Update user preferences
       tags: *ref_0
@@ -100,6 +107,9 @@ paths:
         '200':
           description: ''
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
         - JWT-auth: []
       summary: Update user settings
       tags: *ref_0
@@ -176,6 +186,10 @@ paths:
         '401':
           description: User not authenticated - JWT token required
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - email
         - JWT-auth: []
       summary: Get JWT token information
       tags: *ref_0
@@ -202,6 +216,10 @@ paths:
         '403':
           description: Forbidden - admin role required
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: Admin-only test endpoint
       tags: *ref_0
@@ -218,6 +236,12 @@ paths:
       responses:
         '201':
           description: User created successfully
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Create a new user
       tags: &ref_1
         - users
@@ -227,6 +251,12 @@ paths:
       responses:
         '200':
           description: List of all users
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Get all users
       tags: *ref_1
   /api/v1/users/{id}:
@@ -243,6 +273,12 @@ paths:
           description: User found
         '404':
           description: User not found
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Get user by ID
       tags: *ref_1
     patch:
@@ -264,6 +300,12 @@ paths:
           description: User updated successfully
         '404':
           description: User not found
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Update user
       tags: *ref_1
     delete:
@@ -279,6 +321,12 @@ paths:
           description: User deleted successfully
         '404':
           description: User not found
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Delete user
       tags: *ref_1
   /api/v1/users/{id}/preferences:
@@ -293,6 +341,12 @@ paths:
       responses:
         '200':
           description: User preferences
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Get user preferences
       tags: *ref_1
     patch:
@@ -312,6 +366,12 @@ paths:
       responses:
         '200':
           description: Preferences updated successfully
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: Update user preferences
       tags: *ref_1
   /api/v1/foods:
@@ -339,6 +399,10 @@ paths:
         '403':
           description: Forbidden - insufficient permissions
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: Create a new food item
       tags: &ref_2
@@ -427,6 +491,10 @@ paths:
         '503':
           description: OpenFoodFacts service unavailable
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: Import food from OpenFoodFacts
       tags: *ref_2
@@ -524,6 +592,10 @@ paths:
         '404':
           description: Food item not found
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: Update food item
       tags: *ref_2
@@ -548,6 +620,10 @@ paths:
         '404':
           description: Food item not found
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: Delete food item
       tags: *ref_2

@@ -84,7 +84,9 @@ describe('HealthController', () => {
     it('should call database and openfoodfacts health indicators', async () => {
       healthCheckService.check.mockImplementation(async (checks) => {
         // Execute the health check functions
-        await Promise.all(checks.map((check) => check()));
+        for (const check of checks) {
+          await check();
+        }
         return mockHealthResult;
       });
 

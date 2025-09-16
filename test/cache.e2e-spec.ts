@@ -191,7 +191,7 @@ describe('Cache E2E', () => {
 
       // Verify it's gone
       const deletedValue = await cacheManager.get(key);
-      expect(deletedValue).toBeNull();
+      expect(deletedValue).toBeUndefined();
     });
   });
 
