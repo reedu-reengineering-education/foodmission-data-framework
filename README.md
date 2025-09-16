@@ -35,7 +35,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 
 ## 🔧 Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 22+
 - **Docker** and Docker Compose
 - **npm** or **yarn**
 - **Git**

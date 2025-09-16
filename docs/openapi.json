@@ -86,6 +86,13 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "email"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -118,6 +125,12 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -149,6 +162,12 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile"
+            ]
+          },
           {
             "JWT-auth": []
           }
@@ -258,6 +277,13 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "email"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -298,6 +324,13 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -326,6 +359,18 @@
             "description": "User created successfully"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Create a new user",
         "tags": [
           "users"
@@ -339,6 +384,18 @@
             "description": "List of all users"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get all users",
         "tags": [
           "users"
@@ -366,6 +423,18 @@
             "description": "User not found"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get user by ID",
         "tags": [
           "users"
@@ -401,6 +470,18 @@
             "description": "User not found"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Update user",
         "tags": [
           "users"
@@ -426,6 +507,18 @@
             "description": "User not found"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Delete user",
         "tags": [
           "users"
@@ -450,6 +543,18 @@
             "description": "User preferences"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get user preferences",
         "tags": [
           "users"
@@ -482,6 +587,18 @@
             "description": "Preferences updated successfully"
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Update user preferences",
         "tags": [
           "users"
@@ -525,6 +642,13 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
           {
             "JWT-auth": []
           }
@@ -659,6 +783,13 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
           {
             "JWT-auth": []
           }
@@ -810,6 +941,13 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -848,6 +986,13 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
           {
             "JWT-auth": []
           }

@@ -32,7 +32,7 @@ If applicable, add screenshots to help explain your problem.
 ## Environment
 
 - OS: [e.g. macOS, Ubuntu 20.04]
-- Node.js version: [e.g. 18.17.0]
+- Node.js version: [e.g. 22.0.0]
 - npm version: [e.g. 9.6.7]
 - Application version: [e.g. v1.0.0]
 

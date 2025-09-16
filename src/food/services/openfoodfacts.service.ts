@@ -11,7 +11,6 @@ import {
   OpenFoodFactsSearchOptions,
   OpenFoodFactsNutriments,
 } from '../interfaces/openfoodfacts.interface';
-import { Cacheable } from '../../cache/decorators/cache.decorator';
 
 @Injectable()
 export class OpenFoodFactsService {
@@ -25,7 +24,6 @@ export class OpenFoodFactsService {
   /**
    * Get product information by barcode
    */
-  @Cacheable('openfoodfacts_product', 3600) // Cache for 1 hour
   async getProductByBarcode(barcode: string): Promise<ProductInfo | null> {
     this.logger.log(`Fetching product by barcode: ${barcode}`);
 
@@ -55,7 +53,6 @@ export class OpenFoodFactsService {
   /**
    * Search products by name or other criteria
    */
-  @Cacheable('openfoodfacts_search', 1800) // Cache for 30 minutes
   async searchProducts(options: OpenFoodFactsSearchOptions): Promise<{
     products: ProductInfo[];
     totalCount: number;

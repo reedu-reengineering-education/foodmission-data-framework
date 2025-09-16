@@ -19,7 +19,7 @@ This guide provides comprehensive information for developers working on the FOOD
 
 ### Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 22+
 - **Docker** and Docker Compose
 - **Git**
 - **VSCode** (recommended) with Dev Containers extension

@@ -6,7 +6,6 @@ import {
   Gauge,
   collectDefaultMetrics,
 } from 'prom-client';
-import { Cacheable } from '../cache/decorators/cache.decorator';
 
 @Injectable()
 export class MetricsService {
@@ -180,7 +179,6 @@ export class MetricsService {
   /**
    * Get all metrics in Prometheus format
    */
-  @Cacheable('metrics_prometheus', 30) // Cache for 30 seconds
   async getMetrics(): Promise<string> {
     return register.metrics();
   }

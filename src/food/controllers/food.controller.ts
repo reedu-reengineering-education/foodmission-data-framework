@@ -13,6 +13,7 @@ import {
   Request,
   UnauthorizedException,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -34,14 +35,19 @@ import {
   FoodResponseDto,
   PaginatedFoodResponseDto,
 } from '../dto/food-response.dto';
+import { CacheInterceptor } from '../../cache/cache.interceptor';
+import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
+import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 
 @ApiTags('foods')
 @Controller('foods')
 @UseGuards(ThrottlerGuard)
+@UseInterceptors(CacheInterceptor, CacheEvictInterceptor)
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 
   @Post()
+  @CacheEvict(['foods:list', 'foods:count'])
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -197,6 +203,7 @@ export class FoodController {
   }
 
   @Get('barcode/:barcode')
+  @Cacheable('food_barcode', 300) // Cache for 5 minutes
   @Public()
   @ApiOperation({
     summary: 'Find food by barcode',
@@ -228,6 +235,7 @@ export class FoodController {
   }
 
   @Get(':id')
+  @Cacheable('food', 300) // Cache for 5 minutes
   @Public()
   @ApiOperation({
     summary: 'Find food by ID',
@@ -264,6 +272,7 @@ export class FoodController {
   }
 
   @Patch(':id')
+  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -307,6 +316,7 @@ export class FoodController {
   }
 
   @Delete(':id')
+  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth('JWT-auth')
@@ -342,6 +352,7 @@ export class FoodController {
   }
 
   @Get(':id/openfoodfacts')
+  @Cacheable('openfoodfacts', 3600) // Cache for 1 hour
   @Public()
   @ApiOperation({
     summary: 'Get OpenFoodFacts information for food item',

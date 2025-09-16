@@ -142,7 +142,7 @@ DATABASE_URL_PRODUCTION     # PostgreSQL connection string for production
 
 The workflows use the following environment variables:
 
-- `NODE_VERSION`: Node.js version (default: 18)
+- `NODE_VERSION`: Node.js version (default: 22)
 - `REGISTRY`: Container registry (ghcr.io)
 - `IMAGE_NAME`: Docker image name (repository name)
 

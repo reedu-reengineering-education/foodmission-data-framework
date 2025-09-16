@@ -30,7 +30,7 @@ The FOODMISSION Data Framework supports multiple deployment strategies:
 
 - Docker 20.10+
 - Docker Compose 2.0+
-- Node.js 18+ (for local builds)
+- Node.js 22+ (for local builds)
 - Git
 
 ### Kubernetes Requirements
