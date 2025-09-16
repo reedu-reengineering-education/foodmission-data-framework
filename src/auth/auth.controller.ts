@@ -11,6 +11,7 @@ import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
+  ApiOAuth2,
   ApiOkResponse,
   ApiUnauthorizedResponse,
   ApiBody,
@@ -77,6 +78,7 @@ export class AuthController {
 
   @Get('profile')
   @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @ApiOperation({
     summary: 'Get authenticated user profile',
@@ -114,6 +116,7 @@ export class AuthController {
 
   @Put('profile/preferences')
   @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user preferences',
     description: 'Update app-specific user preferences.',
@@ -139,6 +142,7 @@ export class AuthController {
 
   @Put('profile/settings')
   @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user settings',
     description: 'Update app-specific user settings.',
@@ -188,6 +192,7 @@ export class AuthController {
 
   @Get('token-info')
   @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Get JWT token information',
     description:
@@ -265,6 +270,7 @@ export class AuthController {
   @Get('admin-only')
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Admin-only test endpoint',
     description:

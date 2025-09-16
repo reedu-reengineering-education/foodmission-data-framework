@@ -32,6 +32,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api/v1');
+
   // Configure Swagger/OpenAPI
   const config = new DocumentBuilder()
     .setTitle('FOODMISSION Data Framework API')
@@ -83,6 +85,24 @@ async function bootstrap() {
       },
       'JWT-auth',
     )
+    .addOAuth2(
+      {
+        type: 'oauth2',
+        flows: {
+          authorizationCode: {
+            authorizationUrl: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/auth`,
+            tokenUrl: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
+            scopes: {
+              openid: 'OpenID Connect scope',
+              profile: 'Access to user profile information',
+              email: 'Access to user email',
+              roles: 'Access to user roles',
+            },
+          },
+        },
+      },
+      'keycloak-oauth2',
+    )
     .addTag(
       'auth',
       'Authentication and authorization endpoints for Keycloak integration',
@@ -104,6 +124,9 @@ async function bootstrap() {
     .addServer('https://staging-api.foodmission.dev/', 'Staging server')
     .build();
 
+  // Set global prefix for API routes BEFORE creating Swagger document
+  app.setGlobalPrefix('api/v1');
+
   const document = SwaggerModule.createDocument(app, config, {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
     deepScanRoutes: true,
@@ -119,12 +142,13 @@ async function bootstrap() {
       showRequestHeaders: true,
       showCommonExtensions: true,
       tryItOutEnabled: true,
-      requestInterceptor: (req: any) => {
-        // Add correlation ID to requests for tracing
-        req.headers['X-Correlation-ID'] = Math.random()
-          .toString(36)
-          .substring(2, 15);
-        return req;
+      oauth2RedirectUrl: `http://localhost:3000/api/docs/oauth2-redirect.html`, // TODO: get url from environment or app
+      initOAuth: {
+        clientId: process.env.KEYCLOAK_CLIENT_ID,
+        realm: process.env.KEYCLOAK_REALM,
+        appName: 'FOODMISSION API Documentation',
+        scopes: ['openid', 'profile', 'email', 'roles'],
+        useBasicAuthenticationWithAccessCodeGrant: false,
       },
     },
     customSiteTitle: 'FOODMISSION API Documentation',
@@ -143,9 +167,6 @@ async function bootstrap() {
       .swagger-ui .scheme-container { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0 }
     `,
   });
-
-  // Set global prefix for API routes
-  app.setGlobalPrefix('api/v1');
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
