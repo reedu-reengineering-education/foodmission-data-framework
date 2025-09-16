@@ -192,11 +192,6 @@ spec:
                 secretKeyRef:
                   name: foodmission-secrets
                   key: DATABASE_PASSWORD
-            - name: JWT_EXPIRES_IN
-              valueFrom:
-                secretKeyRef:
-                  name: foodmission-secrets
-                  key: JWT_EXPIRES_IN
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
