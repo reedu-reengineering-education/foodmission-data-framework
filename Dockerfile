@@ -1,7 +1,7 @@
 # Multi-stage Docker build for NestJS application
 
 # Stage 1: Development/Builder stage
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Install curl for health checks
 RUN apk add --no-cache curl
@@ -26,7 +26,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production stage
-FROM node:18-alpine AS production
+FROM node:22-alpine AS production
 
 # Create app user for security
 RUN addgroup -g 1001 -S nodejs
