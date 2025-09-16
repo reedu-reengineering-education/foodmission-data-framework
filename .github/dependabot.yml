@@ -19,6 +19,33 @@ updates:
     labels:
       - 'dependencies'
       - 'automated'
+    groups:
+      # Group minor and patch updates together
+      minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Group development dependencies
+      dev-dependencies:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Group NestJS related updates
+      nestjs:
+        patterns:
+          - '@nestjs/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Group Prisma related updates
+      prisma:
+        patterns:
+          - 'prisma'
+          - '@prisma/*'
+        update-types:
+          - 'minor'
+          - 'patch'
     ignore:
       # Ignore major version updates for critical dependencies
       - dependency-name: '@nestjs/*'
@@ -46,6 +73,10 @@ updates:
       - 'docker'
       - 'dependencies'
       - 'automated'
+    groups:
+      docker-updates:
+        patterns:
+          - '*'
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: 'github-actions'
@@ -65,3 +96,7 @@ updates:
       - 'github-actions'
       - 'dependencies'
       - 'automated'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
