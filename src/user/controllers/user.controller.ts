@@ -7,7 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOAuth2,
+} from '@nestjs/swagger';
 import { Roles } from 'nest-keycloak-connect';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -21,6 +27,8 @@ export class UserController {
 
   @Post()
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   async create(@Body() createUserDto: CreateUserDto) {
@@ -29,6 +37,8 @@ export class UserController {
 
   @Get()
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'List of all users' })
   async findAll() {
@@ -37,6 +47,8 @@ export class UserController {
 
   @Get(':id')
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -46,6 +58,8 @@ export class UserController {
 
   @Patch(':id')
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -55,6 +69,8 @@ export class UserController {
 
   @Delete(':id')
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -64,6 +80,8 @@ export class UserController {
 
   @Get(':id/preferences')
   @Roles('admin', 'user')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Get user preferences' })
   @ApiResponse({ status: 200, description: 'User preferences' })
   async getPreferences(@Param('id') id: string) {
@@ -76,6 +94,8 @@ export class UserController {
 
   @Patch(':id/preferences')
   @Roles('admin', 'user')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Update user preferences' })
   @ApiResponse({ status: 200, description: 'Preferences updated successfully' })
   async updatePreferences(
