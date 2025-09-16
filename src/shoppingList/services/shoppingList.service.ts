@@ -10,9 +10,7 @@ import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import { PaginatedShoppingListResponseDto, ShoppingListResponseDto } from '../dto/shoppingList-response.dto';
 import { plainToClass } from 'class-transformer';
 import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
-import { contains } from 'class-validator';
-import { identity } from 'rxjs';
-import { shoppingListData } from 'prisma/seeds/shoppingList';
+import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
 
 @Injectable()
@@ -107,7 +105,27 @@ export class ShoppingListService {
   }
   return this.transformToResponseDto(shoppingList);
   }
-  
+
+  async update(id: string, updateShoppingListDto: UpdateShoppingListDto, userId?: string): Promise<ShoppingListResponseDto> {
+    try {
+      const existingList = await this.shoppingListRepository.findById(id);
+      if(!existingList){
+        throw new NotFoundException('Shopping list not found');
+   }
+   if(existingList.userId !== userId) {
+    throw new ForbiddenException('No premission');
+    } 
+
+   const shoppingList = await this.shoppingListRepository.update(id, updateShoppingListDto);
+   return this.transformToResponseDto(shoppingList);
+ 
+  } catch (error) {
+       if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+      throw error;
+  }
+  throw new BadRequestException('Failed to update shopping list')
+  }    
+}
 
     private transformToResponseDto(shoppingList: any): ShoppingListResponseDto {
       return plainToClass(ShoppingListResponseDto, {
@@ -116,4 +134,6 @@ export class ShoppingListService {
         createdBy: shoppingList.createdAt
       });
     }
+
+
 }

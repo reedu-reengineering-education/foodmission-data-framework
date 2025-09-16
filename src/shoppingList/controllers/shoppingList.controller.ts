@@ -8,10 +8,7 @@ import {
   Delete,
   Query,
   ParseUUIDPipe,
-  HttpCode,
-  HttpStatus,
   Request,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -32,6 +29,7 @@ import {
   ShoppingListResponseDto,
 } from '../dto/shoppingList-response.dto';
 import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
+import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
 
 @ApiTags('shoppinglist')
@@ -69,8 +67,6 @@ export class ShoppingListController {
     @Body() createShoppingListDto: CreateShoppingListDto,
     @Request() req: any,
   ): Promise<ShoppingListResponseDto> {
-
-
     return this.shoppingListService.create(createShoppingListDto);
   }
 
@@ -116,6 +112,18 @@ export class ShoppingListController {
   description: 'Shopping list found',
   type: ShoppingListResponseDto,
 })
+ @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT token required',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
+  })
 async findById(
   @Param('id', ParseUUIDPipe) id: string,  
   @Request() req: any
@@ -124,4 +132,38 @@ async findById(
   return this.shoppingListService.findById(id, userId);
 }
 
+
+@Patch(':id')
+@Roles('user', 'admin')
+@ApiBearerAuth('JWT-auth')
+@ApiOperation({
+  summary: 'Update shopping list'
+})
+@ApiParam({ name: 'id', type: 'string', format: 'uuid' }) 
+@ApiResponse({
+  status: 200,
+  description: 'Shopping list found',
+  type: ShoppingListResponseDto,
+})
+ @ApiResponse({
+    status: 400,
+    description: 'Invalid input data',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT token required',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - insufficient permissions',
+  })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateShoppingListDto: UpdateShoppingListDto,
+    @Request() req: any,
+  ): Promise <ShoppingListResponseDto> {
+      const userId = req.user?.sub; 
+    return this.shoppingListService.update(id, updateShoppingListDto, userId);
+  }
+  
 }
