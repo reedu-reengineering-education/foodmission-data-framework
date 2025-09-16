@@ -52,7 +52,6 @@ export class SecurityService {
   validateEnvironmentVariables(): void {
     const requiredVars = [
       'DATABASE_URL',
-      'JWT_SECRET',
       'KEYCLOAK_BASE_URL',
       'KEYCLOAK_REALM',
       'KEYCLOAK_CLIENT_ID',
@@ -68,14 +67,6 @@ export class SecurityService {
       );
       throw new Error(
         `Missing required environment variables: ${missingVars.join(', ')}`,
-      );
-    }
-
-    // Validate JWT secret strength
-    const jwtSecret = this.configService.get('JWT_SECRET');
-    if (jwtSecret && jwtSecret.length < 32) {
-      this.logger.warn(
-        'JWT_SECRET should be at least 32 characters long for security',
       );
     }
 

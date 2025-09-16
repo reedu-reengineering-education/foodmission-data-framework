@@ -192,11 +192,6 @@ spec:
                 secretKeyRef:
                   name: foodmission-secrets
                   key: DATABASE_PASSWORD
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: foodmission-secrets
-                  key: JWT_SECRET
             - name: JWT_EXPIRES_IN
               valueFrom:
                 secretKeyRef:

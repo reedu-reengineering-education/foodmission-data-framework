@@ -92,7 +92,6 @@ NODE_ENV=development
 DATABASE_URL=postgresql://postgres:password@localhost:5432/foodmission_dev
 DATABASE_URL_TEST=postgresql://postgres:password@localhost:5432/foodmission_test
 REDIS_URL=redis://localhost:6379
-JWT_SECRET=dev-jwt-secret-change-in-production
 LOG_LEVEL=debug
 ```
 

@@ -12,11 +12,6 @@ export const environmentValidationSchema = Joi.object({
     .required()
     .description('PostgreSQL database connection URL'),
 
-  JWT_SECRET: Joi.string()
-    .min(32)
-    .required()
-    .description('JWT signing secret (minimum 32 characters)'),
-
   KEYCLOAK_BASE_URL: Joi.string()
     .uri()
     .required()

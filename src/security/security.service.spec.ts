@@ -16,7 +16,6 @@ describe('SecurityService', () => {
             get: jest.fn((key: string) => {
               const config = {
                 DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
-                JWT_SECRET: 'test-secret-that-is-long-enough-for-security',
                 KEYCLOAK_BASE_URL: 'http://localhost:8080',
                 KEYCLOAK_REALM: 'test-realm',
                 KEYCLOAK_CLIENT_ID: 'test-client',
@@ -121,25 +120,6 @@ describe('SecurityService', () => {
 
       expect(() => service.validateEnvironmentVariables()).toThrow(
         'Missing required environment variables: DATABASE_URL',
-      );
-    });
-
-    it('should warn about weak JWT secret', () => {
-      const loggerSpy = jest.spyOn(service['logger'], 'warn');
-      jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-        if (key === 'JWT_SECRET') return 'short';
-        const config = {
-          DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
-          KEYCLOAK_BASE_URL: 'http://localhost:8080',
-          KEYCLOAK_REALM: 'test-realm',
-          KEYCLOAK_CLIENT_ID: 'test-client',
-        };
-        return config[key];
-      });
-
-      service.validateEnvironmentVariables();
-      expect(loggerSpy).toHaveBeenCalledWith(
-        'JWT_SECRET should be at least 32 characters long for security',
       );
     });
   });

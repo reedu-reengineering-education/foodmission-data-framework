@@ -53,8 +53,8 @@ This document summarizes the security features implemented for Task 17: Security
 
 - **Environment Validation Schema** (`src/security/config/environment.validation.ts`)
   - Uses Joi for comprehensive validation
-  - Validates required variables (DATABASE_URL, JWT_SECRET, etc.)
-  - Enforces minimum security requirements (JWT_SECRET >= 32 chars)
+  - Validates required variables (DATABASE_URL, etc.)
+  <!-- - Enforces minimum security requirements (JWT_SECRET >= 32 chars) -->
   - Validates URLs, ports, and other formats
   - Different requirements for production vs development
 
@@ -134,7 +134,6 @@ Security features are configured through environment variables:
 - `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
 - `RATE_LIMIT_TTL`: Rate limit time window (default: 60000ms)
 - `RATE_LIMIT_MAX`: Maximum requests per window (default: 100)
-- `JWT_SECRET`: JWT signing secret (minimum 32 characters)
 - `NODE_ENV`: Environment mode (affects security strictness)
 
 ### Testing Coverage
