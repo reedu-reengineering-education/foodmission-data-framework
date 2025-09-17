@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { seedFoods } from './seeds/foods';
 import { seedUsers } from './seeds/users';
+import { seedShoppingLists } from './seeds/shoppingList';
 
 const prisma = new PrismaClient();
 
@@ -15,11 +16,14 @@ async function main() {
     // Seed users and preferences
     const users = await seedUsers(prisma);
 
+    const shoppingList = await seedShoppingLists(prisma);
+
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
     console.log(`   - Foods: ${foods.length}`);
     console.log(`   - Users: ${users.length}`);
+    console.log(`   - ShoppingList: ${shoppingList.length}`);
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;

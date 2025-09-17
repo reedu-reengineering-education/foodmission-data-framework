@@ -10,8 +10,7 @@ export class ShoppingListResponseDto {
   @Expose()
   id: string;
 
-  
-    @ApiProperty({
+  @ApiProperty({
     description: 'UUID of the user who created this shopping list',
     example: '550e8400-e29b-41d4-a716-446655440001',
     format: 'uuid',
@@ -19,8 +18,7 @@ export class ShoppingListResponseDto {
   @Expose()
   userId: string;
 
-
-    @ApiProperty({
+  @ApiProperty({
     description: 'title of the shopping list',
     example: 'Family shopping list',
   })
@@ -28,41 +26,12 @@ export class ShoppingListResponseDto {
   title: string;
 }
 
-
-export class PaginatedShoppingListResponseDto {
-    @ApiProperty({
-      description: 'Array of shopping lists',
-      type: [ShoppingListResponseDto],
-    })
-    @Expose()
-    @Type(() => ShoppingListResponseDto)
-    data: ShoppingListResponseDto[];
-  
+export class MultipleShoppingListResponseDto {
   @ApiProperty({
-    description: 'Total number of food items matching the query',
-    example: 150,
+    description: 'Array of shopping lists',
+    type: [ShoppingListResponseDto],
   })
   @Expose()
-  total: number;
-
-  @ApiProperty({
-    description: 'Current page number',
-    example: 1,
-  })
-  @Expose()
-  page: number;
-
-  @ApiProperty({
-    description: 'Number of items per page',
-    example: 10,
-  })
-  @Expose()
-  limit: number;
-
-  @ApiProperty({
-    description: 'Total number of pages',
-    example: 15,
-  })
-  @Expose()
-  totalPages: number;
+  @Type(() => ShoppingListResponseDto)
+  data: ShoppingListResponseDto[];
 }

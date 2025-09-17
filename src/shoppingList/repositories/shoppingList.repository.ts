@@ -24,42 +24,11 @@ export class ShoppingListRepository
 
     constructor(private readonly prisma: PrismaService) {}
 
-  findAll(options?: FindAllOptions): Promise<{ id: string; userId: string; title: string; }[]> {
-    throw new Error('Method not implemented.');
-  }
 
-
-async findWithPagination(
-    options: FindAllOptions,
-  ): Promise<PaginatedResult<ShoppingList>> {
-    try {
-      const { skip = 0, take = 10, where, orderBy } = options;
-
-      const [data, total] = await Promise.all([
-        this.prisma.shoppingList.findMany({
-          skip,
-          take,
-          where,
-          orderBy: orderBy || { title: 'desc' },
-        }),
-        this.count(where),
-      ]);
-
-      const page = Math.floor(skip / take) + 1;
-      const totalPages = Math.ceil(total / take);
-
-      return {
-        data,
-        total,
-        page,
-        limit: take,
-        totalPages,
-      };
-    } catch (error: unknown) {
-      console.error('Error finding shopping list with pagination:', error);
-      throw new Error('Failed to retrieve paginated shopping list');
-    }
-  }
+    
+ async findAll(): Promise<ShoppingList[]> {
+  return await this.prisma.shoppingList.findMany();
+}
 
 
   async findById(id: string): Promise<ShoppingList | null> {

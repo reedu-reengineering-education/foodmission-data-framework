@@ -24,10 +24,7 @@ import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shoppingList.service';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
-import {
-  PaginatedShoppingListResponseDto,
-  ShoppingListResponseDto,
-} from '../dto/shoppingList-response.dto';
+import { MultipleShoppingListResponseDto, ShoppingListResponseDto } from '../dto/shoppingList-response.dto';
 import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
@@ -39,6 +36,7 @@ export class ShoppingListController {
   constructor(private readonly shoppingListService: ShoppingListService) {}
 
   @Post()
+  @Public()
   @Throttle({ default: { limit: 5, ttl: 60000 } }) 
   @ApiOperation({
     summary: 'Create a new Shopping List',
@@ -71,7 +69,7 @@ export class ShoppingListController {
   }
 
 
-  @Get()
+  @Get('findAll')
   @Public()
   @ApiOperation({
     summary: 'Get All Shoppinglists'
@@ -80,7 +78,7 @@ export class ShoppingListController {
   @ApiResponse({
     status: 200,
     description: 'Shopping lists retrieved successfully',
-    type: ShoppingListResponseDto,
+    type: MultipleShoppingListResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -95,12 +93,13 @@ export class ShoppingListController {
     description: 'Forbidden - insufficient permissions',
   })
   async findAll(@Query() query: ShoppingListQueryDto, 
-): Promise<PaginatedShoppingListResponseDto> {
+): Promise<MultipleShoppingListResponseDto> {
   return this.shoppingListService.findAll(query);
 }
 
 
-@Get(':id')
+@Get('getById/:id')
+@Public()
 @Roles('user', 'admin')
 @ApiBearerAuth('JWT-auth')
 @ApiOperation({
@@ -133,7 +132,7 @@ async findById(
 }
 
 
-@Patch(':id')
+@Patch('updateById/:id')
 @Roles('user', 'admin')
 @ApiBearerAuth('JWT-auth')
 @ApiOperation({

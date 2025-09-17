@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
-import { PaginatedShoppingListResponseDto, ShoppingListResponseDto } from '../dto/shoppingList-response.dto';
-import { plainToClass } from 'class-transformer';
+import { MultipleShoppingListResponseDto, ShoppingListResponseDto } from '../dto/shoppingList-response.dto';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
@@ -39,60 +39,27 @@ export class ShoppingListService {
   }
 
 
-  async findAll(query : ShoppingListQueryDto): Promise<PaginatedShoppingListResponseDto> {
-    this.logger.log(`Finding shopping list with query`);
 
-        const {
-      page = 1,
-      limit = 10,
-      search,
-      title,
-      sortBy = 'title',
-      sortOrder = 'desc',
-    } = query;
-    const skip = (page - 1) * limit;
+  async findAll(query : ShoppingListQueryDto): Promise<MultipleShoppingListResponseDto> {
+    this.logger.log(`Finding all shopping list `);
 
-    const where: any = {};
+    const shoppingList = await this.shoppingListRepository.findAll();
 
-    if(search) {
-      where.title = {
-        contains:search,
-        mode: 'insensitive',
+   const transformedData = plainToInstance(
+    ShoppingListResponseDto,
+    shoppingList,
+    { excludeExtraneousValues: true }, 
+  );
+
+      return {
+        data: transformedData,
       };
-    }
-
-    if(title) {
-      where.title = title;
-    }
-
-       const orderBy: any = {};
-    orderBy[sortBy] = sortOrder;
-
-    const result = await this.shoppingListRepository.findWithPagination({
-      skip, 
-      take : limit, 
-      where,
-      orderBy,
-    });
-
- const transformedData = await Promise.all(
-      result.data.map(async (shoppingList) => {
-        const responseDto = this.transformToResponseDto(shoppingList);
-
-        return responseDto;
-      }),
-    );
-
-   return plainToClass(PaginatedShoppingListResponseDto, {
-      data: transformedData,
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-      totalPages: result.totalPages,
-    });
   }
 
+
+
   async findById(id: string, userId?: string): Promise<ShoppingListResponseDto> {
+     this.logger.log(`Finding shopping list with the id:` + id);
 
    const shoppingList = await this.shoppingListRepository.findById(id);
 
@@ -105,6 +72,8 @@ export class ShoppingListService {
   }
   return this.transformToResponseDto(shoppingList);
   }
+
+
 
   async update(id: string, updateShoppingListDto: UpdateShoppingListDto, userId?: string): Promise<ShoppingListResponseDto> {
     try {
