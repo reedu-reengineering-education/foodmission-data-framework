@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
-import {
-  FoodRepository,
-  CreateFoodDto,
-  UpdateFoodDto,
-} from './food.repository';
+import { FoodRepository, UpdateFoodDto } from './food.repository';
+import { CreateFoodDto } from '../dto/create-food.dto';
 import { PrismaService } from '../../database/prisma.service';
 
 describe('FoodRepository', () => {
@@ -162,30 +159,35 @@ describe('FoodRepository', () => {
         name: 'New Food',
         description: 'New Description',
         barcode: '9876543210',
-        createdBy: 'user-1',
       };
+      const userId = 'user-1';
       mockPrismaService.food.create.mockResolvedValueOnce(mockFood);
 
-      const result = await repository.create(createDto);
+      const result = await repository.create({
+        ...createDto,
+        createdBy: userId,
+      });
 
       expect(result).toEqual(mockFood);
       expect(mockPrismaService.food.create).toHaveBeenCalledWith({
-        data: createDto,
+        data: { ...createDto, createdBy: userId },
       });
     });
 
     it('should throw error for duplicate barcode', async () => {
       const createDto: CreateFoodDto = {
         name: 'New Food',
-        createdBy: 'user-1',
       };
+      const userId = 'user-1';
       const prismaError = new Prisma.PrismaClientKnownRequestError(
         'Unique constraint failed',
         { code: 'P2002', clientVersion: '4.0.0' },
       );
       mockPrismaService.food.create.mockRejectedValueOnce(prismaError);
 
-      await expect(repository.create(createDto)).rejects.toThrow(
+      await expect(
+        repository.create({ ...createDto, createdBy: userId }),
+      ).rejects.toThrow(
         'Food with this barcode or OpenFoodFacts ID already exists',
       );
     });

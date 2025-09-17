@@ -101,4 +101,37 @@ export class UserProfileService {
       settings: updatedUser.settings as Record<string, unknown>,
     };
   }
+
+  /**
+   * Get internal userId from keycloakId
+   * Useful when you need the database primary key
+   */
+  async getUserIdFromKeycloakId(keycloakId: string): Promise<string> {
+    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user.id;
+  }
+
+  /**
+   * Get user profile by internal userId
+   * Useful for internal operations that work with database IDs
+   */
+  async getProfileByUserId(userId: string): Promise<UserProfile | null> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      keycloakId: user.keycloakId,
+      preferences: user.preferences as Record<string, unknown>,
+      settings: user.settings as Record<string, unknown>,
+    };
+  }
 }

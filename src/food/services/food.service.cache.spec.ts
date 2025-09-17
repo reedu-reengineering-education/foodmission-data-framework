@@ -168,8 +168,8 @@ describe('FoodService - Caching Integration', () => {
       name: 'New Food',
       description: 'New Description',
       barcode: '9876543210',
-      createdBy: 'user123',
     };
+    const userId = 'user123';
 
     it('should create food successfully', async () => {
       foodRepository.findByBarcode.mockResolvedValue(null);
@@ -179,16 +179,19 @@ describe('FoodService - Caching Integration', () => {
         ...createFoodDto,
       });
 
-      const result = await service.create(createFoodDto);
+      const result = await service.create(createFoodDto, userId);
 
-      expect(foodRepository.create).toHaveBeenCalledWith(createFoodDto);
+      expect(foodRepository.create).toHaveBeenCalledWith({
+        ...createFoodDto,
+        createdBy: userId,
+      });
       expect(result.name).toBe(createFoodDto.name);
     });
 
     it('should throw BadRequestException when barcode already exists', async () => {
       foodRepository.findByBarcode.mockResolvedValue(mockFood);
 
-      await expect(service.create(createFoodDto)).rejects.toThrow(
+      await expect(service.create(createFoodDto, userId)).rejects.toThrow(
         BadRequestException,
       );
       expect(foodRepository.create).not.toHaveBeenCalled();
@@ -203,7 +206,7 @@ describe('FoodService - Caching Integration', () => {
       foodRepository.findByBarcode.mockResolvedValue(null);
       foodRepository.findByOpenFoodFactsId.mockResolvedValue(mockFood);
 
-      await expect(service.create(createDtoWithOffId)).rejects.toThrow(
+      await expect(service.create(createDtoWithOffId, userId)).rejects.toThrow(
         BadRequestException,
       );
       expect(foodRepository.create).not.toHaveBeenCalled();
