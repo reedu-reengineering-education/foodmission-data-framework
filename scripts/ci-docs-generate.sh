@@ -10,7 +10,6 @@ export NODE_ENV=test
 
 # Set required environment variables with mock values for documentation generation
 export DATABASE_URL=${DATABASE_URL:-"postgresql://mock:mock@localhost:5432/mock_db"}
-export JWT_SECRET=${JWT_SECRET:-"mock-jwt-secret-for-docs-generation-32-chars-minimum"}
 export KEYCLOAK_BASE_URL=${KEYCLOAK_BASE_URL:-"http://localhost:8080"}
 export KEYCLOAK_REALM=${KEYCLOAK_REALM:-"mock-realm"}
 export KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:-"mock-client-id"}

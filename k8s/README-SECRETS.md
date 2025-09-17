@@ -50,7 +50,6 @@ This directory contains Kubernetes secret templates. **Never commit actual secre
    ```bash
    kubectl create secret generic foodmission-secrets \
      --from-literal=DATABASE_PASSWORD="your_password" \
-     --from-literal=JWT_SECRET="your_jwt_secret" \
      --dry-run=client -o yaml | \
      kubeseal -o yaml > sealed-secrets.yaml
    ```
@@ -77,8 +76,6 @@ echo "k8s/secrets.yaml" >> .gitignore
 # Create secrets manually on each environment
 kubectl create secret generic foodmission-secrets \
   --from-literal=DATABASE_PASSWORD="your_password" \
-  --from-literal=JWT_SECRET="your_jwt_secret" \
-  --from-literal=JWT_EXPIRES_IN="36h" \
   --from-literal=REDIS_PASSWORD="your_redis_password" \
   --from-literal=KEYCLOAK_CLIENT_SECRET="your_keycloak_secret" \
   --from-literal=OPENFOODFACTS_API_KEY="your_api_key" \
@@ -87,12 +84,10 @@ kubectl create secret generic foodmission-secrets \
 
 ## Environment Variables Reference
 
-| Variable               | Description                   | Example                |
-| ---------------------- | ----------------------------- | ---------------------- |
-| DATABASE_PASSWORD      | PostgreSQL password           | `secure_db_password`   |
-| JWT_SECRET             | JWT signing secret            | `super_secret_jwt_key` |
-| JWT_EXPIRES_IN         | JWT expiration time           | `36h`                  |
-| REDIS_PASSWORD         | Redis authentication password | `redis_password`       |
-| KEYCLOAK_CLIENT_SECRET | Keycloak client secret        | `keycloak_secret`      |
-| OPENFOODFACTS_API_KEY  | OpenFoodFacts API key         | `api_key_value`        |
-| ENCRYPTION_KEY         | Application encryption key    | `encryption_key`       |
+| Variable               | Description                   | Example              |
+| ---------------------- | ----------------------------- | -------------------- |
+| DATABASE_PASSWORD      | PostgreSQL password           | `secure_db_password` |
+| REDIS_PASSWORD         | Redis authentication password | `redis_password`     |
+| KEYCLOAK_CLIENT_SECRET | Keycloak client secret        | `keycloak_secret`    |
+| OPENFOODFACTS_API_KEY  | OpenFoodFacts API key         | `api_key_value`      |
+| ENCRYPTION_KEY         | Application encryption key    | `encryption_key`     |

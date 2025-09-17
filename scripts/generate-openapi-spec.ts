@@ -16,12 +16,6 @@ async function generateOpenApiSpec() {
     console.log('🔧 Set mock DATABASE_URL for documentation generation');
   }
 
-  if (!process.env.JWT_SECRET) {
-    process.env.JWT_SECRET =
-      'mock-jwt-secret-for-docs-generation-32-chars-minimum';
-    console.log('🔧 Set mock JWT_SECRET for documentation generation');
-  }
-
   if (!process.env.KEYCLOAK_BASE_URL) {
     process.env.KEYCLOAK_BASE_URL = 'http://localhost:8080';
     console.log('🔧 Set mock KEYCLOAK_BASE_URL for documentation generation');

@@ -103,7 +103,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_test
       REDIS_URL: redis://localhost:6379
-      JWT_SECRET: test-jwt-secret-key-for-testing-only-32chars
       KEYCLOAK_BASE_URL: http://localhost:8080
       KEYCLOAK_REALM: test-realm
       KEYCLOAK_CLIENT_ID: foodmission-api

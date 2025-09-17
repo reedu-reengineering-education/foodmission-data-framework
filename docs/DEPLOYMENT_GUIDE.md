@@ -76,7 +76,6 @@ OPENFOODFACTS_API_URL=https://world.openfoodfacts.org
 OPENFOODFACTS_RATE_LIMIT=100
 
 # Security
-JWT_SECRET=dev-jwt-secret-key-change-in-production
 CORS_ORIGINS=http://localhost:3000,http://localhost:3001
 
 # Monitoring
@@ -108,7 +107,6 @@ OPENFOODFACTS_API_URL=https://world.openfoodfacts.org
 OPENFOODFACTS_RATE_LIMIT=1000
 
 # Security
-JWT_SECRET=${JWT_SECRET}
 CORS_ORIGINS=https://app-staging.example.com
 
 # Monitoring
@@ -141,7 +139,6 @@ OPENFOODFACTS_API_URL=https://world.openfoodfacts.org
 OPENFOODFACTS_RATE_LIMIT=5000
 
 # Security
-JWT_SECRET=${JWT_SECRET}
 CORS_ORIGINS=https://app.example.com
 
 # Monitoring
@@ -311,7 +308,6 @@ type: Opaque
 data:
   DATABASE_URL: <base64-encoded-database-url>
   REDIS_URL: <base64-encoded-redis-url>
-  JWT_SECRET: <base64-encoded-jwt-secret>
   KEYCLOAK_CLIENT_SECRET: <base64-encoded-keycloak-secret>
 ```
 

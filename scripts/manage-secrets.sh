@@ -97,8 +97,6 @@ create_sealed_secrets() {
     
     read -s -p "Database Password: " db_password
     echo
-    read -s -p "JWT Secret: " jwt_secret
-    echo
     read -s -p "Redis Password: " redis_password
     echo
     read -s -p "Keycloak Client Secret: " keycloak_secret
@@ -111,8 +109,6 @@ create_sealed_secrets() {
     kubectl create secret generic foodmission-secrets \
         --namespace=foodmission \
         --from-literal=DATABASE_PASSWORD="$db_password" \
-        --from-literal=JWT_SECRET="$jwt_secret" \
-        --from-literal=JWT_EXPIRES_IN="36h" \
         --from-literal=REDIS_PASSWORD="$redis_password" \
         --from-literal=KEYCLOAK_CLIENT_SECRET="$keycloak_secret" \
         --from-literal=OPENFOODFACTS_API_KEY="$api_key" \
