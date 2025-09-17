@@ -46,9 +46,9 @@ export class LoggingService implements LoggerService {
   /**
    * Set user context for the current request
    */
-  setUserContext(userId: string, userEmail?: string): void {
+  setUserContext(keycloakId: string, userEmail?: string): void {
     try {
-      this.namespace.set('userId', userId);
+      this.namespace.set('userId', keycloakId); // Store keycloakId as userId for logging
       if (userEmail) {
         this.namespace.set('userEmail', userEmail);
       }
@@ -286,12 +286,12 @@ export class LoggingService implements LoggerService {
    * Run a function within a user context
    */
   runWithUserContext<T>(
-    userId: string,
+    keycloakId: string,
     userEmail: string | undefined,
     fn: () => T,
   ): T {
     return this.namespace.runAndReturn(() => {
-      this.setUserContext(userId, userEmail);
+      this.setUserContext(keycloakId, userEmail);
       return fn();
     });
   }
