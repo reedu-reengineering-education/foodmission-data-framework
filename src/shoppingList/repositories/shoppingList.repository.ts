@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ShoppingList, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import {
-  BaseRepository,
-  FindAllOptions,
-  PaginatedResult,
-} from '../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '../../common/interfaces/base-repository.interface';
+import e from 'express';
 
 export interface CreateShoppingListDto {
   userId: string;
@@ -16,80 +13,88 @@ export interface UpdateShoppingListDto {
   title: string;
 }
 
-
 @Injectable()
 export class ShoppingListRepository
-  implements BaseRepository<ShoppingList, CreateShoppingListDto, UpdateShoppingListDto>
+  implements
+    BaseRepository<ShoppingList, CreateShoppingListDto, UpdateShoppingListDto>
 {
+  constructor(private readonly prisma: PrismaService) {}
 
-    constructor(private readonly prisma: PrismaService) {}
-
-
-    
- async findAll(): Promise<ShoppingList[]> {
-  return await this.prisma.shoppingList.findMany();
-}
-
+  async findAll(): Promise<ShoppingList[]> {
+    return await this.prisma.shoppingList.findMany();
+  }
 
   async findById(id: string): Promise<ShoppingList | null> {
-    try{
+    try {
       return await this.prisma.shoppingList.findUnique({
-        where: {id},
+        where: { id },
         include: {
           items: {
             include: {
-              food: true
-            }
-          }
-        }
+              food: true,
+            },
+          },
+        },
       });
     } catch (error: unknown) {
-         throw new Error('Cloudnt find shopping list.');
+      throw new Error('Cloudnt find shopping list.');
     }
   }
 
-
-   async create(data: CreateShoppingListDto): Promise<ShoppingList> {
-     try {
-       return await this.prisma.shoppingList.create({
-        data ,
-       });
-     } catch (error) {
-       console.error('Error creating shopping list:', error);
-       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-       }
-       throw new Error('Failed to create shopping list.');
-     }
-   }
-
+  async create(data: CreateShoppingListDto): Promise<ShoppingList> {
+    try {
+      return await this.prisma.shoppingList.create({
+        data,
+      });
+    } catch (error) {
+      console.error('Error creating shopping list:', error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      }
+      throw new Error('Failed to create shopping list.');
+    }
+  }
 
   async update(id: string, data: UpdateShoppingListDto): Promise<ShoppingList> {
     try {
       return await this.prisma.shoppingList.update({
-        where: {id},
+        where: { id },
         data,
         include: {
           items: {
             include: {
-              food: true
-            }
-          }
-        }
+              food: true,
+            },
+          },
+        },
       });
-    } catch (error : unknown) {
+    } catch (error: unknown) {
       console.error('Error updating shopping list:', error);
       throw new Error('Failed to update shopping list.');
     }
   }
 
-
-  delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(id: string): Promise<void> {
+    try {
+      await this.prisma.shoppingList.delete({
+        where: { id },
+      });
+    } catch (error) {
+      console.error('Error deleting shopping list:', error);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new Error('Shopping list not found');
+        }
+      }
+      throw new Error('Failed to delete shopping list');
+    }
   }
 
-
-  count(where?: any): Promise<number> {
-    throw new Error('Method not implemented.');
+  async count(where?: any): Promise<number> {
+    try {
+      return await this.prisma.shoppingList.count({ where });
+    } catch (error) {
+      console.error('Error counting shoppings lists:', error);
+      throw new Error('Failed to count shoppings lists');
+    }
   }
-
 }

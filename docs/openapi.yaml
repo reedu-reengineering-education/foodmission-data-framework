@@ -809,11 +809,116 @@ paths:
           description: Unauthorized - JWT token required
         '403':
           description: Forbidden - insufficient permissions
+      summary: Create a new Shopping List
+      tags: &ref_7
+        - shoppinglist
+    get:
+      operationId: findAll
+      parameters:
+        - name: search
+          required: false
+          in: query
+          schema: {}
+      responses:
+        '200':
+          description: Shopping lists retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleShoppingListResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      summary: Get All Shoppinglists
+      tags: *ref_7
+  /api/v1/shoppinglist/{id}:
+    get:
+      operationId: findById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Shopping list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
       security:
         - JWT-auth: []
-      summary: Create a new Shopping List
-      tags:
-        - shoppinglist
+      summary: Get specific shopping list by ID
+      tags: *ref_7
+    patch:
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShoppingListDto'
+      responses:
+        '200':
+          description: Shopping list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Update shopping list
+      tags: *ref_7
+    delete:
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Shopping list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingListResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Delete specific shopping list by ID
+      tags: *ref_7
   /api/v1:
     get:
       description: >-
@@ -1245,18 +1350,12 @@ components:
     CreateShoppingListDto:
       type: object
       properties:
-        userId:
-          type: string
-          description: UUID of the user who created this shopping list
-          example: 550e8400-e29b-41d4-a716-446655440001
-          format: uuid
         title:
           type: string
           description: The name of the shopping list
           example: Family-Shopping-List
           maxLength: 255
       required:
-        - userId
         - title
     ShoppingListResponseDto:
       type: object
@@ -1271,11 +1370,31 @@ components:
           description: UUID of the user who created this shopping list
           example: 550e8400-e29b-41d4-a716-446655440001
           format: uuid
-        name:
+        title:
           type: string
-          description: Name of the shopping list
+          description: title of the shopping list
           example: Family shopping list
       required:
         - id
         - userId
-        - name
+        - title
+    MultipleShoppingListResponseDto:
+      type: object
+      properties:
+        data:
+          description: Array of shopping lists
+          type: array
+          items:
+            $ref: '#/components/schemas/ShoppingListResponseDto'
+      required:
+        - data
+    UpdateShoppingListDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the shopping list
+          example: Family-Shopping-List
+          maxLength: 255
+      required:
+        - title

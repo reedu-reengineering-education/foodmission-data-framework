@@ -5,8 +5,7 @@ describe('ShoppingListService - Caching Integration', () => {
   let service: ShoppingListService;
   let shoppingListRepository: jest.Mocked<ShoppingListRepository>;
 
-
-  const mockFood = {
+  const mockShoppingList = {
     id: '123',
     title: 'Test shopping list',
   };
@@ -14,13 +13,10 @@ describe('ShoppingListService - Caching Integration', () => {
   beforeEach(async () => {
     const shoppingListRepository = {
       findById: jest.fn(),
-      findByBarcode: jest.fn(),
-      findByOpenFoodFactsId: jest.fn(),
+      findByAll: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      findWithPagination: jest.fn(),
     };
-
   });
 });
