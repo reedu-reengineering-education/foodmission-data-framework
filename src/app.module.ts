@@ -16,6 +16,7 @@ import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 
 import { SecurityMiddleware } from './security/middleware/security.middleware';
 import { ShoppingListModule } from './shoppingList/shoppingList.module';
+import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { ShoppingListModule } from './shoppingList/shoppingList.module';
     FoodModule,
     HealthModule,
     MonitoringModule,
-    ShoppingListModule
+    ShoppingListModule,
+    ShoppingListItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

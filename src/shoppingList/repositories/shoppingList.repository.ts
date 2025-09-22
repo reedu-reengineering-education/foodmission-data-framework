@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ShoppingList, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { BaseRepository } from '../../common/interfaces/base-repository.interface';
-import e from 'express';
 
 export interface CreateShoppingListDto {
   userId: string;
