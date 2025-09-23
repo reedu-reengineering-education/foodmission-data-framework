@@ -11,7 +11,6 @@ import {
   HttpCode,
   HttpStatus,
   Request,
-  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -38,13 +37,17 @@ import {
 import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
+import { UserContextService } from '../../auth/user-context.service';
 
 @ApiTags('foods')
 @Controller('foods')
 @UseGuards(ThrottlerGuard)
 @UseInterceptors(CacheInterceptor, CacheEvictInterceptor)
 export class FoodController {
-  constructor(private readonly foodService: FoodService) {}
+  constructor(
+    private readonly foodService: FoodService,
+    private readonly userContextService: UserContextService,
+  ) {}
 
   @Post()
   @CacheEvict(['foods:list', 'foods:count'])
@@ -79,16 +82,10 @@ export class FoodController {
     @Body() createFoodDto: CreateFoodDto,
     @Request() req: any,
   ): Promise<FoodResponseDto> {
-    // Extract user ID from request (set by Keycloak authentication)
-    const userId = req.user?.sub;
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
+    // Get the internal userId for database operations
+    const userId = await this.userContextService.getUserIdFromRequest(req);
 
-    // Set the createdBy field to the authenticated user's ID
-    createFoodDto.createdBy = userId;
-
-    return this.foodService.create(createFoodDto);
+    return this.foodService.create(createFoodDto, userId);
   }
 
   @Get()
@@ -195,10 +192,8 @@ export class FoodController {
     @Param('barcode') barcode: string,
     @Request() req: any,
   ): Promise<FoodResponseDto> {
-    const userId = req.user?.sub;
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
+    // Get the internal userId for database operations
+    const userId = await this.userContextService.getUserIdFromRequest(req);
     return this.foodService.importFromOpenFoodFacts(barcode, userId);
   }
 

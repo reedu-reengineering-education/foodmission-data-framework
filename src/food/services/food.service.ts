@@ -25,7 +25,10 @@ export class FoodService {
     private readonly openFoodFactsService: OpenFoodFactsService,
   ) {}
 
-  async create(createFoodDto: CreateFoodDto): Promise<FoodResponseDto> {
+  async create(
+    createFoodDto: CreateFoodDto,
+    userId: string,
+  ): Promise<FoodResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
 
     // Check if barcode already exists
@@ -50,7 +53,10 @@ export class FoodService {
       }
     }
 
-    const food = await this.foodRepository.create(createFoodDto);
+    const food = await this.foodRepository.create({
+      ...createFoodDto,
+      createdBy: userId,
+    });
     return this.transformToResponseDto(food);
   }
 
@@ -259,10 +265,12 @@ export class FoodService {
       description: productInfo.genericName,
       barcode: productInfo.barcode,
       openFoodFactsId: productInfo.barcode, // Use barcode as OpenFoodFacts ID
-      createdBy,
     };
 
-    const food = await this.foodRepository.create(createFoodDto);
+    const food = await this.foodRepository.create({
+      ...createFoodDto,
+      createdBy,
+    });
     const responseDto = this.transformToResponseDto(food);
 
     // Include OpenFoodFacts data in response
