@@ -1,5 +1,4 @@
 import { PrismaClient, ShoppingListItem } from '@prisma/client';
-import { ShoppingListItemRepository } from 'src/shoppingListItem/repositories/shoppingListItem.repository';
 
 export interface ShoppingListItemSeedData {
   shoppingListTitle: string;

@@ -132,7 +132,7 @@ describe('ShoppingListRepository', () => {
       prismaService.shoppingList.findUnique.mockResolvedValue(mockShoppingList);
 
       // ACT
-      const result = await repository.findById(listId);
+      await repository.findById(listId);
 
       // ASSERT: Prüfen ob findUnique mit richtigen Parametern aufgerufen wurde
       expect(prismaService.shoppingList.findUnique).toHaveBeenCalledTimes(1);

@@ -144,7 +144,7 @@ export class ShoppingListItemService {
     updateDto: UpdateShoppingListItemDto,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const existingItem = await this.findById(id, userId);
+    await this.findById(id, userId);
 
     if (updateDto.foodId) {
       await this.validateFoodExists(updateDto.foodId);

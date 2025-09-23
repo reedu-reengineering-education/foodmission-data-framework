@@ -120,8 +120,7 @@ export class ShoppingListService {
       if (existingList.userId !== userId) {
         throw new ForbiddenException('No premission');
       }
-
-      const shoppinglist = await this.shoppingListRepository.delete(id);
+      await this.shoppingListRepository.delete(id);
     } catch (error) {
       if (
         error instanceof NotFoundException ||
