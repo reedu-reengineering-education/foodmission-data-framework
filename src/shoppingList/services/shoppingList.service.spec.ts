@@ -35,7 +35,6 @@ describe('ShoppingListService', () => {
   // SCHRITT 1: Test-Setup
   // beforeEach läuft vor jedem Test und bereitet unser Test-Modul vor
   beforeEach(async () => {
-    // Mock Repository erstellen - das ist eine "Fake"-Version des echten Repository
     const mockRepository = {
       create: jest.fn(),
       findAll: jest.fn(),

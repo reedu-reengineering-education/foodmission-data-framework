@@ -32,23 +32,22 @@ export class ShoppingListItemService {
     createDto: CreateShoppingListItemDto,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    await this.validateShoppingListAccess(createDto.shoppingListId, userId);
-    await this.validateFoodExists(createDto.foodId);
-
-    const existingItem =
-      await this.shoppingListItemRepository.findByShoppingListAndFood(
-        createDto.shoppingListId,
-        createDto.foodId,
-      );
-
-    if (existingItem) {
-      throw new ConflictException(
-        'This food item is already in the shopping list',
-      );
-    }
-
     try {
-      // Wichtig: Relationen beim Create mitladen
+      await this.validateShoppingListAccess(createDto.shoppingListId, userId);
+      await this.validateFoodExists(createDto.foodId);
+
+      const existingItem =
+        await this.shoppingListItemRepository.findByShoppingListAndFood(
+          createDto.shoppingListId,
+          createDto.foodId,
+        );
+
+      if (existingItem) {
+        throw new ConflictException(
+          'This food item is already in the shopping list',
+        );
+      }
+
       const item = await this.prisma.shoppingListItem.create({
         data: {
           quantity: createDto.quantity,
@@ -66,6 +65,12 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
+        throw error;
+      }
       throw new BadRequestException('Failed to create shopping list item');
     }
   }
