@@ -46,7 +46,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_perf
       REDIS_URL: redis://localhost:6379
-      JWT_SECRET: perf-test-jwt-secret-which-is-at-least-thirty-two-characters-long
       KEYCLOAK_BASE_URL: http://localhost:8080
       KEYCLOAK_REALM: test-realm
       KEYCLOAK_CLIENT_ID: foodmission-api
@@ -231,7 +230,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_memory
       NODE_ENV: test
-      JWT_SECRET: perf-test-jwt-secret-which-is-at-least-thirty-two-characters-long
       KEYCLOAK_BASE_URL: http://localhost:8080
       KEYCLOAK_REALM: test-realm
       KEYCLOAK_CLIENT_ID: foodmission-api

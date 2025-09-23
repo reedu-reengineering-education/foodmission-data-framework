@@ -34,9 +34,6 @@ The authentication system uses Keycloak as the identity provider with JWT tokens
 ### Environment Variables
 
 ```bash
-# JWT Configuration
-JWT_SECRET="your-jwt-secret-key-change-in-production"
-
 # Keycloak Configuration
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"
 KEYCLOAK_REALM="foodmission"

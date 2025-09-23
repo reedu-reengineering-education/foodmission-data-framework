@@ -80,7 +80,6 @@ OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
 # Application
 NODE_ENV="development"
 PORT=3000
-JWT_SECRET="your-jwt-secret-key"
 ```
 
 ### 3. Start Services
