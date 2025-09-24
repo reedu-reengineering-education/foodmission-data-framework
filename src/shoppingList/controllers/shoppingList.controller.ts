@@ -98,10 +98,8 @@ export class ShoppingListController {
     status: 403,
     description: 'Forbidden - insufficient permissions',
   })
-  async findAll(
-    @Query() query: ShoppingListQueryDto,
-  ): Promise<MultipleShoppingListResponseDto> {
-    return this.shoppingListService.findAll(query);
+  async findAll(): Promise<MultipleShoppingListResponseDto> {
+    return this.shoppingListService.findAll();
   }
 
   @Get(':id')

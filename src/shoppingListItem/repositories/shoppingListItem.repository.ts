@@ -54,7 +54,7 @@ export class ShoppingListItemRepository
     });
   }
 
-  findAll(options?: FindAllOptions): Promise<
+  findAll(): Promise<
     {
       id: string;
       quantity: number;

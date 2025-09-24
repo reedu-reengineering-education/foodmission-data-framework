@@ -45,9 +45,7 @@ export class ShoppingListService {
     }
   }
 
-  async findAll(
-    query: ShoppingListQueryDto,
-  ): Promise<MultipleShoppingListResponseDto> {
+  async findAll(): Promise<MultipleShoppingListResponseDto> {
     this.logger.log(`Finding all shopping list `);
 
     const shoppingList = await this.shoppingListRepository.findAll();

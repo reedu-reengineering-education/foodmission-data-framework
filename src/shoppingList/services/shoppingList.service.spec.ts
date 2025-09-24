@@ -116,11 +116,10 @@ describe('ShoppingListService', () => {
   describe('findAll', () => {
     it('should return all shopping lists', async () => {
       // ARRANGE
-      const query: ShoppingListQueryDto = {};
       shoppingListRepository.findAll.mockResolvedValue(mockShoppingListArray);
 
       // ACT
-      const result = await service.findAll(query);
+      const result = await service.findAll();
 
       // ASSERT
       expect(shoppingListRepository.findAll).toHaveBeenCalled();
