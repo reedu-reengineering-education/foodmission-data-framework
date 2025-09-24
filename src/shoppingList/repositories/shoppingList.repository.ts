@@ -36,6 +36,7 @@ export class ShoppingListRepository
         },
       });
     } catch (error: unknown) {
+      console.error('Error find shopping list:', error);
       throw new Error('Cloudnt find shopping list.');
     }
   }
@@ -48,6 +49,7 @@ export class ShoppingListRepository
     } catch (error) {
       console.error('Error creating shopping list:', error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error('Failed to create shopping list.');
       }
       throw new Error('Failed to create shopping list.');
     }

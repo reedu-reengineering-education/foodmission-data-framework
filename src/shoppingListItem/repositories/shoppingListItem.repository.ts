@@ -73,41 +73,22 @@ export class ShoppingListItemRepository
   async findMany(
     filter: ShoppingListItemFilter = {},
   ): Promise<ShoppingListItemWithRelations[]> {
-    const whereConditions: Prisma.ShoppingListItemWhereInput = {};
-
-    if (filter.shoppingListId) {
-      whereConditions.shoppingListId = filter.shoppingListId;
-    }
-
-    if (filter.foodId) {
-      whereConditions.foodId = filter.foodId;
-    }
-
-    if (filter.checked !== undefined) {
-      whereConditions.checked = filter.checked;
-    }
-
-    if (filter.unit) {
-      whereConditions.unit = { contains: filter.unit, mode: 'insensitive' };
-    }
-
-    // Filter by user access through shopping list
-    if (filter.userId) {
-      whereConditions.shoppingList = {
-        userId: filter.userId,
-      };
-    }
-
     return this.prisma.shoppingListItem.findMany({
-      where: whereConditions,
+      where: {
+        shoppingListId: filter.shoppingListId,
+        foodId: filter.foodId,
+        checked: filter.checked,
+        unit: filter.unit
+          ? { contains: filter.unit, mode: 'insensitive' }
+          : undefined,
+
+        shoppingList: filter.userId ? { userId: filter.userId } : undefined,
+      },
       include: {
         shoppingList: true,
         food: true,
       },
-      orderBy: [
-        { checked: 'asc' }, // Unchecked items first
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
     });
   }
 
