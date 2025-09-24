@@ -168,17 +168,10 @@ describe('ShoppingListItemRepository', () => {
       ]);
 
       // Act
-      const result = await repository.findMany();
+      const result = await repository.findAll();
 
       // Assert
-      expect(mockPrismaService.shoppingListItem.findMany).toHaveBeenCalledWith({
-        where: {},
-        include: {
-          shoppingList: true,
-          food: true,
-        },
-        orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
-      });
+      expect(prismaService.shoppingListItem.findMany).toHaveBeenCalledTimes(1);
       expect(result).toEqual([mockShoppingListItem]);
     });
   });

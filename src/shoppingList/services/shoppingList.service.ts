@@ -12,7 +12,6 @@ import {
   ShoppingListResponseDto,
 } from '../dto/shoppingList-response.dto';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
 @Injectable()

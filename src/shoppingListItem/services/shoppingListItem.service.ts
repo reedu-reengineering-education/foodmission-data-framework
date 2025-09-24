@@ -13,11 +13,13 @@ import {
   ShoppingListItemResponseDto,
 } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import { plainToInstance } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import {
   ShoppingListItemRepository,
   ShoppingListItemWithRelations,
 } from '../repositories/shoppingListItem.repository';
+import { FoodResponseDto } from '../../food/dto/food-response.dto';
+import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
 
 @Injectable()
 export class ShoppingListItemService {
@@ -239,16 +241,18 @@ export class ShoppingListItemService {
   private transformToResponseDto(
     item: ShoppingListItemWithRelations,
   ): ShoppingListItemResponseDto {
-    return {
+    return plainToClass(ShoppingListItemResponseDto, {
       id: item.id,
       quantity: item.quantity,
       unit: item.unit,
-      notes: item.notes ?? undefined,
+      notes: null,
       checked: item.checked,
       shoppingListId: item.shoppingListId,
       foodId: item.foodId,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-    };
+      shoppingList: new ShoppingListResponseDto(),
+      food: new FoodResponseDto(),
+    });
   }
 }

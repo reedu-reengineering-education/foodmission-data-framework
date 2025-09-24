@@ -8,7 +8,6 @@ import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
-import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 
 describe('ShoppingListService', () => {
   let service: ShoppingListService;

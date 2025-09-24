@@ -3,25 +3,14 @@ import { Prisma, ShoppingListItem } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import {
-  BaseRepository,
-  FindAllOptions,
-} from 'src/common/interfaces/base-repository.interface';
+import { BaseRepository } from 'src/common/interfaces/base-repository.interface';
 
-export type ShoppingListItemWithRelations = ShoppingListItem & {
-  shoppingList: {
-    id: string;
-    title: string;
-    userId: string;
+export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
+  include: {
+    shoppingList: true;
+    food: true;
   };
-  food: {
-    id: string;
-    name: string;
-    category?: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-};
+}>;
 
 export interface ShoppingListItemFilter {
   shoppingListId?: string;
@@ -54,25 +43,22 @@ export class ShoppingListItemRepository
     });
   }
 
-  findAll(): Promise<
-    {
-      id: string;
-      quantity: number;
-      unit: string;
-      notes: string | null;
-      checked: boolean;
-      shoppingListId: string;
-      foodId: string;
-      createdAt: Date;
-      updatedAt: Date;
-    }[]
-  > {
-    throw new Error('Method not implemented.');
+  async findAll(): Promise<ShoppingListItemWithRelations[]> {
+    return await this.prisma.shoppingListItem.findMany({
+      include: {
+        shoppingList: true,
+        food: true,
+      },
+      orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
+    });
   }
 
   async findMany(
     filter: ShoppingListItemFilter = {},
   ): Promise<ShoppingListItemWithRelations[]> {
+    if (Object.keys(filter).length === 0) {
+      return this.findAll();
+    }
     return this.prisma.shoppingListItem.findMany({
       where: {
         shoppingListId: filter.shoppingListId,

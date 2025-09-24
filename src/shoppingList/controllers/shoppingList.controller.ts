@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   ParseUUIDPipe,
   Request,
   UseGuards,
@@ -29,7 +28,6 @@ import {
   MultipleShoppingListResponseDto,
   ShoppingListResponseDto,
 } from '../dto/shoppingList-response.dto';
-import { ShoppingListQueryDto } from '../dto/shoppingList-query.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 
 @ApiTags('shoppinglist')
