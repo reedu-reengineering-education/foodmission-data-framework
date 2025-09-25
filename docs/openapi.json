@@ -1327,6 +1327,642 @@
         ]
       }
     },
+    "/api/v1/shoppinglist": {
+      "post": {
+        "description": "Creates a new ShoppingList in the database. Requires user or admin role.",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShoppingListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Shopping list created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "summary": "Create a new Shopping List",
+        "tags": [
+          "shoppinglist"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping lists retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleShoppingListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "summary": "Get All Shoppinglists",
+        "tags": [
+          "shoppinglist"
+        ]
+      }
+    },
+    "/api/v1/shoppinglist/{id}": {
+      "get": {
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get specific shopping list by ID",
+        "tags": [
+          "shoppinglist"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShoppingListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Shopping list found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update shopping list",
+        "tags": [
+          "shoppinglist"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete specific shopping list by ID",
+        "tags": [
+          "shoppinglist"
+        ]
+      }
+    },
+    "/api/v1/shopping-list-items": {
+      "post": {
+        "description": "Creates a new ShoppingListItem and adds it to the specified shopping list. Requires user or admin role.",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShoppingListItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Shopping list item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data or duplicate item"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list or food item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Add a new item to shopping list",
+        "tags": [
+          "shopping-list-items"
+        ]
+      },
+      "get": {
+        "description": "Retrieve shopping list items with optional filtering",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "shoppingListId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by shopping list ID",
+            "schema": {
+              "example": "uuid-shopping-list-id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "foodId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by food ID",
+            "schema": {
+              "example": "uuid-food-id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "checked",
+            "required": false,
+            "in": "query",
+            "description": "Filter by checked status",
+            "schema": {
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "unit",
+            "required": false,
+            "in": "query",
+            "description": "Filter by unit",
+            "schema": {
+              "example": "kg",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          }
+        },
+        "summary": "Get shopping list items",
+        "tags": [
+          "shopping-list-items"
+        ]
+      }
+    },
+    "/api/v1/shopping-list-items/{shoppingListId}": {
+      "get": {
+        "description": "Retrieve all items belonging to a specific shopping list",
+        "operationId": "findByShoppingList",
+        "parameters": [
+          {
+            "name": "shoppingListId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all items from a specific shopping list",
+        "tags": [
+          "shopping-list-items"
+        ]
+      }
+    },
+    "/api/v1/shopping-list-items/{id}": {
+      "get": {
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list item found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get specific shopping list item by ID",
+        "tags": [
+          "shopping-list-items"
+        ]
+      },
+      "patch": {
+        "description": "Update quantity, unit, notes, or checked status of a shopping list item",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateShoppingListItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Shopping list item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update shopping list item",
+        "tags": [
+          "shopping-list-items"
+        ]
+      },
+      "delete": {
+        "description": "Delete a specific shopping list item by ID",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list item deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Remove item from shopping list",
+        "tags": [
+          "shopping-list-items"
+        ]
+      }
+    },
+    "/api/v1/shopping-list-items/{id}/toggle-checked": {
+      "patch": {
+        "description": "Quick endpoint to toggle the checked status of an item",
+        "operationId": "toggleChecked",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item checked status toggled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list item not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Toggle checked status of shopping list item",
+        "tags": [
+          "shopping-list-items"
+        ]
+      }
+    },
+    "/api/v1/shopping-list-items/{shoppingListId}/clear-checked": {
+      "delete": {
+        "description": "Remove all checked items from a specific shopping list",
+        "operationId": "clearCheckedItems",
+        "parameters": [
+          {
+            "name": "shoppingListId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checked items cleared successfully"
+          },
+          "401": {
+            "description": "Unauthorized - JWT token required"
+          },
+          "403": {
+            "description": "Forbidden - insufficient permissions"
+          },
+          "404": {
+            "description": "Shopping list not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Clear all checked items from shopping list",
+        "tags": [
+          "shopping-list-items"
+        ]
+      }
+    },
     "/api/v1": {
       "get": {
         "description": "Returns a simple health check message to verify the application is running.",
@@ -1851,6 +2487,254 @@
             "description": "UUID of the user who created this food item",
             "example": "550e8400-e29b-41d4-a716-446655440001",
             "format": "uuid"
+          }
+        }
+      },
+      "CreateShoppingListDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The name of the shopping list",
+            "example": "Family-Shopping-List",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "ShoppingListResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID of the user who created this shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of the shopping list",
+            "example": "Family shopping list"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "title"
+        ]
+      },
+      "MultipleShoppingListResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Array of shopping lists",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShoppingListResponseDto"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "UpdateShoppingListDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The name of the shopping list",
+            "example": "Family-Shopping-List",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "CreateShoppingListItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the item",
+            "example": 2,
+            "minimum": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "The unit of measurement",
+            "example": "kg",
+            "maxLength": 50
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes for the item",
+            "example": "Buy organic if available",
+            "maxLength": 500
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Whether the item is checked off",
+            "example": false
+          },
+          "shoppingListId": {
+            "type": "string",
+            "description": "The ID of the shopping list",
+            "example": "uuid-shopping-list-id"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "The ID of the food item",
+            "example": "uuid-food-id"
+          }
+        },
+        "required": [
+          "quantity",
+          "unit",
+          "checked",
+          "shoppingListId",
+          "foodId"
+        ]
+      },
+      "ShoppingListItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the shopping list item",
+            "example": "uuid-item-id"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the item",
+            "example": 2
+          },
+          "unit": {
+            "type": "string",
+            "description": "The unit of measurement",
+            "example": "kg"
+          },
+          "notes": {
+            "type": "object",
+            "description": "Additional notes for the item",
+            "example": "Buy organic if available"
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Whether the item is checked off",
+            "example": false
+          },
+          "shoppingListId": {
+            "type": "string",
+            "description": "The ID of the shopping list",
+            "example": "uuid-shopping-list-id"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "The ID of the food item",
+            "example": "uuid-food-id"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The creation timestamp",
+            "example": "2024-01-15T10:30:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "The last update timestamp",
+            "example": "2024-01-15T11:30:00.000Z"
+          },
+          "shoppingList": {
+            "description": "Associated shopping list",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ShoppingListResponseDto"
+              }
+            ]
+          },
+          "food": {
+            "description": "Associated food item",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "quantity",
+          "unit",
+          "checked",
+          "shoppingListId",
+          "foodId",
+          "createdAt",
+          "updatedAt",
+          "shoppingList",
+          "food"
+        ]
+      },
+      "MultipleShoppingListItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Array of shopping list items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShoppingListItemResponseDto"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "UpdateShoppingListItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the item",
+            "example": 3,
+            "minimum": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "The unit of measurement",
+            "example": "pieces",
+            "maxLength": 50
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes for the item",
+            "example": "Buy organic if available",
+            "maxLength": 500
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Whether the item is checked off",
+            "example": true
+          },
+          "shoppingListId": {
+            "type": "string",
+            "description": "The ID of the shopping list",
+            "example": "uuid-shopping-list-id"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "The ID of the food item",
+            "example": "uuid-food-id"
           }
         }
       }
