@@ -2479,7 +2479,7 @@
             "example": "kg"
           },
           "notes": {
-            "type": "string",
+            "type": "object",
             "description": "Additional notes for the item",
             "example": "Buy organic if available"
           },
@@ -2509,6 +2509,22 @@
             "type": "string",
             "description": "The last update timestamp",
             "example": "2024-01-15T11:30:00.000Z"
+          },
+          "shoppingList": {
+            "description": "Associated shopping list",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ShoppingListResponseDto"
+              }
+            ]
+          },
+          "food": {
+            "description": "Associated food item",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
           }
         },
         "required": [
@@ -2519,7 +2535,9 @@
           "shoppingListId",
           "foodId",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "shoppingList",
+          "food"
         ]
       },
       "MultipleShoppingListItemResponseDto": {
