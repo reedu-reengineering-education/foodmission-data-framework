@@ -6,11 +6,18 @@ import { FoodController } from './controllers/food.controller';
 import { FoodService } from './services/food.service';
 import { OpenFoodFactsService } from './services/openfoodfacts.service';
 import { FoodRepository } from './repositories/food.repository';
+import { UserRepository } from '../user/repositories/user.repository';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, HttpModule],
+  imports: [DatabaseModule, AuthModule, HttpModule, CommonModule],
   controllers: [FoodController],
-  providers: [FoodService, OpenFoodFactsService, FoodRepository],
+  providers: [
+    FoodService,
+    OpenFoodFactsService,
+    FoodRepository,
+    UserRepository,
+  ],
   exports: [FoodService, OpenFoodFactsService, FoodRepository],
 })
 export class FoodModule {}
