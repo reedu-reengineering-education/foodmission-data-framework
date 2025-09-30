@@ -14,11 +14,13 @@ Brief description of the changes in this PR.
 - [ ] Code refactoring
 - [ ] Security fix
 
-## Related Issues
+## Type of Changes
 
-Fixes #(issue number)
-Closes #(issue number)
-Related to #(issue number)
+- [ ] Database changes
+- [ ] Schema changes (migration included)
+- [ ] Seed data changes
+- [ ] API changes
+- [ ] New Entity
 
 ## Changes Made
 
@@ -28,51 +30,10 @@ Related to #(issue number)
 
 ## Testing
 
-- [ ] Unit tests pass
-- [ ] Integration tests pass
-- [ ] E2E tests pass
-- [ ] Manual testing completed
-- [ ] Performance testing completed (if applicable)
+- [ ] White box testing
+- [ ] Black box testing
 
-### Test Coverage
-
-- Current coverage: X%
-- Coverage change: +/-X%
-
-## Security Considerations
-
-- [ ] No sensitive data exposed
-- [ ] Input validation implemented
-- [ ] Authentication/authorization checked
-- [ ] SQL injection prevention verified
-- [ ] XSS prevention verified
-
-## Performance Impact
-
-- [ ] No performance impact
-- [ ] Performance improved
-- [ ] Performance degraded (explain below)
-
-Performance details:
-
-- Response time impact:
-- Memory usage impact:
-- Database query impact:
-
-## Database Changes
-
-- [ ] No database changes
-- [ ] Schema changes (migration included)
-- [ ] Data migration required
-- [ ] Seed data changes
-
-## API Changes
-
-- [ ] No API changes
-- [ ] New endpoints added
-- [ ] Existing endpoints modified
-- [ ] Breaking API changes
-- [ ] OpenAPI documentation updated
+- Test coverage: X%
 
 ## Deployment Notes
 
@@ -105,4 +66,4 @@ Add screenshots to help explain your changes.
 
 ## Additional Notes
 
-Add any additional notes for reviewers here.
+Add any additional notes for reviewers here. Like Related Issues, Perfomance Impact, Breaking Chances.
