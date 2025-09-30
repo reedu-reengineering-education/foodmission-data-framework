@@ -31,10 +31,12 @@ import {
   ShoppingListItemResponseDto,
 } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
 
 @ApiTags('shopping-list-items')
 @Controller('shopping-list-items')
-@UseGuards(ThrottlerGuard)
+@UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class ShoppingListItemController {
   constructor(
     private readonly shoppingListItemService: ShoppingListItemService,
@@ -73,9 +75,8 @@ export class ShoppingListItemController {
   })
   async create(
     @Body() createShoppingListItemDto: CreateShoppingListItemDto,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const userId = req.user?.sub;
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
@@ -155,9 +156,8 @@ export class ShoppingListItemController {
   })
   async findByShoppingList(
     @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<MultipleShoppingListItemResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.findByShoppingList(
       shoppingListId,
       userId,
@@ -230,9 +230,8 @@ export class ShoppingListItemController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateShoppingListItemDto: UpdateShoppingListItemDto,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.update(
       id,
       updateShoppingListItemDto,
@@ -267,9 +266,8 @@ export class ShoppingListItemController {
   })
   async toggleChecked(
     @Param('id', ParseUUIDPipe) id: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.toggleChecked(id, userId);
   }
 
@@ -299,9 +297,8 @@ export class ShoppingListItemController {
   })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<void> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.remove(id, userId);
   }
 
@@ -331,9 +328,8 @@ export class ShoppingListItemController {
   })
   async clearCheckedItems(
     @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<void> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.clearCheckedItems(
       shoppingListId,
       userId,
