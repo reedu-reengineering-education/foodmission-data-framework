@@ -12,13 +12,15 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  lint-and-typecheck:
-    name: Lint and Type Check
+  lint-and-quality:
+    name: Lint, Type Check & Code Quality
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -39,8 +41,35 @@ jobs:
       - name: Check TypeScript compilation
         run: npx tsc --noEmit
 
-      - name: Check code formatting
+      - name: Check code formatting with Prettier
         run: npx prettier --check "src/**/*.ts" "test/**/*.ts"
+        continue-on-error: true
+
+      - name: Check for circular dependencies
+        run: |
+          npx madge --circular --extensions ts src/
+          if [ $? -eq 0 ]; then
+            echo "✅ No circular dependencies found"
+          else
+            echo "❌ Circular dependencies detected"
+            exit 1
+          fi
+
+      - name: Check for unused dependencies
+        run: |
+          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics"
+
+      - name: Generate complexity report
+        run: |
+          npx complexity-report --format json --output complexity-report.json src/ || true
+          npx complexity-report src/
+
+      - name: Upload code quality artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-reports
+          path: |
+            complexity-report.json
 
   security-scan:
     name: Security Scanning
@@ -146,10 +175,70 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Build application
+        run: npm run build
+
+      - name: Generate OpenAPI documentation
+        run: npm run docs:generate:ci
+
+      - name: Check for outdated documentation
+        run: |
+          if ! git diff --quiet docs/; then
+            echo "❌ Documentation is outdated. Please run 'npm run docs:generate' and commit the changes."
+            git diff docs/
+            exit 1
+          else
+            echo "✅ Documentation is up to date"
+          fi
+
+      - name: Validate OpenAPI spec
+        run: |
+          npx swagger-codegen-cli validate -i docs/openapi.yaml
+
+      - name: Check README completeness
+        run: |
+          required_sections=(
+            "Prerequisites"
+            "Quick Start" 
+            "API Documentation"
+            "Development Setup"
+            "Testing"
+            "Deployment"
+          )
+
+          for section in "${required_sections[@]}"; do
+            if ! grep -q "# $section\|## .*$section" README.md; then
+              echo "❌ README is missing required section: $section"
+              exit 1
+            fi
+          done
+
+          echo "✅ README contains all required sections"
+
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, security-scan, test]
+    needs: [lint-and-quality, security-scan, test]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     permissions:
