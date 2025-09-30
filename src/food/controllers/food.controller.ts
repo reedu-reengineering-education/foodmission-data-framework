@@ -38,10 +38,12 @@ import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 import { UserContextService } from '../../auth/user-context.service';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
 
 @ApiTags('foods')
 @Controller('foods')
-@UseGuards(ThrottlerGuard)
+@UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 @UseInterceptors(CacheInterceptor, CacheEvictInterceptor)
 export class FoodController {
   constructor(
@@ -80,11 +82,9 @@ export class FoodController {
   })
   async create(
     @Body() createFoodDto: CreateFoodDto,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<FoodResponseDto> {
     // Get the internal userId for database operations
-    const userId = await this.userContextService.getUserIdFromRequest(req);
-
     return this.foodService.create(createFoodDto, userId);
   }
 
@@ -190,10 +190,9 @@ export class FoodController {
   })
   async importFromOpenFoodFacts(
     @Param('barcode') barcode: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<FoodResponseDto> {
     // Get the internal userId for database operations
-    const userId = await this.userContextService.getUserIdFromRequest(req);
     return this.foodService.importFromOpenFoodFacts(barcode, userId);
   }
 

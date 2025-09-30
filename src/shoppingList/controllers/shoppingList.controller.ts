@@ -7,9 +7,8 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-  Request,
-  UseGuards,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -29,15 +28,18 @@ import {
   ShoppingListResponseDto,
 } from '../dto/shoppingList-response.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
 
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')
-@UseGuards(ThrottlerGuard)
+@UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class ShoppingListController {
   constructor(private readonly shoppingListService: ShoppingListService) {}
 
   @Post()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new Shopping List',
@@ -64,9 +66,8 @@ export class ShoppingListController {
   })
   async create(
     @Body() createShoppingListDto: CreateShoppingListDto,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListResponseDto> {
-    const userId = req.user?.sub;
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
@@ -126,9 +127,8 @@ export class ShoppingListController {
   })
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListService.findById(id, userId);
   }
 
@@ -159,9 +159,8 @@ export class ShoppingListController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateShoppingListDto: UpdateShoppingListDto,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListService.update(id, updateShoppingListDto, userId);
   }
 
