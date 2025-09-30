@@ -5,7 +5,7 @@ import {
   CanActivate,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRepository } from 'src/user/repositories/user.repository';
+import { UserRepository } from '../../user/repositories/user.repository';
 
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {
@@ -17,8 +17,6 @@ export class DataBaseAuthGuard implements CanActivate {
   private userCache = new Map<string, any>();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('Den Request holen');
-
     const request = context.switchToHttp().getRequest();
 
     // Prüfe ob JWT Guard bereits durchgelaufen ist
@@ -26,7 +24,6 @@ export class DataBaseAuthGuard implements CanActivate {
       throw new UnauthorizedException('No valid JWT token found');
     }
 
-    console.log('Den Request bearbeiten');
     const keycloakId = request.user.sub;
     console.log(`Authenticating user with Keycloak ID: ${keycloakId}`);
 

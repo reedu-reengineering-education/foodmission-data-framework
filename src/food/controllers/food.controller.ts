@@ -38,7 +38,7 @@ import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 import { UserContextService } from '../../auth/user-context.service';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
 
 @ApiTags('foods')
