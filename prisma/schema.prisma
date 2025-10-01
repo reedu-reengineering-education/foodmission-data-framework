@@ -20,6 +20,7 @@ model Food {
   updatedAt        DateTime           @updatedAt
   createdBy        String
   ShoppingListItem ShoppingListItem[]
+  PantryItem       PantryItem[]
 
   @@index([name])
   @@index([createdAt])
@@ -37,6 +38,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   ShoppingList ShoppingList[]
+  Pantry       Pantry?
 
   @@index([email])
   @@index([createdAt])
@@ -73,4 +75,34 @@ model ShoppingListItem {
   @@unique([shoppingListId, foodId])
   @@index([shoppingListId])
   @@map("shopping_list_items")
+}
+
+model Pantry {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  user  User         @relation(fields: [userId], references: [id])
+  items PantryItem[]
+
+  @@index([userId])
+}
+
+model PantryItem {
+  id         String    @id @default(uuid())
+  quantity   Int       @default(1)
+  unit       String    @default("pieces")
+  notes      String?
+  location   String?
+  expiryDate DateTime?
+  pantryId   String
+  foodId     String
+
+  pantry Pantry @relation(fields: [pantryId], references: [id], onDelete: Cascade)
+  food   Food   @relation(fields: [foodId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pantryId])
+  @@map("pantry_items")
 }

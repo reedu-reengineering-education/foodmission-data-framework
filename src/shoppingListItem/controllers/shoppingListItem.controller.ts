@@ -190,9 +190,8 @@ export class ShoppingListItemController {
   })
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
-    @Request() req: any,
+    @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const userId = req.user?.sub;
     return this.shoppingListItemService.findById(id, userId);
   }
 
