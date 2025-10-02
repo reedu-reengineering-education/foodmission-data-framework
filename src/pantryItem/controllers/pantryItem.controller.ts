@@ -50,7 +50,7 @@ export class PantryItemController {
   @ApiBody({ type: CreatePantryItemDto })
   @ApiResponse({
     status: 201,
-    description: 'Shopping list item created successfully',
+    description: 'Pantry item created successfully',
     type: PantryItemResponseDto,
   })
   @ApiResponse({
@@ -67,7 +67,7 @@ export class PantryItemController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Shopping list or food item not found',
+    description: 'Pantry or food item not found',
   })
   async create(
     @Body() createPantryItemDto: CreatePantryItemDto,
@@ -82,13 +82,13 @@ export class PantryItemController {
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get shopping list items',
-    description: 'Retrieve shopping list items with optional filtering',
+    summary: 'Get pantry items',
+    description: 'Retrieve pantry items with optional filtering',
   })
   @ApiQuery({
     name: 'shoppingListId',
     required: false,
-    description: 'Filter by shopping list ID',
+    description: 'Filter by pantry ID',
   })
   @ApiQuery({
     name: 'foodId',
@@ -109,7 +109,7 @@ export class PantryItemController {
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
-    description: 'Shopping list items retrieved successfully',
+    description: 'Pantry items retrieved successfully',
     type: MultiplePantryItemResponseDto,
   })
   @ApiResponse({

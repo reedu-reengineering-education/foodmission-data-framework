@@ -50,16 +50,6 @@ export class CreatePantryItemDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'Where the item is located',
-    example: 'refrigerator',
-    maxLength: 100,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  location?: string;
-
-  @ApiPropertyOptional({
     description: 'When the food will expire (ISO date string)',
     example: '2027-02-02',
   })

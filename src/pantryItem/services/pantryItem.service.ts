@@ -10,7 +10,7 @@ import {
   PantryItemWithRelations,
 } from '../repositories/pantryItem.repository';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import {
   MultiplePantryItemResponseDto,
@@ -18,7 +18,7 @@ import {
 } from '../dto/response-pantryItem.dto';
 import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
-import { PantryService } from 'src/pantry/services/pantry.service';
+import { PantryService } from '../../pantry/services/pantry.service';
 
 @Injectable()
 export class PantryItemService {
@@ -33,7 +33,7 @@ export class PantryItemService {
     userId: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      const pantryId = await this.pantryService.ensurePantryExists(userId);
+      const pantryId = await this.pantryService.validatePantryExists(userId);
 
       await this.validateFoodExists(createDto.foodId);
       const existingItem = await this.pantryItemRepository.findFoodInPantry(
@@ -50,7 +50,6 @@ export class PantryItemService {
           quantity: createDto.quantity,
           unit: createDto.unit,
           notes: createDto.notes,
-          location: createDto.location,
           expiryDate: createDto.expiryDate,
           pantryId: pantryId,
           foodId: createDto.foodId,
@@ -134,9 +133,6 @@ export class PantryItemService {
         }),
         ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
         ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
-        ...(updateDto.location !== undefined && {
-          location: updateDto.location,
-        }),
         ...(updateDto.expiryDate !== undefined && {
           expiryDate: updateDto.expiryDate,
         }),
@@ -167,7 +163,6 @@ export class PantryItemService {
         quantity: item.quantity,
         unit: item.unit,
         notes: item.notes,
-        location: item.location,
         expiryDate: item.expiryDate,
         pantryId: item.pantryId,
         foodId: item.foodId,

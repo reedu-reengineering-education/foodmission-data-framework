@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { FoodResponseDto } from 'src/food/dto/food-response.dto';
+import { FoodResponseDto } from '../../food/dto/food-response.dto';
 
 export class PantryItemResponseDto {
   @ApiProperty({
@@ -33,14 +33,6 @@ export class PantryItemResponseDto {
   })
   @Expose()
   notes?: string;
-
-  @ApiPropertyOptional({
-    description: 'Where the item is located',
-    example: 'refrigerator',
-    maxLength: 100,
-  })
-  @Expose()
-  location?: string;
 
   @ApiPropertyOptional({
     description: 'When the food will expire',

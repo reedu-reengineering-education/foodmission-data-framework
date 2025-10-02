@@ -18,10 +18,17 @@ export class PantryResponseDto {
   userId: string;
 
   @ApiProperty({
-    description: 'List of items in the pantry',
-    type: [PantryItemResponseDto],
+    description: 'The pantry title',
+    example: 'Home or Work',
   })
   @Expose()
-  @Type(() => PantryItemResponseDto)
-  pantryItems: PantryItemResponseDto[];
+  title: string;
+
+  //   @ApiProperty({
+  //     description: 'List of items in the pantry',
+  //     type: [PantryItemResponseDto],
+  //   })
+  //   @Expose()
+  //   @Type(() => PantryItemResponseDto)
+  //   pantryItems: PantryItemResponseDto[];
 }

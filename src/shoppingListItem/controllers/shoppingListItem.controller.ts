@@ -31,7 +31,7 @@ import {
   ShoppingListItemResponseDto,
 } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
 
 @ApiTags('shopping-list-items')

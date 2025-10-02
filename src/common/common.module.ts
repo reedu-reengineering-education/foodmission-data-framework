@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggingService } from './logging/logging.service';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { validateEnvironment } from '../security/config/environment.validation';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 import { DataBaseAuthGuard } from './guards/auth.guards';
 
 @Global()

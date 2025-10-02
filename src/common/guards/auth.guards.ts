@@ -5,7 +5,7 @@ import {
   CanActivate,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRepository } from 'src/user/repositories/user.repository';
+import { UserRepository } from '../../user/repositories/user.repository';
 
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {

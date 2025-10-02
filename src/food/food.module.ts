@@ -6,8 +6,8 @@ import { FoodController } from './controllers/food.controller';
 import { FoodService } from './services/food.service';
 import { OpenFoodFactsService } from './services/openfoodfacts.service';
 import { FoodRepository } from './repositories/food.repository';
-import { UserRepository } from 'src/user/repositories/user.repository';
-import { CommonModule } from 'src/common/common.module';
+import { UserRepository } from '../user/repositories/user.repository';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [DatabaseModule, AuthModule, HttpModule, CommonModule],

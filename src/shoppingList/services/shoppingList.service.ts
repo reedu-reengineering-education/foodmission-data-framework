@@ -133,7 +133,8 @@ export class ShoppingListService {
     return plainToClass(ShoppingListResponseDto, {
       id: shoppingList.id,
       title: shoppingList.title,
-      createdBy: shoppingList.createdAt,
+      createdAt: shoppingList.createdAt,
+      updatedAt: shoppingList.updatedAt,
     });
   }
 }

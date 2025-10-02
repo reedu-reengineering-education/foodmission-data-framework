@@ -885,6 +885,8 @@ paths:
           description: Unauthorized - JWT token required
         '403':
           description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
       summary: Create a new Shopping List
       tags: &ref_7
         - shoppinglist
@@ -1253,6 +1255,294 @@ paths:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
       tags: *ref_8
+  /api/v1/pantry:
+    post:
+      description: Creates a new pantry in the database. Requires user or admin role.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePantryDto'
+      responses:
+        '201':
+          description: pantry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Create a new Pantry
+      tags: &ref_9
+        - pantry
+    get:
+      description: Retrieves the authenticated user's pantry with all items
+      operationId: getMyPantry
+      parameters: []
+      responses:
+        '200':
+          description: Pantry retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryResponseDto'
+        '401':
+          description: Unauthorized - JWT token required
+        '404':
+          description: Pantry not found
+      security:
+        - JWT-auth: []
+      summary: Get user pantry
+      tags: *ref_9
+  /api/v1/pantry/{id}:
+    patch:
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePantryDto'
+      responses:
+        '200':
+          description: pantry found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Update pantry
+      tags: *ref_9
+    delete:
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Shopping list found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Delete specific shopping list by ID
+      tags: *ref_9
+  /api/v1/pantry-item:
+    post:
+      description: Creates a new Pantry Item and adds it to the Pantry.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePantryItemDto'
+      responses:
+        '201':
+          description: Pantry item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryItemResponseDto'
+        '400':
+          description: Invalid input data or duplicate item
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Pantry or food item not found
+      security:
+        - JWT-auth: []
+      summary: Add a new item to Pantry
+      tags: &ref_10
+        - pantry-item
+    get:
+      description: Retrieve pantry items with optional filtering
+      operationId: findAll
+      parameters:
+        - name: foodId
+          required: false
+          in: query
+          description: Filter by food ID
+          schema:
+            example: uuid-food-id
+            type: string
+        - name: unit
+          required: false
+          in: query
+          description: Filter by unit
+          schema:
+            example: kg
+            type: string
+        - name: expiryDate
+          required: false
+          in: query
+          description: when the food will expires
+          schema:
+            maxLength: 500
+            format: date-time
+            example: 02-02-2027
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: Page number for pagination
+          schema:
+            minimum: 1
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            minimum: 1
+            maximum: 100
+            example: 10
+            type: number
+        - name: checked
+          required: false
+          in: query
+          description: Filter by checked status
+          schema: {}
+        - name: shoppingListId
+          required: false
+          in: query
+          description: Filter by pantry ID
+          schema: {}
+      responses:
+        '200':
+          description: Pantry items retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiplePantryItemResponseDto'
+        '400':
+          description: Invalid query parameters
+      summary: Get pantry items
+      tags: *ref_10
+  /api/v1/pantry-item/{id}:
+    get:
+      operationId: findById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: pantry item found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryItemResponseDto'
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Pantry item not found
+      security:
+        - JWT-auth: []
+      summary: Get specific pantry item by ID
+      tags: *ref_10
+    patch:
+      description: Update quantity, unit, notes of a pantry item
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePantryItemDto'
+      responses:
+        '200':
+          description: Pantry item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryItemResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: Pantry item not found
+      security:
+        - JWT-auth: []
+      summary: Update pantry item
+      tags: *ref_10
+    delete:
+      description: Delete a specific pantry item by ID
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: pantry item deleted successfully
+        '401':
+          description: Unauthorized - JWT token required
+        '403':
+          description: Forbidden - insufficient permissions
+        '404':
+          description: pantry item not found
+      security:
+        - JWT-auth: []
+      summary: Remove item from pantry
+      tags: *ref_10
   /api/v1:
     get:
       description: >-
@@ -1425,14 +1715,8 @@ components:
           description: OpenFoodFacts product identifier
           example: '3017620422003'
           maxLength: 100
-        createdBy:
-          type: string
-          description: UUID of the user who created this food item
-          example: 550e8400-e29b-41d4-a716-446655440001
-          format: uuid
       required:
         - name
-        - createdBy
     NutritionalInfoDto:
       type: object
       properties:
@@ -1676,11 +1960,6 @@ components:
           description: OpenFoodFacts product identifier
           example: '3017620422003'
           maxLength: 100
-        createdBy:
-          type: string
-          description: UUID of the user who created this food item
-          example: 550e8400-e29b-41d4-a716-446655440001
-          format: uuid
     CreateShoppingListDto:
       type: object
       properties:
@@ -1864,6 +2143,158 @@ components:
           type: string
           description: The ID of the shopping list
           example: uuid-shopping-list-id
+        foodId:
+          type: string
+          description: The ID of the food item
+          example: uuid-food-id
+    CreatePantryDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The user id
+          example: uuid-user-id
+          maxLength: 255
+        title:
+          type: string
+          description: The name of the pantry
+          example: Home or Work
+          maxLength: 255
+      required:
+        - userId
+        - title
+    PantryResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the pantry
+          example: uuid-pantry-id
+        userId:
+          type: string
+          description: The user ID who owns this pantry
+          example: uuid-user-id
+        title:
+          type: string
+          description: The pantry title
+          example: Home or Work
+      required:
+        - id
+        - userId
+        - title
+    UpdatePantryDto:
+      type: object
+      properties: {}
+    CreatePantryItemDto:
+      type: object
+      properties:
+        foodId:
+          type: string
+          description: The ID of the food item to add
+          example: uuid-food-id
+        quantity:
+          type: number
+          description: The quantity of the item
+          example: 2
+          minimum: 0.01
+        unit:
+          type: string
+          description: The unit of measurement
+          example: kg
+          maxLength: 50
+        notes:
+          type: string
+          description: Additional notes for the item
+          example: Store in cool place
+          maxLength: 500
+        expiryDate:
+          format: date-time
+          type: string
+          description: When the food will expire (ISO date string)
+          example: '2027-02-02'
+      required:
+        - foodId
+        - quantity
+        - unit
+    PantryItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the pantry item
+          example: uuid-item-id
+        quantity:
+          type: number
+          description: The quantity of the item
+          example: 2
+          minimum: 1
+        unit:
+          type: string
+          description: The unit of measurement
+          example: kg
+          maxLength: 50
+        notes:
+          type: string
+          description: Additional notes for the item
+          example: Store in cool place
+          maxLength: 500
+        expiryDate:
+          format: date-time
+          type: string
+          description: When the food will expire
+          example: '2027-02-02T00:00:00.000Z'
+        pantryId:
+          type: string
+          description: The ID of the pantry
+          example: uuid-pantry-id
+        foodId:
+          type: string
+          description: The ID of the food item
+          example: uuid-food-id
+        food:
+          description: The food item details
+          allOf:
+            - $ref: '#/components/schemas/FoodResponseDto'
+      required:
+        - id
+        - quantity
+        - unit
+        - pantryId
+        - foodId
+    MultiplePantryItemResponseDto:
+      type: object
+      properties:
+        data:
+          description: Array of pantry items
+          type: array
+          items:
+            $ref: '#/components/schemas/PantryItemResponseDto'
+      required:
+        - data
+    UpdatePantryItemDto:
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: The quantity of the item
+          example: 3
+          minimum: 1
+        unit:
+          type: string
+          description: The unit of measurement
+          example: pieces
+          maxLength: 50
+        notes:
+          type: string
+          description: Additional notes for the item
+          example: Buy organic if available
+          maxLength: 500
+        expiryDate:
+          format: date-time
+          type: string
+          description: when the food will expires
+          example: 02-02-2027
+          maxLength: 500
         foodId:
           type: string
           description: The ID of the food item
