@@ -1,10 +1,10 @@
-import { PrismaClient, PantryItem } from '@prisma/client';
+import { PrismaClient, PantryItem, Unit } from '@prisma/client';
 
 export interface PantryItemSeedData {
   userKeycloakId: string;
   foodName: string;
   quantity: number;
-  unit: string;
+  unit: Unit;
   notes?: string;
   expiryDate?: Date;
 }
@@ -15,45 +15,45 @@ export const pantryItemData: PantryItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Tomatoes',
     quantity: 5,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Fresh from farmers market',
     expiryDate: new Date('2025-10-15'),
   },
   {
     userKeycloakId: 'dev-user-1',
     foodName: 'Pasta',
-    quantity: 3,
-    unit: 'packages',
+    quantity: 300,
+    unit: Unit.G,
     notes: 'Whole wheat',
   },
   {
     userKeycloakId: 'dev-user-1',
     foodName: 'Olive Oil',
     quantity: 1,
-    unit: 'liter',
+    unit: Unit.L,
     expiryDate: new Date('2026-03-20'),
   },
 
   // Dev User 2 - Vegan Pantry
   {
     userKeycloakId: 'dev-user-2',
-    foodName: 'Chickpeas',
+    foodName: 'Chickpeas in Cans',
     quantity: 4,
-    unit: 'cans',
+    unit: Unit.PIECES,
     notes: 'Organic',
   },
   {
     userKeycloakId: 'dev-user-2',
     foodName: 'Almond Milk',
     quantity: 2,
-    unit: 'liters',
+    unit: Unit.L,
     expiryDate: new Date('2025-10-08'),
   },
   {
     userKeycloakId: 'dev-user-2',
     foodName: 'Quinoa',
     quantity: 1.5,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Red quinoa',
   },
 
@@ -61,8 +61,8 @@ export const pantryItemData: PantryItemSeedData[] = [
   {
     userKeycloakId: 'dev-user-3',
     foodName: 'BBQ Sauce',
-    quantity: 3,
-    unit: 'bottles',
+    quantity: 300,
+    unit: Unit.ML,
     notes: 'Spicy variant',
     expiryDate: new Date('2026-01-15'),
   },
@@ -70,7 +70,7 @@ export const pantryItemData: PantryItemSeedData[] = [
     userKeycloakId: 'dev-user-3',
     foodName: 'Charcoal',
     quantity: 10,
-    unit: 'kg',
+    unit: Unit.KG,
   },
 
   // Dev User 4 - Keto Pantry
@@ -78,14 +78,14 @@ export const pantryItemData: PantryItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Coconut Oil',
     quantity: 2,
-    unit: 'jars',
+    unit: Unit.ML,
     notes: 'Virgin coconut oil',
   },
   {
     userKeycloakId: 'dev-user-4',
     foodName: 'Almonds',
     quantity: 0.5,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Raw, unsalted',
     expiryDate: new Date('2025-12-01'),
   },
@@ -93,7 +93,7 @@ export const pantryItemData: PantryItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Cheese',
     quantity: 0.8,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Cheddar',
     expiryDate: new Date('2025-10-20'),
   },
@@ -103,20 +103,20 @@ export const pantryItemData: PantryItemSeedData[] = [
     userKeycloakId: 'admin-user-1',
     foodName: 'Coffee',
     quantity: 2,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Arabica beans',
   },
   {
     userKeycloakId: 'admin-user-1',
     foodName: 'Sugar',
     quantity: 1,
-    unit: 'kg',
+    unit: Unit.KG,
   },
   {
     userKeycloakId: 'admin-user-1',
     foodName: 'Tea Bags',
     quantity: 100,
-    unit: 'pieces',
+    unit: Unit.PIECES,
     notes: 'Black tea',
   },
 ];
