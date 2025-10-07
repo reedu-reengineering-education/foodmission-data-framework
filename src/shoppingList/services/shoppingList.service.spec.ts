@@ -13,12 +13,12 @@ describe('ShoppingListService', () => {
   let service: ShoppingListService;
   let shoppingListRepository: jest.Mocked<ShoppingListRepository>;
 
-  // Mock-Daten: Das sind Beispieldaten, die wir für unsere Tests verwenden
   const mockShoppingList = {
     id: 'list-1',
     title: 'Test Shopping List',
     userId: 'user-1',
     createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
   };
 
   const mockShoppingListArray = [
@@ -28,6 +28,7 @@ describe('ShoppingListService', () => {
       title: 'Second List',
       userId: 'user-2',
       createdAt: new Date('2024-01-02'),
+      updatedAt: new Date('2024-01-02'),
     },
   ];
 
@@ -86,7 +87,8 @@ describe('ShoppingListService', () => {
       expect(result).toEqual({
         id: mockShoppingList.id,
         title: mockShoppingList.title,
-        createdBy: mockShoppingList.createdAt,
+        createdAt: mockShoppingList.createdAt,
+        updatedAt: mockShoppingList.updatedAt,
       });
     });
 
@@ -288,7 +290,8 @@ describe('ShoppingListService', () => {
       expect(result).toEqual({
         id: mockShoppingList.id,
         title: mockShoppingList.title,
-        createdBy: mockShoppingList.createdAt,
+        createdAt: mockShoppingList.createdAt,
+        updatedAt: mockShoppingList.updatedAt,
       });
     });
   });

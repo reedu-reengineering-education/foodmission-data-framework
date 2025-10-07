@@ -43,6 +43,8 @@ describe('ShoppingListItemService', () => {
       id: 'list-1',
       title: 'Test List',
       userId: 'user-1',
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-01'),
     },
     food: {
       name: 'Test Food',
@@ -61,6 +63,8 @@ describe('ShoppingListItemService', () => {
     id: 'list-1',
     title: 'Test List',
     userId: 'user-1',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
   };
 
   const mockFood = {
