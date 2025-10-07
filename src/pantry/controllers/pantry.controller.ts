@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryService } from '../services/pantry.service';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -132,12 +132,12 @@ export class PantryController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Delete specific shopping list by ID',
+    summary: 'Delete specific pantry by ID',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Shopping list found',
+    description: 'Pantry found',
     type: PantryResponseDto,
   })
   @ApiResponse({

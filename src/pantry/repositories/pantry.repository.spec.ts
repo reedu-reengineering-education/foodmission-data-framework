@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryRepository } from './pantry.repository';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { Pantry } from '@prisma/client';
 
 describe('PantryRepository', () => {
@@ -23,7 +23,6 @@ describe('PantryRepository', () => {
         quantity: 5,
         unit: 'kg',
         notes: 'Fresh',
-        location: 'Shelf A',
         expiryDate: new Date('2024-12-31'),
         pantryId: 'pantry-1',
         foodId: 'food-1',
@@ -134,8 +133,6 @@ describe('PantryRepository', () => {
       });
     });
 
-    // KORREKTUR: Die catch-Anweisung im Original-Code ist syntaktisch falsch
-    // Sie sollte innerhalb einer try-catch-Block sein oder entfernt werden
     it('should throw error if creation fails', async () => {
       const createDto = {
         title: 'New Pantry',
@@ -237,7 +234,7 @@ describe('PantryRepository', () => {
       mockPrismaService.pantry.delete.mockRejectedValue(prismaError);
 
       await expect(repository.delete('non-existent-id')).rejects.toThrow(
-        'Pantry not found',
+        'Failed to delete pantry',
       );
     });
   });

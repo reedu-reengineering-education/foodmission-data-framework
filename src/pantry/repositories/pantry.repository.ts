@@ -18,16 +18,10 @@ export type PantryWithRelations = Prisma.PantryGetPayload<{
 export class PantryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByUserId(userId: string): Promise<PantryWithRelations | null> {
-    return await this.prisma.pantry.findUnique({
+  async findByUserId(userId: string): Promise<any> {
+    return this.prisma.pantry.findUnique({
       where: { userId },
-      include: {
-        items: {
-          include: {
-            food: true,
-          },
-        },
-      },
+      include: { items: { include: { food: true } } },
     });
   }
 

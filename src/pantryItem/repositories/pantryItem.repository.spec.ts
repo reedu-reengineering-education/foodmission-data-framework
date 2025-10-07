@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemRepository } from './pantryItem.repository';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 describe('PantryItemRepository', () => {
   let repository: PantryItemRepository;
@@ -11,7 +11,6 @@ describe('PantryItemRepository', () => {
     quantity: 5,
     unit: 'kg',
     notes: 'Fresh tomatoes',
-    location: 'Shelf A',
     expiryDate: new Date('2024-12-31'),
     pantryId: 'pantry-1',
     foodId: 'food-1',
@@ -71,7 +70,6 @@ describe('PantryItemRepository', () => {
         quantity: 5,
         unit: 'kg',
         notes: 'Fresh tomatoes',
-        location: 'Shelf A',
         expiryDate: new Date('2024-12-31'),
       };
 
@@ -87,7 +85,6 @@ describe('PantryItemRepository', () => {
           quantity: createData.quantity,
           unit: createData.unit,
           notes: createData.notes,
-          location: createData.location,
           expiryDate: createData.expiryDate,
         },
         include: {
@@ -108,7 +105,6 @@ describe('PantryItemRepository', () => {
       const itemWithoutOptionals = {
         ...mockPantryItem,
         notes: null,
-        location: null,
         expiryDate: null,
       };
 
@@ -200,7 +196,6 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           foodId: 'food-1',
-          location: undefined,
           expiryDate: undefined,
           unit: undefined,
         },
@@ -220,7 +215,6 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           foodId: undefined,
-          location: undefined,
           expiryDate: undefined,
           unit: { contains: 'kg', mode: 'insensitive' },
         },
@@ -234,7 +228,6 @@ describe('PantryItemRepository', () => {
     it('should filter items by multiple criteria', async () => {
       const filter = {
         foodId: 'food-1',
-        location: 'Shelf A',
         unit: 'kg',
       };
 
@@ -246,7 +239,6 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           foodId: 'food-1',
-          location: 'Shelf A',
           expiryDate: undefined,
           unit: { contains: 'kg', mode: 'insensitive' },
         },

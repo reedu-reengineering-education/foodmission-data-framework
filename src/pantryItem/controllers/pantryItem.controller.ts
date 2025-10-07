@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryItemService } from '../services/pantryItem.service';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';

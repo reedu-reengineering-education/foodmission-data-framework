@@ -11,6 +11,7 @@ import { PantryRepository } from '../repositories/pantry.repository';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
 import { UpdatePantryDto } from '../dto/query-pantry.dto';
 import { PrismaService } from '../../database/prisma.service';
+import { date } from 'joi';
 
 @Injectable()
 export class PantryService {
@@ -27,8 +28,8 @@ export class PantryService {
     let pantry = await this.pantryRepository.findByUserId(userId);
 
     if (!pantry) {
-      this.logger.log(`Creating new pantry for user: ${userId}`);
-      await this.create({ userId, title: 'My Pantry' });
+      this.logger.log(`No pantry found for user ${userId}, creating one...`);
+      pantry = await this.create({ userId, title: 'My Pantry' });
     }
 
     return this.transformToResponseDto(pantry);
@@ -41,7 +42,7 @@ export class PantryService {
       });
       return this.transformToResponseDto(pantry);
     } catch (error) {
-      throw new Error('failed to create Pantry');
+      throw new Error('Failed to create pantry');
     }
   }
 
@@ -94,13 +95,16 @@ export class PantryService {
   }
 
   async validatePantryExists(userId: string): Promise<string> {
-    const pantry = await this.prisma.pantry.findUniqueOrThrow({
-      where: { userId },
-    });
+    let pantry = await this.pantryRepository.findByUserId(userId);
 
     if (!pantry) {
-      this.logger.log(`Creating new pantry for user: ${userId}`);
-      await this.create({ userId, title: 'My Pantry' });
+      this.logger.log(`No pantry found for user ${userId}, creating one...`);
+      pantry = await this.create({ userId, title: 'My Pantry' });
+
+      pantry = await this.pantryRepository.findByUserId(userId);
+      if (!pantry) {
+        throw new BadRequestException('Failed to create pantry');
+      }
     }
     return pantry.id;
   }
@@ -112,6 +116,7 @@ export class PantryService {
       userId: pantry.userId,
       createdAt: pantry.createdAt,
       updatedAt: pantry.updatedAt,
+      items: pantry.items,
     });
   }
 }

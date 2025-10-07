@@ -24,11 +24,11 @@ export class PantryResponseDto {
   @Expose()
   title: string;
 
-  //   @ApiProperty({
-  //     description: 'List of items in the pantry',
-  //     type: [PantryItemResponseDto],
-  //   })
-  //   @Expose()
-  //   @Type(() => PantryItemResponseDto)
-  //   pantryItems: PantryItemResponseDto[];
+  @ApiProperty({
+    description: 'List of items in the pantry',
+    type: [PantryItemResponseDto],
+  })
+  @Expose()
+  @Type(() => PantryItemResponseDto)
+  items: PantryItemResponseDto[];
 }
