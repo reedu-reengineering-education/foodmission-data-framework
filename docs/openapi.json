@@ -1643,8 +1643,16 @@
             "in": "query",
             "description": "Filter by unit",
             "schema": {
-              "example": "kg",
-              "type": "string"
+              "example": "KG",
+              "type": "string",
+              "enum": [
+                "PIECES",
+                "G",
+                "KG",
+                "ML",
+                "L",
+                "CUPS"
+              ]
             }
           },
           {
@@ -2216,8 +2224,16 @@
             "in": "query",
             "description": "Filter by unit",
             "schema": {
-              "example": "kg",
-              "type": "string"
+              "example": "KG",
+              "type": "string",
+              "enum": [
+                "PIECES",
+                "G",
+                "KG",
+                "ML",
+                "L",
+                "CUPS"
+              ]
             }
           },
           {
@@ -3029,8 +3045,15 @@
           "unit": {
             "type": "string",
             "description": "The unit of measurement",
-            "example": "kg",
-            "maxLength": 50
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
           },
           "notes": {
             "type": "string",
@@ -3169,8 +3192,15 @@
           "unit": {
             "type": "string",
             "description": "The unit of measurement",
-            "example": "pieces",
-            "maxLength": 50
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
           },
           "notes": {
             "type": "string",
@@ -3233,8 +3263,15 @@
           "unit": {
             "type": "string",
             "description": "The unit of measurement",
-            "example": "kg",
-            "maxLength": 50
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
           },
           "notes": {
             "type": "string",
@@ -3329,8 +3366,15 @@
           "unit": {
             "type": "string",
             "description": "The unit of measurement",
-            "example": "kg",
-            "maxLength": 50
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
           },
           "notes": {
             "type": "string",
@@ -3377,9 +3421,16 @@
           },
           "unit": {
             "type": "string",
-            "description": "The unit of measurement",
-            "example": "pieces",
-            "maxLength": 50
+            "description": "Unit of the item",
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
           },
           "notes": {
             "type": "string",

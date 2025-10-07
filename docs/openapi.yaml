@@ -1060,8 +1060,15 @@ paths:
           in: query
           description: Filter by unit
           schema:
-            example: kg
+            example: KG
             type: string
+            enum:
+              - PIECES
+              - G
+              - KG
+              - ML
+              - L
+              - CUPS
         - name: page
           required: false
           in: query
@@ -1409,8 +1416,15 @@ paths:
           in: query
           description: Filter by unit
           schema:
-            example: kg
+            example: KG
             type: string
+            enum:
+              - PIECES
+              - G
+              - KG
+              - ML
+              - L
+              - CUPS
         - name: expiryDate
           required: false
           in: query
@@ -2022,8 +2036,14 @@ components:
         unit:
           type: string
           description: The unit of measurement
-          example: kg
-          maxLength: 50
+          example: KG
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
         notes:
           type: string
           description: Additional notes for the item
@@ -2128,8 +2148,14 @@ components:
         unit:
           type: string
           description: The unit of measurement
-          example: pieces
-          maxLength: 50
+          example: KG
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
         notes:
           type: string
           description: Additional notes for the item
@@ -2178,8 +2204,14 @@ components:
         unit:
           type: string
           description: The unit of measurement
-          example: kg
-          maxLength: 50
+          example: KG
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
         notes:
           type: string
           description: Additional notes for the item
@@ -2251,8 +2283,14 @@ components:
         unit:
           type: string
           description: The unit of measurement
-          example: kg
-          maxLength: 50
+          example: KG
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
         notes:
           type: string
           description: Additional notes for the item
@@ -2287,9 +2325,15 @@ components:
           minimum: 1
         unit:
           type: string
-          description: The unit of measurement
-          example: pieces
-          maxLength: 50
+          description: Unit of the item
+          example: KG
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
         notes:
           type: string
           description: Additional notes for the item
