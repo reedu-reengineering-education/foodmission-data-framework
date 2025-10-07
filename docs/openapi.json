@@ -2117,7 +2117,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Shopping list found",
+            "description": "Pantry found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2141,7 +2141,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Delete specific shopping list by ID",
+        "summary": "Delete specific pantry by ID",
         "tags": [
           "pantry"
         ]
@@ -3216,74 +3216,6 @@
           "title"
         ]
       },
-      "PantryResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the pantry",
-            "example": "uuid-pantry-id"
-          },
-          "userId": {
-            "type": "string",
-            "description": "The user ID who owns this pantry",
-            "example": "uuid-user-id"
-          },
-          "title": {
-            "type": "string",
-            "description": "The pantry title",
-            "example": "Home or Work"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "title"
-        ]
-      },
-      "UpdatePantryDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "CreatePantryItemDto": {
-        "type": "object",
-        "properties": {
-          "foodId": {
-            "type": "string",
-            "description": "The ID of the food item to add",
-            "example": "uuid-food-id"
-          },
-          "quantity": {
-            "type": "number",
-            "description": "The quantity of the item",
-            "example": 2,
-            "minimum": 0.01
-          },
-          "unit": {
-            "type": "string",
-            "description": "The unit of measurement",
-            "example": "kg",
-            "maxLength": 50
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes for the item",
-            "example": "Store in cool place",
-            "maxLength": 500
-          },
-          "expiryDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "When the food will expire (ISO date string)",
-            "example": "2027-02-02"
-          }
-        },
-        "required": [
-          "foodId",
-          "quantity",
-          "unit"
-        ]
-      },
       "PantryItemResponseDto": {
         "type": "object",
         "properties": {
@@ -3341,6 +3273,82 @@
           "unit",
           "pantryId",
           "foodId"
+        ]
+      },
+      "PantryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the pantry",
+            "example": "uuid-pantry-id"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The user ID who owns this pantry",
+            "example": "uuid-user-id"
+          },
+          "title": {
+            "type": "string",
+            "description": "The pantry title",
+            "example": "Home or Work"
+          },
+          "items": {
+            "description": "List of items in the pantry",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PantryItemResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "title",
+          "items"
+        ]
+      },
+      "UpdatePantryDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreatePantryItemDto": {
+        "type": "object",
+        "properties": {
+          "foodId": {
+            "type": "string",
+            "description": "The ID of the food item to add",
+            "example": "uuid-food-id"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the item",
+            "example": 2,
+            "minimum": 0.01
+          },
+          "unit": {
+            "type": "string",
+            "description": "The unit of measurement",
+            "example": "kg",
+            "maxLength": 50
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes for the item",
+            "example": "Store in cool place",
+            "maxLength": 500
+          },
+          "expiryDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the food will expire (ISO date string)",
+            "example": "2027-02-02"
+          }
+        },
+        "required": [
+          "foodId",
+          "quantity",
+          "unit"
         ]
       },
       "MultiplePantryItemResponseDto": {

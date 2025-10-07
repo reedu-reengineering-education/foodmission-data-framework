@@ -11,6 +11,7 @@ import { ShoppingListItemRepository } from '../repositories/shoppingListItem.rep
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
+import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
@@ -32,7 +33,7 @@ describe('ShoppingListItemService', () => {
   const mockShoppingListItem = {
     id: '1',
     quantity: 2,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Test notes',
     checked: false,
     shoppingListId: 'list-1',
@@ -129,7 +130,7 @@ describe('ShoppingListItemService', () => {
   describe('create', () => {
     const createDto: CreateShoppingListItemDto = {
       quantity: 2,
-      unit: 'kg',
+      unit: 'KG',
       notes: 'Test notes',
       checked: false,
       shoppingListId: 'list-1',
@@ -165,7 +166,7 @@ describe('ShoppingListItemService', () => {
       expect(mockPrismaService.shoppingListItem.create).toHaveBeenCalledWith({
         data: {
           quantity: 2,
-          unit: 'kg',
+          unit: 'KG',
           notes: 'Test notes',
           checked: false,
           shoppingListId: 'list-1',

@@ -1,5 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsBoolean, IsInt, Min } from 'class-validator';
+import { Unit } from '@prisma/client';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsInt,
+  Min,
+  IsEnum,
+} from 'class-validator';
 
 export class QueryShoppingListItemDto {
   @ApiPropertyOptional({
@@ -27,12 +35,12 @@ export class QueryShoppingListItemDto {
   checked?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Filter by unit',
-    example: 'kg',
+    description: 'The unit of measurement',
+    example: 'KG',
+    enum: Unit,
   })
-  @IsString()
-  @IsOptional()
-  unit?: string;
+  @IsEnum(Unit)
+  unit?: Unit = Unit.PIECES;
 
   @ApiPropertyOptional({
     description: 'Page number for pagination',

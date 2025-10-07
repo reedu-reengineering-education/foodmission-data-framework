@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
+import { Unit } from '@prisma/client';
 
 export class PantryItemResponseDto {
   @ApiProperty({
@@ -20,11 +21,11 @@ export class PantryItemResponseDto {
 
   @ApiProperty({
     description: 'The unit of measurement',
-    example: 'kg',
-    maxLength: 50,
+    example: 'KG',
+    enum: Unit,
   })
   @Expose()
-  unit: string;
+  unit: Unit;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',

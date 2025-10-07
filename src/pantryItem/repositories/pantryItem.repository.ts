@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Unit } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
@@ -11,7 +11,7 @@ export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
 
 export interface PantryItemFilter {
   foodId?: string;
-  unit?: string;
+  unit?: Unit;
   expiryDate?: Date;
 }
 
@@ -19,7 +19,7 @@ export interface CreatePantryItemData {
   pantryId: string;
   foodId: string;
   quantity: number;
-  unit: string;
+  unit: Unit;
   notes?: string;
   expiryDate?: Date;
 }
@@ -74,9 +74,7 @@ export class PantryItemRepository {
       where: {
         foodId: filter.foodId,
         expiryDate: filter.expiryDate,
-        unit: filter.unit
-          ? { contains: filter.unit, mode: 'insensitive' }
-          : undefined,
+        unit: filter.unit,
       },
       include: {
         pantry: true,

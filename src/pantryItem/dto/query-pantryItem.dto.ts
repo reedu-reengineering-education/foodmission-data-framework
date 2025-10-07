@@ -1,22 +1,30 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsInt, Min, IsDate } from 'class-validator';
+import { Unit } from '@prisma/client';
+import {
+  IsOptional,
+  IsInt,
+  Min,
+  IsDate,
+  IsUUID,
+  IsEnum,
+} from 'class-validator';
 
 export class QueryPantryItemDto {
   @ApiPropertyOptional({
     description: 'Filter by food ID',
     example: 'uuid-food-id',
   })
-  @IsString()
+  @IsUUID()
   @IsOptional()
   foodId?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by unit',
-    example: 'kg',
+    description: 'The unit of measurement',
+    example: 'KG',
+    enum: Unit,
   })
-  @IsString()
-  @IsOptional()
-  unit?: string;
+  @IsEnum(Unit)
+  unit?: Unit = Unit.PIECES;
 
   @ApiPropertyOptional({
     description: 'when the food will expires',

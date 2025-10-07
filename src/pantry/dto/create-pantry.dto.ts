@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
 
 export class CreatePantryDto {
   @ApiProperty({
@@ -7,7 +7,7 @@ export class CreatePantryDto {
     example: 'uuid-user-id',
     maxLength: 255,
   })
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   @MaxLength(255)
   userId: string;

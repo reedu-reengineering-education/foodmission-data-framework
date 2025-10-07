@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemRepository } from './pantryItem.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { Unit } from '@prisma/client';
 
 describe('PantryItemRepository', () => {
   let repository: PantryItemRepository;
@@ -68,7 +69,7 @@ describe('PantryItemRepository', () => {
         pantryId: 'pantry-1',
         foodId: 'food-1',
         quantity: 5,
-        unit: 'kg',
+        unit: Unit.KG,
         notes: 'Fresh tomatoes',
         expiryDate: new Date('2024-12-31'),
       };
@@ -99,7 +100,7 @@ describe('PantryItemRepository', () => {
         pantryId: 'pantry-1',
         foodId: 'food-1',
         quantity: 3,
-        unit: 'pieces',
+        unit: Unit.PIECES,
       };
 
       const itemWithoutOptionals = {
@@ -209,14 +210,14 @@ describe('PantryItemRepository', () => {
     it('should filter items by unit with case insensitive search', async () => {
       mockPrismaService.pantryItem.findMany.mockResolvedValue([mockPantryItem]);
 
-      const result = await repository.findMany({ unit: 'kg' });
+      const result = await repository.findMany({ unit: Unit.KG });
 
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           foodId: undefined,
           expiryDate: undefined,
-          unit: { contains: 'kg', mode: 'insensitive' },
+          unit: Unit.KG,
         },
         include: {
           pantry: true,
@@ -228,7 +229,7 @@ describe('PantryItemRepository', () => {
     it('should filter items by multiple criteria', async () => {
       const filter = {
         foodId: 'food-1',
-        unit: 'kg',
+        unit: Unit.KG,
       };
 
       mockPrismaService.pantryItem.findMany.mockResolvedValue([mockPantryItem]);
@@ -240,7 +241,7 @@ describe('PantryItemRepository', () => {
         where: {
           foodId: 'food-1',
           expiryDate: undefined,
-          unit: { contains: 'kg', mode: 'insensitive' },
+          unit: Unit.KG,
         },
         include: {
           pantry: true,

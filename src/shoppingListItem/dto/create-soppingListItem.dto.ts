@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Unit } from '@prisma/client';
 import {
   IsString,
   IsNotEmpty,
@@ -7,6 +8,8 @@ import {
   IsOptional,
   Min,
   MaxLength,
+  IsEnum,
+  isEnum,
 } from 'class-validator';
 
 export class CreateShoppingListItemDto {
@@ -21,13 +24,12 @@ export class CreateShoppingListItemDto {
 
   @ApiProperty({
     description: 'The unit of measurement',
-    example: 'kg',
-    maxLength: 50,
+    example: 'KG',
+    enum: Unit,
   })
-  @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
-  unit: string = 'pieces';
+  @IsEnum(Unit)
+  unit: Unit = Unit.PIECES;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',

@@ -19,8 +19,8 @@ model Food {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   createdBy        String
-  ShoppingListItem ShoppingListItem[]
-  PantryItem       PantryItem[]
+  shoppingListItem ShoppingListItem[]
+  pantryItem       PantryItem[]
 
   @@index([name])
   @@index([createdAt])
@@ -37,8 +37,8 @@ model User {
   settings     Json           @default("{}") // Flexible JSON for app-specific settings
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  ShoppingList ShoppingList[]
-  Pantry       Pantry[]
+  shoppingList ShoppingList[]
+  pantry       Pantry[]
 
   @@index([email])
   @@index([createdAt])
@@ -62,7 +62,7 @@ model ShoppingList {
 model ShoppingListItem {
   id             String  @id @default(uuid())
   quantity       Int     @default(1)
-  unit           String  @default("pieces")
+  unit           Unit    @default(PIECES)
   notes          String?
   checked        Boolean @default(false)
   shoppingListId String
@@ -96,7 +96,7 @@ model Pantry {
 model PantryItem {
   id         String    @id @default(uuid())
   quantity   Int       @default(1)
-  unit       String    @default("pieces")
+  unit       Unit      @default(PIECES)
   notes      String?
   expiryDate DateTime?
   pantryId   String
@@ -110,4 +110,13 @@ model PantryItem {
 
   @@index([pantryId])
   @@map("pantry_items")
+}
+
+enum Unit {
+  PIECES
+  G
+  KG
+  ML
+  L
+  CUPS
 }

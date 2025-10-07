@@ -9,6 +9,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { Unit } from '@prisma/client';
 
 describe('PantryItemService', () => {
   let service: PantryItemService;
@@ -19,7 +20,7 @@ describe('PantryItemService', () => {
   const mockPantryItem = {
     id: 'item-1',
     quantity: 5,
-    unit: 'kg',
+    unit: Unit.KG,
     notes: 'Fresh',
     expiryDate: new Date('2024-12-31'),
     pantryId: 'pantry-1',
@@ -96,7 +97,7 @@ describe('PantryItemService', () => {
     const createDto = {
       foodId: 'food-1',
       quantity: 5,
-      unit: 'kg',
+      unit: Unit.KG,
       notes: 'Fresh',
       expiryDate: new Date('2024-12-31'),
     };
@@ -191,12 +192,12 @@ describe('PantryItemService', () => {
       const mockItems = [mockPantryItem];
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({ foodId: 'food-1', unit: 'kg' });
+      const result = await service.findAll({ foodId: 'food-1', unit: Unit.KG });
 
       expect(result.data).toHaveLength(1);
       expect(repository.findMany).toHaveBeenCalledWith({
         foodId: 'food-1',
-        unit: 'kg',
+        unit: 'KG',
       });
     });
 
@@ -248,7 +249,7 @@ describe('PantryItemService', () => {
   describe('update', () => {
     const updateDto = {
       quantity: 10,
-      unit: 'pieces',
+      unit: Unit.PIECES,
       notes: 'Updated notes',
     };
 
