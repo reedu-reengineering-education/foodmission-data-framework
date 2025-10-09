@@ -67,19 +67,7 @@ This directory contains the GitHub Actions workflows for the FOODMISSION Data Fr
 
 **Jobs:**
 
-- **Load Testing**: k6 performance tests with various load patterns
 - **Memory Profiling**: Memory usage analysis and leak detection
-
-### 6. Code Quality (`code-quality.yml`)
-
-**Triggers:** Push, Pull requests
-
-**Jobs:**
-
-- **Code Quality Analysis**: ESLint, Prettier, TypeScript, circular dependencies
-- **SonarCloud**: Code quality metrics and technical debt analysis
-- **Commit Lint**: Conventional commit message validation
-- **Documentation**: OpenAPI spec validation, README completeness
 
 ## Configuration Files
 

@@ -1,11 +1,11 @@
-import { PrismaClient, ShoppingListItem } from '@prisma/client';
+import { PrismaClient, ShoppingListItem, Unit } from '@prisma/client';
 
 export interface ShoppingListItemSeedData {
   shoppingListTitle: string;
   userKeycloakId: string;
   foodName: string;
   quantity: number;
-  unit: string;
+  unit: Unit;
   notes?: string;
   checked?: boolean;
 }
@@ -16,14 +16,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Bananas',
     quantity: 6,
-    unit: 'pieces',
+    unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'Weekly Groceries',
     userKeycloakId: 'dev-user-1',
     foodName: 'Milk',
     quantity: 1,
-    unit: 'liter',
+    unit: Unit.L,
     notes: 'Organic if available',
   },
   {
@@ -31,7 +31,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Bread',
     quantity: 2,
-    unit: 'pieces',
+    unit: Unit.PIECES,
     notes: 'Whole grain',
   },
   {
@@ -39,14 +39,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Eggs',
     quantity: 12,
-    unit: 'pieces',
+    unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'Weekly Groceries',
     userKeycloakId: 'dev-user-1',
     foodName: 'Chicken Breast',
     quantity: 500,
-    unit: 'grams',
+    unit: Unit.G,
     checked: true,
   },
 
@@ -55,21 +55,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Potato Chips',
     quantity: 3,
-    unit: 'packages',
+    unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'Party Snacks',
     userKeycloakId: 'dev-user-1',
     foodName: 'Coca Cola',
     quantity: 2,
-    unit: 'liter',
+    unit: Unit.L,
   },
   {
     shoppingListTitle: 'Party Snacks',
     userKeycloakId: 'dev-user-1',
     foodName: 'Pizza',
     quantity: 4,
-    unit: 'pieces',
+    unit: Unit.PIECES,
     notes: 'Frozen pizza',
   },
   {
@@ -77,7 +77,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-1',
     foodName: 'Ice Cream',
     quantity: 1,
-    unit: 'liter',
+    unit: Unit.L,
     notes: 'Vanilla flavor',
   },
 
@@ -86,7 +86,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-2',
     foodName: 'Tofu',
     quantity: 2,
-    unit: 'packages',
+    unit: Unit.PIECES,
     notes: 'Extra firm',
   },
   {
@@ -94,21 +94,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-2',
     foodName: 'Oat Milk',
     quantity: 1,
-    unit: 'liter',
+    unit: Unit.L,
   },
   {
     shoppingListTitle: 'Vegan Essentials',
     userKeycloakId: 'dev-user-2',
     foodName: 'Quinoa',
     quantity: 500,
-    unit: 'grams',
+    unit: Unit.G,
   },
   {
     shoppingListTitle: 'Vegan Essentials',
     userKeycloakId: 'dev-user-2',
     foodName: 'Avocado',
     quantity: 4,
-    unit: 'pieces',
+    unit: Unit.PIECES,
     checked: true,
   },
   {
@@ -116,7 +116,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-2',
     foodName: 'Nutritional Yeast',
     quantity: 1,
-    unit: 'package',
+    unit: Unit.PIECES,
   },
 
   {
@@ -124,7 +124,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-3',
     foodName: 'Beef Steaks',
     quantity: 8,
-    unit: 'pieces',
+    unit: Unit.PIECES,
     notes: 'Ribeye preferred',
   },
   {
@@ -132,21 +132,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-3',
     foodName: 'Sausages',
     quantity: 12,
-    unit: 'pieces',
+    unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'BBQ Party List',
     userKeycloakId: 'dev-user-3',
     foodName: 'Burger Buns',
     quantity: 8,
-    unit: 'pieces',
+    unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'BBQ Party List',
     userKeycloakId: 'dev-user-3',
     foodName: 'Beer',
     quantity: 24,
-    unit: 'cans',
+    unit: Unit.ML,
     checked: true,
   },
   {
@@ -154,7 +154,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-3',
     foodName: 'BBQ Sauce',
     quantity: 2,
-    unit: 'bottles',
+    unit: Unit.CUPS,
   },
 
   {
@@ -162,14 +162,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Salmon',
     quantity: 400,
-    unit: 'grams',
+    unit: Unit.G,
   },
   {
     shoppingListTitle: 'Keto Diet Shopping',
     userKeycloakId: 'dev-user-4',
     foodName: 'Cheese',
     quantity: 200,
-    unit: 'grams',
+    unit: Unit.G,
     notes: 'Aged cheddar',
   },
   {
@@ -177,7 +177,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Spinach',
     quantity: 500,
-    unit: 'grams',
+    unit: Unit.G,
     notes: 'Fresh leaves',
   },
   {
@@ -185,7 +185,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Olive Oil',
     quantity: 1,
-    unit: 'bottle',
+    unit: Unit.CUPS,
     notes: 'Extra virgin',
   },
   {
@@ -193,7 +193,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'dev-user-4',
     foodName: 'Almonds',
     quantity: 250,
-    unit: 'grams',
+    unit: Unit.G,
   },
 
   {
@@ -201,7 +201,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'admin-user-1',
     foodName: 'Coffee',
     quantity: 2,
-    unit: 'packages',
+    unit: Unit.G,
     notes: 'Medium roast',
   },
   {
@@ -209,14 +209,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'admin-user-1',
     foodName: 'Sugar',
     quantity: 1,
-    unit: 'package',
+    unit: Unit.G,
   },
   {
     shoppingListTitle: 'Office Supplies',
     userKeycloakId: 'admin-user-1',
     foodName: 'Tea',
     quantity: 3,
-    unit: 'boxes',
+    unit: Unit.G,
     notes: 'Various flavors',
   },
   {
@@ -224,7 +224,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     userKeycloakId: 'admin-user-1',
     foodName: 'Cookies',
     quantity: 5,
-    unit: 'packages',
+    unit: Unit.PIECES,
     notes: 'For meetings',
   },
 ];

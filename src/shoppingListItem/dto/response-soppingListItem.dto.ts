@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
 import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
+import { Unit } from '@prisma/client';
 
 @Exclude()
 export class ShoppingListItemResponseDto {
@@ -24,7 +25,7 @@ export class ShoppingListItemResponseDto {
     example: 'kg',
   })
   @Expose()
-  unit: string;
+  unit: Unit;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',

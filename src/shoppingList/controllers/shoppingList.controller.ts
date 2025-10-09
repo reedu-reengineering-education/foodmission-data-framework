@@ -29,7 +29,7 @@ import {
 } from '../dto/shoppingList-response.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')

@@ -39,7 +39,7 @@ import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 import { UserContextService } from '../../auth/user-context.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { DataBaseAuthGuard } from '../../common/guards/auth.guards';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 @ApiTags('foods')
 @Controller('foods')

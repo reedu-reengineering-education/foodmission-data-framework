@@ -19,7 +19,8 @@ model Food {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   createdBy        String
-  ShoppingListItem ShoppingListItem[]
+  shoppingListItem ShoppingListItem[]
+  pantryItem       PantryItem[]
 
   @@index([name])
   @@index([createdAt])
@@ -36,7 +37,8 @@ model User {
   settings     Json           @default("{}") // Flexible JSON for app-specific settings
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  ShoppingList ShoppingList[]
+  shoppingList ShoppingList[]
+  pantry       Pantry[]
 
   @@index([email])
   @@index([createdAt])
@@ -44,9 +46,11 @@ model User {
 }
 
 model ShoppingList {
-  id     String @id @default(uuid())
-  userId String
-  title  String
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user  User               @relation(fields: [userId], references: [id])
   items ShoppingListItem[]
@@ -58,7 +62,7 @@ model ShoppingList {
 model ShoppingListItem {
   id             String  @id @default(uuid())
   quantity       Int     @default(1)
-  unit           String  @default("pieces")
+  unit           Unit    @default(PIECES)
   notes          String?
   checked        Boolean @default(false)
   shoppingListId String
@@ -73,4 +77,46 @@ model ShoppingListItem {
   @@unique([shoppingListId, foodId])
   @@index([shoppingListId])
   @@map("shopping_list_items")
+}
+
+model Pantry {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User         @relation(fields: [userId], references: [id])
+  items PantryItem[]
+
+  @@unique([userId, title])
+  @@index([userId])
+}
+
+model PantryItem {
+  id         String    @id @default(uuid())
+  quantity   Int       @default(1)
+  unit       Unit      @default(PIECES)
+  notes      String?
+  expiryDate DateTime?
+  pantryId   String
+  foodId     String
+
+  pantry Pantry @relation(fields: [pantryId], references: [id], onDelete: Cascade)
+  food   Food   @relation(fields: [foodId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pantryId])
+  @@map("pantry_items")
+}
+
+enum Unit {
+  PIECES
+  G
+  KG
+  ML
+  L
+  CUPS
 }

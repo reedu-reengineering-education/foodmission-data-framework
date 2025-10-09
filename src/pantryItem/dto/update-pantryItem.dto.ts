@@ -7,11 +7,11 @@ import {
   IsString,
   IsNotEmpty,
   MaxLength,
-  IsBoolean,
+  IsDate,
   IsEnum,
 } from 'class-validator';
 
-export class UpdateShoppingListItemDto {
+export class UpdatePantryItemDto {
   @ApiPropertyOptional({
     description: 'The quantity of the item',
     example: 3,
@@ -23,12 +23,13 @@ export class UpdateShoppingListItemDto {
   quantity?: number;
 
   @ApiPropertyOptional({
-    description: 'The unit of measurement',
+    description: 'Unit of the item',
     example: 'KG',
     enum: Unit,
   })
+  @IsOptional()
   @IsEnum(Unit)
-  unit?: Unit = Unit.PIECES;
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',
@@ -41,21 +42,14 @@ export class UpdateShoppingListItemDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'Whether the item is checked off',
-    example: true,
+    description: 'when the food will expires',
+    example: '02-02-2027',
+    maxLength: 500,
   })
-  @IsBoolean()
+  @IsDate()
   @IsOptional()
-  checked?: boolean;
-
-  @ApiPropertyOptional({
-    description: 'The ID of the shopping list',
-    example: 'uuid-shopping-list-id',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  shoppingListId?: string;
+  @MaxLength(500)
+  expiryDate?: Date;
 
   @ApiPropertyOptional({
     description: 'The ID of the food item',

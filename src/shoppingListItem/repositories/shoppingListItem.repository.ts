@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, ShoppingListItem } from '@prisma/client';
+import { Prisma, ShoppingListItem, Unit } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
@@ -16,7 +16,7 @@ export interface ShoppingListItemFilter {
   shoppingListId?: string;
   foodId?: string;
   checked?: boolean;
-  unit?: string;
+  unit?: Unit;
   userId?: string;
 }
 
@@ -64,9 +64,7 @@ export class ShoppingListItemRepository
         shoppingListId: filter.shoppingListId,
         foodId: filter.foodId,
         checked: filter.checked,
-        unit: filter.unit
-          ? { contains: filter.unit, mode: 'insensitive' }
-          : undefined,
+        unit: filter.unit,
 
         shoppingList: filter.userId ? { userId: filter.userId } : undefined,
       },

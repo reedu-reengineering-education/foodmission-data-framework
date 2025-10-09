@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
+import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemRepository', () => {
   let repository: ShoppingListItemRepository;
@@ -76,7 +77,7 @@ describe('ShoppingListItemRepository', () => {
       // Arrange
       const createDto: CreateShoppingListItemDto = {
         quantity: 2,
-        unit: 'kg',
+        unit: 'KG',
         notes: 'Test notes',
         checked: false,
         shoppingListId: 'list-1',
@@ -133,8 +134,7 @@ describe('ShoppingListItemRepository', () => {
         shoppingListId: 'list-1',
         foodId: 'food-1',
         checked: false,
-        unit: 'kg',
-        userId: 'user-1',
+        unit: Unit.KG,
       };
       mockPrismaService.shoppingListItem.findMany.mockResolvedValue([
         mockShoppingListItem,
@@ -149,8 +149,7 @@ describe('ShoppingListItemRepository', () => {
           shoppingListId: 'list-1',
           foodId: 'food-1',
           checked: false,
-          unit: { contains: 'kg', mode: 'insensitive' },
-          shoppingList: { userId: 'user-1' },
+          unit: 'KG',
         },
         include: {
           shoppingList: true,
