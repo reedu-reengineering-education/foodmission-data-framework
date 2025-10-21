@@ -605,6 +605,42 @@
         ]
       }
     },
+    "/api/v1/users/{id}/chekedShoppingListItemInPantry": {
+      "get": {
+        "operationId": "getChekedShoppingListItemInPantry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User cheked shopping list item in pantry"
+          }
+        },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get user cheked if shopping list item in pantry",
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/v1/foods": {
       "post": {
         "description": "Creates a new food item in the database. Requires user or admin role.",
@@ -3352,6 +3388,11 @@
       "CreatePantryItemDto": {
         "type": "object",
         "properties": {
+          "pantryId": {
+            "type": "string",
+            "description": "The ID of the pantry",
+            "example": "uuid-food-id"
+          },
           "foodId": {
             "type": "string",
             "description": "The ID of the food item to add",
@@ -3390,6 +3431,7 @@
           }
         },
         "required": [
+          "pantryId",
           "foodId",
           "quantity",
           "unit"

@@ -103,6 +103,24 @@ export class UserController {
     return user.preferences || {};
   }
 
+  @Get(':id/chekedShoppingListItemInPantry')
+  @Cacheable('user_cheked shopping list item in pantry', 600)
+  @Roles('admin', 'user')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  @ApiOperation({ summary: 'Get user cheked if shopping list item in pantry' })
+  @ApiResponse({
+    status: 200,
+    description: 'User cheked shopping list item in pantry',
+  })
+  async getChekedShoppingListItemInPantry(@Param('id') id: string) {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user.chekedShoppingListItemInPantry || {};
+  }
+
   @Patch(':id/preferences')
   @CacheEvict(['user_profile:{id}', 'user_preferences:{id}'])
   @Roles('admin', 'user')

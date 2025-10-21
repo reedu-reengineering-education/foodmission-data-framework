@@ -14,6 +14,14 @@ import {
 
 export class CreatePantryItemDto {
   @ApiProperty({
+    description: 'The ID of the pantry',
+    example: 'uuid-food-id',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  pantryId: string;
+
+  @ApiProperty({
     description: 'The ID of the food item to add',
     example: 'uuid-food-id',
   })
@@ -57,4 +65,20 @@ export class CreatePantryItemDto {
   @IsOptional()
   @IsDateString()
   expiryDate?: Date;
+
+  constructor(
+    pantryId: string,
+    foodId: string,
+    quantity: number,
+    unit: Unit = Unit.PIECES,
+    notes?: string,
+    expiryDate?: Date,
+  ) {
+    this.pantryId = pantryId;
+    this.foodId = foodId;
+    this.quantity = quantity;
+    this.unit = unit;
+    this.notes = notes;
+    this.expiryDate = expiryDate;
+  }
 }

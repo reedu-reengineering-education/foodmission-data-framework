@@ -10,6 +10,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Unit } from '@prisma/client';
+import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-soppingListItem.dto';
 
 describe('PantryItemService', () => {
   let service: PantryItemService;
@@ -95,6 +96,7 @@ describe('PantryItemService', () => {
 
   describe('create', () => {
     const createDto = {
+      pantryId: 'pantry-1',
       foodId: 'food-1',
       quantity: 5,
       unit: Unit.KG,
@@ -115,6 +117,7 @@ describe('PantryItemService', () => {
 
       expect(result).toHaveProperty('id');
       expect(result.quantity).toBe(5);
+      expect(result.pantryId).toBe('pantry-1');
       expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
@@ -344,5 +347,40 @@ describe('PantryItemService', () => {
         ForbiddenException,
       );
     });
+  });
+
+  it('should create pantry item from shopping list', async () => {
+    const dto = new CreateShoppingListItemDto('food-1', 2, Unit.KG);
+
+    mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+
+    mockPrismaService.food.findUnique.mockResolvedValue({
+      id: 'food-1',
+      name: 'Test Food',
+    });
+    mockPantryItemRepository.findFoodInPantry.mockResolvedValue(null);
+    mockPrismaService.pantryItem.create.mockResolvedValue({
+      ...mockPantryItem,
+      id: 'new-item',
+    });
+
+    const result = await service.createFromShoppingList(dto, 'user-1');
+
+    expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
+    expect(prisma.pantryItem.create).toHaveBeenCalledWith({
+      data: {
+        pantryId: 'pantry-1',
+        foodId: 'food-1',
+        quantity: 2,
+        unit: Unit.KG,
+        notes: undefined,
+        expiryDate: undefined,
+      },
+      include: {
+        pantry: true,
+        food: true,
+      },
+    });
+    expect(result).toHaveProperty('id', 'new-item');
   });
 });

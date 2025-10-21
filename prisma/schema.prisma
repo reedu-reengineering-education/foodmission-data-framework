@@ -28,17 +28,18 @@ model Food {
 }
 
 model User {
-  id           String         @id @default(uuid())
-  keycloakId   String         @unique
-  email        String         @unique
-  firstName    String
-  lastName     String
-  preferences  Json           @default("{}") // Flexible JSON for app-specific preferences
-  settings     Json           @default("{}") // Flexible JSON for app-specific settings
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  shoppingList ShoppingList[]
-  pantry       Pantry[]
+  id                             String         @id @default(uuid())
+  keycloakId                     String         @unique
+  email                          String         @unique
+  firstName                      String
+  lastName                       String
+  preferences                    Json           @default("{}") // Flexible JSON for app-specific preferences
+  settings                       Json           @default("{}") // Flexible JSON for app-specific settings
+  createdAt                      DateTime       @default(now())
+  updatedAt                      DateTime       @updatedAt
+  chekedShoppingListItemInPantry Boolean        @default(true)
+  shoppingList                   ShoppingList[]
+  pantry                         Pantry[]
 
   @@index([email])
   @@index([createdAt])

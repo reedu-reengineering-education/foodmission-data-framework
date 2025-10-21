@@ -20,6 +20,8 @@ import {
 } from '../repositories/shoppingListItem.repository';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
 import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
+import { UserRepository } from '../../user/repositories/user.repository';
+import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
 
 @Injectable()
 export class ShoppingListItemService {
@@ -28,6 +30,8 @@ export class ShoppingListItemService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
+    private readonly userRepository: UserRepository,
+    private readonly pantryItemSerivce: PantryItemService,
   ) {}
 
   async create(
@@ -185,10 +189,21 @@ export class ShoppingListItemService {
     id: string,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    await this.findById(id, userId);
+    const item = await this.findById(id, userId);
 
+    const user = await this.userRepository.findById(userId);
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.chekedShoppingListItemInPantry) {
+      this.pantryItemSerivce.createFromShoppingList(
+        new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
+        userId,
+      );
+    }
     return this.transformToResponseDto(updatedItem);
   }
 

@@ -11,11 +11,15 @@ import { ShoppingListItemRepository } from '../repositories/shoppingListItem.rep
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
-import { Unit } from '@prisma/client';
+import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
+import { UserRepository } from '../../user/repositories/user.repository';
 
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
   let repository: jest.Mocked<ShoppingListItemRepository>;
+  let prismaService: PrismaService;
+  let pantryItemService: PantryItemService;
+  let userRepository: UserRepository;
 
   const mockPrismaService = {
     shoppingList: {
@@ -72,6 +76,25 @@ describe('ShoppingListItemService', () => {
     name: 'Test Food',
   };
 
+  const mockUser = {
+    id: 'user-1',
+    chekedShoppingListItemInPantry: true,
+  };
+
+  const mockUserRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockRepository = {
+    toggleChecked: jest.fn(),
+  };
+
+  const mockPantryItemService = {
+    createFromShoppingList: jest.fn(),
+  };
+
+  const mockUpdatedItem = { ...mockShoppingListItem, checked: true };
+
   beforeEach(async () => {
     const mockRepository = {
       create: jest.fn(),
@@ -96,11 +119,22 @@ describe('ShoppingListItemService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+        {
+          provide: PantryItemService,
+          useValue: mockPantryItemService,
+        },
+        {
+          provide: UserRepository,
+          useValue: mockUserRepository,
+        },
       ],
     }).compile();
 
     service = module.get<ShoppingListItemService>(ShoppingListItemService);
     repository = module.get(ShoppingListItemRepository);
+    prismaService = module.get<PrismaService>(PrismaService);
+    pantryItemService = module.get<PantryItemService>(PantryItemService);
+    userRepository = module.get<UserRepository>(UserRepository);
 
     // Mock logger to avoid undefined errors
     service.logger = { log: jest.fn() };
@@ -334,8 +368,6 @@ describe('ShoppingListItemService', () => {
       // Assert
       expect(repository.findById).toHaveBeenCalledWith('1');
       expect(result).toHaveProperty('id');
-      // Passe je nach tatsächlicher Transformation an:
-      // expect(result.notes).toBeUndefined(); // falls notes transformiert wird
     });
 
     it('should throw NotFoundException when item not found', async () => {
@@ -391,5 +423,51 @@ describe('ShoppingListItemService', () => {
       expect(result.quantity).toBe(5);
       expect(result.checked).toBe(true);
     });
+  });
+
+  it('should toggle checked and create pantry item if user preference is true', async () => {
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+
+    mockUserRepository.findById.mockResolvedValue(mockUser);
+    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+
+    mockPantryItemService.createFromShoppingList.mockResolvedValue({
+      id: 'pantry-item-1',
+      quantity: 2,
+      unit: 'KG',
+      notes: 'Test notes',
+      checked: false,
+      shoppingListId: 'list-1',
+      foodId: 'food-1',
+      include: {
+        shoppingList: true,
+        food: true,
+      },
+    });
+
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(pantryItemService.createFromShoppingList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        foodId: mockShoppingListItem.foodId,
+        quantity: mockShoppingListItem.quantity,
+        unit: mockShoppingListItem.unit,
+      }),
+      'user-1',
+    );
+    expect(result).toBeDefined();
+    expect(result.id).toBe('1');
+  });
+
+  it('should throw NotFoundException if user does not exist', async () => {
+    mockUserRepository.findById.mockResolvedValue(null);
+
+    await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
+      NotFoundException,
+    );
+    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
   });
 });
