@@ -181,11 +181,6 @@ npm run dev:setup
 # Start development services
 npm run docker:up
 
-# Run database setup
-npm run db:generate
-npm run db:migrate:deploy
-npm run db:seed:dev
-
 # Start the application
 npm run start:dev
 ```
