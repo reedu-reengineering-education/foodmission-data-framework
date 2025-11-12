@@ -73,24 +73,22 @@ describe('ShoppingListItemService', () => {
   };
 
   beforeEach(async () => {
-    const mockRepository = {
-      create: jest.fn(),
-      findMany: jest.fn(),
-      findByShoppingListId: jest.fn(),
-      findById: jest.fn(),
-      findByShoppingListAndFood: jest.fn(),
-      update: jest.fn(),
-      toggleChecked: jest.fn(),
-      delete: jest.fn(),
-      clearCheckedItems: jest.fn(),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ShoppingListItemService,
         {
           provide: ShoppingListItemRepository,
-          useValue: mockRepository,
+          useValue: {
+            create: jest.fn(),
+            findMany: jest.fn(),
+            findByShoppingListId: jest.fn(),
+            findById: jest.fn(),
+            findByShoppingListAndFood: jest.fn(),
+            update: jest.fn(),
+            toggleChecked: jest.fn(),
+            delete: jest.fn(),
+            clearCheckedItems: jest.fn(),
+          },
         },
         {
           provide: PrismaService,
