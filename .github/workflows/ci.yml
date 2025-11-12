@@ -35,8 +35,61 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Run ESLint
-        run: npm run lint
+      - name: Get changed files (PR only)
+        id: changed-files
+        if: github.event_name == 'pull_request'
+        run: |
+          # Fetch the base branch to compare against
+          git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }} --depth=1 || true
+          
+          # Get changed TypeScript files compared to base branch
+          # Use merge-base to find the common ancestor, then diff from there
+          BASE_REF="origin/${{ github.event.pull_request.base.ref }}"
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_REF"...HEAD 2>/dev/null | grep -E '\.(ts|tsx)$' | grep -E '^(src|test|apps|libs)/' || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No TypeScript files changed in this PR"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            # Use multiline output for files with special characters
+            {
+              echo "changed_files<<EOF"
+              echo "$CHANGED_FILES"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+            echo "Changed TypeScript files:"
+            echo "$CHANGED_FILES"
+          fi
+
+      - name: Run ESLint on changed files (PR only)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
+        run: |
+          CHANGED_FILES="${{ steps.changed-files.outputs.changed_files }}"
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No files to lint"
+            exit 0
+          fi
+          
+          echo "Linting changed TypeScript files:"
+          echo "$CHANGED_FILES"
+          echo ""
+          
+          # Build array of files and lint them all at once
+          FILES_ARRAY=()
+          while IFS= read -r line; do
+            if [ -n "$line" ] && [ -f "$line" ]; then
+              FILES_ARRAY+=("$line")
+            fi
+          done <<< "$CHANGED_FILES"
+          
+          if [ ${#FILES_ARRAY[@]} -eq 0 ]; then
+            echo "No valid files to lint"
+            exit 0
+          fi
+          
+          # Lint all files at once
+          npx eslint --fix "${FILES_ARRAY[@]}"
 
       - name: Check TypeScript compilation
         run: npx tsc --noEmit
