@@ -19,12 +19,26 @@
     "jest-runtime": {
       "glob": "^12.0.0"
     },
+    "@jest/transform": {
+      "babel-plugin-istanbul": {
+        "test-exclude": {
+          "glob": "^7.2.3"
+        }
+      }
+    },
+    "babel-jest": {
+      "babel-plugin-istanbul": {
+        "test-exclude": {
+          "glob": "^7.2.3"
+        }
+      }
+    },
     "test-exclude": {
-      "glob": "^10.5.0"
+      "glob": "^7.2.3"
     },
     "babel-plugin-istanbul": {
       "test-exclude": {
-        "glob": "^10.5.0"
+        "glob": "^7.2.3"
       }
     }
   },
