@@ -11,7 +11,6 @@ import {
 } from '../repositories/pantryItem.repository';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { PrismaService } from '../../database/prisma.service';
-import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
@@ -19,6 +18,8 @@ import {
 import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryService } from '../../pantry/services/pantry.service';
+import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-soppingListItem.dto';
+import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 
 @Injectable()
 export class PantryItemService {
@@ -27,6 +28,22 @@ export class PantryItemService {
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
   ) {}
+
+  async createFromShoppingList(
+    createShoppingListItemDto: CreateShoppingListItemDto,
+    userId: string,
+  ): Promise<PantryItemResponseDto> {
+    const pantryId = await this.pantryService.validatePantryExists(userId);
+
+    const createPantryItemDto = new CreatePantryItemDto(
+      pantryId,
+      createShoppingListItemDto.foodId,
+      createShoppingListItemDto.quantity,
+      createShoppingListItemDto.unit,
+    );
+
+    return this.create(createPantryItemDto, userId);
+  }
 
   async create(
     createDto: CreatePantryItemDto,
