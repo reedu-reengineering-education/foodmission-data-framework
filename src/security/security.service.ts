@@ -57,6 +57,8 @@ export class SecurityService {
       'KEYCLOAK_CLIENT_ID',
     ];
 
+    // KEYCLOAK_AUTH_SERVER_URL is optional (falls back to KEYCLOAK_BASE_URL)
+
     const missingVars = requiredVars.filter(
       (varName) => !this.configService.get(varName),
     );

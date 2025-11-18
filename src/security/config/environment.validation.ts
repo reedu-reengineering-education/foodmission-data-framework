@@ -17,6 +17,13 @@ export const environmentValidationSchema = Joi.object({
     .required()
     .description('Keycloak server base URL'),
 
+  KEYCLOAK_AUTH_SERVER_URL: Joi.string()
+    .uri()
+    .optional()
+    .description(
+      'Keycloak authentication server URL (fallback to KEYCLOAK_BASE_URL if not provided)',
+    ),
+
   KEYCLOAK_REALM: Joi.string().required().description('Keycloak realm name'),
 
   KEYCLOAK_CLIENT_ID: Joi.string().required().description('Keycloak client ID'),

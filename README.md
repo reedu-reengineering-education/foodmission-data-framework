@@ -113,6 +113,7 @@ REDIS_URL="redis://localhost:6379"
 
 # Keycloak
 KEYCLOAK_BASE_URL="http://localhost:8080"
+KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
 
