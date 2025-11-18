@@ -3,7 +3,7 @@ import { Prisma, ShoppingListItem, Unit } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import { BaseRepository } from 'src/common/interfaces/base-repository.interface';
+import { BaseRepository } from '../../common/interfaces/base-repository.interface';
 
 export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
   include: {
