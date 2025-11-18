@@ -10,6 +10,15 @@
   },
   "overrides": {
     "glob": "^12.0.0",
+    "@jest/reporters": {
+      "glob": "^12.0.0"
+    },
+    "jest-config": {
+      "glob": "^12.0.0"
+    },
+    "jest-runtime": {
+      "glob": "^12.0.0"
+    },
     "test-exclude": {
       "glob": "^10.5.0"
     },
