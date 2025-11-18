@@ -16,7 +16,6 @@ import { Unit } from '@prisma/client';
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
   let repository: jest.Mocked<ShoppingListItemRepository>;
-  let prismaService: PrismaService;
 
   const mockPrismaService = {
     shoppingList: {
@@ -102,7 +101,6 @@ describe('ShoppingListItemService', () => {
 
     service = module.get<ShoppingListItemService>(ShoppingListItemService);
     repository = module.get(ShoppingListItemRepository);
-    prismaService = module.get<PrismaService>(PrismaService);
 
     // Mock logger to avoid undefined errors
     service.logger = { log: jest.fn() };

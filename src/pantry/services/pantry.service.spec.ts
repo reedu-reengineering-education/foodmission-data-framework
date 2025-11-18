@@ -11,7 +11,6 @@ import {
 describe('PantryService', () => {
   let service: PantryService;
   let repository: PantryRepository;
-  let prisma: PrismaService;
 
   const mockPantry = {
     id: 'pantry-1',
@@ -54,7 +53,6 @@ describe('PantryService', () => {
 
     service = module.get<PantryService>(PantryService);
     repository = module.get<PantryRepository>(PantryRepository);
-    prisma = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

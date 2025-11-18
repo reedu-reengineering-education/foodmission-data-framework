@@ -19,10 +19,13 @@ This guide provides comprehensive information for developers working on the FOOD
 
 ### Prerequisites
 
-- **Node.js** 22+
+- **Node.js** 22+ (specified in `.nvmrc`)
+- **npm** 10.x (comes with Node.js 22, see `package.json` engines field)
 - **Docker** and Docker Compose
 - **Git**
 - **VSCode** (recommended) with Dev Containers extension
+
+**Note:** This project requires npm 10.x to match the Docker environment. If you're using a different npm version, use `nvm use` to switch to Node.js 22, which includes npm 10.x.
 
 ### Development Setup
 

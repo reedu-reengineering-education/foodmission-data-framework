@@ -30,7 +30,7 @@ export class PantryRepository {
       return await this.prisma.pantry.create({
         data,
       });
-    } catch (error) {
+    } catch {
       throw new Error('failed to create pantry');
     }
   }

@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsNotEmpty,
-  MaxLength,
-  IsUUID,
-} from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateFoodDto {

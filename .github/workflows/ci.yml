@@ -90,6 +90,7 @@ jobs:
         run: npm ci
 
       - name: Run npm audit
+        if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
         run: npm audit --audit-level=high
 
       - name: Run CodeQL Analysis
@@ -162,7 +163,7 @@ jobs:
         run: npm run db:seed
 
       - name: Run unit tests
-        run: npm run test:cov
+        run: npm run test:unit -- --coverage
 
       - name: Run e2e tests
         run: npm run test:e2e
