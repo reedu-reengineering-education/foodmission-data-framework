@@ -31,7 +31,7 @@ export class ShoppingListItemService {
     private readonly prisma: PrismaService,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
-    private readonly pantryItemSerivce: PantryItemService,
+    private readonly pantryItemService: PantryItemService,
   ) {}
 
   async create(
@@ -198,8 +198,8 @@ export class ShoppingListItemService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.chekedShoppingListItemInPantry) {
-      await this.pantryItemSerivce.createFromShoppingList(
+    if (user.checkedShoppingListItemInPantry) {
+      await this.pantryItemService.createFromShoppingList(
         new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
         userId,
       );

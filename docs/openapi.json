@@ -605,9 +605,9 @@
         ]
       }
     },
-    "/api/v1/users/{id}/chekedShoppingListItemInPantry": {
+    "/api/v1/users/{id}/checkedShoppingListItemInPantry": {
       "get": {
-        "operationId": "getChekedShoppingListItemInPantry",
+        "operationId": "getCheckedShoppingListItemInPantry",
         "parameters": [
           {
             "name": "id",
@@ -620,7 +620,7 @@
         ],
         "responses": {
           "200": {
-            "description": "User cheked shopping list item in pantry"
+            "description": "User checked shopping list item in pantry"
           }
         },
         "security": [
@@ -635,7 +635,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Get user cheked if shopping list item in pantry",
+        "summary": "Get user checked if shopping list item in pantry",
         "tags": [
           "users"
         ]

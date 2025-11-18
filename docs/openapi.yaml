@@ -374,9 +374,9 @@ paths:
         - JWT-auth: []
       summary: Update user preferences
       tags: *ref_1
-  /api/v1/users/{id}/chekedShoppingListItemInPantry:
+  /api/v1/users/{id}/checkedShoppingListItemInPantry:
     get:
-      operationId: getChekedShoppingListItemInPantry
+      operationId: getCheckedShoppingListItemInPantry
       parameters:
         - name: id
           required: true
@@ -385,14 +385,14 @@ paths:
             type: string
       responses:
         '200':
-          description: User cheked shopping list item in pantry
+          description: User checked shopping list item in pantry
       security:
         - keycloak-oauth2:
             - openid
             - profile
             - roles
         - JWT-auth: []
-      summary: Get user cheked if shopping list item in pantry
+      summary: Get user checked if shopping list item in pantry
       tags: *ref_1
   /api/v1/foods:
     post:

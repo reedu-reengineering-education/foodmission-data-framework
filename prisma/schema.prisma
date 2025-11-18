@@ -37,7 +37,7 @@ model User {
   settings                       Json           @default("{}") // Flexible JSON for app-specific settings
   createdAt                      DateTime       @default(now())
   updatedAt                      DateTime       @updatedAt
-  chekedShoppingListItemInPantry Boolean        @default(true)
+  checkedShoppingListItemInPantry Boolean        @default(true)
   shoppingList                   ShoppingList[]
   pantry                         Pantry[]
 

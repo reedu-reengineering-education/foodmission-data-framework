@@ -77,7 +77,7 @@ describe('ShoppingListItemService', () => {
 
   const mockUser = {
     id: 'user-1',
-    chekedShoppingListItemInPantry: true,
+    checkedShoppingListItemInPantry: true,
   };
 
   const mockUserRepository = {
