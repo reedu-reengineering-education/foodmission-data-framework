@@ -24,14 +24,18 @@ A comprehensive, production-ready backend system for managing food-related data 
 
 ## 📋 Table of Contents
 
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Development Setup](#development-setup)
-- [API Documentation](#api-documentation)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Architecture](#architecture)
-- [Contributing](#contributing)
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Quick Start](#-quick-start)
+- [Development Setup](#-development-setup)
+- [API Documentation](#-api-documentation)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Architecture](#-architecture)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Support](#-support)
+- [Acknowledgments](#-acknowledgments)
 
 ## 🔧 Prerequisites
 
@@ -109,6 +113,7 @@ REDIS_URL="redis://localhost:6379"
 
 # Keycloak
 KEYCLOAK_BASE_URL="http://localhost:8080"
+KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
 
@@ -176,11 +181,6 @@ npm run dev:setup
 
 # Start development services
 npm run docker:up
-
-# Run database setup
-npm run db:generate
-npm run db:migrate:deploy
-npm run db:seed:dev
 
 # Start the application
 npm run start:dev
