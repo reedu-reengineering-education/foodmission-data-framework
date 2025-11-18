@@ -9,7 +9,6 @@ import {
   Min,
   MaxLength,
   IsEnum,
-  isEnum,
 } from 'class-validator';
 
 export class CreateShoppingListItemDto {

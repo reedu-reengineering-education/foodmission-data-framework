@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryService } from './pantry.service';
 import { PantryRepository } from '../repositories/pantry.repository';
-import { PrismaService } from '../../database/prisma.service';
 import {
   BadRequestException,
   ForbiddenException,
@@ -11,7 +10,6 @@ import {
 describe('PantryService', () => {
   let service: PantryService;
   let repository: PantryRepository;
-  let prisma: PrismaService;
 
   const mockPantry = {
     id: 'pantry-1',
@@ -54,7 +52,6 @@ describe('PantryService', () => {
 
     service = module.get<PantryService>(PantryService);
     repository = module.get<PantryRepository>(PantryRepository);
-    prisma = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

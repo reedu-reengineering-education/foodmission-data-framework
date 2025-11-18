@@ -11,7 +11,6 @@ import { PantryRepository } from '../repositories/pantry.repository';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
 import { UpdatePantryDto } from '../dto/query-pantry.dto';
 import { PrismaService } from '../../database/prisma.service';
-import { date } from 'joi';
 
 @Injectable()
 export class PantryService {
@@ -41,7 +40,7 @@ export class PantryService {
         ...createPantryDto,
       });
       return this.transformToResponseDto(pantry);
-    } catch (error) {
+    } catch {
       throw new Error('Failed to create pantry');
     }
   }
