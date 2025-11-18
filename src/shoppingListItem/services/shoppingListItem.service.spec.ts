@@ -6,6 +6,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
+import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryService } from './pantry.service';
 import { PantryRepository } from '../repositories/pantry.repository';
+import { PrismaService } from '../../database/prisma.service';
 import {
   BadRequestException,
   ForbiddenException,
