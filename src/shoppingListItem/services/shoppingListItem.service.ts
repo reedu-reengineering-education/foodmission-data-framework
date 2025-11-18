@@ -199,7 +199,7 @@ export class ShoppingListItemService {
     }
 
     if (user.chekedShoppingListItemInPantry) {
-      this.pantryItemSerivce.createFromShoppingList(
+      await this.pantryItemSerivce.createFromShoppingList(
         new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
         userId,
       );

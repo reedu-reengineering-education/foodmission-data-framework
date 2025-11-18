@@ -17,7 +17,6 @@ import { UserRepository } from '../../user/repositories/user.repository';
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
   let repository: jest.Mocked<ShoppingListItemRepository>;
-  let prismaService: PrismaService;
   let pantryItemService: PantryItemService;
   let userRepository: UserRepository;
 
@@ -85,10 +84,6 @@ describe('ShoppingListItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockRepository = {
-    toggleChecked: jest.fn(),
-  };
-
   const mockPantryItemService = {
     createFromShoppingList: jest.fn(),
   };
@@ -132,7 +127,6 @@ describe('ShoppingListItemService', () => {
 
     service = module.get<ShoppingListItemService>(ShoppingListItemService);
     repository = module.get(ShoppingListItemRepository);
-    prismaService = module.get<PrismaService>(PrismaService);
     pantryItemService = module.get<PantryItemService>(PantryItemService);
     userRepository = module.get<UserRepository>(UserRepository);
 
