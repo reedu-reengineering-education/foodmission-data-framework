@@ -35,7 +35,7 @@ describe('ShoppingListItemService', () => {
   const mockShoppingListItem = {
     id: '1',
     quantity: 2,
-    unit: Unit.KG,
+    unit: 'KG' as const,
     notes: 'Test notes',
     checked: false,
     shoppingListId: 'list-1',
