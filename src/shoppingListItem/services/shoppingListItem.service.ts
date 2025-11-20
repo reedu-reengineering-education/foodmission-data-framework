@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
@@ -22,16 +23,20 @@ import { FoodResponseDto } from '../../food/dto/food-response.dto';
 import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
+import { FoodRepository } from '../../food/repositories/food.repository';
+import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
 
 @Injectable()
 export class ShoppingListItemService {
-  logger: any;
+  private readonly logger = new Logger(ShoppingListItemService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
     private readonly pantryItemService: PantryItemService,
+    private readonly foodRepository: FoodRepository,
+    private readonly shoppingListRepository: ShoppingListRepository,
   ) {}
 
   async create(
@@ -54,20 +59,7 @@ export class ShoppingListItemService {
         );
       }
 
-      const item = await this.prisma.shoppingListItem.create({
-        data: {
-          quantity: createDto.quantity,
-          unit: createDto.unit,
-          notes: createDto.notes,
-          checked: createDto.checked,
-          shoppingListId: createDto.shoppingListId,
-          foodId: createDto.foodId,
-        },
-        include: {
-          shoppingList: true,
-          food: true,
-        },
-      });
+      const item = await this.shoppingListItemRepository.create(createDto);
 
       return this.transformToResponseDto(item);
     } catch (error) {
@@ -106,7 +98,7 @@ export class ShoppingListItemService {
     shoppingListId: string,
     userId: string,
   ): Promise<MultipleShoppingListItemResponseDto> {
-    this.logger?.log(
+    this.logger.log(
       `Finding all shopping list items for list: ${shoppingListId}`,
     );
 
@@ -189,21 +181,38 @@ export class ShoppingListItemService {
     id: string,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
+    // 1. Validate item exists and user has access (also gets current checked state)
     const item = await this.findById(id, userId);
+    const willBeChecked = !item.checked;
 
+    // 2. Validate user exists BEFORE any mutations
     const user = await this.userRepository.findById(userId);
-    const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    if (user.checkedShoppingListItemInPantry) {
-      await this.pantryItemService.createFromShoppingList(
-        new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
-        userId,
-      );
+    // 3. Toggle the item
+    const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
+
+    // 4. Only create pantry item if checking (not unchecking) AND user preference is enabled
+    if (willBeChecked && user.checkedShoppingListItemInPantry === true) {
+      try {
+        await this.pantryItemService.createFromShoppingList(
+          new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
+          userId,
+        );
+      } catch (error) {
+        // Log the error but don't fail the toggle operation
+        // The item is already checked, which is the primary operation
+        this.logger.error(
+          `Failed to create pantry item from shopping list item ${id} for user ${userId}`,
+          error instanceof Error ? error.stack : String(error),
+        );
+        // Optionally, you could revert the toggle here if pantry creation is critical
+        // For now, we log and continue since the toggle is the primary operation
+      }
     }
+
     return this.transformToResponseDto(updatedItem);
   }
 
@@ -229,14 +238,10 @@ export class ShoppingListItemService {
     shoppingListId: string,
     userId: string,
   ): Promise<void> {
-    const shoppingList = await this.prisma.shoppingList.findFirst({
-      where: {
-        id: shoppingListId,
-        userId: userId,
-      },
-    });
+    const shoppingList =
+      await this.shoppingListRepository.findById(shoppingListId);
 
-    if (!shoppingList) {
+    if (!shoppingList || shoppingList.userId !== userId) {
       throw new NotFoundException(
         'Shopping list not found or you do not have access to it',
       );
@@ -244,9 +249,7 @@ export class ShoppingListItemService {
   }
 
   private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.prisma.food.findUnique({
-      where: { id: foodId },
-    });
+    const food = await this.foodRepository.findById(foodId);
 
     if (!food) {
       throw new NotFoundException('Food item not found');
