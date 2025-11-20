@@ -80,23 +80,13 @@ export class ShoppingListItemService {
       unit,
     });
 
-    const transformedData = plainToInstance(
-      ShoppingListItemResponseDto,
-      items,
-      { excludeExtraneousValues: true },
-    );
-
-    return { data: transformedData };
+    return this.transformMultipleToResponseDto(items);
   }
 
   async findByShoppingList(
     shoppingListId: string,
     userId: string,
   ): Promise<MultipleShoppingListItemResponseDto> {
-    this.logger.log(
-      `Finding all shopping list items for list: ${shoppingListId}`,
-    );
-
     await this.validateShoppingListAccess(shoppingListId, userId);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
@@ -104,13 +94,7 @@ export class ShoppingListItemService {
       userId,
     );
 
-    const transformedData = plainToInstance(
-      ShoppingListItemResponseDto,
-      items,
-      { excludeExtraneousValues: true },
-    );
-
-    return { data: transformedData };
+    return this.transformMultipleToResponseDto(items);
   }
 
   async findById(
@@ -148,18 +132,11 @@ export class ShoppingListItemService {
     }
 
     try {
-      const updatedItem = await this.shoppingListItemRepository.update(id, {
-        ...(updateDto.quantity !== undefined && {
-          quantity: updateDto.quantity,
-        }),
-        ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
-        ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
-        ...(updateDto.checked !== undefined && { checked: updateDto.checked }),
-        ...(updateDto.shoppingListId !== undefined && {
-          shoppingListId: updateDto.shoppingListId,
-        }),
-        ...(updateDto.foodId !== undefined && { foodId: updateDto.foodId }),
-      });
+      const updateData = this.buildUpdateData(updateDto);
+      const updatedItem = await this.shoppingListItemRepository.update(
+        id,
+        updateData,
+      );
 
       return this.transformToResponseDto(updatedItem);
     } catch (error) {
@@ -180,47 +157,23 @@ export class ShoppingListItemService {
     id: string,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    // 1. Validate item exists and user has access (also gets current checked state)
     const item = await this.findById(id, userId);
     const willBeChecked = !item.checked;
 
-    // 2. Validate user exists BEFORE any mutations
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    // 3. Toggle the item
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
 
-    // 4. Only create pantry item if checking (not unchecking) AND user preference is enabled
-    if (willBeChecked && user.checkedShoppingListItemInPantry === true) {
-      try {
-        await this.pantryItemService.createFromShoppingList(
-          new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
-          userId,
-        );
-      } catch (error) {
-        // Log the error but don't fail the toggle operation
-        // The item is already checked, which is the primary operation
-        this.logger.error(
-          formatErrorForLogging(
-            error,
-            `ShoppingListItemService.toggleChecked(itemId: ${id}, userId: ${userId})`,
-          ),
-          error instanceof Error ? error.stack : undefined,
-        );
-        // Optionally, you could revert the toggle here if pantry creation is critical
-        // For now, we log and continue since the toggle is the primary operation
-      }
-    }
+    await this.createPantryItemIfEnabled(item, user, userId, willBeChecked);
 
     return this.transformToResponseDto(updatedItem);
   }
 
   async remove(id: string, userId: string): Promise<void> {
     await this.findById(id, userId);
-
     await this.shoppingListItemRepository.delete(id);
   }
 
@@ -229,7 +182,6 @@ export class ShoppingListItemService {
     userId: string,
   ): Promise<void> {
     await this.validateShoppingListAccess(shoppingListId, userId);
-
     await this.shoppingListItemRepository.clearCheckedItems(
       shoppingListId,
       userId,
@@ -240,12 +192,36 @@ export class ShoppingListItemService {
     shoppingListId: string,
     userId: string,
   ): Promise<void> {
+    const shoppingList = await this.validateShoppingListExists(shoppingListId);
+    this.validateShoppingListOwnership(shoppingList, userId);
+  }
+
+  private async validateShoppingListExists(
+    shoppingListId: string,
+  ): Promise<
+    NonNullable<
+      Awaited<ReturnType<typeof this.shoppingListRepository.findById>>
+    >
+  > {
     const shoppingList =
       await this.shoppingListRepository.findById(shoppingListId);
 
-    if (!shoppingList || shoppingList.userId !== userId) {
-      throw new NotFoundException(
-        'Shopping list not found or you do not have access to it',
+    if (!shoppingList) {
+      throw new NotFoundException('Shopping list not found');
+    }
+
+    return shoppingList;
+  }
+
+  private validateShoppingListOwnership(
+    shoppingList: NonNullable<
+      Awaited<ReturnType<typeof this.shoppingListRepository.findById>>
+    >,
+    userId: string,
+  ): void {
+    if (shoppingList.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have access to this shopping list',
       );
     }
   }
@@ -264,5 +240,52 @@ export class ShoppingListItemService {
     return plainToInstance(ShoppingListItemResponseDto, item, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private transformMultipleToResponseDto(
+    items: ShoppingListItemWithRelations[],
+  ): MultipleShoppingListItemResponseDto {
+    const transformedData = plainToInstance(
+      ShoppingListItemResponseDto,
+      items,
+      { excludeExtraneousValues: true },
+    );
+    return { data: transformedData };
+  }
+
+  private buildUpdateData(
+    updateDto: UpdateShoppingListItemDto,
+  ): Partial<UpdateShoppingListItemDto> {
+    return Object.fromEntries(
+      Object.entries(updateDto).filter(([, value]) => value !== undefined),
+    ) as Partial<UpdateShoppingListItemDto>;
+  }
+
+  private async createPantryItemIfEnabled(
+    item: ShoppingListItemResponseDto,
+    user: NonNullable<Awaited<ReturnType<typeof this.userRepository.findById>>>,
+    userId: string,
+    willBeChecked: boolean,
+  ): Promise<void> {
+    if (!willBeChecked || user.checkedShoppingListItemInPantry !== true) {
+      return;
+    }
+
+    try {
+      await this.pantryItemService.createFromShoppingList(
+        new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
+        userId,
+      );
+    } catch (error) {
+      // Log the error but don't fail the toggle operation
+      // The item is already checked, which is the primary operation
+      this.logger.error(
+        formatErrorForLogging(
+          error,
+          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId})`,
+        ),
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 }
