@@ -1,4 +1,10 @@
-import { HttpStatus } from '@nestjs/common';
+import {
+  HttpStatus,
+  BadRequestException,
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+} from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
@@ -291,4 +297,39 @@ export function getUserFriendlyMessage(error: any): string {
     friendlyMessages[errorInfo.code] ||
     'An unexpected error occurred. Please try again.'
   );
+}
+
+/**
+ * Handle service-level errors by re-throwing known exceptions
+ * and wrapping unknown errors in BadRequestException
+ *
+ * This is a common pattern in NestJS services where you want to:
+ * - Re-throw domain exceptions (NotFoundException, ConflictException, etc.)
+ * - Wrap unexpected errors in BadRequestException with a default message
+ *
+ * @param error - The error to handle
+ * @param defaultMessage - Default message for unknown errors
+ * @throws {NotFoundException | ConflictException | ForbiddenException | BadRequestException}
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   // service operation
+ * } catch (error) {
+ *   handleServiceError(error, 'Failed to create item');
+ * }
+ * ```
+ */
+export function handleServiceError(
+  error: unknown,
+  defaultMessage: string,
+): never {
+  if (
+    error instanceof NotFoundException ||
+    error instanceof ConflictException ||
+    error instanceof ForbiddenException
+  ) {
+    throw error;
+  }
+  throw new BadRequestException(defaultMessage);
 }

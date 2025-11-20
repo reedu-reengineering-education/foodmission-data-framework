@@ -2,11 +2,15 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  BadRequestException,
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  handleServiceError,
+  ERROR_CODES,
+  formatErrorForLogging,
+} from '../../common/utils/error.utils';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
 import {
@@ -14,13 +18,11 @@ import {
   ShoppingListItemResponseDto,
 } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import {
   ShoppingListItemRepository,
   ShoppingListItemWithRelations,
 } from '../repositories/shoppingListItem.repository';
-import { FoodResponseDto } from '../../food/dto/food-response.dto';
-import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
@@ -31,7 +33,6 @@ export class ShoppingListItemService {
   private readonly logger = new Logger(ShoppingListItemService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
     private readonly pantryItemService: PantryItemService,
@@ -63,13 +64,7 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to create shopping list item');
+      handleServiceError(error, 'Failed to create shopping list item');
     }
   }
 
@@ -167,13 +162,17 @@ export class ShoppingListItemService {
       });
 
       return this.transformToResponseDto(updatedItem);
-    } catch (error: any) {
-      if (error.code === 'P2002') {
+    } catch (error) {
+      // Handle Prisma unique constraint violation (P2002)
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT
+      ) {
         throw new ConflictException(
           'This food item is already in the shopping list',
         );
       }
-      throw new BadRequestException('Failed to update shopping list item');
+      handleServiceError(error, 'Failed to update shopping list item');
     }
   }
 
@@ -205,8 +204,11 @@ export class ShoppingListItemService {
         // Log the error but don't fail the toggle operation
         // The item is already checked, which is the primary operation
         this.logger.error(
-          `Failed to create pantry item from shopping list item ${id} for user ${userId}`,
-          error instanceof Error ? error.stack : String(error),
+          formatErrorForLogging(
+            error,
+            `ShoppingListItemService.toggleChecked(itemId: ${id}, userId: ${userId})`,
+          ),
+          error instanceof Error ? error.stack : undefined,
         );
         // Optionally, you could revert the toggle here if pantry creation is critical
         // For now, we log and continue since the toggle is the primary operation
@@ -259,18 +261,8 @@ export class ShoppingListItemService {
   private transformToResponseDto(
     item: ShoppingListItemWithRelations,
   ): ShoppingListItemResponseDto {
-    return plainToClass(ShoppingListItemResponseDto, {
-      id: item.id,
-      quantity: item.quantity,
-      unit: item.unit,
-      notes: null,
-      checked: item.checked,
-      shoppingListId: item.shoppingListId,
-      foodId: item.foodId,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      shoppingList: new ShoppingListResponseDto(),
-      food: new FoodResponseDto(),
+    return plainToInstance(ShoppingListItemResponseDto, item, {
+      excludeExtraneousValues: true,
     });
   }
 }
