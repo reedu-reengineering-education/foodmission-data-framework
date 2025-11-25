@@ -17,6 +17,7 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
+import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UserProfileService } from './user-profile.service';
@@ -100,6 +101,7 @@ export class AuthController {
       },
     },
   })
+  @ApiAuthenticatedErrorResponses()
   async getProfile(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
@@ -125,6 +127,7 @@ export class AuthController {
     description: 'User preferences object',
     schema: { type: 'object' },
   })
+  @ApiAuthenticatedErrorResponses()
   async updatePreferences(
     @Request() req: AuthenticatedRequest,
     @Body() preferences: Record<string, unknown>,
@@ -151,6 +154,7 @@ export class AuthController {
     description: 'User settings object',
     schema: { type: 'object' },
   })
+  @ApiAuthenticatedErrorResponses()
   async updateSettings(
     @Request() req: AuthenticatedRequest,
     @Body() settings: Record<string, unknown>,
@@ -243,9 +247,7 @@ export class AuthController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'User not authenticated - JWT token required',
-  })
+  @ApiAuthenticatedErrorResponses()
   getTokenInfo(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
@@ -288,13 +290,7 @@ export class AuthController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'User not authenticated - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - admin role required',
-  })
+  @ApiAuthenticatedErrorResponses()
   adminEndpoint() {
     return { message: 'This endpoint is only accessible to admins' };
   }

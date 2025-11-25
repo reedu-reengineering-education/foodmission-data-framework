@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryItemService } from '../services/pantryItem.service';
@@ -53,22 +54,7 @@ export class PantryItemController {
     description: 'Pantry item created successfully',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data or duplicate item',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry or food item not found',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createPantryItemDto: CreatePantryItemDto,
     @CurrentUser('id') userId: string,
@@ -112,10 +98,7 @@ export class PantryItemController {
     description: 'Pantry items retrieved successfully',
     type: MultiplePantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid query parameters',
-  })
+  @ApiCrudErrorResponses()
   async findAll(
     @Query() query: QueryPantryItemDto,
   ): Promise<MultiplePantryItemResponseDto> {
@@ -134,18 +117,7 @@ export class PantryItemController {
     description: 'pantry item found',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -167,22 +139,7 @@ export class PantryItemController {
     description: 'Pantry item updated successfully',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePantryItemDto: UpdatePantryItemDto,
@@ -203,18 +160,7 @@ export class PantryItemController {
     status: 200,
     description: 'pantry item deleted successfully',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,

@@ -24,6 +24,7 @@ import { UserPreferencesDto } from '../dto/user-preferences.dto';
 import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
+import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -38,6 +39,12 @@ export class UserController {
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    conflict: true,
+  })
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userRepository.create(createUserDto);
   }
@@ -60,7 +67,12 @@ export class UserController {
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'User found' })
-  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
+  })
   async findOne(@Param('id') id: string) {
     return this.userRepository.findOne(id);
   }
@@ -72,7 +84,12 @@ export class UserController {
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
-  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
+  })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userRepository.update(id, updateUserDto);
   }

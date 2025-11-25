@@ -10,7 +10,9 @@ import {
   handleServiceError,
   ERROR_CODES,
   formatErrorForLogging,
+  handlePrismaError,
 } from '../../common/utils/error.utils';
+import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
 import {
@@ -32,6 +34,17 @@ import { ShoppingListRepository } from '../../shoppingList/repositories/shopping
 export class ShoppingListItemService {
   private readonly logger = new Logger(ShoppingListItemService.name);
 
+  private static readonly ERROR_MESSAGES = {
+    ITEM_ALREADY_EXISTS: 'This food item is already in the shopping list',
+    ITEM_NOT_FOUND: 'Shopping list item not found',
+    SHOPPING_LIST_NOT_FOUND: 'Shopping list not found',
+    SHOPPING_LIST_ACCESS_DENIED: 'You do not have access to this shopping list',
+    FOOD_NOT_FOUND: 'Food item not found',
+    USER_NOT_FOUND: 'User not found',
+    CREATE_FAILED: 'Failed to create shopping list item',
+    UPDATE_FAILED: 'Failed to update shopping list item',
+  } as const;
+
   constructor(
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
@@ -47,24 +60,16 @@ export class ShoppingListItemService {
     try {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
       await this.validateFoodExists(createDto.foodId);
-
-      const existingItem =
-        await this.shoppingListItemRepository.findByShoppingListAndFood(
-          createDto.shoppingListId,
-          createDto.foodId,
-        );
-
-      if (existingItem) {
-        throw new ConflictException(
-          'This food item is already in the shopping list',
-        );
-      }
+      await this.checkForDuplicateItem(
+        createDto.shoppingListId,
+        createDto.foodId,
+      );
 
       const item = await this.shoppingListItemRepository.create(createDto);
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      handleServiceError(error, 'Failed to create shopping list item');
+      handleServiceError(error, ShoppingListItemService.ERROR_MESSAGES.CREATE_FAILED);
     }
   }
 
@@ -104,12 +109,14 @@ export class ShoppingListItemService {
     const item = await this.shoppingListItemRepository.findById(id);
 
     if (!item) {
-      throw new NotFoundException('Shopping list item not found');
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.ITEM_NOT_FOUND,
+      );
     }
 
     if (item.shoppingList.userId !== userId) {
       throw new ForbiddenException(
-        'You do not have access to this shopping list item',
+        ShoppingListItemService.ERROR_MESSAGES.SHOPPING_LIST_ACCESS_DENIED,
       );
     }
 
@@ -140,16 +147,29 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(updatedItem);
     } catch (error) {
-      // Handle Prisma unique constraint violation (P2002)
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT
-      ) {
-        throw new ConflictException(
-          'This food item is already in the shopping list',
+      // Handle Prisma errors using utility function
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'update',
+          'shopping_list_items',
         );
+
+        // Convert ResourceAlreadyExistsException to ConflictException with specific message
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
+          );
+        }
+
+        // Re-throw other business exceptions as-is
+        throw businessException;
       }
-      handleServiceError(error, 'Failed to update shopping list item');
+
+      handleServiceError(
+        error,
+        ShoppingListItemService.ERROR_MESSAGES.UPDATE_FAILED,
+      );
     }
   }
 
@@ -160,10 +180,7 @@ export class ShoppingListItemService {
     const item = await this.findById(id, userId);
     const willBeChecked = !item.checked;
 
-    const user = await this.userRepository.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const user = await this.validateUserExists(userId);
 
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
 
@@ -207,7 +224,9 @@ export class ShoppingListItemService {
       await this.shoppingListRepository.findById(shoppingListId);
 
     if (!shoppingList) {
-      throw new NotFoundException('Shopping list not found');
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.SHOPPING_LIST_NOT_FOUND,
+      );
     }
 
     return shoppingList;
@@ -221,7 +240,7 @@ export class ShoppingListItemService {
   ): void {
     if (shoppingList.userId !== userId) {
       throw new ForbiddenException(
-        'You do not have access to this shopping list',
+        ShoppingListItemService.ERROR_MESSAGES.SHOPPING_LIST_ACCESS_DENIED,
       );
     }
   }
@@ -230,7 +249,38 @@ export class ShoppingListItemService {
     const food = await this.foodRepository.findById(foodId);
 
     if (!food) {
-      throw new NotFoundException('Food item not found');
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.FOOD_NOT_FOUND,
+      );
+    }
+  }
+
+  private async validateUserExists(
+    userId: string,
+  ): Promise<NonNullable<Awaited<ReturnType<typeof this.userRepository.findById>>>> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.USER_NOT_FOUND,
+      );
+    }
+    return user;
+  }
+
+  private async checkForDuplicateItem(
+    shoppingListId: string,
+    foodId: string,
+  ): Promise<void> {
+    const existingItem =
+      await this.shoppingListItemRepository.findByShoppingListAndFood(
+        shoppingListId,
+        foodId,
+      );
+
+    if (existingItem) {
+      throw new ConflictException(
+        ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
+      );
     }
   }
 

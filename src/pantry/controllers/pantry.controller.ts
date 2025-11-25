@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryService } from '../services/pantry.service';
@@ -48,18 +49,7 @@ export class PantryController {
     description: 'pantry created successfully',
     type: PantryResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createPantryDto: CreatePantryDto,
     @CurrentUser('id') userId: string,
@@ -82,14 +72,7 @@ export class PantryController {
     description: 'Pantry retrieved successfully',
     type: PantryResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry not found',
-  })
+  @ApiCrudErrorResponses()
   async getMyPantry(
     @CurrentUser('id') userId: string,
   ): Promise<PantryResponseDto> {
@@ -108,18 +91,7 @@ export class PantryController {
     description: 'pantry found',
     type: PantryResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePantryDto: UpdatePantryDto,
@@ -140,18 +112,7 @@ export class PantryController {
     description: 'Pantry found',
     type: PantryResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.pantryService.remove(id);
   }
