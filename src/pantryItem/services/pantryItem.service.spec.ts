@@ -96,7 +96,6 @@ describe('PantryItemService', () => {
 
   describe('create', () => {
     const createDto = {
-      pantryId: 'pantry-1',
       foodId: 'food-1',
       quantity: 5,
       unit: Unit.KG,
@@ -173,6 +172,84 @@ describe('PantryItemService', () => {
       await expect(service.create(createDto, 'user-1')).rejects.toThrow(
         BadRequestException,
       );
+    });
+
+    it('should transform expiryDate string to Date object when creating', async () => {
+      const createDtoWithStringDate = {
+        foodId: 'food-1',
+        quantity: 5,
+        unit: Unit.KG,
+        notes: 'Fresh',
+        expiryDate: '2027-02-02' as any, // Simulating string from JSON
+      };
+
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: 'food-1',
+        name: 'Tomatoes',
+      });
+      mockPantryItemRepository.findFoodInPantry.mockResolvedValue(null);
+      mockPrismaService.pantryItem.create.mockResolvedValue(mockPantryItem);
+
+      await service.create(createDtoWithStringDate, 'user-1');
+
+      expect(prisma.pantryItem.create).toHaveBeenCalledWith({
+        data: {
+          quantity: 5,
+          unit: Unit.KG,
+          notes: 'Fresh',
+          expiryDate: expect.any(Date), // Should be transformed to Date
+          pantryId: 'pantry-1',
+          foodId: 'food-1',
+        },
+        include: {
+          pantry: true,
+          food: true,
+        },
+      });
+
+      // Verify the date was correctly parsed
+      const createCall = (prisma.pantryItem.create as jest.Mock).mock.calls[0][0];
+      expect(createCall.data.expiryDate).toBeInstanceOf(Date);
+      expect(createCall.data.expiryDate.toISOString()).toContain('2027-02-02');
+    });
+
+    it('should handle undefined expiryDate when creating', async () => {
+      const createDtoWithoutDate = {
+        foodId: 'food-1',
+        quantity: 5,
+        unit: Unit.KG,
+        notes: 'Fresh',
+        expiryDate: undefined,
+      };
+
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: 'food-1',
+        name: 'Tomatoes',
+      });
+      mockPantryItemRepository.findFoodInPantry.mockResolvedValue(null);
+      mockPrismaService.pantryItem.create.mockResolvedValue({
+        ...mockPantryItem,
+        expiryDate: null,
+      });
+
+      await service.create(createDtoWithoutDate, 'user-1');
+
+      expect(prisma.pantryItem.create).toHaveBeenCalledWith({
+        data: {
+          quantity: 5,
+          unit: Unit.KG,
+          notes: 'Fresh',
+          expiryDate: undefined,
+          pantryId: 'pantry-1',
+          foodId: 'food-1',
+        },
+        include: {
+          pantry: true,
+          food: true,
+        },
+      });
     });
   });
 
@@ -334,6 +411,60 @@ describe('PantryItemService', () => {
       await expect(
         service.update('item-1', { foodId: 'food-2' }, 'user-1'),
       ).rejects.toThrow(ConflictException);
+    });
+
+    it('should transform expiryDate string to Date object when updating', async () => {
+      const updateDtoWithStringDate = {
+        quantity: 10,
+        expiryDate: '2027-02-02' as any, // Simulating string from JSON
+      };
+
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        quantity: 10,
+        expiryDate: new Date('2027-02-02'),
+      });
+
+      await service.update('item-1', updateDtoWithStringDate, 'user-1');
+
+      expect(repository.update).toHaveBeenCalledWith(
+        'item-1',
+        expect.objectContaining({
+          quantity: 10,
+          expiryDate: expect.any(Date), // Should be transformed to Date
+        }),
+      );
+
+      // Verify the date was correctly parsed
+      const updateCall = (repository.update as jest.Mock).mock.calls[0][1];
+      expect(updateCall.expiryDate).toBeInstanceOf(Date);
+      expect(updateCall.expiryDate.toISOString()).toContain('2027-02-02');
+    });
+
+    it('should handle undefined expiryDate when updating', async () => {
+      const updateDtoWithoutDate = {
+        quantity: 10,
+        expiryDate: undefined,
+      };
+
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        quantity: 10,
+      });
+
+      await service.update('item-1', updateDtoWithoutDate, 'user-1');
+
+      // When expiryDate is undefined, it should not be included in the update
+      expect(repository.update).toHaveBeenCalledWith(
+        'item-1',
+        expect.objectContaining({
+          quantity: 10,
+        }),
+      );
+      const updateCall = (repository.update as jest.Mock).mock.calls[0][1];
+      expect(updateCall).not.toHaveProperty('expiryDate');
     });
   });
 

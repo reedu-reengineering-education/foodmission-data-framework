@@ -202,7 +202,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"pantryId\": \"{{pantry_id}}\",\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
+							"raw": "{\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -222,7 +222,7 @@
 							],
 							"protocol": "http"
 						},
-						"description": "Creates a new Pantry Item and adds it to the Pantry. Requires user or admin role."
+						"description": "Creates a new Pantry Item and adds it to the user's pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.\n\n**Required fields:**\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n\n**Optional fields:**\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
 					},
 					"response": [],
 					"event": [
@@ -242,9 +242,13 @@
 									"    console.warn('⚠️  User ID not found. Run \"Get User Profile\" from Auth API collection to create user.');",
 									"}",
 									"",
-									"// Check if pantry_id exists",
-									"if (!pm.environment.get('pantry_id') || pm.environment.get('pantry_id') === '') {",
-									"    console.warn('⚠️  Pantry ID not found. Create a pantry first or set pantry_id manually.');",
+									"// Set default food_id if not exists",
+									"const defaultFoodId = '00d2eca5-0377-448b-b74e-d5ae25e9c944';",
+									"if (!pm.environment.get('food_id') || pm.environment.get('food_id') === '') {",
+									"    console.log('ℹ️  Food ID not set, using default food ID:', defaultFoodId);",
+									"    pm.environment.set('food_id', defaultFoodId);",
+									"} else {",
+									"    console.log('✅ Using food_id from environment:', pm.environment.get('food_id'));",
 									"}"
 								],
 								"type": "text/javascript"

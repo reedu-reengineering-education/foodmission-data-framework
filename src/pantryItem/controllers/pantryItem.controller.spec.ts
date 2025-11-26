@@ -68,7 +68,6 @@ describe('PantryItemController', () => {
   describe('create', () => {
     const userId = 'user-123';
     const createDto: CreatePantryItemDto = {
-      pantryId: 'pantry-123',
       foodId: 'food-123',
       quantity: 2,
       unit: Unit.KG,
