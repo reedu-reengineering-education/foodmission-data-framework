@@ -45,7 +45,6 @@ describe('PantryRepository', () => {
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
-      count: jest.fn(),
     },
   };
 
@@ -239,25 +238,4 @@ describe('PantryRepository', () => {
     });
   });
 
-  describe('count', () => {
-    it('should return count of pantries', async () => {
-      mockPrismaService.pantry.count.mockResolvedValue(5);
-
-      const result = await repository.count();
-
-      expect(result).toBe(5);
-      expect(prisma.pantry.count).toHaveBeenCalledWith({ where: undefined });
-    });
-
-    it('should return count with filter', async () => {
-      mockPrismaService.pantry.count.mockResolvedValue(2);
-
-      const result = await repository.count({ userId: 'user-1' });
-
-      expect(result).toBe(2);
-      expect(prisma.pantry.count).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-    });
-  });
 });

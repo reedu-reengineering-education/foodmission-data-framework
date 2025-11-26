@@ -96,13 +96,4 @@ export class PantryRepository {
       throw new Error('Failed to delete pantry');
     }
   }
-
-  async count(where?: any): Promise<number> {
-    try {
-      return await this.prisma.pantry.count({ where });
-    } catch (error) {
-      console.error('Error counting pantrys:', error);
-      throw new Error('Failed to count pantrys');
-    }
-  }
 }
