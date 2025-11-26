@@ -285,13 +285,20 @@ export class AuthController {
       properties: {
         message: {
           type: 'string',
-          example: 'This endpoint is only accessible to admins',
+          example: 'Admin access granted',
+        },
+        status: {
+          type: 'string',
+          example: 'success',
         },
       },
     },
   })
   @ApiAuthenticatedErrorResponses()
   adminEndpoint() {
-    return { message: 'This endpoint is only accessible to admins' };
+    return {
+      message: 'Admin access granted',
+      status: 'success',
+    };
   }
 }
