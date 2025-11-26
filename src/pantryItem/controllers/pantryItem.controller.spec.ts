@@ -139,8 +139,6 @@ describe('PantryItemController', () => {
       const query: QueryPantryItemDto = {
         foodId: 'food-123',
         unit: Unit.KG,
-        page: 1,
-        limit: 10,
       };
 
       mockPantryItemService.findAll.mockResolvedValue({
@@ -154,21 +152,20 @@ describe('PantryItemController', () => {
       expect(service.findAll).toHaveBeenCalledWith(query, userId);
     });
 
-    it('should handle pagination query params', async () => {
+    it('should handle filtering by unit only', async () => {
       const query: QueryPantryItemDto = {
-        page: 2,
-        limit: 20,
+        unit: Unit.G,
       };
 
-      const paginatedResponse: MultiplePantryItemResponseDto = {
+      const filteredResponse: MultiplePantryItemResponseDto = {
         data: [],
       };
 
-      mockPantryItemService.findAll.mockResolvedValue(paginatedResponse);
+      mockPantryItemService.findAll.mockResolvedValue(filteredResponse);
 
       const result = await controller.findAll(query, mockRequest, userId);
 
-      expect(result).toEqual(paginatedResponse);
+      expect(result).toEqual(filteredResponse);
       expect(service.findAll).toHaveBeenCalledWith(query, userId);
     });
 

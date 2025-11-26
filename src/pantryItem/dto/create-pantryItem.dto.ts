@@ -34,13 +34,13 @@ export class CreatePantryItemDto {
   quantity: number;
 
   @ApiProperty({
-    description: 'The unit of measurement',
+    description: 'The unit of measurement (required)',
     example: 'KG',
     enum: Unit,
   })
   @IsNotEmpty()
   @IsEnum(Unit)
-  unit: Unit = Unit.PIECES;
+  unit: Unit;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',

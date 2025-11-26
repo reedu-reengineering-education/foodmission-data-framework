@@ -36,6 +36,7 @@ import {
 } from '../dto/response-pantryItem.dto';
 import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
+import { Unit } from '@prisma/client';
 
 @ApiTags('pantry-item')
 @Controller('pantry-item')
@@ -49,7 +50,8 @@ export class PantryItemController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Add a new item to Pantry',
-    description: 'Creates a new Pantry Item and adds it to the Pantry.',
+    description:
+      'Creates a new Pantry Item and adds it to the user\'s pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryItemDto })
   @ApiResponse({
@@ -73,30 +75,27 @@ export class PantryItemController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get pantry items',
-    description: 'Retrieve pantry items with optional filtering',
-  })
-  @ApiQuery({
-    name: 'shoppingListId',
-    required: false,
-    description: 'Filter by pantry ID',
+    description:
+      'Retrieve pantry items from the authenticated user\'s pantry with optional filtering. Returns all items from the user\'s pantry.',
   })
   @ApiQuery({
     name: 'foodId',
     required: false,
-    description: 'Filter by food ID',
+    description: 'Filter by food ID (UUID)',
+    type: String,
   })
   @ApiQuery({
-    name: 'checked',
+    name: 'unit',
     required: false,
-    description: 'Filter by checked status',
+    description: 'Filter by unit (PIECES, G, KG, ML, L, CUPS)',
+    enum: Unit,
   })
-  @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
   @ApiQuery({
-    name: 'page',
+    name: 'expiryDate',
     required: false,
-    description: 'Page number for pagination',
+    description: 'Filter by expiry date (ISO date string)',
+    type: String,
   })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
     description: 'Pantry items retrieved successfully',
@@ -149,7 +148,8 @@ export class PantryItemController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update pantry item',
-    description: 'Update quantity, unit, notes of a pantry item',
+    description:
+      'Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiBody({ type: UpdatePantryItemDto })
