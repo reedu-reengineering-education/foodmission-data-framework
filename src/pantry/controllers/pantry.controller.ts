@@ -61,7 +61,7 @@ export class PantryController {
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.pantryService.create(createPantryDto);
+    return this.pantryService.create(createPantryDto, userId);
   }
 
   @Get()

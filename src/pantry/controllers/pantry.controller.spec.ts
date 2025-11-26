@@ -64,7 +64,6 @@ describe('PantryController', () => {
   describe('create', () => {
     const userId = 'user-123';
     const createDto: CreatePantryDto = {
-      userId: 'user-123',
       title: 'My Pantry',
     };
 
@@ -81,7 +80,7 @@ describe('PantryController', () => {
       const result = await controller.create(createDto, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.create).toHaveBeenCalledWith(createDto);
+      expect(service.create).toHaveBeenCalledWith(createDto, userId);
       expect(service.create).toHaveBeenCalledTimes(1);
     });
 

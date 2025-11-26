@@ -1,20 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreatePantryDto {
   @ApiProperty({
-    description: 'The user ID (must match the authenticated user)',
-    example: 'uuid-user-id',
-    maxLength: 255,
-  })
-  @IsUUID()
-  @IsNotEmpty()
-  @MaxLength(255)
-  userId: string;
-
-  @ApiProperty({
     description: 'The name of the pantry',
-    example: 'Home or Work',
+    example: 'Home Pantry',
     maxLength: 255,
   })
   @IsString()

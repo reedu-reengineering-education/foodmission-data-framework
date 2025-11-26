@@ -35,12 +35,13 @@ export class PantryService {
     return this.transformToResponseDto(pantry);
   }
 
-  async create(createPantryDto: CreatePantryDto): Promise<PantryResponseDto> {
+  async create(
+    createPantryDto: CreatePantryDto,
+    userId: string,
+  ): Promise<PantryResponseDto> {
     try {
       // Check if user already has a pantry
-      const existingPantry = await this.pantryRepository.findByUserId(
-        createPantryDto.userId,
-      );
+      const existingPantry = await this.pantryRepository.findByUserId(userId);
       if (existingPantry) {
         throw new ConflictException(
           'User already has a pantry. Each user can only have one pantry. Use PATCH to update it instead.',
@@ -49,6 +50,7 @@ export class PantryService {
 
       const pantry = await this.pantryRepository.create({
         ...createPantryDto,
+        userId,
       });
       return this.transformToResponseDto(pantry);
     } catch (error) {
@@ -116,7 +118,7 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
+      pantry = await this.create({ title: 'My Pantry' }, userId);
 
       pantry = await this.pantryRepository.findByUserId(userId);
       if (!pantry) {

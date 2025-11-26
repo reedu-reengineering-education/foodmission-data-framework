@@ -112,38 +112,39 @@ describe('PantryService', () => {
     it('should create a new pantry successfully', async () => {
       const createDto = {
         title: 'New Pantry',
-        userId: 'user-2',
       };
+      const userId = 'user-2';
 
       mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockResolvedValue({
         id: 'pantry-2',
         ...createDto,
+        userId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
 
-      const result = await service.create(createDto);
+      const result = await service.create(createDto, userId);
 
       expect(result).toHaveProperty('id', 'pantry-2');
       expect(result.title).toBe(createDto.title);
-      expect(result.userId).toBe(createDto.userId);
-      expect(repository.findByUserId).toHaveBeenCalledWith(createDto.userId);
-      expect(repository.create).toHaveBeenCalledWith(createDto);
+      expect(result.userId).toBe(userId);
+      expect(repository.findByUserId).toHaveBeenCalledWith(userId);
+      expect(repository.create).toHaveBeenCalledWith({ ...createDto, userId });
     });
 
     it('should throw error if creation fails', async () => {
       const createDto = {
         title: 'New Pantry',
-        userId: 'user-2',
       };
+      const userId = 'user-2';
 
       mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockRejectedValue(
         new Error('Database error'),
       );
 
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto, userId)).rejects.toThrow(
         'Failed to create pantry',
       );
     });
@@ -151,20 +152,21 @@ describe('PantryService', () => {
     it('should pass all DTO properties to repository', async () => {
       const createDto = {
         title: 'Custom Pantry',
-        userId: 'user-5',
       };
+      const userId = 'user-5';
 
       mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockResolvedValue({
         id: 'pantry-5',
         ...createDto,
+        userId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
 
-      await service.create(createDto);
+      await service.create(createDto, userId);
 
-      expect(repository.findByUserId).toHaveBeenCalledWith(createDto.userId);
+      expect(repository.findByUserId).toHaveBeenCalledWith(userId);
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Custom Pantry',
@@ -176,8 +178,8 @@ describe('PantryService', () => {
     it('should throw ConflictException when user already has a pantry', async () => {
       const createDto = {
         title: 'New Pantry',
-        userId: 'user-2',
       };
+      const userId = 'user-2';
 
       const existingPantry = {
         ...mockPantry,
@@ -185,10 +187,10 @@ describe('PantryService', () => {
       };
       mockPantryRepository.findByUserId.mockResolvedValue(existingPantry);
 
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto, userId)).rejects.toThrow(
         ConflictException,
       );
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto, userId)).rejects.toThrow(
         'User already has a pantry',
       );
       expect(repository.create).not.toHaveBeenCalled();
