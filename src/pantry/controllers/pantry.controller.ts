@@ -41,13 +41,17 @@ export class PantryController {
   @ApiOperation({
     summary: 'Create a new Pantry',
     description:
-      'Creates a new pantry in the database. Requires user or admin role.',
+      'Creates a new pantry for the authenticated user. Each user can only have one pantry. If a pantry already exists, returns a conflict error. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryDto })
   @ApiResponse({
     status: 201,
-    description: 'pantry created successfully',
+    description: 'Pantry created successfully',
     type: PantryResponseDto,
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'User already has a pantry. Each user can only have one pantry.',
   })
   @ApiCrudErrorResponses()
   async create(
@@ -92,12 +96,18 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update pantry',
+    description:
+      'Updates the pantry title. Only the pantry owner can update their pantry.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'pantry found',
+    description: 'Pantry updated successfully',
     type: PantryResponseDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No permission - user does not own this pantry',
   })
   @ApiCrudErrorResponses()
   async update(
@@ -112,13 +122,22 @@ export class PantryController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Delete specific pantry by ID',
+    summary: 'Delete pantry',
+    description:
+      'Deletes a specific pantry by ID. Only the pantry owner can delete their pantry. All pantry items will be deleted as well (cascade delete).',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Pantry found',
-    type: PantryResponseDto,
+    description: 'Pantry deleted successfully',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No permission - user does not own this pantry',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Pantry not found',
   })
   @ApiCrudErrorResponses()
   async remove(

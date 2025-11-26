@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
 
 export class CreatePantryDto {
   @ApiProperty({
-    description: 'The user id',
+    description: 'The user ID (must match the authenticated user)',
     example: 'uuid-user-id',
     maxLength: 255,
   })
