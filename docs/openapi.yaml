@@ -61,6 +61,53 @@ paths:
                     type: object
                   settings:
                     type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -71,19 +118,93 @@ paths:
       tags: *ref_0
   /api/v1/auth/profile/preferences:
     put:
-      description: Update app-specific user preferences.
+      description: Update app-specific user preferences. Returns the updated user profile.
       operationId: updatePreferences
       parameters: []
       requestBody:
         required: true
-        description: User preferences object
+        description: User preferences object (JSON)
         content:
           application/json:
             schema:
               type: object
+              example:
+                dietaryRestrictions:
+                  - vegetarian
+                allergies:
+                  - nuts
+                theme: dark
       responses:
         '200':
-          description: ''
+          description: User preferences updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                    format: email
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  keycloakId:
+                    type: string
+                  preferences:
+                    type: object
+                  settings:
+                    type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -93,19 +214,91 @@ paths:
       tags: *ref_0
   /api/v1/auth/profile/settings:
     put:
-      description: Update app-specific user settings.
+      description: Update app-specific user settings. Returns the updated user profile.
       operationId: updateSettings
       parameters: []
       requestBody:
         required: true
-        description: User settings object
+        description: User settings object (JSON)
         content:
           application/json:
             schema:
               type: object
+              example:
+                language: en
+                notifications: true
+                timezone: UTC
       responses:
         '200':
-          description: ''
+          description: User settings updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                    format: email
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  keycloakId:
+                    type: string
+                  preferences:
+                    type: object
+                  settings:
+                    type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -183,8 +376,53 @@ paths:
                     type: number
                     example: 1640991600
                     description: Token issued at timestamp
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: User not authenticated - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -210,11 +448,57 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: This endpoint is only accessible to admins
+                    example: Admin access granted
+                  status:
+                    type: string
+                    example: success
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: User not authenticated - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - admin role required
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -236,6 +520,70 @@ paths:
       responses:
         '201':
           description: User created successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -271,8 +619,70 @@ paths:
       responses:
         '200':
           description: User found
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -298,8 +708,70 @@ paths:
       responses:
         '200':
           description: User updated successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -413,11 +885,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -441,7 +971,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFoodResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get all food items
       tags: *ref_2
   /api/v1/foods/search/openfoodfacts:
@@ -470,9 +1031,44 @@ paths:
                   page_size:
                     type: number
         '400':
-          description: Invalid search parameters
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Search OpenFoodFacts database
       tags: *ref_2
   /api/v1/foods/import/openfoodfacts/{barcode}:
@@ -501,15 +1097,75 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid barcode
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Product not found in OpenFoodFacts
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -544,8 +1200,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by barcode
       tags: *ref_2
   /api/v1/foods/{id}:
@@ -575,8 +1279,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by ID
       tags: *ref_2
     patch:
@@ -604,13 +1356,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -633,12 +1441,70 @@ paths:
       responses:
         '204':
           description: Food item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - admin role required
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -670,10 +1536,62 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/OpenFoodFactsInfoDto'
                   - type: 'null'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get OpenFoodFacts information for food item
       tags: *ref_2
   /api/v1/health:
@@ -900,11 +1818,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Create a new Shopping List
@@ -925,11 +1918,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get All Shoppinglists
       tags: *ref_7
   /api/v1/shoppinglist/{id}:
@@ -950,11 +2018,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific shopping list by ID
@@ -982,11 +2125,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update shopping list
@@ -1008,11 +2226,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Delete specific shopping list by ID
@@ -1038,13 +2331,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
         '400':
-          description: Invalid input data or duplicate item
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list or food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
@@ -1114,7 +2480,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get shopping list items
       tags: *ref_8
   /api/v1/shopping-list-items/{shoppingListId}:
@@ -1135,12 +2580,87 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get all items from a specific shopping list
@@ -1162,12 +2682,87 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
@@ -1196,13 +2791,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update shopping list item
@@ -1220,12 +2888,87 @@ paths:
       responses:
         '200':
           description: Shopping list item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
@@ -1248,12 +2991,87 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
@@ -1272,19 +3090,97 @@ paths:
       responses:
         '200':
           description: Checked items cleared successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
       tags: *ref_8
   /api/v1/pantry:
     post:
-      description: Creates a new pantry in the database. Requires user or admin role.
+      description: >-
+        Creates a new pantry for the authenticated user. Each user can only have
+        one pantry. If a pantry already exists, returns a conflict error.
+        Requires user or admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -1295,24 +3191,86 @@ paths:
               $ref: '#/components/schemas/CreatePantryDto'
       responses:
         '201':
-          description: pantry created successfully
+          description: Pantry created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: User already has a pantry. Each user can only have one pantry.
       security:
         - JWT-auth: []
       summary: Create a new Pantry
       tags: &ref_9
         - pantry
     get:
-      description: Retrieves the authenticated user's pantry with all items
+      description: >-
+        Retrieves the authenticated user's pantry with all items. Returns null
+        if no pantry exists.
       operationId: getMyPantry
       parameters: []
       responses:
@@ -1322,16 +3280,94 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get user pantry
       tags: *ref_9
   /api/v1/pantry/{id}:
     patch:
+      description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
       parameters:
         - name: id
@@ -1348,22 +3384,88 @@ paths:
               $ref: '#/components/schemas/UpdatePantryDto'
       responses:
         '200':
-          description: pantry found
+          description: Pantry updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: No permission - user does not own this pantry
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update pantry
       tags: *ref_9
     delete:
+      description: >-
+        Deletes a specific pantry by ID. Only the pantry owner can delete their
+        pantry. All pantry items will be deleted as well (cascade delete).
       operationId: remove
       parameters:
         - name: id
@@ -1374,24 +3476,71 @@ paths:
             type: string
       responses:
         '200':
-          description: Pantry found
+          description: Pantry deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PantryResponseDto'
-        '400':
-          description: Invalid input data
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: No permission - user does not own this pantry
+        '404':
+          description: Pantry not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
-      summary: Delete specific pantry by ID
+      summary: Delete pantry
       tags: *ref_9
   /api/v1/pantry-item:
     post:
-      description: Creates a new Pantry Item and adds it to the Pantry.
+      description: >-
+        Creates a new Pantry Item and adds it to the user's pantry. The pantry
+        is automatically determined from the authenticated user (each user has
+        one pantry). Requires user or admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -1408,36 +3557,109 @@ paths:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
         '400':
-          description: Invalid input data or duplicate item
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry or food item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
       tags: &ref_10
         - pantry-item
     get:
-      description: Retrieve pantry items with optional filtering
+      description: >-
+        Retrieve pantry items from the authenticated user's pantry with optional
+        filtering. Returns all items from the user's pantry.
       operationId: findAll
       parameters:
         - name: foodId
           required: false
           in: query
-          description: Filter by food ID
+          description: Filter by food ID (UUID)
           schema:
             example: uuid-food-id
             type: string
         - name: unit
           required: false
           in: query
-          description: Filter by unit
+          description: Filter by unit (PIECES, G, KG, ML, L, CUPS)
           schema:
-            example: KG
-            type: string
             enum:
               - PIECES
               - G
@@ -1445,42 +3667,14 @@ paths:
               - ML
               - L
               - CUPS
+            type: string
         - name: expiryDate
           required: false
           in: query
-          description: when the food will expires
+          description: Filter by expiry date (ISO date string)
           schema:
-            maxLength: 500
-            format: date-time
-            example: 02-02-2027
+            example: '2027-02-02'
             type: string
-        - name: page
-          required: false
-          in: query
-          description: Page number for pagination
-          schema:
-            minimum: 1
-            example: 1
-            type: number
-        - name: limit
-          required: false
-          in: query
-          description: Items per page
-          schema:
-            minimum: 1
-            maximum: 100
-            example: 10
-            type: number
-        - name: checked
-          required: false
-          in: query
-          description: Filter by checked status
-          schema: {}
-        - name: shoppingListId
-          required: false
-          in: query
-          description: Filter by pantry ID
-          schema: {}
       responses:
         '200':
           description: Pantry items retrieved successfully
@@ -1489,7 +3683,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultiplePantryItemResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
       summary: Get pantry items
       tags: *ref_10
   /api/v1/pantry-item/{id}:
@@ -1509,18 +3784,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
       tags: *ref_10
     patch:
-      description: Update quantity, unit, notes of a pantry item
+      description: >-
+        Update quantity, unit, notes, or expiry date of a pantry item. All
+        fields are optional.
       operationId: update
       parameters:
         - name: id
@@ -1543,13 +3895,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update pantry item
@@ -1567,12 +3992,87 @@ paths:
       responses:
         '200':
           description: pantry item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          schema:
+            example:
+              statusCode: 400
+              message: Validation failed
+              error: VALIDATION_ERROR
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                errors:
+                  - name should not be empty
+                  - email must be a valid email
+                  - age must be a positive number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          schema:
+            example:
+              statusCode: 401
+              message: Unauthorized
+              error: UNAUTHORIZED
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          schema:
+            example:
+              statusCode: 403
+              message: Forbidden - insufficient permissions
+              error: FORBIDDEN
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: pantry item not found
+          description: Not Found - Resource does not exist
+          schema:
+            example:
+              statusCode: 404
+              message: Resource with identifier '123' not found
+              error: RESOURCE_NOT_FOUND
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example/123
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: '123'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          schema:
+            example:
+              statusCode: 409
+              message: Resource with identifier 'email=test@example.com' already exists
+              error: RESOURCE_ALREADY_EXISTS
+              timestamp: '2024-01-15T10:30:00.000Z'
+              path: /api/v1/example
+              correlationId: abc123def456
+              details:
+                resource: Resource
+                identifier: email=test@example.com
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Remove item from pantry
@@ -1623,6 +4123,47 @@ info:
           ## Rate Limiting
           API requests are rate-limited to prevent abuse. Check response headers for rate limit information.
           
+          ## Error Handling
+          All endpoints follow a consistent error response format. When an error occurs, the API returns a JSON object with the following structure:
+          
+          - **statusCode**: HTTP status code (e.g., 400, 401, 404, 500)
+          - **message**: Human-readable error message or array of validation errors
+          - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')
+          - **timestamp**: ISO 8601 timestamp when the error occurred
+          - **path**: API path where the error occurred
+          - **correlationId**: Unique identifier for request tracing
+          - **details**: Optional object containing additional error information (e.g., validation errors array)
+          
+          ### Common Error Responses
+          
+          - **400 Bad Request**: Invalid input data or validation failed. The `details.errors` field contains an array of validation error messages.
+          - **401 Unauthorized**: Authentication required or invalid/expired JWT token.
+          - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.
+          - **404 Not Found**: The requested resource does not exist.
+          - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
+          - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
+          - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
+          - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.
+          
+          ### Example Error Response
+          
+          ```json
+          {
+            "statusCode": 400,
+            "message": "Validation failed",
+            "error": "VALIDATION_ERROR",
+            "timestamp": "2024-01-15T10:30:00.000Z",
+            "path": "/api/v1/foods",
+            "correlationId": "abc123def456",
+            "details": {
+              "errors": [
+                "name should not be empty",
+                "categoryId must be a valid UUID"
+              ]
+            }
+          }
+          ```
+          
           ## Support
           For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
         
@@ -1661,6 +4202,47 @@ components:
       description: Enter JWT token obtained from Keycloak authentication
       in: header
   schemas:
+    ApiErrorResponseDto:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          description: Error message or array of validation errors
+          oneOf:
+            - type: string
+              example: Bad Request
+            - type: array
+              items:
+                type: string
+              example:
+                - name should not be empty
+                - email must be a valid email
+        error:
+          type: string
+          description: Error type
+          example: Bad Request
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+        path:
+          type: string
+          description: API path where the error occurred
+          example: /api/v1/foods
+        correlationId:
+          type: string
+          description: Correlation ID for request tracing
+          example: abc123def456
+      required:
+        - statusCode
+        - message
+        - error
+        - timestamp
+        - path
     CreateUserDto:
       type: object
       properties:
@@ -2198,7 +4780,7 @@ components:
       properties:
         userId:
           type: string
-          description: The user id
+          description: The user ID (must match the authenticated user)
           example: uuid-user-id
           maxLength: 255
         title:
@@ -2287,14 +4869,17 @@ components:
         - items
     UpdatePantryDto:
       type: object
-      properties: {}
+      properties:
+        title:
+          type: string
+          description: The name of the pantry
+          example: Refrigerator
+          maxLength: 255
+      required:
+        - title
     CreatePantryItemDto:
       type: object
       properties:
-        pantryId:
-          type: string
-          description: The ID of the pantry
-          example: uuid-food-id
         foodId:
           type: string
           description: The ID of the food item to add
@@ -2306,7 +4891,7 @@ components:
           minimum: 0.01
         unit:
           type: string
-          description: The unit of measurement
+          description: The unit of measurement (required)
           example: KG
           enum:
             - PIECES
@@ -2326,7 +4911,6 @@ components:
           description: When the food will expire (ISO date string)
           example: '2027-02-02'
       required:
-        - pantryId
         - foodId
         - quantity
         - unit
@@ -2347,7 +4931,7 @@ components:
           type: number
           description: The quantity of the item
           example: 3
-          minimum: 1
+          minimum: 0.01
         unit:
           type: string
           description: Unit of the item
@@ -2367,9 +4951,8 @@ components:
         expiryDate:
           format: date-time
           type: string
-          description: when the food will expires
-          example: 02-02-2027
-          maxLength: 500
+          description: When the food will expire (ISO date string)
+          example: '2027-03-15'
         foodId:
           type: string
           description: The ID of the food item

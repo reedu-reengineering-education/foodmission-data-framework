@@ -82,6 +82,73 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -104,23 +171,131 @@
     },
     "/api/v1/auth/profile/preferences": {
       "put": {
-        "description": "Update app-specific user preferences.",
+        "description": "Update app-specific user preferences. Returns the updated user profile.",
         "operationId": "updatePreferences",
         "parameters": [],
         "requestBody": {
           "required": true,
-          "description": "User preferences object",
+          "description": "User preferences object (JSON)",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "example": {
+                  "dietaryRestrictions": [
+                    "vegetarian"
+                  ],
+                  "allergies": [
+                    "nuts"
+                  ],
+                  "theme": "dark"
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "User preferences updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "keycloakId": {
+                      "type": "string"
+                    },
+                    "preferences": {
+                      "type": "object"
+                    },
+                    "settings": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -142,23 +317,127 @@
     },
     "/api/v1/auth/profile/settings": {
       "put": {
-        "description": "Update app-specific user settings.",
+        "description": "Update app-specific user settings. Returns the updated user profile.",
         "operationId": "updateSettings",
         "parameters": [],
         "requestBody": {
           "required": true,
-          "description": "User settings object",
+          "description": "User settings object (JSON)",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "example": {
+                  "language": "en",
+                  "notifications": true,
+                  "timezone": "UTC"
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "User settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "keycloakId": {
+                      "type": "string"
+                    },
+                    "preferences": {
+                      "type": "object"
+                    },
+                    "settings": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -271,8 +550,72 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "User not authenticated - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -308,18 +651,83 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "This endpoint is only accessible to admins"
+                      "example": "Admin access granted"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "success"
                     }
                   }
                 }
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "User not authenticated - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - admin role required"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -357,6 +765,97 @@
         "responses": {
           "201": {
             "description": "User created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -419,8 +918,96 @@
           "200": {
             "description": "User found"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "User not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -466,8 +1053,96 @@
           "200": {
             "description": "User updated successfully"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "User not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -668,13 +1343,95 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -710,7 +1467,51 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get all food items",
@@ -753,10 +1554,61 @@
             }
           },
           "400": {
-            "description": "Invalid search parameters"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable"
+            "description": "OpenFoodFacts service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Search OpenFoodFacts database",
@@ -803,19 +1655,105 @@
             }
           },
           "400": {
-            "description": "Invalid barcode"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Product not found in OpenFoodFacts"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable"
+            "description": "OpenFoodFacts service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -871,8 +1809,76 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Find food by barcode",
@@ -917,8 +1923,76 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Find food by ID",
@@ -963,16 +2037,95 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1011,14 +2164,96 @@
           "204": {
             "description": "Food item deleted successfully"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - admin role required"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1073,11 +2308,86 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable"
+            "description": "OpenFoodFacts service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get OpenFoodFacts information for food item",
@@ -1390,13 +2700,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1431,13 +2847,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get All Shoppinglists",
@@ -1472,13 +2994,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1526,13 +3154,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1570,13 +3304,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1617,16 +3457,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data or duplicate item"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list or food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1727,7 +3670,119 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get shopping list items",
@@ -1762,14 +3817,120 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1808,14 +3969,120 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1864,16 +4131,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1904,14 +4274,120 @@
           "200": {
             "description": "Shopping list item deleted successfully"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1951,14 +4427,120 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1991,14 +4573,120 @@
           "200": {
             "description": "Checked items cleared successfully"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Shopping list not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2014,7 +4702,7 @@
     },
     "/api/v1/pantry": {
       "post": {
-        "description": "Creates a new pantry in the database. Requires user or admin role.",
+        "description": "Creates a new pantry for the authenticated user. Each user can only have one pantry. If a pantry already exists, returns a conflict error. Requires user or admin role.",
         "operationId": "create",
         "parameters": [],
         "requestBody": {
@@ -2029,7 +4717,7 @@
         },
         "responses": {
           "201": {
-            "description": "pantry created successfully",
+            "description": "Pantry created successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -2039,13 +4727,98 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already has a pantry. Each user can only have one pantry."
           }
         },
         "security": [
@@ -2059,7 +4832,7 @@
         ]
       },
       "get": {
-        "description": "Retrieves the authenticated user's pantry with all items",
+        "description": "Retrieves the authenticated user's pantry with all items. Returns null if no pantry exists.",
         "operationId": "getMyPantry",
         "parameters": [],
         "responses": {
@@ -2073,11 +4846,120 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Pantry not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2093,6 +4975,7 @@
     },
     "/api/v1/pantry/{id}": {
       "patch": {
+        "description": "Updates the pantry title. Only the pantry owner can update their pantry.",
         "operationId": "update",
         "parameters": [
           {
@@ -2117,7 +5000,7 @@
         },
         "responses": {
           "200": {
-            "description": "pantry found",
+            "description": "Pantry updated successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -2127,13 +5010,102 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "No permission - user does not own this pantry"
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2147,6 +5119,7 @@
         ]
       },
       "delete": {
+        "description": "Deletes a specific pantry by ID. Only the pantry owner can delete their pantry. All pantry items will be deleted as well (cascade delete).",
         "operationId": "remove",
         "parameters": [
           {
@@ -2161,23 +5134,84 @@
         ],
         "responses": {
           "200": {
-            "description": "Pantry found",
+            "description": "Pantry deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PantryResponseDto"
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
                 }
               }
             }
           },
-          "400": {
-            "description": "Invalid input data"
-          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "No permission - user does not own this pantry"
+          },
+          "404": {
+            "description": "Pantry not found"
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2185,7 +5219,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Delete specific pantry by ID",
+        "summary": "Delete pantry",
         "tags": [
           "pantry"
         ]
@@ -2193,7 +5227,7 @@
     },
     "/api/v1/pantry-item": {
       "post": {
-        "description": "Creates a new Pantry Item and adds it to the Pantry.",
+        "description": "Creates a new Pantry Item and adds it to the user's pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.",
         "operationId": "create",
         "parameters": [],
         "requestBody": {
@@ -2218,16 +5252,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data or duplicate item"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Pantry or food item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2241,14 +5378,14 @@
         ]
       },
       "get": {
-        "description": "Retrieve pantry items with optional filtering",
+        "description": "Retrieve pantry items from the authenticated user's pantry with optional filtering. Returns all items from the user's pantry.",
         "operationId": "findAll",
         "parameters": [
           {
             "name": "foodId",
             "required": false,
             "in": "query",
-            "description": "Filter by food ID",
+            "description": "Filter by food ID (UUID)",
             "schema": {
               "example": "uuid-food-id",
               "type": "string"
@@ -2258,10 +5395,8 @@
             "name": "unit",
             "required": false,
             "in": "query",
-            "description": "Filter by unit",
+            "description": "Filter by unit (PIECES, G, KG, ML, L, CUPS)",
             "schema": {
-              "example": "KG",
-              "type": "string",
               "enum": [
                 "PIECES",
                 "G",
@@ -2269,57 +5404,19 @@
                 "ML",
                 "L",
                 "CUPS"
-              ]
+              ],
+              "type": "string"
             }
           },
           {
             "name": "expiryDate",
             "required": false,
             "in": "query",
-            "description": "when the food will expires",
+            "description": "Filter by expiry date (ISO date string)",
             "schema": {
-              "maxLength": 500,
-              "format": "date-time",
-              "example": "02-02-2027",
+              "example": "2027-02-02",
               "type": "string"
             }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number for pagination",
-            "schema": {
-              "minimum": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "checked",
-            "required": false,
-            "in": "query",
-            "description": "Filter by checked status",
-            "schema": {}
-          },
-          {
-            "name": "shoppingListId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by pantry ID",
-            "schema": {}
           }
         ],
         "responses": {
@@ -2334,9 +5431,126 @@
             }
           },
           "400": {
-            "description": "Invalid query parameters"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get pantry items",
         "tags": [
           "pantry-item"
@@ -2368,14 +5582,120 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Pantry item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2389,7 +5709,7 @@
         ]
       },
       "patch": {
-        "description": "Update quantity, unit, notes of a pantry item",
+        "description": "Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional.",
         "operationId": "update",
         "parameters": [
           {
@@ -2424,16 +5744,119 @@
             }
           },
           "400": {
-            "description": "Invalid input data"
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Pantry item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2464,14 +5887,120 @@
           "200": {
             "description": "pantry item deleted successfully"
           },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "schema": {
+              "example": {
+                "statusCode": 400,
+                "message": "Validation failed",
+                "error": "VALIDATION_ERROR",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "errors": [
+                    "name should not be empty",
+                    "email must be a valid email",
+                    "age must be a positive number"
+                  ]
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - JWT token required"
+            "description": "Unauthorized - Authentication required or invalid token",
+            "schema": {
+              "example": {
+                "statusCode": 401,
+                "message": "Unauthorized",
+                "error": "UNAUTHORIZED",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Forbidden - insufficient permissions"
+            "description": "Forbidden - Insufficient permissions",
+            "schema": {
+              "example": {
+                "statusCode": 403,
+                "message": "Forbidden - insufficient permissions",
+                "error": "FORBIDDEN",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           },
           "404": {
-            "description": "pantry item not found"
+            "description": "Not Found - Resource does not exist",
+            "schema": {
+              "example": {
+                "statusCode": 404,
+                "message": "Resource with identifier '123' not found",
+                "error": "RESOURCE_NOT_FOUND",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example/123",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "123"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "schema": {
+              "example": {
+                "statusCode": 409,
+                "message": "Resource with identifier 'email=test@example.com' already exists",
+                "error": "RESOURCE_ALREADY_EXISTS",
+                "timestamp": "2024-01-15T10:30:00.000Z",
+                "path": "/api/v1/example",
+                "correlationId": "abc123def456",
+                "details": {
+                  "resource": "Resource",
+                  "identifier": "email=test@example.com"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2512,7 +6041,7 @@
   },
   "info": {
     "title": "FOODMISSION Data Framework API",
-    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
+    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Error Handling\n      All endpoints follow a consistent error response format. When an error occurs, the API returns a JSON object with the following structure:\n      \n      - **statusCode**: HTTP status code (e.g., 400, 401, 404, 500)\n      - **message**: Human-readable error message or array of validation errors\n      - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')\n      - **timestamp**: ISO 8601 timestamp when the error occurred\n      - **path**: API path where the error occurred\n      - **correlationId**: Unique identifier for request tracing\n      - **details**: Optional object containing additional error information (e.g., validation errors array)\n      \n      ### Common Error Responses\n      \n      - **400 Bad Request**: Invalid input data or validation failed. The `details.errors` field contains an array of validation error messages.\n      - **401 Unauthorized**: Authentication required or invalid/expired JWT token.\n      - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.\n      - **404 Not Found**: The requested resource does not exist.\n      - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).\n      - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).\n      - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.\n      - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.\n      \n      ### Example Error Response\n      \n      ```json\n      {\n        \"statusCode\": 400,\n        \"message\": \"Validation failed\",\n        \"error\": \"VALIDATION_ERROR\",\n        \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n        \"path\": \"/api/v1/foods\",\n        \"correlationId\": \"abc123def456\",\n        \"details\": {\n          \"errors\": [\n            \"name should not be empty\",\n            \"categoryId must be a valid UUID\"\n          ]\n        }\n      }\n      ```\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
     "version": "1.0.0",
     "contact": {
       "name": "FOODMISSION Team",
@@ -2568,6 +6097,63 @@
       }
     },
     "schemas": {
+      "ApiErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 400
+          },
+          "message": {
+            "description": "Error message or array of validation errors",
+            "oneOf": [
+              {
+                "type": "string",
+                "example": "Bad Request"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "name should not be empty",
+                  "email must be a valid email"
+                ]
+              }
+            ]
+          },
+          "error": {
+            "type": "string",
+            "description": "Error type",
+            "example": "Bad Request"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp when the error occurred",
+            "example": "2024-01-15T10:30:00Z",
+            "format": "date-time"
+          },
+          "path": {
+            "type": "string",
+            "description": "API path where the error occurred",
+            "example": "/api/v1/foods"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Correlation ID for request tracing",
+            "example": "abc123def456"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error",
+          "timestamp",
+          "path"
+        ]
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -3266,7 +6852,7 @@
         "properties": {
           "userId": {
             "type": "string",
-            "description": "The user id",
+            "description": "The user ID (must match the authenticated user)",
             "example": "uuid-user-id",
             "maxLength": 255
           },
@@ -3383,16 +6969,21 @@
       },
       "UpdatePantryDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The name of the pantry",
+            "example": "Refrigerator",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "title"
+        ]
       },
       "CreatePantryItemDto": {
         "type": "object",
         "properties": {
-          "pantryId": {
-            "type": "string",
-            "description": "The ID of the pantry",
-            "example": "uuid-food-id"
-          },
           "foodId": {
             "type": "string",
             "description": "The ID of the food item to add",
@@ -3406,7 +6997,7 @@
           },
           "unit": {
             "type": "string",
-            "description": "The unit of measurement",
+            "description": "The unit of measurement (required)",
             "example": "KG",
             "enum": [
               "PIECES",
@@ -3431,7 +7022,6 @@
           }
         },
         "required": [
-          "pantryId",
           "foodId",
           "quantity",
           "unit"
@@ -3459,7 +7049,7 @@
             "type": "number",
             "description": "The quantity of the item",
             "example": 3,
-            "minimum": 1
+            "minimum": 0.01
           },
           "unit": {
             "type": "string",
@@ -3483,9 +7073,8 @@
           "expiryDate": {
             "format": "date-time",
             "type": "string",
-            "description": "when the food will expires",
-            "example": "02-02-2027",
-            "maxLength": 500
+            "description": "When the food will expire (ISO date string)",
+            "example": "2027-03-15"
           },
           "foodId": {
             "type": "string",
