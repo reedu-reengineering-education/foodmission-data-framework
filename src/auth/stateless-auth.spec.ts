@@ -196,11 +196,12 @@ describe('Stateless Authentication', () => {
   });
 
   describe('adminEndpoint', () => {
-    it('should return admin message', () => {
+    it('should return admin access granted message', () => {
       const result = controller.adminEndpoint();
 
       expect(result).toEqual({
-        message: 'This endpoint is only accessible to admins',
+        message: 'Admin access granted',
+        status: 'success',
       });
     });
   });

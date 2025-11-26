@@ -24,6 +24,7 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
+import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FoodService } from '../services/food.service';
@@ -68,17 +69,11 @@ export class FoodController {
     description: 'Food item created successfully',
     type: FoodResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    conflict: true,
   })
   async create(
     @Body() createFoodDto: CreateFoodDto,
@@ -100,9 +95,8 @@ export class FoodController {
     description: 'List of food items retrieved successfully',
     type: PaginatedFoodResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid query parameters',
+  @ApiCommonErrorResponses({
+    badRequest: true,
   })
   async findAll(
     @Query() query: FoodQueryDto,
@@ -134,13 +128,14 @@ export class FoodController {
       },
     },
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid search parameters',
-  })
-  @ApiResponse({
-    status: 503,
-    description: 'OpenFoodFacts service unavailable',
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    custom: [
+      {
+        status: 503,
+        description: 'OpenFoodFacts service unavailable',
+      },
+    ],
   })
   async searchOpenFoodFacts(@Query() searchDto: FoodSearchDto) {
     return this.foodService.searchOpenFoodFacts(searchDto);
@@ -168,25 +163,17 @@ export class FoodController {
     description: 'Food imported successfully',
     type: FoodResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid barcode',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Product not found in OpenFoodFacts',
-  })
-  @ApiResponse({
-    status: 503,
-    description: 'OpenFoodFacts service unavailable',
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
+    custom: [
+      {
+        status: 503,
+        description: 'OpenFoodFacts service unavailable',
+      },
+    ],
   })
   async importFromOpenFoodFacts(
     @Param('barcode') barcode: string,
@@ -216,9 +203,8 @@ export class FoodController {
     description: 'Food item found',
     type: FoodResponseDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Food item not found',
+  @ApiCommonErrorResponses({
+    notFound: true,
   })
   async findByBarcode(
     @Param('barcode') barcode: string,
@@ -253,9 +239,8 @@ export class FoodController {
     description: 'Food item found',
     type: FoodResponseDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Food item not found',
+  @ApiCommonErrorResponses({
+    notFound: true,
   })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -286,21 +271,11 @@ export class FoodController {
     description: 'Food item updated successfully',
     type: FoodResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Food item not found',
+  @ApiCommonErrorResponses({
+    badRequest: true,
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
   })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -329,17 +304,10 @@ export class FoodController {
     status: 204,
     description: 'Food item deleted successfully',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - admin role required',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Food item not found',
+  @ApiCommonErrorResponses({
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
   })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.foodService.remove(id);
@@ -369,13 +337,14 @@ export class FoodController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Food item not found',
-  })
-  @ApiResponse({
-    status: 503,
-    description: 'OpenFoodFacts service unavailable',
+  @ApiCommonErrorResponses({
+    notFound: true,
+    custom: [
+      {
+        status: 503,
+        description: 'OpenFoodFacts service unavailable',
+      },
+    ],
   })
   async getOpenFoodFactsInfo(@Param('id', ParseUUIDPipe) id: string) {
     const food = await this.foodService.findOne(id);

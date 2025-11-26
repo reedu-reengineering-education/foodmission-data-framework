@@ -11,6 +11,7 @@ import {
   MaxLength,
   IsEnum,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreatePantryItemDto {
   @ApiProperty({
@@ -27,18 +28,19 @@ export class CreatePantryItemDto {
     minimum: 0.01,
   })
   @IsNotEmpty()
+  @Type(() => Number)
   @IsNumber()
   @Min(0.01)
   quantity: number;
 
   @ApiProperty({
-    description: 'The unit of measurement',
+    description: 'The unit of measurement (required)',
     example: 'KG',
     enum: Unit,
   })
   @IsNotEmpty()
   @IsEnum(Unit)
-  unit: Unit = Unit.PIECES;
+  unit: Unit;
 
   @ApiPropertyOptional({
     description: 'Additional notes for the item',
@@ -57,4 +59,18 @@ export class CreatePantryItemDto {
   @IsOptional()
   @IsDateString()
   expiryDate?: Date;
+
+  constructor(
+    foodId: string,
+    quantity: number,
+    unit: Unit = Unit.PIECES,
+    notes?: string,
+    expiryDate?: Date,
+  ) {
+    this.foodId = foodId;
+    this.quantity = quantity;
+    this.unit = unit;
+    this.notes = notes;
+    this.expiryDate = expiryDate;
+  }
 }

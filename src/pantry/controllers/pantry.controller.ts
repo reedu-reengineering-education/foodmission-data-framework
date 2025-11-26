@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryService } from '../services/pantry.service';
@@ -25,7 +26,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 
 @ApiTags('pantry')
 @Controller('pantry')
@@ -40,26 +41,19 @@ export class PantryController {
   @ApiOperation({
     summary: 'Create a new Pantry',
     description:
-      'Creates a new pantry in the database. Requires user or admin role.',
+      'Creates a new pantry for the authenticated user. Each user can only have one pantry. If a pantry already exists, returns a conflict error. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryDto })
   @ApiResponse({
     status: 201,
-    description: 'pantry created successfully',
+    description: 'Pantry created successfully',
     type: PantryResponseDto,
   })
   @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
+    status: 409,
+    description: 'User already has a pantry. Each user can only have one pantry.',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createPantryDto: CreatePantryDto,
     @CurrentUser('id') userId: string,
@@ -67,7 +61,7 @@ export class PantryController {
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
-    return this.pantryService.create(createPantryDto);
+    return this.pantryService.create(createPantryDto, userId);
   }
 
   @Get()
@@ -75,7 +69,7 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get user pantry',
-    description: "Retrieves the authenticated user's pantry with all items",
+    description: "Retrieves the authenticated user's pantry with all items. Returns null if no pantry exists.",
   })
   @ApiResponse({
     status: 200,
@@ -83,16 +77,17 @@ export class PantryController {
     type: PantryResponseDto,
   })
   @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
+    status: 200,
+    description: 'No pantry found for user',
+    schema: {
+      type: 'null',
+      example: null,
+    },
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry not found',
-  })
+  @ApiCrudErrorResponses()
   async getMyPantry(
     @CurrentUser('id') userId: string,
-  ): Promise<PantryResponseDto> {
+  ): Promise<PantryResponseDto | null> {
     return this.pantryService.getPantryByUserId(userId);
   }
 
@@ -101,25 +96,20 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update pantry',
+    description:
+      'Updates the pantry title. Only the pantry owner can update their pantry.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'pantry found',
+    description: 'Pantry updated successfully',
     type: PantryResponseDto,
   })
   @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
     status: 403,
-    description: 'Forbidden - insufficient permissions',
+    description: 'No permission - user does not own this pantry',
   })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePantryDto: UpdatePantryDto,
@@ -132,27 +122,28 @@ export class PantryController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Delete specific pantry by ID',
+    summary: 'Delete pantry',
+    description:
+      'Deletes a specific pantry by ID. Only the pantry owner can delete their pantry. All pantry items will be deleted as well (cascade delete).',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Pantry found',
-    type: PantryResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
+    description: 'Pantry deleted successfully',
   })
   @ApiResponse({
     status: 403,
-    description: 'Forbidden - insufficient permissions',
+    description: 'No permission - user does not own this pantry',
   })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.pantryService.remove(id);
+  @ApiResponse({
+    status: 404,
+    description: 'Pantry not found',
+  })
+  @ApiCrudErrorResponses()
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<void> {
+    return this.pantryService.remove(id, userId);
   }
 }
