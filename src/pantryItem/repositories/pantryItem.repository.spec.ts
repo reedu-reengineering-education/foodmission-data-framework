@@ -181,6 +181,7 @@ describe('PantryItemRepository', () => {
 
       expect(result).toEqual(mockItems);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
+        where: {},
         include: {
           pantry: true,
           food: true,

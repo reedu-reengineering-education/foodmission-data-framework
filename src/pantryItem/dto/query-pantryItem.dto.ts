@@ -24,7 +24,8 @@ export class QueryPantryItemDto {
     enum: Unit,
   })
   @IsEnum(Unit)
-  unit?: Unit = Unit.PIECES;
+  @IsOptional()
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'when the food will expires',

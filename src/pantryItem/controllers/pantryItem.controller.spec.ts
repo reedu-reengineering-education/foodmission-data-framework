@@ -114,6 +114,7 @@ describe('PantryItemController', () => {
   });
 
   describe('findAll', () => {
+    const userId = 'user-123';
     const mockResponse: MultiplePantryItemResponseDto = {
       data: [],
     };
@@ -127,10 +128,10 @@ describe('PantryItemController', () => {
     it('should return pantry items without query params', async () => {
       mockPantryItemService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll({}, mockRequest);
+      const result = await controller.findAll({}, mockRequest, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.findAll).toHaveBeenCalledWith({});
+      expect(service.findAll).toHaveBeenCalledWith({}, userId);
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
 
@@ -147,10 +148,10 @@ describe('PantryItemController', () => {
         data: [],
       });
 
-      const result = await controller.findAll(query, mockRequest);
+      const result = await controller.findAll(query, mockRequest, userId);
 
       expect(result).toEqual({ ...mockResponse, data: [] });
-      expect(service.findAll).toHaveBeenCalledWith(query);
+      expect(service.findAll).toHaveBeenCalledWith(query, userId);
     });
 
     it('should handle pagination query params', async () => {
@@ -165,10 +166,10 @@ describe('PantryItemController', () => {
 
       mockPantryItemService.findAll.mockResolvedValue(paginatedResponse);
 
-      const result = await controller.findAll(query, mockRequest);
+      const result = await controller.findAll(query, mockRequest, userId);
 
       expect(result).toEqual(paginatedResponse);
-      expect(service.findAll).toHaveBeenCalledWith(query);
+      expect(service.findAll).toHaveBeenCalledWith(query, userId);
     });
 
     it('should throw BadRequestException when path has trailing slash', async () => {
@@ -179,11 +180,21 @@ describe('PantryItemController', () => {
       } as any;
 
       await expect(
-        controller.findAll({}, requestWithTrailingSlash),
+        controller.findAll({}, requestWithTrailingSlash, userId),
       ).rejects.toThrow(BadRequestException);
       await expect(
-        controller.findAll({}, requestWithTrailingSlash),
+        controller.findAll({}, requestWithTrailingSlash, userId),
       ).rejects.toThrow('Invalid request path');
+      expect(service.findAll).not.toHaveBeenCalled();
+    });
+
+    it('should throw UnauthorizedException when userId is missing', async () => {
+      await expect(
+        controller.findAll({}, mockRequest, null as any),
+      ).rejects.toThrow(UnauthorizedException);
+      await expect(
+        controller.findAll({}, mockRequest, null as any),
+      ).rejects.toThrow('User not authenticated');
       expect(service.findAll).not.toHaveBeenCalled();
     });
   });

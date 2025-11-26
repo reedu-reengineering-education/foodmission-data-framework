@@ -106,6 +106,7 @@ export class PantryItemController {
   async findAll(
     @Query() query: QueryPantryItemDto,
     @Req() request: Request,
+    @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
     const url = request.originalUrl || request.url;
     const pathname = url.split('?')[0];
@@ -116,7 +117,11 @@ export class PantryItemController {
       );
     }
 
-    return this.pantryItemService.findAll(query);
+    if (!userId) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    return this.pantryItemService.findAll(query, userId);
   }
 
   @Get(':id')

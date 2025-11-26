@@ -256,47 +256,57 @@ describe('PantryItemService', () => {
   describe('findAll', () => {
     it('should return all pantry items without filter', async () => {
       const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({});
+      const result = await service.findAll({}, 'user-1');
 
       expect(result.data).toHaveLength(1);
       expect(result.data[0]).toHaveProperty('id');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
       expect(repository.findMany).toHaveBeenCalledWith({
-        foodId: undefined,
-        unit: undefined,
+        pantryId: 'pantry-1',
+        // foodId and unit should not be in the filter when not provided
       });
+      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
+      expect(filterCall).not.toHaveProperty('foodId');
+      expect(filterCall).not.toHaveProperty('unit');
     });
 
     it('should return filtered pantry items', async () => {
       const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
       mockPrismaService.food.findUnique.mockResolvedValue({
         id: 'food-1',
         name: 'Tomatoes',
       });
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({ foodId: 'food-1', unit: Unit.KG });
+      const result = await service.findAll({ foodId: 'food-1', unit: Unit.KG }, 'user-1');
 
       expect(result.data).toHaveLength(1);
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
       });
       expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: 'pantry-1',
         foodId: 'food-1',
         unit: 'KG',
       });
     });
 
     it('should throw NotFoundException if foodId is provided but food does not exist', async () => {
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
       mockPrismaService.food.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.findAll({ foodId: 'non-existent-food' }),
+        service.findAll({ foodId: 'non-existent-food' }, 'user-1'),
       ).rejects.toThrow(NotFoundException);
       await expect(
-        service.findAll({ foodId: 'non-existent-food' }),
+        service.findAll({ foodId: 'non-existent-food' }, 'user-1'),
       ).rejects.toThrow('Food item not found');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'non-existent-food' },
       });
@@ -304,11 +314,66 @@ describe('PantryItemService', () => {
     });
 
     it('should return empty array if no items found', async () => {
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
       mockPantryItemRepository.findMany.mockResolvedValue([]);
 
-      const result = await service.findAll({});
+      const result = await service.findAll({}, 'user-1');
 
       expect(result.data).toHaveLength(0);
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1');
+    });
+
+    it('should not filter by unit when unit is not provided', async () => {
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const result = await service.findAll({}, 'user-1');
+
+      expect(result.data).toHaveLength(1);
+      // Verify that unit is NOT included in the filter when not provided
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: 'pantry-1',
+        // unit should not be in the filter object at all
+      });
+      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
+      expect(filterCall).not.toHaveProperty('unit');
+      expect(filterCall).not.toHaveProperty('foodId');
+    });
+
+    it('should filter by unit when unit is explicitly provided', async () => {
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const result = await service.findAll({ unit: Unit.KG }, 'user-1');
+
+      expect(result.data).toHaveLength(1);
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: 'pantry-1',
+        unit: Unit.KG,
+      });
+    });
+
+    it('should filter by foodId only when foodId is provided without unit', async () => {
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: 'food-1',
+        name: 'Tomatoes',
+      });
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const result = await service.findAll({ foodId: 'food-1' }, 'user-1');
+
+      expect(result.data).toHaveLength(1);
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: 'pantry-1',
+        foodId: 'food-1',
+        // unit should not be in the filter
+      });
+      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
+      expect(filterCall).not.toHaveProperty('unit');
     });
   });
 

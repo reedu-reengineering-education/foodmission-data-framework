@@ -119,18 +119,29 @@ export class PantryItemService {
 
   async findAll(
     query: QueryPantryItemDto,
+    userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
     const { foodId, unit } = query;
 
-    // Validate food exists if foodId is provided
+    const pantryId = await this.pantryService.validatePantryExists(userId);
+
     if (foodId) {
       await this.validateFoodExists(foodId);
     }
 
-    const items = await this.pantryItemRepository.findMany({
-      foodId,
-      unit,
-    });
+    const filter: any = {
+      pantryId,
+    };
+    
+    if (foodId) {
+      filter.foodId = foodId;
+    }
+    
+    if (unit) {
+      filter.unit = unit;
+    }
+
+    const items = await this.pantryItemRepository.findMany(filter);
 
     const transformedData = plainToInstance(PantryItemResponseDto, items, {
       excludeExtraneousValues: true,
