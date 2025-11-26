@@ -2,423 +2,171 @@
 	"info": {
 		"_postman_id": "pantry-api-collection",
 		"name": "FoodMission Pantry API",
-		"description": "Collection for FoodMission Pantry and Pantry Item API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`",
+		"description": "Collection for FoodMission Pantry API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Pantry",
-			"item": [
-				{
-					"name": "Create Pantry",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"title\": \"Home Pantry\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry"
-							],
-							"protocol": "http"
-						},
-						"description": "Creates a new pantry in the database. Requires user or admin role."
+			"name": "Create Pantry",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
 					},
-					"response": [],
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 201) {",
-									"    const jsonData = pm.response.json();",
-									"    pm.environment.set('pantry_id', jsonData.id);",
-									"    console.log('Pantry ID saved:', jsonData.id);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Home Pantry\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/pantry",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"pantry"
 					]
 				},
+				"description": "Creates a new pantry for the authenticated user. Each user can only have one pantry. Requires user or admin role."
+			},
+			"response": [],
+			"event": [
 				{
-					"name": "Get My Pantry",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const jsonData = pm.response.json();",
+							"    pm.environment.set('pantry_id', jsonData.id);",
+							"}"
 						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry"
-							],
-							"protocol": "http"
-						},
-						"description": "Retrieves the authenticated user's pantry with all items"
-					},
-					"response": [],
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200) {",
-									"    const jsonData = pm.response.json();",
-									"    pm.environment.set('pantry_id', jsonData.id);",
-									"    console.log('Pantry ID saved:', jsonData.id);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					]
-				},
-				{
-					"name": "Update Pantry",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Updated Pantry Name\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry/{{pantry_id}}",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry",
-								"{{pantry_id}}"
-							],
-							"protocol": "http"
-						},
-						"description": "Update pantry information"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Pantry",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry/{{pantry_id}}",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry",
-								"{{pantry_id}}"
-							],
-							"protocol": "http"
-						},
-						"description": "Delete a specific pantry by ID"
-					},
-					"response": []
+						"type": "text/javascript"
+					}
 				}
-			],
-			"description": "Pantry management endpoints"
+			]
 		},
 		{
-			"name": "Pantry Items",
-			"item": [
-				{
-					"name": "Create Pantry Item",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry-item"
-							],
-							"protocol": "http"
-						},
-						"description": "Creates a new Pantry Item and adds it to the user's pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.\n\n**Required fields:**\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n\n**Optional fields:**\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
-					},
-					"response": [],
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"// Check if JWT token exists",
-									"if (!pm.environment.get('jwt_token') || pm.environment.get('jwt_token') === '') {",
-									"    console.error('❌ JWT token is missing!');",
-									"    console.log('Please run \"Get Token (Password Grant)\" from the Auth API collection first.');",
-									"    throw new Error('JWT token is required. Please get a token first.');",
-									"}",
-									"",
-									"// Check if user_id exists (user should be created in database)",
-									"if (!pm.environment.get('user_id') || pm.environment.get('user_id') === '') {",
-									"    console.warn('⚠️  User ID not found. Run \"Get User Profile\" from Auth API collection to create user.');",
-									"}",
-									"",
-									"// Set default food_id if not exists",
-									"const defaultFoodId = '00d2eca5-0377-448b-b74e-d5ae25e9c944';",
-									"if (!pm.environment.get('food_id') || pm.environment.get('food_id') === '') {",
-									"    console.log('ℹ️  Food ID not set, using default food ID:', defaultFoodId);",
-									"    pm.environment.set('food_id', defaultFoodId);",
-									"} else {",
-									"    console.log('✅ Using food_id from environment:', pm.environment.get('food_id'));",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 201) {",
-									"    const jsonData = pm.response.json();",
-									"    pm.environment.set('pantry_item_id', jsonData.id);",
-									"    console.log('✅ Pantry Item ID saved:', jsonData.id);",
-									"} else if (pm.response.code === 401) {",
-									"    console.error('❌ Unauthorized - JWT token is missing, invalid, or expired.');",
-									"    console.log('Please:');",
-									"    console.log('1. Run \"Get Token (Password Grant)\" from Auth API collection');",
-									"    console.log('2. Run \"Get User Profile\" to create user in database');",
-									"    console.log('3. Try again');",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
+			"name": "Get My Pantry",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/pantry",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"pantry"
 					]
 				},
+				"description": "Retrieves the authenticated user's pantry. Returns null if no pantry exists. Requires user or admin role."
+			},
+			"response": [],
+			"event": [
 				{
-					"name": "Get All Pantry Items",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const jsonData = pm.response.json();",
+							"    if (jsonData && jsonData.id) {",
+							"        pm.environment.set('pantry_id', jsonData.id);",
+							"    }",
+							"}"
 						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry-item"
-							],
-							"protocol": "http",
-							"query": [
-								{
-									"key": "foodId",
-									"value": "{{food_id}}",
-									"description": "Filter by food ID",
-									"disabled": true
-								},
-								{
-									"key": "unit",
-									"value": "KG",
-									"description": "Filter by unit (PIECES, G, KG, ML, L, CUPS)",
-									"disabled": true
-								}
-							]
-						},
-						"description": "Retrieve pantry items with optional filtering. Requires user or admin role. Query params: foodId, unit, expiryDate"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Pantry Item by ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item/{{pantry_item_id}}",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry-item",
-								"{{pantry_item_id}}"
-							],
-							"protocol": "http"
-						},
-						"description": "Get a specific pantry item by ID. Requires user or admin role."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Pantry Item",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"quantity\": 3,\n  \"unit\": \"PIECES\",\n  \"notes\": \"Buy organic if available\",\n  \"expiryDate\": \"2027-03-15\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item/{{pantry_item_id}}",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry-item",
-								"{{pantry_item_id}}"
-							],
-							"protocol": "http"
-						},
-						"description": "Update quantity, unit, notes, or expiry date of a pantry item. Requires user or admin role."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Pantry Item",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item/{{pantry_item_id}}",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"v1",
-								"pantry-item",
-								"{{pantry_item_id}}"
-							],
-							"protocol": "http"
-						},
-						"description": "Delete a specific pantry item by ID. Requires user or admin role."
-					},
-					"response": []
+						"type": "text/javascript"
+					}
 				}
-			],
-			"description": "Pantry Item management endpoints"
+			]
+		},
+		{
+			"name": "Update Pantry",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated Pantry Name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/pantry/{{pantry_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"pantry",
+						"{{pantry_id}}"
+					]
+				},
+				"description": "Update pantry information. Only the pantry owner can update it. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Pantry",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/pantry/{{pantry_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"pantry",
+						"{{pantry_id}}"
+					]
+				},
+				"description": "Delete a specific pantry by ID. Only the pantry owner can delete it. All pantry items are cascade deleted. Requires user or admin role."
+			},
+			"response": []
 		}
 	],
 	"variable": [
@@ -431,27 +179,20 @@
 		{
 			"key": "jwt_token",
 			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "JWT access token (set automatically from Auth API collection)"
 		},
 		{
 			"key": "user_id",
 			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "User ID from the authenticated user profile (set automatically from Auth API collection)"
 		},
 		{
 			"key": "pantry_id",
 			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "pantry_item_id",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "food_id",
-			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "Pantry ID (automatically set after creating or getting pantry)"
 		}
 	]
 }

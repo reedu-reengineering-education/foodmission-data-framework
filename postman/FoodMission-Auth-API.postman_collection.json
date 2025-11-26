@@ -14,20 +14,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-					"url": {
-						"raw": "{{base_url}}/api/v1/auth/info",
-						"host": [
-							"localhost"
-						],
-						"port": "3000",
-						"path": [
-							"api",
-							"v1",
-							"auth",
-							"info"
-						],
-						"protocol": "http"
-					},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/info",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"info"
+							]
+						},
 						"description": "Get Keycloak authentication configuration. Use this to get the Keycloak server URL, realm, and client ID needed for token requests."
 					},
 					"response": [],
@@ -52,20 +50,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-					"url": {
-						"raw": "{{base_url}}/api/v1/auth/health",
-						"host": [
-							"localhost"
-						],
-						"port": "3000",
-						"path": [
-							"api",
-							"v1",
-							"auth",
-							"health"
-						],
-						"protocol": "http"
-					},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"health"
+							]
+						},
 						"description": "Check if the authentication service is healthy"
 					},
 					"response": []
@@ -140,8 +136,10 @@
 									"if (pm.response.code === 200) {",
 									"    const jsonData = pm.response.json();",
 									"    pm.environment.set('jwt_token', jsonData.access_token);",
-									"    pm.environment.set('refresh_token', jsonData.refresh_token);",
-									"    console.log('Token saved to environment variable: jwt_token');",
+									"    if (jsonData.refresh_token) {",
+									"        pm.environment.set('refresh_token', jsonData.refresh_token);",
+									"    }",
+									"    console.log('✅ Token saved successfully');",
 									"}"
 								],
 								"type": "text/javascript"
@@ -208,7 +206,10 @@
 									"if (pm.response.code === 200) {",
 									"    const jsonData = pm.response.json();",
 									"    pm.environment.set('jwt_token', jsonData.access_token);",
-									"    pm.environment.set('refresh_token', jsonData.refresh_token);",
+									"    if (jsonData.refresh_token) {",
+									"        pm.environment.set('refresh_token', jsonData.refresh_token);",
+									"    }",
+									"    console.log('✅ Token refreshed successfully');",
 									"}"
 								],
 								"type": "text/javascript"
@@ -236,16 +237,14 @@
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/profile",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
 								"auth",
 								"profile"
-							],
-							"protocol": "http"
+							]
 						},
 						"description": "Get authenticated user profile. Automatically creates user record if not exists. Requires valid JWT token."
 					},
@@ -258,7 +257,6 @@
 									"if (pm.response.code === 200) {",
 									"    const jsonData = pm.response.json();",
 									"    pm.environment.set('user_id', jsonData.id);",
-									"    console.log('User ID saved:', jsonData.id);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -280,16 +278,14 @@
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/token-info",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
 								"auth",
 								"token-info"
-							],
-							"protocol": "http"
+							]
 						},
 						"description": "Get detailed information about the current JWT token. Requires valid JWT token."
 					},
@@ -322,17 +318,15 @@
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/profile/preferences",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
 								"auth",
 								"profile",
 								"preferences"
-							],
-							"protocol": "http"
+							]
 						},
 						"description": "Update app-specific user preferences. Requires valid JWT token."
 					},
@@ -365,17 +359,15 @@
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/profile/settings",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
 								"auth",
 								"profile",
 								"settings"
-							],
-							"protocol": "http"
+							]
 						},
 						"description": "Update app-specific user settings. Requires valid JWT token."
 					},
@@ -395,16 +387,14 @@
 						"url": {
 							"raw": "{{base_url}}/api/v1/auth/admin-only",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"v1",
 								"auth",
 								"admin-only"
-							],
-							"protocol": "http"
+							]
 						},
 						"description": "Test endpoint that requires admin role. Used for testing role-based access control."
 					},
@@ -424,12 +414,14 @@
 		{
 			"key": "keycloak_url",
 			"value": "http://localhost:8080",
-			"type": "string"
+			"type": "string",
+			"description": "Keycloak server URL"
 		},
 		{
 			"key": "keycloak_realm",
 			"value": "foodmission",
-			"type": "string"
+			"type": "string",
+			"description": "Keycloak realm name"
 		},
 		{
 			"key": "keycloak_client_id",
@@ -458,17 +450,20 @@
 		{
 			"key": "jwt_token",
 			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "JWT access token (automatically set after getting token)"
 		},
 		{
 			"key": "refresh_token",
 			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "Refresh token for getting new access tokens (automatically set after getting token)"
 		},
 		{
 			"key": "user_id",
 			"value": "",
-			"type": "string"
+			"type": "string",
+			"description": "User ID from the authenticated user profile (automatically set after getting profile)"
 		}
 	]
 }
