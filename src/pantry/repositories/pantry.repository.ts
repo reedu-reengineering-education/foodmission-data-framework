@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Pantry, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 
 export type PantryWithRelations = Prisma.PantryGetPayload<{
   include: {
@@ -30,8 +30,19 @@ export class PantryRepository {
       return await this.prisma.pantry.create({
         data,
       });
-    } catch {
-      throw new Error('failed to create pantry');
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          // Unique constraint violation
+          const target = error.meta?.target as string[] | undefined;
+          if (target?.includes('userId')) {
+            throw new Error('User already has a pantry. Each user can only have one pantry.');
+          }
+          // Note: userId is unique, so duplicate titles for same user are not possible
+        }
+      }
+
+      throw new Error('Failed to create pantry');
     }
   }
 

@@ -26,7 +26,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 
 @ApiTags('pantry')
 @Controller('pantry')
@@ -65,17 +65,25 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get user pantry',
-    description: "Retrieves the authenticated user's pantry with all items",
+    description: "Retrieves the authenticated user's pantry with all items. Returns null if no pantry exists.",
   })
   @ApiResponse({
     status: 200,
     description: 'Pantry retrieved successfully',
     type: PantryResponseDto,
   })
+  @ApiResponse({
+    status: 200,
+    description: 'No pantry found for user',
+    schema: {
+      type: 'null',
+      example: null,
+    },
+  })
   @ApiCrudErrorResponses()
   async getMyPantry(
     @CurrentUser('id') userId: string,
-  ): Promise<PantryResponseDto> {
+  ): Promise<PantryResponseDto | null> {
     return this.pantryService.getPantryByUserId(userId);
   }
 
@@ -113,7 +121,10 @@ export class PantryController {
     type: PantryResponseDto,
   })
   @ApiCrudErrorResponses()
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.pantryService.remove(id);
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<void> {
+    return this.pantryService.remove(id, userId);
   }
 }

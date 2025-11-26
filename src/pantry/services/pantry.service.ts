@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -9,7 +10,7 @@ import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
@@ -21,14 +22,14 @@ export class PantryService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async getPantryByUserId(userId: string): Promise<PantryResponseDto> {
+  async getPantryByUserId(userId: string): Promise<PantryResponseDto | null> {
     this.logger.log(`Getting pantry for user: ${userId}`);
 
-    let pantry = await this.pantryRepository.findByUserId(userId);
+    const pantry = await this.pantryRepository.findByUserId(userId);
 
     if (!pantry) {
-      this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
+      this.logger.log(`No pantry found for user ${userId}`);
+      return null;
     }
 
     return this.transformToResponseDto(pantry);
@@ -36,12 +37,29 @@ export class PantryService {
 
   async create(createPantryDto: CreatePantryDto): Promise<PantryResponseDto> {
     try {
+      // Check if user already has a pantry
+      const existingPantry = await this.pantryRepository.findByUserId(
+        createPantryDto.userId,
+      );
+      if (existingPantry) {
+        throw new ConflictException(
+          'User already has a pantry. Each user can only have one pantry. Use PATCH to update it instead.',
+        );
+      }
+
       const pantry = await this.pantryRepository.create({
         ...createPantryDto,
       });
       return this.transformToResponseDto(pantry);
-    } catch {
-      throw new Error('Failed to create pantry');
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      this.logger.error('Failed to create pantry:', error);
+      throw new BadRequestException('Failed to create pantry');
     }
   }
 

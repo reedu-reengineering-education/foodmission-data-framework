@@ -200,6 +200,16 @@
 								"type": "text"
 							}
 						],
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"pantryId\": \"{{pantry_id}}\",\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
@@ -227,13 +237,43 @@
 					"response": [],
 					"event": [
 						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Check if JWT token exists",
+									"if (!pm.environment.get('jwt_token') || pm.environment.get('jwt_token') === '') {",
+									"    console.error('❌ JWT token is missing!');",
+									"    console.log('Please run \"Get Token (Password Grant)\" from the Auth API collection first.');",
+									"    throw new Error('JWT token is required. Please get a token first.');",
+									"}",
+									"",
+									"// Check if user_id exists (user should be created in database)",
+									"if (!pm.environment.get('user_id') || pm.environment.get('user_id') === '') {",
+									"    console.warn('⚠️  User ID not found. Run \"Get User Profile\" from Auth API collection to create user.');",
+									"}",
+									"",
+									"// Check if pantry_id exists",
+									"if (!pm.environment.get('pantry_id') || pm.environment.get('pantry_id') === '') {",
+									"    console.warn('⚠️  Pantry ID not found. Create a pantry first or set pantry_id manually.');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"if (pm.response.code === 201) {",
 									"    const jsonData = pm.response.json();",
 									"    pm.environment.set('pantry_item_id', jsonData.id);",
-									"    console.log('Pantry Item ID saved:', jsonData.id);",
+									"    console.log('✅ Pantry Item ID saved:', jsonData.id);",
+									"} else if (pm.response.code === 401) {",
+									"    console.error('❌ Unauthorized - JWT token is missing, invalid, or expired.');",
+									"    console.log('Please:');",
+									"    console.log('1. Run \"Get Token (Password Grant)\" from Auth API collection');",
+									"    console.log('2. Run \"Get User Profile\" to create user in database');",
+									"    console.log('3. Try again');",
 									"}"
 								],
 								"type": "text/javascript"
