@@ -347,9 +347,11 @@ describe('PantryService', () => {
         userId: 'user-999',
       };
 
-      // Erste Abfrage: null (nicht gefunden)
-      // Zweite Abfrage: neu erstelltes Pantry
+      // First call: in validatePantryExists - returns null (no pantry exists)
+      // Second call: in create method - returns null (no existing pantry to avoid ConflictException)
+      // Third call: in validatePantryExists after creation - returns new pantry
       mockPantryRepository.findByUserId
+        .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(newPantry);
       mockPantryRepository.create.mockResolvedValue(newPantry);
@@ -358,7 +360,7 @@ describe('PantryService', () => {
 
       expect(result).toBe('pantry-new');
       expect(repository.findByUserId).toHaveBeenCalledWith('user-999');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(2);
+      expect(repository.findByUserId).toHaveBeenCalledTimes(3);
       expect(repository.create).toHaveBeenCalledWith({
         userId: 'user-999',
         title: 'My Pantry',
@@ -372,7 +374,11 @@ describe('PantryService', () => {
         userId: 'user-888',
       };
 
+      // First call: in validatePantryExists - returns null
+      // Second call: in create method - returns null (no existing pantry)
+      // Third call: in validatePantryExists after creation - returns new pantry
       mockPantryRepository.findByUserId
+        .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(newPantry);
       mockPantryRepository.create.mockResolvedValue(newPantry);
@@ -386,14 +392,15 @@ describe('PantryService', () => {
     });
 
     it('should throw BadRequestException if pantry creation fails', async () => {
+      // First call: in validatePantryExists - returns null
+      // Second call: in create method - returns null (no existing pantry)
+      // Third call: in validatePantryExists after failed creation - returns null (pantry was not created)
       mockPantryRepository.findByUserId
+        .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce(null);
       mockPantryRepository.create.mockRejectedValue(new Error('DB error'));
 
-      await expect(service.validatePantryExists('user-777')).rejects.toThrow(
-        Error,
-      );
       await expect(service.validatePantryExists('user-777')).rejects.toThrow(
         'Failed to create pantry',
       );
