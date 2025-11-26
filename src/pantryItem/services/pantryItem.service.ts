@@ -94,6 +94,11 @@ export class PantryItemService {
   ): Promise<MultiplePantryItemResponseDto> {
     const { foodId, unit } = query;
 
+    // Validate food exists if foodId is provided
+    if (foodId) {
+      await this.validateFoodExists(foodId);
+    }
+
     const items = await this.pantryItemRepository.findMany({
       foodId,
       unit,

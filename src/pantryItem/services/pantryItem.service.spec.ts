@@ -193,15 +193,37 @@ describe('PantryItemService', () => {
 
     it('should return filtered pantry items', async () => {
       const mockItems = [mockPantryItem];
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: 'food-1',
+        name: 'Tomatoes',
+      });
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
       const result = await service.findAll({ foodId: 'food-1', unit: Unit.KG });
 
       expect(result.data).toHaveLength(1);
+      expect(prisma.food.findUnique).toHaveBeenCalledWith({
+        where: { id: 'food-1' },
+      });
       expect(repository.findMany).toHaveBeenCalledWith({
         foodId: 'food-1',
         unit: 'KG',
       });
+    });
+
+    it('should throw NotFoundException if foodId is provided but food does not exist', async () => {
+      mockPrismaService.food.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.findAll({ foodId: 'non-existent-food' }),
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findAll({ foodId: 'non-existent-food' }),
+      ).rejects.toThrow('Food item not found');
+      expect(prisma.food.findUnique).toHaveBeenCalledWith({
+        where: { id: 'non-existent-food' },
+      });
+      expect(repository.findMany).not.toHaveBeenCalled();
     });
 
     it('should return empty array if no items found', async () => {
