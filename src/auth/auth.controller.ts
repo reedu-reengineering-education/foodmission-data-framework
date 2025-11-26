@@ -121,11 +121,34 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user preferences',
-    description: 'Update app-specific user preferences.',
+    description:
+      'Update app-specific user preferences. Returns the updated user profile.',
   })
   @ApiBody({
-    description: 'User preferences object',
-    schema: { type: 'object' },
+    description: 'User preferences object (JSON)',
+    schema: {
+      type: 'object',
+      example: {
+        dietaryRestrictions: ['vegetarian'],
+        allergies: ['nuts'],
+        theme: 'dark',
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'User preferences updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        email: { type: 'string', format: 'email' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        keycloakId: { type: 'string' },
+        preferences: { type: 'object' },
+        settings: { type: 'object' },
+      },
+    },
   })
   @ApiAuthenticatedErrorResponses()
   async updatePreferences(
@@ -148,11 +171,34 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user settings',
-    description: 'Update app-specific user settings.',
+    description:
+      'Update app-specific user settings. Returns the updated user profile.',
   })
   @ApiBody({
-    description: 'User settings object',
-    schema: { type: 'object' },
+    description: 'User settings object (JSON)',
+    schema: {
+      type: 'object',
+      example: {
+        language: 'en',
+        notifications: true,
+        timezone: 'UTC',
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'User settings updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        email: { type: 'string', format: 'email' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        keycloakId: { type: 'string' },
+        preferences: { type: 'object' },
+        settings: { type: 'object' },
+      },
+    },
   })
   @ApiAuthenticatedErrorResponses()
   async updateSettings(
