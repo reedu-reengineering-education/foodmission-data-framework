@@ -8,7 +8,6 @@ import {
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   handleServiceError,
-  ERROR_CODES,
   formatErrorForLogging,
   handlePrismaError,
 } from '../../common/utils/error.utils';

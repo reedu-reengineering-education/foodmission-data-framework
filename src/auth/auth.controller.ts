@@ -13,9 +13,7 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
-  ApiUnauthorizedResponse,
   ApiBody,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
