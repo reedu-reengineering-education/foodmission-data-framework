@@ -3131,18 +3131,12 @@ components:
     CreatePantryDto:
       type: object
       properties:
-        userId:
-          type: string
-          description: The user ID (must match the authenticated user)
-          example: uuid-user-id
-          maxLength: 255
         title:
           type: string
           description: The name of the pantry
-          example: Home or Work
+          example: Home Pantry
           maxLength: 255
       required:
-        - userId
         - title
     PantryItemResponseDto:
       type: object
