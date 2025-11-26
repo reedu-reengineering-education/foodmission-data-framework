@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { PantryItemController } from './pantryItem.controller';
 import { PantryItemService } from '../services/pantryItem.service';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
@@ -119,10 +119,16 @@ describe('PantryItemController', () => {
       data: [],
     };
 
+    const mockRequest = {
+      path: '/pantry-item',
+      originalUrl: '/api/v1/pantry-item',
+      url: '/api/v1/pantry-item',
+    } as any;
+
     it('should return pantry items without query params', async () => {
       mockPantryItemService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll({});
+      const result = await controller.findAll({}, mockRequest);
 
       expect(result).toEqual(mockResponse);
       expect(service.findAll).toHaveBeenCalledWith({});
@@ -142,7 +148,7 @@ describe('PantryItemController', () => {
         data: [],
       });
 
-      const result = await controller.findAll(query);
+      const result = await controller.findAll(query, mockRequest);
 
       expect(result).toEqual({ ...mockResponse, data: [] });
       expect(service.findAll).toHaveBeenCalledWith(query);
@@ -160,10 +166,26 @@ describe('PantryItemController', () => {
 
       mockPantryItemService.findAll.mockResolvedValue(paginatedResponse);
 
-      const result = await controller.findAll(query);
+      const result = await controller.findAll(query, mockRequest);
 
       expect(result).toEqual(paginatedResponse);
       expect(service.findAll).toHaveBeenCalledWith(query);
+    });
+
+    it('should throw BadRequestException when path has trailing slash', async () => {
+      const requestWithTrailingSlash = {
+        path: '/pantry-item',
+        originalUrl: '/api/v1/pantry-item/',
+        url: '/api/v1/pantry-item/',
+      } as any;
+
+      await expect(
+        controller.findAll({}, requestWithTrailingSlash),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        controller.findAll({}, requestWithTrailingSlash),
+      ).rejects.toThrow('Invalid request path');
+      expect(service.findAll).not.toHaveBeenCalled();
     });
   });
 
