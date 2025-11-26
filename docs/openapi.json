@@ -85,23 +85,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -112,16 +95,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -132,16 +105,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -232,23 +195,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -259,16 +205,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -279,16 +215,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -374,23 +300,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -401,16 +310,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -421,16 +320,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -552,23 +441,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -579,16 +451,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -599,16 +461,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -664,23 +516,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -691,16 +526,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -711,16 +536,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -768,23 +583,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -795,16 +593,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -815,16 +603,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -835,20 +613,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -920,23 +684,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -947,16 +694,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -967,16 +704,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -987,20 +714,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1055,23 +768,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1082,16 +778,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1102,16 +788,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1122,20 +798,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1344,23 +1006,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1371,16 +1016,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1391,16 +1026,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1411,20 +1036,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1468,23 +1079,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1495,16 +1089,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1555,23 +1139,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1582,16 +1149,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1656,23 +1213,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1683,16 +1223,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1703,16 +1233,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1723,20 +1243,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1811,23 +1317,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1838,16 +1327,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1858,20 +1337,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1925,23 +1390,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1952,16 +1400,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1972,20 +1410,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2038,23 +1462,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2065,16 +1472,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2085,16 +1482,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2105,20 +1492,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2166,23 +1539,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2193,16 +1549,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2213,16 +1559,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2233,20 +1569,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2310,23 +1632,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2337,16 +1642,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2357,20 +1652,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2701,23 +1982,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2728,16 +1992,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2748,16 +2002,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2768,20 +2012,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2792,20 +2022,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2848,23 +2064,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2875,16 +2074,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2895,16 +2084,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2915,20 +2094,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2939,20 +2104,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -2995,23 +2146,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3022,16 +2156,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3042,16 +2166,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3062,20 +2176,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3086,20 +2186,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3155,23 +2241,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3182,16 +2251,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3202,16 +2261,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3222,20 +2271,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3246,20 +2281,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3305,23 +2326,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3332,16 +2336,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3352,16 +2346,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3372,20 +2356,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3396,20 +2366,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3458,23 +2414,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3485,16 +2424,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3505,16 +2434,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3525,20 +2444,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3549,20 +2454,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3671,23 +2562,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3698,16 +2572,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3718,16 +2582,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3738,20 +2592,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3762,20 +2602,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3819,23 +2645,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3846,16 +2655,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3866,16 +2665,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3886,20 +2675,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3910,20 +2685,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3971,23 +2732,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -3998,16 +2742,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4018,16 +2752,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4038,20 +2762,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4062,20 +2772,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4132,23 +2828,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4159,16 +2838,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4179,16 +2848,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4199,20 +2858,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4223,20 +2868,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4276,23 +2907,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4303,16 +2917,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4323,16 +2927,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4343,20 +2937,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4367,20 +2947,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4429,23 +2995,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4456,16 +3005,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4476,16 +3015,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4496,20 +3025,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4520,20 +3035,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4575,23 +3076,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4602,16 +3086,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4622,16 +3096,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4642,20 +3106,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4666,20 +3116,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4728,23 +3164,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4755,16 +3174,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4775,16 +3184,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4795,20 +3194,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4848,23 +3233,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4875,16 +3243,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4895,16 +3253,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4915,20 +3263,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -4939,20 +3273,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5011,23 +3331,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5038,16 +3341,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5061,20 +3354,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5085,20 +3364,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5138,23 +3403,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5165,16 +3413,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5191,20 +3429,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5253,23 +3477,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5280,16 +3487,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5300,16 +3497,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5320,20 +3507,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5344,20 +3517,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5432,23 +3591,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5459,16 +3601,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5479,16 +3611,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5499,20 +3621,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5523,20 +3631,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5584,23 +3678,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5611,16 +3688,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5631,16 +3698,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5651,20 +3708,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5675,20 +3718,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5745,23 +3774,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5772,16 +3784,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5792,16 +3794,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5812,20 +3804,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5836,20 +3814,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5889,23 +3853,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
-            "schema": {
-              "example": {
-                "statusCode": 400,
-                "message": "Validation failed",
-                "error": "VALIDATION_ERROR",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "errors": [
-                    "name should not be empty",
-                    "email must be a valid email",
-                    "age must be a positive number"
-                  ]
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5916,16 +3863,6 @@
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
-            "schema": {
-              "example": {
-                "statusCode": 401,
-                "message": "Unauthorized",
-                "error": "UNAUTHORIZED",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5936,16 +3873,6 @@
           },
           "403": {
             "description": "Forbidden - Insufficient permissions",
-            "schema": {
-              "example": {
-                "statusCode": 403,
-                "message": "Forbidden - insufficient permissions",
-                "error": "FORBIDDEN",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456"
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5956,20 +3883,6 @@
           },
           "404": {
             "description": "Not Found - Resource does not exist",
-            "schema": {
-              "example": {
-                "statusCode": 404,
-                "message": "Resource with identifier '123' not found",
-                "error": "RESOURCE_NOT_FOUND",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example/123",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "123"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -5980,20 +3893,6 @@
           },
           "409": {
             "description": "Conflict - Resource already exists or state conflict",
-            "schema": {
-              "example": {
-                "statusCode": 409,
-                "message": "Resource with identifier 'email=test@example.com' already exists",
-                "error": "RESOURCE_ALREADY_EXISTS",
-                "timestamp": "2024-01-15T10:30:00.000Z",
-                "path": "/api/v1/example",
-                "correlationId": "abc123def456",
-                "details": {
-                  "resource": "Resource",
-                  "identifier": "email=test@example.com"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
