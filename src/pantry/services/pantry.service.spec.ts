@@ -4,6 +4,7 @@ import { PantryRepository } from '../repositories/pantry.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
@@ -73,25 +74,15 @@ describe('PantryService', () => {
       expect(repository.create).not.toHaveBeenCalled();
     });
 
-    it('should create new pantry if none exists for user', async () => {
-      const newPantry = {
-        ...mockPantry,
-        id: 'pantry-2',
-        userId: 'user-2',
-      };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+    it('should return null when no pantry exists for user', async () => {
+      mockPantryRepository.findByUserId.mockResolvedValue(null);
 
       const result = await service.getPantryByUserId('user-2');
 
       expect(repository.findByUserId).toHaveBeenCalledWith('user-2');
       expect(repository.findByUserId).toHaveBeenCalledTimes(1);
-      expect(repository.create).toHaveBeenCalledWith({
-        userId: 'user-2',
-        title: 'My Pantry',
-      });
-      expect(result).toHaveProperty('id', 'pantry-2');
-      expect(result).toHaveProperty('userId', 'user-2');
+      expect(repository.create).not.toHaveBeenCalled();
+      expect(result).toBeNull();
     });
 
     it('should log when getting pantry for user', async () => {
@@ -103,10 +94,8 @@ describe('PantryService', () => {
       expect(loggerSpy).toHaveBeenCalledWith('Getting pantry for user: user-1');
     });
 
-    it('should log when creating new pantry', async () => {
-      const newPantry = { ...mockPantry, id: 'pantry-3', userId: 'user-3' };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+    it('should log when no pantry found', async () => {
+      mockPantryRepository.findByUserId.mockResolvedValue(null);
 
       const loggerSpy = jest.spyOn(service['logger'], 'log');
 
@@ -114,7 +103,7 @@ describe('PantryService', () => {
 
       expect(loggerSpy).toHaveBeenCalledWith('Getting pantry for user: user-3');
       expect(loggerSpy).toHaveBeenCalledWith(
-        'No pantry found for user user-3, creating one...',
+        'No pantry found for user user-3',
       );
     });
   });
@@ -126,6 +115,7 @@ describe('PantryService', () => {
         userId: 'user-2',
       };
 
+      mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockResolvedValue({
         id: 'pantry-2',
         ...createDto,
@@ -138,6 +128,7 @@ describe('PantryService', () => {
       expect(result).toHaveProperty('id', 'pantry-2');
       expect(result.title).toBe(createDto.title);
       expect(result.userId).toBe(createDto.userId);
+      expect(repository.findByUserId).toHaveBeenCalledWith(createDto.userId);
       expect(repository.create).toHaveBeenCalledWith(createDto);
     });
 
@@ -147,6 +138,7 @@ describe('PantryService', () => {
         userId: 'user-2',
       };
 
+      mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockRejectedValue(
         new Error('Database error'),
       );
@@ -162,6 +154,7 @@ describe('PantryService', () => {
         userId: 'user-5',
       };
 
+      mockPantryRepository.findByUserId.mockResolvedValue(null);
       mockPantryRepository.create.mockResolvedValue({
         id: 'pantry-5',
         ...createDto,
@@ -171,12 +164,34 @@ describe('PantryService', () => {
 
       await service.create(createDto);
 
+      expect(repository.findByUserId).toHaveBeenCalledWith(createDto.userId);
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Custom Pantry',
           userId: 'user-5',
         }),
       );
+    });
+
+    it('should throw ConflictException when user already has a pantry', async () => {
+      const createDto = {
+        title: 'New Pantry',
+        userId: 'user-2',
+      };
+
+      const existingPantry = {
+        ...mockPantry,
+        userId: 'user-2',
+      };
+      mockPantryRepository.findByUserId.mockResolvedValue(existingPantry);
+
+      await expect(service.create(createDto)).rejects.toThrow(
+        ConflictException,
+      );
+      await expect(service.create(createDto)).rejects.toThrow(
+        'User already has a pantry',
+      );
+      expect(repository.create).not.toHaveBeenCalled();
     });
   });
 
