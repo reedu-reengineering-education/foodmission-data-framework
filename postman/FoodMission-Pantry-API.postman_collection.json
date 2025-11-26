@@ -287,7 +287,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/pantry-item?page=1&limit=10",
+							"raw": "{{base_url}}/api/v1/pantry-item",
 							"host": [
 								"localhost"
 							],
@@ -299,18 +299,6 @@
 							],
 							"protocol": "http",
 							"query": [
-								{
-									"key": "page",
-									"value": "1",
-									"description": "Page number for pagination",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "10",
-									"description": "Items per page",
-									"disabled": true
-								},
 								{
 									"key": "foodId",
 									"value": "{{food_id}}",
@@ -325,7 +313,7 @@
 								}
 							]
 						},
-						"description": "Retrieve pantry items with optional filtering. Requires user or admin role. Query params: page, limit, foodId, unit, expiryDate"
+						"description": "Retrieve pantry items with optional filtering. Requires user or admin role. Query params: foodId, unit, expiryDate"
 					},
 					"response": []
 				},
