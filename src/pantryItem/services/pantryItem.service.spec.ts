@@ -521,7 +521,6 @@ describe('PantryItemService', () => {
 
       await service.update('item-1', updateDtoWithoutDate, 'user-1');
 
-      // When expiryDate is undefined, it should not be included in the update
       expect(repository.update).toHaveBeenCalledWith(
         'item-1',
         expect.objectContaining({
@@ -530,6 +529,90 @@ describe('PantryItemService', () => {
       );
       const updateCall = (repository.update as jest.Mock).mock.calls[0][1];
       expect(updateCall).not.toHaveProperty('expiryDate');
+    });
+
+    it('should accept decimal quantity values', async () => {
+      const updateDtoWithDecimal = {
+        quantity: 100.5,
+        unit: Unit.G,
+      };
+
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        quantity: 100.5,
+        unit: Unit.G,
+      });
+
+      const result = await service.update('item-1', updateDtoWithDecimal, 'user-1');
+
+      expect(result.quantity).toBe(100.5);
+      expect(result.unit).toBe(Unit.G);
+      expect(repository.update).toHaveBeenCalledWith(
+        'item-1',
+        expect.objectContaining({
+          quantity: 100.5,
+          unit: Unit.G,
+        }),
+      );
+    });
+
+    it('should accept small decimal quantity values (min 0.01)', async () => {
+      const updateDtoWithSmallDecimal = {
+        quantity: 0.5,
+      };
+
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        quantity: 0.5,
+      });
+
+      const result = await service.update('item-1', updateDtoWithSmallDecimal, 'user-1');
+
+      expect(result.quantity).toBe(0.5);
+      expect(repository.update).toHaveBeenCalledWith(
+        'item-1',
+        expect.objectContaining({
+          quantity: 0.5,
+        }),
+      );
+    });
+
+    it('should update with all fields including date string', async () => {
+      const updateDtoWithAllFields = {
+        quantity: 100,
+        unit: Unit.G,
+        notes: 'Buy organic if available',
+        expiryDate: '2027-03-15' as any,
+      };
+
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        quantity: 100,
+        unit: Unit.G,
+        notes: 'Buy organic if available',
+        expiryDate: new Date('2027-03-15'),
+      });
+
+      const result = await service.update('item-1', updateDtoWithAllFields, 'user-1');
+
+      expect(result.quantity).toBe(100);
+      expect(result.unit).toBe(Unit.G);
+      expect(result.notes).toBe('Buy organic if available');
+      expect(repository.update).toHaveBeenCalledWith(
+        'item-1',
+        expect.objectContaining({
+          quantity: 100,
+          unit: Unit.G,
+          notes: 'Buy organic if available',
+          expiryDate: expect.any(Date),
+        }),
+      );
+      const updateCall = (repository.update as jest.Mock).mock.calls[0][1];
+      expect(updateCall.expiryDate).toBeInstanceOf(Date);
+      expect(updateCall.expiryDate.toISOString()).toContain('2027-03-15');
     });
   });
 
