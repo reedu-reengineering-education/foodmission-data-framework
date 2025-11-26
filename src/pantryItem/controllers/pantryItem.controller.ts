@@ -24,7 +24,7 @@ import { ApiCrudErrorResponses } from '../../common/decorators/api-error-respons
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryItemService } from '../services/pantryItem.service';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import {
@@ -66,7 +66,8 @@ export class PantryItemController {
   }
 
   @Get()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get pantry items',
     description: 'Retrieve pantry items with optional filtering',

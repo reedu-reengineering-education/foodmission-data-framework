@@ -200,16 +200,6 @@
 								"type": "text"
 							}
 						],
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"pantryId\": \"{{pantry_id}}\",\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
@@ -285,7 +275,13 @@
 					"name": "Get All Pantry Items",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/pantry-item?page=1&limit=10",
 							"host": [
@@ -325,7 +321,7 @@
 								}
 							]
 						},
-						"description": "Retrieve pantry items with optional filtering. This endpoint is public. Query params: page, limit, foodId, unit, expiryDate"
+						"description": "Retrieve pantry items with optional filtering. Requires user or admin role. Query params: page, limit, foodId, unit, expiryDate"
 					},
 					"response": []
 				},
