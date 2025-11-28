@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -119,27 +118,6 @@ export class UserController {
       throw new Error('User not found');
     }
     return user.preferences || {};
-  }
-
-  @Get(':id/checkedShoppingListItemInPantry')
-  @Cacheable('user_checked shopping list item in pantry', 600)
-  @Roles('admin', 'user')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'Get user checked if shopping list item in pantry' })
-  @ApiResponse({
-    status: 200,
-    description: 'User checked shopping list item in pantry',
-  })
-  async getCheckedShoppingListItemInPantry(@Param('id') id: string) {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return {
-      checkedShoppingListItemInPantry:
-        user.checkedShoppingListItemInPantry ?? true,
-    };
   }
 
   @Patch(':id/preferences')
