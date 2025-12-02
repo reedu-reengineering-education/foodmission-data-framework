@@ -581,26 +581,6 @@ paths:
         - JWT-auth: []
       summary: Update user preferences
       tags: *ref_1
-  /api/v1/users/{id}/checkedShoppingListItemInPantry:
-    get:
-      operationId: getCheckedShoppingListItemInPantry
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: User checked shopping list item in pantry
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
-      summary: Get user checked if shopping list item in pantry
-      tags: *ref_1
   /api/v1/foods:
     post:
       description: Creates a new food item in the database. Requires user or admin role.
@@ -1952,9 +1932,9 @@ paths:
   /api/v1/pantry:
     post:
       description: >-
-        Creates a new pantry for the authenticated user. Each user can only have
-        one pantry. If a pantry already exists, returns a conflict error.
-        Requires user or admin role.
+        Creates a new pantry for the authenticated user. Users can have multiple
+        pantries. If a pantry with the same title already exists for the user,
+        returns a conflict error. Requires user or admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -1995,7 +1975,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
         '409':
-          description: User already has a pantry. Each user can only have one pantry.
+          description: A pantry with this title already exists for this user.
       security:
         - JWT-auth: []
       summary: Create a new Pantry
@@ -2003,17 +1983,19 @@ paths:
         - pantry
     get:
       description: >-
-        Retrieves the authenticated user's pantry with all items. Returns null
-        if no pantry exists.
-      operationId: getMyPantry
+        Retrieves all pantries for the authenticated user with all items.
+        Returns an empty array if no pantries exist.
+      operationId: getAllPantries
       parameters: []
       responses:
         '200':
-          description: Pantry retrieved successfully
+          description: List of pantries retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PantryResponseDto'
+                type: array
+                items:
+                  $ref: '#/components/schemas/PantryResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -2046,9 +2028,54 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
-      summary: Get user pantry
+      summary: Get all user pantries
       tags: *ref_9
   /api/v1/pantry/{id}:
+    get:
+      description: >-
+        Retrieves a specific pantry by ID for the authenticated user. Only the
+        pantry owner can access it.
+      operationId: getPantryById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Pantry retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this pantry
+        '404':
+          description: Pantry not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get pantry by ID
+      tags: *ref_9
     patch:
       description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
@@ -2146,9 +2173,10 @@ paths:
   /api/v1/pantry-item:
     post:
       description: >-
-        Creates a new Pantry Item and adds it to the user's pantry. The pantry
-        is automatically determined from the authenticated user (each user has
-        one pantry). Requires user or admin role.
+        Creates a new Pantry Item and adds it to the specified pantry. The
+        pantryId must be provided in the request body and must belong to the
+        authenticated user. Users can have multiple pantries. Requires user or
+        admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -2201,10 +2229,18 @@ paths:
         - pantry-item
     get:
       description: >-
-        Retrieve pantry items from the authenticated user's pantry with optional
-        filtering. Returns all items from the user's pantry.
+        Retrieve pantry items from a specific pantry. The pantryId must be
+        provided as a query parameter and must belong to the authenticated user.
+        Optional filtering by foodId, unit, or expiryDate.
       operationId: findAll
       parameters:
+        - name: pantryId
+          required: true
+          in: query
+          description: The ID of the pantry to get items from (UUID)
+          schema:
+            example: uuid-pantry-id
+            type: string
         - name: foodId
           required: false
           in: query
@@ -3227,6 +3263,10 @@ components:
     CreatePantryItemDto:
       type: object
       properties:
+        pantryId:
+          type: string
+          description: The ID of the pantry to add the item to
+          example: uuid-pantry-id
         foodId:
           type: string
           description: The ID of the food item to add
@@ -3258,6 +3298,7 @@ components:
           description: When the food will expire (ISO date string)
           example: '2027-02-02'
       required:
+        - pantryId
         - foodId
         - quantity
         - unit
