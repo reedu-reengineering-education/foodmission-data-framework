@@ -32,7 +32,7 @@ export interface ApiCommonErrorResponsesOptions {
 
 /**
  * Decorator to add common error responses to an endpoint
- * 
+ *
  * @example
  * ```typescript
  * @Post()
@@ -111,7 +111,8 @@ export function ApiCommonErrorResponses(
     decorators.push(
       ApiResponse({
         status: 422,
-        description: 'Unprocessable Entity - Request is well-formed but semantically incorrect',
+        description:
+          'Unprocessable Entity - Request is well-formed but semantically incorrect',
         type: ApiErrorResponseDto,
       }),
     );
@@ -174,4 +175,3 @@ export function ApiCrudErrorResponses() {
     conflict: true,
   });
 }
-

@@ -799,7 +799,9 @@ describe('ShoppingListItemService', () => {
     expect(repository.findById).toHaveBeenCalledWith('item-1');
     expect(userRepository.findById).toHaveBeenCalledWith('user-1');
     expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith('user-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
+      'user-1',
+    );
     expect(pantryItemService.createFromShoppingList).toHaveBeenCalledWith(
       expect.objectContaining({
         foodId: mockShoppingListItem.foodId,
@@ -904,7 +906,9 @@ describe('ShoppingListItemService', () => {
     expect(repository.findById).toHaveBeenCalledWith('item-1');
     expect(userRepository.findById).toHaveBeenCalledWith('user-1');
     expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith('user-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
+      'user-1',
+    );
     expect(pantryItemService.createFromShoppingList).toHaveBeenCalled();
     expect(result).toBeDefined();
     expect(result.id).toBe('1');

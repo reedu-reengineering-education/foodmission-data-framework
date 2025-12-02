@@ -63,7 +63,10 @@ describe('PantryService', () => {
 
   describe('getAllPantriesByUserId', () => {
     it('should return all pantries for user', async () => {
-      const pantries = [mockPantry, { ...mockPantry, id: 'pantry-2', title: 'Second Pantry' }];
+      const pantries = [
+        mockPantry,
+        { ...mockPantry, id: 'pantry-2', title: 'Second Pantry' },
+      ];
       mockPantryRepository.findAllByUserId.mockResolvedValue(pantries);
 
       const result = await service.getAllPantriesByUserId('user-1');
@@ -90,7 +93,9 @@ describe('PantryService', () => {
 
       await service.getAllPantriesByUserId('user-1');
 
-      expect(loggerSpy).toHaveBeenCalledWith('Getting all pantries for user: user-1');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Getting all pantries for user: user-1',
+      );
     });
   });
 
@@ -109,12 +114,12 @@ describe('PantryService', () => {
     it('should throw NotFoundException when pantry does not exist', async () => {
       mockPantryRepository.findById.mockResolvedValue(null);
 
-      await expect(service.getPantryById('non-existent', 'user-1')).rejects.toThrow(
-        NotFoundException,
-      );
-      await expect(service.getPantryById('non-existent', 'user-1')).rejects.toThrow(
-        'Pantry not found',
-      );
+      await expect(
+        service.getPantryById('non-existent', 'user-1'),
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        service.getPantryById('non-existent', 'user-1'),
+      ).rejects.toThrow('Pantry not found');
     });
 
     it('should throw ForbiddenException when pantry belongs to different user', async () => {
@@ -137,7 +142,9 @@ describe('PantryService', () => {
 
       await service.getPantryById('pantry-1', 'user-1');
 
-      expect(loggerSpy).toHaveBeenCalledWith('Getting pantry pantry-1 for user: user-1');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Getting pantry pantry-1 for user: user-1',
+      );
     });
   });
 
@@ -369,12 +376,12 @@ describe('PantryService', () => {
     it('should throw NotFoundException when pantryId is provided but pantry does not exist', async () => {
       mockPantryRepository.findById.mockResolvedValue(null);
 
-      await expect(service.validatePantryExists('user-1', 'non-existent')).rejects.toThrow(
-        NotFoundException,
-      );
-      await expect(service.validatePantryExists('user-1', 'non-existent')).rejects.toThrow(
-        'Pantry not found',
-      );
+      await expect(
+        service.validatePantryExists('user-1', 'non-existent'),
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        service.validatePantryExists('user-1', 'non-existent'),
+      ).rejects.toThrow('Pantry not found');
     });
 
     it('should throw ForbiddenException when pantryId is provided but belongs to different user', async () => {
@@ -383,12 +390,12 @@ describe('PantryService', () => {
         userId: 'other-user',
       });
 
-      await expect(service.validatePantryExists('user-1', 'pantry-1')).rejects.toThrow(
-        ForbiddenException,
-      );
-      await expect(service.validatePantryExists('user-1', 'pantry-1')).rejects.toThrow(
-        'No permission - user does not own this pantry',
-      );
+      await expect(
+        service.validatePantryExists('user-1', 'pantry-1'),
+      ).rejects.toThrow(ForbiddenException);
+      await expect(
+        service.validatePantryExists('user-1', 'pantry-1'),
+      ).rejects.toThrow('No permission - user does not own this pantry');
     });
 
     it('should return first pantry id when pantryId is not provided', async () => {

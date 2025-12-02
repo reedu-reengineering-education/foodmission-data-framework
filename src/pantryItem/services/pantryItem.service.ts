@@ -39,7 +39,9 @@ export class PantryItemService {
     pantryId: string,
   ): Promise<PantryItemResponseDto> {
     if (!pantryId) {
-      throw new BadRequestException('pantryId is required to create pantry item from shopping list');
+      throw new BadRequestException(
+        'pantryId is required to create pantry item from shopping list',
+      );
     }
 
     const createPantryItemDto = new CreatePantryItemDto(
@@ -113,12 +115,16 @@ export class PantryItemService {
 
       // Handle Prisma errors
       if (error && typeof error === 'object' && 'code' in error) {
-        const prismaError = error as any;
+        const prismaError = error;
         if (prismaError.code === 'P2002') {
-          throw new ConflictException('This food item is already in your pantry');
+          throw new ConflictException(
+            'This food item is already in your pantry',
+          );
         }
         if (prismaError.code === 'P2003') {
-          throw new BadRequestException('Invalid reference: food or pantry does not exist');
+          throw new BadRequestException(
+            'Invalid reference: food or pantry does not exist',
+          );
         }
       }
 
@@ -144,11 +150,11 @@ export class PantryItemService {
     const filter: any = {
       pantryId,
     };
-    
+
     if (foodId) {
       filter.foodId = foodId;
     }
-    
+
     if (unit) {
       filter.unit = unit;
     }

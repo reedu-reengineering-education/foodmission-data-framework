@@ -70,7 +70,10 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      handleServiceError(error, ShoppingListItemService.ERROR_MESSAGES.CREATE_FAILED);
+      handleServiceError(
+        error,
+        ShoppingListItemService.ERROR_MESSAGES.CREATE_FAILED,
+      );
     }
   }
 
@@ -258,7 +261,9 @@ export class ShoppingListItemService {
 
   private async validateUserExists(
     userId: string,
-  ): Promise<NonNullable<Awaited<ReturnType<typeof this.userRepository.findById>>>> {
+  ): Promise<
+    NonNullable<Awaited<ReturnType<typeof this.userRepository.findById>>>
+  > {
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException(

@@ -69,7 +69,8 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all user pantries',
-    description: "Retrieves all pantries for the authenticated user with all items. Returns an empty array if no pantries exist.",
+    description:
+      'Retrieves all pantries for the authenticated user with all items. Returns an empty array if no pantries exist.',
   })
   @ApiResponse({
     status: 200,
@@ -88,7 +89,8 @@ export class PantryController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get pantry by ID',
-    description: 'Retrieves a specific pantry by ID for the authenticated user. Only the pantry owner can access it.',
+    description:
+      'Retrieves a specific pantry by ID for the authenticated user. Only the pantry owner can access it.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({

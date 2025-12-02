@@ -35,7 +35,9 @@ export class PantryService {
     }
 
     if (pantry.userId !== userId) {
-      throw new ForbiddenException('No permission - user does not own this pantry');
+      throw new ForbiddenException(
+        'No permission - user does not own this pantry',
+      );
     }
 
     return this.transformToResponseDto(pantry);
@@ -67,7 +69,10 @@ export class PantryService {
         throw error;
       }
       // Handle repository error for duplicate title
-      if (error instanceof Error && error.message.includes('title already exists')) {
+      if (
+        error instanceof Error &&
+        error.message.includes('title already exists')
+      ) {
         throw new ConflictException(error.message);
       }
       this.logger.error('Failed to create pantry:', error);
@@ -134,7 +139,9 @@ export class PantryService {
         throw new NotFoundException('Pantry not found');
       }
       if (pantry.userId !== userId) {
-        throw new ForbiddenException('No permission - user does not own this pantry');
+        throw new ForbiddenException(
+          'No permission - user does not own this pantry',
+        );
       }
       return pantryId;
     }

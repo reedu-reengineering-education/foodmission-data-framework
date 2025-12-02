@@ -118,7 +118,10 @@ describe('PantryItemService', () => {
       expect(result).toHaveProperty('id');
       expect(result.quantity).toBe(5);
       expect(result.pantryId).toBe('pantry-1');
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', 'pantry-1');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+        'user-1',
+        'pantry-1',
+      );
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
       });
@@ -211,7 +214,8 @@ describe('PantryItemService', () => {
       });
 
       // Verify the date was correctly parsed
-      const createCall = (prisma.pantryItem.create as jest.Mock).mock.calls[0][0];
+      const createCall = (prisma.pantryItem.create as jest.Mock).mock
+        .calls[0][0];
       expect(createCall.data.expiryDate).toBeInstanceOf(Date);
       expect(createCall.data.expiryDate.toISOString()).toContain('2027-02-02');
     });
@@ -303,7 +307,10 @@ describe('PantryItemService', () => {
 
       expect(result.data).toHaveLength(1);
       expect(result.data[0]).toHaveProperty('id');
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', 'pantry-1');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+        'user-1',
+        'pantry-1',
+      );
       expect(repository.findMany).toHaveBeenCalledWith({
         pantryId: 'pantry-1',
         // foodId and unit should not be in the filter when not provided
@@ -322,10 +329,16 @@ describe('PantryItemService', () => {
       });
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({ pantryId: 'pantry-1', foodId: 'food-1', unit: Unit.KG }, 'user-1');
+      const result = await service.findAll(
+        { pantryId: 'pantry-1', foodId: 'food-1', unit: Unit.KG },
+        'user-1',
+      );
 
       expect(result.data).toHaveLength(1);
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', 'pantry-1');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+        'user-1',
+        'pantry-1',
+      );
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
       });
@@ -341,12 +354,21 @@ describe('PantryItemService', () => {
       mockPrismaService.food.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.findAll({ pantryId: 'pantry-1', foodId: 'non-existent-food' }, 'user-1'),
+        service.findAll(
+          { pantryId: 'pantry-1', foodId: 'non-existent-food' },
+          'user-1',
+        ),
       ).rejects.toThrow(NotFoundException);
       await expect(
-        service.findAll({ pantryId: 'pantry-1', foodId: 'non-existent-food' }, 'user-1'),
+        service.findAll(
+          { pantryId: 'pantry-1', foodId: 'non-existent-food' },
+          'user-1',
+        ),
       ).rejects.toThrow('Food item not found');
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', 'pantry-1');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+        'user-1',
+        'pantry-1',
+      );
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: 'non-existent-food' },
       });
@@ -360,7 +382,10 @@ describe('PantryItemService', () => {
       const result = await service.findAll({ pantryId: 'pantry-1' }, 'user-1');
 
       expect(result.data).toHaveLength(0);
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', 'pantry-1');
+      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+        'user-1',
+        'pantry-1',
+      );
     });
 
     it('should not filter by unit when unit is not provided', async () => {
@@ -386,7 +411,10 @@ describe('PantryItemService', () => {
       mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({ pantryId: 'pantry-1', unit: Unit.KG }, 'user-1');
+      const result = await service.findAll(
+        { pantryId: 'pantry-1', unit: Unit.KG },
+        'user-1',
+      );
 
       expect(result.data).toHaveLength(1);
       expect(repository.findMany).toHaveBeenCalledWith({
@@ -404,7 +432,10 @@ describe('PantryItemService', () => {
       });
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
-      const result = await service.findAll({ pantryId: 'pantry-1', foodId: 'food-1' }, 'user-1');
+      const result = await service.findAll(
+        { pantryId: 'pantry-1', foodId: 'food-1' },
+        'user-1',
+      );
 
       expect(result.data).toHaveLength(1);
       expect(repository.findMany).toHaveBeenCalledWith({
@@ -584,7 +615,11 @@ describe('PantryItemService', () => {
         unit: Unit.G,
       });
 
-      const result = await service.update('item-1', updateDtoWithDecimal, 'user-1');
+      const result = await service.update(
+        'item-1',
+        updateDtoWithDecimal,
+        'user-1',
+      );
 
       expect(result.quantity).toBe(100.5);
       expect(result.unit).toBe(Unit.G);
@@ -608,7 +643,11 @@ describe('PantryItemService', () => {
         quantity: 0.5,
       });
 
-      const result = await service.update('item-1', updateDtoWithSmallDecimal, 'user-1');
+      const result = await service.update(
+        'item-1',
+        updateDtoWithSmallDecimal,
+        'user-1',
+      );
 
       expect(result.quantity).toBe(0.5);
       expect(repository.update).toHaveBeenCalledWith(
@@ -636,7 +675,11 @@ describe('PantryItemService', () => {
         expiryDate: new Date('2027-03-15'),
       });
 
-      const result = await service.update('item-1', updateDtoWithAllFields, 'user-1');
+      const result = await service.update(
+        'item-1',
+        updateDtoWithAllFields,
+        'user-1',
+      );
 
       expect(result.quantity).toBe(100);
       expect(result.unit).toBe(Unit.G);
@@ -706,9 +749,16 @@ describe('PantryItemService', () => {
       id: 'new-item',
     });
 
-    const result = await service.createFromShoppingList(dto, 'user-1', pantryId);
+    const result = await service.createFromShoppingList(
+      dto,
+      'user-1',
+      pantryId,
+    );
 
-    expect(pantryService.validatePantryExists).toHaveBeenCalledWith('user-1', pantryId);
+    expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
+      'user-1',
+      pantryId,
+    );
     expect(prisma.pantryItem.create).toHaveBeenCalledWith({
       data: {
         pantryId: 'pantry-1',

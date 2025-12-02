@@ -45,7 +45,9 @@ export class PantryRepository {
           // Unique constraint violation - only for [userId, title] composite constraint
           const target = error.meta?.target as string[] | undefined;
           if (target?.includes('userId') && target?.includes('title')) {
-            throw new Error('A pantry with this title already exists for this user.');
+            throw new Error(
+              'A pantry with this title already exists for this user.',
+            );
           }
         }
       }
