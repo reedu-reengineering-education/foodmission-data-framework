@@ -26,6 +26,7 @@ import {
 } from '../repositories/shoppingListItem.repository';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
+import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
 
@@ -48,6 +49,7 @@ export class ShoppingListItemService {
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
     private readonly pantryItemService: PantryItemService,
+    private readonly pantryService: PantryService,
     private readonly foodRepository: FoodRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
   ) {}
@@ -321,9 +323,22 @@ export class ShoppingListItemService {
     }
 
     try {
+      // Get the first pantry for the user (most recent)
+      const pantries = await this.pantryService.getAllPantriesByUserId(userId);
+      if (pantries.length === 0) {
+        this.logger.warn(
+          `Cannot create pantry item from shopping list: No pantry found for user ${userId}`,
+        );
+        return;
+      }
+
+      // Use the first pantry (most recent)
+      const pantryId = pantries[0].id;
+
       await this.pantryItemService.createFromShoppingList(
         new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
         userId,
+        pantryId,
       );
     } catch (error) {
       // Log the error but don't fail the toggle operation

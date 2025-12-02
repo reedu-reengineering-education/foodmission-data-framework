@@ -1,6 +1,7 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 import {
+  IsNotEmpty,
   IsOptional,
   IsUUID,
   IsEnum,
@@ -8,6 +9,14 @@ import {
 } from 'class-validator';
 
 export class QueryPantryItemDto {
+  @ApiProperty({
+    description: 'The ID of the pantry to get items from',
+    example: 'uuid-pantry-id',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  pantryId: string;
+
   @ApiPropertyOptional({
     description: 'Filter by food ID',
     example: 'uuid-food-id',

@@ -15,6 +15,14 @@ import { Type } from 'class-transformer';
 
 export class CreatePantryItemDto {
   @ApiProperty({
+    description: 'The ID of the pantry to add the item to',
+    example: 'uuid-pantry-id',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  pantryId: string;
+
+  @ApiProperty({
     description: 'The ID of the food item to add',
     example: 'uuid-food-id',
   })
@@ -61,12 +69,14 @@ export class CreatePantryItemDto {
   expiryDate?: Date;
 
   constructor(
+    pantryId: string,
     foodId: string,
     quantity: number,
     unit: Unit = Unit.PIECES,
     notes?: string,
     expiryDate?: Date,
   ) {
+    this.pantryId = pantryId;
     this.foodId = foodId;
     this.quantity = quantity;
     this.unit = unit;
