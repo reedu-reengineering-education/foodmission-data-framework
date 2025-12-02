@@ -13,6 +13,7 @@ import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
+import { PantryService } from '../../pantry/services/pantry.service';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
@@ -91,6 +92,10 @@ describe('ShoppingListItemService', () => {
     createFromShoppingList: jest.fn(),
   };
 
+  const mockPantryService = {
+    getAllPantriesByUserId: jest.fn(),
+  };
+
   const mockFoodRepository = {
     findById: jest.fn(),
   };
@@ -128,6 +133,10 @@ describe('ShoppingListItemService', () => {
         {
           provide: PantryItemService,
           useValue: mockPantryItemService,
+        },
+        {
+          provide: PantryService,
+          useValue: mockPantryService,
         },
         {
           provide: UserRepository,
@@ -766,23 +775,23 @@ describe('ShoppingListItemService', () => {
   });
 
   it('should toggle checked and create pantry item if user preference is true', async () => {
-    repository.findById.mockResolvedValue(mockShoppingListItem);
+    const mockPantry = {
+      id: 'pantry-1',
+      userId: 'user-1',
+      title: 'My Pantry',
+      items: [],
+    };
 
+    repository.findById.mockResolvedValue(mockShoppingListItem);
     mockUserRepository.findById.mockResolvedValue(mockUser);
     repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
-
+    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
     mockPantryItemService.createFromShoppingList.mockResolvedValue({
       id: 'pantry-item-1',
+      pantryId: 'pantry-1',
+      foodId: 'food-1',
       quantity: 2,
       unit: 'KG',
-      notes: 'Test notes',
-      checked: false,
-      shoppingListId: 'list-1',
-      foodId: 'food-1',
-      include: {
-        shoppingList: true,
-        food: true,
-      },
     });
 
     const result = await service.toggleChecked('item-1', 'user-1');
@@ -790,6 +799,7 @@ describe('ShoppingListItemService', () => {
     expect(repository.findById).toHaveBeenCalledWith('item-1');
     expect(userRepository.findById).toHaveBeenCalledWith('user-1');
     expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith('user-1');
     expect(pantryItemService.createFromShoppingList).toHaveBeenCalledWith(
       expect.objectContaining({
         foodId: mockShoppingListItem.foodId,
@@ -797,6 +807,7 @@ describe('ShoppingListItemService', () => {
         unit: mockShoppingListItem.unit,
       }),
       'user-1',
+      'pantry-1', // pantryId should be passed
     );
     expect(result).toBeDefined();
     expect(result.id).toBe('1');
@@ -826,6 +837,7 @@ describe('ShoppingListItemService', () => {
     expect(repository.findById).toHaveBeenCalledWith('item-1');
     expect(userRepository.findById).toHaveBeenCalledWith('user-1');
     expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).not.toHaveBeenCalled();
     expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
     expect(result).toBeDefined();
     expect(result.id).toBe('1');
@@ -871,9 +883,17 @@ describe('ShoppingListItemService', () => {
   });
 
   it('should handle pantry creation failure gracefully', async () => {
+    const mockPantry = {
+      id: 'pantry-1',
+      userId: 'user-1',
+      title: 'My Pantry',
+      items: [],
+    };
+
     repository.findById.mockResolvedValue(mockShoppingListItem);
     mockUserRepository.findById.mockResolvedValue(mockUser);
     repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
     mockPantryItemService.createFromShoppingList.mockRejectedValue(
       new Error('Pantry creation failed'),
     );
@@ -884,6 +904,7 @@ describe('ShoppingListItemService', () => {
     expect(repository.findById).toHaveBeenCalledWith('item-1');
     expect(userRepository.findById).toHaveBeenCalledWith('user-1');
     expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith('user-1');
     expect(pantryItemService.createFromShoppingList).toHaveBeenCalled();
     expect(result).toBeDefined();
     expect(result.id).toBe('1');
