@@ -254,6 +254,43 @@ describe('PantryItemService', () => {
         },
       });
     });
+
+    it('should default unit to PIECES when unit is not provided', async () => {
+      const createDtoWithoutUnit = {
+        pantryId: 'pantry-1',
+        foodId: 'food-1',
+        quantity: 5,
+        notes: 'Fresh',
+      };
+
+      mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: 'food-1',
+        name: 'Tomatoes',
+      });
+      mockPantryItemRepository.findFoodInPantry.mockResolvedValue(null);
+      mockPrismaService.pantryItem.create.mockResolvedValue({
+        ...mockPantryItem,
+        unit: Unit.PIECES,
+      });
+
+      await service.create(createDtoWithoutUnit, 'user-1');
+
+      expect(prisma.pantryItem.create).toHaveBeenCalledWith({
+        data: {
+          quantity: 5,
+          unit: Unit.PIECES,
+          notes: 'Fresh',
+          expiryDate: undefined,
+          pantryId: 'pantry-1',
+          foodId: 'food-1',
+        },
+        include: {
+          pantry: true,
+          food: true,
+        },
+      });
+    });
   });
 
   describe('findAll', () => {

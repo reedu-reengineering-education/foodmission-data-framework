@@ -3278,7 +3278,7 @@ components:
           minimum: 0.01
         unit:
           type: string
-          description: The unit of measurement (required)
+          description: The unit of measurement (defaults to PIECES if not provided)
           example: KG
           enum:
             - PIECES
@@ -3287,6 +3287,7 @@ components:
             - ML
             - L
             - CUPS
+          default: PIECES
         notes:
           type: string
           description: Additional notes for the item
@@ -3301,7 +3302,6 @@ components:
         - pantryId
         - foodId
         - quantity
-        - unit
     MultiplePantryItemResponseDto:
       type: object
       properties:

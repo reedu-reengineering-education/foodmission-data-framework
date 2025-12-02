@@ -21,6 +21,7 @@ import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryService } from '../../pantry/services/pantry.service';
 import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-soppingListItem.dto';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
+import { Unit } from '@prisma/client';
 
 @Injectable()
 export class PantryItemService {
@@ -79,10 +80,13 @@ export class PantryItemService {
             : new Date(createDto.expiryDate);
       }
 
+      // Default unit to PIECES if not provided
+      const unit = createDto.unit ?? Unit.PIECES;
+
       const item = await this.prisma.pantryItem.create({
         data: {
           quantity: createDto.quantity,
-          unit: createDto.unit,
+          unit: unit,
           notes: createDto.notes,
           expiryDate: expiryDate,
           pantryId: createDto.pantryId,

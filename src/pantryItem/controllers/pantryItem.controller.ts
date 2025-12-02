@@ -51,7 +51,7 @@ export class PantryItemController {
   @ApiOperation({
     summary: 'Add a new item to Pantry',
     description:
-      'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.',
+      'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryItemDto })
   @ApiResponse({

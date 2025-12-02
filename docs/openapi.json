@@ -4943,7 +4943,7 @@
           },
           "unit": {
             "type": "string",
-            "description": "The unit of measurement (required)",
+            "description": "The unit of measurement (defaults to PIECES if not provided)",
             "example": "KG",
             "enum": [
               "PIECES",
@@ -4952,7 +4952,8 @@
               "ML",
               "L",
               "CUPS"
-            ]
+            ],
+            "default": "PIECES"
           },
           "notes": {
             "type": "string",
@@ -4970,8 +4971,7 @@
         "required": [
           "pantryId",
           "foodId",
-          "quantity",
-          "unit"
+          "quantity"
         ]
       },
       "MultiplePantryItemResponseDto": {

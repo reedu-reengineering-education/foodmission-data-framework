@@ -41,7 +41,7 @@
 						"pantry-item"
 					]
 				},
-				"description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.\n\n**Required fields:**\n- `pantryId` (UUID): The ID of the pantry to add the item to\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n\n**Optional fields:**\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
+				"description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.\n\n**Required fields:**\n- `pantryId` (UUID): The ID of the pantry to add the item to\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n\n**Optional fields:**\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS). Defaults to PIECES if not provided.\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
 			},
 			"response": [],
 			"event": [
