@@ -15,7 +15,8 @@ describe('PantryController', () => {
 
   const mockPantryService = {
     create: jest.fn(),
-    getPantryByUserId: jest.fn(),
+    getAllPantriesByUserId: jest.fn(),
+    getPantryById: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
   };
@@ -102,33 +103,64 @@ describe('PantryController', () => {
     });
   });
 
-  describe('getMyPantry', () => {
+  describe('getAllPantries', () => {
     const userId = 'user-123';
 
+    const mockResponse: PantryResponseDto[] = [
+      {
+        id: 'pantry-123',
+        userId: 'user-123',
+        title: 'My Pantry',
+        items: [],
+      },
+      {
+        id: 'pantry-456',
+        userId: 'user-123',
+        title: 'Second Pantry',
+        items: [],
+      },
+    ];
+
+    it('should return all pantries when they exist', async () => {
+      mockPantryService.getAllPantriesByUserId.mockResolvedValue(mockResponse);
+
+      const result = await controller.getAllPantries(userId);
+
+      expect(result).toEqual(mockResponse);
+      expect(result).toHaveLength(2);
+      expect(service.getAllPantriesByUserId).toHaveBeenCalledWith(userId);
+      expect(service.getAllPantriesByUserId).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return empty array when no pantries exist', async () => {
+      mockPantryService.getAllPantriesByUserId.mockResolvedValue([]);
+
+      const result = await controller.getAllPantries(userId);
+
+      expect(result).toEqual([]);
+      expect(service.getAllPantriesByUserId).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  describe('getPantryById', () => {
+    const userId = 'user-123';
+    const pantryId = 'pantry-123';
+
     const mockResponse: PantryResponseDto = {
-      id: 'pantry-123',
-      userId: 'user-123',
+      id: pantryId,
+      userId: userId,
       title: 'My Pantry',
       items: [],
     };
 
-    it('should return pantry when it exists', async () => {
-      mockPantryService.getPantryByUserId.mockResolvedValue(mockResponse);
+    it('should return pantry when it exists and belongs to user', async () => {
+      mockPantryService.getPantryById.mockResolvedValue(mockResponse);
 
-      const result = await controller.getMyPantry(userId);
+      const result = await controller.getPantryById(pantryId, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.getPantryByUserId).toHaveBeenCalledWith(userId);
-      expect(service.getPantryByUserId).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return null when pantry does not exist', async () => {
-      mockPantryService.getPantryByUserId.mockResolvedValue(null);
-
-      const result = await controller.getMyPantry(userId);
-
-      expect(result).toBeNull();
-      expect(service.getPantryByUserId).toHaveBeenCalledWith(userId);
+      expect(service.getPantryById).toHaveBeenCalledWith(pantryId, userId);
+      expect(service.getPantryById).toHaveBeenCalledTimes(1);
     });
   });
 

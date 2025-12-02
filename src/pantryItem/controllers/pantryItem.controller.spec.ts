@@ -68,6 +68,7 @@ describe('PantryItemController', () => {
   describe('create', () => {
     const userId = 'user-123';
     const createDto: CreatePantryItemDto = {
+      pantryId: 'pantry-123',
       foodId: 'food-123',
       quantity: 2,
       unit: Unit.KG,
@@ -125,18 +126,23 @@ describe('PantryItemController', () => {
       url: '/api/v1/pantry-item',
     } as any;
 
-    it('should return pantry items without query params', async () => {
+    it('should return pantry items with pantryId query param', async () => {
+      const query: QueryPantryItemDto = {
+        pantryId: 'pantry-123',
+      };
+
       mockPantryItemService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll({}, mockRequest, userId);
+      const result = await controller.findAll(query, mockRequest, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.findAll).toHaveBeenCalledWith({}, userId);
+      expect(service.findAll).toHaveBeenCalledWith(query, userId);
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
 
     it('should return pantry items with query params', async () => {
       const query: QueryPantryItemDto = {
+        pantryId: 'pantry-123',
         foodId: 'food-123',
         unit: Unit.KG,
       };
@@ -154,6 +160,7 @@ describe('PantryItemController', () => {
 
     it('should handle filtering by unit only', async () => {
       const query: QueryPantryItemDto = {
+        pantryId: 'pantry-123',
         unit: Unit.G,
       };
 
