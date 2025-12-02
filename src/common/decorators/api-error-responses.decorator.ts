@@ -2,27 +2,15 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiErrorResponseDto } from '../dto/api-response.dto';
 
-/**
- * Options for common error responses decorator
- */
 export interface ApiCommonErrorResponsesOptions {
-  /** Include 400 Bad Request (validation errors) */
   badRequest?: boolean;
-  /** Include 401 Unauthorized */
   unauthorized?: boolean;
-  /** Include 403 Forbidden */
   forbidden?: boolean;
-  /** Include 404 Not Found */
   notFound?: boolean;
-  /** Include 409 Conflict */
   conflict?: boolean;
-  /** Include 422 Unprocessable Entity */
   unprocessableEntity?: boolean;
-  /** Include 429 Too Many Requests */
   tooManyRequests?: boolean;
-  /** Include 500 Internal Server Error */
   internalServerError?: boolean;
-  /** Custom error responses */
   custom?: Array<{
     status: number;
     description: string;
@@ -30,16 +18,6 @@ export interface ApiCommonErrorResponsesOptions {
   }>;
 }
 
-/**
- * Decorator to add common error responses to an endpoint
- *
- * @example
- * ```typescript
- * @Post()
- * @ApiCommonErrorResponses({ badRequest: true, unauthorized: true })
- * async create(@Body() dto: CreateDto) { ... }
- * ```
- */
 export function ApiCommonErrorResponses(
   options: ApiCommonErrorResponsesOptions = {},
 ) {
@@ -138,7 +116,6 @@ export function ApiCommonErrorResponses(
     );
   }
 
-  // Add custom error responses
   custom.forEach((error) => {
     decorators.push(
       ApiResponse({
@@ -152,9 +129,6 @@ export function ApiCommonErrorResponses(
   return applyDecorators(...decorators);
 }
 
-/**
- * Shorthand decorator for authenticated endpoints (includes 400, 401, 403)
- */
 export function ApiAuthenticatedErrorResponses() {
   return ApiCommonErrorResponses({
     badRequest: true,
@@ -163,9 +137,6 @@ export function ApiAuthenticatedErrorResponses() {
   });
 }
 
-/**
- * Shorthand decorator for CRUD endpoints (includes 400, 401, 403, 404, 409)
- */
 export function ApiCrudErrorResponses() {
   return ApiCommonErrorResponses({
     badRequest: true,

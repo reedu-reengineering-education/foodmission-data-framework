@@ -133,7 +133,6 @@ export class PantryService {
     pantryId?: string,
   ): Promise<string> {
     if (pantryId) {
-      // Validate that the pantry exists and belongs to the user
       const pantry = await this.pantryRepository.findById(pantryId);
       if (!pantry) {
         throw new NotFoundException('Pantry not found');
@@ -146,7 +145,6 @@ export class PantryService {
       return pantryId;
     }
 
-    // If no pantryId provided, get the first pantry for the user
     const pantry = await this.pantryRepository.findByUserId(userId);
     if (!pantry) {
       throw new NotFoundException(

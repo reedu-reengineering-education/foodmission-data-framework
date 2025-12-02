@@ -328,7 +328,6 @@ export class ShoppingListItemService {
     }
 
     try {
-      // Get the first pantry for the user (most recent)
       const pantries = await this.pantryService.getAllPantriesByUserId(userId);
       if (pantries.length === 0) {
         this.logger.warn(
@@ -337,7 +336,6 @@ export class ShoppingListItemService {
         return;
       }
 
-      // Use the first pantry (most recent)
       const pantryId = pantries[0].id;
 
       await this.pantryItemService.createFromShoppingList(
@@ -346,8 +344,6 @@ export class ShoppingListItemService {
         pantryId,
       );
     } catch (error) {
-      // Log the error but don't fail the toggle operation
-      // The item is already checked, which is the primary operation
       this.logger.error(
         formatErrorForLogging(
           error,

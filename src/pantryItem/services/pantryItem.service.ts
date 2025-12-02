@@ -59,7 +59,6 @@ export class PantryItemService {
     userId: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      // Validate that the pantry exists and belongs to the user
       await this.pantryService.validatePantryExists(userId, createDto.pantryId);
 
       await this.validateFoodExists(createDto.foodId);
@@ -72,17 +71,14 @@ export class PantryItemService {
         throw new ConflictException('This food item is already in your pantry');
       }
 
-      // Transform expiryDate to proper Date object if provided
       let expiryDate: Date | undefined;
       if (createDto.expiryDate) {
-        // If it's already a Date object, use it; otherwise parse the string
         expiryDate =
           createDto.expiryDate instanceof Date
             ? createDto.expiryDate
             : new Date(createDto.expiryDate);
       }
 
-      // Default unit to PIECES if not provided
       const unit = createDto.unit ?? Unit.PIECES;
 
       const item = await this.prisma.pantryItem.create({
@@ -110,10 +106,8 @@ export class PantryItemService {
         throw error;
       }
 
-      // Log the actual error for debugging
       this.logger.error('Failed to create pantry item:', error);
 
-      // Handle Prisma errors
       if (error && typeof error === 'object' && 'code' in error) {
         const prismaError = error;
         if (prismaError.code === 'P2002') {
@@ -140,7 +134,6 @@ export class PantryItemService {
   ): Promise<MultiplePantryItemResponseDto> {
     const { pantryId, foodId, unit } = query;
 
-    // Validate that the pantry exists and belongs to the user
     await this.pantryService.validatePantryExists(userId, pantryId);
 
     if (foodId) {
@@ -206,7 +199,6 @@ export class PantryItemService {
     }
 
     try {
-      // Transform expiryDate to proper Date object if provided
       let expiryDate: Date | undefined;
       if (updateDto.expiryDate !== undefined) {
         expiryDate =
