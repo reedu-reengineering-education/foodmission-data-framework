@@ -51,7 +51,7 @@ export class PantryItemController {
   @ApiOperation({
     summary: 'Add a new item to Pantry',
     description:
-      'Creates a new Pantry Item and adds it to the user\'s pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.',
+      'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryItemDto })
   @ApiResponse({
@@ -76,7 +76,13 @@ export class PantryItemController {
   @ApiOperation({
     summary: 'Get pantry items',
     description:
-      'Retrieve pantry items from the authenticated user\'s pantry with optional filtering. Returns all items from the user\'s pantry.',
+      'Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate.',
+  })
+  @ApiQuery({
+    name: 'pantryId',
+    required: true,
+    description: 'The ID of the pantry to get items from (UUID)',
+    type: String,
   })
   @ApiQuery({
     name: 'foodId',
