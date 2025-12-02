@@ -18,10 +18,19 @@ export type PantryWithRelations = Prisma.PantryGetPayload<{
 export class PantryRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByUserId(userId: string): Promise<any> {
-    return this.prisma.pantry.findUnique({
+  async findByUserId(userId: string): Promise<PantryWithRelations | null> {
+    return this.prisma.pantry.findFirst({
       where: { userId },
       include: { items: { include: { food: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findAllByUserId(userId: string): Promise<PantryWithRelations[]> {
+    return this.prisma.pantry.findMany({
+      where: { userId },
+      include: { items: { include: { food: true } } },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -33,12 +42,11 @@ export class PantryRepository {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          // Unique constraint violation
+          // Unique constraint violation - only for [userId, title] composite constraint
           const target = error.meta?.target as string[] | undefined;
-          if (target?.includes('userId')) {
-            throw new Error('User already has a pantry. Each user can only have one pantry.');
+          if (target?.includes('userId') && target?.includes('title')) {
+            throw new Error('A pantry with this title already exists for this user.');
           }
-          // Note: userId is unique, so duplicate titles for same user are not possible
         }
       }
 

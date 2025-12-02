@@ -82,7 +82,7 @@ model ShoppingListItem {
 
 model Pantry {
   id        String   @id @default(uuid())
-  userId    String   @unique
+  userId    String
   title     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
