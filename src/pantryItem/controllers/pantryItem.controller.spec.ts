@@ -182,22 +182,29 @@ describe('PantryItemController', () => {
         originalUrl: '/api/v1/pantry-item/',
         url: '/api/v1/pantry-item/',
       } as any;
+      const query: QueryPantryItemDto = {
+        pantryId: 'pantry-123',
+      };
 
       await expect(
-        controller.findAll({}, requestWithTrailingSlash, userId),
+        controller.findAll(query, requestWithTrailingSlash, userId),
       ).rejects.toThrow(BadRequestException);
       await expect(
-        controller.findAll({}, requestWithTrailingSlash, userId),
+        controller.findAll(query, requestWithTrailingSlash, userId),
       ).rejects.toThrow('Invalid request path');
       expect(service.findAll).not.toHaveBeenCalled();
     });
 
     it('should throw UnauthorizedException when userId is missing', async () => {
+      const query: QueryPantryItemDto = {
+        pantryId: 'pantry-123',
+      };
+
       await expect(
-        controller.findAll({}, mockRequest, null as any),
+        controller.findAll(query, mockRequest, null as any),
       ).rejects.toThrow(UnauthorizedException);
       await expect(
-        controller.findAll({}, mockRequest, null as any),
+        controller.findAll(query, mockRequest, null as any),
       ).rejects.toThrow('User not authenticated');
       expect(service.findAll).not.toHaveBeenCalled();
     });

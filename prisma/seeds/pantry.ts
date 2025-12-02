@@ -30,22 +30,19 @@ export async function seedPantries(prisma: PrismaClient) {
       continue;
     }
 
-    // Check if pantry already exists for this user
-    const existingPantry = await prisma.pantry.findUnique({
-      where: { userId: user.id },
+    // Check if pantry with same title already exists for this user
+    const existingPantry = await prisma.pantry.findFirst({
+      where: {
+        userId: user.id,
+        title: pantryInfo.title,
+      },
     });
 
     if (existingPantry) {
       console.log(
-        `ℹ️  Pantry already exists for user ${pantryInfo.userKeycloakId}, updating...`,
+        `ℹ️  Pantry "${pantryInfo.title}" already exists for user ${pantryInfo.userKeycloakId}, skipping...`,
       );
-      const updatedPantry = await prisma.pantry.update({
-        where: { userId: user.id },
-        data: {
-          title: pantryInfo.title,
-        },
-      });
-      pantries.push(updatedPantry);
+      pantries.push(existingPantry);
     } else {
       const pantry = await prisma.pantry.create({
         data: {
