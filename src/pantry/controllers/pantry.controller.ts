@@ -41,7 +41,7 @@ export class PantryController {
   @ApiOperation({
     summary: 'Create a new Pantry',
     description:
-      'Creates a new pantry for the authenticated user. Each user can only have one pantry. If a pantry already exists, returns a conflict error. Requires user or admin role.',
+      'Creates a new pantry for the authenticated user. Users can have multiple pantries. If a pantry with the same title already exists for the user, returns a conflict error. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryDto })
   @ApiResponse({
@@ -51,7 +51,7 @@ export class PantryController {
   })
   @ApiResponse({
     status: 409,
-    description: 'User already has a pantry. Each user can only have one pantry.',
+    description: 'A pantry with this title already exists for this user.',
   })
   @ApiCrudErrorResponses()
   async create(
@@ -68,27 +68,48 @@ export class PantryController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get user pantry',
-    description: "Retrieves the authenticated user's pantry with all items. Returns null if no pantry exists.",
+    summary: 'Get all user pantries',
+    description: "Retrieves all pantries for the authenticated user with all items. Returns an empty array if no pantries exist.",
   })
+  @ApiResponse({
+    status: 200,
+    description: 'List of pantries retrieved successfully',
+    type: [PantryResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAllPantries(
+    @CurrentUser('id') userId: string,
+  ): Promise<PantryResponseDto[]> {
+    return this.pantryService.getAllPantriesByUserId(userId);
+  }
+
+  @Get(':id')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get pantry by ID',
+    description: 'Retrieves a specific pantry by ID for the authenticated user. Only the pantry owner can access it.',
+  })
+  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
     description: 'Pantry retrieved successfully',
     type: PantryResponseDto,
   })
   @ApiResponse({
-    status: 200,
-    description: 'No pantry found for user',
-    schema: {
-      type: 'null',
-      example: null,
-    },
+    status: 403,
+    description: 'No permission - user does not own this pantry',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Pantry not found',
   })
   @ApiCrudErrorResponses()
-  async getMyPantry(
+  async getPantryById(
+    @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
-  ): Promise<PantryResponseDto | null> {
-    return this.pantryService.getPantryByUserId(userId);
+  ): Promise<PantryResponseDto> {
+    return this.pantryService.getPantryById(id, userId);
   }
 
   @Patch(':id')
