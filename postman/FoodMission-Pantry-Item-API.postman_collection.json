@@ -23,7 +23,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
+					"raw": "{\n  \"pantryId\": \"{{pantry_id}}\",\n  \"foodId\": \"{{food_id}}\",\n  \"quantity\": 2,\n  \"unit\": \"KG\",\n  \"notes\": \"Store in cool place\",\n  \"expiryDate\": \"2027-02-02\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,7 +41,7 @@
 						"pantry-item"
 					]
 				},
-				"description": "Creates a new Pantry Item and adds it to the user's pantry. The pantry is automatically determined from the authenticated user (each user has one pantry). Requires user or admin role.\n\n**Required fields:**\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n\n**Optional fields:**\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
+				"description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.\n\n**Required fields:**\n- `pantryId` (UUID): The ID of the pantry to add the item to\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n\n**Optional fields:**\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
 			},
 			"response": [],
 			"event": [
@@ -53,6 +53,10 @@
 							"const defaultFoodId = '00d2eca5-0377-448b-b74e-d5ae25e9c944';",
 							"if (!pm.environment.get('food_id') || pm.environment.get('food_id') === '') {",
 							"    pm.environment.set('food_id', defaultFoodId);",
+							"}",
+							"// Warn if pantry_id is not set",
+							"if (!pm.environment.get('pantry_id') || pm.environment.get('pantry_id') === '') {",
+							"    console.warn('Warning: pantry_id is not set. Please set it manually or create a pantry first using the Pantry API collection.');",
 							"}"
 						],
 						"type": "text/javascript"
@@ -84,7 +88,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{base_url}}/api/v1/pantry-item",
+					"raw": "{{base_url}}/api/v1/pantry-item?pantryId={{pantry_id}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -94,6 +98,12 @@
 						"pantry-item"
 					],
 					"query": [
+						{
+							"key": "pantryId",
+							"value": "{{pantry_id}}",
+							"description": "The ID of the pantry to get items from (required)",
+							"disabled": false
+						},
 						{
 							"key": "foodId",
 							"value": "{{food_id}}",
@@ -108,7 +118,7 @@
 						}
 					]
 				},
-				"description": "Retrieve pantry items from the authenticated user's pantry with optional filtering. Requires user or admin role. Query params: foodId, unit, expiryDate"
+				"description": "Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate. Requires user or admin role."
 			},
 			"response": []
 		},
@@ -237,6 +247,12 @@
 			"value": "00d2eca5-0377-448b-b74e-d5ae25e9c944",
 			"type": "string",
 			"description": "Food ID to use when creating pantry items (default: seeded food ID)"
+		},
+		{
+			"key": "pantry_id",
+			"value": "",
+			"type": "string",
+			"description": "Pantry ID (set automatically from Pantry API collection or manually)"
 		}
 	]
 }
