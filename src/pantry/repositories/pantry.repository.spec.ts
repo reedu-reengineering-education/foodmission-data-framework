@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryRepository } from './pantry.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { Pantry } from '@prisma/client';
+import { Pantry, Prisma } from '@prisma/client';
 
 describe('PantryRepository', () => {
   let repository: PantryRepository;
@@ -204,13 +204,12 @@ describe('PantryRepository', () => {
     });
 
     it('should throw error if update fails', async () => {
-      mockPrismaService.pantry.update.mockRejectedValue(
-        new Error('Update failed'),
-      );
+      const dbError = new Error('Update failed');
+      mockPrismaService.pantry.update.mockRejectedValue(dbError);
 
       await expect(
         repository.update('pantry-1', { title: 'New Title' }),
-      ).rejects.toThrow('Failed to update pantry');
+      ).rejects.toThrow(dbError);
     });
   });
 
@@ -227,14 +226,14 @@ describe('PantryRepository', () => {
     });
 
     it('should throw error if pantry not found during deletion', async () => {
-      const prismaError = {
-        code: 'P2025',
-        message: 'Record not found',
-      };
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Record not found',
+        { code: 'P2025', clientVersion: '4.0.0' },
+      );
       mockPrismaService.pantry.delete.mockRejectedValue(prismaError);
 
       await expect(repository.delete('non-existent-id')).rejects.toThrow(
-        'Failed to delete pantry',
+        prismaError,
       );
     });
   });

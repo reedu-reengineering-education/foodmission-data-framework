@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { FoodRepository, UpdateFoodDto } from './food.repository';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { PrismaService } from '../../database/prisma.service';
@@ -89,13 +90,10 @@ describe('FoodRepository', () => {
     });
 
     it('should throw error when database fails', async () => {
-      mockPrismaService.food.findMany.mockRejectedValueOnce(
-        new Error('Database error'),
-      );
+      const dbError = new Error('Database error');
+      mockPrismaService.food.findMany.mockRejectedValueOnce(dbError);
 
-      await expect(repository.findAll()).rejects.toThrow(
-        'Failed to retrieve foods',
-      );
+      await expect(repository.findAll()).rejects.toThrow(dbError);
     });
   });
 
@@ -120,13 +118,10 @@ describe('FoodRepository', () => {
     });
 
     it('should throw error when database fails', async () => {
-      mockPrismaService.food.findUnique.mockRejectedValueOnce(
-        new Error('Database error'),
-      );
+      const dbError = new Error('Database error');
+      mockPrismaService.food.findUnique.mockRejectedValueOnce(dbError);
 
-      await expect(repository.findById('food-1')).rejects.toThrow(
-        'Failed to retrieve food',
-      );
+      await expect(repository.findById('food-1')).rejects.toThrow(dbError);
     });
   });
 
@@ -143,12 +138,11 @@ describe('FoodRepository', () => {
     });
 
     it('should throw error when database fails', async () => {
-      mockPrismaService.food.findUnique.mockRejectedValueOnce(
-        new Error('Database error'),
-      );
+      const dbError = new Error('Database error');
+      mockPrismaService.food.findUnique.mockRejectedValueOnce(dbError);
 
       await expect(repository.findByBarcode('1234567890')).rejects.toThrow(
-        'Failed to retrieve food by barcode',
+        dbError,
       );
     });
   });
@@ -179,7 +173,7 @@ describe('FoodRepository', () => {
         name: 'New Food',
       };
       const userId = 'user-1';
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
+      const prismaError = new PrismaClientKnownRequestError(
         'Unique constraint failed',
         { code: 'P2002', clientVersion: '4.0.0' },
       );
@@ -215,7 +209,7 @@ describe('FoodRepository', () => {
 
     it('should throw error when food not found', async () => {
       const updateDto: UpdateFoodDto = { name: 'Updated Food' };
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
+      const prismaError = new PrismaClientKnownRequestError(
         'Record not found',
         { code: 'P2025', clientVersion: '4.0.0' },
       );
@@ -239,14 +233,14 @@ describe('FoodRepository', () => {
     });
 
     it('should throw error when food not found', async () => {
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
+      const prismaError = new PrismaClientKnownRequestError(
         'Record not found',
         { code: 'P2025', clientVersion: '4.0.0' },
       );
       mockPrismaService.food.delete.mockRejectedValueOnce(prismaError);
 
       await expect(repository.delete('nonexistent')).rejects.toThrow(
-        'Food not found',
+        prismaError,
       );
     });
   });

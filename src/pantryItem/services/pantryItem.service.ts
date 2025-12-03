@@ -5,7 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { handleServiceError } from '../../common/utils/error.utils';
+import {
+  handlePrismaError,
+  handleServiceError,
+} from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import {
   PantryItemRepository,
   PantryItemWithRelations,
@@ -136,9 +141,26 @@ export class PantryItemService {
 
       return this.transformToResponseDto(updatedItem);
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('This food item is already in your pantry');
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'update',
+          'pantry_item',
+        );
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            'This food item is already in your pantry',
+          );
+        }
+
+        throw businessException;
       }
+
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+
       throw new BadRequestException('Failed to update pantry item');
     }
   }
