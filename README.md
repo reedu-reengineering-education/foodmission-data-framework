@@ -116,7 +116,7 @@ KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
-KEYCLOAK_CLIENT_SECRET="foodmission-dev-secret-2025"  # Required for API authentication
+KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"  # Required for API authentication - DO NOT commit secrets to version control
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
@@ -169,13 +169,27 @@ The imported realm includes:
 3. Navigate to **Clients** → You should see:
    - `foodmission-api` client
 
-#### 3.4. Update Environment Variables
+#### 3.4. Configure Client Secret
 
-The client secret is already configured in the realm JSON. Ensure your `.env` file has:
+**IMPORTANT: Never commit secrets to version control!**
+
+The client secret is configured in the realm JSON. You need to configure it in your `.env` file:
 
 ```env
-KEYCLOAK_CLIENT_SECRET="foodmission-dev-secret-2025"
+KEYCLOAK_CLIENT_SECRET="your-actual-client-secret-here"
 ```
+
+**Security Best Practices:**
+- Use environment variables or a secret manager for sensitive values
+- Never hardcode secrets in code or commit them to version control
+- Use different secrets for development, staging, and production environments
+- Rotate secrets regularly
+
+To find your client secret:
+1. Go to Keycloak Admin Console → Clients → `foodmission-api`
+2. Go to the "Credentials" tab
+3. Copy the "Client Secret" value
+4. Set it in your `.env` file (which should be in `.gitignore`)
 
 #### 3.5. Test Authentication
 
@@ -183,18 +197,25 @@ Test the setup with the pre-configured admin user:
 
 ```bash
 # Get JWT token using the admin user
+# IMPORTANT: Replace ${KEYCLOAK_CLIENT_SECRET} with your actual client secret from .env
 curl -X POST http://localhost:8080/realms/foodmission/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password" \
   -d "client_id=foodmission-api" \
-  -d "client_secret=foodmission-dev-secret-2025" \
+  -d "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
   -d "username=admin" \
   -d "password=admin123"
+
+# Alternative: Use environment variable substitution
+# export KEYCLOAK_CLIENT_SECRET="your-secret-here"
+# Then use: -d "client_secret=${KEYCLOAK_CLIENT_SECRET}"
 
 # Test admin endpoint (replace TOKEN with the access_token from above)
 curl http://localhost:3000/api/v1/auth/admin-only \
   -H "Authorization: Bearer TOKEN"
 ```
+
+**Security Note:** Never include secrets directly in command-line arguments or scripts. Use environment variables or secure credential stores.
 
 ### 4. Start Services
 
