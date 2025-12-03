@@ -116,7 +116,7 @@ KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
-KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"  # Required for API authentication - DO NOT commit secrets to version control
+KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"  
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
