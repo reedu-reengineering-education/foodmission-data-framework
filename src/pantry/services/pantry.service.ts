@@ -5,6 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { handleServiceError } from '../../common/utils/error.utils';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
@@ -62,13 +63,7 @@ export class PantryService {
       const pantry = await this.pantryRepository.update(id, updatePantryDto);
       return this.transformToResponseDto(pantry);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to update pantry');
+      handleServiceError(error, 'Failed to update pantry');
     }
   }
 
@@ -83,13 +78,7 @@ export class PantryService {
       }
       await this.pantryRepository.delete(id);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to delete pantry');
+      handleServiceError(error, 'Failed to delete pantry');
     }
   }
 

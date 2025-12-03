@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ConflictException,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
@@ -261,7 +262,8 @@ export function handleServiceError(
   if (
     error instanceof NotFoundException ||
     error instanceof ConflictException ||
-    error instanceof ForbiddenException
+    error instanceof ForbiddenException ||
+    error instanceof UnauthorizedException
   ) {
     throw error;
   }

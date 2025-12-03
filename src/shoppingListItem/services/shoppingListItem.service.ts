@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
+import { handleServiceError } from '../../common/utils/error.utils';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
@@ -67,13 +68,7 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to create shopping list item');
+      handleServiceError(error, 'Failed to create shopping list item');
     }
   }
 

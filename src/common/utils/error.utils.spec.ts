@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   ForbiddenException,
+  UnauthorizedException,
   BadRequestException,
 } from '@nestjs/common';
 import {
@@ -397,6 +398,18 @@ describe('ErrorUtils', () => {
       }).toThrow('Access denied');
     });
 
+    it('should re-throw UnauthorizedException', () => {
+      const error = new UnauthorizedException('User not authenticated');
+      const defaultMessage = 'Operation failed';
+
+      expect(() => {
+        handleServiceError(error, defaultMessage);
+      }).toThrow(UnauthorizedException);
+      expect(() => {
+        handleServiceError(error, defaultMessage);
+      }).toThrow('User not authenticated');
+    });
+
     it('should wrap unknown errors in BadRequestException', () => {
       const error = new Error('Unknown error');
       const defaultMessage = 'Failed to perform operation';
@@ -437,6 +450,7 @@ describe('ErrorUtils', () => {
       const notFoundError = new NotFoundException('Not found');
       const conflictError = new ConflictException('Conflict');
       const forbiddenError = new ForbiddenException('Forbidden');
+      const unauthorizedError = new UnauthorizedException('Unauthorized');
 
       expect(() => {
         handleServiceError(notFoundError, 'Default');
@@ -449,6 +463,10 @@ describe('ErrorUtils', () => {
       expect(() => {
         handleServiceError(forbiddenError, 'Default');
       }).toThrow(ForbiddenException);
+
+      expect(() => {
+        handleServiceError(unauthorizedError, 'Default');
+      }).toThrow(UnauthorizedException);
     });
   });
 });

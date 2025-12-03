@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { handleServiceError } from '../../common/utils/error.utils';
 import {
   PantryItemRepository,
   PantryItemWithRelations,
@@ -62,13 +63,7 @@ export class PantryItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to create pantry item');
+      handleServiceError(error, 'Failed to create pantry item');
     }
   }
 
