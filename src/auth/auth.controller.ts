@@ -67,11 +67,10 @@ export class AuthController {
   })
   getAuthInfo() {
     return {
-      authServerUrl:
-        process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080',
-      realm: process.env.KEYCLOAK_REALM || 'foodmission',
-      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID || 'foodmission-web', // Different client for frontend
-      redirectUri: process.env.FRONTEND_URL || 'http://localhost:3000',
+      authServerUrl: process.env.KEYCLOAK_BASE_URL,
+      realm: process.env.KEYCLOAK_REALM,
+      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID, // Different client for frontend
+      redirectUri: process.env.FRONTEND_URL,
     };
   }
 

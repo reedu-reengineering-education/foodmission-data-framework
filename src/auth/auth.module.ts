@@ -18,10 +18,9 @@ import { UserModule } from '../user/user.module';
     UserModule,
     ConfigModule,
     KeycloakConnectModule.register({
-      authServerUrl:
-        process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080',
-      realm: process.env.KEYCLOAK_REALM || 'foodmission',
-      clientId: process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api',
+      authServerUrl: process.env.KEYCLOAK_BASE_URL!,
+      realm: process.env.KEYCLOAK_REALM!,
+      clientId: process.env.KEYCLOAK_CLIENT_ID!,
       secret: process.env.KEYCLOAK_CLIENT_SECRET || '',
       // Stateless configuration - bearer tokens only, no sessions
       bearerOnly: true,
