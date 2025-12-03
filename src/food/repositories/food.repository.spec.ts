@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { FoodRepository, UpdateFoodDto } from './food.repository';
 import { CreateFoodDto } from '../dto/create-food.dto';
