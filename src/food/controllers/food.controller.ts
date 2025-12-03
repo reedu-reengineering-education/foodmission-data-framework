@@ -97,6 +97,7 @@ export class FoodController {
   })
   @ApiCommonErrorResponses({
     badRequest: true,
+    unauthorized: false,
   })
   async findAll(
     @Query() query: FoodQueryDto,
@@ -130,6 +131,7 @@ export class FoodController {
   })
   @ApiCommonErrorResponses({
     badRequest: true,
+    unauthorized: false,
     custom: [
       {
         status: 503,
@@ -205,6 +207,7 @@ export class FoodController {
   })
   @ApiCommonErrorResponses({
     notFound: true,
+    unauthorized: false,
   })
   async findByBarcode(
     @Param('barcode') barcode: string,
@@ -241,6 +244,7 @@ export class FoodController {
   })
   @ApiCommonErrorResponses({
     notFound: true,
+    unauthorized: false,
   })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -339,6 +343,7 @@ export class FoodController {
   })
   @ApiCommonErrorResponses({
     notFound: true,
+    unauthorized: false,
     custom: [
       {
         status: 503,
