@@ -1,7 +1,7 @@
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
 import { UpdatePantryDto } from '../dto/update-pantry.dto';
-import { TEST_IDS, TEST_DATA, TEST_DATES } from '../../common/test-utils/test-constants';
+import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 
 export class PantryTestBuilder {
   static createPantryResponseDto(
@@ -16,9 +16,7 @@ export class PantryTestBuilder {
     };
   }
 
-  static createPantryResponseDtoArray(
-    count: number = 2,
-  ): PantryResponseDto[] {
+  static createPantryResponseDtoArray(count: number = 2): PantryResponseDto[] {
     return Array.from({ length: count }, (_, index) =>
       this.createPantryResponseDto({
         id: `${TEST_IDS.PANTRY}-${index + 1}`,
@@ -45,4 +43,3 @@ export class PantryTestBuilder {
     };
   }
 }
-

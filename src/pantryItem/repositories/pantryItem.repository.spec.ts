@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemRepository } from './pantryItem.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { Unit } from '@prisma/client';
-import { TEST_IDS, TEST_DATA, TEST_DATES } from '../../common/test-utils/test-constants';
+import {
+  TEST_IDS,
+  TEST_DATA,
+  TEST_DATES,
+} from '../../common/test-utils/test-constants';
 
 describe('PantryItemRepository', () => {
   let repository: PantryItemRepository;

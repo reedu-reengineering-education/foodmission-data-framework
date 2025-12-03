@@ -1,5 +1,3 @@
-import { DataBaseAuthGuard } from '../guards/database-auth.guards';
-import { ThrottlerGuard } from '@nestjs/throttler';
 import { Request } from 'express';
 import { MockGuard } from './type-helpers';
 
@@ -29,4 +27,3 @@ export function createMockRequest(overrides?: Partial<Request>): Request {
     ...overrides,
   } as Request;
 }
-

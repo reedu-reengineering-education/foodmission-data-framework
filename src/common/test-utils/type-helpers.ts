@@ -7,4 +7,3 @@ export type MockService<T> = {
 export type MockGuard = {
   canActivate: jest.MockedFunction<() => boolean>;
 };
-

@@ -44,4 +44,3 @@ export async function createControllerTestModule<TController, TService>(
     .useValue(mockThrottlerGuard)
     .compile();
 }
-

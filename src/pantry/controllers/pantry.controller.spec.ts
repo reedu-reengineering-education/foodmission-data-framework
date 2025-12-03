@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
 import {
   UnauthorizedException,
   NotFoundException,
@@ -56,7 +56,7 @@ describe('PantryController', () => {
       ['', 'empty string'],
     ])(
       'should throw UnauthorizedException when userId is %s',
-      async (invalidUserId, description) => {
+      async (invalidUserId, _description) => {
         await expect(
           controller.create(createDto, invalidUserId as string),
         ).rejects.toThrow(UnauthorizedException);
@@ -125,9 +125,9 @@ describe('PantryController', () => {
         new NotFoundException('Pantry not found'),
       );
 
-      await expect(
-        controller.getPantryById(pantryId, userId),
-      ).rejects.toThrow(NotFoundException);
+      await expect(controller.getPantryById(pantryId, userId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should propagate ForbiddenException when user does not own pantry', async () => {
@@ -135,9 +135,9 @@ describe('PantryController', () => {
         new ForbiddenException('No permission - user does not own this pantry'),
       );
 
-      await expect(
-        controller.getPantryById(pantryId, userId),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(controller.getPantryById(pantryId, userId)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 

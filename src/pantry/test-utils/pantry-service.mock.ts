@@ -11,4 +11,3 @@ export function createMockPantryService(): MockService<PantryService> {
     validatePantryExists: jest.fn(),
   } as MockService<PantryService>;
 }
-

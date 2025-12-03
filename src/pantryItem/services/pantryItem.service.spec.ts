@@ -14,7 +14,11 @@ import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-sop
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
-import { TEST_IDS, TEST_DATA, TEST_DATES } from '../../common/test-utils/test-constants';
+import {
+  TEST_IDS,
+  TEST_DATA,
+  TEST_DATES,
+} from '../../common/test-utils/test-constants';
 
 describe('PantryItemService', () => {
   let service: PantryItemService;
@@ -177,10 +181,7 @@ describe('PantryItemService', () => {
     });
 
     it('should transform expiryDate string to Date object when creating', async () => {
-      const createDtoWithStringDate: Omit<
-        CreatePantryItemDto,
-        'expiryDate'
-      > & {
+      const createDtoWithStringDate: Omit<CreatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
       } = {
         ...PantryItemTestBuilder.createCreatePantryItemDto(),
@@ -218,11 +219,10 @@ describe('PantryItemService', () => {
     });
 
     it('should handle undefined expiryDate when creating', async () => {
-      const createDtoWithoutDate = PantryItemTestBuilder.createCreatePantryItemDto(
-        {
+      const createDtoWithoutDate =
+        PantryItemTestBuilder.createCreatePantryItemDto({
           expiryDate: undefined,
-        },
-      );
+        });
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
       mockPrismaService.pantryItem.create.mockResolvedValue({
@@ -249,7 +249,8 @@ describe('PantryItemService', () => {
     });
 
     it('should default unit to PIECES when unit is not provided', async () => {
-      const createDtoWithoutUnit = PantryItemTestBuilder.createCreatePantryItemDto();
+      const createDtoWithoutUnit =
+        PantryItemTestBuilder.createCreatePantryItemDto();
       delete (createDtoWithoutUnit as any).unit;
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
@@ -538,10 +539,7 @@ describe('PantryItemService', () => {
     });
 
     it('should transform expiryDate string to Date object when updating', async () => {
-      const updateDtoWithStringDate: Omit<
-        UpdatePantryItemDto,
-        'expiryDate'
-      > & {
+      const updateDtoWithStringDate: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
       } = {
         quantity: 10,
@@ -651,10 +649,7 @@ describe('PantryItemService', () => {
     });
 
     it('should update with all fields including date string', async () => {
-      const updateDtoWithAllFields: Omit<
-        UpdatePantryItemDto,
-        'expiryDate'
-      > & {
+      const updateDtoWithAllFields: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
       } = {
         quantity: 100,
@@ -786,7 +781,7 @@ describe('PantryItemService', () => {
       [undefined, 'undefined'],
     ])(
       'should throw BadRequestException when pantryId is %s',
-      async (invalidPantryId, description) => {
+      async (invalidPantryId, _description) => {
         const dto = new CreateShoppingListItemDto(
           TEST_IDS.FOOD,
           TEST_DATA.QUANTITY,

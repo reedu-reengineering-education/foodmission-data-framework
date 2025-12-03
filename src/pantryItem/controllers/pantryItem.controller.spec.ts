@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
 import {
   BadRequestException,
   UnauthorizedException,
@@ -59,7 +59,7 @@ describe('PantryItemController', () => {
       ['', 'empty string'],
     ])(
       'should throw UnauthorizedException when userId is %s',
-      async (invalidUserId, description) => {
+      async (invalidUserId, _description) => {
         await expect(
           controller.create(createDto, invalidUserId as string),
         ).rejects.toThrow(UnauthorizedException);
@@ -229,9 +229,9 @@ describe('PantryItemController', () => {
         new NotFoundException('Pantry item not found'),
       );
 
-      await expect(controller.update(itemId, updateDto, userId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.update(itemId, updateDto, userId),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should propagate ForbiddenException when user does not own pantry', async () => {
@@ -239,9 +239,9 @@ describe('PantryItemController', () => {
         new ForbiddenException('You do not have access to this pantry item'),
       );
 
-      await expect(controller.update(itemId, updateDto, userId)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        controller.update(itemId, updateDto, userId),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should propagate ConflictException when food already exists in pantry', async () => {
@@ -249,9 +249,9 @@ describe('PantryItemController', () => {
         new ConflictException('This food item is already in your pantry'),
       );
 
-      await expect(controller.update(itemId, updateDto, userId)).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(
+        controller.update(itemId, updateDto, userId),
+      ).rejects.toThrow(ConflictException);
     });
   });
 

@@ -11,4 +11,3 @@ export function createMockPantryItemService(): MockService<PantryItemService> {
     createFromShoppingList: jest.fn(),
   } as MockService<PantryItemService>;
 }
-
