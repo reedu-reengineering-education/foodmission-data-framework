@@ -29,7 +29,11 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
+      await this.create({ userId, title: 'My Pantry' });
+      pantry = await this.pantryRepository.findByUserId(userId);
+      if (!pantry) {
+        throw new BadRequestException('Failed to create pantry');
+      }
     }
 
     return this.transformToResponseDto(pantry);
@@ -87,7 +91,7 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
+      await this.create({ userId, title: 'My Pantry' });
 
       pantry = await this.pantryRepository.findByUserId(userId);
       if (!pantry) {

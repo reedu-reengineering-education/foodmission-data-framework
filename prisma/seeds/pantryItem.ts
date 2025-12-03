@@ -142,8 +142,9 @@ export async function seedPantryItems(prisma: PrismaClient) {
     }
 
     // Find or create pantry for user
-    let pantry = await prisma.pantry.findUnique({
+    let pantry = await prisma.pantry.findFirst({
       where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
     });
 
     if (!pantry) {
