@@ -81,7 +81,7 @@ describe('ShoppingListItemService', () => {
 
   const mockUser = {
     id: 'user-1',
-    checkedShoppingListItemInPantry: true,
+    shouldAutoAddToPantry: true,
   };
 
   const mockUserRepository = {
@@ -848,7 +848,7 @@ describe('ShoppingListItemService', () => {
   it('should NOT create pantry item when user preference is false', async () => {
     const userWithPreferenceFalse = {
       ...mockUser,
-      checkedShoppingListItemInPantry: false,
+      shouldAutoAddToPantry: false,
     };
 
     repository.findById.mockResolvedValue(mockShoppingListItem);
@@ -868,7 +868,7 @@ describe('ShoppingListItemService', () => {
   it('should NOT create pantry item when user preference is null or undefined', async () => {
     const userWithPreferenceNull = {
       ...mockUser,
-      checkedShoppingListItemInPantry: null,
+      shouldAutoAddToPantry: null,
     };
 
     repository.findById.mockResolvedValue(mockShoppingListItem);

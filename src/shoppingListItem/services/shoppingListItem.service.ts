@@ -321,7 +321,7 @@ export class ShoppingListItemService {
     userId: string,
     willBeChecked: boolean,
   ): Promise<void> {
-    if (!willBeChecked || user.checkedShoppingListItemInPantry !== true) {
+    if (!willBeChecked || user.shouldAutoAddToPantry !== true) {
       return;
     }
 

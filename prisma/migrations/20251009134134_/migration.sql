@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "public"."users" ADD COLUMN     "checkedShoppingListItemInPantry" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "public"."users" ADD COLUMN     "shouldAutoAddToPantry" BOOLEAN NOT NULL DEFAULT true;
