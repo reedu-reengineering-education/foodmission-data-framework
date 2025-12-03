@@ -6,10 +6,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  handlePrismaError,
-  handleServiceError,
-} from '../../common/utils/error.utils';
+import { handlePrismaError } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import {

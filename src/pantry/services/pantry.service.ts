@@ -11,6 +11,7 @@ import {
   handleServiceError,
 } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
@@ -77,17 +78,10 @@ export class PantryService {
 
       // Handle Prisma errors using unified error handling
       if (error instanceof PrismaClientKnownRequestError) {
-        const businessException = handlePrismaError(
-          error,
-          'create',
-          'pantry',
-        );
+        const businessException = handlePrismaError(error, 'create', 'pantry');
 
         // Convert ResourceAlreadyExistsException to ConflictException
-        if (
-          businessException.code === 'RESOURCE_ALREADY_EXISTS' ||
-          error.code === 'P2002'
-        ) {
+        if (businessException instanceof ResourceAlreadyExistsException) {
           throw new ConflictException(
             'A pantry with this title already exists for this user.',
           );

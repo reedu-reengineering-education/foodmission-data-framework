@@ -8,10 +8,10 @@ import {
 import {
   handlePrismaError,
   handleServiceError,
+  formatErrorForLogging,
 } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
-import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
 import {

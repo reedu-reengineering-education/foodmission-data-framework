@@ -8,6 +8,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
@@ -197,12 +198,21 @@ describe('PantryService', () => {
       const createDto = PantryTestBuilder.createCreatePantryDto({
         title: 'Existing Pantry',
       });
-      mockPantryRepository.create.mockRejectedValue(
-        new Error('A pantry with this title already exists for this user.'),
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
       );
+      mockPantryRepository.create.mockRejectedValue(prismaError);
 
       await expect(service.create(createDto, userId)).rejects.toThrow(
         ConflictException,
+      );
+      await expect(service.create(createDto, userId)).rejects.toThrow(
+        'A pantry with this title already exists for this user.',
       );
     });
   });
