@@ -29,6 +29,7 @@ export class PantryTestBuilder {
     overrides?: Partial<CreatePantryDto>,
   ): CreatePantryDto {
     return {
+      userId: TEST_IDS.USER,
       title: TEST_DATA.PANTRY_TITLE,
       ...overrides,
     };

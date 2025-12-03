@@ -3,9 +3,8 @@ import { MockService } from '../../common/test-utils/type-helpers';
 
 export function createMockPantryService(): MockService<PantryService> {
   return {
+    getPantryByUserId: jest.fn(),
     create: jest.fn(),
-    getAllPantriesByUserId: jest.fn(),
-    getPantryById: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
     validatePantryExists: jest.fn(),
