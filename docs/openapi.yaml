@@ -651,12 +651,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get all food items
       tags: *ref_2
   /api/v1/foods/search/openfoodfacts:
@@ -686,12 +680,6 @@ paths:
                     type: number
         '400':
           description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
           content:
             application/json:
               schema:
@@ -799,12 +787,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
           description: Not Found - Resource does not exist
           content:
@@ -842,12 +824,6 @@ paths:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
           content:
             application/json:
               schema:
@@ -987,12 +963,6 @@ paths:
                   - type: 'null'
         '400':
           description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
           content:
             application/json:
               schema:
