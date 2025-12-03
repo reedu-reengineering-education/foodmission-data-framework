@@ -375,6 +375,30 @@ paths:
       responses:
         '201':
           description: User created successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -410,8 +434,30 @@ paths:
       responses:
         '200':
           description: User found
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -437,8 +483,30 @@ paths:
       responses:
         '200':
           description: User updated successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -532,11 +600,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -560,7 +646,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFoodResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get all food items
       tags: *ref_2
   /api/v1/foods/search/openfoodfacts:
@@ -589,9 +685,23 @@ paths:
                   page_size:
                     type: number
         '400':
-          description: Invalid search parameters
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Search OpenFoodFacts database
       tags: *ref_2
   /api/v1/foods/import/openfoodfacts/{barcode}:
@@ -620,15 +730,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid barcode
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Product not found in OpenFoodFacts
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -663,8 +793,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by barcode
       tags: *ref_2
   /api/v1/foods/{id}:
@@ -694,8 +840,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by ID
       tags: *ref_2
     patch:
@@ -723,13 +885,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/FoodResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -752,12 +930,30 @@ paths:
       responses:
         '204':
           description: Food item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - admin role required
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -789,10 +985,30 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/OpenFoodFactsInfoDto'
                   - type: 'null'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '503':
           description: OpenFoodFacts service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get OpenFoodFacts information for food item
       tags: *ref_2
   /api/v1/health:
@@ -1157,13 +1373,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
         '400':
-          description: Invalid input data or duplicate item
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list or food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
@@ -1233,7 +1471,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get shopping list items
       tags: *ref_8
   /api/v1/shopping-list-items/{shoppingListId}:
@@ -1254,12 +1520,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get all items from a specific shopping list
@@ -1281,12 +1571,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
@@ -1315,13 +1629,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update shopping list item
@@ -1339,12 +1675,36 @@ paths:
       responses:
         '200':
           description: Shopping list item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
@@ -1367,12 +1727,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
@@ -1391,12 +1775,36 @@ paths:
       responses:
         '200':
           description: Checked items cleared successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Shopping list not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
@@ -1741,6 +2149,47 @@ info:
           
           ## Rate Limiting
           API requests are rate-limited to prevent abuse. Check response headers for rate limit information.
+          
+          ## Error Handling
+          All endpoints follow a consistent error response format. When an error occurs, the API returns a JSON object with the following structure:
+          
+          - **statusCode**: HTTP status code (e.g., 400, 401, 404, 500)
+          - **message**: Human-readable error message or array of validation errors
+          - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')
+          - **timestamp**: ISO 8601 timestamp when the error occurred
+          - **path**: API path where the error occurred
+          - **correlationId**: Unique identifier for request tracing
+          - **details**: Optional object containing additional error information (e.g., validation errors array)
+          
+          ### Common Error Responses
+          
+          - **400 Bad Request**: Invalid input data or validation failed. The `details.errors` field contains an array of validation error messages.
+          - **401 Unauthorized**: Authentication required or invalid/expired JWT token.
+          - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.
+          - **404 Not Found**: The requested resource does not exist.
+          - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
+          - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
+          - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
+          - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.
+          
+          ### Example Error Response
+          
+          ```json
+          {
+            "statusCode": 400,
+            "message": "Validation failed",
+            "error": "VALIDATION_ERROR",
+            "timestamp": "2024-01-15T10:30:00.000Z",
+            "path": "/api/v1/foods",
+            "correlationId": "abc123def456",
+            "details": {
+              "errors": [
+                "name should not be empty",
+                "categoryId must be a valid UUID"
+              ]
+            }
+          }
+          ```
           
           ## Support
           For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
