@@ -1,0 +1,54 @@
+# Cursor AI Assistant Rules for FoodMission Data Framework
+
+## Code Change Policy
+- **NEVER make code changes without explicit user consent**
+- Always suggest solutions first and wait for approval before implementing
+- When investigating issues, provide analysis and recommendations, not immediate fixes
+- **ALWAYS update tests and documentation when code is updated**
+  - Update or add unit tests for new/changed functionality
+  - Update or add integration tests if applicable
+  - Update API documentation (OpenAPI/Swagger) if endpoints change
+  - Update README or relevant docs if behavior changes
+  - Ensure all tests pass after changes
+
+## Troubleshooting Approach
+When looking for root causes:
+1. Analyze the code to identify the issue
+2. Explain what the issue likely is based on the code
+3. Suggest possible solutions
+4. Wait for user approval before making any changes
+
+## Solution Proposal Guidelines
+When proposing solutions, follow these principles in order of priority:
+1. **Coding Best Practices:**
+   - Clean Code principles (readability, maintainability, meaningful names)
+   - DRY (Don't Repeat Yourself)
+   - SOLID principles
+   - Single Responsibility Principle
+   - Proper error handling
+2. **Backend Development Best Practices:**
+   - RESTful API design
+   - Proper HTTP status codes
+   - Input validation and sanitization
+   - Security considerations
+   - Performance optimization
+3. **NestJS Best Practices:**
+   - Dependency Injection patterns
+   - Module organization
+   - Guard, Interceptor, and Middleware usage
+   - Service layer separation
+   - Repository pattern where appropriate
+   - Proper use of decorators
+4. **TypeScript Best Practices:**
+   - Strong typing
+   - Interface/type definitions
+   - Proper use of generics
+   - Type safety
+   - Avoid `any` types
+
+## General Guidelines
+- Prefer suggesting changes over implementing them
+- Ask for confirmation before modifying code
+- Provide clear explanations of what needs to be changed and why
+- When proposing solutions, reference relevant best practices
+

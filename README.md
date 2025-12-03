@@ -116,6 +116,7 @@ KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
+KEYCLOAK_CLIENT_SECRET="foodmission-dev-secret-2025"  # Required for API authentication
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
@@ -125,7 +126,77 @@ NODE_ENV="development"
 PORT=3000
 ```
 
-### 3. Start Services
+### 3. Keycloak Setup
+
+The application uses Keycloak for authentication. A pre-configured realm JSON file is included in the repository that contains all necessary configuration.
+
+#### 3.1. Start Keycloak
+
+Keycloak should be running via Docker Compose. If not already started:
+
+```bash
+npm run docker:up
+```
+
+Keycloak Admin Console will be available at `http://localhost:8080`
+- Default username: `admin`
+- Default password: `admin`
+
+#### 3.2. Import the Realm Configuration
+
+1. Access Keycloak Admin Console at `http://localhost:8080`
+2. Log in with admin credentials (username: `admin`, password: `admin`)
+3. In the top-left corner, click the realm dropdown (shows "master" by default)
+4. Click **"Create Realm"** (or **"Add realm"**)
+5. Click the **"Browse..."** button
+6. Navigate to and select: `keycloak/foodmission-realm.json` in your project directory
+7. Click **"Create"** (or **"Import"**)
+
+The imported realm includes:
+- **Realm**: `foodmission`
+- **Client**: `foodmission-api` 
+- **Pre-configured users**:
+  - `admin` user with `admin` and `user` roles
+  - `developer` user with `user` role
+- **Roles**: `admin` and `user` roles for the `foodmission-api` client
+
+#### 3.3. Verify the Import
+
+1. Switch to the `foodmission` realm using the dropdown in the top-left corner
+2. Navigate to **Users** → You should see:
+   - `admin` user
+   - `developer` user
+3. Navigate to **Clients** → You should see:
+   - `foodmission-api` client
+
+#### 3.4. Update Environment Variables
+
+The client secret is already configured in the realm JSON. Ensure your `.env` file has:
+
+```env
+KEYCLOAK_CLIENT_SECRET="foodmission-dev-secret-2025"
+```
+
+#### 3.5. Test Authentication
+
+Test the setup with the pre-configured admin user:
+
+```bash
+# Get JWT token using the admin user
+curl -X POST http://localhost:8080/realms/foodmission/protocol/openid-connect/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=foodmission-api" \
+  -d "client_secret=foodmission-dev-secret-2025" \
+  -d "username=admin" \
+  -d "password=admin123"
+
+# Test admin endpoint (replace TOKEN with the access_token from above)
+curl http://localhost:3000/api/v1/auth/admin-only \
+  -H "Authorization: Bearer TOKEN"
+```
+
+### 4. Start Services
 
 ```bash
 # Start database and Redis services
@@ -141,7 +212,7 @@ npm run db:migrate:deploy
 npm run db:seed
 ```
 
-### 4. Start the Application
+### 5. Start the Application
 
 ```bash
 # Development mode with hot reload
