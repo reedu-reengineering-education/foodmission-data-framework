@@ -1,16 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryRepository } from './pantry.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { Pantry } from '@prisma/client';
+import { Pantry, Prisma } from '@prisma/client';
+import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 
 describe('PantryRepository', () => {
   let repository: PantryRepository;
   let prisma: PrismaService;
 
   const mockPantry: Pantry = {
-    id: 'pantry-1',
-    title: 'My Pantry',
-    userId: 'user-1',
+    id: TEST_IDS.PANTRY,
+    title: TEST_DATA.PANTRY_TITLE,
+    userId: TEST_IDS.USER,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };
@@ -19,17 +20,17 @@ describe('PantryRepository', () => {
     ...mockPantry,
     items: [
       {
-        id: 'item-1',
-        quantity: 5,
+        id: TEST_IDS.PANTRY_ITEM,
+        quantity: TEST_DATA.QUANTITY,
         unit: 'kg',
-        notes: 'Fresh',
+        notes: TEST_DATA.NOTES,
         expiryDate: new Date('2024-12-31'),
-        pantryId: 'pantry-1',
-        foodId: 'food-1',
+        pantryId: TEST_IDS.PANTRY,
+        foodId: TEST_IDS.FOOD,
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
         food: {
-          id: 'food-1',
+          id: TEST_IDS.FOOD,
           name: 'Tomatoes',
           category: 'Vegetables',
           createdAt: new Date('2024-01-01'),
@@ -75,11 +76,11 @@ describe('PantryRepository', () => {
         mockPantryWithRelations,
       );
 
-      const result = await repository.findByUserId('user-1');
+      const result = await repository.findByUserId(TEST_IDS.USER);
 
       expect(result).toEqual(mockPantryWithRelations);
       expect(prisma.pantry.findFirst).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: { userId: TEST_IDS.USER },
         include: {
           items: {
             include: {
@@ -114,15 +115,22 @@ describe('PantryRepository', () => {
 
   describe('findAllByUserId', () => {
     it('should return all pantries with relations for a given userId', async () => {
-      const pantries = [mockPantryWithRelations, { ...mockPantryWithRelations, id: 'pantry-2', title: 'Second Pantry' }];
+      const pantries = [
+        mockPantryWithRelations,
+        {
+          ...mockPantryWithRelations,
+          id: `${TEST_IDS.PANTRY}-2`,
+          title: TEST_DATA.PANTRY_TITLE_2,
+        },
+      ];
       mockPrismaService.pantry.findMany.mockResolvedValue(pantries);
 
-      const result = await repository.findAllByUserId('user-1');
+      const result = await repository.findAllByUserId(TEST_IDS.USER);
 
       expect(result).toEqual(pantries);
       expect(result).toHaveLength(2);
       expect(prisma.pantry.findMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
+        where: { userId: TEST_IDS.USER },
         include: {
           items: {
             include: {
@@ -156,14 +164,14 @@ describe('PantryRepository', () => {
   });
 
   describe('create', () => {
-    it('should create a new pantry', async () => {
+    it('should create a new pantry when valid data is provided', async () => {
       const createDto = {
         title: 'New Pantry',
-        userId: 'user-2',
+        userId: TEST_IDS.USER,
       };
 
       mockPrismaService.pantry.create.mockResolvedValue({
-        id: 'pantry-2',
+        id: `${TEST_IDS.PANTRY}-2`,
         ...createDto,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -179,10 +187,10 @@ describe('PantryRepository', () => {
       });
     });
 
-    it('should throw error if creation fails', async () => {
+    it('should throw error when creation fails', async () => {
       const createDto = {
         title: 'New Pantry',
-        userId: 'user-2',
+        userId: TEST_IDS.USER,
       };
 
       mockPrismaService.pantry.create.mockRejectedValue(
@@ -190,6 +198,54 @@ describe('PantryRepository', () => {
       );
 
       await expect(repository.create(createDto)).rejects.toThrow();
+    });
+
+    it('should throw specific error for duplicate title (composite unique constraint)', async () => {
+      const createDto = {
+        title: 'Existing Pantry',
+        userId: TEST_IDS.USER,
+      };
+
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint violation',
+        {
+          code: 'P2002',
+          clientVersion: '1.0.0',
+          meta: {
+            target: ['userId', 'title'],
+          },
+        },
+      );
+
+      mockPrismaService.pantry.create.mockRejectedValue(prismaError);
+
+      await expect(repository.create(createDto)).rejects.toThrow(
+        'A pantry with this title already exists for this user.',
+      );
+    });
+
+    it('should throw generic error for other unique constraint violations', async () => {
+      const createDto = {
+        title: 'New Pantry',
+        userId: TEST_IDS.USER,
+      };
+
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint violation',
+        {
+          code: 'P2002',
+          clientVersion: '1.0.0',
+          meta: {
+            target: ['id'],
+          },
+        },
+      );
+
+      mockPrismaService.pantry.create.mockRejectedValue(prismaError);
+
+      await expect(repository.create(createDto)).rejects.toThrow(
+        'Failed to create pantry',
+      );
     });
   });
 
@@ -199,11 +255,11 @@ describe('PantryRepository', () => {
         mockPantryWithRelations,
       );
 
-      const result = await repository.findById('pantry-1');
+      const result = await repository.findById(TEST_IDS.PANTRY);
 
       expect(result).toEqual(mockPantryWithRelations);
       expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
-        where: { id: 'pantry-1' },
+        where: { id: TEST_IDS.PANTRY },
         include: {
           items: {
             include: {
@@ -224,7 +280,7 @@ describe('PantryRepository', () => {
   });
 
   describe('update', () => {
-    it('should update a pantry', async () => {
+    it('should update pantry when valid data is provided', async () => {
       const updateDto = { title: 'Updated Pantry' };
       const updatedPantry = {
         ...mockPantryWithRelations,
@@ -233,11 +289,11 @@ describe('PantryRepository', () => {
 
       mockPrismaService.pantry.update.mockResolvedValue(updatedPantry);
 
-      const result = await repository.update('pantry-1', updateDto);
+      const result = await repository.update(TEST_IDS.PANTRY, updateDto);
 
       expect(result.title).toBe('Updated Pantry');
       expect(prisma.pantry.update).toHaveBeenCalledWith({
-        where: { id: 'pantry-1' },
+        where: { id: TEST_IDS.PANTRY },
         data: updateDto,
         include: {
           items: {
@@ -249,30 +305,30 @@ describe('PantryRepository', () => {
       });
     });
 
-    it('should throw error if update fails', async () => {
+    it('should throw error when update fails', async () => {
       mockPrismaService.pantry.update.mockRejectedValue(
         new Error('Update failed'),
       );
 
       await expect(
-        repository.update('pantry-1', { title: 'New Title' }),
+        repository.update(TEST_IDS.PANTRY, { title: 'New Title' }),
       ).rejects.toThrow('Failed to update pantry');
     });
   });
 
   describe('delete', () => {
-    it('should delete a pantry', async () => {
+    it('should delete pantry when it exists', async () => {
       mockPrismaService.pantry.delete.mockResolvedValue(mockPantry);
 
-      await repository.delete('pantry-1');
+      await repository.delete(TEST_IDS.PANTRY);
 
       expect(prisma.pantry.delete).toHaveBeenCalledWith({
-        where: { id: 'pantry-1' },
+        where: { id: TEST_IDS.PANTRY },
       });
       expect(prisma.pantry.delete).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw error if pantry not found during deletion', async () => {
+    it('should throw error when pantry not found during deletion', async () => {
       const prismaError = {
         code: 'P2025',
         message: 'Record not found',

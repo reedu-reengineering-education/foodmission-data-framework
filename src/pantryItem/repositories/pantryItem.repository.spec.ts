@@ -2,30 +2,31 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemRepository } from './pantryItem.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { Unit } from '@prisma/client';
+import { TEST_IDS, TEST_DATA, TEST_DATES } from '../../common/test-utils/test-constants';
 
 describe('PantryItemRepository', () => {
   let repository: PantryItemRepository;
   let prisma: PrismaService;
 
   const mockPantryItem = {
-    id: 'item-1',
-    quantity: 5,
+    id: TEST_IDS.PANTRY_ITEM,
+    quantity: TEST_DATA.QUANTITY,
     unit: 'kg',
-    notes: 'Fresh tomatoes',
-    expiryDate: new Date('2024-12-31'),
-    pantryId: 'pantry-1',
-    foodId: 'food-1',
+    notes: TEST_DATA.NOTES,
+    expiryDate: TEST_DATES.EXPIRY,
+    pantryId: TEST_IDS.PANTRY,
+    foodId: TEST_IDS.FOOD,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
     pantry: {
-      id: 'pantry-1',
+      id: TEST_IDS.PANTRY,
       title: 'My Pantry',
-      userId: 'user-1',
+      userId: TEST_IDS.USER,
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },
     food: {
-      id: 'food-1',
+      id: TEST_IDS.FOOD,
       name: 'Tomatoes',
       category: 'Vegetables',
       createdAt: new Date('2024-01-01'),
@@ -64,14 +65,14 @@ describe('PantryItemRepository', () => {
   });
 
   describe('create', () => {
-    it('should create a new pantry item', async () => {
+    it('should create a new pantry item when valid data is provided', async () => {
       const createData = {
-        pantryId: 'pantry-1',
-        foodId: 'food-1',
-        quantity: 5,
+        pantryId: TEST_IDS.PANTRY,
+        foodId: TEST_IDS.FOOD,
+        quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
-        notes: 'Fresh tomatoes',
-        expiryDate: new Date('2024-12-31'),
+        notes: TEST_DATA.NOTES,
+        expiryDate: TEST_DATES.EXPIRY,
       };
 
       mockPrismaService.pantryItem.create.mockResolvedValue(mockPantryItem);
@@ -97,8 +98,8 @@ describe('PantryItemRepository', () => {
 
     it('should create pantry item without optional fields', async () => {
       const createData = {
-        pantryId: 'pantry-1',
-        foodId: 'food-1',
+        pantryId: TEST_IDS.PANTRY,
+        foodId: TEST_IDS.FOOD,
         quantity: 3,
         unit: Unit.PIECES,
       };
@@ -121,8 +122,11 @@ describe('PantryItemRepository', () => {
   });
 
   describe('findAll', () => {
-    it('should return all pantry items', async () => {
-      const mockItems = [mockPantryItem, { ...mockPantryItem, id: 'item-2' }];
+    it('should return all pantry items when no filter is provided', async () => {
+      const mockItems = [
+        mockPantryItem,
+        { ...mockPantryItem, id: `${TEST_IDS.PANTRY_ITEM}-2` },
+      ];
       mockPrismaService.pantryItem.findMany.mockResolvedValue(mockItems);
 
       const result = await repository.findAll();
@@ -137,7 +141,7 @@ describe('PantryItemRepository', () => {
       });
     });
 
-    it('should return empty array if no items exist', async () => {
+    it('should return empty array when no items exist', async () => {
       mockPrismaService.pantryItem.findMany.mockResolvedValue([]);
 
       const result = await repository.findAll();
@@ -151,11 +155,11 @@ describe('PantryItemRepository', () => {
     it('should return a pantry item by id', async () => {
       mockPrismaService.pantryItem.findUnique.mockResolvedValue(mockPantryItem);
 
-      const result = await repository.findById('item-1');
+      const result = await repository.findById(TEST_IDS.PANTRY_ITEM);
 
       expect(result).toEqual(mockPantryItem);
       expect(prisma.pantryItem.findUnique).toHaveBeenCalledWith({
-        where: { id: 'item-1' },
+        where: { id: TEST_IDS.PANTRY_ITEM },
         include: {
           pantry: true,
           food: true,
@@ -192,12 +196,12 @@ describe('PantryItemRepository', () => {
     it('should filter items by foodId', async () => {
       mockPrismaService.pantryItem.findMany.mockResolvedValue([mockPantryItem]);
 
-      const result = await repository.findMany({ foodId: 'food-1' });
+      const result = await repository.findMany({ foodId: TEST_IDS.FOOD });
 
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
-          foodId: 'food-1',
+          foodId: TEST_IDS.FOOD,
           expiryDate: undefined,
           unit: undefined,
         },
@@ -208,7 +212,7 @@ describe('PantryItemRepository', () => {
       });
     });
 
-    it('should filter items by unit with case insensitive search', async () => {
+    it('should filter items by unit', async () => {
       mockPrismaService.pantryItem.findMany.mockResolvedValue([mockPantryItem]);
 
       const result = await repository.findMany({ unit: Unit.KG });
@@ -229,7 +233,7 @@ describe('PantryItemRepository', () => {
 
     it('should filter items by multiple criteria', async () => {
       const filter = {
-        foodId: 'food-1',
+        foodId: TEST_IDS.FOOD,
         unit: Unit.KG,
       };
 
@@ -240,7 +244,7 @@ describe('PantryItemRepository', () => {
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
-          foodId: 'food-1',
+          foodId: TEST_IDS.FOOD,
           expiryDate: undefined,
           unit: Unit.KG,
         },
@@ -253,7 +257,7 @@ describe('PantryItemRepository', () => {
   });
 
   describe('update', () => {
-    it('should update a pantry item', async () => {
+    it('should update pantry item when valid data is provided', async () => {
       const updateData = {
         quantity: 10,
         notes: 'Updated notes',
@@ -266,12 +270,12 @@ describe('PantryItemRepository', () => {
 
       mockPrismaService.pantryItem.update.mockResolvedValue(updatedItem);
 
-      const result = await repository.update('item-1', updateData);
+      const result = await repository.update(TEST_IDS.PANTRY_ITEM, updateData);
 
       expect(result.quantity).toBe(10);
       expect(result.notes).toBe('Updated notes');
       expect(prisma.pantryItem.update).toHaveBeenCalledWith({
-        where: { id: 'item-1' },
+        where: { id: TEST_IDS.PANTRY_ITEM },
         data: updateData,
         include: {
           pantry: true,
@@ -282,13 +286,13 @@ describe('PantryItemRepository', () => {
   });
 
   describe('delete', () => {
-    it('should delete a pantry item', async () => {
+    it('should delete pantry item when it exists', async () => {
       mockPrismaService.pantryItem.delete.mockResolvedValue(mockPantryItem);
 
-      await repository.delete('item-1');
+      await repository.delete(TEST_IDS.PANTRY_ITEM);
 
       expect(prisma.pantryItem.delete).toHaveBeenCalledWith({
-        where: { id: 'item-1' },
+        where: { id: TEST_IDS.PANTRY_ITEM },
       });
       expect(prisma.pantryItem.delete).toHaveBeenCalledTimes(1);
     });
@@ -298,13 +302,16 @@ describe('PantryItemRepository', () => {
     it('should find a specific food item in a pantry', async () => {
       mockPrismaService.pantryItem.findFirst.mockResolvedValue(mockPantryItem);
 
-      const result = await repository.findFoodInPantry('pantry-1', 'food-1');
+      const result = await repository.findFoodInPantry(
+        TEST_IDS.PANTRY,
+        TEST_IDS.FOOD,
+      );
 
       expect(result).toEqual(mockPantryItem);
       expect(prisma.pantryItem.findFirst).toHaveBeenCalledWith({
         where: {
-          pantryId: 'pantry-1',
-          foodId: 'food-1',
+          pantryId: TEST_IDS.PANTRY,
+          foodId: TEST_IDS.FOOD,
         },
         include: {
           pantry: true,
@@ -316,7 +323,10 @@ describe('PantryItemRepository', () => {
     it('should return null if food not found in pantry', async () => {
       mockPrismaService.pantryItem.findFirst.mockResolvedValue(null);
 
-      const result = await repository.findFoodInPantry('pantry-1', 'food-999');
+      const result = await repository.findFoodInPantry(
+        TEST_IDS.PANTRY,
+        'food-999',
+      );
 
       expect(result).toBeNull();
     });
