@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
 import { UpdatePantryDto } from '../dto/query-pantry.dto';
