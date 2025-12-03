@@ -59,6 +59,7 @@ describe('PantryItemController', () => {
       ['', 'empty string'],
     ])(
       'should throw UnauthorizedException when userId is %s',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async (invalidUserId, _description) => {
         await expect(
           controller.create(createDto, invalidUserId as string),

@@ -580,46 +580,6 @@
         "responses": {
           "201": {
             "description": "User created successfully"
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -682,45 +642,8 @@
           "200": {
             "description": "User found"
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "User not found"
           }
         },
         "security": [
@@ -766,45 +689,8 @@
           "200": {
             "description": "User updated successfully"
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "User not found"
           }
         },
         "security": [
@@ -969,44 +855,13 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid input data"
           },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           }
         },
         "security": [
@@ -1042,14 +897,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid query parameters"
           }
         },
         "summary": "Get all food items",
@@ -1092,24 +940,10 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid search parameters"
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "OpenFoodFacts service unavailable"
           }
         },
         "summary": "Search OpenFoodFacts database",
@@ -1156,54 +990,19 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid barcode"
           },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Product not found in OpenFoodFacts"
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "OpenFoodFacts service unavailable"
           }
         },
         "security": [
@@ -1259,25 +1058,8 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+       "404": {
+            "description": "Food item not found"
           }
         },
         "summary": "Find food by barcode",
@@ -1322,25 +1104,8 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Food item not found"
           }
         },
         "summary": "Find food by ID",
@@ -1385,44 +1150,16 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid input data"
           },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Food item not found"
           }
         },
         "security": [
@@ -1461,45 +1198,14 @@
           "204": {
             "description": "Food item deleted successfully"
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - admin role required"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Food item not found"
           }
         },
         "security": [
@@ -1554,35 +1260,11 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+         "404": {
+            "description": "Food item not found"
           },
           "503": {
-            "description": "OpenFoodFacts service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "OpenFoodFacts service unavailable"
           }
         },
         "summary": "Get OpenFoodFacts information for food item",
@@ -2327,54 +2009,16 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid input data or duplicate item"
           },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list or food item not found"
           }
         },
         "security": [
@@ -2475,54 +2119,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid query parameters"
           }
         },
         "summary": "Get shopping list items",
@@ -2557,55 +2154,14 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list not found"
           }
         },
         "security": [
@@ -2644,55 +2200,14 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list item not found"
           }
         },
         "security": [
@@ -2741,54 +2256,16 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Invalid input data"
           },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list item not found"
           }
         },
         "security": [
@@ -2819,55 +2296,14 @@
           "200": {
             "description": "Shopping list item deleted successfully"
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list item not found"
           }
         },
         "security": [
@@ -2907,55 +2343,14 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list item not found"
           }
         },
         "security": [
@@ -2988,55 +2383,14 @@
           "200": {
             "description": "Checked items cleared successfully"
           },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
           "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Unauthorized - JWT token required"
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Forbidden - insufficient permissions"
           },
           "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list not found"
           }
         },
         "security": [
@@ -3939,7 +3293,7 @@
   },
   "info": {
     "title": "FOODMISSION Data Framework API",
-    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Error Handling\n      All endpoints follow a consistent error response format. When an error occurs, the API returns a JSON object with the following structure:\n      \n      - **statusCode**: HTTP status code (e.g., 400, 401, 404, 500)\n      - **message**: Human-readable error message or array of validation errors\n      - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')\n      - **timestamp**: ISO 8601 timestamp when the error occurred\n      - **path**: API path where the error occurred\n      - **correlationId**: Unique identifier for request tracing\n      - **details**: Optional object containing additional error information (e.g., validation errors array)\n      \n      ### Common Error Responses\n      \n      - **400 Bad Request**: Invalid input data or validation failed. The `details.errors` field contains an array of validation error messages.\n      - **401 Unauthorized**: Authentication required or invalid/expired JWT token.\n      - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.\n      - **404 Not Found**: The requested resource does not exist.\n      - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).\n      - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).\n      - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.\n      - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.\n      \n      ### Example Error Response\n      \n      ```json\n      {\n        \"statusCode\": 400,\n        \"message\": \"Validation failed\",\n        \"error\": \"VALIDATION_ERROR\",\n        \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n        \"path\": \"/api/v1/foods\",\n        \"correlationId\": \"abc123def456\",\n        \"details\": {\n          \"errors\": [\n            \"name should not be empty\",\n            \"categoryId must be a valid UUID\"\n          ]\n        }\n      }\n      ```\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
+    "description": "\n      A comprehensive backend system for managing food-related data and operations.\n      \n      ## Features\n      - **Authentication**: Secure JWT-based authentication via Keycloak\n      - **Food Management**: CRUD operations for food items with categorization\n      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval\n      - **User Management**: User profiles and dietary preferences\n      - **Health Monitoring**: Comprehensive health checks and metrics\n      \n      ## Getting Started\n      1. Obtain a JWT token from the authentication endpoints\n      2. Include the token in the Authorization header: `Bearer <token>`\n      3. Use the interactive documentation below to explore available endpoints\n      \n      ## Authentication\n      This API uses stateless JWT authentication via Keycloak.\n      \n      1. Get Keycloak configuration from `/auth/info`\n      2. Authenticate directly with Keycloak using OAuth2/OIDC\n      3. Include JWT tokens in the Authorization header: `Bearer <token>`\n      \n      ## Rate Limiting\n      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.\n      \n      ## Support\n      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).\n    ",
     "version": "1.0.0",
     "contact": {
       "name": "FOODMISSION Team",

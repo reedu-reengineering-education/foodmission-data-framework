@@ -789,6 +789,7 @@ describe('PantryItemService', () => {
       [undefined, 'undefined'],
     ])(
       'should throw BadRequestException when pantryId is %s',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async (invalidPantryId, _description) => {
         const dto = new CreateShoppingListItemDto(
           TEST_IDS.FOOD,
