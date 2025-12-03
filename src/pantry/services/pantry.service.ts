@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -9,7 +11,7 @@ import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
@@ -21,31 +23,61 @@ export class PantryService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async getPantryByUserId(userId: string): Promise<PantryResponseDto> {
-    this.logger.log(`Getting pantry for user: ${userId}`);
+  async getPantryById(
+    pantryId: string,
+    userId: string,
+  ): Promise<PantryResponseDto> {
+    this.logger.log(`Getting pantry ${pantryId} for user: ${userId}`);
 
-    let pantry = await this.pantryRepository.findByUserId(userId);
+    const pantry = await this.pantryRepository.findById(pantryId);
 
     if (!pantry) {
-      this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      const createdPantry = await this.pantryRepository.create({
-        userId,
-        title: 'My Pantry',
-      });
-      pantry = createdPantry;
+      throw new NotFoundException('Pantry not found');
+    }
+
+    if (pantry.userId !== userId) {
+      throw new ForbiddenException(
+        'No permission - user does not own this pantry',
+      );
     }
 
     return this.transformToResponseDto(pantry);
   }
 
-  async create(createPantryDto: CreatePantryDto): Promise<PantryResponseDto> {
+  async getAllPantriesByUserId(userId: string): Promise<PantryResponseDto[]> {
+    this.logger.log(`Getting all pantries for user: ${userId}`);
+
+    const pantries = await this.pantryRepository.findAllByUserId(userId);
+
+    return pantries.map((pantry) => this.transformToResponseDto(pantry));
+  }
+
+  async create(
+    createPantryDto: CreatePantryDto,
+    userId: string,
+  ): Promise<PantryResponseDto> {
     try {
       const pantry = await this.pantryRepository.create({
         ...createPantryDto,
+        userId,
       });
       return this.transformToResponseDto(pantry);
-    } catch {
-      throw new Error('Failed to create pantry');
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      // Handle repository error for duplicate title
+      if (
+        error instanceof Error &&
+        error.message.includes('title already exists')
+      ) {
+        throw new ConflictException(error.message);
+      }
+      this.logger.error('Failed to create pantry:', error);
+      throw new BadRequestException('Failed to create pantry');
     }
   }
 
@@ -85,15 +117,28 @@ export class PantryService {
     }
   }
 
-  async validatePantryExists(userId: string): Promise<string> {
-    let pantry = await this.pantryRepository.findByUserId(userId);
+  async validatePantryExists(
+    userId: string,
+    pantryId?: string,
+  ): Promise<string> {
+    if (pantryId) {
+      const pantry = await this.pantryRepository.findById(pantryId);
+      if (!pantry) {
+        throw new NotFoundException('Pantry not found');
+      }
+      if (pantry.userId !== userId) {
+        throw new ForbiddenException(
+          'No permission - user does not own this pantry',
+        );
+      }
+      return pantryId;
+    }
 
+    const pantry = await this.pantryRepository.findByUserId(userId);
     if (!pantry) {
-      this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.pantryRepository.create({
-        userId,
-        title: 'My Pantry',
-      });
+      throw new NotFoundException(
+        'No pantry found. Please create a pantry first or specify a pantryId.',
+      );
     }
     return pantry.id;
   }

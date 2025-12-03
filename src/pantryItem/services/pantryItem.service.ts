@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -17,7 +18,6 @@ import {
 } from '../repositories/pantryItem.repository';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { PrismaService } from '../../database/prisma.service';
-import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
@@ -25,25 +25,51 @@ import {
 import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryService } from '../../pantry/services/pantry.service';
+import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-soppingListItem.dto';
+import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
+import { Unit } from '@prisma/client';
 
 @Injectable()
 export class PantryItemService {
+  private readonly logger = new Logger(PantryItemService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
   ) {}
 
+  async createFromShoppingList(
+    createShoppingListItemDto: CreateShoppingListItemDto,
+    userId: string,
+    pantryId: string,
+  ): Promise<PantryItemResponseDto> {
+    if (!pantryId) {
+      throw new BadRequestException(
+        'pantryId is required to create pantry item from shopping list',
+      );
+    }
+
+    const createPantryItemDto = new CreatePantryItemDto(
+      pantryId,
+      createShoppingListItemDto.foodId,
+      createShoppingListItemDto.quantity,
+      createShoppingListItemDto.unit,
+    );
+
+    return this.create(createPantryItemDto, userId);
+  }
+
   async create(
     createDto: CreatePantryItemDto,
     userId: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      const pantryId = await this.pantryService.validatePantryExists(userId);
+      await this.pantryService.validatePantryExists(userId, createDto.pantryId);
 
       await this.validateFoodExists(createDto.foodId);
       const existingItem = await this.pantryItemRepository.findFoodInPantry(
-        pantryId,
+        createDto.pantryId,
         createDto.foodId,
       );
 
@@ -51,13 +77,23 @@ export class PantryItemService {
         throw new ConflictException('This food item is already in your pantry');
       }
 
+      let expiryDate: Date | undefined;
+      if (createDto.expiryDate) {
+        expiryDate =
+          createDto.expiryDate instanceof Date
+            ? createDto.expiryDate
+            : new Date(createDto.expiryDate);
+      }
+
+      const unit = createDto.unit ?? Unit.PIECES;
+
       const item = await this.prisma.pantryItem.create({
         data: {
           quantity: createDto.quantity,
-          unit: createDto.unit,
+          unit: unit,
           notes: createDto.notes,
-          expiryDate: createDto.expiryDate,
-          pantryId: pantryId,
+          expiryDate: expiryDate,
+          pantryId: createDto.pantryId,
           foodId: createDto.foodId,
         },
         include: {
@@ -68,19 +104,61 @@ export class PantryItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      handleServiceError(error, 'Failed to create pantry item');
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+
+      this.logger.error('Failed to create pantry item:', error);
+
+      if (error && typeof error === 'object' && 'code' in error) {
+        const prismaError = error;
+        if (prismaError.code === 'P2002') {
+          throw new ConflictException(
+            'This food item is already in your pantry',
+          );
+        }
+        if (prismaError.code === 'P2003') {
+          throw new BadRequestException(
+            'Invalid reference: food or pantry does not exist',
+          );
+        }
+      }
+
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Failed to create pantry item',
+      );
     }
   }
 
   async findAll(
     query: QueryPantryItemDto,
+    userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const { foodId, unit } = query;
+    const { pantryId, foodId, unit } = query;
 
-    const items = await this.pantryItemRepository.findMany({
-      foodId,
-      unit,
-    });
+    await this.pantryService.validatePantryExists(userId, pantryId);
+
+    if (foodId) {
+      await this.validateFoodExists(foodId);
+    }
+
+    const filter: any = {
+      pantryId,
+    };
+
+    if (foodId) {
+      filter.foodId = foodId;
+    }
+
+    if (unit) {
+      filter.unit = unit;
+    }
+
+    const items = await this.pantryItemRepository.findMany(filter);
 
     const transformedData = plainToInstance(PantryItemResponseDto, items, {
       excludeExtraneousValues: true,
@@ -127,14 +205,24 @@ export class PantryItemService {
     }
 
     try {
+      let expiryDate: Date | undefined;
+      if (updateDto.expiryDate !== undefined) {
+        expiryDate =
+          updateDto.expiryDate instanceof Date
+            ? updateDto.expiryDate
+            : updateDto.expiryDate
+              ? new Date(updateDto.expiryDate)
+              : undefined;
+      }
+
       const updatedItem = await this.pantryItemRepository.update(id, {
         ...(updateDto.quantity !== undefined && {
           quantity: updateDto.quantity,
         }),
         ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
         ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
-        ...(updateDto.expiryDate !== undefined && {
-          expiryDate: updateDto.expiryDate,
+        ...(expiryDate !== undefined && {
+          expiryDate: expiryDate,
         }),
         ...(updateDto.foodId !== undefined && { foodId: updateDto.foodId }),
       });

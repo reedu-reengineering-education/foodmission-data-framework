@@ -17,6 +17,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     foodName: 'Bananas',
     quantity: 6,
     unit: Unit.PIECES,
+    checked: true,
   },
   {
     shoppingListTitle: 'Weekly Groceries',
@@ -25,6 +26,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     quantity: 1,
     unit: Unit.L,
     notes: 'Organic if available',
+    checked: true,
   },
   {
     shoppingListTitle: 'Weekly Groceries',
@@ -33,6 +35,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
     quantity: 2,
     unit: Unit.PIECES,
     notes: 'Whole grain',
+    checked: true,
   },
   {
     shoppingListTitle: 'Weekly Groceries',

@@ -5,17 +5,24 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
-import { Unit } from '@prisma/client';
+import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
+import { PantryService } from '../../pantry/services/pantry.service';
+import { UserRepository } from '../../user/repositories/user.repository';
+import { FoodRepository } from '../../food/repositories/food.repository';
+import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
 
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
   let repository: jest.Mocked<ShoppingListItemRepository>;
+  let pantryItemService: PantryItemService;
+  let userRepository: UserRepository;
 
   const mockPrismaService = {
     shoppingList: {
@@ -32,7 +39,7 @@ describe('ShoppingListItemService', () => {
   const mockShoppingListItem = {
     id: '1',
     quantity: 2,
-    unit: Unit.KG,
+    unit: 'KG' as const,
     notes: 'Test notes',
     checked: false,
     shoppingListId: 'list-1',
@@ -72,6 +79,33 @@ describe('ShoppingListItemService', () => {
     name: 'Test Food',
   };
 
+  const mockUser = {
+    id: 'user-1',
+    checkedShoppingListItemInPantry: true,
+  };
+
+  const mockUserRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockPantryItemService = {
+    createFromShoppingList: jest.fn(),
+  };
+
+  const mockPantryService = {
+    getAllPantriesByUserId: jest.fn(),
+  };
+
+  const mockFoodRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockShoppingListRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockUpdatedItem = { ...mockShoppingListItem, checked: true };
+
   beforeEach(async () => {
     const mockRepository = {
       create: jest.fn(),
@@ -96,14 +130,33 @@ describe('ShoppingListItemService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+        {
+          provide: PantryItemService,
+          useValue: mockPantryItemService,
+        },
+        {
+          provide: PantryService,
+          useValue: mockPantryService,
+        },
+        {
+          provide: UserRepository,
+          useValue: mockUserRepository,
+        },
+        {
+          provide: FoodRepository,
+          useValue: mockFoodRepository,
+        },
+        {
+          provide: ShoppingListRepository,
+          useValue: mockShoppingListRepository,
+        },
       ],
     }).compile();
 
     service = module.get<ShoppingListItemService>(ShoppingListItemService);
     repository = module.get(ShoppingListItemRepository);
-
-    // Mock logger to avoid undefined errors
-    service.logger = { log: jest.fn() };
+    pantryItemService = module.get<PantryItemService>(PantryItemService);
+    userRepository = module.get<UserRepository>(UserRepository);
 
     // Mock die Transformation mit korrektem Typing
     jest
@@ -119,6 +172,9 @@ describe('ShoppingListItemService', () => {
         shoppingList: item.shoppingList,
         food: item.food,
       }));
+
+    // Don't mock transformMultipleToResponseDto - we want to test it
+    // It uses plainToInstance directly, not transformToResponseDto
   });
 
   afterEach(() => {
@@ -137,44 +193,24 @@ describe('ShoppingListItemService', () => {
 
     it('should create a shopping list item successfully', async () => {
       // Arrange
-      // Mock die Prisma-Aufrufe für die Validierungen
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(
-        mockShoppingList,
-      );
-      mockPrismaService.food.findUnique.mockResolvedValue(mockFood);
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockFoodRepository.findById.mockResolvedValue(mockFood);
       repository.findByShoppingListAndFood.mockResolvedValue(null);
-      mockPrismaService.shoppingListItem.create.mockResolvedValue(
-        mockShoppingListItem,
-      );
+      repository.create.mockResolvedValue(mockShoppingListItem);
 
       // Act
       const result = await service.create(createDto, 'user-1');
 
       // Assert
-      expect(mockPrismaService.shoppingList.findFirst).toHaveBeenCalledWith({
-        where: { id: 'list-1', userId: 'user-1' },
-      });
-      expect(mockPrismaService.food.findUnique).toHaveBeenCalledWith({
-        where: { id: 'food-1' },
-      });
+      expect(mockShoppingListRepository.findById).toHaveBeenCalledWith(
+        'list-1',
+      );
+      expect(mockFoodRepository.findById).toHaveBeenCalledWith('food-1');
       expect(repository.findByShoppingListAndFood).toHaveBeenCalledWith(
         'list-1',
         'food-1',
       );
-      expect(mockPrismaService.shoppingListItem.create).toHaveBeenCalledWith({
-        data: {
-          quantity: 2,
-          unit: 'KG',
-          notes: 'Test notes',
-          checked: false,
-          shoppingListId: 'list-1',
-          foodId: 'food-1',
-        },
-        include: {
-          shoppingList: true,
-          food: true,
-        },
-      });
+      expect(repository.create).toHaveBeenCalledWith(createDto);
 
       expect(result.id).toBe('1');
       expect(result.quantity).toBe(2);
@@ -182,7 +218,7 @@ describe('ShoppingListItemService', () => {
 
     it('should throw NotFoundException if shopping list not found', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(null);
+      mockShoppingListRepository.findById.mockResolvedValue(null);
 
       // Act & Assert
       await expect(service.create(createDto, 'user-1')).rejects.toThrow(
@@ -190,16 +226,14 @@ describe('ShoppingListItemService', () => {
       );
 
       // Stelle sicher, dass nachfolgende Schritte nicht ausgeführt werden
-      expect(mockPrismaService.food.findUnique).not.toHaveBeenCalled();
+      expect(mockFoodRepository.findById).not.toHaveBeenCalled();
       expect(repository.findByShoppingListAndFood).not.toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if food not found', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(
-        mockShoppingList,
-      );
-      mockPrismaService.food.findUnique.mockResolvedValue(null);
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockFoodRepository.findById.mockResolvedValue(null);
 
       // Act & Assert
       await expect(service.create(createDto, 'user-1')).rejects.toThrow(
@@ -209,10 +243,8 @@ describe('ShoppingListItemService', () => {
 
     it('should throw ConflictException if item already exists', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(
-        mockShoppingList,
-      );
-      mockPrismaService.food.findUnique.mockResolvedValue(mockFood);
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockFoodRepository.findById.mockResolvedValue(mockFood);
       repository.findByShoppingListAndFood.mockResolvedValue(
         mockShoppingListItem,
       );
@@ -223,19 +255,15 @@ describe('ShoppingListItemService', () => {
       );
 
       // Stelle sicher, dass create nicht aufgerufen wird, wenn Item bereits existiert
-      expect(mockPrismaService.shoppingListItem.create).not.toHaveBeenCalled();
+      expect(repository.create).not.toHaveBeenCalled();
     });
 
     it('should throw BadRequestException on repository error', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(
-        mockShoppingList,
-      );
-      mockPrismaService.food.findUnique.mockResolvedValue(mockFood);
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockFoodRepository.findById.mockResolvedValue(mockFood);
       repository.findByShoppingListAndFood.mockResolvedValue(null);
-      mockPrismaService.shoppingListItem.create.mockRejectedValue(
-        new Error('Database error'),
-      );
+      repository.create.mockRejectedValue(new Error('Database error'));
 
       // Act & Assert
       await expect(service.create(createDto, 'user-1')).rejects.toThrow(
@@ -267,6 +295,8 @@ describe('ShoppingListItemService', () => {
       });
       expect(result.data).toHaveLength(1);
       expect(result.data[0]).toHaveProperty('id');
+      expect(result.data[0]).toHaveProperty('quantity');
+      expect(result.data[0]).toHaveProperty('unit');
     });
 
     it('should handle unit filter with case-insensitive search', async () => {
@@ -288,38 +318,140 @@ describe('ShoppingListItemService', () => {
       });
       expect(result.data).toHaveLength(1);
     });
+
+    it('should transform multiple items correctly using transformMultipleToResponseDto', async () => {
+      // Arrange
+      const multipleItems = [
+        mockShoppingListItem,
+        {
+          ...mockShoppingListItem,
+          id: '2',
+          quantity: 3,
+          unit: 'PIECES' as const,
+        },
+      ];
+      repository.findMany.mockResolvedValue(multipleItems);
+
+      // Act
+      const result = await service.findAll({});
+
+      // Assert
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0].id).toBe('1');
+      expect(result.data[0].quantity).toBe(2);
+      expect(result.data[1].id).toBe('2');
+      expect(result.data[1].quantity).toBe(3);
+      expect(result.data[1].unit).toBe('PIECES');
+      // Verify the structure matches MultipleShoppingListItemResponseDto
+      expect(result).toHaveProperty('data');
+      expect(Array.isArray(result.data)).toBe(true);
+    });
+
+    it('should return empty array when no items found', async () => {
+      // Arrange
+      repository.findMany.mockResolvedValue([]);
+
+      // Act
+      const result = await service.findAll({});
+
+      // Assert
+      expect(result.data).toHaveLength(0);
+      expect(result.data).toEqual([]);
+    });
+
+    it('should handle findAll with all filters', async () => {
+      // Arrange
+      const query: QueryShoppingListItemDto = {
+        shoppingListId: 'list-1',
+        foodId: 'food-1',
+        checked: true,
+        unit: 'KG',
+      };
+      repository.findMany.mockResolvedValue([mockShoppingListItem]);
+
+      // Act
+      const result = await service.findAll(query);
+
+      // Assert
+      expect(repository.findMany).toHaveBeenCalledWith({
+        shoppingListId: 'list-1',
+        foodId: 'food-1',
+        checked: true,
+        unit: 'KG',
+      });
+      expect(result.data).toHaveLength(1);
+    });
+
+    it('should handle findAll with empty query object', async () => {
+      // Arrange
+      repository.findMany.mockResolvedValue([mockShoppingListItem]);
+
+      // Act
+      const result = await service.findAll({});
+
+      // Assert
+      expect(repository.findMany).toHaveBeenCalledWith({
+        shoppingListId: undefined,
+        foodId: undefined,
+        checked: undefined,
+        unit: undefined,
+      });
+      expect(result.data).toHaveLength(1);
+    });
   });
 
   describe('findByShoppingList', () => {
     it('should return items for a shopping list', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(
-        mockShoppingList,
-      );
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
       repository.findByShoppingListId.mockResolvedValue([mockShoppingListItem]);
 
       // Act
       const result = await service.findByShoppingList('list-1', 'user-1');
 
       // Assert
-      expect(mockPrismaService.shoppingList.findFirst).toHaveBeenCalledWith({
-        where: { id: 'list-1', userId: 'user-1' },
-      });
+      expect(mockShoppingListRepository.findById).toHaveBeenCalledWith(
+        'list-1',
+      );
       expect(repository.findByShoppingListId).toHaveBeenCalledWith(
         'list-1',
         'user-1',
       );
       expect(result.data).toHaveLength(1);
+      expect(result.data[0]).toHaveProperty('id');
     });
 
     it('should throw NotFoundException when shopping list not found', async () => {
       // Arrange
-      mockPrismaService.shoppingList.findFirst.mockResolvedValue(null);
+      mockShoppingListRepository.findById.mockResolvedValue(null);
 
       // Act & Assert
       await expect(
         service.findByShoppingList('list-1', 'user-1'),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should transform multiple items correctly using transformMultipleToResponseDto', async () => {
+      // Arrange
+      const multipleItems = [
+        mockShoppingListItem,
+        {
+          ...mockShoppingListItem,
+          id: '2',
+          quantity: 5,
+        },
+      ];
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      repository.findByShoppingListId.mockResolvedValue(multipleItems);
+
+      // Act
+      const result = await service.findByShoppingList('list-1', 'user-1');
+
+      // Assert
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0].id).toBe('1');
+      expect(result.data[1].id).toBe('2');
+      expect(result.data[1].quantity).toBe(5);
     });
   });
 
@@ -334,8 +466,6 @@ describe('ShoppingListItemService', () => {
       // Assert
       expect(repository.findById).toHaveBeenCalledWith('1');
       expect(result).toHaveProperty('id');
-      // Passe je nach tatsächlicher Transformation an:
-      // expect(result.notes).toBeUndefined(); // falls notes transformiert wird
     });
 
     it('should throw NotFoundException when item not found', async () => {
@@ -390,6 +520,458 @@ describe('ShoppingListItemService', () => {
       expect(repository.update).toHaveBeenCalledWith(itemId, updateDto);
       expect(result.quantity).toBe(5);
       expect(result.checked).toBe(true);
+    });
+
+    it('should validate food exists when foodId is updated', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        foodId: 'new-food-1',
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockFoodRepository.findById.mockResolvedValue(mockFood);
+      repository.update.mockResolvedValue({
+        ...mockShoppingListItem,
+        foodId: 'new-food-1',
+      });
+
+      await service.update(itemId, updateDto, userId);
+
+      expect(mockFoodRepository.findById).toHaveBeenCalledWith('new-food-1');
+    });
+
+    it('should validate shopping list access when shoppingListId is updated', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        shoppingListId: 'new-list-1',
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      repository.update.mockResolvedValue({
+        ...mockShoppingListItem,
+        shoppingListId: 'new-list-1',
+      });
+
+      await service.update(itemId, updateDto, userId);
+
+      expect(mockShoppingListRepository.findById).toHaveBeenCalledWith(
+        'new-list-1',
+      );
+    });
+
+    it('should throw ConflictException on unique constraint violation', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        quantity: 5,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint violation',
+        {
+          code: 'P2002',
+          clientVersion: '5.0.0',
+        },
+      );
+      repository.update.mockRejectedValue(prismaError);
+
+      await expect(service.update(itemId, updateDto, userId)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+
+    it('should throw BadRequestException on unknown error', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        quantity: 5,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockRejectedValue(new Error('Unknown error'));
+
+      await expect(service.update(itemId, updateDto, userId)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('should handle update with empty updateDto (all undefined)', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {};
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue(mockShoppingListItem);
+
+      const result = await service.update(itemId, updateDto, userId);
+
+      expect(repository.findById).toHaveBeenCalledWith(itemId);
+      // buildUpdateData should filter out undefined values
+      expect(repository.update).toHaveBeenCalledWith(itemId, {});
+      expect(result).toBeDefined();
+    });
+
+    it('should handle update with only notes field', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        notes: 'Updated notes',
+      };
+
+      const updatedItem = {
+        ...mockShoppingListItem,
+        notes: 'Updated notes',
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue(updatedItem);
+
+      const result = await service.update(itemId, updateDto, userId);
+
+      expect(repository.update).toHaveBeenCalledWith(itemId, {
+        notes: 'Updated notes',
+      });
+      expect(result.notes).toBe('Updated notes');
+    });
+
+    it('should handle update with only checked field', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        checked: true,
+      };
+
+      const updatedItem = {
+        ...mockShoppingListItem,
+        checked: true,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue(updatedItem);
+
+      const result = await service.update(itemId, updateDto, userId);
+
+      expect(repository.update).toHaveBeenCalledWith(itemId, {
+        checked: true,
+      });
+      expect(result.checked).toBe(true);
+    });
+
+    it('should not validate food when foodId is not in updateDto', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        quantity: 5,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue(mockShoppingListItem);
+
+      await service.update(itemId, updateDto, userId);
+
+      expect(mockFoodRepository.findById).not.toHaveBeenCalled();
+    });
+
+    it('should not validate shopping list when shoppingListId is not in updateDto', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        quantity: 5,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue(mockShoppingListItem);
+
+      await service.update(itemId, updateDto, userId);
+
+      expect(mockShoppingListRepository.findById).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a shopping list item', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.delete.mockResolvedValue(undefined);
+
+      await service.remove('item-1', 'user-1');
+
+      expect(repository.findById).toHaveBeenCalledWith('item-1');
+      expect(repository.delete).toHaveBeenCalledWith('item-1');
+    });
+
+    it('should throw NotFoundException when item not found', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(service.remove('item-1', 'user-1')).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw ForbiddenException when user does not have access', async () => {
+      const itemWithDifferentUser = {
+        ...mockShoppingListItem,
+        shoppingList: {
+          ...mockShoppingListItem.shoppingList,
+          userId: 'other-user',
+        },
+      };
+      repository.findById.mockResolvedValue(itemWithDifferentUser);
+
+      await expect(service.remove('item-1', 'user-1')).rejects.toThrow(
+        ForbiddenException,
+      );
+
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('clearCheckedItems', () => {
+    it('should clear checked items from a shopping list', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      repository.clearCheckedItems.mockResolvedValue(undefined as any);
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      expect(mockShoppingListRepository.findById).toHaveBeenCalledWith(
+        'list-1',
+      );
+      expect(repository.clearCheckedItems).toHaveBeenCalledWith(
+        'list-1',
+        'user-1',
+      );
+    });
+
+    it('should throw NotFoundException when shopping list not found', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.clearCheckedItems('list-1', 'user-1'),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(repository.clearCheckedItems).not.toHaveBeenCalled();
+    });
+
+    it('should throw ForbiddenException when user does not have access', async () => {
+      const shoppingListWithDifferentUser = {
+        ...mockShoppingList,
+        userId: 'other-user',
+      };
+      mockShoppingListRepository.findById.mockResolvedValue(
+        shoppingListWithDifferentUser,
+      );
+
+      await expect(
+        service.clearCheckedItems('list-1', 'user-1'),
+      ).rejects.toThrow(ForbiddenException);
+
+      expect(repository.clearCheckedItems).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should toggle checked and create pantry item if user preference is true', async () => {
+    const mockPantry = {
+      id: 'pantry-1',
+      userId: 'user-1',
+      title: 'My Pantry',
+      items: [],
+    };
+
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+    mockUserRepository.findById.mockResolvedValue(mockUser);
+    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
+    mockPantryItemService.createFromShoppingList.mockResolvedValue({
+      id: 'pantry-item-1',
+      pantryId: 'pantry-1',
+      foodId: 'food-1',
+      quantity: 2,
+      unit: 'KG',
+    });
+
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
+      'user-1',
+    );
+    expect(pantryItemService.createFromShoppingList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        foodId: mockShoppingListItem.foodId,
+        quantity: mockShoppingListItem.quantity,
+        unit: mockShoppingListItem.unit,
+      }),
+      'user-1',
+      'pantry-1', // pantryId should be passed
+    );
+    expect(result).toBeDefined();
+    expect(result.id).toBe('1');
+  });
+
+  it('should throw NotFoundException if user does not exist', async () => {
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+    mockUserRepository.findById.mockResolvedValue(null);
+
+    await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
+      NotFoundException,
+    );
+    expect(repository.toggleChecked).not.toHaveBeenCalled();
+    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
+  });
+
+  it('should NOT create pantry item when unchecking (item is already checked)', async () => {
+    const checkedItem = { ...mockShoppingListItem, checked: true };
+    const uncheckedItem = { ...mockShoppingListItem, checked: false };
+
+    repository.findById.mockResolvedValue(checkedItem);
+    mockUserRepository.findById.mockResolvedValue(mockUser);
+    repository.toggleChecked.mockResolvedValue(uncheckedItem);
+
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).not.toHaveBeenCalled();
+    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
+    expect(result).toBeDefined();
+    expect(result.id).toBe('1');
+  });
+
+  it('should NOT create pantry item when user preference is false', async () => {
+    const userWithPreferenceFalse = {
+      ...mockUser,
+      checkedShoppingListItemInPantry: false,
+    };
+
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+    mockUserRepository.findById.mockResolvedValue(userWithPreferenceFalse);
+    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
+    expect(result).toBeDefined();
+    expect(result.id).toBe('1');
+  });
+
+  it('should NOT create pantry item when user preference is null or undefined', async () => {
+    const userWithPreferenceNull = {
+      ...mockUser,
+      checkedShoppingListItemInPantry: null,
+    };
+
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+    mockUserRepository.findById.mockResolvedValue(userWithPreferenceNull);
+    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
+    expect(result).toBeDefined();
+  });
+
+  it('should handle pantry creation failure gracefully', async () => {
+    const mockPantry = {
+      id: 'pantry-1',
+      userId: 'user-1',
+      title: 'My Pantry',
+      items: [],
+    };
+
+    repository.findById.mockResolvedValue(mockShoppingListItem);
+    mockUserRepository.findById.mockResolvedValue(mockUser);
+    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
+    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
+    mockPantryItemService.createFromShoppingList.mockRejectedValue(
+      new Error('Pantry creation failed'),
+    );
+
+    // Should not throw, toggle should succeed even if pantry creation fails
+    const result = await service.toggleChecked('item-1', 'user-1');
+
+    expect(repository.findById).toHaveBeenCalledWith('item-1');
+    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
+    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
+    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
+      'user-1',
+    );
+    expect(pantryItemService.createFromShoppingList).toHaveBeenCalled();
+    expect(result).toBeDefined();
+    expect(result.id).toBe('1');
+  });
+
+  describe('toggleChecked edge cases', () => {
+    it('should throw NotFoundException when item not found', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(repository.toggleChecked).not.toHaveBeenCalled();
+      expect(mockUserRepository.findById).not.toHaveBeenCalled();
+    });
+
+    it('should throw ForbiddenException when user does not have access', async () => {
+      const itemWithDifferentUser = {
+        ...mockShoppingListItem,
+        shoppingList: {
+          ...mockShoppingListItem.shoppingList,
+          userId: 'other-user',
+        },
+      };
+      repository.findById.mockResolvedValue(itemWithDifferentUser);
+
+      await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
+        ForbiddenException,
+      );
+
+      expect(repository.toggleChecked).not.toHaveBeenCalled();
+      expect(mockUserRepository.findById).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('buildUpdateData (tested indirectly through update)', () => {
+    it('should filter out undefined values from updateDto', async () => {
+      const itemId = 'item-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListItemDto = {
+        quantity: 5,
+        unit: undefined,
+        notes: 'test',
+        checked: undefined,
+        shoppingListId: undefined,
+        foodId: undefined,
+      };
+
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      repository.update.mockResolvedValue({
+        ...mockShoppingListItem,
+        quantity: 5,
+        notes: 'test',
+      });
+
+      await service.update(itemId, updateDto, userId);
+
+      // buildUpdateData should only include defined values
+      expect(repository.update).toHaveBeenCalledWith(itemId, {
+        quantity: 5,
+        notes: 'test',
+      });
     });
   });
 });

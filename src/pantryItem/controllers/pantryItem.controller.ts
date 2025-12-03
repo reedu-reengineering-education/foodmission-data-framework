@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,9 +9,11 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -20,10 +23,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryItemService } from '../services/pantryItem.service';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import {
@@ -32,6 +36,7 @@ import {
 } from '../dto/response-pantryItem.dto';
 import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
+import { Unit } from '@prisma/client';
 
 @ApiTags('pantry-item')
 @Controller('pantry-item')
@@ -45,7 +50,8 @@ export class PantryItemController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Add a new item to Pantry',
-    description: 'Creates a new Pantry Item and adds it to the Pantry.',
+    description:
+      'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryItemDto })
   @ApiResponse({
@@ -53,22 +59,7 @@ export class PantryItemController {
     description: 'Pantry item created successfully',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data or duplicate item',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry or food item not found',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createPantryItemDto: CreatePantryItemDto,
     @CurrentUser('id') userId: string,
@@ -80,46 +71,62 @@ export class PantryItemController {
   }
 
   @Get()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get pantry items',
-    description: 'Retrieve pantry items with optional filtering',
+    description:
+      'Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate.',
   })
   @ApiQuery({
-    name: 'shoppingListId',
-    required: false,
-    description: 'Filter by pantry ID',
+    name: 'pantryId',
+    required: true,
+    description: 'The ID of the pantry to get items from (UUID)',
+    type: String,
   })
   @ApiQuery({
     name: 'foodId',
     required: false,
-    description: 'Filter by food ID',
+    description: 'Filter by food ID (UUID)',
+    type: String,
   })
   @ApiQuery({
-    name: 'checked',
+    name: 'unit',
     required: false,
-    description: 'Filter by checked status',
+    description: 'Filter by unit (PIECES, G, KG, ML, L, CUPS)',
+    enum: Unit,
   })
-  @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
   @ApiQuery({
-    name: 'page',
+    name: 'expiryDate',
     required: false,
-    description: 'Page number for pagination',
+    description: 'Filter by expiry date (ISO date string)',
+    type: String,
   })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
     description: 'Pantry items retrieved successfully',
     type: MultiplePantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid query parameters',
-  })
+  @ApiCrudErrorResponses()
   async findAll(
     @Query() query: QueryPantryItemDto,
+    @Req() request: Request,
+    @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    return this.pantryItemService.findAll(query);
+    const url = request.originalUrl || request.url;
+    const pathname = url.split('?')[0];
+
+    if (pathname.endsWith('/pantry-item/')) {
+      throw new BadRequestException(
+        'Invalid request path. Use GET /api/v1/pantry-item (without trailing slash) to list all items, or GET /api/v1/pantry-item/:id to get a specific item.',
+      );
+    }
+
+    if (!userId) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    return this.pantryItemService.findAll(query, userId);
   }
 
   @Get(':id')
@@ -134,18 +141,7 @@ export class PantryItemController {
     description: 'pantry item found',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -158,7 +154,8 @@ export class PantryItemController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update pantry item',
-    description: 'Update quantity, unit, notes of a pantry item',
+    description:
+      'Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiBody({ type: UpdatePantryItemDto })
@@ -167,22 +164,7 @@ export class PantryItemController {
     description: 'Pantry item updated successfully',
     type: PantryItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePantryItemDto: UpdatePantryItemDto,
@@ -203,18 +185,7 @@ export class PantryItemController {
     status: 200,
     description: 'pantry item deleted successfully',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'pantry item not found',
-  })
+  @ApiCrudErrorResponses()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,

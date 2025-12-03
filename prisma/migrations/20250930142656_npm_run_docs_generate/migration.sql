@@ -23,9 +23,6 @@ CREATE TABLE "public"."pantry_items" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Pantry_userId_key" ON "public"."Pantry"("userId");
-
--- CreateIndex
 CREATE INDEX "Pantry_userId_idx" ON "public"."Pantry"("userId");
 
 -- CreateIndex

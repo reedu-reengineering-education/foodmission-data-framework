@@ -4,36 +4,24 @@ import { PantryRepository } from '../repositories/pantry.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
+import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantryService', () => {
   let service: PantryService;
   let repository: PantryRepository;
 
-  const mockPantry = {
-    id: 'pantry-1',
-    title: 'My Pantry',
-    userId: 'user-1',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    items: [],
-  };
-
   const mockPantryRepository = {
     findByUserId: jest.fn(),
+    findAllByUserId: jest.fn(),
     create: jest.fn(),
     findById: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  };
-
-  const mockPrismaService = {
-    pantry: {
-      findUniqueOrThrow: jest.fn(),
-      findUnique: jest.fn(),
-    },
   };
 
   beforeEach(async () => {
@@ -46,7 +34,7 @@ describe('PantryService', () => {
         },
         {
           provide: PrismaService,
-          useValue: mockPrismaService,
+          useValue: {},
         },
       ],
     }).compile();
@@ -59,351 +47,355 @@ describe('PantryService', () => {
     jest.clearAllMocks();
   });
 
-  describe('getPantryByUserId', () => {
-    it('should return existing pantry for user', async () => {
-      mockPantryRepository.findByUserId.mockResolvedValue(mockPantry);
+  describe('getAllPantriesByUserId', () => {
+    const userId = TEST_IDS.USER;
 
-      const result = await service.getPantryByUserId('user-1');
+    it('should return all pantries when user has multiple pantries', async () => {
+      const pantries = PantryTestBuilder.createPantryResponseDtoArray(2);
+      mockPantryRepository.findAllByUserId.mockResolvedValue(pantries);
 
-      expect(result).toHaveProperty('id', 'pantry-1');
-      expect(result).toHaveProperty('title', 'My Pantry');
-      expect(result).toHaveProperty('userId', 'user-1');
-      expect(repository.findByUserId).toHaveBeenCalledWith('user-1');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1);
-      expect(repository.create).not.toHaveBeenCalled();
+      const result = await service.getAllPantriesByUserId(userId);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe(`${TEST_IDS.PANTRY}-1`);
+      expect(result[1].id).toBe(`${TEST_IDS.PANTRY}-2`);
+      expect(repository.findAllByUserId).toHaveBeenCalledWith(userId);
+      expect(repository.findAllByUserId).toHaveBeenCalledTimes(1);
     });
 
-    it('should create new pantry if none exists for user', async () => {
-      const newPantry = {
-        ...mockPantry,
-        id: 'pantry-2',
-        userId: 'user-2',
-      };
-      const newPantryWithRelations = {
-        ...newPantry,
-        items: [],
-      };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null); // No pantry found
-      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
+    it('should return empty array when no pantries exist for user', async () => {
+      mockPantryRepository.findAllByUserId.mockResolvedValue([]);
 
-      const result = await service.getPantryByUserId('user-2');
+      const result = await service.getAllPantriesByUserId(userId);
 
-      expect(repository.findByUserId).toHaveBeenCalledWith('user-2');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1); // Only once to check
-      expect(repository.create).toHaveBeenCalledWith({
-        userId: 'user-2',
-        title: 'My Pantry',
-      });
-      expect(result).toHaveProperty('id', 'pantry-2');
-      expect(result).toHaveProperty('userId', 'user-2');
+      expect(result).toEqual([]);
+      expect(repository.findAllByUserId).toHaveBeenCalledWith(userId);
     });
 
-    it('should log when getting pantry for user', async () => {
-      mockPantryRepository.findByUserId.mockResolvedValue(mockPantry);
+    it('should log when getting all pantries for user', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto();
+      mockPantryRepository.findAllByUserId.mockResolvedValue([mockPantry]);
       const loggerSpy = jest.spyOn(service['logger'], 'log');
 
-      await service.getPantryByUserId('user-1');
+      await service.getAllPantriesByUserId(userId);
 
-      expect(loggerSpy).toHaveBeenCalledWith('Getting pantry for user: user-1');
-    });
-
-    it('should log when creating new pantry', async () => {
-      const newPantryWithRelations = {
-        ...mockPantry,
-        id: 'pantry-3',
-        userId: 'user-3',
-        items: [],
-      };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
-
-      const loggerSpy = jest.spyOn(service['logger'], 'log');
-
-      await service.getPantryByUserId('user-3');
-
-      expect(loggerSpy).toHaveBeenCalledWith('Getting pantry for user: user-3');
       expect(loggerSpy).toHaveBeenCalledWith(
-        'No pantry found for user user-3, creating one...',
+        `Getting all pantries for user: ${userId}`,
+      );
+    });
+  });
+
+  describe('getPantryById', () => {
+    const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
+
+    it('should return pantry when it exists and belongs to user', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+
+      const result = await service.getPantryById(pantryId, userId);
+
+      expect(result.id).toBe(pantryId);
+      expect(result.title).toBe(mockPantry.title);
+      expect(result.userId).toBe(userId);
+      expect(repository.findById).toHaveBeenCalledWith(pantryId);
+    });
+
+    it('should throw NotFoundException when pantry does not exist', async () => {
+      mockPantryRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.getPantryById('non-existent', userId),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when pantry belongs to different user', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: 'other-user',
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+
+      await expect(service.getPantryById(pantryId, userId)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('should log when getting pantry by id', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+      const loggerSpy = jest.spyOn(service['logger'], 'log');
+
+      await service.getPantryById(pantryId, userId);
+
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Getting pantry ${pantryId} for user: ${userId}`,
       );
     });
   });
 
   describe('create', () => {
-    it('should create a new pantry successfully', async () => {
-      const createDto = {
-        title: 'New Pantry',
-        userId: 'user-2',
-      };
+    const userId = TEST_IDS.USER;
 
-      mockPantryRepository.create.mockResolvedValue({
-        id: 'pantry-2',
+    it('should create a new pantry when valid DTO and userId are provided', async () => {
+      const createDto = PantryTestBuilder.createCreatePantryDto();
+      const createdPantry = PantryTestBuilder.createPantryResponseDto({
         ...createDto,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        userId,
       });
+      mockPantryRepository.create.mockResolvedValue(createdPantry);
 
-      const result = await service.create(createDto);
+      const result = await service.create(createDto, userId);
 
-      expect(result).toHaveProperty('id', 'pantry-2');
+      expect(result.id).toBe(createdPantry.id);
       expect(result.title).toBe(createDto.title);
-      expect(result.userId).toBe(createDto.userId);
-      expect(repository.create).toHaveBeenCalledWith(createDto);
+      expect(result.userId).toBe(userId);
+      expect(repository.create).toHaveBeenCalledWith({ ...createDto, userId });
     });
 
-    it('should throw error if creation fails', async () => {
-      const createDto = {
-        title: 'New Pantry',
-        userId: 'user-2',
-      };
-
+    it('should throw BadRequestException when creation fails with generic error', async () => {
+      const createDto = PantryTestBuilder.createCreatePantryDto();
       mockPantryRepository.create.mockRejectedValue(
         new Error('Database error'),
       );
 
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto, userId)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto, userId)).rejects.toThrow(
         'Failed to create pantry',
       );
     });
 
     it('should pass all DTO properties to repository', async () => {
-      const createDto = {
+      const createDto = PantryTestBuilder.createCreatePantryDto({
         title: 'Custom Pantry',
-        userId: 'user-5',
-      };
-
-      mockPantryRepository.create.mockResolvedValue({
-        id: 'pantry-5',
-        ...createDto,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
+      const createdPantry = PantryTestBuilder.createPantryResponseDto({
+        ...createDto,
+        userId,
+      });
+      mockPantryRepository.create.mockResolvedValue(createdPantry);
 
-      await service.create(createDto);
+      await service.create(createDto, userId);
 
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Custom Pantry',
-          userId: 'user-5',
+          userId: userId,
         }),
+      );
+    });
+
+    it('should throw ConflictException when pantry with same title already exists', async () => {
+      const createDto = PantryTestBuilder.createCreatePantryDto({
+        title: 'Existing Pantry',
+      });
+      mockPantryRepository.create.mockRejectedValue(
+        new Error('A pantry with this title already exists for this user.'),
+      );
+
+      await expect(service.create(createDto, userId)).rejects.toThrow(
+        ConflictException,
       );
     });
   });
 
   describe('update', () => {
-    it('should update a pantry successfully', async () => {
-      const updateDto = { title: 'Updated Pantry' };
-      const updatedPantry = {
-        ...mockPantry,
-        title: 'Updated Pantry',
-      };
+    const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
 
-      mockPantryRepository.findById.mockResolvedValue(mockPantry);
-      mockPantryRepository.update.mockResolvedValue(updatedPantry);
-
-      const result = await service.update('pantry-1', updateDto, 'user-1');
-
-      expect(result.title).toBe('Updated Pantry');
-      expect(repository.findById).toHaveBeenCalledWith('pantry-1');
-      expect(repository.update).toHaveBeenCalledWith('pantry-1', updateDto);
-    });
-
-    it('should throw NotFoundException if pantry does not exist', async () => {
-      mockPantryRepository.findById.mockResolvedValue(null);
-
-      await expect(
-        service.update('non-existent-id', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow(NotFoundException);
-      await expect(
-        service.update('non-existent-id', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow('Pantry not found');
-    });
-
-    it('should throw ForbiddenException if user does not own pantry', async () => {
-      mockPantryRepository.findById.mockResolvedValue({
-        ...mockPantry,
-        userId: 'other-user',
+    it('should update pantry when it exists and belongs to user', async () => {
+      const updateDto = PantryTestBuilder.createUpdatePantryDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
       });
-
-      await expect(
-        service.update('pantry-1', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow(ForbiddenException);
-      await expect(
-        service.update('pantry-1', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow('No premission');
-    });
-
-    it('should throw BadRequestException on unexpected error', async () => {
-      mockPantryRepository.findById.mockResolvedValue(mockPantry);
-      mockPantryRepository.update.mockRejectedValue(new Error('DB Error'));
-
-      await expect(
-        service.update('pantry-1', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow(BadRequestException);
-      await expect(
-        service.update('pantry-1', { title: 'New' }, 'user-1'),
-      ).rejects.toThrow('Failed to update pantry');
-    });
-
-    it('should allow update without userId parameter', async () => {
-      const updateDto = { title: 'No User Check' };
-      mockPantryRepository.findById.mockResolvedValue({
-        ...mockPantry,
-        userId: undefined,
-      });
-      mockPantryRepository.update.mockResolvedValue({
+      const updatedPantry = PantryTestBuilder.createPantryResponseDto({
         ...mockPantry,
         ...updateDto,
       });
 
-      await service.update('pantry-1', updateDto, undefined);
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+      mockPantryRepository.update.mockResolvedValue(updatedPantry);
 
-      expect(repository.update).toHaveBeenCalledWith('pantry-1', updateDto);
+      const result = await service.update(pantryId, updateDto, userId);
+
+      expect(result.title).toBe(updateDto.title);
+      expect(repository.findById).toHaveBeenCalledWith(pantryId);
+      expect(repository.update).toHaveBeenCalledWith(pantryId, updateDto);
+    });
+
+    it('should throw NotFoundException when pantry does not exist', async () => {
+      const updateDto = PantryTestBuilder.createUpdatePantryDto();
+      mockPantryRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.update('non-existent-id', updateDto, userId),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when user does not own pantry', async () => {
+      const updateDto = PantryTestBuilder.createUpdatePantryDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: 'other-user',
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+
+      await expect(service.update(pantryId, updateDto, userId)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('should throw BadRequestException when update fails unexpectedly', async () => {
+      const updateDto = PantryTestBuilder.createUpdatePantryDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+      mockPantryRepository.update.mockRejectedValue(new Error('DB Error'));
+
+      await expect(service.update(pantryId, updateDto, userId)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
   describe('remove', () => {
-    it('should delete a pantry successfully', async () => {
+    const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
+
+    it('should delete pantry when it exists and belongs to user', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
       mockPantryRepository.findById.mockResolvedValue(mockPantry);
       mockPantryRepository.delete.mockResolvedValue(undefined);
 
-      await service.remove('pantry-1', 'user-1');
+      await service.remove(pantryId, userId);
 
-      expect(repository.findById).toHaveBeenCalledWith('pantry-1');
-      expect(repository.delete).toHaveBeenCalledWith('pantry-1');
+      expect(repository.findById).toHaveBeenCalledWith(pantryId);
+      expect(repository.delete).toHaveBeenCalledWith(pantryId);
     });
 
-    it('should throw NotFoundException if pantry does not exist', async () => {
+    it('should throw NotFoundException when pantry does not exist', async () => {
       mockPantryRepository.findById.mockResolvedValue(null);
 
-      await expect(service.remove('non-existent-id', 'user-1')).rejects.toThrow(
+      await expect(service.remove('non-existent-id', userId)).rejects.toThrow(
         NotFoundException,
       );
-      await expect(service.remove('non-existent-id', 'user-1')).rejects.toThrow(
-        'pantry not found',
-      );
     });
 
-    it('should throw ForbiddenException if user does not own pantry', async () => {
-      mockPantryRepository.findById.mockResolvedValue({
-        ...mockPantry,
+    it('should throw ForbiddenException when user does not own pantry', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
         userId: 'other-user',
       });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
 
-      await expect(service.remove('pantry-1', 'user-1')).rejects.toThrow(
+      await expect(service.remove(pantryId, userId)).rejects.toThrow(
         ForbiddenException,
-      );
-      await expect(service.remove('pantry-1', 'user-1')).rejects.toThrow(
-        'No premission',
       );
     });
 
-    it('should throw BadRequestException on unexpected error', async () => {
+    it('should throw BadRequestException when deletion fails unexpectedly', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
       mockPantryRepository.findById.mockResolvedValue(mockPantry);
       mockPantryRepository.delete.mockRejectedValue(new Error('DB Error'));
 
-      await expect(service.remove('pantry-1', 'user-1')).rejects.toThrow(
+      await expect(service.remove(pantryId, userId)).rejects.toThrow(
         BadRequestException,
       );
-      await expect(service.remove('pantry-1', 'user-1')).rejects.toThrow(
-        'Failed to delete pantry',
-      );
-    });
-
-    it('should allow deletion without userId parameter', async () => {
-      mockPantryRepository.findById.mockResolvedValue({
-        ...mockPantry,
-        userId: undefined,
-      });
-      mockPantryRepository.delete.mockResolvedValue(undefined);
-
-      await service.remove('pantry-1', undefined);
-
-      expect(repository.delete).toHaveBeenCalledWith('pantry-1');
     });
   });
 
   describe('validatePantryExists', () => {
-    it('should return pantry id if pantry exists', async () => {
+    const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
+
+    it('should return pantry id when pantryId is provided and exists', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+
+      const result = await service.validatePantryExists(userId, pantryId);
+
+      expect(result).toBe(pantryId);
+      expect(repository.findById).toHaveBeenCalledWith(pantryId);
+      expect(repository.findById).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw NotFoundException when pantryId is provided but pantry does not exist', async () => {
+      mockPantryRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.validatePantryExists(userId, 'non-existent'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when pantryId is provided but belongs to different user', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: 'other-user',
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+
+      await expect(
+        service.validatePantryExists(userId, pantryId),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should return first pantry id when pantryId is not provided', async () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
       mockPantryRepository.findByUserId.mockResolvedValue(mockPantry);
 
-      const result = await service.validatePantryExists('user-1');
+      const result = await service.validatePantryExists(userId);
 
-      expect(result).toBe('pantry-1');
-      expect(repository.findByUserId).toHaveBeenCalledWith('user-1');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1);
-      expect(repository.create).not.toHaveBeenCalled();
+      expect(result).toBe(pantryId);
+      expect(repository.findByUserId).toHaveBeenCalledWith(userId);
     });
 
-    it('should create pantry and return id if pantry does not exist', async () => {
-      const newPantry = {
-        ...mockPantry,
-        id: 'pantry-new',
-        userId: 'user-999',
-      };
-
-      const newPantryWithRelations = {
-        ...newPantry,
-        items: [],
-      };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
-
-      const result = await service.validatePantryExists('user-999');
-
-      expect(result).toBe('pantry-new');
-      expect(repository.findByUserId).toHaveBeenCalledWith('user-999');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1); // Only once to check
-      expect(repository.create).toHaveBeenCalledWith({
-        userId: 'user-999',
-        title: 'My Pantry',
-      });
-    });
-
-    it('should log when creating new pantry', async () => {
-      const newPantryWithRelations = {
-        ...mockPantry,
-        id: 'pantry-new',
-        userId: 'user-888',
-        items: [],
-      };
-
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
-      const loggerSpy = jest.spyOn(service['logger'], 'log');
-
-      await service.validatePantryExists('user-888');
-
-      expect(loggerSpy).toHaveBeenCalledWith(
-        'No pantry found for user user-888, creating one...',
-      );
-    });
-
-    it('should throw error if repository create fails', async () => {
+    it('should throw NotFoundException when pantryId is not provided and no pantry exists', async () => {
       mockPantryRepository.findByUserId.mockResolvedValue(null);
-      mockPantryRepository.create.mockRejectedValue(
-        new Error('Database error'),
-      );
 
-      await expect(service.validatePantryExists('user-666')).rejects.toThrow(
-        'Database error',
+      await expect(service.validatePantryExists(userId)).rejects.toThrow(
+        NotFoundException,
       );
     });
   });
 
   describe('transformToResponseDto', () => {
-    it('should transform pantry to response DTO', () => {
+    it('should transform pantry to response DTO with all required fields', () => {
+      const mockPantry = PantryTestBuilder.createPantryResponseDto();
       const result = service['transformToResponseDto'](mockPantry);
 
-      expect(result).toHaveProperty('id', 'pantry-1');
-      expect(result).toHaveProperty('title', 'My Pantry');
-      expect(result).toHaveProperty('userId', 'user-1');
+      expect(result.id).toBe(mockPantry.id);
+      expect(result.title).toBe(mockPantry.title);
+      expect(result.userId).toBe(mockPantry.userId);
       expect(result).toHaveProperty('createdAt');
       expect(result).toHaveProperty('updatedAt');
     });
 
     it('should only include specific fields in response DTO', () => {
       const pantryWithExtraFields = {
-        ...mockPantry,
+        ...PantryTestBuilder.createPantryResponseDto(),
         items: [{ id: 'item-1', name: 'Test' }],
         someOtherField: 'should not be included',
       };
@@ -416,7 +408,7 @@ describe('PantryService', () => {
 
     it('should handle pantry with null values', () => {
       const pantryWithNulls = {
-        ...mockPantry,
+        ...PantryTestBuilder.createPantryResponseDto(),
         title: null,
       };
 
