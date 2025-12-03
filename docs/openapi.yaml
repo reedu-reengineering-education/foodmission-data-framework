@@ -61,6 +61,24 @@ paths:
                     type: object
                   settings:
                     type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -71,19 +89,64 @@ paths:
       tags: *ref_0
   /api/v1/auth/profile/preferences:
     put:
-      description: Update app-specific user preferences.
+      description: Update app-specific user preferences. Returns the updated user profile.
       operationId: updatePreferences
       parameters: []
       requestBody:
         required: true
-        description: User preferences object
+        description: User preferences object (JSON)
         content:
           application/json:
             schema:
               type: object
+              example:
+                dietaryRestrictions:
+                  - vegetarian
+                allergies:
+                  - nuts
+                theme: dark
       responses:
         '200':
-          description: ''
+          description: User preferences updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                    format: email
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  keycloakId:
+                    type: string
+                  preferences:
+                    type: object
+                  settings:
+                    type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -93,19 +156,62 @@ paths:
       tags: *ref_0
   /api/v1/auth/profile/settings:
     put:
-      description: Update app-specific user settings.
+      description: Update app-specific user settings. Returns the updated user profile.
       operationId: updateSettings
       parameters: []
       requestBody:
         required: true
-        description: User settings object
+        description: User settings object (JSON)
         content:
           application/json:
             schema:
               type: object
+              example:
+                language: en
+                notifications: true
+                timezone: UTC
       responses:
         '200':
-          description: ''
+          description: User settings updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  email:
+                    type: string
+                    format: email
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  keycloakId:
+                    type: string
+                  preferences:
+                    type: object
+                  settings:
+                    type: object
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -183,8 +289,24 @@ paths:
                     type: number
                     example: 1640991600
                     description: Token issued at timestamp
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: User not authenticated - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -210,11 +332,28 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: This endpoint is only accessible to admins
+                    example: Admin access granted
+                  status:
+                    type: string
+                    example: success
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: User not authenticated - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - admin role required
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -1641,6 +1780,47 @@ components:
       description: Enter JWT token obtained from Keycloak authentication
       in: header
   schemas:
+    ApiErrorResponseDto:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          description: Error message or array of validation errors
+          oneOf:
+            - type: string
+              example: Bad Request
+            - type: array
+              items:
+                type: string
+              example:
+                - name should not be empty
+                - email must be a valid email
+        error:
+          type: string
+          description: Error type
+          example: Bad Request
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+        path:
+          type: string
+          description: API path where the error occurred
+          example: /api/v1/foods
+        correlationId:
+          type: string
+          description: Correlation ID for request tracing
+          example: abc123def456
+      required:
+        - statusCode
+        - message
+        - error
+        - timestamp
+        - path
     CreateUserDto:
       type: object
       properties:
