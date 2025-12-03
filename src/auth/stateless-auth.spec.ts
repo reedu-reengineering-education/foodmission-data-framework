@@ -4,6 +4,7 @@ import { UserProfileService } from './user-profile.service';
 describe('Stateless Authentication', () => {
   let controller: AuthController;
   let userProfileService: jest.Mocked<UserProfileService>;
+  const originalEnv = process.env;
 
   beforeEach(() => {
     userProfileService = {
@@ -12,7 +13,20 @@ describe('Stateless Authentication', () => {
       updateSettings: jest.fn(),
     } as any;
 
+    // Mock environment variables
+    process.env = {
+      ...originalEnv,
+      KEYCLOAK_BASE_URL: 'http://localhost:8081',
+      KEYCLOAK_REALM: 'foodmission',
+      KEYCLOAK_WEB_CLIENT_ID: 'foodmission-web',
+      FRONTEND_URL: 'http://localhost:3000',
+    };
+
     controller = new AuthController(userProfileService);
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
   });
 
   describe('getAuthInfo', () => {
@@ -20,14 +34,14 @@ describe('Stateless Authentication', () => {
       const result = controller.getAuthInfo();
 
       expect(result).toEqual({
-        authServerUrl: expect.any(String),
-        realm: expect.any(String),
-        clientId: expect.any(String),
-        redirectUri: expect.any(String),
+        authServerUrl: 'http://localhost:8081',
+        realm: 'foodmission',
+        clientId: 'foodmission-web',
+        redirectUri: 'http://localhost:3000',
       });
     });
 
-    it('should use environment variables or defaults', () => {
+    it('should use environment variables', () => {
       const result = controller.getAuthInfo();
 
       expect(result.authServerUrl).toBeDefined();

@@ -79,13 +79,19 @@ describe('PantryService', () => {
         id: 'pantry-2',
         userId: 'user-2',
       };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
+      const newPantryWithRelations = {
+        ...newPantry,
+        items: [],
+      };
+      mockPantryRepository.findByUserId
+        .mockResolvedValueOnce(null) // First call - no pantry found
+        .mockResolvedValueOnce(newPantryWithRelations); // Second call - return created pantry
       mockPantryRepository.create.mockResolvedValue(newPantry);
 
       const result = await service.getPantryByUserId('user-2');
 
       expect(repository.findByUserId).toHaveBeenCalledWith('user-2');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1);
+      expect(repository.findByUserId).toHaveBeenCalledTimes(2); // Once to check, once after creating
       expect(repository.create).toHaveBeenCalledWith({
         userId: 'user-2',
         title: 'My Pantry',
