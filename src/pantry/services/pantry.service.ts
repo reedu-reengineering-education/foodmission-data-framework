@@ -6,7 +6,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { handleServiceError } from '../../common/utils/error.utils';
+import {
+  handlePrismaError,
+  handleServiceError,
+} from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
@@ -63,21 +67,38 @@ export class PantryService {
       });
       return this.transformToResponseDto(pantry);
     } catch (error) {
+      // Re-throw HTTP exceptions (like ConflictException from repository)
       if (
         error instanceof ConflictException ||
         error instanceof BadRequestException
       ) {
         throw error;
       }
-      // Handle repository error for duplicate title
-      if (
-        error instanceof Error &&
-        error.message.includes('title already exists')
-      ) {
-        throw new ConflictException(error.message);
+
+      // Handle Prisma errors using unified error handling
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'create',
+          'pantry',
+        );
+
+        // Convert ResourceAlreadyExistsException to ConflictException
+        if (
+          businessException.code === 'RESOURCE_ALREADY_EXISTS' ||
+          error.code === 'P2002'
+        ) {
+          throw new ConflictException(
+            'A pantry with this title already exists for this user.',
+          );
+        }
+
+        // Re-throw other business exceptions
+        throw businessException;
       }
-      this.logger.error('Failed to create pantry:', error);
-      throw new BadRequestException('Failed to create pantry');
+
+      // Handle other errors
+      handleServiceError(error, 'Failed to create pantry');
     }
   }
 
