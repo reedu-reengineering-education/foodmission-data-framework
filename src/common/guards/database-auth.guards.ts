@@ -5,6 +5,7 @@ import {
   CanActivate,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { META_PUBLIC } from 'nest-keycloak-connect';
 import { UserRepository } from '../../user/repositories/user.repository';
 
 @Injectable()
@@ -17,9 +18,17 @@ export class DataBaseAuthGuard implements CanActivate {
   private userCache = new Map<string, any>();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(META_PUBLIC, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest();
 
-    // Prüfe ob JWT Guard bereits durchgelaufen ist
     if (!request.user || !request.user.sub) {
       throw new UnauthorizedException('No valid JWT token found');
     }

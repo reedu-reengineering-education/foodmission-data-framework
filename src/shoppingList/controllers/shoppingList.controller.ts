@@ -130,11 +130,16 @@ export class ShoppingListController {
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Shopping list found',
-    type: ShoppingListResponseDto,
+    description: 'Shopping list deleted successfully',
   })
   @ApiCrudErrorResponses()
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.shoppingListService.remove(id);
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<void> {
+    if (!userId) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    return this.shoppingListService.remove(id, userId);
   }
 }

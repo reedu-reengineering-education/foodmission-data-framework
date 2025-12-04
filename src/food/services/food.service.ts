@@ -234,7 +234,8 @@ export class FoodService {
       query: searchDto.query,
       categories: searchDto.category ? [searchDto.category] : undefined,
       brands: searchDto.brand ? [searchDto.brand] : undefined,
-      pageSize: searchDto.limit || 10,
+      page: searchDto.page || 1,
+      pageSize: searchDto.pageSize || searchDto.limit || 10,
     };
 
     return await this.openFoodFactsService.searchProducts(searchOptions);
