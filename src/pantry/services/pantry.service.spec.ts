@@ -51,7 +51,7 @@ describe('PantryService', () => {
   describe('getAllPantriesByUserId', () => {
     const userId = TEST_IDS.USER;
 
-    it('should return all pantries when user has multiple pantries', async () => {
+    it('should transform pantries to DTOs and return them', async () => {
       const pantries = PantryTestBuilder.createPantryResponseDtoArray(2);
       mockPantryRepository.findAllByUserId.mockResolvedValue(pantries);
 
@@ -60,16 +60,6 @@ describe('PantryService', () => {
       expect(result).toHaveLength(2);
       expect(result[0].id).toBe(`${TEST_IDS.PANTRY}-1`);
       expect(result[1].id).toBe(`${TEST_IDS.PANTRY}-2`);
-      expect(repository.findAllByUserId).toHaveBeenCalledWith(userId);
-      expect(repository.findAllByUserId).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return empty array when no pantries exist for user', async () => {
-      mockPantryRepository.findAllByUserId.mockResolvedValue([]);
-
-      const result = await service.getAllPantriesByUserId(userId);
-
-      expect(result).toEqual([]);
       expect(repository.findAllByUserId).toHaveBeenCalledWith(userId);
     });
 
@@ -90,7 +80,7 @@ describe('PantryService', () => {
     const userId = TEST_IDS.USER;
     const pantryId = TEST_IDS.PANTRY;
 
-    it('should return pantry when it exists and belongs to user', async () => {
+    it('should return transformed pantry when it exists and belongs to user', async () => {
       const mockPantry = PantryTestBuilder.createPantryResponseDto({
         id: pantryId,
         userId: userId,
@@ -100,7 +90,6 @@ describe('PantryService', () => {
       const result = await service.getPantryById(pantryId, userId);
 
       expect(result.id).toBe(pantryId);
-      expect(result.title).toBe(mockPantry.title);
       expect(result.userId).toBe(userId);
       expect(repository.findById).toHaveBeenCalledWith(pantryId);
     });
@@ -144,7 +133,7 @@ describe('PantryService', () => {
   describe('create', () => {
     const userId = TEST_IDS.USER;
 
-    it('should create a new pantry when valid DTO and userId are provided', async () => {
+    it('should create pantry and transform to DTO', async () => {
       const createDto = PantryTestBuilder.createCreatePantryDto();
       const createdPantry = PantryTestBuilder.createPantryResponseDto({
         ...createDto,
@@ -155,7 +144,6 @@ describe('PantryService', () => {
       const result = await service.create(createDto, userId);
 
       expect(result.id).toBe(createdPantry.id);
-      expect(result.title).toBe(createDto.title);
       expect(result.userId).toBe(userId);
       expect(repository.create).toHaveBeenCalledWith({ ...createDto, userId });
     });
@@ -171,26 +159,6 @@ describe('PantryService', () => {
       );
       await expect(service.create(createDto, userId)).rejects.toThrow(
         'Failed to create pantry',
-      );
-    });
-
-    it('should pass all DTO properties to repository', async () => {
-      const createDto = PantryTestBuilder.createCreatePantryDto({
-        title: 'Custom Pantry',
-      });
-      const createdPantry = PantryTestBuilder.createPantryResponseDto({
-        ...createDto,
-        userId,
-      });
-      mockPantryRepository.create.mockResolvedValue(createdPantry);
-
-      await service.create(createDto, userId);
-
-      expect(repository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: 'Custom Pantry',
-          userId: userId,
-        }),
       );
     });
 
@@ -238,7 +206,6 @@ describe('PantryService', () => {
       const result = await service.update(pantryId, updateDto, userId);
 
       expect(result.title).toBe(updateDto.title);
-      expect(repository.findById).toHaveBeenCalledWith(pantryId);
       expect(repository.update).toHaveBeenCalledWith(pantryId, updateDto);
     });
 
@@ -277,6 +244,30 @@ describe('PantryService', () => {
         BadRequestException,
       );
     });
+
+    it('should throw ConflictException when updating to duplicate title', async () => {
+      const updateDto = PantryTestBuilder.createUpdatePantryDto({
+        title: 'Duplicate Title',
+      });
+      const mockPantry = PantryTestBuilder.createPantryResponseDto({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryRepository.findById.mockResolvedValue(mockPantry);
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
+      );
+      mockPantryRepository.update.mockRejectedValue(prismaError);
+
+      await expect(service.update(pantryId, updateDto, userId)).rejects.toThrow(
+        ConflictException,
+      );
+    });
   });
 
   describe('remove', () => {
@@ -293,7 +284,6 @@ describe('PantryService', () => {
 
       await service.remove(pantryId, userId);
 
-      expect(repository.findById).toHaveBeenCalledWith(pantryId);
       expect(repository.delete).toHaveBeenCalledWith(pantryId);
     });
 

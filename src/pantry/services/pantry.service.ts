@@ -113,6 +113,27 @@ export class PantryService {
       const pantry = await this.pantryRepository.update(id, updatePantryDto);
       return this.transformToResponseDto(pantry);
     } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error;
+      }
+
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(error, 'update', 'pantry');
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            'A pantry with this title already exists for this user.',
+          );
+        }
+
+        throw businessException;
+      }
+
       handleServiceError(error, 'Failed to update pantry');
     }
   }

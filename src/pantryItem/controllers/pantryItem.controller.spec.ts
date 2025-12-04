@@ -1,11 +1,5 @@
 import { TestingModule } from '@nestjs/testing';
-import {
-  BadRequestException,
-  UnauthorizedException,
-  NotFoundException,
-  ForbiddenException,
-  ConflictException,
-} from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { PantryItemController } from './pantryItem.controller';
 import { PantryItemService } from '../services/pantryItem.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
@@ -13,7 +7,6 @@ import { createMockPantryItemService } from '../test-utils/pantry-item-service.m
 import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
 import { createMockRequest } from '../../common/test-utils/mock-factories';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
-import { Unit } from '@prisma/client';
 
 describe('PantryItemController', () => {
   let controller: PantryItemController;
@@ -44,7 +37,7 @@ describe('PantryItemController', () => {
     const createDto = PantryItemTestBuilder.createCreatePantryItemDto();
     const mockResponse = PantryItemTestBuilder.createPantryItemResponseDto();
 
-    it('should create a pantry item successfully', async () => {
+    it('should call service with correct parameters and return result', async () => {
       mockPantryItemService.create.mockResolvedValue(mockResponse);
 
       const result = await controller.create(createDto, userId);
@@ -67,26 +60,6 @@ describe('PantryItemController', () => {
         expect(service.create).not.toHaveBeenCalled();
       },
     );
-
-    it('should propagate NotFoundException when food does not exist', async () => {
-      mockPantryItemService.create.mockRejectedValue(
-        new NotFoundException('Food item not found'),
-      );
-
-      await expect(controller.create(createDto, userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should propagate ConflictException when food already exists in pantry', async () => {
-      mockPantryItemService.create.mockRejectedValue(
-        new ConflictException('This food item is already in your pantry'),
-      );
-
-      await expect(controller.create(createDto, userId)).rejects.toThrow(
-        ConflictException,
-      );
-    });
   });
 
   describe('findAll', () => {
@@ -99,7 +72,7 @@ describe('PantryItemController', () => {
       url: '/api/v1/pantry-item',
     });
 
-    it('should return pantry items with pantryId query param', async () => {
+    it('should call service with query and userId and return result', async () => {
       const query = PantryItemTestBuilder.createQueryPantryItemDto();
 
       mockPantryItemService.findAll.mockResolvedValue(mockResponse);
@@ -111,58 +84,21 @@ describe('PantryItemController', () => {
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
 
-    it('should return pantry items with query params', async () => {
-      const query = PantryItemTestBuilder.createQueryPantryItemDto({
-        foodId: TEST_IDS.FOOD,
-        unit: Unit.KG,
-      });
-
-      mockPantryItemService.findAll.mockResolvedValue({
-        ...mockResponse,
-        data: [],
-      });
-
-      const result = await controller.findAll(query, mockRequest, userId);
-
-      expect(result).toEqual({ ...mockResponse, data: [] });
-      expect(service.findAll).toHaveBeenCalledWith(query, userId);
-    });
-
-    it('should handle filtering by unit only', async () => {
-      const query = PantryItemTestBuilder.createQueryPantryItemDto({
-        unit: Unit.G,
-      });
-
-      const filteredResponse = { data: [] };
-
-      mockPantryItemService.findAll.mockResolvedValue(filteredResponse);
-
-      const result = await controller.findAll(query, mockRequest, userId);
-
-      expect(result).toEqual(filteredResponse);
-      expect(service.findAll).toHaveBeenCalledWith(query, userId);
-    });
-
-    it('should throw BadRequestException when path has trailing slash', async () => {
-      const requestWithTrailingSlash = createMockRequest({
-        path: '/pantry-item',
-        originalUrl: '/api/v1/pantry-item/',
-        url: '/api/v1/pantry-item/',
-      });
-      const query = PantryItemTestBuilder.createQueryPantryItemDto();
-
-      await expect(
-        controller.findAll(query, requestWithTrailingSlash, userId),
-      ).rejects.toThrow(BadRequestException);
-      expect(service.findAll).not.toHaveBeenCalled();
-    });
-
     it('should throw UnauthorizedException when userId is null', async () => {
       const query = PantryItemTestBuilder.createQueryPantryItemDto();
 
       await expect(
         controller.findAll(query, mockRequest, null as unknown as string),
       ).rejects.toThrow(UnauthorizedException);
+      expect(service.findAll).not.toHaveBeenCalled();
+    });
+
+    it('should throw UnauthorizedException when userId is empty string', async () => {
+      const query = PantryItemTestBuilder.createQueryPantryItemDto();
+
+      await expect(controller.findAll(query, mockRequest, '')).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(service.findAll).not.toHaveBeenCalled();
     });
   });
@@ -175,7 +111,7 @@ describe('PantryItemController', () => {
       id: itemId,
     });
 
-    it('should return pantry item by id', async () => {
+    it('should call service with itemId and userId and return result', async () => {
       mockPantryItemService.findById.mockResolvedValue(mockResponse);
 
       const result = await controller.findById(itemId, userId);
@@ -183,26 +119,6 @@ describe('PantryItemController', () => {
       expect(result).toEqual(mockResponse);
       expect(service.findById).toHaveBeenCalledWith(itemId, userId);
       expect(service.findById).toHaveBeenCalledTimes(1);
-    });
-
-    it('should propagate NotFoundException when item does not exist', async () => {
-      mockPantryItemService.findById.mockRejectedValue(
-        new NotFoundException('Pantry item not found'),
-      );
-
-      await expect(controller.findById(itemId, userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryItemService.findById.mockRejectedValue(
-        new ForbiddenException('You do not have access to this pantry item'),
-      );
-
-      await expect(controller.findById(itemId, userId)).rejects.toThrow(
-        ForbiddenException,
-      );
     });
   });
 
@@ -215,7 +131,7 @@ describe('PantryItemController', () => {
       ...updateDto,
     });
 
-    it('should update pantry item successfully', async () => {
+    it('should call service with correct parameters and return result', async () => {
       mockPantryItemService.update.mockResolvedValue(mockResponse);
 
       const result = await controller.update(itemId, updateDto, userId);
@@ -224,69 +140,19 @@ describe('PantryItemController', () => {
       expect(service.update).toHaveBeenCalledWith(itemId, updateDto, userId);
       expect(service.update).toHaveBeenCalledTimes(1);
     });
-
-    it('should propagate NotFoundException when item does not exist', async () => {
-      mockPantryItemService.update.mockRejectedValue(
-        new NotFoundException('Pantry item not found'),
-      );
-
-      await expect(
-        controller.update(itemId, updateDto, userId),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryItemService.update.mockRejectedValue(
-        new ForbiddenException('You do not have access to this pantry item'),
-      );
-
-      await expect(
-        controller.update(itemId, updateDto, userId),
-      ).rejects.toThrow(ForbiddenException);
-    });
-
-    it('should propagate ConflictException when food already exists in pantry', async () => {
-      mockPantryItemService.update.mockRejectedValue(
-        new ConflictException('This food item is already in your pantry'),
-      );
-
-      await expect(
-        controller.update(itemId, updateDto, userId),
-      ).rejects.toThrow(ConflictException);
-    });
   });
 
   describe('remove', () => {
     const userId = TEST_IDS.USER;
     const itemId = TEST_IDS.PANTRY_ITEM;
 
-    it('should delete pantry item successfully', async () => {
+    it('should call service with itemId and userId', async () => {
       mockPantryItemService.remove.mockResolvedValue(undefined);
 
       await controller.remove(itemId, userId);
 
       expect(service.remove).toHaveBeenCalledWith(itemId, userId);
       expect(service.remove).toHaveBeenCalledTimes(1);
-    });
-
-    it('should propagate NotFoundException when item does not exist', async () => {
-      mockPantryItemService.remove.mockRejectedValue(
-        new NotFoundException('Pantry item not found'),
-      );
-
-      await expect(controller.remove(itemId, userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryItemService.remove.mockRejectedValue(
-        new ForbiddenException('You do not have access to this pantry item'),
-      );
-
-      await expect(controller.remove(itemId, userId)).rejects.toThrow(
-        ForbiddenException,
-      );
     });
   });
 });

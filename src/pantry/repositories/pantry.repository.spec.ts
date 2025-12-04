@@ -213,6 +213,25 @@ describe('PantryRepository', () => {
 
       await expect(repository.create(createDto)).rejects.toThrow(dbError);
     });
+
+    it('should throw Prisma unique constraint error when pantry with same title exists', async () => {
+      const createDto = {
+        title: 'Existing Pantry',
+        userId: TEST_IDS.USER,
+      };
+
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
+      );
+      mockPrismaService.pantry.create.mockRejectedValue(prismaError);
+
+      await expect(repository.create(createDto)).rejects.toThrow(prismaError);
+    });
   });
 
   describe('findById', () => {
@@ -242,6 +261,16 @@ describe('PantryRepository', () => {
       const result = await repository.findById('non-existent-id');
 
       expect(result).toBeNull();
+      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
+        where: { id: 'non-existent-id' },
+        include: {
+          items: {
+            include: {
+              food: true,
+            },
+          },
+        },
+      });
     });
   });
 
@@ -278,6 +307,36 @@ describe('PantryRepository', () => {
       await expect(
         repository.update(TEST_IDS.PANTRY, { title: 'New Title' }),
       ).rejects.toThrow(dbError);
+    });
+
+    it('should throw Prisma not found error when pantry does not exist', async () => {
+      const updateDto = { title: 'Updated Pantry' };
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Record to update does not exist',
+        { code: 'P2025', clientVersion: '4.0.0' },
+      );
+      mockPrismaService.pantry.update.mockRejectedValue(prismaError);
+
+      await expect(
+        repository.update('non-existent-id', updateDto),
+      ).rejects.toThrow(prismaError);
+    });
+
+    it('should throw Prisma unique constraint error when updating to duplicate title', async () => {
+      const updateDto = { title: 'Duplicate Title' };
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
+      );
+      mockPrismaService.pantry.update.mockRejectedValue(prismaError);
+
+      await expect(
+        repository.update(TEST_IDS.PANTRY, updateDto),
+      ).rejects.toThrow(prismaError);
     });
   });
 

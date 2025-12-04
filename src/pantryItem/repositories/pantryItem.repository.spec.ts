@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemRepository } from './pantryItem.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { Unit } from '@prisma/client';
+import { Unit, Prisma } from '@prisma/client';
 import {
   TEST_IDS,
   TEST_DATA,
@@ -122,6 +122,41 @@ describe('PantryItemRepository', () => {
 
       expect(result.notes).toBeNull();
       expect(result.expiryDate).toBeNull();
+    });
+
+    it('should throw Prisma unique constraint error when food already exists in pantry', async () => {
+      const createData = {
+        pantryId: TEST_IDS.PANTRY,
+        foodId: TEST_IDS.FOOD,
+        quantity: TEST_DATA.QUANTITY,
+        unit: Unit.KG,
+      };
+
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['pantryId', 'foodId'] },
+        },
+      );
+      mockPrismaService.pantryItem.create.mockRejectedValue(prismaError);
+
+      await expect(repository.create(createData)).rejects.toThrow(prismaError);
+    });
+
+    it('should throw error when creation fails', async () => {
+      const createData = {
+        pantryId: TEST_IDS.PANTRY,
+        foodId: TEST_IDS.FOOD,
+        quantity: TEST_DATA.QUANTITY,
+        unit: Unit.KG,
+      };
+
+      const dbError = new Error('Database error');
+      mockPrismaService.pantryItem.create.mockRejectedValue(dbError);
+
+      await expect(repository.create(createData)).rejects.toThrow(dbError);
     });
   });
 
@@ -287,6 +322,54 @@ describe('PantryItemRepository', () => {
         },
       });
     });
+
+    it('should throw Prisma not found error when pantry item does not exist', async () => {
+      const updateData = {
+        quantity: 10,
+      };
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Record to update does not exist',
+        { code: 'P2025', clientVersion: '4.0.0' },
+      );
+      mockPrismaService.pantryItem.update.mockRejectedValue(prismaError);
+
+      await expect(
+        repository.update('non-existent-id', updateData),
+      ).rejects.toThrow(prismaError);
+    });
+
+    it('should throw Prisma unique constraint error when updating to duplicate food', async () => {
+      const updateData: Prisma.PantryItemUpdateInput = {
+        food: {
+          connect: { id: 'duplicate-food-id' },
+        },
+      };
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '4.0.0',
+          meta: { target: ['pantryId', 'foodId'] },
+        },
+      );
+      mockPrismaService.pantryItem.update.mockRejectedValue(prismaError);
+
+      await expect(
+        repository.update(TEST_IDS.PANTRY_ITEM, updateData),
+      ).rejects.toThrow(prismaError);
+    });
+
+    it('should throw error when update fails', async () => {
+      const updateData = {
+        quantity: 10,
+      };
+      const dbError = new Error('Update failed');
+      mockPrismaService.pantryItem.update.mockRejectedValue(dbError);
+
+      await expect(
+        repository.update(TEST_IDS.PANTRY_ITEM, updateData),
+      ).rejects.toThrow(dbError);
+    });
   });
 
   describe('delete', () => {
@@ -299,6 +382,27 @@ describe('PantryItemRepository', () => {
         where: { id: TEST_IDS.PANTRY_ITEM },
       });
       expect(prisma.pantryItem.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw Prisma not found error when pantry item does not exist', async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Record to delete does not exist',
+        { code: 'P2025', clientVersion: '4.0.0' },
+      );
+      mockPrismaService.pantryItem.delete.mockRejectedValue(prismaError);
+
+      await expect(repository.delete('non-existent-id')).rejects.toThrow(
+        prismaError,
+      );
+    });
+
+    it('should throw error when deletion fails', async () => {
+      const dbError = new Error('Delete failed');
+      mockPrismaService.pantryItem.delete.mockRejectedValue(dbError);
+
+      await expect(repository.delete(TEST_IDS.PANTRY_ITEM)).rejects.toThrow(
+        dbError,
+      );
     });
   });
 

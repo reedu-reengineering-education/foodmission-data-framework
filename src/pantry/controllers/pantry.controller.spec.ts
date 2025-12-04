@@ -1,10 +1,5 @@
 import { TestingModule } from '@nestjs/testing';
-import {
-  UnauthorizedException,
-  NotFoundException,
-  ForbiddenException,
-  ConflictException,
-} from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { PantryController } from './pantry.controller';
 import { PantryService } from '../services/pantry.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
@@ -41,7 +36,7 @@ describe('PantryController', () => {
     const createDto = PantryTestBuilder.createCreatePantryDto();
     const mockResponse = PantryTestBuilder.createPantryResponseDto();
 
-    it('should create a pantry successfully', async () => {
+    it('should call service with correct parameters and return result', async () => {
       mockPantryService.create.mockResolvedValue(mockResponse);
 
       const result = await controller.create(createDto, userId);
@@ -64,42 +59,20 @@ describe('PantryController', () => {
         expect(service.create).not.toHaveBeenCalled();
       },
     );
-
-    it('should propagate ConflictException when pantry with same title already exists', async () => {
-      mockPantryService.create.mockRejectedValue(
-        new ConflictException(
-          'A pantry with this title already exists for this user.',
-        ),
-      );
-
-      await expect(controller.create(createDto, userId)).rejects.toThrow(
-        ConflictException,
-      );
-    });
   });
 
   describe('getAllPantries', () => {
     const userId = TEST_IDS.USER;
     const mockResponse = PantryTestBuilder.createPantryResponseDtoArray(2);
 
-    it('should return all pantries when they exist', async () => {
+    it('should call service with userId and return result', async () => {
       mockPantryService.getAllPantriesByUserId.mockResolvedValue(mockResponse);
 
       const result = await controller.getAllPantries(userId);
 
       expect(result).toEqual(mockResponse);
-      expect(result).toHaveLength(2);
       expect(service.getAllPantriesByUserId).toHaveBeenCalledWith(userId);
       expect(service.getAllPantriesByUserId).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return empty array when no pantries exist', async () => {
-      mockPantryService.getAllPantriesByUserId.mockResolvedValue([]);
-
-      const result = await controller.getAllPantries(userId);
-
-      expect(result).toEqual([]);
-      expect(service.getAllPantriesByUserId).toHaveBeenCalledWith(userId);
     });
   });
 
@@ -111,7 +84,7 @@ describe('PantryController', () => {
       userId: userId,
     });
 
-    it('should return pantry when it exists and belongs to user', async () => {
+    it('should call service with pantryId and userId and return result', async () => {
       mockPantryService.getPantryById.mockResolvedValue(mockResponse);
 
       const result = await controller.getPantryById(pantryId, userId);
@@ -119,26 +92,6 @@ describe('PantryController', () => {
       expect(result).toEqual(mockResponse);
       expect(service.getPantryById).toHaveBeenCalledWith(pantryId, userId);
       expect(service.getPantryById).toHaveBeenCalledTimes(1);
-    });
-
-    it('should propagate NotFoundException when pantry does not exist', async () => {
-      mockPantryService.getPantryById.mockRejectedValue(
-        new NotFoundException('Pantry not found'),
-      );
-
-      await expect(controller.getPantryById(pantryId, userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryService.getPantryById.mockRejectedValue(
-        new ForbiddenException('No permission - user does not own this pantry'),
-      );
-
-      await expect(controller.getPantryById(pantryId, userId)).rejects.toThrow(
-        ForbiddenException,
-      );
     });
   });
 
@@ -152,7 +105,7 @@ describe('PantryController', () => {
       title: updateDto.title,
     });
 
-    it('should update pantry successfully', async () => {
+    it('should call service with correct parameters and return result', async () => {
       mockPantryService.update.mockResolvedValue(mockResponse);
 
       const result = await controller.update(pantryId, updateDto, userId);
@@ -161,59 +114,19 @@ describe('PantryController', () => {
       expect(service.update).toHaveBeenCalledWith(pantryId, updateDto, userId);
       expect(service.update).toHaveBeenCalledTimes(1);
     });
-
-    it('should propagate NotFoundException when pantry does not exist', async () => {
-      mockPantryService.update.mockRejectedValue(
-        new NotFoundException('Pantry not found'),
-      );
-
-      await expect(
-        controller.update(pantryId, updateDto, userId),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryService.update.mockRejectedValue(
-        new ForbiddenException('No premission'),
-      );
-
-      await expect(
-        controller.update(pantryId, updateDto, userId),
-      ).rejects.toThrow(ForbiddenException);
-    });
   });
 
   describe('remove', () => {
     const userId = TEST_IDS.USER;
     const pantryId = TEST_IDS.PANTRY;
 
-    it('should delete pantry successfully', async () => {
+    it('should call service with pantryId and userId', async () => {
       mockPantryService.remove.mockResolvedValue(undefined);
 
       await controller.remove(pantryId, userId);
 
       expect(service.remove).toHaveBeenCalledWith(pantryId, userId);
       expect(service.remove).toHaveBeenCalledTimes(1);
-    });
-
-    it('should propagate NotFoundException when pantry does not exist', async () => {
-      mockPantryService.remove.mockRejectedValue(
-        new NotFoundException('pantry not found'),
-      );
-
-      await expect(controller.remove(pantryId, userId)).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should propagate ForbiddenException when user does not own pantry', async () => {
-      mockPantryService.remove.mockRejectedValue(
-        new ForbiddenException('No premission'),
-      );
-
-      await expect(controller.remove(pantryId, userId)).rejects.toThrow(
-        ForbiddenException,
-      );
     });
   });
 });

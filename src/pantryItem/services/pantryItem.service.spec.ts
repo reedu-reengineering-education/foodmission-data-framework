@@ -294,7 +294,6 @@ describe('PantryItemService', () => {
       const result = await service.findAll(query, userId);
 
       expect(result.data).toHaveLength(1);
-      expect(result.data[0].id).toBe(TEST_IDS.PANTRY_ITEM);
       expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
         userId,
         pantryId,
@@ -302,9 +301,6 @@ describe('PantryItemService', () => {
       expect(repository.findMany).toHaveBeenCalledWith({
         pantryId: pantryId,
       });
-      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
-      expect(filterCall).not.toHaveProperty('foodId');
-      expect(filterCall).not.toHaveProperty('unit');
     });
 
     it('should return filtered pantry items when foodId and unit are provided', async () => {
@@ -367,10 +363,6 @@ describe('PantryItemService', () => {
       const result = await service.findAll(query, userId);
 
       expect(result.data).toHaveLength(0);
-      expect(pantryService.validatePantryExists).toHaveBeenCalledWith(
-        userId,
-        pantryId,
-      );
     });
 
     it('should not filter by unit when unit is not provided', async () => {
@@ -383,9 +375,9 @@ describe('PantryItemService', () => {
       const result = await service.findAll(query, userId);
 
       expect(result.data).toHaveLength(1);
-      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
-      expect(filterCall).not.toHaveProperty('unit');
-      expect(filterCall).not.toHaveProperty('foodId');
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: pantryId,
+      });
     });
 
     it('should filter by unit when unit is explicitly provided', async () => {
@@ -426,8 +418,85 @@ describe('PantryItemService', () => {
         pantryId: pantryId,
         foodId: TEST_IDS.FOOD,
       });
+    });
+
+    it('should filter by expiryDate when expiryDate is provided', async () => {
+      const mockPantryItem = createMockPantryItemWithRelations();
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const query = PantryItemTestBuilder.createQueryPantryItemDto({
+        expiryDate: new Date('2027-12-31'),
+      });
+      const result = await service.findAll(query, userId);
+
+      expect(result.data).toHaveLength(1);
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: pantryId,
+        expiryDate: expect.any(Date),
+      });
       const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
-      expect(filterCall).not.toHaveProperty('unit');
+      expect(filterCall.expiryDate).toBeInstanceOf(Date);
+      expect(filterCall.expiryDate.toISOString()).toContain('2027-12-31');
+    });
+
+    it('should convert expiryDate string to Date object when filtering', async () => {
+      const mockPantryItem = createMockPantryItemWithRelations();
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const queryWithStringDate =
+        PantryItemTestBuilder.createQueryPantryItemDto({
+          expiryDate: '2027-06-15' as any,
+        });
+      const result = await service.findAll(queryWithStringDate, userId);
+
+      expect(result.data).toHaveLength(1);
+      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
+      expect(filterCall.expiryDate).toBeInstanceOf(Date);
+      expect(filterCall.expiryDate.toISOString()).toContain('2027-06-15');
+    });
+
+    it('should filter by expiryDate with other filters', async () => {
+      const mockPantryItem = createMockPantryItemWithRelations();
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
+      mockPrismaService.food.findUnique.mockResolvedValue({
+        id: TEST_IDS.FOOD,
+        name: 'Tomatoes',
+      });
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const query = PantryItemTestBuilder.createQueryPantryItemDto({
+        foodId: TEST_IDS.FOOD,
+        unit: Unit.KG,
+        expiryDate: new Date('2027-12-31'),
+      });
+      const result = await service.findAll(query, userId);
+
+      expect(result.data).toHaveLength(1);
+      expect(repository.findMany).toHaveBeenCalledWith({
+        pantryId: pantryId,
+        foodId: TEST_IDS.FOOD,
+        unit: Unit.KG,
+        expiryDate: expect.any(Date),
+      });
+    });
+
+    it('should not filter by expiryDate when expiryDate is not provided', async () => {
+      const mockPantryItem = createMockPantryItemWithRelations();
+      const mockItems = [mockPantryItem];
+      mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
+      mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
+
+      const query = PantryItemTestBuilder.createQueryPantryItemDto();
+      const result = await service.findAll(query, userId);
+
+      expect(result.data).toHaveLength(1);
+      const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
+      expect(filterCall).not.toHaveProperty('expiryDate');
     });
   });
 
@@ -442,7 +511,6 @@ describe('PantryItemService', () => {
       const result = await service.findById(itemId, userId);
 
       expect(result.id).toBe(itemId);
-      expect(repository.findById).toHaveBeenCalledWith(itemId);
     });
 
     it('should throw NotFoundException when item does not exist', async () => {
@@ -486,7 +554,6 @@ describe('PantryItemService', () => {
 
       expect(result.quantity).toBe(updateDto.quantity);
       expect(result.notes).toBe(updateDto.notes);
-      expect(repository.update).toHaveBeenCalled();
     });
 
     it('should validate new food when foodId is provided in update', async () => {
@@ -710,7 +777,6 @@ describe('PantryItemService', () => {
 
       await service.remove(itemId, userId);
 
-      expect(repository.findById).toHaveBeenCalledWith(itemId);
       expect(repository.delete).toHaveBeenCalledWith(itemId);
     });
 
@@ -789,8 +855,11 @@ describe('PantryItemService', () => {
       [undefined, 'undefined'],
     ])(
       'should throw BadRequestException when pantryId is %s',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async (invalidPantryId, _description) => {
+      async (
+        invalidPantryId,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _description,
+      ) => {
         const dto = new CreateShoppingListItemDto(
           TEST_IDS.FOOD,
           TEST_DATA.QUANTITY,

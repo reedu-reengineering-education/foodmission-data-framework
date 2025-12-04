@@ -135,7 +135,7 @@ export class PantryItemService {
     query: QueryPantryItemDto,
     userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const { pantryId, foodId, unit } = query;
+    const { pantryId, foodId, unit, expiryDate } = query;
 
     await this.pantryService.validatePantryExists(userId, pantryId);
 
@@ -153,6 +153,11 @@ export class PantryItemService {
 
     if (unit) {
       filter.unit = unit;
+    }
+
+    if (expiryDate) {
+      filter.expiryDate =
+        expiryDate instanceof Date ? expiryDate : new Date(expiryDate);
     }
 
     const items = await this.pantryItemRepository.findMany(filter);
