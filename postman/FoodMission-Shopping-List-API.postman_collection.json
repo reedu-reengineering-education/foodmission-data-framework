@@ -58,50 +58,6 @@
 					}
 				}
 			]
-		},
-		{
-			"name": "Get All Shopping Lists",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/v1/shoppinglist?search=",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"shoppinglist"
-					],
-					"query": [
-						{
-							"key": "search",
-							"value": "",
-							"description": "Optional search term to filter shopping lists by title",
-							"disabled": true
-						}
-					]
-				},
-				"description": "Retrieves all shopping lists. This endpoint is public (no authentication required). Returns an array of shopping lists with their `id`, `userId`, and `title`.\n\n**Optional query parameters:**\n- `search` (string): Search term to filter shopping lists by title\n\n**Response:**\n- Returns an array of shopping lists in the format: `{ data: [{ id, userId, title }, ...] }`\n- If the first shopping list exists, its `id` is automatically saved to `shopping_list_id` variable"
-			},
-			"response": [],
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"if (pm.response.code === 200) {",
-							"    const jsonData = pm.response.json();",
-							"    if (jsonData.data && Array.isArray(jsonData.data) && jsonData.data.length > 0) {",
-							"        pm.environment.set('shopping_list_id', jsonData.data[0].id);",
-							"    }",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				}
-			]
 		}
 	],
 	"variable": [
@@ -127,7 +83,7 @@
 			"key": "shopping_list_id",
 			"value": "",
 			"type": "string",
-			"description": "Shopping List ID (automatically set after creating a shopping list or getting all shopping lists)"
+			"description": "Shopping List ID (automatically set after creating a shopping list)"
 		}
 	]
 }
