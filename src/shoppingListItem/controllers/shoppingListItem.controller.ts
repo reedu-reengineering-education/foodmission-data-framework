@@ -11,7 +11,6 @@ import {
   Request,
   UseGuards,
   UnauthorizedException,
-  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,6 +21,7 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
@@ -58,22 +58,7 @@ export class ShoppingListItemController {
     description: 'Shopping list item created successfully',
     type: ShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data or duplicate item',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list or food item not found',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createShoppingListItemDto: CreateShoppingListItemDto,
     @CurrentUser('id') userId: string,
@@ -120,10 +105,7 @@ export class ShoppingListItemController {
     description: 'Shopping list items retrieved successfully',
     type: MultipleShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid query parameters',
-  })
+  @ApiCrudErrorResponses()
   async findAll(
     @Query() query: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
@@ -143,18 +125,7 @@ export class ShoppingListItemController {
     description: 'Shopping list items retrieved successfully',
     type: MultipleShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list not found',
-  })
+  @ApiCrudErrorResponses()
   async findByShoppingList(
     @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
     @CurrentUser('id') userId: string,
@@ -177,18 +148,7 @@ export class ShoppingListItemController {
     description: 'Shopping list item found',
     type: ShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list item not found',
-  })
+  @ApiCrudErrorResponses()
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -211,22 +171,7 @@ export class ShoppingListItemController {
     description: 'Shopping list item updated successfully',
     type: ShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list item not found',
-  })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateShoppingListItemDto: UpdateShoppingListItemDto,
@@ -244,53 +189,20 @@ export class ShoppingListItemController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Toggle checked status of shopping list item',
-    description:
-      'Toggles the checked status of an item. When checking an item (checked=true), creates a pantry item if shouldAutoAddToPantry is enabled. The pantryId query parameter is required.',
+    description: 'Quick endpoint to toggle the checked status of an item',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiQuery({
-    name: 'pantryId',
-    required: true,
-    description: 'Target pantry ID where the item will be added when checked',
-    type: String,
-  })
   @ApiResponse({
     status: 200,
     description: 'Item checked status toggled successfully',
     type: ShoppingListItemResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad Request - pantryId is required or invalid',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list item or pantry not found',
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Conflict - food item already exists in pantry',
-  })
+  @ApiCrudErrorResponses()
   async toggleChecked(
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('pantryId') pantryId: string | undefined,
     @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-    if (!pantryId) {
-      throw new BadRequestException('pantryId is required');
-    }
-    return this.shoppingListItemService.toggleChecked(id, userId, pantryId);
+    return this.shoppingListItemService.toggleChecked(id, userId);
   }
 
   @Delete(':id')
@@ -305,18 +217,7 @@ export class ShoppingListItemController {
     status: 200,
     description: 'Shopping list item deleted successfully',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list item not found',
-  })
+  @ApiCrudErrorResponses()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -336,18 +237,7 @@ export class ShoppingListItemController {
     status: 200,
     description: 'Checked items cleared successfully',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Shopping list not found',
-  })
+  @ApiCrudErrorResponses()
   async clearCheckedItems(
     @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
     @CurrentUser('id') userId: string,
