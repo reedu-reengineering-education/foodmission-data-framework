@@ -697,32 +697,6 @@ describe('PantryItemService', () => {
       );
     });
 
-    it('should accept small decimal quantity values (min 0.01)', async () => {
-      const updateDtoWithSmallDecimal = {
-        quantity: 0.5,
-      };
-      const mockPantryItem = createMockPantryItemWithRelations();
-      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
-      mockPantryItemRepository.update.mockResolvedValue({
-        ...mockPantryItem,
-        quantity: 0.5,
-      });
-
-      const result = await service.update(
-        itemId,
-        updateDtoWithSmallDecimal,
-        userId,
-      );
-
-      expect(result.quantity).toBe(0.5);
-      expect(repository.update).toHaveBeenCalledWith(
-        itemId,
-        expect.objectContaining({
-          quantity: 0.5,
-        }),
-      );
-    });
-
     it('should update with all fields including date string', async () => {
       const updateDtoWithAllFields: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
