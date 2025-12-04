@@ -45,7 +45,6 @@ export class ShoppingListItemService {
     USER_NOT_FOUND: 'User not found',
     CREATE_FAILED: 'Failed to create shopping list item',
     UPDATE_FAILED: 'Failed to update shopping list item',
-    PANTRY_ID_REQUIRED: 'pantryId is required',
   } as const;
 
   constructor(
@@ -73,6 +72,22 @@ export class ShoppingListItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'create',
+          'shopping_list_item',
+        );
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
+          );
+        }
+
+        throw businessException;
+      }
+
       handleServiceError(
         error,
         ShoppingListItemService.ERROR_MESSAGES.CREATE_FAILED,
@@ -153,7 +168,7 @@ export class ShoppingListItemService {
       );
 
       return this.transformToResponseDto(updatedItem);
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         const businessException = handlePrismaError(
           error,
@@ -163,32 +178,24 @@ export class ShoppingListItemService {
 
         if (businessException instanceof ResourceAlreadyExistsException) {
           throw new ConflictException(
-            'This food item is already in the shopping list',
+            ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
           );
         }
 
         throw businessException;
       }
 
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-
-      handleServiceError(error, 'Failed to update shopping list item');
+      handleServiceError(
+        error,
+        ShoppingListItemService.ERROR_MESSAGES.UPDATE_FAILED,
+      );
     }
   }
 
   async toggleChecked(
     id: string,
     userId: string,
-    pantryId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    if (!pantryId) {
-      throw new BadRequestException(
-        ShoppingListItemService.ERROR_MESSAGES.PANTRY_ID_REQUIRED,
-      );
-    }
-
     const item = await this.findById(id, userId);
     const willBeChecked = !item.checked;
 
@@ -196,31 +203,51 @@ export class ShoppingListItemService {
 
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
 
-    await this.createPantryItemIfEnabled(
-      item,
-      user,
-      userId,
-      willBeChecked,
-      pantryId,
-    );
+    await this.createPantryItemIfEnabled(item, user, userId, willBeChecked);
 
     return this.transformToResponseDto(updatedItem);
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    await this.findById(id, userId);
-    await this.shoppingListItemRepository.delete(id);
+    try {
+      await this.findById(id, userId);
+      await this.shoppingListItemRepository.delete(id);
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'delete',
+          'shopping_list_item',
+        );
+        throw businessException;
+      }
+
+      handleServiceError(error, 'Failed to delete shopping list item');
+    }
   }
 
   async clearCheckedItems(
     shoppingListId: string,
     userId: string,
   ): Promise<void> {
-    await this.validateShoppingListAccess(shoppingListId, userId);
-    await this.shoppingListItemRepository.clearCheckedItems(
-      shoppingListId,
-      userId,
-    );
+    try {
+      await this.validateShoppingListAccess(shoppingListId, userId);
+      await this.shoppingListItemRepository.clearCheckedItems(
+        shoppingListId,
+        userId,
+      );
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'clearCheckedItems',
+          'shopping_list_item',
+        );
+        throw businessException;
+      }
+
+      handleServiceError(error, 'Failed to clear checked items');
+    }
   }
 
   private async validateShoppingListAccess(
@@ -336,14 +363,13 @@ export class ShoppingListItemService {
     user: User,
     userId: string,
     willBeChecked: boolean,
-    pantryId: string,
   ): Promise<void> {
     if (!willBeChecked || user.shouldAutoAddToPantry !== true) {
       return;
     }
 
     try {
-      await this.pantryService.getPantryById(pantryId, userId);
+      const pantryId = await this.pantryService.validatePantryExists(userId);
 
       await this.pantryItemService.createFromShoppingList(
         new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
@@ -363,7 +389,7 @@ export class ShoppingListItemService {
       this.logger.error(
         formatErrorForLogging(
           error,
-          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId}, pantryId: ${pantryId})`,
+          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId})`,
         ),
         error instanceof Error ? error.stack : undefined,
       );
