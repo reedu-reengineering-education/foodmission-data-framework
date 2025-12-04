@@ -13,10 +13,9 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
-  ApiUnauthorizedResponse,
   ApiBody,
-  ApiResponse,
 } from '@nestjs/swagger';
+import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UserProfileService } from './user-profile.service';
@@ -68,11 +67,10 @@ export class AuthController {
   })
   getAuthInfo() {
     return {
-      authServerUrl:
-        process.env.KEYCLOAK_AUTH_SERVER_URL || 'http://localhost:8080',
-      realm: process.env.KEYCLOAK_REALM || 'foodmission',
-      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID || 'foodmission-web', // Different client for frontend
-      redirectUri: process.env.FRONTEND_URL || 'http://localhost:3000',
+      authServerUrl: process.env.KEYCLOAK_BASE_URL!,
+      realm: process.env.KEYCLOAK_REALM!,
+      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID!,
+      redirectUri: process.env.FRONTEND_URL!,
     };
   }
 
@@ -100,6 +98,7 @@ export class AuthController {
       },
     },
   })
+  @ApiAuthenticatedErrorResponses()
   async getProfile(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
@@ -119,12 +118,36 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user preferences',
-    description: 'Update app-specific user preferences.',
+    description:
+      'Update app-specific user preferences. Returns the updated user profile.',
   })
   @ApiBody({
-    description: 'User preferences object',
-    schema: { type: 'object' },
+    description: 'User preferences object (JSON)',
+    schema: {
+      type: 'object',
+      example: {
+        dietaryRestrictions: ['vegetarian'],
+        allergies: ['nuts'],
+        theme: 'dark',
+      },
+    },
   })
+  @ApiOkResponse({
+    description: 'User preferences updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        email: { type: 'string', format: 'email' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        keycloakId: { type: 'string' },
+        preferences: { type: 'object' },
+        settings: { type: 'object' },
+      },
+    },
+  })
+  @ApiAuthenticatedErrorResponses()
   async updatePreferences(
     @Request() req: AuthenticatedRequest,
     @Body() preferences: Record<string, unknown>,
@@ -145,12 +168,36 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update user settings',
-    description: 'Update app-specific user settings.',
+    description:
+      'Update app-specific user settings. Returns the updated user profile.',
   })
   @ApiBody({
-    description: 'User settings object',
-    schema: { type: 'object' },
+    description: 'User settings object (JSON)',
+    schema: {
+      type: 'object',
+      example: {
+        language: 'en',
+        notifications: true,
+        timezone: 'UTC',
+      },
+    },
   })
+  @ApiOkResponse({
+    description: 'User settings updated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid' },
+        email: { type: 'string', format: 'email' },
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        keycloakId: { type: 'string' },
+        preferences: { type: 'object' },
+        settings: { type: 'object' },
+      },
+    },
+  })
+  @ApiAuthenticatedErrorResponses()
   async updateSettings(
     @Request() req: AuthenticatedRequest,
     @Body() settings: Record<string, unknown>,
@@ -243,9 +290,7 @@ export class AuthController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'User not authenticated - JWT token required',
-  })
+  @ApiAuthenticatedErrorResponses()
   getTokenInfo(@Request() req: AuthenticatedRequest) {
     const user = req.user;
     if (!user) {
@@ -283,19 +328,20 @@ export class AuthController {
       properties: {
         message: {
           type: 'string',
-          example: 'This endpoint is only accessible to admins',
+          example: 'Admin access granted',
+        },
+        status: {
+          type: 'string',
+          example: 'success',
         },
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'User not authenticated - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - admin role required',
-  })
+  @ApiAuthenticatedErrorResponses()
   adminEndpoint() {
-    return { message: 'This endpoint is only accessible to admins' };
+    return {
+      message: 'Admin access granted',
+      status: 'success',
+    };
   }
 }

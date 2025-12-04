@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Food, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { ERROR_CODES } from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+
+type Food = Awaited<ReturnType<PrismaService['food']['create']>>;
 import {
   BaseRepository,
   FindAllOptions,
@@ -29,105 +32,75 @@ export class FoodRepository
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(options: FindAllOptions = {}): Promise<Food[]> {
-    try {
-      return await this.prisma.food.findMany({
-        skip: options.skip,
-        take: options.take,
-        where: options.where,
-        orderBy: options.orderBy || { createdAt: 'desc' },
-      });
-    } catch (error: unknown) {
-      console.error('Error finding foods:', error);
-      throw new Error('Failed to retrieve foods');
-    }
+    return await this.prisma.food.findMany({
+      skip: options.skip,
+      take: options.take,
+      where: options.where,
+      orderBy: options.orderBy || { createdAt: 'desc' },
+    });
   }
 
   async findById(id: string): Promise<Food | null> {
-    try {
-      return await this.prisma.food.findUnique({
-        where: { id },
-      });
-    } catch (error: unknown) {
-      console.error('Error finding food by id:', error);
-      throw new Error('Failed to retrieve food');
-    }
+    return await this.prisma.food.findUnique({
+      where: { id },
+    });
   }
 
   async findByBarcode(barcode: string): Promise<Food | null> {
-    try {
-      return await this.prisma.food.findUnique({
-        where: { barcode },
-      });
-    } catch (error: unknown) {
-      console.error('Error finding food by barcode:', error);
-      throw new Error('Failed to retrieve food by barcode');
-    }
+    return await this.prisma.food.findUnique({
+      where: { barcode },
+    });
   }
 
   async findByOpenFoodFactsId(openFoodFactsId: string): Promise<Food | null> {
-    try {
-      return await this.prisma.food.findUnique({
-        where: { openFoodFactsId },
-      });
-    } catch (error: unknown) {
-      console.error('Error finding food by OpenFoodFacts ID:', error);
-      throw new Error('Failed to retrieve food by OpenFoodFacts ID');
-    }
+    return await this.prisma.food.findUnique({
+      where: { openFoodFactsId },
+    });
   }
 
   async findWithPagination(
     options: FindAllOptions,
   ): Promise<PaginatedResult<Food>> {
-    try {
-      const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip = 0, take = 10, where, orderBy } = options;
 
-      const [data, total] = await Promise.all([
-        this.prisma.food.findMany({
-          skip,
-          take,
-          where,
-          orderBy: orderBy || { createdAt: 'desc' },
-        }),
-        this.count(where),
-      ]);
+    const [data, total] = await Promise.all([
+      this.prisma.food.findMany({
+        skip,
+        take,
+        where,
+        orderBy: orderBy || { createdAt: 'desc' },
+      }),
+      this.count(where),
+    ]);
 
-      const page = Math.floor(skip / take) + 1;
-      const totalPages = Math.ceil(total / take);
+    const page = Math.floor(skip / take) + 1;
+    const totalPages = Math.ceil(total / take);
 
-      return {
-        data,
-        total,
-        page,
-        limit: take,
-        totalPages,
-      };
-    } catch (error: unknown) {
-      console.error('Error finding foods with pagination:', error);
-      throw new Error('Failed to retrieve paginated foods');
-    }
+    return {
+      data,
+      total,
+      page,
+      limit: take,
+      totalPages,
+    };
   }
 
   async searchByName(
     name: string,
     options: FindAllOptions = {},
   ): Promise<Food[]> {
-    try {
-      return await this.prisma.food.findMany({
-        where: {
-          name: {
-            contains: name,
-            mode: 'insensitive',
-          },
-          ...options.where,
+    return await this.prisma.food.findMany({
+      where: {
+        name: {
+          contains: name,
+          mode: 'insensitive',
         },
-        skip: options.skip,
-        take: options.take,
-        orderBy: options.orderBy || { createdAt: 'desc' },
-      });
-    } catch (error: unknown) {
-      console.error('Error searching foods by name:', error);
-      throw new Error('Failed to search foods');
-    }
+        ...options.where,
+      },
+      skip: options.skip,
+      take: options.take,
+      orderBy: options.orderBy || { createdAt: 'desc' },
+    });
   }
 
   async create(data: CreateFoodDto): Promise<Food> {
@@ -136,15 +109,14 @@ export class FoodRepository
         data,
       });
     } catch (error) {
-      console.error('Error creating food:', error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT) {
           throw new Error(
             'Food with this barcode or OpenFoodFacts ID already exists',
           );
         }
       }
-      throw new Error('Failed to create food');
+      throw error;
     }
   }
 
@@ -155,43 +127,27 @@ export class FoodRepository
         data,
       });
     } catch (error) {
-      console.error('Error updating food:', error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === ERROR_CODES.PRISMA_RECORD_NOT_FOUND) {
           throw new Error('Food not found');
         }
-        if (error.code === 'P2002') {
+        if (error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT) {
           throw new Error(
             'Food with this barcode or OpenFoodFacts ID already exists',
           );
         }
       }
-      throw new Error('Failed to update food');
+      throw error;
     }
   }
 
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.food.delete({
-        where: { id },
-      });
-    } catch (error) {
-      console.error('Error deleting food:', error);
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new Error('Food not found');
-        }
-      }
-      throw new Error('Failed to delete food');
-    }
+    await this.prisma.food.delete({
+      where: { id },
+    });
   }
 
   async count(where?: any): Promise<number> {
-    try {
-      return await this.prisma.food.count({ where });
-    } catch (error) {
-      console.error('Error counting foods:', error);
-      throw new Error('Failed to count foods');
-    }
+    return await this.prisma.food.count({ where });
   }
 }

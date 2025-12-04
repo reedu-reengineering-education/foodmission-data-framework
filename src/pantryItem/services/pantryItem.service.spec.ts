@@ -10,6 +10,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Unit } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ERROR_CODES } from '../../common/utils/error.utils';
 
 describe('PantryItemService', () => {
   let service: PantryItemService;
@@ -302,8 +304,14 @@ describe('PantryItemService', () => {
         id: 'food-2',
         name: 'Carrots',
       });
-      const prismaError: any = new Error('Unique constraint');
-      prismaError.code = 'P2002';
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
+          clientVersion: '4.0.0',
+          meta: { target: ['pantryId', 'foodId'] },
+        },
+      );
       mockPantryItemRepository.update.mockRejectedValue(prismaError);
 
       await expect(

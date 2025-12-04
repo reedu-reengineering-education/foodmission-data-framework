@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  BadRequestException,
+  ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +8,8 @@ import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ERROR_CODES } from '../../common/utils/error.utils';
 
 describe('ShoppingListService', () => {
   let service: ShoppingListService;
@@ -92,20 +94,24 @@ describe('ShoppingListService', () => {
       });
     });
 
-    it('should throw BadRequestException when duplicate title', async () => {
-      // ARRANGE: Simuliere einen Datenbank-Fehler (P2002 = Unique Constraint Violation)
+    it('should throw ConflictException when duplicate title', async () => {
       const createDto: CreateShoppingListDto = {
         title: 'Duplicate Title',
       };
       const userId = 'user-1';
 
-      const duplicateError = new Error('Duplicate key');
-      (duplicateError as any).code = 'P2002';
-      shoppingListRepository.create.mockRejectedValue(duplicateError);
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
+      );
+      shoppingListRepository.create.mockRejectedValue(prismaError);
 
-      // ACT & ASSERT: Prüfen ob die richtige Exception geworfen wird
       await expect(service.create(createDto, userId)).rejects.toThrow(
-        BadRequestException,
+        ConflictException,
       );
       await expect(service.create(createDto, userId)).rejects.toThrow(
         'Shopping list with this title already exists',

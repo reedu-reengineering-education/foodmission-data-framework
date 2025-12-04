@@ -171,15 +171,11 @@ describe('ShoppingListRepository', () => {
     });
 
     it('should throw error when database operation fails', async () => {
-      // ARRANGE: Simuliere einen Datenbank-Fehler
       const listId = 'list-1';
       const dbError = new Error('Database connection failed');
       prismaService.shoppingList.findUnique.mockRejectedValue(dbError);
 
-      // ACT & ASSERT: Prüfen ob die richtige Error-Message geworfen wird
-      await expect(repository.findById(listId)).rejects.toThrow(
-        'Cloudnt find shopping list.',
-      );
+      await expect(repository.findById(listId)).rejects.toThrow(dbError);
     });
   });
 
@@ -205,7 +201,6 @@ describe('ShoppingListRepository', () => {
     });
 
     it('should throw error when creation fails', async () => {
-      // ARRANGE: Simuliere einen generischen Datenbank-Fehler
       const createData: CreateShoppingListDto = {
         title: 'New Shopping List',
         userId: 'user-1',
@@ -213,20 +208,15 @@ describe('ShoppingListRepository', () => {
       const dbError = new Error('Database error');
       prismaService.shoppingList.create.mockRejectedValue(dbError);
 
-      // ACT & ASSERT
-      await expect(repository.create(createData)).rejects.toThrow(
-        'Failed to create shopping list.',
-      );
+      await expect(repository.create(createData)).rejects.toThrow(dbError);
     });
 
     it('should handle Prisma known request errors', async () => {
-      // ARRANGE: Simuliere einen spezifischen Prisma-Fehler
       const createData: CreateShoppingListDto = {
         title: 'Duplicate Title',
         userId: 'user-1',
       };
 
-      // Erstelle einen Prisma-spezifischen Fehler
       const prismaError = new Prisma.PrismaClientKnownRequestError(
         'Unique constraint failed',
         {
@@ -237,10 +227,7 @@ describe('ShoppingListRepository', () => {
 
       prismaService.shoppingList.create.mockRejectedValue(prismaError);
 
-      // ACT & ASSERT
-      await expect(repository.create(createData)).rejects.toThrow(
-        'Failed to create shopping list.',
-      );
+      await expect(repository.create(createData)).rejects.toThrow(prismaError);
     });
   });
 
@@ -277,7 +264,6 @@ describe('ShoppingListRepository', () => {
     });
 
     it('should throw error when update fails', async () => {
-      // ARRANGE
       const listId = 'list-1';
       const updateData: UpdateShoppingListDto = {
         title: 'Updated Title',
@@ -285,9 +271,8 @@ describe('ShoppingListRepository', () => {
       const dbError = new Error('Database connection lost');
       prismaService.shoppingList.update.mockRejectedValue(dbError);
 
-      // ACT & ASSERT
       await expect(repository.update(listId, updateData)).rejects.toThrow(
-        'Failed to update shopping list.',
+        dbError,
       );
     });
   });
@@ -311,34 +296,26 @@ describe('ShoppingListRepository', () => {
     });
 
     it('should throw specific error when shopping list not found (P2025)', async () => {
-      // ARRANGE: Simuliere "Record not found" Fehler
       const listId = 'non-existent-id';
       const prismaError = new Prisma.PrismaClientKnownRequestError(
         'Record to delete does not exist',
         {
-          code: 'P2025', // Prisma Error Code für "Record not found"
+          code: 'P2025',
           clientVersion: '4.0.0',
         },
       );
 
       prismaService.shoppingList.delete.mockRejectedValue(prismaError);
 
-      // ACT & ASSERT
-      await expect(repository.delete(listId)).rejects.toThrow(
-        'Shopping list not found',
-      );
+      await expect(repository.delete(listId)).rejects.toThrow(prismaError);
     });
 
     it('should throw generic error for other database errors', async () => {
-      // ARRANGE
       const listId = 'list-1';
       const dbError = new Error('Database connection failed');
       prismaService.shoppingList.delete.mockRejectedValue(dbError);
 
-      // ACT & ASSERT
-      await expect(repository.delete(listId)).rejects.toThrow(
-        'Failed to delete shopping list',
-      );
+      await expect(repository.delete(listId)).rejects.toThrow(dbError);
     });
   });
 
@@ -378,14 +355,10 @@ describe('ShoppingListRepository', () => {
     });
 
     it('should throw error when count fails', async () => {
-      // ARRANGE
       const dbError = new Error('Database error');
       prismaService.shoppingList.count.mockRejectedValue(dbError);
 
-      // ACT & ASSERT
-      await expect(repository.count()).rejects.toThrow(
-        'Failed to count shoppings lists',
-      );
+      await expect(repository.count()).rejects.toThrow(dbError);
     });
   });
 
