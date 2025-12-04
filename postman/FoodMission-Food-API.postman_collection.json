@@ -239,7 +239,7 @@
 						"3017620422003"
 					]
 				},
-				"description": "Imports a food item from OpenFoodFacts database using barcode. Requires user or admin role.\n\n**Rate Limit:** 10 imports per minute"
+				"description": "Imports a food item from OpenFoodFacts database using barcode. Requires user or admin role.\n\n**Authentication Required:** This endpoint requires a valid JWT token. Make sure to:\n1. Set the `jwt_token` variable in your Postman environment\n2. Include the Authorization header: `Bearer {{jwt_token}}`\n\n**Rate Limit:** 10 imports per minute"
 			},
 			"response": [],
 			"event": [
