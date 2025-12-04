@@ -11,6 +11,7 @@ import {
   Request,
   UseGuards,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -243,13 +244,24 @@ export class ShoppingListItemController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Toggle checked status of shopping list item',
-    description: 'Quick endpoint to toggle the checked status of an item',
+    description:
+      'Toggles the checked status of an item. When checking an item (checked=true), creates a pantry item if shouldAutoAddToPantry is enabled. The pantryId query parameter is required.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiQuery({
+    name: 'pantryId',
+    required: true,
+    description: 'Target pantry ID where the item will be added when checked',
+    type: String,
+  })
   @ApiResponse({
     status: 200,
     description: 'Item checked status toggled successfully',
     type: ShoppingListItemResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request - pantryId is required or invalid',
   })
   @ApiResponse({
     status: 401,
@@ -261,13 +273,24 @@ export class ShoppingListItemController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Shopping list item not found',
+    description: 'Shopping list item or pantry not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict - food item already exists in pantry',
   })
   async toggleChecked(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query('pantryId') pantryId: string | undefined,
     @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    return this.shoppingListItemService.toggleChecked(id, userId);
+    if (!userId) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+    if (!pantryId) {
+      throw new BadRequestException('pantryId is required');
+    }
+    return this.shoppingListItemService.toggleChecked(id, userId, pantryId);
   }
 
   @Delete(':id')

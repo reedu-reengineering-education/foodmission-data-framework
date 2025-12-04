@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   handlePrismaError,
@@ -44,6 +45,7 @@ export class ShoppingListItemService {
     USER_NOT_FOUND: 'User not found',
     CREATE_FAILED: 'Failed to create shopping list item',
     UPDATE_FAILED: 'Failed to update shopping list item',
+    PANTRY_ID_REQUIRED: 'pantryId is required',
   } as const;
 
   constructor(
@@ -179,7 +181,14 @@ export class ShoppingListItemService {
   async toggleChecked(
     id: string,
     userId: string,
+    pantryId: string,
   ): Promise<ShoppingListItemResponseDto> {
+    if (!pantryId) {
+      throw new BadRequestException(
+        ShoppingListItemService.ERROR_MESSAGES.PANTRY_ID_REQUIRED,
+      );
+    }
+
     const item = await this.findById(id, userId);
     const willBeChecked = !item.checked;
 
@@ -187,7 +196,13 @@ export class ShoppingListItemService {
 
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
 
-    await this.createPantryItemIfEnabled(item, user, userId, willBeChecked);
+    await this.createPantryItemIfEnabled(
+      item,
+      user,
+      userId,
+      willBeChecked,
+      pantryId,
+    );
 
     return this.transformToResponseDto(updatedItem);
   }
@@ -321,21 +336,14 @@ export class ShoppingListItemService {
     user: User,
     userId: string,
     willBeChecked: boolean,
+    pantryId: string,
   ): Promise<void> {
     if (!willBeChecked || user.shouldAutoAddToPantry !== true) {
       return;
     }
 
     try {
-      const pantries = await this.pantryService.getAllPantriesByUserId(userId);
-      if (pantries.length === 0) {
-        this.logger.warn(
-          `Cannot create pantry item from shopping list: No pantry found for user ${userId}`,
-        );
-        return;
-      }
-
-      const pantryId = pantries[0].id;
+      await this.pantryService.getPantryById(pantryId, userId);
 
       await this.pantryItemService.createFromShoppingList(
         new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
@@ -343,10 +351,19 @@ export class ShoppingListItemService {
         pantryId,
       );
     } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException ||
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+
       this.logger.error(
         formatErrorForLogging(
           error,
-          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId})`,
+          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId}, pantryId: ${pantryId})`,
         ),
         error instanceof Error ? error.stack : undefined,
       );

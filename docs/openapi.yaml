@@ -1589,7 +1589,10 @@ paths:
       tags: *ref_8
   /api/v1/shopping-list-items/{id}/toggle-checked:
     patch:
-      description: Quick endpoint to toggle the checked status of an item
+      description: >-
+        Toggles the checked status of an item. When checking an item
+        (checked=true), creates a pantry item if shouldAutoAddToPantry is
+        enabled. The pantryId query parameter is required.
       operationId: toggleChecked
       parameters:
         - name: id
@@ -1598,6 +1601,12 @@ paths:
           schema:
             format: uuid
             type: string
+        - name: pantryId
+          required: true
+          in: query
+          description: Target pantry ID where the item will be added when checked
+          schema:
+            type: string
       responses:
         '200':
           description: Item checked status toggled successfully
@@ -1605,12 +1614,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShoppingListItemResponseDto'
+        '400':
+          description: Bad Request - pantryId is required or invalid
         '401':
           description: Unauthorized - JWT token required
         '403':
           description: Forbidden - insufficient permissions
         '404':
-          description: Shopping list item not found
+          description: Shopping list item or pantry not found
+        '409':
+          description: Conflict - food item already exists in pantry
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item

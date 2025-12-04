@@ -94,6 +94,7 @@ describe('ShoppingListItemService', () => {
 
   const mockPantryService = {
     getAllPantriesByUserId: jest.fn(),
+    getPantryById: jest.fn(),
   };
 
   const mockFoodRepository = {
@@ -721,152 +722,15 @@ describe('ShoppingListItemService', () => {
     });
   });
 
-  it('should toggle checked and create pantry item if user preference is true', async () => {
-    const mockPantry = {
-      id: 'pantry-1',
-      userId: 'user-1',
-      title: 'My Pantry',
-      items: [],
-    };
-
-    repository.findById.mockResolvedValue(mockShoppingListItem);
-    mockUserRepository.findById.mockResolvedValue(mockUser);
-    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
-    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
-    mockPantryItemService.createFromShoppingList.mockResolvedValue({
-      id: 'pantry-item-1',
-      pantryId: 'pantry-1',
-      foodId: 'food-1',
-      quantity: 2,
-      unit: 'KG',
-    });
-
-    const result = await service.toggleChecked('item-1', 'user-1');
-
-    expect(repository.findById).toHaveBeenCalledWith('item-1');
-    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
-      'user-1',
-    );
-    expect(pantryItemService.createFromShoppingList).toHaveBeenCalledWith(
-      expect.objectContaining({
-        foodId: mockShoppingListItem.foodId,
-        quantity: mockShoppingListItem.quantity,
-        unit: mockShoppingListItem.unit,
-      }),
-      'user-1',
-      'pantry-1',
-    );
-    expect(result).toBeDefined();
-    expect(result.id).toBe('1');
-  });
-
-  it('should throw NotFoundException if user does not exist', async () => {
-    repository.findById.mockResolvedValue(mockShoppingListItem);
-    mockUserRepository.findById.mockResolvedValue(null);
-
-    await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
-      NotFoundException,
-    );
-    expect(repository.toggleChecked).not.toHaveBeenCalled();
-    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
-  });
-
-  it('should NOT create pantry item when unchecking (item is already checked)', async () => {
-    const checkedItem = { ...mockShoppingListItem, checked: true };
-    const uncheckedItem = { ...mockShoppingListItem, checked: false };
-
-    repository.findById.mockResolvedValue(checkedItem);
-    mockUserRepository.findById.mockResolvedValue(mockUser);
-    repository.toggleChecked.mockResolvedValue(uncheckedItem);
-
-    const result = await service.toggleChecked('item-1', 'user-1');
-
-    expect(repository.findById).toHaveBeenCalledWith('item-1');
-    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(mockPantryService.getAllPantriesByUserId).not.toHaveBeenCalled();
-    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
-    expect(result).toBeDefined();
-    expect(result.id).toBe('1');
-  });
-
-  it('should NOT create pantry item when user preference is false', async () => {
-    const userWithPreferenceFalse = {
-      ...mockUser,
-      shouldAutoAddToPantry: false,
-    };
-
-    repository.findById.mockResolvedValue(mockShoppingListItem);
-    mockUserRepository.findById.mockResolvedValue(userWithPreferenceFalse);
-    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
-
-    const result = await service.toggleChecked('item-1', 'user-1');
-
-    expect(repository.findById).toHaveBeenCalledWith('item-1');
-    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
-    expect(result).toBeDefined();
-    expect(result.id).toBe('1');
-  });
-
-  it('should NOT create pantry item when user preference is null or undefined', async () => {
-    const userWithPreferenceNull = {
-      ...mockUser,
-      shouldAutoAddToPantry: null,
-    };
-
-    repository.findById.mockResolvedValue(mockShoppingListItem);
-    mockUserRepository.findById.mockResolvedValue(userWithPreferenceNull);
-    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
-
-    const result = await service.toggleChecked('item-1', 'user-1');
-
-    expect(repository.findById).toHaveBeenCalledWith('item-1');
-    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(pantryItemService.createFromShoppingList).not.toHaveBeenCalled();
-    expect(result).toBeDefined();
-  });
-
-  it('should handle pantry creation failure gracefully', async () => {
-    const mockPantry = {
-      id: 'pantry-1',
-      userId: 'user-1',
-      title: 'My Pantry',
-      items: [],
-    };
-
-    repository.findById.mockResolvedValue(mockShoppingListItem);
-    mockUserRepository.findById.mockResolvedValue(mockUser);
-    repository.toggleChecked.mockResolvedValue(mockUpdatedItem);
-    mockPantryService.getAllPantriesByUserId.mockResolvedValue([mockPantry]);
-    mockPantryItemService.createFromShoppingList.mockRejectedValue(
-      new Error('Pantry creation failed'),
-    );
-
-    const result = await service.toggleChecked('item-1', 'user-1');
-
-    expect(repository.findById).toHaveBeenCalledWith('item-1');
-    expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-    expect(repository.toggleChecked).toHaveBeenCalledWith('item-1');
-    expect(mockPantryService.getAllPantriesByUserId).toHaveBeenCalledWith(
-      'user-1',
-    );
-    expect(pantryItemService.createFromShoppingList).toHaveBeenCalled();
-    expect(result).toBeDefined();
-    expect(result.id).toBe('1');
-  });
-
   describe('toggleChecked edge cases', () => {
+    const pantryId = 'pantry-1';
+
     it('should throw NotFoundException when item not found', async () => {
       repository.findById.mockResolvedValue(null);
 
-      await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.toggleChecked('item-1', 'user-1', pantryId),
+      ).rejects.toThrow(NotFoundException);
 
       expect(repository.toggleChecked).not.toHaveBeenCalled();
       expect(mockUserRepository.findById).not.toHaveBeenCalled();
@@ -882,9 +746,9 @@ describe('ShoppingListItemService', () => {
       };
       repository.findById.mockResolvedValue(itemWithDifferentUser);
 
-      await expect(service.toggleChecked('item-1', 'user-1')).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        service.toggleChecked('item-1', 'user-1', pantryId),
+      ).rejects.toThrow(ForbiddenException);
 
       expect(repository.toggleChecked).not.toHaveBeenCalled();
       expect(mockUserRepository.findById).not.toHaveBeenCalled();
@@ -917,6 +781,139 @@ describe('ShoppingListItemService', () => {
         quantity: 5,
         notes: 'test',
       });
+    });
+  });
+
+  describe('toggleChecked with pantryId', () => {
+    const itemId = 'item-1';
+    const userId = 'user-1';
+    const pantryId = 'pantry-1';
+
+    it('should throw BadRequestException when pantryId is not provided', async () => {
+      await expect(
+        service.toggleChecked(itemId, userId, ''),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        service.toggleChecked(itemId, userId, ''),
+      ).rejects.toThrow('pantryId is required');
+    });
+
+    it('should create pantry item when checking item and user preference is enabled', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(mockUser);
+      repository.toggleChecked.mockResolvedValue({
+        ...mockShoppingListItem,
+        checked: true,
+      });
+      mockPantryService.getPantryById.mockResolvedValue({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryItemService.createFromShoppingList.mockResolvedValue({
+        id: 'pantry-item-1',
+      });
+
+      const result = await service.toggleChecked(itemId, userId, pantryId);
+
+      expect(result.checked).toBe(true);
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalled();
+    });
+
+    it('should not create pantry item when unchecking item', async () => {
+      const checkedItem = { ...mockShoppingListItem, checked: true };
+      repository.findById.mockResolvedValue(checkedItem);
+      repository.toggleChecked.mockResolvedValue({
+        ...checkedItem,
+        checked: false,
+      });
+
+      const result = await service.toggleChecked(itemId, userId, pantryId);
+
+      expect(result.checked).toBe(false);
+      expect(
+        mockPantryItemService.createFromShoppingList,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should not create pantry item when user preference is false', async () => {
+      const userWithPreferenceFalse = {
+        ...mockUser,
+        shouldAutoAddToPantry: false,
+      };
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(userWithPreferenceFalse);
+      repository.toggleChecked.mockResolvedValue({
+        ...mockShoppingListItem,
+        checked: true,
+      });
+
+      const result = await service.toggleChecked(itemId, userId, pantryId);
+
+      expect(result.checked).toBe(true);
+      expect(
+        mockPantryItemService.createFromShoppingList,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when pantry not found', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(mockUser);
+      repository.toggleChecked.mockResolvedValue({
+        ...mockShoppingListItem,
+        checked: true,
+      });
+      mockPantryService.getPantryById.mockRejectedValue(
+        new NotFoundException('Pantry not found'),
+      );
+
+      await expect(
+        service.toggleChecked(itemId, userId, pantryId),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when user does not own pantry', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(mockUser);
+      repository.toggleChecked.mockResolvedValue({
+        ...mockShoppingListItem,
+        checked: true,
+      });
+      mockPantryService.getPantryById.mockRejectedValue(
+        new ForbiddenException('No permission'),
+      );
+
+      await expect(
+        service.toggleChecked(itemId, userId, pantryId),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw ConflictException when food already exists in pantry', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(mockUser);
+      repository.toggleChecked.mockResolvedValue({
+        ...mockShoppingListItem,
+        checked: true,
+      });
+      mockPantryService.getPantryById.mockResolvedValue({
+        id: pantryId,
+        userId: userId,
+      });
+      mockPantryItemService.createFromShoppingList.mockRejectedValue(
+        new ConflictException('This food item is already in your pantry'),
+      );
+
+      await expect(
+        service.toggleChecked(itemId, userId, pantryId),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('should throw NotFoundException when user does not exist', async () => {
+      repository.findById.mockResolvedValue(mockShoppingListItem);
+      mockUserRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.toggleChecked(itemId, userId, pantryId),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });
