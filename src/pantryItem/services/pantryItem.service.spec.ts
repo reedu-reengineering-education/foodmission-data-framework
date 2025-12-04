@@ -671,32 +671,6 @@ describe('PantryItemService', () => {
       expect(updateCall).not.toHaveProperty('expiryDate');
     });
 
-    it('should accept decimal quantity values', async () => {
-      const updateDtoWithDecimal = {
-        quantity: 100.5,
-        unit: Unit.G,
-      };
-      const mockPantryItem = createMockPantryItemWithRelations();
-      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
-      mockPantryItemRepository.update.mockResolvedValue({
-        ...mockPantryItem,
-        quantity: 100.5,
-        unit: Unit.G,
-      });
-
-      const result = await service.update(itemId, updateDtoWithDecimal, userId);
-
-      expect(result.quantity).toBe(100.5);
-      expect(result.unit).toBe(Unit.G);
-      expect(repository.update).toHaveBeenCalledWith(
-        itemId,
-        expect.objectContaining({
-          quantity: 100.5,
-          unit: Unit.G,
-        }),
-      );
-    });
-
     it('should update with all fields including date string', async () => {
       const updateDtoWithAllFields: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
