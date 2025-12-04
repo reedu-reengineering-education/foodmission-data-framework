@@ -95,7 +95,7 @@ export class ShoppingListService {
     }
 
     if (shoppingList.userId !== userId) {
-      throw new ForbiddenException('No premission');
+      throw new ForbiddenException('No permission');
     }
     return this.transformToResponseDto(shoppingList);
   }
@@ -111,7 +111,7 @@ export class ShoppingListService {
         throw new NotFoundException('Shopping list not found');
       }
       if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
+        throw new ForbiddenException('No permission');
       }
 
       const shoppingList = await this.shoppingListRepository.update(
@@ -130,14 +130,14 @@ export class ShoppingListService {
     }
   }
 
-  async remove(id: string, userId?: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<void> {
     try {
       const existingList = await this.shoppingListRepository.findById(id);
       if (!existingList) {
         throw new NotFoundException('Shopping list not found');
       }
       if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
+        throw new ForbiddenException('No permission');
       }
       await this.shoppingListRepository.delete(id);
     } catch (error) {
