@@ -8,6 +8,9 @@ import { ShoppingListItemController } from './controllers/shoppingListItem.contr
 import { UserModule } from '../user/user.module';
 import { CommonModule } from '../common/common.module';
 import { UserRepository } from '../user/repositories/user.repository';
+import { PantryItemModule } from '../pantryItem/pantry.module';
+import { PantryModule } from '../pantry/pantry.module';
+import { FoodModule } from '../food/food.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { UserRepository } from '../user/repositories/user.repository';
     ShoppingListModule,
     UserModule,
     CommonModule,
+    PantryItemModule,
+    PantryModule,
+    FoodModule,
   ],
   controllers: [ShoppingListItemController],
   providers: [

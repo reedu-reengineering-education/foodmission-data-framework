@@ -10,6 +10,7 @@ export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
 }>;
 
 export interface PantryItemFilter {
+  pantryId?: string;
   foodId?: string;
   unit?: Unit;
   expiryDate?: Date;
@@ -67,11 +68,9 @@ export class PantryItemRepository {
   async findMany(
     filter: PantryItemFilter = {},
   ): Promise<PantryItemWithRelations[]> {
-    if (Object.keys(filter).length === 0) {
-      return this.findAll();
-    }
     return this.prisma.pantryItem.findMany({
       where: {
+        pantryId: filter.pantryId,
         foodId: filter.foodId,
         expiryDate: filter.expiryDate,
         unit: filter.unit,

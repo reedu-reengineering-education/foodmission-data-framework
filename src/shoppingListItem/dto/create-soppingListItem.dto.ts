@@ -62,4 +62,10 @@ export class CreateShoppingListItemDto {
   @IsString()
   @IsNotEmpty()
   foodId: string;
+
+  constructor(foodId: string, quantity: number, unit: Unit = Unit.PIECES) {
+    this.foodId = foodId;
+    this.quantity = quantity;
+    this.unit = unit;
+  }
 }

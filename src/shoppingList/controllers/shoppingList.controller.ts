@@ -19,6 +19,7 @@ import {
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
+import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shoppingList.service';
@@ -52,18 +53,7 @@ export class ShoppingListController {
     description: 'Shopping list created successfully',
     type: ShoppingListResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async create(
     @Body() createShoppingListDto: CreateShoppingListDto,
     @CurrentUser('id') userId: string,
@@ -85,18 +75,7 @@ export class ShoppingListController {
     description: 'Shopping lists retrieved successfully',
     type: MultipleShoppingListResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async findAll(): Promise<MultipleShoppingListResponseDto> {
     return this.shoppingListService.findAll();
   }
@@ -113,18 +92,7 @@ export class ShoppingListController {
     description: 'Shopping list found',
     type: ShoppingListResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
@@ -144,18 +112,7 @@ export class ShoppingListController {
     description: 'Shopping list found',
     type: ShoppingListResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateShoppingListDto: UpdateShoppingListDto,
@@ -176,18 +133,7 @@ export class ShoppingListController {
     description: 'Shopping list found',
     type: ShoppingListResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid input data',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - JWT token required',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - insufficient permissions',
-  })
+  @ApiCrudErrorResponses()
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.shoppingListService.remove(id);
   }
