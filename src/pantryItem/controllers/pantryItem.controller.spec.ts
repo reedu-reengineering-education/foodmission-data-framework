@@ -5,7 +5,6 @@ import { PantryItemService } from '../services/pantryItem.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
 import { createMockPantryItemService } from '../test-utils/pantry-item-service.mock';
 import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
-import { createMockRequest } from '../../common/test-utils/mock-factories';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantryItemController', () => {
@@ -66,18 +65,12 @@ describe('PantryItemController', () => {
     const userId = TEST_IDS.USER;
     const mockResponse = { data: [] };
 
-    const mockRequest = createMockRequest({
-      path: '/pantry-item',
-      originalUrl: '/api/v1/pantry-item',
-      url: '/api/v1/pantry-item',
-    });
-
     it('should call service with query and userId and return result', async () => {
       const query = PantryItemTestBuilder.createQueryPantryItemDto();
 
       mockPantryItemService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll(query, mockRequest, userId);
+      const result = await controller.findAll(query, userId);
 
       expect(result).toEqual(mockResponse);
       expect(service.findAll).toHaveBeenCalledWith(query, userId);
@@ -88,7 +81,7 @@ describe('PantryItemController', () => {
       const query = PantryItemTestBuilder.createQueryPantryItemDto();
 
       await expect(
-        controller.findAll(query, mockRequest, null as unknown as string),
+        controller.findAll(query, null as unknown as string),
       ).rejects.toThrow(UnauthorizedException);
       expect(service.findAll).not.toHaveBeenCalled();
     });
@@ -96,7 +89,7 @@ describe('PantryItemController', () => {
     it('should throw UnauthorizedException when userId is empty string', async () => {
       const query = PantryItemTestBuilder.createQueryPantryItemDto();
 
-      await expect(controller.findAll(query, mockRequest, '')).rejects.toThrow(
+      await expect(controller.findAll(query, '')).rejects.toThrow(
         UnauthorizedException,
       );
       expect(service.findAll).not.toHaveBeenCalled();

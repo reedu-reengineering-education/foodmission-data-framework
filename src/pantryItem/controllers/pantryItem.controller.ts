@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,11 +8,9 @@ import {
   Patch,
   Post,
   Query,
-  Req,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -110,18 +107,8 @@ export class PantryItemController {
   @ApiCrudErrorResponses()
   async findAll(
     @Query() query: QueryPantryItemDto,
-    @Req() request: Request,
     @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const url = request.originalUrl || request.url;
-    const pathname = url.split('?')[0];
-
-    if (pathname.endsWith('/pantry-item/')) {
-      throw new BadRequestException(
-        'Invalid request path. Use GET /api/v1/pantry-item (without trailing slash) to list all items, or GET /api/v1/pantry-item/:id to get a specific item.',
-      );
-    }
-
     if (!userId) {
       throw new UnauthorizedException('User not authenticated');
     }
