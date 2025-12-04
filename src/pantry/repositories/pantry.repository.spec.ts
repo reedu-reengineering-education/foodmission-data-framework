@@ -44,7 +44,6 @@ describe('PantryRepository', () => {
     pantry: {
       findFirst: jest.fn(),
       findUnique: jest.fn(),
-      findFirst: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
@@ -162,7 +161,7 @@ describe('PantryRepository', () => {
         },
         orderBy: { createdAt: 'desc' },
       });
-      expect(prisma.pantry.findUnique).toHaveBeenCalledTimes(1);
+      expect(prisma.pantry.findMany).toHaveBeenCalledTimes(1);
     });
   });
 

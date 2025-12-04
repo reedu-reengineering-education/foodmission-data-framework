@@ -11,6 +11,7 @@ import {
   formatErrorForLogging,
 } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
@@ -317,7 +318,7 @@ export class ShoppingListItemService {
 
   private async createPantryItemIfEnabled(
     item: ShoppingListItemResponseDto,
-    user: NonNullable<Awaited<ReturnType<typeof this.userRepository.findById>>>,
+    user: User,
     userId: string,
     willBeChecked: boolean,
   ): Promise<void> {

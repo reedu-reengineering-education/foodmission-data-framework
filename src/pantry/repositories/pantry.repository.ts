@@ -27,7 +27,9 @@ export class PantryRepository {
     });
   }
 
-  async create(data: CreatePantryDto & { userId: string }): Promise<PantryWithRelations> {
+  async create(
+    data: CreatePantryDto & { userId: string },
+  ): Promise<PantryWithRelations> {
     return await this.prisma.pantry.create({
       data,
       include: {

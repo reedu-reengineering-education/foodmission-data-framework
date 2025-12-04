@@ -578,7 +578,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedFoodResponseDto'
         '400':
-
           description: Bad Request - Invalid input data or validation failed
           content:
             application/json:
