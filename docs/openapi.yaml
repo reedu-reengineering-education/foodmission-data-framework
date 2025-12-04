@@ -375,6 +375,30 @@ paths:
       responses:
         '201':
           description: User created successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -410,8 +434,30 @@ paths:
       responses:
         '200':
           description: User found
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -437,8 +483,30 @@ paths:
       responses:
         '200':
           description: User updated successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: User not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - keycloak-oauth2:
             - openid
@@ -589,9 +657,49 @@ paths:
     get:
       description: >-
         Search for products in the OpenFoodFacts database by name, category, or
-        brand.
+        brand. Supports pagination with page and pageSize parameters.
       operationId: searchOpenFoodFacts
-      parameters: []
+      parameters:
+        - name: query
+          required: false
+          in: query
+          description: Search query string (name, category, or brand)
+          schema:
+            type: string
+        - name: category
+          required: false
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: brand
+          required: false
+          in: query
+          description: Filter by brand
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            type: number
+        - name: pageSize
+          required: false
+          in: query
+          description: >-
+            Items per page (default: 10, min: 1, max: 50). Can also use limit
+            parameter for backward compatibility.
+          schema:
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: >-
+            Items per page (alternative to pageSize, for backward compatibility,
+            min: 1, max: 50)
+          schema:
+            type: number
       responses:
         '200':
           description: Search results from OpenFoodFacts
@@ -604,11 +712,13 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/OpenFoodFactsInfoDto'
-                  count:
+                  totalCount:
                     type: number
                   page:
                     type: number
-                  page_size:
+                  pageSize:
+                    type: number
+                  totalPages:
                     type: number
         '400':
           description: Bad Request - Invalid input data or validation failed

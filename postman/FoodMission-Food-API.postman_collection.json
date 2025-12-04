@@ -172,18 +172,36 @@
 							"description": "Search query (name, category, or brand)"
 						},
 						{
+							"key": "category",
+							"value": "",
+							"description": "Filter by category (optional)",
+							"disabled": true
+						},
+						{
+							"key": "brand",
+							"value": "",
+							"description": "Filter by brand (optional)",
+							"disabled": true
+						},
+						{
 							"key": "page",
 							"value": "1",
-							"description": "Page number (default: 1)"
+							"description": "Page number (default: 1, min: 1)"
 						},
 						{
 							"key": "pageSize",
 							"value": "20",
-							"description": "Items per page (default: 20)"
+							"description": "Items per page (default: 10, min: 1, max: 50). Can also use 'limit' parameter for backward compatibility."
+						},
+						{
+							"key": "limit",
+							"value": "",
+							"description": "Items per page (alternative to pageSize, for backward compatibility)",
+							"disabled": true
 						}
 					]
 				},
-				"description": "Search for products in the OpenFoodFacts database by name, category, or brand. This is a public endpoint.\n\n**Rate Limit:** 20 searches per minute"
+				"description": "Search for products in the OpenFoodFacts database by name, category, or brand. This is a public endpoint.\n\n**Query Parameters:**\n- `query` (optional): Search query string\n- `category` (optional): Filter by category\n- `brand` (optional): Filter by brand\n- `page` (optional): Page number, default: 1, min: 1\n- `pageSize` (optional): Items per page, default: 10, min: 1, max: 50\n- `limit` (optional): Alternative to pageSize for backward compatibility\n\n**Rate Limit:** 20 searches per minute"
 			},
 			"response": []
 		},

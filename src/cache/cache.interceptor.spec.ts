@@ -104,7 +104,12 @@ describe('CacheInterceptor', () => {
     });
 
     it('should return cached result when cache hit occurs', async () => {
-      const context = createMockExecutionContext('GET', {}, { id: 'user123' }, {});
+      const context = createMockExecutionContext(
+        'GET',
+        {},
+        { id: 'user123' },
+        {},
+      );
       const next = createMockCallHandler('fresh-result');
       const cachedResult = 'cached-result';
 
@@ -125,7 +130,12 @@ describe('CacheInterceptor', () => {
     });
 
     it('should cache result when cache miss occurs', async () => {
-      const context = createMockExecutionContext('GET', {}, { id: 'user123' }, {});
+      const context = createMockExecutionContext(
+        'GET',
+        {},
+        { id: 'user123' },
+        {},
+      );
       const freshResult = 'fresh-result';
       const next = createMockCallHandler(freshResult);
 
@@ -188,7 +198,9 @@ describe('CacheInterceptor', () => {
 
       await interceptor.intercept(context, next);
 
-      expect(cacheManager.get).toHaveBeenCalledWith('test-key:user123:id:food-1');
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        'test-key:user123:id:food-1',
+      );
     });
 
     it('should generate cache key with both route and query parameters', async () => {
@@ -208,7 +220,9 @@ describe('CacheInterceptor', () => {
 
       await interceptor.intercept(context, next);
 
-      const queryString = Buffer.from('includeOpenFoodFacts=true').toString('base64');
+      const queryString = Buffer.from('includeOpenFoodFacts=true').toString(
+        'base64',
+      );
       const expectedKey = `test-key:user123:id:food-1:${queryString}`;
       expect(cacheManager.get).toHaveBeenCalledWith(expectedKey);
     });
@@ -240,9 +254,15 @@ describe('CacheInterceptor', () => {
       await interceptor.intercept(context1, next1);
       await interceptor.intercept(context2, next2);
 
-      const queryString = Buffer.from('includeOpenFoodFacts=true').toString('base64');
-      expect(cacheManager.get).toHaveBeenCalledWith(`test-key:user123:id:food-1:${queryString}`);
-      expect(cacheManager.get).toHaveBeenCalledWith(`test-key:user123:id:food-2:${queryString}`);
+      const queryString = Buffer.from('includeOpenFoodFacts=true').toString(
+        'base64',
+      );
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        `test-key:user123:id:food-1:${queryString}`,
+      );
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        `test-key:user123:id:food-2:${queryString}`,
+      );
     });
 
     it('should generate different cache keys for different query parameters', async () => {
@@ -272,10 +292,18 @@ describe('CacheInterceptor', () => {
       await interceptor.intercept(context1, next1);
       await interceptor.intercept(context2, next2);
 
-      const queryString1 = Buffer.from('includeOpenFoodFacts=true').toString('base64');
-      const queryString2 = Buffer.from('includeOpenFoodFacts=false').toString('base64');
-      expect(cacheManager.get).toHaveBeenCalledWith(`test-key:user123:id:food-1:${queryString1}`);
-      expect(cacheManager.get).toHaveBeenCalledWith(`test-key:user123:id:food-1:${queryString2}`);
+      const queryString1 = Buffer.from('includeOpenFoodFacts=true').toString(
+        'base64',
+      );
+      const queryString2 = Buffer.from('includeOpenFoodFacts=false').toString(
+        'base64',
+      );
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        `test-key:user123:id:food-1:${queryString1}`,
+      );
+      expect(cacheManager.get).toHaveBeenCalledWith(
+        `test-key:user123:id:food-1:${queryString2}`,
+      );
     });
 
     it('should handle anonymous users', async () => {
@@ -294,7 +322,12 @@ describe('CacheInterceptor', () => {
     });
 
     it('should not cache responses with errors', async () => {
-      const context = createMockExecutionContext('GET', {}, { id: 'user123' }, {});
+      const context = createMockExecutionContext(
+        'GET',
+        {},
+        { id: 'user123' },
+        {},
+      );
       const errorResult = { error: 'Something went wrong' };
       const next = createMockCallHandler(errorResult);
 
@@ -311,7 +344,12 @@ describe('CacheInterceptor', () => {
     });
 
     it('should handle cache errors gracefully', async () => {
-      const context = createMockExecutionContext('GET', {}, { id: 'user123' }, {});
+      const context = createMockExecutionContext(
+        'GET',
+        {},
+        { id: 'user123' },
+        {},
+      );
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride

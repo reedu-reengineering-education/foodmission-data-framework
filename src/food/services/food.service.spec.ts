@@ -485,7 +485,7 @@ describe('FoodService', () => {
   });
 
   describe('searchOpenFoodFacts', () => {
-    it('should search OpenFoodFacts products', async () => {
+    it('should search OpenFoodFacts products with limit', async () => {
       const searchDto = { query: 'nutella', limit: 10 };
       const mockSearchResult = {
         products: [mockOpenFoodFactsProduct],
@@ -507,7 +507,87 @@ describe('FoodService', () => {
         query: 'nutella',
         categories: undefined,
         brands: undefined,
+        page: 1,
         pageSize: 10,
+      });
+    });
+
+    it('should search OpenFoodFacts products with page and pageSize', async () => {
+      const searchDto = { query: 'apple', page: 1, pageSize: 20 };
+      const mockSearchResult = {
+        products: [mockOpenFoodFactsProduct],
+        totalCount: 50,
+        page: 1,
+        pageSize: 20,
+        totalPages: 3,
+      };
+
+      openFoodFactsService.searchProducts.mockResolvedValueOnce(
+        mockSearchResult,
+      );
+
+      const result = await service.searchOpenFoodFacts(searchDto);
+
+      expect(result).toBeDefined();
+      expect(result.products).toHaveLength(1);
+      expect(openFoodFactsService.searchProducts).toHaveBeenCalledWith({
+        query: 'apple',
+        categories: undefined,
+        brands: undefined,
+        page: 1,
+        pageSize: 20,
+      });
+    });
+
+    it('should use default page and pageSize when not provided', async () => {
+      const searchDto = { query: 'nutella' };
+      const mockSearchResult = {
+        products: [mockOpenFoodFactsProduct],
+        totalCount: 1,
+        page: 1,
+        pageSize: 10,
+        totalPages: 1,
+      };
+
+      openFoodFactsService.searchProducts.mockResolvedValueOnce(
+        mockSearchResult,
+      );
+
+      const result = await service.searchOpenFoodFacts(searchDto);
+
+      expect(result).toBeDefined();
+      expect(openFoodFactsService.searchProducts).toHaveBeenCalledWith({
+        query: 'nutella',
+        categories: undefined,
+        brands: undefined,
+        page: 1,
+        pageSize: 10,
+      });
+    });
+
+    it('should prioritize pageSize over limit when both are provided', async () => {
+      const searchDto = { query: 'nutella', limit: 5, pageSize: 20 };
+      const mockSearchResult = {
+        products: [mockOpenFoodFactsProduct],
+        totalCount: 1,
+        page: 1,
+        pageSize: 20,
+        totalPages: 1,
+      };
+
+      openFoodFactsService.searchProducts.mockResolvedValueOnce(
+        mockSearchResult,
+      );
+
+      const result = await service.searchOpenFoodFacts(searchDto);
+
+      expect(result).toBeDefined();
+      expect(openFoodFactsService.searchProducts).toHaveBeenCalledWith({
+        query: 'nutella',
+        categories: undefined,
+        brands: undefined,
+        page: 1,
+        pageSize: 20,
       });
     });
   });

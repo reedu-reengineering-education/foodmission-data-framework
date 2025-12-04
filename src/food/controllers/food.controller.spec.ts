@@ -35,6 +35,7 @@ describe('FoodController', () => {
   beforeEach(async () => {
     const mockFoodService = {
       findOne: jest.fn(),
+      searchOpenFoodFacts: jest.fn(),
     };
 
     const mockUserContextService = {};
@@ -121,11 +122,73 @@ describe('FoodController', () => {
         new NotFoundException('Food not found'),
       );
 
-      await expect(controller.findOne('non-existent', undefined)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.findOne('non-existent', undefined),
+      ).rejects.toThrow(NotFoundException);
       expect(foodService.findOne).toHaveBeenCalledWith('non-existent', false);
     });
   });
-});
 
+  describe('searchOpenFoodFacts', () => {
+    const mockSearchResult = {
+      products: [
+        {
+          id: 'off-123',
+          barcode: '1234567890',
+          name: 'Test Product',
+        },
+      ],
+      totalCount: 1,
+      page: 1,
+      pageSize: 20,
+      totalPages: 1,
+    };
+
+    it('should call service with correct parameters and return result', async () => {
+      const searchDto = { query: 'apple', page: 1, pageSize: 20 };
+      foodService.searchOpenFoodFacts.mockResolvedValueOnce(mockSearchResult);
+
+      const result = await controller.searchOpenFoodFacts(searchDto);
+
+      expect(result).toEqual(mockSearchResult);
+      expect(foodService.searchOpenFoodFacts).toHaveBeenCalledWith(searchDto);
+    });
+
+    it('should call service with query only', async () => {
+      const searchDto = { query: 'apple' };
+      foodService.searchOpenFoodFacts.mockResolvedValueOnce(mockSearchResult);
+
+      const result = await controller.searchOpenFoodFacts(searchDto);
+
+      expect(result).toEqual(mockSearchResult);
+      expect(foodService.searchOpenFoodFacts).toHaveBeenCalledWith(searchDto);
+    });
+
+    it('should call service with all optional parameters', async () => {
+      const searchDto = {
+        query: 'apple',
+        category: 'fruits',
+        brand: 'test brand',
+        page: 2,
+        pageSize: 30,
+      };
+      foodService.searchOpenFoodFacts.mockResolvedValueOnce(mockSearchResult);
+
+      const result = await controller.searchOpenFoodFacts(searchDto);
+
+      expect(result).toEqual(mockSearchResult);
+      expect(foodService.searchOpenFoodFacts).toHaveBeenCalledWith(searchDto);
+    });
+
+    it('should propagate errors from service', async () => {
+      const searchDto = { query: 'apple' };
+      const error = new Error('Service error');
+      foodService.searchOpenFoodFacts.mockRejectedValueOnce(error);
+
+      await expect(controller.searchOpenFoodFacts(searchDto)).rejects.toThrow(
+        error,
+      );
+      expect(foodService.searchOpenFoodFacts).toHaveBeenCalledWith(searchDto);
+    });
+  });
+});
