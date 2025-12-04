@@ -68,7 +68,6 @@ export class PantryService {
       });
       return this.transformToResponseDto(pantry);
     } catch (error) {
-      // Re-throw HTTP exceptions (like ConflictException from repository)
       if (
         error instanceof ConflictException ||
         error instanceof BadRequestException
@@ -76,22 +75,18 @@ export class PantryService {
         throw error;
       }
 
-      // Handle Prisma errors using unified error handling
       if (error instanceof PrismaClientKnownRequestError) {
         const businessException = handlePrismaError(error, 'create', 'pantry');
 
-        // Convert ResourceAlreadyExistsException to ConflictException
         if (businessException instanceof ResourceAlreadyExistsException) {
           throw new ConflictException(
             'A pantry with this title already exists for this user.',
           );
         }
 
-        // Re-throw other business exceptions
         throw businessException;
       }
 
-      // Handle other errors
       handleServiceError(error, 'Failed to create pantry');
     }
   }

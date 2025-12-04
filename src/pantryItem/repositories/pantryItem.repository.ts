@@ -68,23 +68,13 @@ export class PantryItemRepository {
   async findMany(
     filter: PantryItemFilter = {},
   ): Promise<PantryItemWithRelations[]> {
-    const where: any = {};
-
-    if (filter.pantryId) {
-      where.pantryId = filter.pantryId;
-    }
-    if (filter.foodId) {
-      where.foodId = filter.foodId;
-    }
-    if (filter.expiryDate) {
-      where.expiryDate = filter.expiryDate;
-    }
-    if (filter.unit) {
-      where.unit = filter.unit;
-    }
-
     return this.prisma.pantryItem.findMany({
-      where,
+      where: {
+        pantryId: filter.pantryId,
+        foodId: filter.foodId,
+        expiryDate: filter.expiryDate,
+        unit: filter.unit,
+      },
       include: {
         pantry: true,
         food: true,
