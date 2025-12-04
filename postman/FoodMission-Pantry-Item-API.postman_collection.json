@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "pantry-item-api-collection",
 		"name": "FoodMission Pantry Item API",
-		"description": "Collection for FoodMission Pantry Item API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`",
+		"description": "Collection for FoodMission Pantry Item API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`\n\n**Note:** Users can have multiple pantries. The pantryId must belong to the authenticated user when creating or querying pantry items.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -41,7 +41,7 @@
 						"pantry-item"
 					]
 				},
-				"description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. Requires user or admin role.\n\n**Required fields:**\n- `pantryId` (UUID): The ID of the pantry to add the item to\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n\n**Optional fields:**\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS). Defaults to PIECES if not provided.\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
+				"description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.\n\n**Rate Limit:** 10 requests per minute\n\n**Required fields:**\n- `pantryId` (UUID): The ID of the pantry to add the item to\n- `foodId` (UUID): The ID of the food item to add\n- `quantity` (number, min 0.01): The quantity of the item\n\n**Optional fields:**\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS). Defaults to PIECES if not provided.\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire"
 			},
 			"response": [],
 			"event": [
@@ -88,7 +88,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{base_url}}/api/v1/pantry-item?pantryId={{pantry_id}}",
+					"raw": "{{base_url}}/api/v1/pantry-item?pantryId={{pantry_id}}&foodId={{food_id}}&unit=KG&expiryDate=",
 					"host": [
 						"{{base_url}}"
 					],
@@ -101,24 +101,30 @@
 						{
 							"key": "pantryId",
 							"value": "{{pantry_id}}",
-							"description": "The ID of the pantry to get items from (required)",
+							"description": "The ID of the pantry to get items from (required, UUID)",
 							"disabled": false
 						},
 						{
 							"key": "foodId",
 							"value": "{{food_id}}",
-							"description": "Filter by food ID",
+							"description": "Filter by food ID (optional, UUID)",
 							"disabled": true
 						},
 						{
 							"key": "unit",
 							"value": "KG",
-							"description": "Filter by unit (PIECES, G, KG, ML, L, CUPS)",
+							"description": "Filter by unit (optional: PIECES, G, KG, ML, L, CUPS)",
+							"disabled": true
+						},
+						{
+							"key": "expiryDate",
+							"value": "",
+							"description": "Filter by expiry date (optional, ISO date string)",
 							"disabled": true
 						}
 					]
 				},
-				"description": "Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate. Requires user or admin role."
+				"description": "Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate. Returns a response with a `data` array containing the pantry items. Requires user or admin role.\n\n**Required query parameters:**\n- `pantryId` (UUID): The ID of the pantry to get items from\n\n**Optional query parameters:**\n- `foodId` (UUID): Filter by food ID\n- `unit` (enum): Filter by unit (PIECES, G, KG, ML, L, CUPS)\n- `expiryDate` (ISO date string): Filter by expiry date"
 			},
 			"response": []
 		},
@@ -145,7 +151,7 @@
 						"{{pantry_item_id}}"
 					]
 				},
-				"description": "Get a specific pantry item by ID. Requires user or admin role."
+				"description": "Get a specific pantry item by ID. The pantry item must belong to a pantry owned by the authenticated user. Returns 403 Forbidden if the user does not own the pantry, or 404 Not Found if the item doesn't exist. Requires user or admin role."
 			},
 			"response": []
 		},
@@ -185,7 +191,7 @@
 						"{{pantry_item_id}}"
 					]
 				},
-				"description": "Update quantity, unit, notes, or expiry date of a pantry item. Requires user or admin role."
+				"description": "Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional. The pantry item must belong to a pantry owned by the authenticated user. Returns 403 Forbidden if the user does not own the pantry, or 404 Not Found if the item doesn't exist. Requires user or admin role.\n\n**Optional fields (all can be updated independently):**\n- `quantity` (number, min 0.01): The quantity of the item\n- `unit` (enum): The unit of measurement (PIECES, G, KG, ML, L, CUPS)\n- `notes` (string, max 500 chars): Additional notes for the item\n- `expiryDate` (ISO date string): When the food will expire\n- `foodId` (UUID): The ID of the food item (can be changed)"
 			},
 			"response": []
 		},
@@ -212,7 +218,7 @@
 						"{{pantry_item_id}}"
 					]
 				},
-				"description": "Delete a specific pantry item by ID. Requires user or admin role."
+				"description": "Delete a specific pantry item by ID. The pantry item must belong to a pantry owned by the authenticated user. Returns 403 Forbidden if the user does not own the pantry, or 404 Not Found if the item doesn't exist. Requires user or admin role."
 			},
 			"response": []
 		}
@@ -256,4 +262,3 @@
 		}
 	]
 }
-
