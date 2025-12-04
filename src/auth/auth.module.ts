@@ -21,7 +21,7 @@ import { UserModule } from '../user/user.module';
       authServerUrl: process.env.KEYCLOAK_BASE_URL!,
       realm: process.env.KEYCLOAK_REALM!,
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
-      secret: process.env.KEYCLOAK_CLIENT_SECRET || '',
+      secret: process.env.KEYCLOAK_CLIENT_SECRET!,
       // Stateless configuration - bearer tokens only, no sessions
       bearerOnly: true,
       verifyTokenAudience: false,

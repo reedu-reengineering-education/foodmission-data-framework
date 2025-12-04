@@ -67,10 +67,10 @@ export class AuthController {
   })
   getAuthInfo() {
     return {
-      authServerUrl: process.env.KEYCLOAK_BASE_URL,
-      realm: process.env.KEYCLOAK_REALM,
-      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID, // Different client for frontend
-      redirectUri: process.env.FRONTEND_URL,
+      authServerUrl: process.env.KEYCLOAK_BASE_URL!,
+      realm: process.env.KEYCLOAK_REALM!,
+      clientId: process.env.KEYCLOAK_WEB_CLIENT_ID!,
+      redirectUri: process.env.FRONTEND_URL!,
     };
   }
 

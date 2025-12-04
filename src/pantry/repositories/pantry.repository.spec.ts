@@ -71,14 +71,14 @@ describe('PantryRepository', () => {
 
   describe('findByUserId', () => {
     it('should return a pantry with relations for a given userId', async () => {
-      mockPrismaService.pantry.findFirst.mockResolvedValue(
+      mockPrismaService.pantry.findUnique.mockResolvedValue(
         mockPantryWithRelations,
       );
 
       const result = await repository.findByUserId('user-1');
 
       expect(result).toEqual(mockPantryWithRelations);
-      expect(prisma.pantry.findFirst).toHaveBeenCalledWith({
+      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
         where: { userId: 'user-1' },
         include: {
           items: {
@@ -87,18 +87,17 @@ describe('PantryRepository', () => {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
-      expect(prisma.pantry.findFirst).toHaveBeenCalledTimes(1);
+      expect(prisma.pantry.findUnique).toHaveBeenCalledTimes(1);
     });
 
     it('should return null if pantry does not exist for userId', async () => {
-      mockPrismaService.pantry.findFirst.mockResolvedValue(null);
+      mockPrismaService.pantry.findUnique.mockResolvedValue(null);
 
       const result = await repository.findByUserId('non-existent-user');
 
       expect(result).toBeNull();
-      expect(prisma.pantry.findFirst).toHaveBeenCalledWith({
+      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
         where: { userId: 'non-existent-user' },
         include: {
           items: {
@@ -107,33 +106,45 @@ describe('PantryRepository', () => {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
-      expect(prisma.pantry.findFirst).toHaveBeenCalledTimes(1);
+      expect(prisma.pantry.findUnique).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('create', () => {
-    it('should create a new pantry', async () => {
+    it('should create a new pantry with relations', async () => {
       const createDto = {
         title: 'New Pantry',
         userId: 'user-2',
       };
 
-      mockPrismaService.pantry.create.mockResolvedValue({
+      const createdPantryWithRelations = {
         id: 'pantry-2',
         ...createDto,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+        items: [],
+      };
+
+      mockPrismaService.pantry.create.mockResolvedValue(
+        createdPantryWithRelations,
+      );
 
       const result = await repository.create(createDto);
 
       expect(result).toHaveProperty('id');
       expect(result.title).toBe(createDto.title);
       expect(result.userId).toBe(createDto.userId);
+      expect(result).toHaveProperty('items');
       expect(prisma.pantry.create).toHaveBeenCalledWith({
         data: createDto,
+        include: {
+          items: {
+            include: {
+              food: true,
+            },
+          },
+        },
       });
     });
 

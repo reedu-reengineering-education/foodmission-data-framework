@@ -3,8 +3,6 @@ import { PrismaService } from '../../database/prisma.service';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
 import { UpdatePantryDto } from '../dto/query-pantry.dto';
 
-type Pantry = Awaited<ReturnType<PrismaService['pantry']['create']>>;
-
 export type PantryWithRelations = NonNullable<
   Awaited<ReturnType<PrismaService['pantry']['findUnique']>>
 >;
@@ -14,16 +12,22 @@ export class PantryRepository {
   constructor(private prisma: PrismaService) {}
 
   async findByUserId(userId: string): Promise<PantryWithRelations | null> {
-    return this.prisma.pantry.findFirst({
+    return this.prisma.pantry.findUnique({
       where: { userId },
       include: { items: { include: { food: true } } },
-      orderBy: { createdAt: 'desc' },
     });
   }
 
-  async create(data: CreatePantryDto): Promise<Pantry> {
+  async create(data: CreatePantryDto): Promise<PantryWithRelations> {
     return await this.prisma.pantry.create({
       data,
+      include: {
+        items: {
+          include: {
+            food: true,
+          },
+        },
+      },
     });
   }
 

@@ -195,9 +195,18 @@ To find your client secret:
 
 Test the setup with the pre-configured admin user:
 
+**Step 1: Get JWT Token**
+
+First, export your client secret as an environment variable (never include it directly in commands):
+
 ```bash
-# Get JWT token using the admin user
-# IMPORTANT: Replace ${KEYCLOAK_CLIENT_SECRET} with your actual client secret from .env
+# Export the secret from your .env file
+export KEYCLOAK_CLIENT_SECRET="your-actual-client-secret-here"
+```
+
+Then use it in the curl command:
+
+```bash
 curl -X POST http://localhost:8080/realms/foodmission/protocol/openid-connect/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password" \
@@ -205,17 +214,23 @@ curl -X POST http://localhost:8080/realms/foodmission/protocol/openid-connect/to
   -d "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
   -d "username=admin" \
   -d "password=admin123"
-
-# Alternative: Use environment variable substitution
-# export KEYCLOAK_CLIENT_SECRET="your-secret-here"
-# Then use: -d "client_secret=${KEYCLOAK_CLIENT_SECRET}"
-
-# Test admin endpoint (replace TOKEN with the access_token from above)
-curl http://localhost:3000/api/v1/auth/admin-only \
-  -H "Authorization: Bearer TOKEN"
 ```
 
-**Security Note:** Never include secrets directly in command-line arguments or scripts. Use environment variables or secure credential stores.
+**Step 2: Test Protected Endpoint**
+
+Use the `access_token` from the response above:
+
+```bash
+# Replace YOUR_ACCESS_TOKEN with the actual token from Step 1
+curl http://localhost:3000/api/v1/auth/admin-only \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+**Security Best Practices:**
+- ✅ Always use environment variables for secrets
+- ✅ Never include secrets directly in command-line arguments
+- ✅ Never commit secrets to version control
+- ✅ Use secure credential stores in production environments
 
 ### 4. Start Services
 

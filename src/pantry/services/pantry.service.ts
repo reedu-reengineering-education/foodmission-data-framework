@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -29,11 +28,11 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      await this.create({ userId, title: 'My Pantry' });
-      pantry = await this.pantryRepository.findByUserId(userId);
-      if (!pantry) {
-        throw new BadRequestException('Failed to create pantry');
-      }
+      const createdPantry = await this.pantryRepository.create({
+        userId,
+        title: 'My Pantry',
+      });
+      pantry = createdPantry;
     }
 
     return this.transformToResponseDto(pantry);
@@ -91,12 +90,10 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      await this.create({ userId, title: 'My Pantry' });
-
-      pantry = await this.pantryRepository.findByUserId(userId);
-      if (!pantry) {
-        throw new BadRequestException('Failed to create pantry');
-      }
+      pantry = await this.pantryRepository.create({
+        userId,
+        title: 'My Pantry',
+      });
     }
     return pantry.id;
   }
