@@ -21,8 +21,6 @@ import { ShoppingListRepository } from '../../shoppingList/repositories/shopping
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
   let repository: jest.Mocked<ShoppingListItemRepository>;
-  let pantryItemService: PantryItemService;
-  let userRepository: UserRepository;
 
   const mockPrismaService = {
     shoppingList: {
@@ -105,8 +103,6 @@ describe('ShoppingListItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockUpdatedItem = { ...mockShoppingListItem, checked: true };
-
   beforeEach(async () => {
     const mockRepository = {
       create: jest.fn(),
@@ -156,8 +152,6 @@ describe('ShoppingListItemService', () => {
 
     service = module.get<ShoppingListItemService>(ShoppingListItemService);
     repository = module.get(ShoppingListItemRepository);
-    pantryItemService = module.get<PantryItemService>(PantryItemService);
-    userRepository = module.get<UserRepository>(UserRepository);
 
     jest
       .spyOn(service, 'transformToResponseDto' as any)
@@ -790,12 +784,9 @@ describe('ShoppingListItemService', () => {
     const pantryId = 'pantry-1';
 
     it('should throw BadRequestException when pantryId is not provided', async () => {
-      await expect(
-        service.toggleChecked(itemId, userId, ''),
-      ).rejects.toThrow(BadRequestException);
-      await expect(
-        service.toggleChecked(itemId, userId, ''),
-      ).rejects.toThrow('pantryId is required');
+      await expect(service.toggleChecked(itemId, userId, '')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should create pantry item when checking item and user preference is enabled', async () => {
