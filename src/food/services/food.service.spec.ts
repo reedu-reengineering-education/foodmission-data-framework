@@ -346,6 +346,34 @@ describe('FoodService', () => {
         mockFood.barcode,
       );
     });
+
+    it('should not include OpenFoodFacts data when includeOpenFoodFacts is false', async () => {
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+
+      const result = await service.findOne('food-1', false);
+
+      expect(result.openFoodFactsInfo).toBeUndefined();
+      expect(openFoodFactsService.getProductByBarcode).not.toHaveBeenCalled();
+    });
+
+    it('should not include OpenFoodFacts data when includeOpenFoodFacts is not provided', async () => {
+      foodRepository.findById.mockResolvedValueOnce(mockFood);
+
+      const result = await service.findOne('food-1');
+
+      expect(result.openFoodFactsInfo).toBeUndefined();
+      expect(openFoodFactsService.getProductByBarcode).not.toHaveBeenCalled();
+    });
+
+    it('should not include OpenFoodFacts data when food has no barcode', async () => {
+      const foodWithoutBarcode = { ...mockFood, barcode: null };
+      foodRepository.findById.mockResolvedValueOnce(foodWithoutBarcode);
+
+      const result = await service.findOne('food-1', true);
+
+      expect(result.openFoodFactsInfo).toBeUndefined();
+      expect(openFoodFactsService.getProductByBarcode).not.toHaveBeenCalled();
+    });
   });
 
   describe('findByBarcode', () => {
