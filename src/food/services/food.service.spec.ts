@@ -195,6 +195,123 @@ describe('FoodService', () => {
         mockFood.barcode,
       );
     });
+
+    it('should use default page and limit when not provided', async () => {
+      const queryWithoutPagination: FoodQueryDto = {};
+      const mockPaginatedResult = {
+        data: [mockFood],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      foodRepository.findWithPagination.mockResolvedValueOnce(
+        mockPaginatedResult,
+      );
+
+      const result = await service.findAll(queryWithoutPagination);
+
+      expect(result).toBeDefined();
+      expect(foodRepository.findWithPagination).toHaveBeenCalledWith({
+        skip: 0,
+        take: 10,
+        where: {},
+        orderBy: { createdAt: 'desc' },
+      });
+    });
+
+    it.each([
+      [1, 10, 0],
+      [2, 10, 10],
+      [3, 10, 20],
+      [1, 5, 0],
+      [2, 5, 5],
+      [3, 5, 10],
+      [5, 20, 80],
+    ])(
+      'should calculate skip correctly for page %i with limit %i (expected skip: %i)',
+      async (page, limit, expectedSkip) => {
+        const query: FoodQueryDto = { page, limit };
+        const mockPaginatedResult = {
+          data: [mockFood],
+          total: 100,
+          page,
+          limit,
+          totalPages: Math.ceil(100 / limit),
+        };
+
+        foodRepository.findWithPagination.mockResolvedValueOnce(
+          mockPaginatedResult,
+        );
+
+        await service.findAll(query);
+
+        expect(foodRepository.findWithPagination).toHaveBeenCalledWith({
+          skip: expectedSkip,
+          take: limit,
+          where: {},
+          orderBy: { createdAt: 'desc' },
+        });
+      },
+    );
+
+    it('should handle pagination with large total count', async () => {
+      const query: FoodQueryDto = { page: 5, limit: 20 };
+      const total = 250;
+      const mockPaginatedResult = {
+        data: [mockFood],
+        total,
+        page: 5,
+        limit: 20,
+        totalPages: Math.ceil(total / 20),
+      };
+
+      foodRepository.findWithPagination.mockResolvedValueOnce(
+        mockPaginatedResult,
+      );
+
+      const result = await service.findAll(query);
+
+      expect(result.total).toBe(250);
+      expect(result.page).toBe(5);
+      expect(result.limit).toBe(20);
+      expect(result.totalPages).toBe(13);
+      expect(foodRepository.findWithPagination).toHaveBeenCalledWith({
+        skip: 80,
+        take: 20,
+        where: {},
+        orderBy: { createdAt: 'desc' },
+      });
+    });
+
+    it('should handle last page with partial results', async () => {
+      const query: FoodQueryDto = { page: 3, limit: 10 };
+      const total = 25;
+      const mockPaginatedResult = {
+        data: [mockFood],
+        total,
+        page: 3,
+        limit: 10,
+        totalPages: 3,
+      };
+
+      foodRepository.findWithPagination.mockResolvedValueOnce(
+        mockPaginatedResult,
+      );
+
+      const result = await service.findAll(query);
+
+      expect(result.total).toBe(25);
+      expect(result.page).toBe(3);
+      expect(result.totalPages).toBe(3);
+      expect(foodRepository.findWithPagination).toHaveBeenCalledWith({
+        skip: 20,
+        take: 10,
+        where: {},
+        orderBy: { createdAt: 'desc' },
+      });
+    });
   });
 
   describe('findOne', () => {
