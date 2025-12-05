@@ -371,9 +371,28 @@ describe('ShoppingListItemService', () => {
       expect(repository.findByShoppingListId).toHaveBeenCalledWith(
         'list-1',
         'user-1',
+        { foodId: undefined, checked: undefined, unit: undefined },
       );
       expect(result.data).toHaveLength(1);
       expect(result.data[0]).toHaveProperty('id');
+    });
+
+    it('should ignore empty string filters and return all items', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      repository.findByShoppingListId.mockResolvedValue([mockShoppingListItem]);
+
+      const result = await service.findByShoppingList('list-1', 'user-1', {
+        foodId: '',
+        checked: '' as any,
+        unit: '' as any,
+      });
+
+      expect(repository.findByShoppingListId).toHaveBeenCalledWith(
+        'list-1',
+        'user-1',
+        { foodId: undefined, checked: undefined, unit: undefined },
+      );
+      expect(result.data).toHaveLength(1);
     });
 
     it('should throw NotFoundException when shopping list not found', async () => {

@@ -1,7 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  TransformBooleanString,
+  TransformEmptyStringToUndefined,
+} from '../../common/decorators/transformers';
 
 export class QueryShoppingListItemDto {
   @ApiPropertyOptional({
@@ -16,6 +19,7 @@ export class QueryShoppingListItemDto {
     description: 'Filter by food ID',
     example: 'uuid-food-id',
   })
+  @TransformEmptyStringToUndefined()
   @IsString()
   @IsOptional()
   foodId?: string;
@@ -24,11 +28,7 @@ export class QueryShoppingListItemDto {
     description: 'Filter by checked status',
     example: false,
   })
-  @Transform(({ value }) => {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
-    return value;
-  })
+  @TransformBooleanString()
   @IsBoolean()
   @IsOptional()
   checked?: boolean;
@@ -38,6 +38,8 @@ export class QueryShoppingListItemDto {
     example: 'KG',
     enum: Unit,
   })
+  @TransformEmptyStringToUndefined()
   @IsEnum(Unit)
-  unit?: Unit = Unit.PIECES;
+  @IsOptional()
+  unit?: Unit;
 }

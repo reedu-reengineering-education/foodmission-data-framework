@@ -105,77 +105,6 @@
 			"response": []
 		},
 		{
-			"name": "Get All Shopping List Items",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base_url}}/api/v1/shopping-list-items?shoppingListId={{shopping_list_id}}&checked=false",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"shopping-list-items"
-					],
-					"query": [
-						{
-							"key": "shoppingListId",
-							"value": "{{shopping_list_id}}",
-							"description": "Filter by shopping list ID (optional)"
-						},
-						{
-							"key": "foodId",
-							"value": "",
-							"description": "Filter by food ID (optional)",
-							"disabled": true
-						},
-						{
-							"key": "checked",
-							"value": "false",
-							"description": "Filter by checked status (optional)"
-						},
-						{
-							"key": "unit",
-							"value": "",
-							"description": "Filter by unit (optional)",
-							"disabled": true
-						}
-					]
-				},
-				"description": "Retrieve shopping list items with optional filtering. This is a public endpoint."
-			},
-			"response": []
-		},
-		{
-			"name": "Get Items by Shopping List ID",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{jwt_token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_id}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"shopping-list-items",
-						"{{shopping_list_id}}"
-					]
-				},
-				"description": "Retrieve all items belonging to a specific shopping list. Requires user or admin role."
-			},
-			"response": []
-		},
-		{
 			"name": "Get Shopping List Item by ID",
 			"request": {
 				"method": "GET",
@@ -187,7 +116,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_item_id}}",
+					"raw": "{{base_url}}/api/v1/shopping-list-items/item/{{shopping_list_item_id}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -195,6 +124,7 @@
 						"api",
 						"v1",
 						"shopping-list-items",
+						"item",
 						"{{shopping_list_item_id}}"
 					]
 				},

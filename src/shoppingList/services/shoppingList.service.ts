@@ -17,6 +17,10 @@ import {
 } from '../dto/shoppingList-response.dto';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/shoppingListItem.repository';
+import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
+import { ShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
 
 @Injectable()
 export class ShoppingListService {
@@ -24,6 +28,7 @@ export class ShoppingListService {
 
   constructor(
     private readonly shoppingListRepository: ShoppingListRepository,
+    private readonly shoppingListItemRepository: ShoppingListItemRepository,
   ) {}
 
   async create(
@@ -100,6 +105,38 @@ export class ShoppingListService {
     return this.transformToResponseDto(shoppingList);
   }
 
+  async findItems(
+    id: string,
+    userId: string,
+    query?: QueryShoppingListItemDto,
+  ): Promise<MultipleShoppingListItemResponseDto> {
+    const shoppingList = await this.shoppingListRepository.findById(id);
+
+    if (!shoppingList) {
+      throw new NotFoundException('Shopping list not found');
+    }
+
+    if (shoppingList.userId !== userId) {
+      throw new ForbiddenException('No permission');
+    }
+
+    const { foodId, checked, unit } = this.sanitizeFilters(query);
+
+    const items = await this.shoppingListItemRepository.findByShoppingListId(
+      id,
+      userId,
+      { foodId, checked, unit },
+    );
+
+    const transformedData = plainToInstance(
+      ShoppingListItemResponseDto,
+      items,
+      { excludeExtraneousValues: true },
+    );
+
+    return { data: transformedData };
+  }
+
   async update(
     id: string,
     updateShoppingListDto: UpdateShoppingListDto,
@@ -158,5 +195,21 @@ export class ShoppingListService {
       createdAt: shoppingList.createdAt,
       updatedAt: shoppingList.updatedAt,
     });
+  }
+
+  private sanitizeFilters(query?: QueryShoppingListItemDto) {
+    if (!query) {
+      return { foodId: undefined, checked: undefined, unit: undefined };
+    }
+
+    const foodId = query.foodId || undefined;
+    const unit = query.unit || undefined;
+
+    let checked = query.checked;
+    if (checked === undefined || checked === null || checked === ('' as any)) {
+      checked = undefined;
+    }
+
+    return { foodId, checked, unit };
   }
 }

@@ -107,6 +107,54 @@
 			"response": []
 		},
 		{
+			"name": "Get Items for Shopping List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist/{{shopping_list_id}}/items?foodId={{food_id}}&checked=false&unit=KG",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist",
+						"{{shopping_list_id}}",
+						"items"
+					],
+					"query": [
+						{
+							"key": "foodId",
+							"value": "{{food_id}}",
+							"description": "Filter by food ID (optional)",
+							"disabled": true
+						},
+						{
+							"key": "checked",
+							"value": "false",
+							"description": "Filter by checked status (optional)",
+							"disabled": true
+						},
+						{
+							"key": "unit",
+							"value": "KG",
+							"description": "Filter by unit (optional)",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Retrieve items for a shopping list with optional filters (foodId, checked, unit). Requires user or admin role."
+			},
+			"response": []
+		},
+		{
 			"name": "Update Shopping List",
 			"request": {
 				"method": "PATCH",

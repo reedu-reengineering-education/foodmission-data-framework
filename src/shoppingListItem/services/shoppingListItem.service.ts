@@ -113,12 +113,16 @@ export class ShoppingListItemService {
   async findByShoppingList(
     shoppingListId: string,
     userId: string,
+    query?: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
+
+    const { foodId, checked, unit } = this.sanitizeFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
       userId,
+      { foodId, checked, unit },
     );
 
     return this.transformMultipleToResponseDto(items);
@@ -348,6 +352,22 @@ export class ShoppingListItemService {
       { excludeExtraneousValues: true },
     );
     return { data: transformedData };
+  }
+
+  private sanitizeFilters(query?: QueryShoppingListItemDto) {
+    if (!query) {
+      return { foodId: undefined, checked: undefined, unit: undefined as any };
+    }
+
+    const foodId = query.foodId?.trim() || undefined;
+    const unit = query.unit || undefined;
+
+    let checked = query.checked;
+    if (checked === undefined || checked === null || checked === ('' as any)) {
+      checked = undefined;
+    }
+
+    return { foodId, checked, unit };
   }
 
   private buildUpdateData(

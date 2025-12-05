@@ -22,11 +22,10 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
-import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
@@ -72,65 +71,7 @@ export class ShoppingListItemController {
     );
   }
 
-  @Get()
-  @Public()
-  @ApiOperation({
-    summary: 'Get shopping list items',
-    description: 'Retrieve shopping list items with optional filtering',
-  })
-  @ApiQuery({
-    name: 'shoppingListId',
-    required: false,
-    description: 'Filter by shopping list ID',
-  })
-  @ApiQuery({
-    name: 'foodId',
-    required: false,
-    description: 'Filter by food ID',
-  })
-  @ApiQuery({
-    name: 'checked',
-    required: false,
-    description: 'Filter by checked status',
-  })
-  @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
-  @ApiResponse({
-    status: 200,
-    description: 'Shopping list items retrieved successfully',
-    type: MultipleShoppingListItemResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async findAll(
-    @Query() query: QueryShoppingListItemDto,
-  ): Promise<MultipleShoppingListItemResponseDto> {
-    return this.shoppingListItemService.findAll(query);
-  }
-
-  @Get(':shoppingListId')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all items from a specific shopping list',
-    description: 'Retrieve all items belonging to a specific shopping list',
-  })
-  @ApiParam({ name: 'shoppingListId', type: 'string', format: 'uuid' })
-  @ApiResponse({
-    status: 200,
-    description: 'Shopping list items retrieved successfully',
-    type: MultipleShoppingListItemResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async findByShoppingList(
-    @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
-    @CurrentUser('id') userId: string,
-  ): Promise<MultipleShoppingListItemResponseDto> {
-    return this.shoppingListItemService.findByShoppingList(
-      shoppingListId,
-      userId,
-    );
-  }
-
-  @Get(':id')
+  @Get('item/:id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({

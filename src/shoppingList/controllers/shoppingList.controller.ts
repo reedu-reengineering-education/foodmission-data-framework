@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   UnauthorizedException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -31,6 +32,8 @@ import {
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
+import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
 
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')
@@ -98,6 +101,40 @@ export class ShoppingListController {
     @CurrentUser('id') userId: string,
   ): Promise<ShoppingListResponseDto> {
     return this.shoppingListService.findById(id, userId);
+  }
+
+  @Get(':id/items')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get items for a specific shopping list',
+    description:
+      'Retrieve all items belonging to a shopping list with optional filters',
+  })
+  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiQuery({
+    name: 'foodId',
+    required: false,
+    description: 'Filter by food ID',
+  })
+  @ApiQuery({
+    name: 'checked',
+    required: false,
+    description: 'Filter by checked status',
+  })
+  @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
+  @ApiResponse({
+    status: 200,
+    description: 'Shopping list items retrieved successfully',
+    type: MultipleShoppingListItemResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  async findItems(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: QueryShoppingListItemDto,
+  ): Promise<MultipleShoppingListItemResponseDto> {
+    return this.shoppingListService.findItems(id, userId, query);
   }
 
   @Patch(':id')

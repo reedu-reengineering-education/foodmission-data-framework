@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
+import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
 
 describe('ShoppingListController', () => {
   let controller: ShoppingListController;
@@ -26,6 +28,7 @@ describe('ShoppingListController', () => {
       create: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
+      findItems: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
     };
@@ -106,6 +109,32 @@ describe('ShoppingListController', () => {
 
       expect(result).toEqual(mockShoppingListResponse);
       expect(shoppingListService.findById).toHaveBeenCalledWith(id, userId);
+    });
+  });
+
+  describe('findItems', () => {
+    it('should call service with id, userId, and filters', async () => {
+      const id = 'list-1';
+      const userId = 'user-1';
+      const query: QueryShoppingListItemDto = {
+        foodId: 'food-1',
+        checked: false,
+        unit: 'KG',
+      };
+      const mockItems: MultipleShoppingListItemResponseDto = {
+        data: [],
+      };
+
+      shoppingListService.findItems.mockResolvedValueOnce(mockItems);
+
+      const result = await controller.findItems(id, userId, query);
+
+      expect(result).toEqual(mockItems);
+      expect(shoppingListService.findItems).toHaveBeenCalledWith(
+        id,
+        userId,
+        query,
+      );
     });
   });
 
