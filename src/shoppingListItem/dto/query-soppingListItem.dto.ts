@@ -1,13 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
-import {
-  IsString,
-  IsOptional,
-  IsBoolean,
-  IsInt,
-  Min,
-  IsEnum,
-} from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class QueryShoppingListItemDto {
   @ApiPropertyOptional({
@@ -30,6 +24,11 @@ export class QueryShoppingListItemDto {
     description: 'Filter by checked status',
     example: false,
   })
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
   @IsBoolean()
   @IsOptional()
   checked?: boolean;
@@ -41,25 +40,4 @@ export class QueryShoppingListItemDto {
   })
   @IsEnum(Unit)
   unit?: Unit = Unit.PIECES;
-
-  @ApiPropertyOptional({
-    description: 'Page number for pagination',
-    example: 1,
-    minimum: 1,
-  })
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  page?: number;
-
-  @ApiPropertyOptional({
-    description: 'Number of items per page',
-    example: 10,
-    minimum: 1,
-    maximum: 100,
-  })
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  limit?: number;
 }

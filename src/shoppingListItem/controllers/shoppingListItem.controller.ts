@@ -94,12 +94,6 @@ export class ShoppingListItemController {
     description: 'Filter by checked status',
   })
   @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number for pagination',
-  })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
     description: 'Shopping list items retrieved successfully',

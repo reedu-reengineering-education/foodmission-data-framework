@@ -57,12 +57,17 @@ describe('ShoppingListController', () => {
     it('should call service with correct parameters and return result', async () => {
       const createDto = { title: 'New List' };
       const userId = 'user-1';
-      shoppingListService.create.mockResolvedValueOnce(mockShoppingListResponse);
+      shoppingListService.create.mockResolvedValueOnce(
+        mockShoppingListResponse,
+      );
 
       const result = await controller.create(createDto, userId);
 
       expect(result).toEqual(mockShoppingListResponse);
-      expect(shoppingListService.create).toHaveBeenCalledWith(createDto, userId);
+      expect(shoppingListService.create).toHaveBeenCalledWith(
+        createDto,
+        userId,
+      );
     });
 
     it('should throw UnauthorizedException when userId is missing', async () => {
@@ -93,7 +98,9 @@ describe('ShoppingListController', () => {
     it('should call service with correct parameters and return result', async () => {
       const id = 'list-1';
       const userId = 'user-1';
-      shoppingListService.findById.mockResolvedValueOnce(mockShoppingListResponse);
+      shoppingListService.findById.mockResolvedValueOnce(
+        mockShoppingListResponse,
+      );
 
       const result = await controller.findById(id, userId);
 
@@ -170,4 +177,3 @@ describe('ShoppingListController', () => {
     });
   });
 });
-

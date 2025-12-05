@@ -110,7 +110,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/v1/shopping-list-items?shoppingListId={{shopping_list_id}}&checked=false&page=1&limit=10",
+					"raw": "{{base_url}}/api/v1/shopping-list-items?shoppingListId={{shopping_list_id}}&checked=false",
 					"host": [
 						"{{base_url}}"
 					],
@@ -141,16 +141,6 @@
 							"value": "",
 							"description": "Filter by unit (optional)",
 							"disabled": true
-						},
-						{
-							"key": "page",
-							"value": "1",
-							"description": "Page number for pagination (optional)"
-						},
-						{
-							"key": "limit",
-							"value": "10",
-							"description": "Items per page (optional)"
 						}
 					]
 				},
