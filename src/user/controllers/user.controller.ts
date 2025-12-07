@@ -20,19 +20,14 @@ import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserPreferencesDto } from '../dto/user-preferences.dto';
-import { CacheInterceptor } from '../../cache/cache.interceptor';
-import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
-import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 
 @ApiTags('users')
 @Controller('users')
-@UseInterceptors(CacheInterceptor, CacheEvictInterceptor)
 export class UserController {
   constructor(private readonly userRepository: UserRepository) {}
 
   @Post()
-  @CacheEvict(['users:list'])
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -49,7 +44,6 @@ export class UserController {
   }
 
   @Get()
-  @Cacheable('users_list', 300) // Cache for 5 minutes
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -60,7 +54,6 @@ export class UserController {
   }
 
   @Get(':id')
-  @Cacheable('user_profile:{id}', 900) // Cache for 15 minutes
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -77,7 +70,6 @@ export class UserController {
   }
 
   @Patch(':id')
-  @CacheEvict(['user_profile:{id}', 'users:list'])
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -94,7 +86,6 @@ export class UserController {
   }
 
   @Delete(':id')
-  @CacheEvict(['user_profile:{id}', 'users:list'])
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -106,7 +97,6 @@ export class UserController {
   }
 
   @Get(':id/preferences')
-  @Cacheable('user_preferences:{id}', 600) // Cache for 10 minutes
   @Roles('admin', 'user')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -121,7 +111,6 @@ export class UserController {
   }
 
   @Patch(':id/preferences')
-  @CacheEvict(['user_profile:{id}', 'user_preferences:{id}'])
   @Roles('admin', 'user')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
