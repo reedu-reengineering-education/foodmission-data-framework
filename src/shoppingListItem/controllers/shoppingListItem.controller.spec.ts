@@ -19,11 +19,6 @@ describe('ShoppingListItemController', () => {
     updatedAt: new Date(),
   };
 
-  const mockMultipleResponse = {
-    data: [mockItemResponse],
-    total: 1,
-  };
-
   beforeEach(async () => {
     const mockService: Partial<jest.Mocked<ShoppingListItemService>> = {
       findByShoppingList: jest.fn(),

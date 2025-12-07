@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiTags,

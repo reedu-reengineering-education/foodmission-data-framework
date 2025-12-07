@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   ParseUUIDPipe,
   Request,
   UseGuards,
@@ -18,7 +17,6 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
-  ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
@@ -26,10 +24,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
-import {
-  MultipleShoppingListItemResponseDto,
-  ShoppingListItemResponseDto,
-} from '../dto/response-soppingListItem.dto';
+import { ShoppingListItemResponseDto } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';

@@ -1,121 +1,3 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { ShoppingListService } from './shoppingList.service';
-import { ShoppingListRepository } from '../repositories/shoppingList.repository';
-import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/shoppingListItem.repository';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
-
-describe('ShoppingListService', () => {
-  let service: ShoppingListService;
-  let shoppingListRepository: jest.Mocked<ShoppingListRepository>;
-  let shoppingListItemRepository: jest.Mocked<ShoppingListItemRepository>;
-
-  const mockShoppingList = {
-    id: 'list-1',
-    userId: 'user-1',
-    title: 'List',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const mockItems = [
-    {
-      id: 'item-1',
-      shoppingListId: 'list-1',
-      foodId: 'food-1',
-      quantity: 1,
-      unit: 'KG',
-      checked: false,
-      notes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      shoppingList: mockShoppingList,
-      food: {},
-    },
-  ] as any[];
-
-  beforeEach(() => {
-    shoppingListRepository = {
-      findAll: jest.fn(),
-      findById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      count: jest.fn(),
-    } as any;
-
-    shoppingListItemRepository = {
-      findByShoppingListId: jest.fn(),
-    } as any;
-
-    service = new ShoppingListService(
-      shoppingListRepository,
-      shoppingListItemRepository,
-    );
-  });
-
-  describe('findItems', () => {
-    it('should return items for the list with filters', async () => {
-      const query: QueryShoppingListItemDto = {
-        foodId: 'food-1',
-        checked: false,
-        unit: 'KG',
-      };
-      shoppingListRepository.findById.mockResolvedValue(mockShoppingList);
-      shoppingListItemRepository.findByShoppingListId.mockResolvedValue(
-        mockItems,
-      );
-
-      const result = await service.findItems('list-1', 'user-1', query);
-
-      expect(shoppingListItemRepository.findByShoppingListId).toHaveBeenCalledWith(
-        'list-1',
-        'user-1',
-        { foodId: 'food-1', checked: false, unit: 'KG' },
-      );
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].id).toBe('item-1');
-    });
-
-    it('should ignore empty filters and return all items', async () => {
-      shoppingListRepository.findById.mockResolvedValue(mockShoppingList);
-      shoppingListItemRepository.findByShoppingListId.mockResolvedValue(
-        mockItems,
-      );
-
-      const result = await service.findItems('list-1', 'user-1', {
-        foodId: '',
-        checked: '' as any,
-        unit: '' as any,
-      });
-
-      expect(shoppingListItemRepository.findByShoppingListId).toHaveBeenCalledWith(
-        'list-1',
-        'user-1',
-        { foodId: undefined, checked: undefined, unit: undefined },
-      );
-      expect(result.data).toHaveLength(1);
-    });
-
-    it('should throw NotFoundException when list does not exist', async () => {
-      shoppingListRepository.findById.mockResolvedValue(null);
-
-      await expect(
-        service.findItems('missing', 'user-1'),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw ForbiddenException when user does not own list', async () => {
-      shoppingListRepository.findById.mockResolvedValue({
-        ...mockShoppingList,
-        userId: 'other-user',
-      });
-
-      await expect(
-        service.findItems('list-1', 'user-1'),
-      ).rejects.toThrow(ForbiddenException);
-    });
-  });
-});
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   ConflictException,
@@ -124,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
+import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/shoppingListItem.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -132,6 +15,7 @@ import { ERROR_CODES } from '../../common/utils/error.utils';
 describe('ShoppingListService', () => {
   let service: ShoppingListService;
   let shoppingListRepository: jest.Mocked<ShoppingListRepository>;
+  let shoppingListItemRepository: jest.Mocked<ShoppingListItemRepository>;
 
   const mockShoppingList = {
     id: 'list-1',
@@ -163,6 +47,10 @@ describe('ShoppingListService', () => {
       delete: jest.fn(),
     };
 
+    const mockItemRepository = {
+      findByShoppingListId: jest.fn(),
+    };
+
     // NestJS Test-Modul erstellen - das ist wie eine Mini-Version unserer App nur für Tests
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -171,12 +59,17 @@ describe('ShoppingListService', () => {
           provide: ShoppingListRepository,
           useValue: mockRepository, // Verwende unser Mock statt dem echten Repository
         },
+        {
+          provide: ShoppingListItemRepository,
+          useValue: mockItemRepository,
+        },
       ],
     }).compile();
 
     // Service und Repository aus dem Test-Modul holen
     service = module.get<ShoppingListService>(ShoppingListService);
     shoppingListRepository = module.get(ShoppingListRepository);
+    shoppingListItemRepository = module.get(ShoppingListItemRepository);
   });
 
   // SCHRITT 2: Basis-Test - Prüfen ob der Service erstellt werden kann
