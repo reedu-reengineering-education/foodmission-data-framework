@@ -21,7 +21,6 @@ describe('ShoppingListItemController', () => {
 
   beforeEach(async () => {
     const mockService: Partial<jest.Mocked<ShoppingListItemService>> = {
-      findByShoppingList: jest.fn(),
       findById: jest.fn(),
     };
 
@@ -50,12 +49,6 @@ describe('ShoppingListItemController', () => {
     jest.clearAllMocks();
   });
 
-  describe('findByShoppingList', () => {
-    it('placeholder to keep describe block empty after route removal', () => {
-      expect(true).toBe(true);
-    });
-  });
-
   describe('findById', () => {
     it('should call service with id and userId and return result', async () => {
       const id = 'item-1';
@@ -67,6 +60,64 @@ describe('ShoppingListItemController', () => {
 
       expect(result).toEqual(mockItemResponse);
       expect(service.findById).toHaveBeenCalledWith(id, userId);
+    });
+  });
+
+  describe('update', () => {
+    it('should call service with id, dto, and userId', async () => {
+      const id = 'item-1';
+      const userId = 'user-1';
+      const updateDto = { quantity: 3 };
+      service.update = jest.fn().mockResolvedValue(mockItemResponse as any);
+
+      const result = await controller.update(id, updateDto as any, userId);
+
+      expect(result).toEqual(mockItemResponse);
+      expect(service.update).toHaveBeenCalledWith(id, updateDto, userId);
+    });
+  });
+
+  describe('toggleChecked', () => {
+    it('should call service with id and userId', async () => {
+      const id = 'item-1';
+      const userId = 'user-1';
+      service.toggleChecked = jest
+        .fn()
+        .mockResolvedValue(mockItemResponse as any);
+
+      const result = await controller.toggleChecked(id, userId);
+
+      expect(result).toEqual(mockItemResponse);
+      expect(service.toggleChecked).toHaveBeenCalledWith(id, userId);
+    });
+  });
+
+  describe('remove', () => {
+    it('should call service with id and userId', async () => {
+      const id = 'item-1';
+      const userId = 'user-1';
+      service.remove = jest.fn().mockResolvedValue(undefined);
+
+      const result = await controller.remove(id, userId);
+
+      expect(result).toBeUndefined();
+      expect(service.remove).toHaveBeenCalledWith(id, userId);
+    });
+  });
+
+  describe('clearCheckedItems', () => {
+    it('should call service with shoppingListId and userId', async () => {
+      const shoppingListId = 'list-1';
+      const userId = 'user-1';
+      service.clearCheckedItems = jest.fn().mockResolvedValue(undefined);
+
+      const result = await controller.clearCheckedItems(shoppingListId, userId);
+
+      expect(result).toBeUndefined();
+      expect(service.clearCheckedItems).toHaveBeenCalledWith(
+        shoppingListId,
+        userId,
+      );
     });
   });
 });

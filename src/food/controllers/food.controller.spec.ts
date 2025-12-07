@@ -34,8 +34,15 @@ describe('FoodController', () => {
 
   beforeEach(async () => {
     const mockFoodService = {
+      create: jest.fn(),
+      findAll: jest.fn(),
       findOne: jest.fn(),
+      findByBarcode: jest.fn(),
       searchOpenFoodFacts: jest.fn(),
+      importFromOpenFoodFacts: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+      getOpenFoodFactsInfo: jest.fn(),
     };
 
     const mockUserContextService = {};
@@ -129,6 +136,54 @@ describe('FoodController', () => {
     });
   });
 
+  describe('create', () => {
+    it('should call service with dto and userId and return result', async () => {
+      const createDto = { name: 'Apple', barcode: '123' } as any;
+      const userId = 'user-1';
+      foodService.create.mockResolvedValueOnce(mockFoodResponse as any);
+
+      const result = await controller.create(createDto, userId);
+
+      expect(result).toEqual(mockFoodResponse);
+      expect(foodService.create).toHaveBeenCalledWith(createDto, userId);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should call service with query and return result', async () => {
+      const query = { page: 1, limit: 10 } as any;
+      const mockPaginated = { data: [mockFoodResponse], total: 1 };
+      foodService.findAll.mockResolvedValueOnce(mockPaginated as any);
+
+      const result = await controller.findAll(query);
+
+      expect(result).toEqual(mockPaginated);
+      expect(foodService.findAll).toHaveBeenCalledWith(query);
+    });
+  });
+
+  describe('findByBarcode', () => {
+    it('should call service with includeOpenFoodFacts=true when query param is "true"', async () => {
+      foodService.findByBarcode.mockResolvedValueOnce(
+        mockFoodResponseWithOff as any,
+      );
+
+      const result = await controller.findByBarcode('123', 'true');
+
+      expect(result).toEqual(mockFoodResponseWithOff);
+      expect(foodService.findByBarcode).toHaveBeenCalledWith('123', true);
+    });
+
+    it('should call service with includeOpenFoodFacts=false when query param is undefined', async () => {
+      foodService.findByBarcode.mockResolvedValueOnce(mockFoodResponse as any);
+
+      const result = await controller.findByBarcode('123', undefined);
+
+      expect(result).toEqual(mockFoodResponse);
+      expect(foodService.findByBarcode).toHaveBeenCalledWith('123', false);
+    });
+  });
+
   describe('searchOpenFoodFacts', () => {
     const mockSearchResult = {
       products: [
@@ -189,6 +244,75 @@ describe('FoodController', () => {
         error,
       );
       expect(foodService.searchOpenFoodFacts).toHaveBeenCalledWith(searchDto);
+    });
+  });
+
+  describe('importFromOpenFoodFacts', () => {
+    it('should call service with barcode and userId and return result', async () => {
+      foodService.importFromOpenFoodFacts.mockResolvedValueOnce(
+        mockFoodResponse as any,
+      );
+
+      const result = await controller.importFromOpenFoodFacts('123', 'user-1');
+
+      expect(result).toEqual(mockFoodResponse);
+      expect(foodService.importFromOpenFoodFacts).toHaveBeenCalledWith(
+        '123',
+        'user-1',
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should call service with id and dto and return result', async () => {
+      const updateDto = { name: 'Updated' } as any;
+      foodService.update.mockResolvedValueOnce({
+        ...mockFoodResponse,
+        name: 'Updated',
+      } as any);
+
+      const result = await controller.update('food-1', updateDto);
+
+      expect(result.name).toBe('Updated');
+      expect(foodService.update).toHaveBeenCalledWith('food-1', updateDto);
+    });
+  });
+
+  describe('remove', () => {
+    it('should call service with id', async () => {
+      foodService.remove.mockResolvedValueOnce(undefined);
+
+      await controller.remove('food-1');
+
+      expect(foodService.remove).toHaveBeenCalledWith('food-1');
+    });
+  });
+
+  describe('getOpenFoodFactsInfo', () => {
+    it('should return null when food has no barcode and not call getOpenFoodFactsInfo', async () => {
+      foodService.findOne.mockResolvedValueOnce({
+        ...mockFoodResponse,
+        barcode: null,
+      } as any);
+
+      const result = await controller.getOpenFoodFactsInfo('food-1');
+
+      expect(result).toBeNull();
+      expect(foodService.getOpenFoodFactsInfo).not.toHaveBeenCalled();
+    });
+
+    it('should call getOpenFoodFactsInfo when barcode exists', async () => {
+      foodService.findOne.mockResolvedValueOnce(mockFoodResponse as any);
+      foodService.getOpenFoodFactsInfo.mockResolvedValueOnce(
+        mockFoodResponseWithOff.openFoodFactsInfo as any,
+      );
+
+      const result = await controller.getOpenFoodFactsInfo('food-1');
+
+      expect(result).toEqual(mockFoodResponseWithOff.openFoodFactsInfo);
+      expect(foodService.getOpenFoodFactsInfo).toHaveBeenCalledWith(
+        mockFoodResponse.barcode,
+      );
     });
   });
 });
