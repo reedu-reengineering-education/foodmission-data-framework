@@ -60,7 +60,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @Cacheable('user_profile', 900) // Cache for 15 minutes
+  @Cacheable('user_profile:{id}', 900) // Cache for 15 minutes
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
@@ -106,7 +106,7 @@ export class UserController {
   }
 
   @Get(':id/preferences')
-  @Cacheable('user_preferences', 600) // Cache for 10 minutes
+  @Cacheable('user_preferences:{id}', 600) // Cache for 10 minutes
   @Roles('admin', 'user')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
