@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "auth-api-collection",
 		"name": "FoodMission Auth API",
-		"description": "Collection for FoodMission Authentication API endpoints. Use this to get JWT tokens from Keycloak and test authenticated endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`",
+		"description": "Collection for FoodMission Authentication API endpoints. Use this to get JWT tokens from Keycloak and test authenticated endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\n**Secrets:** Leave `keycloak_client_secret` empty in the collection. Set it in your Postman environment from your local `KEYCLOAK_CLIENT_SECRET` (or equivalent) and never commit secrets to version control.\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -431,9 +431,9 @@
 		},
 		{
 			"key": "keycloak_client_secret",
-			"value": "foodmission-dev-secret-2025",
+			"value": "",
 			"type": "string",
-			"description": "Client secret for foodmission-api (required for password grant)"
+			"description": "Client secret for foodmission-api (required for password grant). Set via environment variable; do not commit secrets."
 		},
 		{
 			"key": "keycloak_username",
