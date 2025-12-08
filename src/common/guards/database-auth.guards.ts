@@ -29,6 +29,7 @@ export class DataBaseAuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
 
+    // JWT guard should populate user claims for non-public routes; bail out if missing.
     if (!request.user || !request.user.sub) {
       throw new UnauthorizedException('No valid JWT token found');
     }

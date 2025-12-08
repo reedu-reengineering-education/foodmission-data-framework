@@ -31,6 +31,7 @@ import { PantryItemService } from '../../pantryItem/services/pantryItem.service'
 import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
+import { sanitizeShoppingListItemFilters } from '../../shoppingList/utils/filter-sanitizer';
 
 @Injectable()
 export class ShoppingListItemService {
@@ -117,7 +118,7 @@ export class ShoppingListItemService {
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
 
-    const { foodId, checked, unit } = this.sanitizeFilters(query);
+    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
@@ -352,22 +353,6 @@ export class ShoppingListItemService {
       { excludeExtraneousValues: true },
     );
     return { data: transformedData };
-  }
-
-  private sanitizeFilters(query?: QueryShoppingListItemDto) {
-    if (!query) {
-      return { foodId: undefined, checked: undefined, unit: undefined as any };
-    }
-
-    const foodId = query.foodId?.trim() || undefined;
-    const unit = query.unit || undefined;
-
-    let checked = query.checked;
-    if (checked === undefined || checked === null || checked === ('' as any)) {
-      checked = undefined;
-    }
-
-    return { foodId, checked, unit };
   }
 
   private buildUpdateData(

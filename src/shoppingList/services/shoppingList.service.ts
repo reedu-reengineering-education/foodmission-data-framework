@@ -21,6 +21,7 @@ import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/
 import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
 import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
 import { ShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
+import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 
 @Injectable()
 export class ShoppingListService {
@@ -120,7 +121,7 @@ export class ShoppingListService {
       throw new ForbiddenException('No permission');
     }
 
-    const { foodId, checked, unit } = this.sanitizeFilters(query);
+    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       id,
@@ -195,21 +196,5 @@ export class ShoppingListService {
       createdAt: shoppingList.createdAt,
       updatedAt: shoppingList.updatedAt,
     });
-  }
-
-  private sanitizeFilters(query?: QueryShoppingListItemDto) {
-    if (!query) {
-      return { foodId: undefined, checked: undefined, unit: undefined };
-    }
-
-    const foodId = query.foodId || undefined;
-    const unit = query.unit || undefined;
-
-    let checked = query.checked;
-    if (checked === undefined || checked === null || checked === ('' as any)) {
-      checked = undefined;
-    }
-
-    return { foodId, checked, unit };
   }
 }
