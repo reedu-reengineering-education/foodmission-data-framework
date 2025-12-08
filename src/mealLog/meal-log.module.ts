@@ -5,11 +5,12 @@ import { MealLogRepository } from './repositories/meal-log.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { DishModule } from '../dish/dish.module';
+import { UserRepository } from '../user/repositories/user.repository';
 
 @Module({
   imports: [DatabaseModule, CommonModule, DishModule],
   controllers: [MealLogController],
-  providers: [MealLogService, MealLogRepository],
+  providers: [MealLogService, MealLogRepository, UserRepository],
   exports: [MealLogService, MealLogRepository],
 })
 export class MealLogModule {}
