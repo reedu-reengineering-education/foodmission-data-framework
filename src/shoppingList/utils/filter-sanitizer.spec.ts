@@ -1,5 +1,5 @@
 import { sanitizeShoppingListItemFilters } from './filter-sanitizer';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
 import { Unit } from '@prisma/client';
 
 describe('sanitizeShoppingListItemFilters', () => {

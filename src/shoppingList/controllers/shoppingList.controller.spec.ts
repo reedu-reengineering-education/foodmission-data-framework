@@ -4,7 +4,7 @@ import { ShoppingListService } from '../services/shoppingList.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
 import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
 
 describe('ShoppingListController', () => {

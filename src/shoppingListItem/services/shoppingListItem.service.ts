@@ -15,7 +15,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
-import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,

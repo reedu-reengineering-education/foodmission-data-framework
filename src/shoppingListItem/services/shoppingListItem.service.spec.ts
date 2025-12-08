@@ -11,7 +11,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
-import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
 import { PantryService } from '../../pantry/services/pantry.service';
 import { UserRepository } from '../../user/repositories/user.repository';
