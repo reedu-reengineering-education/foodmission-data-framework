@@ -10,7 +10,12 @@ import { UserRepository } from '../user/repositories/user.repository';
 @Module({
   imports: [DatabaseModule, CommonModule],
   controllers: [DishController],
-  providers: [DishService, DishRepository, PantryItemRepository, UserRepository],
+  providers: [
+    DishService,
+    DishRepository,
+    PantryItemRepository,
+    UserRepository,
+  ],
   exports: [DishService, DishRepository],
 })
 export class DishModule {}

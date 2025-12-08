@@ -123,4 +123,33 @@ describe('DishService', () => {
       service.update('missing', { name: 'New' }, userId),
     ).rejects.toThrow(NotFoundException);
   });
+
+  it('should build filters for findAll', async () => {
+    const paginationResult = {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    };
+    mockDishRepository.findWithPagination.mockResolvedValue(paginationResult);
+
+    await service.findAll(userId, {
+      mealType: MealType.MEAT,
+      search: 'chick',
+      page: 2,
+      limit: 5,
+    } as any);
+
+    expect(mockDishRepository.findWithPagination).toHaveBeenCalledWith({
+      skip: 5,
+      take: 5,
+      where: {
+        userId,
+        mealType: MealType.MEAT,
+        name: { contains: 'chick', mode: 'insensitive' },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  });
 });
