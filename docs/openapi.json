@@ -3870,6 +3870,1486 @@
         ]
       }
     },
+    "/api/v1/dishes": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Dish created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DishResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a dish",
+        "tags": [
+          "dishes"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "mealType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by meal type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SALAT",
+                "MEAT",
+                "PASTA",
+                "RICE",
+                "VEGAN"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by name substring",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dishes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleDishResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "List dishes for the user",
+        "tags": [
+          "dishes"
+        ]
+      }
+    },
+    "/api/v1/dishes/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dish retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DishResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get a dish by id",
+        "tags": [
+          "dishes"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dish updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DishResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update a dish",
+        "tags": [
+          "dishes"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dish deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete a dish",
+        "tags": [
+          "dishes"
+        ]
+      }
+    },
+    "/api/v1/recipes": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRecipeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recipe created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a recipe",
+        "tags": [
+          "recipes"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "mealType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by dish meal type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SALAT",
+                "MEAT",
+                "PASTA",
+                "RICE",
+                "VEGAN"
+              ]
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Filter by tags",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "allergens",
+            "required": false,
+            "in": "query",
+            "description": "Filter by allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "difficulty",
+            "required": false,
+            "in": "query",
+            "description": "Difficulty label",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by title",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleRecipeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "List recipes",
+        "tags": [
+          "recipes"
+        ]
+      }
+    },
+    "/api/v1/recipes/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get recipe by id",
+        "tags": [
+          "recipes"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRecipeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recipe updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update recipe",
+        "tags": [
+          "recipes"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recipe deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete recipe",
+        "tags": [
+          "recipes"
+        ]
+      }
+    },
+    "/api/v1/meal-logs": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMealLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Meal log created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealLogResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a meal log",
+        "tags": [
+          "meal-logs"
+        ]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "From date ISO",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "To date ISO",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "description": "Meal type filter",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ]
+            }
+          },
+          {
+            "name": "mealType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by underlying dish meal type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SALAT",
+                "MEAT",
+                "PASTA",
+                "RICE",
+                "VEGAN"
+              ]
+            }
+          },
+          {
+            "name": "mealFromPantry",
+            "required": false,
+            "in": "query",
+            "description": "Only meals from pantry",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "eatenOut",
+            "required": false,
+            "in": "query",
+            "description": "Only meals eaten out",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleMealLogResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "List meal logs",
+        "tags": [
+          "meal-logs"
+        ]
+      }
+    },
+    "/api/v1/meal-logs/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal log retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealLogResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get meal log by id",
+        "tags": [
+          "meal-logs"
+        ]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMealLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Meal log updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealLogResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update meal log",
+        "tags": [
+          "meal-logs"
+        ]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal log deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete meal log",
+        "tags": [
+          "meal-logs"
+        ]
+      }
+    },
     "/api/v1": {
       "get": {
         "description": "Returns a simple health check message to verify the application is running.",
@@ -4935,6 +6415,703 @@
             "type": "string",
             "description": "The ID of the food item",
             "example": "uuid-food-id"
+          }
+        }
+      },
+      "CreateDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Dish name",
+            "example": "Grilled chicken salad"
+          },
+          "mealType": {
+            "type": "string",
+            "enum": [
+              "SALAT",
+              "MEAT",
+              "PASTA",
+              "RICE",
+              "VEGAN"
+            ],
+            "description": "Meal type"
+          },
+          "calories": {
+            "type": "number",
+            "description": "Calories for the dish",
+            "example": 520
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Protein amount in grams",
+            "example": 42
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Structured nutritional information",
+            "example": {
+              "carbs": 40,
+              "fats": 20,
+              "sugar": 5
+            }
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score",
+            "example": 0.72
+          },
+          "pantryItemId": {
+            "type": "string",
+            "description": "Link to pantry item if sourced from pantry",
+            "format": "uuid"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Barcode of the dish (if packaged)"
+          }
+        },
+        "required": [
+          "name",
+          "mealType"
+        ]
+      },
+      "DishResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Dish id",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Dish name"
+          },
+          "mealType": {
+            "type": "string",
+            "enum": [
+              "SALAT",
+              "MEAT",
+              "PASTA",
+              "RICE",
+              "VEGAN"
+            ],
+            "description": "Meal type"
+          },
+          "calories": {
+            "type": "number",
+            "description": "Calories"
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Proteins"
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Nutritional information"
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score"
+          },
+          "pantryItemId": {
+            "type": "object",
+            "description": "Linked pantry item id",
+            "format": "uuid"
+          },
+          "barcode": {
+            "type": "object",
+            "description": "Barcode"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User owner",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at ISO date"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at ISO date"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "mealType",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "MultipleDishResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DishResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total dishes"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Items per page"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
+      "UpdateDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Dish name",
+            "example": "Grilled chicken salad"
+          },
+          "mealType": {
+            "type": "string",
+            "enum": [
+              "SALAT",
+              "MEAT",
+              "PASTA",
+              "RICE",
+              "VEGAN"
+            ],
+            "description": "Meal type"
+          },
+          "calories": {
+            "type": "number",
+            "description": "Calories for the dish",
+            "example": 520
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Protein amount in grams",
+            "example": 42
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Structured nutritional information",
+            "example": {
+              "carbs": 40,
+              "fats": 20,
+              "sugar": 5
+            }
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score",
+            "example": 0.72
+          },
+          "pantryItemId": {
+            "type": "string",
+            "description": "Link to pantry item if sourced from pantry",
+            "format": "uuid"
+          },
+          "barcode": {
+            "type": "string",
+            "description": "Barcode of the dish (if packaged)"
+          }
+        }
+      },
+      "CreateRecipeDto": {
+        "type": "object",
+        "properties": {
+          "mealId": {
+            "type": "string",
+            "description": "Dish identifier this recipe is based on",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "Recipe title",
+            "example": "Hearty veggie pasta"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short description"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Cooking instructions"
+          },
+          "prepTime": {
+            "type": "number",
+            "description": "Prep time in minutes",
+            "example": 15
+          },
+          "cookTime": {
+            "type": "number",
+            "description": "Cook time in minutes",
+            "example": 30
+          },
+          "servings": {
+            "type": "number",
+            "description": "Servings",
+            "example": 4
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty label",
+            "example": "easy"
+          },
+          "tags": {
+            "description": "Tags for filtering",
+            "example": [
+              "vegan",
+              "quick"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Structured nutritional info",
+            "example": {
+              "carbs": 50,
+              "fats": 10,
+              "fiber": 8
+            }
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score",
+            "example": 0.65
+          },
+          "allergens": {
+            "description": "Known allergens",
+            "example": [
+              "nuts",
+              "gluten"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "mealId",
+          "title"
+        ]
+      },
+      "RecipeResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Recipe id",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Owner user id",
+            "format": "uuid"
+          },
+          "mealId": {
+            "type": "string",
+            "description": "Dish reference id",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "Recipe title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions"
+          },
+          "prepTime": {
+            "type": "number",
+            "description": "Prep time minutes"
+          },
+          "cookTime": {
+            "type": "number",
+            "description": "Cook time minutes"
+          },
+          "servings": {
+            "type": "number",
+            "description": "Servings count"
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty label"
+          },
+          "tags": {
+            "description": "Tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Nutritional info payload"
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score"
+          },
+          "allergens": {
+            "description": "Allergens",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rating": {
+            "type": "number",
+            "description": "Aggregate rating value"
+          },
+          "ratingCount": {
+            "type": "number",
+            "description": "Number of ratings"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at"
+          },
+          "meal": {
+            "description": "Attached dish",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DishResponseDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "mealId",
+          "title",
+          "rating",
+          "ratingCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "MultipleRecipeResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total recipes"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
+      "UpdateRecipeDto": {
+        "type": "object",
+        "properties": {
+          "mealId": {
+            "type": "string",
+            "description": "Dish identifier this recipe is based on",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "Recipe title",
+            "example": "Hearty veggie pasta"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short description"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Cooking instructions"
+          },
+          "prepTime": {
+            "type": "number",
+            "description": "Prep time in minutes",
+            "example": 15
+          },
+          "cookTime": {
+            "type": "number",
+            "description": "Cook time in minutes",
+            "example": 30
+          },
+          "servings": {
+            "type": "number",
+            "description": "Servings",
+            "example": 4
+          },
+          "difficulty": {
+            "type": "string",
+            "description": "Difficulty label",
+            "example": "easy"
+          },
+          "tags": {
+            "description": "Tags for filtering",
+            "example": [
+              "vegan",
+              "quick"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nutritionalInfo": {
+            "type": "object",
+            "description": "Structured nutritional info",
+            "example": {
+              "carbs": 50,
+              "fats": 10,
+              "fiber": 8
+            }
+          },
+          "sustainabilityScore": {
+            "type": "number",
+            "description": "Sustainability score",
+            "example": 0.65
+          },
+          "allergens": {
+            "description": "Known allergens",
+            "example": [
+              "nuts",
+              "gluten"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateMealLogDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "Dish consumed",
+            "format": "uuid"
+          },
+          "typeOfMeal": {
+            "type": "string",
+            "description": "Type of meal",
+            "enum": [
+              "BREAKFAST",
+              "LUNCH",
+              "DINNER",
+              "SNACK",
+              "SPECIAL_DRINKS"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of consumption (ISO string)"
+          },
+          "mealFromPantry": {
+            "type": "boolean",
+            "description": "Whether meal came from pantry"
+          },
+          "eatenOut": {
+            "type": "boolean",
+            "description": "Whether meal was eaten out"
+          }
+        },
+        "required": [
+          "dishId",
+          "typeOfMeal"
+        ]
+      },
+      "MealLogResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Meal log id",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User id",
+            "format": "uuid"
+          },
+          "dishId": {
+            "type": "string",
+            "description": "Dish id",
+            "format": "uuid"
+          },
+          "typeOfMeal": {
+            "type": "string",
+            "enum": [
+              "BREAKFAST",
+              "LUNCH",
+              "DINNER",
+              "SNACK",
+              "SPECIAL_DRINKS"
+            ]
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp of the meal"
+          },
+          "mealFromPantry": {
+            "type": "boolean",
+            "description": "From pantry flag"
+          },
+          "eatenOut": {
+            "type": "boolean",
+            "description": "Eaten out flag"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at"
+          },
+          "dish": {
+            "description": "Linked dish details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DishResponseDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "dishId",
+          "typeOfMeal",
+          "timestamp",
+          "mealFromPantry",
+          "eatenOut",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "MultipleMealLogResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MealLogResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total logs"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
+      "UpdateMealLogDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "Dish consumed",
+            "format": "uuid"
+          },
+          "typeOfMeal": {
+            "type": "string",
+            "description": "Type of meal",
+            "enum": [
+              "BREAKFAST",
+              "LUNCH",
+              "DINNER",
+              "SNACK",
+              "SPECIAL_DRINKS"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of consumption (ISO string)"
+          },
+          "mealFromPantry": {
+            "type": "boolean",
+            "description": "Whether meal came from pantry"
+          },
+          "eatenOut": {
+            "type": "boolean",
+            "description": "Whether meal was eaten out"
           }
         }
       }
