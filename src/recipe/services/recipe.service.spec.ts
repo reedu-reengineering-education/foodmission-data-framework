@@ -1,0 +1,115 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { RecipeService } from './recipe.service';
+import { RecipeRepository } from '../repositories/recipe.repository';
+import { DishRepository } from '../../dish/repositories/dish.repository';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { MealType } from '@prisma/client';
+
+describe('RecipeService', () => {
+  let service: RecipeService;
+  const userId = 'user-1';
+
+  const mockRecipeRepository = {
+    create: jest.fn(),
+    findWithPagination: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const mockDishRepository = {
+    findById: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        RecipeService,
+        { provide: RecipeRepository, useValue: mockRecipeRepository },
+        { provide: DishRepository, useValue: mockDishRepository },
+      ],
+    }).compile();
+
+    service = module.get<RecipeService>(RecipeService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should throw NotFound when dish is missing on create', async () => {
+    mockDishRepository.findById.mockResolvedValue(null);
+
+    await expect(
+      service.create(
+        {
+          mealId: 'd1',
+          title: 'R',
+          mealType: MealType.MEAT,
+        } as any,
+        userId,
+      ),
+    ).rejects.toThrow(NotFoundException);
+  });
+
+  it('should enforce dish ownership on create', async () => {
+    mockDishRepository.findById.mockResolvedValue({
+      id: 'd1',
+      userId: 'other',
+    });
+
+    await expect(
+      service.create(
+        {
+          mealId: 'd1',
+          title: 'R',
+        } as any,
+        userId,
+      ),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('should create recipe when dish owned by user', async () => {
+    const recipe = {
+      id: 'r1',
+      mealId: 'd1',
+      userId,
+      title: 'R',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockDishRepository.findById.mockResolvedValue({ id: 'd1', userId });
+    mockRecipeRepository.create.mockResolvedValue(recipe);
+
+    const result = await service.create(
+      { mealId: 'd1', title: 'R' } as any,
+      userId,
+    );
+
+    expect(result.id).toBe('r1');
+    expect(mockRecipeRepository.create).toHaveBeenCalledWith({
+      mealId: 'd1',
+      title: 'R',
+      userId,
+    });
+  });
+
+  it('should throw NotFound on update when recipe missing', async () => {
+    mockRecipeRepository.findById.mockResolvedValue(null);
+
+    await expect(
+      service.update('missing', { title: 'X' }, userId),
+    ).rejects.toThrow(NotFoundException);
+  });
+
+  it('should enforce ownership on remove', async () => {
+    mockRecipeRepository.findById.mockResolvedValue({
+      id: 'r1',
+      userId: 'other',
+    });
+
+    await expect(service.remove('r1', userId)).rejects.toThrow(
+      ForbiddenException,
+    );
+  });
+});
