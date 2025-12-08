@@ -112,4 +112,56 @@ describe('RecipeService', () => {
       ForbiddenException,
     );
   });
+
+  it('should build filters for findAll and trim tags', async () => {
+    const paginationResult = {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    };
+    mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+
+    await service.findAll(userId, {
+      mealType: MealType.MEAT,
+      tags: [' quick '],
+      allergens: [' nuts '],
+      difficulty: 'easy',
+      search: 'pasta',
+      page: 2,
+      limit: 5,
+    } as any);
+
+    expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith({
+      skip: 5,
+      take: 5,
+      where: {
+        userId,
+        difficulty: 'easy',
+        tags: { hasSome: ['quick'] },
+        allergens: { hasSome: ['nuts'] },
+        title: { contains: 'pasta', mode: 'insensitive' },
+        meal: { mealType: MealType.MEAT },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: { meal: true },
+    });
+  });
+
+  it('should ensure ownership when changing meal on update', async () => {
+    mockRecipeRepository.findById.mockResolvedValue({
+      id: 'r1',
+      mealId: 'd-old',
+      userId,
+    });
+    mockDishRepository.findById.mockResolvedValue({
+      id: 'd2',
+      userId: 'other',
+    });
+
+    await expect(
+      service.update('r1', { mealId: 'd2' } as any, userId),
+    ).rejects.toThrow(ForbiddenException);
+  });
 });
