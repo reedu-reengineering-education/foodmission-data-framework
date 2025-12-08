@@ -145,7 +145,10 @@ describe('PantryService', () => {
 
       expect(result.id).toBe(createdPantry.id);
       expect(result.userId).toBe(userId);
-      expect(repository.create).toHaveBeenCalled();
+      expect(repository.create).toHaveBeenCalledWith({
+        ...createDto,
+        userId,
+      });
     });
 
     it('should throw BadRequestException when creation fails with generic error', async () => {

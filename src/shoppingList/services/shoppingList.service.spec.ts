@@ -81,7 +81,10 @@ describe('ShoppingListService', () => {
 
       const result = await service.create(createDto, userId);
 
-      expect(shoppingListRepository.create).toHaveBeenCalled();
+      expect(shoppingListRepository.create).toHaveBeenCalledWith({
+        ...createDto,
+        userId,
+      });
       expect(result).toEqual({
         id: mockShoppingList.id,
         title: mockShoppingList.title,

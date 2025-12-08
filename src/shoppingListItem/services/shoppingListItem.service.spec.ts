@@ -190,10 +190,15 @@ describe('ShoppingListItemService', () => {
 
       const result = await service.create(createDto, 'user-1');
 
-      expect(mockShoppingListRepository.findById).toHaveBeenCalled();
-      expect(mockFoodRepository.findById).toHaveBeenCalled();
-      expect(repository.findByShoppingListAndFood).toHaveBeenCalled();
-      expect(repository.create).toHaveBeenCalled();
+      expect(mockShoppingListRepository.findById).toHaveBeenCalledWith(
+        'list-1',
+      );
+      expect(mockFoodRepository.findById).toHaveBeenCalledWith('food-1');
+      expect(repository.findByShoppingListAndFood).toHaveBeenCalledWith(
+        'list-1',
+        'food-1',
+      );
+      expect(repository.create).toHaveBeenCalledWith(createDto);
 
       expect(result.id).toBe('1');
       expect(result.quantity).toBe(2);
@@ -256,7 +261,12 @@ describe('ShoppingListItemService', () => {
 
       const result = await service.findAll(query);
 
-      expect(repository.findMany).toHaveBeenCalled();
+      expect(repository.findMany).toHaveBeenCalledWith({
+        shoppingListId: 'list-1',
+        foodId: undefined,
+        checked: false,
+        unit: undefined,
+      });
       expect(result.data).toHaveLength(1);
       expect(result.data[0]).toHaveProperty('id');
       expect(result.data[0]).toHaveProperty('quantity');
@@ -271,7 +281,12 @@ describe('ShoppingListItemService', () => {
 
       const result = await service.findAll(query);
 
-      expect(repository.findMany).toHaveBeenCalled();
+      expect(repository.findMany).toHaveBeenCalledWith({
+        shoppingListId: undefined,
+        foodId: undefined,
+        checked: undefined,
+        unit: 'KG',
+      });
       expect(result.data).toHaveLength(1);
     });
 
