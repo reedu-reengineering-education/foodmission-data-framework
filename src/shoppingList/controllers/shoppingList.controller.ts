@@ -79,26 +79,6 @@ export class ShoppingListController {
     return this.shoppingListService.findAll();
   }
 
-  @Get(':id')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get specific shopping list by ID',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiResponse({
-    status: 200,
-    description: 'Shopping list found',
-    type: ShoppingListResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') userId: string,
-  ): Promise<ShoppingListResponseDto> {
-    return this.shoppingListService.findById(id, userId);
-  }
-
   @Get(':id/items')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -131,6 +111,26 @@ export class ShoppingListController {
     @Query() query: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
     return this.shoppingListService.findItems(id, userId, query);
+  }
+
+  @Get(':id')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get specific shopping list by ID',
+  })
+  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'Shopping list found',
+    type: ShoppingListResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  async findById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<ShoppingListResponseDto> {
+    return this.shoppingListService.findById(id, userId);
   }
 
   @Patch(':id')

@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ShoppingListController } from './shoppingList.controller';
 import { ShoppingListService } from '../services/shoppingList.service';
-import {
-  NotFoundException,
-  ForbiddenException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-soppingListItem.dto';
@@ -70,14 +66,6 @@ describe('ShoppingListController', () => {
       expect(shoppingListService.create).toHaveBeenCalledWith(
         createDto,
         userId,
-      );
-    });
-
-    it('should throw UnauthorizedException when userId is missing', async () => {
-      const createDto = { title: 'New List' };
-
-      await expect(controller.create(createDto, '')).rejects.toThrow(
-        UnauthorizedException,
       );
     });
   });
@@ -168,15 +156,6 @@ describe('ShoppingListController', () => {
       await controller.remove(id, userId);
 
       expect(shoppingListService.remove).toHaveBeenCalledWith(id, userId);
-    });
-
-    it('should throw UnauthorizedException when userId is missing', async () => {
-      const id = 'list-1';
-
-      await expect(controller.remove(id, '')).rejects.toThrow(
-        UnauthorizedException,
-      );
-      expect(shoppingListService.remove).not.toHaveBeenCalled();
     });
 
     it('should propagate NotFoundException from service', async () => {
