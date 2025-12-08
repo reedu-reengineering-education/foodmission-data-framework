@@ -1,5 +1,4 @@
 import { TestingModule } from '@nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
 import { PantryItemController } from './pantryItem.controller';
 import { PantryItemService } from '../services/pantryItem.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
@@ -45,20 +44,6 @@ describe('PantryItemController', () => {
       expect(service.create).toHaveBeenCalledWith(createDto, userId);
       expect(service.create).toHaveBeenCalledTimes(1);
     });
-
-    it.each([
-      [null, 'null'],
-      ['', 'empty string'],
-    ])(
-      'should throw UnauthorizedException when userId is %s',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async (invalidUserId, _description) => {
-        await expect(
-          controller.create(createDto, invalidUserId as string),
-        ).rejects.toThrow(UnauthorizedException);
-        expect(service.create).not.toHaveBeenCalled();
-      },
-    );
   });
 
   describe('findAll', () => {
@@ -75,24 +60,6 @@ describe('PantryItemController', () => {
       expect(result).toEqual(mockResponse);
       expect(service.findAll).toHaveBeenCalledWith(query, userId);
       expect(service.findAll).toHaveBeenCalledTimes(1);
-    });
-
-    it('should throw UnauthorizedException when userId is null', async () => {
-      const query = PantryItemTestBuilder.createQueryPantryItemDto();
-
-      await expect(
-        controller.findAll(query, null as unknown as string),
-      ).rejects.toThrow(UnauthorizedException);
-      expect(service.findAll).not.toHaveBeenCalled();
-    });
-
-    it('should throw UnauthorizedException when userId is empty string', async () => {
-      const query = PantryItemTestBuilder.createQueryPantryItemDto();
-
-      await expect(controller.findAll(query, '')).rejects.toThrow(
-        UnauthorizedException,
-      );
-      expect(service.findAll).not.toHaveBeenCalled();
     });
   });
 

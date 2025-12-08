@@ -1,5 +1,4 @@
 import { TestingModule } from '@nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
 import { PantryController } from './pantry.controller';
 import { PantryService } from '../services/pantry.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
@@ -45,20 +44,6 @@ describe('PantryController', () => {
       expect(service.create).toHaveBeenCalledWith(createDto, userId);
       expect(service.create).toHaveBeenCalledTimes(1);
     });
-
-    it.each([
-      [null, 'null'],
-      ['', 'empty string'],
-    ])(
-      'should throw UnauthorizedException when userId is %s',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async (invalidUserId, _description) => {
-        await expect(
-          controller.create(createDto, invalidUserId as string),
-        ).rejects.toThrow(UnauthorizedException);
-        expect(service.create).not.toHaveBeenCalled();
-      },
-    );
   });
 
   describe('getAllPantries', () => {

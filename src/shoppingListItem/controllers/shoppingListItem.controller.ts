@@ -7,9 +7,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-  Request,
   UseGuards,
-  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -57,9 +55,6 @@ export class ShoppingListItemController {
     @Body() createShoppingListItemDto: CreateShoppingListItemDto,
     @CurrentUser('id') userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return this.shoppingListItemService.create(
       createShoppingListItemDto,
       userId,

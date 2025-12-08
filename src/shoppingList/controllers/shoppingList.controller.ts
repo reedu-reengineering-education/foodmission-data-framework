@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-  UnauthorizedException,
   UseGuards,
   Query,
 } from '@nestjs/common';
@@ -61,9 +60,6 @@ export class ShoppingListController {
     @Body() createShoppingListDto: CreateShoppingListDto,
     @CurrentUser('id') userId: string,
   ): Promise<ShoppingListResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return this.shoppingListService.create(createShoppingListDto, userId);
   }
 
@@ -174,9 +170,6 @@ export class ShoppingListController {
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
   ): Promise<void> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return this.shoppingListService.remove(id, userId);
   }
 }
