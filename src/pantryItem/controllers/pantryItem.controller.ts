@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Query,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -61,9 +60,6 @@ export class PantryItemController {
     @Body() createPantryItemDto: CreatePantryItemDto,
     @CurrentUser('id') userId: string,
   ): Promise<PantryItemResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return this.pantryItemService.create(createPantryItemDto, userId);
   }
 
@@ -109,10 +105,6 @@ export class PantryItemController {
     @Query() query: QueryPantryItemDto,
     @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
     return this.pantryItemService.findAll(query, userId);
   }
 

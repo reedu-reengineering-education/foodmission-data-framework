@@ -17,6 +17,11 @@ import {
 } from '../dto/shoppingList-response.dto';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/shoppingListItem.repository';
+import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
+import { ShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
+import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 
 @Injectable()
 export class ShoppingListService {
@@ -24,6 +29,7 @@ export class ShoppingListService {
 
   constructor(
     private readonly shoppingListRepository: ShoppingListRepository,
+    private readonly shoppingListItemRepository: ShoppingListItemRepository,
   ) {}
 
   async create(
@@ -95,9 +101,41 @@ export class ShoppingListService {
     }
 
     if (shoppingList.userId !== userId) {
-      throw new ForbiddenException('No premission');
+      throw new ForbiddenException('No permission');
     }
     return this.transformToResponseDto(shoppingList);
+  }
+
+  async findItems(
+    id: string,
+    userId: string,
+    query?: QueryShoppingListItemDto,
+  ): Promise<MultipleShoppingListItemResponseDto> {
+    const shoppingList = await this.shoppingListRepository.findById(id);
+
+    if (!shoppingList) {
+      throw new NotFoundException('Shopping list not found');
+    }
+
+    if (shoppingList.userId !== userId) {
+      throw new ForbiddenException('No permission');
+    }
+
+    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
+
+    const items = await this.shoppingListItemRepository.findByShoppingListId(
+      id,
+      userId,
+      { foodId, checked, unit },
+    );
+
+    const transformedData = plainToInstance(
+      ShoppingListItemResponseDto,
+      items,
+      { excludeExtraneousValues: true },
+    );
+
+    return { data: transformedData };
   }
 
   async update(
@@ -111,7 +149,7 @@ export class ShoppingListService {
         throw new NotFoundException('Shopping list not found');
       }
       if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
+        throw new ForbiddenException('No permission');
       }
 
       const shoppingList = await this.shoppingListRepository.update(
@@ -130,14 +168,14 @@ export class ShoppingListService {
     }
   }
 
-  async remove(id: string, userId?: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<void> {
     try {
       const existingList = await this.shoppingListRepository.findById(id);
       if (!existingList) {
         throw new NotFoundException('Shopping list not found');
       }
       if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
+        throw new ForbiddenException('No permission');
       }
       await this.shoppingListRepository.delete(id);
     } catch (error) {

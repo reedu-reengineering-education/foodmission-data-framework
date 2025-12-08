@@ -84,9 +84,20 @@ export class CacheInterceptor implements NestInterceptor {
   private generateCacheKey(baseKey: string, request: any): string {
     const queryString = new URLSearchParams(request.query).toString();
     const userId = request.user?.id || 'anonymous';
+    const routeParams = request.params;
+    const routeParamsString = Object.keys(routeParams)
+      .sort()
+      .map((key) => `${key}:${routeParams[key]}`)
+      .join('|');
 
-    return queryString
-      ? `${baseKey}:${userId}:${Buffer.from(queryString).toString('base64')}`
-      : `${baseKey}:${userId}`;
+    const parts = [baseKey, userId];
+    if (routeParamsString) {
+      parts.push(routeParamsString);
+    }
+    if (queryString) {
+      parts.push(Buffer.from(queryString).toString('base64'));
+    }
+
+    return parts.join(':');
   }
 }

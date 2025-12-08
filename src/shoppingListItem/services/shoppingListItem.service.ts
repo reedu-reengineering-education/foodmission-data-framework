@@ -15,7 +15,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
-import { QueryShoppingListItemDto } from '../dto/query-soppingListItem.dto';
+import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
@@ -31,6 +31,7 @@ import { PantryItemService } from '../../pantryItem/services/pantryItem.service'
 import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
+import { sanitizeShoppingListItemFilters } from '../../shoppingList/utils/filter-sanitizer';
 
 @Injectable()
 export class ShoppingListItemService {
@@ -113,12 +114,16 @@ export class ShoppingListItemService {
   async findByShoppingList(
     shoppingListId: string,
     userId: string,
+    query?: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
+
+    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
       userId,
+      { foodId, checked, unit },
     );
 
     return this.transformMultipleToResponseDto(items);

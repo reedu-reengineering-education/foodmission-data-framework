@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "shopping-list-item-api-collection",
 		"name": "FoodMission Shopping List Item API",
-		"description": "Collection for FoodMission Shopping List Item API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`\n\n**Note:** The `toggle-checked` endpoint requires a `pantryId` query parameter. When checking an item (checked=true), it will create a pantry item if the user's `shouldAutoAddToPantry` preference is enabled.",
+		"description": "Collection for FoodMission Shopping List Item API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment. Do NOT use a frontend URL (like localhost:5173 or localhost:4200).\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`\n\n**Note:** When checking an item (checked=true) using the `toggle-checked` endpoint, it will create a pantry item if the user's `shouldAutoAddToPantry` preference is enabled.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -88,7 +88,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_item_id}}/toggle-checked?pantryId={{pantry_id}}",
+					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_item_id}}/toggle-checked",
 					"host": [
 						"{{base_url}}"
 					],
@@ -98,37 +98,134 @@
 						"shopping-list-items",
 						"{{shopping_list_item_id}}",
 						"toggle-checked"
-					],
-					"query": [
-						{
-							"key": "pantryId",
-							"value": "{{pantry_id}}",
-							"description": "Target pantry ID where the item will be added when checked (required)",
-							"disabled": false
-						}
 					]
 				},
-				"description": "Toggle the checked status of a shopping list item. When checking an item (willBeChecked = true), creates a pantry item from the shopping list item if the user's `shouldAutoAddToPantry` preference is enabled. The pantryId query parameter is required. Requires user or admin role.\n\n**Behavior:**\n- If item is unchecked (checked=false) and you toggle it: item becomes checked (checked=true) and a pantry item is created (if user preference allows)\n- If item is checked (checked=true) and you toggle it: item becomes unchecked (checked=false) and no pantry item is created\n\n**Required query parameters:**\n- `pantryId` (UUID): The ID of the pantry where the item will be added when checked. Must belong to the authenticated user.\n\n**Possible responses:**\n- 200: Item checked status toggled successfully\n- 400: Bad Request - pantryId is required or invalid\n- 401: Unauthorized - JWT token required\n- 403: Forbidden - insufficient permissions\n- 404: Shopping list item or pantry not found\n- 409: Conflict - food item already exists in pantry"
+				"description": "Toggle the checked status of a shopping list item. When checking an item (willBeChecked = true), creates a pantry item from the shopping list item if the user's `shouldAutoAddToPantry` preference is enabled. Requires user or admin role.\n\n**Behavior:**\n- If item is unchecked (checked=false) and you toggle it: item becomes checked (checked=true) and a pantry item is created (if user preference allows)\n- If item is checked (checked=true) and you toggle it: item becomes unchecked (checked=false) and no pantry item is created"
 			},
-			"response": [],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Warn if shopping_list_item_id is not set",
-							"if (!pm.environment.get('shopping_list_item_id') || pm.environment.get('shopping_list_item_id') === '') {",
-							"    console.warn('Warning: shopping_list_item_id is not set. Please create a shopping list item first using the Create Shopping List Item endpoint.');",
-							"}",
-							"// Warn if pantry_id is not set",
-							"if (!pm.environment.get('pantry_id') || pm.environment.get('pantry_id') === '') {",
-							"    console.warn('Warning: pantry_id is not set. Please set it manually or create a pantry first using the Pantry API collection.');",
-							"}"
-						],
-						"type": "text/javascript"
+			"response": []
+		},
+		{
+			"name": "Get Shopping List Item by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
 					}
-				}
-			]
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shopping-list-items/item/{{shopping_list_item_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shopping-list-items",
+						"item",
+						"{{shopping_list_item_id}}"
+					]
+				},
+				"description": "Retrieve a specific shopping list item by ID. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Shopping List Item",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quantity\": 3,\n  \"unit\": \"KG\",\n  \"notes\": \"Updated notes\",\n  \"checked\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_item_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shopping-list-items",
+						"{{shopping_list_item_id}}"
+					]
+				},
+				"description": "Update quantity, unit, notes, or checked status of a shopping list item. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Shopping List Item",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_item_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shopping-list-items",
+						"{{shopping_list_item_id}}"
+					]
+				},
+				"description": "Delete a specific shopping list item by ID. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Clear Checked Items",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shopping-list-items/{{shopping_list_id}}/clear-checked",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shopping-list-items",
+						"{{shopping_list_id}}",
+						"clear-checked"
+					]
+				},
+				"description": "Remove all checked items from a specific shopping list. Requires user or admin role."
+			},
+			"response": []
 		}
 	],
 	"variable": [
