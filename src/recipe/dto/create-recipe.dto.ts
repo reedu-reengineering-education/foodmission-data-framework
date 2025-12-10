@@ -7,6 +7,7 @@ import {
   IsString,
   IsUUID,
   Min,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateRecipeDto {
@@ -77,6 +78,7 @@ export class CreateRecipeDto {
     example: 0.65,
   })
   @IsOptional()
+  @IsNumber()
   @Min(0)
   sustainabilityScore?: number;
 
