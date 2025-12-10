@@ -1,11 +1,11 @@
 import { plainToInstance } from 'class-transformer';
 import {
   TransformBooleanString,
-  TransformEmptyStringToUndefined,
+  TransformTrimToUndefined,
 } from './transformers';
 
 class TestDto {
-  @TransformEmptyStringToUndefined()
+  @TransformTrimToUndefined()
   optionalString?: string;
 
   @TransformBooleanString()
@@ -13,7 +13,7 @@ class TestDto {
 }
 
 describe('transformers', () => {
-  describe('TransformEmptyStringToUndefined', () => {
+  describe('TransformTrimToUndefined', () => {
     it('should convert empty string to undefined', () => {
       const dto = plainToInstance(TestDto, { optionalString: '' });
       expect(dto.optionalString).toBeUndefined();

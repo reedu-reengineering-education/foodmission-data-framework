@@ -8,6 +8,8 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { TransformBooleanString } from '../../common/decorators/transformers';
 
 export class QueryMealLogDto {
   @ApiPropertyOptional({ description: 'From date ISO' })
@@ -36,22 +38,26 @@ export class QueryMealLogDto {
   @ApiPropertyOptional({ description: 'Only meals from pantry' })
   @IsOptional()
   @IsBoolean()
+  @TransformBooleanString()
   mealFromPantry?: boolean;
 
   @ApiPropertyOptional({ description: 'Only meals eaten out' })
   @IsOptional()
   @IsBoolean()
+  @TransformBooleanString()
   eatenOut?: boolean;
 
   @ApiPropertyOptional({ description: 'Page number', default: 1 })
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   page?: number = 1;
 
   @ApiPropertyOptional({ description: 'Items per page', default: 10 })
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   limit?: number = 10;
 }
