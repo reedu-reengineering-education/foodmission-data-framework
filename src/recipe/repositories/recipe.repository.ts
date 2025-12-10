@@ -9,7 +9,7 @@ import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateRecipeData {
   userId: string;
-  mealId: string;
+  dishId: string;
   title: string;
   description?: string;
   instructions?: string;
@@ -76,14 +76,14 @@ export class RecipeRepository
   async findById(id: string): Promise<Recipe | null> {
     return this.prisma.recipe.findUnique({
       where: { id },
-      include: { meal: true },
+      include: { dish: true },
     });
   }
 
   async create(data: CreateRecipeData): Promise<Recipe> {
     return this.prisma.recipe.create({
       data,
-      include: { meal: true },
+      include: { dish: true },
     });
   }
 
@@ -91,7 +91,7 @@ export class RecipeRepository
     return this.prisma.recipe.update({
       where: { id },
       data,
-      include: { meal: true },
+      include: { dish: true },
     });
   }
 

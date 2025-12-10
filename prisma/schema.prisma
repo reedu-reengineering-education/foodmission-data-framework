@@ -169,7 +169,7 @@ model Dish {
 model Recipe {
   id                  String   @id @default(uuid())
   userId              String
-  mealId              String
+  dishId              String
   title               String
   description         String?
   instructions        String?
@@ -186,11 +186,11 @@ model Recipe {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  meal Dish @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  dish Dish @relation(fields: [dishId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
-  @@index([mealId])
+  @@index([dishId])
   @@map("recipes")
 }
 
