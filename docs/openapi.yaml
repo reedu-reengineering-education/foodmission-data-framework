@@ -2478,7 +2478,7 @@ paths:
           schema:
             type: string
             enum:
-              - SALAT
+              - SALAD
               - MEAT
               - PASTA
               - RICE
@@ -2759,7 +2759,7 @@ paths:
           schema:
             type: string
             enum:
-              - SALAT
+              - SALAD
               - MEAT
               - PASTA
               - RICE
@@ -3086,7 +3086,7 @@ paths:
           schema:
             type: string
             enum:
-              - SALAT
+              - SALAD
               - MEAT
               - PASTA
               - RICE
@@ -4200,7 +4200,7 @@ components:
         mealType:
           type: string
           enum: &ref_14
-            - SALAT
+            - SALAD
             - MEAT
             - PASTA
             - RICE
@@ -4248,7 +4248,7 @@ components:
         mealType:
           type: string
           enum:
-            - SALAT
+            - SALAD
             - MEAT
             - PASTA
             - RICE
@@ -4354,7 +4354,7 @@ components:
     CreateRecipeDto:
       type: object
       properties:
-        mealId:
+        dishId:
           type: string
           description: Dish identifier this recipe is based on
           format: uuid
@@ -4412,7 +4412,7 @@ components:
           items:
             type: string
       required:
-        - mealId
+        - dishId
         - title
     RecipeResponseDto:
       type: object
@@ -4425,7 +4425,7 @@ components:
           type: string
           description: Owner user id
           format: uuid
-        mealId:
+        dishId:
           type: string
           description: Dish reference id
           format: uuid
@@ -4480,14 +4480,14 @@ components:
           format: date-time
           type: string
           description: Updated at
-        meal:
+        dish:
           description: Attached dish
           allOf:
             - $ref: '#/components/schemas/DishResponseDto'
       required:
         - id
         - userId
-        - mealId
+        - dishId
         - title
         - rating
         - ratingCount
@@ -4521,7 +4521,7 @@ components:
     UpdateRecipeDto:
       type: object
       properties:
-        mealId:
+        dishId:
           type: string
           description: Dish identifier this recipe is based on
           format: uuid

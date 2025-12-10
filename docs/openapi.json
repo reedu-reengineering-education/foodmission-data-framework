@@ -3967,7 +3967,7 @@
             "schema": {
               "type": "string",
               "enum": [
-                "SALAT",
+                "SALAD",
                 "MEAT",
                 "PASTA",
                 "RICE",
@@ -4435,7 +4435,7 @@
             "schema": {
               "type": "string",
               "enum": [
-                "SALAT",
+                "SALAD",
                 "MEAT",
                 "PASTA",
                 "RICE",
@@ -4970,7 +4970,7 @@
             "schema": {
               "type": "string",
               "enum": [
-                "SALAT",
+                "SALAD",
                 "MEAT",
                 "PASTA",
                 "RICE",
@@ -6429,7 +6429,7 @@
           "mealType": {
             "type": "string",
             "enum": [
-              "SALAT",
+              "SALAD",
               "MEAT",
               "PASTA",
               "RICE",
@@ -6491,7 +6491,7 @@
           "mealType": {
             "type": "string",
             "enum": [
-              "SALAT",
+              "SALAD",
               "MEAT",
               "PASTA",
               "RICE",
@@ -6594,7 +6594,7 @@
           "mealType": {
             "type": "string",
             "enum": [
-              "SALAT",
+              "SALAD",
               "MEAT",
               "PASTA",
               "RICE",
@@ -6640,7 +6640,7 @@
       "CreateRecipeDto": {
         "type": "object",
         "properties": {
-          "mealId": {
+          "dishId": {
             "type": "string",
             "description": "Dish identifier this recipe is based on",
             "format": "uuid"
@@ -6716,7 +6716,7 @@
           }
         },
         "required": [
-          "mealId",
+          "dishId",
           "title"
         ]
       },
@@ -6733,7 +6733,7 @@
             "description": "Owner user id",
             "format": "uuid"
           },
-          "mealId": {
+          "dishId": {
             "type": "string",
             "description": "Dish reference id",
             "format": "uuid"
@@ -6806,7 +6806,7 @@
             "type": "string",
             "description": "Updated at"
           },
-          "meal": {
+          "dish": {
             "description": "Attached dish",
             "allOf": [
               {
@@ -6818,7 +6818,7 @@
         "required": [
           "id",
           "userId",
-          "mealId",
+          "dishId",
           "title",
           "rating",
           "ratingCount",
@@ -6863,7 +6863,7 @@
       "UpdateRecipeDto": {
         "type": "object",
         "properties": {
-          "mealId": {
+          "dishId": {
             "type": "string",
             "description": "Dish identifier this recipe is based on",
             "format": "uuid"
