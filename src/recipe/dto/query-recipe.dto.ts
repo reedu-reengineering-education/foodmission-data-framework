@@ -8,6 +8,11 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  TransformCSVToStringArray,
+  TransformTrimToUndefined,
+} from '../../common/decorators/transformers';
 
 export class QueryRecipeDto {
   @ApiPropertyOptional({
@@ -22,33 +27,39 @@ export class QueryRecipeDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
+  @TransformCSVToStringArray()
   tags?: string[];
 
   @ApiPropertyOptional({ description: 'Filter by allergens', type: [String] })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
+  @TransformCSVToStringArray()
   allergens?: string[];
 
   @ApiPropertyOptional({ description: 'Difficulty label' })
   @IsOptional()
   @IsString()
+  @TransformTrimToUndefined()
   difficulty?: string;
 
   @ApiPropertyOptional({ description: 'Search by title' })
   @IsOptional()
   @IsString()
+  @TransformTrimToUndefined()
   search?: string;
 
   @ApiPropertyOptional({ description: 'Page number', default: 1 })
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   page?: number = 1;
 
   @ApiPropertyOptional({ description: 'Items per page', default: 10 })
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Type(() => Number)
   limit?: number = 10;
 }
