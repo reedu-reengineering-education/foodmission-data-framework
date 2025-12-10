@@ -43,7 +43,7 @@ describe('RecipeService', () => {
     await expect(
       service.create(
         {
-          mealId: 'd1',
+          dishId: 'd1',
           title: 'R',
           mealType: MealType.MEAT,
         } as any,
@@ -61,7 +61,7 @@ describe('RecipeService', () => {
     await expect(
       service.create(
         {
-          mealId: 'd1',
+          dishId: 'd1',
           title: 'R',
         } as any,
         userId,
@@ -72,7 +72,7 @@ describe('RecipeService', () => {
   it('should create recipe when dish owned by user', async () => {
     const recipe = {
       id: 'r1',
-      mealId: 'd1',
+      dishId: 'd1',
       userId,
       title: 'R',
       createdAt: new Date(),
@@ -82,13 +82,13 @@ describe('RecipeService', () => {
     mockRecipeRepository.create.mockResolvedValue(recipe);
 
     const result = await service.create(
-      { mealId: 'd1', title: 'R' } as any,
+      { dishId: 'd1', title: 'R' } as any,
       userId,
     );
 
     expect(result.id).toBe('r1');
     expect(mockRecipeRepository.create).toHaveBeenCalledWith({
-      mealId: 'd1',
+      dishId: 'd1',
       title: 'R',
       userId,
     });
@@ -142,17 +142,17 @@ describe('RecipeService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['nuts'] },
         title: { contains: 'pasta', mode: 'insensitive' },
-        meal: { mealType: MealType.MEAT },
+        dish: { mealType: MealType.MEAT },
       },
       orderBy: { createdAt: 'desc' },
-      include: { meal: true },
+      include: { dish: true },
     });
   });
 
   it('should ensure ownership when changing meal on update', async () => {
     mockRecipeRepository.findById.mockResolvedValue({
       id: 'r1',
-      mealId: 'd-old',
+      dishId: 'd-old',
       userId,
     });
     mockDishRepository.findById.mockResolvedValue({
@@ -161,7 +161,7 @@ describe('RecipeService', () => {
     });
 
     await expect(
-      service.update('r1', { mealId: 'd2' } as any, userId),
+      service.update('r1', { dishId: 'd2' } as any, userId),
     ).rejects.toThrow(ForbiddenException);
   });
 });

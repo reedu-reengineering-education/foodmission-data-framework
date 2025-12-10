@@ -31,7 +31,7 @@ export class RecipeService {
   ): Promise<RecipeResponseDto> {
     this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
 
-    const dish = await this.dishRepository.findById(createRecipeDto.mealId);
+    const dish = await this.dishRepository.findById(createRecipeDto.dishId);
     if (!dish) {
       throw new NotFoundException('Dish not found');
     }
@@ -39,7 +39,7 @@ export class RecipeService {
 
     const recipe = await this.recipeRepository.create({
       ...createRecipeDto,
-      mealId: createRecipeDto.mealId,
+      dishId: createRecipeDto.dishId,
       userId,
     });
     return this.toResponse(recipe);
@@ -72,7 +72,7 @@ export class RecipeService {
       ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
       ...(mealType
         ? {
-            meal: {
+            dish: {
               mealType,
             },
           }
@@ -84,7 +84,7 @@ export class RecipeService {
       take: limit,
       where,
       orderBy: { createdAt: 'desc' },
-      include: { meal: true },
+      include: { dish: true },
     });
 
     return plainToInstance(
@@ -120,8 +120,8 @@ export class RecipeService {
     }
     this.ensureOwnership(recipe.userId, userId);
 
-    if (updateRecipeDto.mealId && updateRecipeDto.mealId !== recipe.mealId) {
-      const dish = await this.dishRepository.findById(updateRecipeDto.mealId);
+    if (updateRecipeDto.dishId && updateRecipeDto.dishId !== recipe.dishId) {
+      const dish = await this.dishRepository.findById(updateRecipeDto.dishId);
       if (!dish) {
         throw new NotFoundException('Dish not found');
       }

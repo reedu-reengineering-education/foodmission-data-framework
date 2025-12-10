@@ -13,7 +13,7 @@ export class RecipeResponseDto {
 
   @ApiProperty({ description: 'Dish reference id', format: 'uuid' })
   @Expose()
-  mealId: string;
+  dishId: string;
 
   @ApiProperty({ description: 'Recipe title' })
   @Expose()
@@ -81,7 +81,7 @@ export class RecipeResponseDto {
   })
   @Expose()
   @Type(() => DishResponseDto)
-  meal?: DishResponseDto;
+  dish?: DishResponseDto;
 }
 
 export class MultipleRecipeResponseDto {

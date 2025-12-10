@@ -15,7 +15,7 @@ export class CreateRecipeDto {
     format: 'uuid',
   })
   @IsUUID()
-  mealId: string;
+  dishId: string;
 
   @ApiProperty({ description: 'Recipe title', example: 'Hearty veggie pasta' })
   @IsString()
