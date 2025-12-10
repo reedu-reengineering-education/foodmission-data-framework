@@ -135,7 +135,7 @@ enum TypeOfMeal {
 }
 
 enum MealType {
-  SALAT
+  SALAD
   MEAT
   PASTA
   RICE
