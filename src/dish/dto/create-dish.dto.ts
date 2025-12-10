@@ -7,6 +7,7 @@ import {
   IsUUID,
   Min,
   IsObject,
+  IsNumber,
 } from 'class-validator';
 import { MealType } from '@prisma/client';
 
@@ -44,6 +45,7 @@ export class CreateDishDto {
     example: 0.72,
   })
   @IsOptional()
+  @IsNumber()
   @Min(0)
   sustainabilityScore?: number;
 
