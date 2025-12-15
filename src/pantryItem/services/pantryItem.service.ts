@@ -6,6 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
+  handlePrismaError,
+  handleServiceError,
+} from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
+import {
   PantryItemRepository,
   PantryItemWithRelations,
 } from '../repositories/pantryItem.repository';
@@ -62,13 +68,7 @@ export class PantryItemService {
 
       return this.transformToResponseDto(item);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to create pantry item');
+      handleServiceError(error, 'Failed to create pantry item');
     }
   }
 
@@ -141,9 +141,26 @@ export class PantryItemService {
 
       return this.transformToResponseDto(updatedItem);
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('This food item is already in your pantry');
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'update',
+          'pantry_item',
+        );
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            'This food item is already in your pantry',
+          );
+        }
+
+        throw businessException;
       }
+
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+
       throw new BadRequestException('Failed to update pantry item');
     }
   }

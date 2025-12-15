@@ -79,13 +79,17 @@ describe('PantryService', () => {
         id: 'pantry-2',
         userId: 'user-2',
       };
-      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+      const newPantryWithRelations = {
+        ...newPantry,
+        items: [],
+      };
+      mockPantryRepository.findByUserId.mockResolvedValueOnce(null); // No pantry found
+      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
 
       const result = await service.getPantryByUserId('user-2');
 
       expect(repository.findByUserId).toHaveBeenCalledWith('user-2');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(1);
+      expect(repository.findByUserId).toHaveBeenCalledTimes(1); // Only once to check
       expect(repository.create).toHaveBeenCalledWith({
         userId: 'user-2',
         title: 'My Pantry',
@@ -104,9 +108,14 @@ describe('PantryService', () => {
     });
 
     it('should log when creating new pantry', async () => {
-      const newPantry = { ...mockPantry, id: 'pantry-3', userId: 'user-3' };
+      const newPantryWithRelations = {
+        ...mockPantry,
+        id: 'pantry-3',
+        userId: 'user-3',
+        items: [],
+      };
       mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
 
       const loggerSpy = jest.spyOn(service['logger'], 'log');
 
@@ -332,18 +341,18 @@ describe('PantryService', () => {
         userId: 'user-999',
       };
 
-      // Erste Abfrage: null (nicht gefunden)
-      // Zweite Abfrage: neu erstelltes Pantry
-      mockPantryRepository.findByUserId
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(newPantry);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+      const newPantryWithRelations = {
+        ...newPantry,
+        items: [],
+      };
+      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
+      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
 
       const result = await service.validatePantryExists('user-999');
 
       expect(result).toBe('pantry-new');
       expect(repository.findByUserId).toHaveBeenCalledWith('user-999');
-      expect(repository.findByUserId).toHaveBeenCalledTimes(2);
+      expect(repository.findByUserId).toHaveBeenCalledTimes(1); // Only once to check
       expect(repository.create).toHaveBeenCalledWith({
         userId: 'user-999',
         title: 'My Pantry',
@@ -351,36 +360,21 @@ describe('PantryService', () => {
     });
 
     it('should log when creating new pantry', async () => {
-      const newPantry = {
+      const newPantryWithRelations = {
         ...mockPantry,
         id: 'pantry-new',
         userId: 'user-888',
+        items: [],
       };
 
-      mockPantryRepository.findByUserId
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(newPantry);
-      mockPantryRepository.create.mockResolvedValue(newPantry);
+      mockPantryRepository.findByUserId.mockResolvedValueOnce(null);
+      mockPantryRepository.create.mockResolvedValue(newPantryWithRelations);
       const loggerSpy = jest.spyOn(service['logger'], 'log');
 
       await service.validatePantryExists('user-888');
 
       expect(loggerSpy).toHaveBeenCalledWith(
         'No pantry found for user user-888, creating one...',
-      );
-    });
-
-    it('should throw BadRequestException if pantry creation fails', async () => {
-      mockPantryRepository.findByUserId
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(null);
-      mockPantryRepository.create.mockRejectedValue(new Error('DB error'));
-
-      await expect(service.validatePantryExists('user-777')).rejects.toThrow(
-        Error,
-      );
-      await expect(service.validatePantryExists('user-777')).rejects.toThrow(
-        'Failed to create pantry',
       );
     });
 
@@ -391,7 +385,7 @@ describe('PantryService', () => {
       );
 
       await expect(service.validatePantryExists('user-666')).rejects.toThrow(
-        'Failed to create pantry',
+        'Database error',
       );
     });
   });

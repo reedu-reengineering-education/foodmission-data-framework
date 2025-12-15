@@ -1,4 +1,11 @@
-import { HttpStatus } from '@nestjs/common';
+import {
+  HttpStatus,
+  BadRequestException,
+  NotFoundException,
+  ConflictException,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
@@ -11,11 +18,7 @@ import {
   ResourceAlreadyExistsException,
 } from '../exceptions/business.exception';
 
-/**
- * Error code mappings for different error types
- */
 export const ERROR_CODES = {
-  // Prisma error codes
   PRISMA_UNIQUE_CONSTRAINT: 'P2002',
   PRISMA_FOREIGN_KEY_CONSTRAINT: 'P2003',
   PRISMA_RECORD_NOT_FOUND: 'P2025',
@@ -24,7 +27,6 @@ export const ERROR_CODES = {
   PRISMA_VALUE_TOO_LONG: 'P2000',
   PRISMA_INVALID_VALUE: 'P2006',
 
-  // HTTP error codes
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
@@ -36,9 +38,6 @@ export const ERROR_CODES = {
   SERVICE_UNAVAILABLE: 503,
 } as const;
 
-/**
- * Extract meaningful error information from various error types
- */
 export interface ErrorInfo {
   message: string;
   code: string;
@@ -47,9 +46,6 @@ export interface ErrorInfo {
   stack?: string;
 }
 
-/**
- * Convert Prisma errors to business exceptions
- */
 export function handlePrismaError(
   error: any,
   operation: string,
@@ -129,7 +125,6 @@ export function handlePrismaError(
     );
   }
 
-  // If it's not a Prisma error, wrap it as a generic database error
   return new DatabaseOperationException(
     operation,
     table || 'unknown',
@@ -138,11 +133,7 @@ export function handlePrismaError(
   );
 }
 
-/**
- * Extract error information from any error type
- */
 export function extractErrorInfo(error: any): ErrorInfo {
-  // Business exceptions
   if (error instanceof BusinessException) {
     return {
       message: error.message,
@@ -153,7 +144,6 @@ export function extractErrorInfo(error: any): ErrorInfo {
     };
   }
 
-  // HTTP exceptions
   if (error.status && error.message) {
     return {
       message: error.message,
@@ -163,7 +153,6 @@ export function extractErrorInfo(error: any): ErrorInfo {
     };
   }
 
-  // Prisma errors
   if (error instanceof PrismaClientKnownRequestError) {
     return {
       message: error.message,
@@ -174,7 +163,6 @@ export function extractErrorInfo(error: any): ErrorInfo {
     };
   }
 
-  // Generic errors
   return {
     message: error.message || 'Internal server error',
     code: error.name || 'UNKNOWN_ERROR',
@@ -183,23 +171,14 @@ export function extractErrorInfo(error: any): ErrorInfo {
   };
 }
 
-/**
- * Check if an error is a client error (4xx)
- */
 export function isClientError(statusCode: number): boolean {
   return statusCode >= 400 && statusCode < 500;
 }
 
-/**
- * Check if an error is a server error (5xx)
- */
 export function isServerError(statusCode: number): boolean {
   return statusCode >= 500;
 }
 
-/**
- * Sanitize error details for client response
- */
 export function sanitizeErrorForClient(
   error: ErrorInfo,
   includeStack: boolean = false,
@@ -211,7 +190,6 @@ export function sanitizeErrorForClient(
     timestamp: new Date().toISOString(),
   };
 
-  // Only include details for client errors or in development
   if (
     isClientError(error.statusCode) ||
     process.env.NODE_ENV === 'development'
@@ -221,7 +199,6 @@ export function sanitizeErrorForClient(
     }
   }
 
-  // Only include stack trace in development
   if (includeStack && process.env.NODE_ENV === 'development' && error.stack) {
     sanitized.stack = error.stack;
   }
@@ -229,34 +206,23 @@ export function sanitizeErrorForClient(
   return sanitized;
 }
 
-/**
- * Create a correlation ID for error tracking
- */
 export function generateCorrelationId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 }
 
-/**
- * Format error message for logging
- */
 export function formatErrorForLogging(error: any, context?: string): string {
   const errorInfo = extractErrorInfo(error);
   const contextStr = context ? `[${context}] ` : '';
   return `${contextStr}${errorInfo.code}: ${errorInfo.message}`;
 }
 
-/**
- * Check if error should be retried
- */
 export function isRetryableError(error: any): boolean {
   const errorInfo = extractErrorInfo(error);
 
-  // Retry server errors but not client errors
   if (isServerError(errorInfo.statusCode)) {
     return true;
   }
 
-  // Retry specific network/timeout errors
   const retryableCodes = [
     'ECONNRESET',
     'ECONNREFUSED',
@@ -268,13 +234,9 @@ export function isRetryableError(error: any): boolean {
   return retryableCodes.includes(errorInfo.code);
 }
 
-/**
- * Get user-friendly error message
- */
 export function getUserFriendlyMessage(error: any): string {
   const errorInfo = extractErrorInfo(error);
 
-  // Map technical errors to user-friendly messages
   const friendlyMessages: Record<string, string> = {
     RESOURCE_NOT_FOUND: 'The requested item could not be found.',
     RESOURCE_ALREADY_EXISTS: 'This item already exists.',
@@ -291,4 +253,19 @@ export function getUserFriendlyMessage(error: any): string {
     friendlyMessages[errorInfo.code] ||
     'An unexpected error occurred. Please try again.'
   );
+}
+
+export function handleServiceError(
+  error: unknown,
+  defaultMessage: string,
+): never {
+  if (
+    error instanceof NotFoundException ||
+    error instanceof ConflictException ||
+    error instanceof ForbiddenException ||
+    error instanceof UnauthorizedException
+  ) {
+    throw error;
+  }
+  throw new BadRequestException(defaultMessage);
 }

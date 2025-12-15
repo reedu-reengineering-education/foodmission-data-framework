@@ -1,10 +1,10 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { handleServiceError } from '../../common/utils/error.utils';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
 import { PantryRepository } from '../repositories/pantry.repository';
@@ -28,7 +28,11 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
+      const createdPantry = await this.pantryRepository.create({
+        userId,
+        title: 'My Pantry',
+      });
+      pantry = createdPantry;
     }
 
     return this.transformToResponseDto(pantry);
@@ -62,13 +66,7 @@ export class PantryService {
       const pantry = await this.pantryRepository.update(id, updatePantryDto);
       return this.transformToResponseDto(pantry);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to update pantry');
+      handleServiceError(error, 'Failed to update pantry');
     }
   }
 
@@ -83,13 +81,7 @@ export class PantryService {
       }
       await this.pantryRepository.delete(id);
     } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to delete pantry');
+      handleServiceError(error, 'Failed to delete pantry');
     }
   }
 
@@ -98,12 +90,10 @@ export class PantryService {
 
     if (!pantry) {
       this.logger.log(`No pantry found for user ${userId}, creating one...`);
-      pantry = await this.create({ userId, title: 'My Pantry' });
-
-      pantry = await this.pantryRepository.findByUserId(userId);
-      if (!pantry) {
-        throw new BadRequestException('Failed to create pantry');
-      }
+      pantry = await this.pantryRepository.create({
+        userId,
+        title: 'My Pantry',
+      });
     }
     return pantry.id;
   }

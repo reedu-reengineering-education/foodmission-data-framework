@@ -1,10 +1,14 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { handlePrismaError } from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { ShoppingListRepository } from '../repositories/shoppingList.repository';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
 import {
@@ -35,11 +39,29 @@ export class ShoppingListService {
       });
       return this.transformToResponseDto(shoppingList);
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        throw new BadRequestException(
-          'Shopping list with this title already exists',
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'create',
+          'shopping_list',
         );
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            'Shopping list with this title already exists',
+          );
+        }
+
+        throw businessException;
       }
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof ConflictException
+      ) {
+        throw error;
+      }
+
       throw error;
     }
   }

@@ -116,6 +116,7 @@ KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
+KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"  
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
@@ -125,7 +126,113 @@ NODE_ENV="development"
 PORT=3000
 ```
 
-### 3. Start Services
+### 3. Keycloak Setup
+
+The application uses Keycloak for authentication. A pre-configured realm JSON file is included in the repository that contains all necessary configuration.
+
+#### 3.1. Start Keycloak
+
+Keycloak should be running via Docker Compose. If not already started:
+
+```bash
+npm run docker:up
+```
+
+Keycloak Admin Console will be available at `http://localhost:8080`
+- Default username: `admin`
+- Default password: `admin`
+
+#### 3.2. Import the Realm Configuration
+
+1. Access Keycloak Admin Console at `http://localhost:8080`
+2. Log in with admin credentials (username: `admin`, password: `admin`)
+3. In the top-left corner, click the realm dropdown (shows "master" by default)
+4. Click **"Create Realm"** (or **"Add realm"**)
+5. Click the **"Browse..."** button
+6. Navigate to and select: `keycloak/foodmission-realm.json` in your project directory
+7. Click **"Create"** (or **"Import"**)
+
+The imported realm includes:
+- **Realm**: `foodmission`
+- **Client**: `foodmission-api` 
+- **Pre-configured users**:
+  - `admin` user with `admin` and `user` roles
+  - `developer` user with `user` role
+- **Roles**: `admin` and `user` roles for the `foodmission-api` client
+
+#### 3.3. Verify the Import
+
+1. Switch to the `foodmission` realm using the dropdown in the top-left corner
+2. Navigate to **Users** → You should see:
+   - `admin` user
+   - `developer` user
+3. Navigate to **Clients** → You should see:
+   - `foodmission-api` client
+
+#### 3.4. Configure Client Secret
+
+**IMPORTANT: Never commit secrets to version control!**
+
+The client secret is configured in the realm JSON. You need to configure it in your `.env` file:
+
+```env
+KEYCLOAK_CLIENT_SECRET="your-actual-client-secret-here"
+```
+
+**Security Best Practices:**
+- Use environment variables or a secret manager for sensitive values
+- Never hardcode secrets in code or commit them to version control
+- Use different secrets for development, staging, and production environments
+- Rotate secrets regularly
+
+To find your client secret:
+1. Go to Keycloak Admin Console → Clients → `foodmission-api`
+2. Go to the "Credentials" tab
+3. Copy the "Client Secret" value
+4. Set it in your `.env` file (which should be in `.gitignore`)
+
+#### 3.5. Test Authentication
+
+Test the setup with the pre-configured admin user:
+
+**Step 1: Get JWT Token**
+
+First, export your client secret as an environment variable (never include it directly in commands):
+
+```bash
+# Export the secret from your .env file
+export KEYCLOAK_CLIENT_SECRET="your-actual-client-secret-here"
+```
+
+Then use it in the curl command:
+
+```bash
+curl -X POST http://localhost:8080/realms/foodmission/protocol/openid-connect/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password" \
+  -d "client_id=foodmission-api" \
+  -d "client_secret=${KEYCLOAK_CLIENT_SECRET}" \
+  -d "username=admin" \
+  -d "password=admin123"
+```
+
+**Step 2: Test Protected Endpoint**
+
+Use the `access_token` from the response above:
+
+```bash
+# Replace YOUR_ACCESS_TOKEN with the actual token from Step 1
+curl http://localhost:3000/api/v1/auth/admin-only \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+**Security Best Practices:**
+- ✅ Always use environment variables for secrets
+- ✅ Never include secrets directly in command-line arguments
+- ✅ Never commit secrets to version control
+- ✅ Use secure credential stores in production environments
+
+### 4. Start Services
 
 ```bash
 # Start database and Redis services
@@ -141,7 +248,7 @@ npm run db:migrate:deploy
 npm run db:seed
 ```
 
-### 4. Start the Application
+### 5. Start the Application
 
 ```bash
 # Development mode with hot reload
