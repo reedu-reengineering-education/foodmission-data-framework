@@ -45,7 +45,6 @@ describe('RecipeService', () => {
         {
           dishId: 'd1',
           title: 'R',
-          mealType: MealType.MEAT,
         } as any,
         userId,
       ),
@@ -149,7 +148,7 @@ describe('RecipeService', () => {
     });
   });
 
-  it('should ensure ownership when changing meal on update', async () => {
+  it('should ensure ownership when changing dish on update', async () => {
     mockRecipeRepository.findById.mockResolvedValue({
       id: 'r1',
       dishId: 'd-old',

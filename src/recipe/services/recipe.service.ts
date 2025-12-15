@@ -39,7 +39,6 @@ export class RecipeService {
 
     const recipe = await this.recipeRepository.create({
       ...createRecipeDto,
-      dishId: createRecipeDto.dishId,
       userId,
     });
     return this.toResponse(recipe);
