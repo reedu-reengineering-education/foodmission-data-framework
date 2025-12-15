@@ -79,12 +79,15 @@ export class ShoppingListItemRepository
   async findByShoppingListId(
     shoppingListId: string,
     userId?: string,
+    filter?: Pick<ShoppingListItemFilter, 'foodId' | 'checked' | 'unit'>,
   ): Promise<ShoppingListItemWithRelations[]> {
     const whereConditions: Prisma.ShoppingListItemWhereInput = {
       shoppingListId,
+      foodId: filter?.foodId,
+      checked: filter?.checked,
+      unit: filter?.unit,
     };
 
-    // Add user access control if userId provided
     if (userId) {
       whereConditions.shoppingList = {
         userId,

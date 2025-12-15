@@ -58,6 +58,168 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Get All Shopping Lists",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist"
+					]
+				},
+				"description": "Retrieves all shopping lists. This is a public endpoint. Returns a list of all shopping lists."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Shopping List by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist/{{shopping_list_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist",
+						"{{shopping_list_id}}"
+					]
+				},
+				"description": "Retrieves a specific shopping list by ID. Only the shopping list owner can access it. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Items for Shopping List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist/{{shopping_list_id}}/items?foodId={{food_id}}&checked=false&unit=KG",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist",
+						"{{shopping_list_id}}",
+						"items"
+					],
+					"query": [
+						{
+							"key": "foodId",
+							"value": "{{food_id}}",
+							"description": "Filter by food ID (optional)",
+							"disabled": true
+						},
+						{
+							"key": "checked",
+							"value": "false",
+							"description": "Filter by checked status (optional)",
+							"disabled": true
+						},
+						{
+							"key": "unit",
+							"value": "KG",
+							"description": "Filter by unit (optional)",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Retrieve items for a shopping list with optional filters (foodId, checked, unit). Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Shopping List",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated Shopping List Name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist/{{shopping_list_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist",
+						"{{shopping_list_id}}"
+					]
+				},
+				"description": "Updates the shopping list title. Only the shopping list owner can update it. Requires user or admin role."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Shopping List",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/shoppinglist/{{shopping_list_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"shoppinglist",
+						"{{shopping_list_id}}"
+					]
+				},
+				"description": "Deletes a specific shopping list by ID. All shopping list items will be deleted as well (cascade delete). Requires user or admin role."
+			},
+			"response": []
 		}
 	],
 	"variable": [

@@ -1060,9 +1060,64 @@
     },
     "/api/v1/foods/search/openfoodfacts": {
       "get": {
-        "description": "Search for products in the OpenFoodFacts database by name, category, or brand.",
+        "description": "Search for products in the OpenFoodFacts database by name, category, or brand. Supports pagination with page and pageSize parameters.",
         "operationId": "searchOpenFoodFacts",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Search query string (name, category, or brand)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "required": false,
+            "in": "query",
+            "description": "Filter by brand",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1, min: 1)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10, min: 1, max: 50). Can also use limit parameter for backward compatibility.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (alternative to pageSize, for backward compatibility, min: 1, max: 50)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Search results from OpenFoodFacts",
@@ -1077,13 +1132,16 @@
                         "$ref": "#/components/schemas/OpenFoodFactsInfoDto"
                       }
                     },
-                    "count": {
+                    "totalCount": {
                       "type": "number"
                     },
                     "page": {
                       "type": "number"
                     },
-                    "page_size": {
+                    "pageSize": {
+                      "type": "number"
+                    },
+                    "totalPages": {
                       "type": "number"
                     }
                   }
@@ -2033,6 +2091,142 @@
         ]
       }
     },
+    "/api/v1/shoppinglist/{id}/items": {
+      "get": {
+        "description": "Retrieve all items belonging to a shopping list with optional filters",
+        "operationId": "findItems",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "shoppingListId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by shopping list ID",
+            "schema": {
+              "example": "uuid-shopping-list-id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "foodId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by food ID",
+            "schema": {
+              "example": "uuid-food-id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "checked",
+            "required": false,
+            "in": "query",
+            "description": "Filter by checked status",
+            "schema": {
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "unit",
+            "required": false,
+            "in": "query",
+            "description": "Filter by unit",
+            "schema": {
+              "example": "KG",
+              "type": "string",
+              "enum": [
+                "PIECES",
+                "G",
+                "KG",
+                "ML",
+                "L",
+                "CUPS"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shopping list items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get items for a specific shopping list",
+        "tags": [
+          "shoppinglist"
+        ]
+      }
+    },
     "/api/v1/shoppinglist/{id}": {
       "get": {
         "operationId": "findById",
@@ -2229,14 +2423,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Shopping list found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ShoppingListResponseDto"
-                }
-              }
-            }
+            "description": "Shopping list deleted successfully"
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
@@ -2386,240 +2573,9 @@
         "tags": [
           "shopping-list-items"
         ]
-      },
-      "get": {
-        "description": "Retrieve shopping list items with optional filtering",
-        "operationId": "findAll",
-        "parameters": [
-          {
-            "name": "shoppingListId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by shopping list ID",
-            "schema": {
-              "example": "uuid-shopping-list-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "foodId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by food ID",
-            "schema": {
-              "example": "uuid-food-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "checked",
-            "required": false,
-            "in": "query",
-            "description": "Filter by checked status",
-            "schema": {
-              "example": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "unit",
-            "required": false,
-            "in": "query",
-            "description": "Filter by unit",
-            "schema": {
-              "example": "KG",
-              "type": "string",
-              "enum": [
-                "PIECES",
-                "G",
-                "KG",
-                "ML",
-                "L",
-                "CUPS"
-              ]
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number for pagination",
-            "schema": {
-              "minimum": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Shopping list items retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get shopping list items",
-        "tags": [
-          "shopping-list-items"
-        ]
       }
     },
-    "/api/v1/shopping-list-items/{shoppingListId}": {
-      "get": {
-        "description": "Retrieve all items belonging to a specific shopping list",
-        "operationId": "findByShoppingList",
-        "parameters": [
-          {
-            "name": "shoppingListId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Shopping list items retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Get all items from a specific shopping list",
-        "tags": [
-          "shopping-list-items"
-        ]
-      }
-    },
-    "/api/v1/shopping-list-items/{id}": {
+    "/api/v1/shopping-list-items/item/{id}": {
       "get": {
         "operationId": "findById",
         "parameters": [
@@ -2704,7 +2660,9 @@
         "tags": [
           "shopping-list-items"
         ]
-      },
+      }
+    },
+    "/api/v1/shopping-list-items/{id}": {
       "patch": {
         "description": "Update quantity, unit, notes, or checked status of a shopping list item",
         "operationId": "update",
@@ -4539,72 +4497,6 @@
           "data"
         ]
       },
-      "UpdateShoppingListDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "The name of the shopping list",
-            "example": "Family-Shopping-List",
-            "maxLength": 255
-          }
-        },
-        "required": [
-          "title"
-        ]
-      },
-      "CreateShoppingListItemDto": {
-        "type": "object",
-        "properties": {
-          "quantity": {
-            "type": "number",
-            "description": "The quantity of the item",
-            "example": 2,
-            "minimum": 1
-          },
-          "unit": {
-            "type": "string",
-            "description": "The unit of measurement",
-            "example": "KG",
-            "enum": [
-              "PIECES",
-              "G",
-              "KG",
-              "ML",
-              "L",
-              "CUPS"
-            ]
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes for the item",
-            "example": "Buy organic if available",
-            "maxLength": 500
-          },
-          "checked": {
-            "type": "boolean",
-            "description": "Whether the item is checked off",
-            "example": false
-          },
-          "shoppingListId": {
-            "type": "string",
-            "description": "The ID of the shopping list",
-            "example": "uuid-shopping-list-id"
-          },
-          "foodId": {
-            "type": "string",
-            "description": "The ID of the food item",
-            "example": "uuid-food-id"
-          }
-        },
-        "required": [
-          "quantity",
-          "unit",
-          "checked",
-          "shoppingListId",
-          "foodId"
-        ]
-      },
       "ShoppingListItemResponseDto": {
         "type": "object",
         "properties": {
@@ -4698,6 +4590,72 @@
         },
         "required": [
           "data"
+        ]
+      },
+      "UpdateShoppingListDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The name of the shopping list",
+            "example": "Family-Shopping-List",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "CreateShoppingListItemDto": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number",
+            "description": "The quantity of the item",
+            "example": 2,
+            "minimum": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "The unit of measurement",
+            "example": "KG",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes for the item",
+            "example": "Buy organic if available",
+            "maxLength": 500
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Whether the item is checked off",
+            "example": false
+          },
+          "shoppingListId": {
+            "type": "string",
+            "description": "The ID of the shopping list",
+            "example": "uuid-shopping-list-id"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "The ID of the food item",
+            "example": "uuid-food-id"
+          }
+        },
+        "required": [
+          "quantity",
+          "unit",
+          "checked",
+          "shoppingListId",
+          "foodId"
         ]
       },
       "UpdateShoppingListItemDto": {

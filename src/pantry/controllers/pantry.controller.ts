@@ -7,7 +7,6 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -58,9 +57,6 @@ export class PantryController {
     @Body() createPantryDto: CreatePantryDto,
     @CurrentUser('id') userId: string,
   ): Promise<PantryResponseDto> {
-    if (!userId) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return this.pantryService.create(createPantryDto, userId);
   }
 

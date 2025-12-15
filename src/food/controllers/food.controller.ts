@@ -25,6 +25,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
+import { ApiOpenFoodFactsSearchQuery } from '../../common/decorators/api-query-params.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FoodService } from '../services/food.service';
@@ -111,8 +112,9 @@ export class FoodController {
   @ApiOperation({
     summary: 'Search OpenFoodFacts database',
     description:
-      'Search for products in the OpenFoodFacts database by name, category, or brand.',
+      'Search for products in the OpenFoodFacts database by name, category, or brand. Supports pagination with page and pageSize parameters.',
   })
+  @ApiOpenFoodFactsSearchQuery()
   @ApiResponse({
     status: 200,
     description: 'Search results from OpenFoodFacts',
@@ -123,9 +125,10 @@ export class FoodController {
           type: 'array',
           items: { $ref: '#/components/schemas/OpenFoodFactsInfoDto' },
         },
-        count: { type: 'number' },
+        totalCount: { type: 'number' },
         page: { type: 'number' },
-        page_size: { type: 'number' },
+        pageSize: { type: 'number' },
+        totalPages: { type: 'number' },
       },
     },
   })

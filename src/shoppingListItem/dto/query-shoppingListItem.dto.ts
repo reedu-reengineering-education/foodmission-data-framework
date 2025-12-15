@@ -1,13 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
+import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
 import {
-  IsString,
-  IsOptional,
-  IsBoolean,
-  IsInt,
-  Min,
-  IsEnum,
-} from 'class-validator';
+  TransformBooleanString,
+  TransformEmptyStringToUndefined,
+} from '../../common/decorators/transformers';
 
 export class QueryShoppingListItemDto {
   @ApiPropertyOptional({
@@ -22,6 +19,7 @@ export class QueryShoppingListItemDto {
     description: 'Filter by food ID',
     example: 'uuid-food-id',
   })
+  @TransformEmptyStringToUndefined()
   @IsString()
   @IsOptional()
   foodId?: string;
@@ -30,6 +28,7 @@ export class QueryShoppingListItemDto {
     description: 'Filter by checked status',
     example: false,
   })
+  @TransformBooleanString()
   @IsBoolean()
   @IsOptional()
   checked?: boolean;
@@ -39,27 +38,8 @@ export class QueryShoppingListItemDto {
     example: 'KG',
     enum: Unit,
   })
+  @TransformEmptyStringToUndefined()
   @IsEnum(Unit)
-  unit?: Unit = Unit.PIECES;
-
-  @ApiPropertyOptional({
-    description: 'Page number for pagination',
-    example: 1,
-    minimum: 1,
-  })
-  @IsInt()
-  @Min(1)
   @IsOptional()
-  page?: number;
-
-  @ApiPropertyOptional({
-    description: 'Number of items per page',
-    example: 10,
-    minimum: 1,
-    maximum: 100,
-  })
-  @IsInt()
-  @Min(1)
-  @IsOptional()
-  limit?: number;
+  unit?: Unit;
 }
