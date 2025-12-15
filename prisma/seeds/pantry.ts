@@ -30,7 +30,7 @@ export async function seedPantries(prisma: PrismaClient) {
       continue;
     }
 
-    // Check if pantry with this title already exists for this user
+    // Check if pantry with same title already exists for this user
     const existingPantry = await prisma.pantry.findFirst({
       where: {
         userId: user.id,

@@ -19,7 +19,7 @@ describe('UserProfileService - Caching Integration', () => {
     keycloakId: 'keycloak123',
     preferences: { theme: 'dark', language: 'en' },
     settings: { notifications: true },
-    checkedShoppingListItemInPantry: false,
+    shouldAutoAddToPantry: false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

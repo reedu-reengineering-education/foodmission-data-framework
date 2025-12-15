@@ -1205,11 +1205,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Create a new Shopping List
@@ -1230,11 +1254,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultipleShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get All Shoppinglists
       tags: *ref_7
   /api/v1/shoppinglist/{id}:
@@ -1255,11 +1303,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific shopping list by ID
@@ -1287,11 +1359,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update shopping list
@@ -1313,11 +1409,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShoppingListResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Delete specific shopping list by ID
@@ -1781,7 +1901,10 @@ paths:
       tags: *ref_8
   /api/v1/pantry:
     post:
-      description: Creates a new pantry in the database. Requires user or admin role.
+      description: >-
+        Creates a new pantry for the authenticated user. Users can have multiple
+        pantries. If a pantry with the same title already exists for the user,
+        returns a conflict error. Requires user or admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -1792,26 +1915,104 @@ paths:
               $ref: '#/components/schemas/CreatePantryDto'
       responses:
         '201':
-          description: pantry created successfully
+          description: Pantry created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: A pantry with this title already exists for this user.
       security:
         - JWT-auth: []
       summary: Create a new Pantry
       tags: &ref_9
         - pantry
     get:
-      description: Retrieves the authenticated user's pantry with all items
-      operationId: getMyPantry
+      description: >-
+        Retrieves all pantries for the authenticated user with all items.
+        Returns an empty array if no pantries exist.
+      operationId: getAllPantries
       parameters: []
+      responses:
+        '200':
+          description: List of pantries retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all user pantries
+      tags: *ref_9
+  /api/v1/pantry/{id}:
+    get:
+      description: >-
+        Retrieves a specific pantry by ID for the authenticated user. Only the
+        pantry owner can access it.
+      operationId: getPantryById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
       responses:
         '200':
           description: Pantry retrieved successfully
@@ -1819,16 +2020,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this pantry
         '404':
           description: Pantry not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
-      summary: Get user pantry
+      summary: Get pantry by ID
       tags: *ref_9
-  /api/v1/pantry/{id}:
     patch:
+      description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
       parameters:
         - name: id
@@ -1845,22 +2064,45 @@ paths:
               $ref: '#/components/schemas/UpdatePantryDto'
       responses:
         '200':
-          description: pantry found
+          description: Pantry updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: No permission - user does not own this pantry
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update pantry
       tags: *ref_9
     delete:
+      description: >-
+        Deletes a specific pantry by ID. Only the pantry owner can delete their
+        pantry. All pantry items will be deleted as well (cascade delete).
       operationId: remove
       parameters:
         - name: id
@@ -1871,24 +2113,41 @@ paths:
             type: string
       responses:
         '200':
-          description: Pantry found
+          description: Pantry deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PantryResponseDto'
-        '400':
-          description: Invalid input data
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: No permission - user does not own this pantry
+        '404':
+          description: Pantry not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
-      summary: Delete specific pantry by ID
+      summary: Delete pantry
       tags: *ref_9
   /api/v1/pantry-item:
     post:
-      description: Creates a new Pantry Item and adds it to the Pantry.
+      description: >-
+        Creates a new Pantry Item and adds it to the specified pantry. The
+        pantryId must be provided in the request body and must belong to the
+        authenticated user. Users can have multiple pantries. The unit field is
+        optional and defaults to PIECES if not provided. Requires user or admin
+        role.
       operationId: create
       parameters: []
       requestBody:
@@ -1905,36 +2164,66 @@ paths:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
         '400':
-          description: Invalid input data or duplicate item
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry or food item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
       tags: &ref_10
         - pantry-item
     get:
-      description: Retrieve pantry items with optional filtering
+      description: >-
+        Retrieve pantry items from a specific pantry. The pantryId must be
+        provided as a query parameter and must belong to the authenticated user.
+        Optional filtering by foodId, unit, or expiryDate.
       operationId: findAll
       parameters:
+        - name: pantryId
+          required: true
+          in: query
+          description: The ID of the pantry to get items from (UUID)
+          schema:
+            example: uuid-pantry-id
+            type: string
         - name: foodId
           required: false
           in: query
-          description: Filter by food ID
+          description: Filter by food ID (UUID)
           schema:
             example: uuid-food-id
             type: string
         - name: unit
           required: false
           in: query
-          description: Filter by unit
+          description: Filter by unit (PIECES, G, KG, ML, L, CUPS)
           schema:
-            example: KG
-            type: string
             enum:
               - PIECES
               - G
@@ -1942,42 +2231,14 @@ paths:
               - ML
               - L
               - CUPS
+            type: string
         - name: expiryDate
           required: false
           in: query
-          description: when the food will expires
+          description: Filter by expiry date (ISO date string)
           schema:
-            maxLength: 500
-            format: date-time
-            example: 02-02-2027
+            example: '2027-02-02'
             type: string
-        - name: page
-          required: false
-          in: query
-          description: Page number for pagination
-          schema:
-            minimum: 1
-            example: 1
-            type: number
-        - name: limit
-          required: false
-          in: query
-          description: Items per page
-          schema:
-            minimum: 1
-            maximum: 100
-            example: 10
-            type: number
-        - name: checked
-          required: false
-          in: query
-          description: Filter by checked status
-          schema: {}
-        - name: shoppingListId
-          required: false
-          in: query
-          description: Filter by pantry ID
-          schema: {}
       responses:
         '200':
           description: Pantry items retrieved successfully
@@ -1986,7 +2247,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/MultiplePantryItemResponseDto'
         '400':
-          description: Invalid query parameters
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
       summary: Get pantry items
       tags: *ref_10
   /api/v1/pantry-item/{id}:
@@ -2006,18 +2297,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
       tags: *ref_10
     patch:
-      description: Update quantity, unit, notes of a pantry item
+      description: >-
+        Update quantity, unit, notes, or expiry date of a pantry item. All
+        fields are optional.
       operationId: update
       parameters:
         - name: id
@@ -2040,13 +2357,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/PantryItemResponseDto'
         '400':
-          description: Invalid input data
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: Pantry item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Update pantry item
@@ -2064,12 +2403,36 @@ paths:
       responses:
         '200':
           description: pantry item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '401':
-          description: Unauthorized - JWT token required
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: Forbidden - insufficient permissions
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
         '404':
-          description: pantry item not found
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
       summary: Remove item from pantry
@@ -2775,18 +3138,12 @@ components:
     CreatePantryDto:
       type: object
       properties:
-        userId:
-          type: string
-          description: The user id
-          example: uuid-user-id
-          maxLength: 255
         title:
           type: string
           description: The name of the pantry
-          example: Home or Work
+          example: Home Pantry
           maxLength: 255
       required:
-        - userId
         - title
     PantryItemResponseDto:
       type: object
@@ -2866,10 +3223,21 @@ components:
         - items
     UpdatePantryDto:
       type: object
-      properties: {}
+      properties:
+        title:
+          type: string
+          description: The name of the pantry
+          example: Refrigerator
+          maxLength: 255
+      required:
+        - title
     CreatePantryItemDto:
       type: object
       properties:
+        pantryId:
+          type: string
+          description: The ID of the pantry to add the item to
+          example: uuid-pantry-id
         foodId:
           type: string
           description: The ID of the food item to add
@@ -2881,7 +3249,7 @@ components:
           minimum: 0.01
         unit:
           type: string
-          description: The unit of measurement
+          description: The unit of measurement (defaults to PIECES if not provided)
           example: KG
           enum:
             - PIECES
@@ -2890,6 +3258,7 @@ components:
             - ML
             - L
             - CUPS
+          default: PIECES
         notes:
           type: string
           description: Additional notes for the item
@@ -2901,9 +3270,9 @@ components:
           description: When the food will expire (ISO date string)
           example: '2027-02-02'
       required:
+        - pantryId
         - foodId
         - quantity
-        - unit
     MultiplePantryItemResponseDto:
       type: object
       properties:
@@ -2921,7 +3290,7 @@ components:
           type: number
           description: The quantity of the item
           example: 3
-          minimum: 1
+          minimum: 0.01
         unit:
           type: string
           description: Unit of the item
@@ -2941,9 +3310,8 @@ components:
         expiryDate:
           format: date-time
           type: string
-          description: when the food will expires
-          example: 02-02-2027
-          maxLength: 500
+          description: When the food will expire (ISO date string)
+          example: '2027-03-15'
         foodId:
           type: string
           description: The ID of the food item

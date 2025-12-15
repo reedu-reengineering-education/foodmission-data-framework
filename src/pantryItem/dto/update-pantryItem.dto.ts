@@ -1,25 +1,27 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 import {
-  IsInt,
+  IsNumber,
   Min,
   IsOptional,
   IsString,
   IsNotEmpty,
   MaxLength,
-  IsDate,
+  IsDateString,
   IsEnum,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdatePantryItemDto {
   @ApiPropertyOptional({
     description: 'The quantity of the item',
     example: 3,
-    minimum: 1,
+    minimum: 0.01,
   })
-  @IsInt()
-  @Min(1)
   @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0.01)
   quantity?: number;
 
   @ApiPropertyOptional({
@@ -42,13 +44,11 @@ export class UpdatePantryItemDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'when the food will expires',
-    example: '02-02-2027',
-    maxLength: 500,
+    description: 'When the food will expire (ISO date string)',
+    example: '2027-03-15',
   })
-  @IsDate()
   @IsOptional()
-  @MaxLength(500)
+  @IsDateString()
   expiryDate?: Date;
 
   @ApiPropertyOptional({

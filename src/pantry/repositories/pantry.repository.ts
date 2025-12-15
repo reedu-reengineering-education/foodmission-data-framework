@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreatePantryDto } from '../dto/create-pantry.dto';
-import { UpdatePantryDto } from '../dto/query-pantry.dto';
+import { UpdatePantryDto } from '../dto/update-pantry.dto';
 
 export type PantryWithRelations = NonNullable<
   Awaited<ReturnType<PrismaService['pantry']['findUnique']>>
@@ -12,13 +12,24 @@ export class PantryRepository {
   constructor(private prisma: PrismaService) {}
 
   async findByUserId(userId: string): Promise<PantryWithRelations | null> {
-    return this.prisma.pantry.findUnique({
+    return this.prisma.pantry.findFirst({
       where: { userId },
       include: { items: { include: { food: true } } },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
-  async create(data: CreatePantryDto): Promise<PantryWithRelations> {
+  async findAllByUserId(userId: string): Promise<PantryWithRelations[]> {
+    return this.prisma.pantry.findMany({
+      where: { userId },
+      include: { items: { include: { food: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async create(
+    data: CreatePantryDto & { userId: string },
+  ): Promise<PantryWithRelations> {
     return await this.prisma.pantry.create({
       data,
       include: {
