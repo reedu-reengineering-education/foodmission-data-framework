@@ -205,7 +205,7 @@ model MealLog {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
   dish Dish @relation(fields: [dishId], references: [id], onDelete: Restrict)
 
   @@index([userId, timestamp])
