@@ -27,7 +27,3 @@ export const TransformCSVToStringArray = () =>
     }
     return value;
   });
-
-/**
- * Converts numeric strings to numbers; leaves others unchanged.
- */
