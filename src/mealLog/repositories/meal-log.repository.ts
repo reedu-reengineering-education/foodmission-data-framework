@@ -38,11 +38,13 @@ export class MealLogRepository
     options: FindAllOptions = {},
   ): Promise<PaginatedResult<MealLog>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
+    const safeTake = take && take > 0 ? take : 10;
+    const safeSkip = skip && skip > 0 ? skip : 0;
 
     const [data, total] = await Promise.all([
       this.prisma.mealLog.findMany({
-        skip,
-        take,
+        skip: safeSkip,
+        take: safeTake,
         where,
         orderBy: orderBy || { timestamp: 'desc' },
         include,
@@ -50,8 +52,8 @@ export class MealLogRepository
       this.count(where),
     ]);
 
-    const page = Math.floor(skip / take) + 1;
-    const totalPages = Math.ceil(total / take);
+    const page = Math.floor(safeSkip / safeTake) + 1;
+    const totalPages = Math.ceil(total / safeTake);
 
     return {
       data,

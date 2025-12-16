@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { normalizePagination } from '../../common/utils/pagination';
 
 type Food = Awaited<ReturnType<PrismaService['food']['create']>>;
 import {
@@ -62,19 +63,20 @@ export class FoodRepository
     options: FindAllOptions,
   ): Promise<PaginatedResult<Food>> {
     const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
       this.prisma.food.findMany({
-        skip,
-        take,
+        skip: safeSkip,
+        take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
       }),
       this.count(where),
     ]);
 
-    const page = Math.floor(skip / take) + 1;
-    const totalPages = Math.ceil(total / take);
+    const page = Math.floor(safeSkip / safeTake) + 1;
+    const totalPages = Math.ceil(total / safeTake);
 
     return {
       data,

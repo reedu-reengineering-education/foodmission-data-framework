@@ -6,6 +6,7 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import { normalizePagination } from '../../common/utils/pagination';
 
 export interface CreateDishData {
   name: string;
@@ -40,25 +41,26 @@ export class DishRepository
     options: FindAllOptions = {},
   ): Promise<PaginatedResult<Dish>> {
     const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
       this.prisma.dish.findMany({
-        skip,
-        take,
+        skip: safeSkip,
+        take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
       }),
       this.count(where),
     ]);
 
-    const page = Math.floor(skip / take) + 1;
-    const totalPages = Math.ceil(total / take);
+    const page = Math.floor(safeSkip / safeTake) + 1;
+    const totalPages = Math.ceil(total / safeTake);
 
     return {
       data,
       total,
       page,
-      limit: take,
+      limit: safeTake,
       totalPages,
     };
   }
