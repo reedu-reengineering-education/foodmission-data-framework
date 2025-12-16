@@ -1,6 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import {
   TransformBooleanString,
+  TransformCSVToStringArray,
   TransformTrimToUndefined,
 } from './transformers';
 
@@ -10,6 +11,11 @@ class TestDto {
 
   @TransformBooleanString()
   optionalBool?: boolean;
+}
+
+class TestCSVDto {
+  @TransformCSVToStringArray()
+  csv?: string[] | string;
 }
 
 describe('transformers', () => {
@@ -44,6 +50,23 @@ describe('transformers', () => {
     it('should leave other values unchanged', () => {
       const dto = plainToInstance(TestDto, { optionalBool: 'maybe' as any });
       expect(dto.optionalBool).toBe('maybe');
+    });
+  });
+
+  describe('TransformCSVToStringArray', () => {
+    it('should split comma-separated string into trimmed array', () => {
+      const dto = plainToInstance(TestCSVDto, { csv: 'a, b , c' });
+      expect(dto.csv).toEqual(['a', 'b', 'c']);
+    });
+
+    it('should trim array entries and drop empties', () => {
+      const dto = plainToInstance(TestCSVDto, { csv: [' a ', '', 'c'] });
+      expect(dto.csv).toEqual(['a', 'c']);
+    });
+
+    it('should leave non-string/array unchanged', () => {
+      const dto = plainToInstance(TestCSVDto, { csv: 123 as any });
+      expect(dto.csv).toBe(123);
     });
   });
 });
