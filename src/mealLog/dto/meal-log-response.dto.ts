@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { TypeOfMeal } from '@prisma/client';
-import { DishResponseDto } from '../../dish/dto/dish-response.dto';
+import { MealResponseDto } from '../../meal/dto/meal-response.dto';
 
 export class MealLogResponseDto {
   @ApiProperty({ description: 'Meal log id', format: 'uuid' })
@@ -12,9 +12,9 @@ export class MealLogResponseDto {
   @Expose()
   userId: string;
 
-  @ApiProperty({ description: 'Dish id', format: 'uuid' })
+  @ApiProperty({ description: 'Meal id', format: 'uuid' })
   @Expose()
-  dishId: string;
+  mealId: string;
 
   @ApiProperty({ enum: TypeOfMeal })
   @Expose()
@@ -41,12 +41,12 @@ export class MealLogResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'Linked dish details',
-    type: () => DishResponseDto,
+    description: 'Linked meal details',
+    type: () => MealResponseDto,
   })
   @Expose()
-  @Type(() => DishResponseDto)
-  dish?: DishResponseDto;
+  @Type(() => MealResponseDto)
+  meal?: MealResponseDto;
 }
 
 export class MultipleMealLogResponseDto {

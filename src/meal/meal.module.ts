@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { DishController } from './controllers/dish.controller';
-import { DishService } from './services/dish.service';
-import { DishRepository } from './repositories/dish.repository';
+import { MealController } from './controllers/meal.controller';
+import { MealService } from './services/meal.service';
+import { MealRepository } from './repositories/meal.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { PantryItemRepository } from '../pantryItem/repositories/pantryItem.repository';
@@ -9,13 +9,13 @@ import { UserRepository } from '../user/repositories/user.repository';
 
 @Module({
   imports: [DatabaseModule, CommonModule],
-  controllers: [DishController],
+  controllers: [MealController],
   providers: [
-    DishService,
-    DishRepository,
+    MealService,
+    MealRepository,
     PantryItemRepository,
     UserRepository,
   ],
-  exports: [DishService, DishRepository],
+  exports: [MealService, MealRepository],
 })
-export class DishModule {}
+export class MealModule {}

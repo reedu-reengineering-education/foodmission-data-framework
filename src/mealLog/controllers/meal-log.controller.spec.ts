@@ -11,7 +11,7 @@ describe('MealLogController', () => {
 
   const mockLog = {
     id: 'log-1',
-    dishId: 'dish-1',
+    mealId: 'meal-1',
     userId: 'user-1',
     typeOfMeal: TypeOfMeal.DINNER,
     timestamp: new Date(),
@@ -50,7 +50,7 @@ describe('MealLogController', () => {
 
   it('create should delegate to service', async () => {
     service.create.mockResolvedValueOnce(mockLog as any);
-    const dto = { dishId: 'dish-1', typeOfMeal: TypeOfMeal.DINNER };
+    const dto = { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER };
     const result = await controller.create(dto as any, 'user-1');
 
     expect(result).toEqual(mockLog);

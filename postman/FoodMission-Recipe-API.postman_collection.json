@@ -16,14 +16,14 @@
         ],
         "body": {
           "mode": "raw",
-					"raw": "{\n  \"dishId\": \"{{dish_id}}\",\n  \"title\": \"Veggie pasta\",\n  \"description\": \"Weeknight dinner\",\n  \"instructions\": \"Boil pasta, mix veggies\",\n  \"prepTime\": 10,\n  \"cookTime\": 15,\n  \"servings\": 2,\n  \"difficulty\": \"easy\",\n  \"tags\": [\"quick\", \"veggie\"],\n  \"allergens\": [\"gluten\"],\n  \"sustainabilityScore\": 0.6\n}"
+          "raw": "{\n  \"mealId\": \"{{meal_id}}\",\n  \"title\": \"Veggie pasta\",\n  \"description\": \"Weeknight dinner\",\n  \"instructions\": \"Boil pasta, mix veggies\",\n  \"prepTime\": 10,\n  \"cookTime\": 15,\n  \"servings\": 2,\n  \"difficulty\": \"easy\",\n  \"tags\": [\"quick\", \"veggie\"],\n  \"allergens\": [\"gluten\"],\n  \"sustainabilityScore\": 0.6\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/v1/recipes",
           "host": ["{{base_url}}"],
           "path": ["api", "v1", "recipes"]
         },
-        "description": "Create a recipe linked to a dish (auth required)."
+        "description": "Create a recipe linked to a meal (auth required)."
       },
       "response": [],
       "event": [

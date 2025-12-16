@@ -12,11 +12,11 @@ import {
 
 export class CreateRecipeDto {
   @ApiProperty({
-    description: 'Dish identifier this recipe is based on',
+    description: 'Meal identifier this recipe is based on',
     format: 'uuid',
   })
   @IsUUID()
-  dishId: string;
+  mealId: string;
 
   @ApiProperty({ description: 'Recipe title', example: 'Hearty veggie pasta' })
   @IsString()

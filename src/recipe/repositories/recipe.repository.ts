@@ -10,7 +10,7 @@ import { normalizePagination } from '../../common/utils/pagination';
 
 export interface CreateRecipeData {
   userId: string;
-  dishId: string;
+  mealId: string;
   title: string;
   description?: string;
   instructions?: string;
@@ -78,14 +78,14 @@ export class RecipeRepository
   async findById(id: string): Promise<Recipe | null> {
     return this.prisma.recipe.findUnique({
       where: { id },
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 
   async create(data: CreateRecipeData): Promise<Recipe> {
     return this.prisma.recipe.create({
       data,
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 
@@ -93,7 +93,7 @@ export class RecipeRepository
     return this.prisma.recipe.update({
       where: { id },
       data,
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 

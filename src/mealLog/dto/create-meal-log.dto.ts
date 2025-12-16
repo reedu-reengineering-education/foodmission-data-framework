@@ -9,9 +9,9 @@ import {
 import { TypeOfMeal } from '@prisma/client';
 
 export class CreateMealLogDto {
-  @ApiProperty({ description: 'Dish consumed', format: 'uuid' })
+  @ApiProperty({ description: 'Meal consumed', format: 'uuid' })
   @IsUUID()
-  dishId: string;
+  mealId: string;
 
   @ApiProperty({ description: 'Type of meal', enum: TypeOfMeal })
   @IsEnum(TypeOfMeal)

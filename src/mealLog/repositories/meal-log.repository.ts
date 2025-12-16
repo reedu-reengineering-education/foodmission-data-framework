@@ -9,7 +9,7 @@ import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateMealLogData {
   userId: string;
-  dishId: string;
+  mealId: string;
   typeOfMeal: TypeOfMeal;
   timestamp?: Date;
   mealFromPantry?: boolean;
@@ -67,14 +67,14 @@ export class MealLogRepository
   async findById(id: string): Promise<MealLog | null> {
     return this.prisma.mealLog.findUnique({
       where: { id },
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 
   async create(data: CreateMealLogData): Promise<MealLog> {
     return this.prisma.mealLog.create({
       data,
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 
@@ -82,7 +82,7 @@ export class MealLogRepository
     return this.prisma.mealLog.update({
       where: { id },
       data,
-      include: { dish: true },
+      include: { meal: true },
     });
   }
 

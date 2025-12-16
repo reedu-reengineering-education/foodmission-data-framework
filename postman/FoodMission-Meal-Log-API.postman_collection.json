@@ -16,7 +16,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"dishId\": \"{{dish_id}}\",\n  \"typeOfMeal\": \"DINNER\",\n  \"timestamp\": \"2025-01-01T18:30:00.000Z\",\n  \"mealFromPantry\": true,\n  \"eatenOut\": false\n}"
+          "raw": "{\n  \"mealId\": \"{{meal_id}}\",\n  \"typeOfMeal\": \"DINNER\",\n  \"timestamp\": \"2025-01-01T18:30:00.000Z\",\n  \"mealFromPantry\": true,\n  \"eatenOut\": false\n}"
         },
         "url": {
           "raw": "{{base_url}}/api/v1/meal-logs",

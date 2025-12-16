@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealLogRepository } from '../repositories/meal-log.repository';
-import { DishRepository } from '../../dish/repositories/dish.repository';
+import { MealRepository } from '../../meal/repositories/meal.repository';
 import { CreateMealLogDto } from '../dto/create-meal-log.dto';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
@@ -18,16 +18,16 @@ export class MealLogService {
 
   constructor(
     private readonly mealLogRepository: MealLogRepository,
-    private readonly dishRepository: DishRepository,
+    private readonly mealRepository: MealRepository,
   ) {}
 
-  private getOwnedDishOrThrow(dishId: string, userId: string) {
+  private getOwnedMealOrThrow(mealId: string, userId: string) {
     return getOwnedEntityOrThrow(
-      dishId,
+      mealId,
       userId,
-      (id) => this.dishRepository.findById(id),
+      (id) => this.mealRepository.findById(id),
       (d) => d.userId,
-      'Dish not found',
+      'Meal not found',
     );
   }
 
@@ -45,13 +45,13 @@ export class MealLogService {
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const dish = await this.getOwnedDishOrThrow(
-      createMealLogDto.dishId,
+    const meal = await this.getOwnedMealOrThrow(
+      createMealLogDto.mealId,
       userId,
     );
 
     const mealFromPantry =
-      createMealLogDto.mealFromPantry ?? Boolean(dish.pantryItemId);
+      createMealLogDto.mealFromPantry ?? Boolean(meal.pantryItemId);
 
     const mealLog = await this.mealLogRepository.create({
       ...createMealLogDto,
@@ -96,7 +96,7 @@ export class MealLogService {
         : {}),
       ...(mealType
         ? {
-            dish: {
+            meal: {
               mealType,
             },
           }
@@ -108,7 +108,7 @@ export class MealLogService {
       take: limit,
       where,
       orderBy: { timestamp: 'desc' },
-      include: { dish: true },
+      include: { meal: true },
     });
 
     return plainToInstance(
@@ -136,8 +136,8 @@ export class MealLogService {
   ): Promise<MealLogResponseDto> {
     const mealLog = await this.getOwnedMealLogOrThrow(id, userId);
 
-    if (updateMealLogDto.dishId && updateMealLogDto.dishId !== mealLog.dishId) {
-      await this.getOwnedDishOrThrow(updateMealLogDto.dishId, userId);
+    if (updateMealLogDto.mealId && updateMealLogDto.mealId !== mealLog.mealId) {
+      await this.getOwnedMealOrThrow(updateMealLogDto.mealId, userId);
     }
 
     const updated = await this.mealLogRepository.update(id, {

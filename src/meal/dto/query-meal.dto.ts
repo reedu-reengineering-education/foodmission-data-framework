@@ -4,7 +4,7 @@ import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TransformTrimToUndefined } from '../../common/decorators/transformers';
 
-export class QueryDishDto {
+export class QueryMealDto {
   @ApiPropertyOptional({ description: 'Filter by meal type', enum: MealType })
   @IsOptional()
   @IsEnum(MealType)

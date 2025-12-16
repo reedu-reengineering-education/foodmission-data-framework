@@ -11,7 +11,7 @@ describe('RecipeController', () => {
 
   const mockRecipe = {
     id: 'recipe-1',
-    dishId: 'dish-1',
+    mealId: 'meal-1',
     title: 'Test recipe',
     userId: 'user-1',
     createdAt: new Date(),
@@ -47,7 +47,7 @@ describe('RecipeController', () => {
 
   it('create should delegate with user id', async () => {
     service.create.mockResolvedValueOnce(mockRecipe as any);
-    const dto = { dishId: 'dish-1', title: 'R' };
+    const dto = { mealId: 'meal-1', title: 'R' };
     const result = await controller.create(dto as any, 'user-1');
 
     expect(result).toEqual(mockRecipe);

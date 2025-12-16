@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DishService } from './dish.service';
-import { DishRepository } from '../repositories/dish.repository';
+import { MealService } from './meal.service';
+import { MealRepository } from '../repositories/meal.repository';
 import { PantryItemRepository } from '../../pantryItem/repositories/pantryItem.repository';
 import {
   ConflictException,
@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { MealType } from '@prisma/client';
 
-describe('DishService', () => {
-  let service: DishService;
+describe('MealService', () => {
+  let service: MealService;
   const userId = 'user-1';
 
-  const mockDishRepository = {
+  const mockMealRepository = {
     findByBarcode: jest.fn(),
     create: jest.fn(),
     findWithPagination: jest.fn(),
@@ -29,13 +29,13 @@ describe('DishService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        DishService,
-        { provide: DishRepository, useValue: mockDishRepository },
+        MealService,
+        { provide: MealRepository, useValue: mockMealRepository },
         { provide: PantryItemRepository, useValue: mockPantryItemRepository },
       ],
     }).compile();
 
-    service = module.get<DishService>(DishService);
+    service = module.get<MealService>(MealService);
   });
 
   afterEach(() => {
@@ -43,12 +43,12 @@ describe('DishService', () => {
   });
 
   it('should throw ConflictException when barcode already exists', async () => {
-    mockDishRepository.findByBarcode.mockResolvedValue({ id: 'd1' });
+    mockMealRepository.findByBarcode.mockResolvedValue({ id: 'm1' });
 
     await expect(
       service.create(
         {
-          name: 'Dish',
+          name: 'Meal',
           mealType: MealType.MEAT,
           barcode: '111',
         },
@@ -58,7 +58,7 @@ describe('DishService', () => {
   });
 
   it('should validate pantry ownership on create', async () => {
-    mockDishRepository.findByBarcode.mockResolvedValue(null);
+    mockMealRepository.findByBarcode.mockResolvedValue(null);
     mockPantryItemRepository.findById.mockResolvedValue({
       id: 'p1',
       pantry: { userId: 'other' },
@@ -67,7 +67,7 @@ describe('DishService', () => {
     await expect(
       service.create(
         {
-          name: 'Dish',
+          name: 'Meal',
           mealType: MealType.MEAT,
           pantryItemId: 'p1',
         },
@@ -76,48 +76,48 @@ describe('DishService', () => {
     ).rejects.toThrow(ForbiddenException);
   });
 
-  it('should create dish when data valid', async () => {
-    const dish = {
-      id: 'd1',
-      name: 'Dish',
+  it('should create meal when data valid', async () => {
+    const meal = {
+      id: 'm1',
+      name: 'Meal',
       mealType: MealType.MEAT,
       userId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    mockDishRepository.findByBarcode.mockResolvedValue(null);
+    mockMealRepository.findByBarcode.mockResolvedValue(null);
     mockPantryItemRepository.findById.mockResolvedValue(null);
-    mockDishRepository.create.mockResolvedValue(dish);
+    mockMealRepository.create.mockResolvedValue(meal);
 
     const result = await service.create(
-      { name: 'Dish', mealType: MealType.MEAT },
+      { name: 'Meal', mealType: MealType.MEAT },
       userId,
     );
 
-    expect(result.id).toBe('d1');
-    expect(mockDishRepository.create).toHaveBeenCalledWith({
-      name: 'Dish',
+    expect(result.id).toBe('m1');
+    expect(mockMealRepository.create).toHaveBeenCalledWith({
+      name: 'Meal',
       mealType: MealType.MEAT,
       userId,
     });
   });
 
   it('should enforce ownership on update', async () => {
-    const dish = {
-      id: 'd1',
-      name: 'Dish',
+    const meal = {
+      id: 'm1',
+      name: 'Meal',
       mealType: MealType.MEAT,
       userId: 'other',
     };
-    mockDishRepository.findById.mockResolvedValue(dish);
+    mockMealRepository.findById.mockResolvedValue(meal);
 
-    await expect(service.update('d1', { name: 'New' }, userId)).rejects.toThrow(
+    await expect(service.update('m1', { name: 'New' }, userId)).rejects.toThrow(
       ForbiddenException,
     );
   });
 
-  it('should throw NotFound when dish missing on update', async () => {
-    mockDishRepository.findById.mockResolvedValue(null);
+  it('should throw NotFound when meal missing on update', async () => {
+    mockMealRepository.findById.mockResolvedValue(null);
 
     await expect(
       service.update('missing', { name: 'New' }, userId),
@@ -132,7 +132,7 @@ describe('DishService', () => {
       limit: 10,
       totalPages: 0,
     };
-    mockDishRepository.findWithPagination.mockResolvedValue(paginationResult);
+    mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
 
     await service.findAll(userId, {
       mealType: MealType.MEAT,
@@ -141,7 +141,7 @@ describe('DishService', () => {
       limit: 5,
     } as any);
 
-    expect(mockDishRepository.findWithPagination).toHaveBeenCalledWith({
+    expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith({
       skip: 5,
       take: 5,
       where: {

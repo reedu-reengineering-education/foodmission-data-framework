@@ -19,7 +19,7 @@ import { ShoppingListModule } from './shoppingList/shoppingList.module';
 import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
 import { PantryModule } from './pantry/pantry.module';
 import { PantryItemModule } from './pantryItem/pantry.module';
-import { DishModule } from './dish/dish.module';
+import { MealModule } from './meal/meal.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
 
@@ -38,7 +38,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     ShoppingListItemModule,
     PantryModule,
     PantryItemModule,
-    DishModule,
+    MealModule,
     RecipeModule,
     MealLogModule,
   ],

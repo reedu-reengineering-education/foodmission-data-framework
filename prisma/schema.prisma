@@ -41,7 +41,7 @@ model User {
   shoppingList                   ShoppingList[]
   pantry                         Pantry[]
   recipes                        Recipe[]
-  dishes                         Dish[]
+  meals                          Meal[]
   mealLogs                       MealLog[]
 
   @@index([email])
@@ -108,7 +108,7 @@ model PantryItem {
 
   pantry Pantry @relation(fields: [pantryId], references: [id], onDelete: Cascade)
   food   Food   @relation(fields: [foodId], references: [id])
-  dishes Dish[]
+  meals  Meal[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,7 +142,7 @@ enum MealType {
   VEGAN
 }
 
-model Dish {
+model Meal {
   id                  String     @id @default(uuid())
   name                String
   mealType            MealType
@@ -169,7 +169,7 @@ model Dish {
 model Recipe {
   id                  String   @id @default(uuid())
   userId              String
-  dishId              String
+  mealId              String   @map("dishId")
   title               String
   description         String?
   instructions        String?
@@ -186,18 +186,18 @@ model Recipe {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  dish Dish @relation(fields: [dishId], references: [id], onDelete: Restrict)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
-  @@index([dishId])
+  @@index([mealId])
   @@map("recipes")
 }
 
 model MealLog {
   id             String     @id @default(uuid())
   userId         String
-  dishId         String
+  mealId         String     @map("dishId")
   typeOfMeal     TypeOfMeal
   timestamp      DateTime   @default(now())
   mealFromPantry Boolean    @default(false)
@@ -206,7 +206,7 @@ model MealLog {
   updatedAt      DateTime   @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Restrict)
-  dish Dish @relation(fields: [dishId], references: [id], onDelete: Restrict)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
 
   @@index([userId, timestamp])
   @@index([typeOfMeal])

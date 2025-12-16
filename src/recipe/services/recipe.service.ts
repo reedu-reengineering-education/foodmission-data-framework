@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { RecipeRepository } from '../repositories/recipe.repository';
-import { DishRepository } from '../../dish/repositories/dish.repository';
+import { MealRepository } from '../../meal/repositories/meal.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
 import {
@@ -18,16 +18,16 @@ export class RecipeService {
 
   constructor(
     private readonly recipeRepository: RecipeRepository,
-    private readonly dishRepository: DishRepository,
+    private readonly mealRepository: MealRepository,
   ) {}
 
-  private getOwnedDishOrThrow(dishId: string, userId: string) {
+  private getOwnedMealOrThrow(mealId: string, userId: string) {
     return getOwnedEntityOrThrow(
-      dishId,
+      mealId,
       userId,
-      (id) => this.dishRepository.findById(id),
+      (id) => this.mealRepository.findById(id),
       (d) => d.userId,
-      'Dish not found',
+      'Meal not found',
     );
   }
 
@@ -47,7 +47,7 @@ export class RecipeService {
   ): Promise<RecipeResponseDto> {
     this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
 
-    await this.getOwnedDishOrThrow(createRecipeDto.dishId, userId);
+    await this.getOwnedMealOrThrow(createRecipeDto.mealId, userId);
 
     const recipe = await this.recipeRepository.create({
       ...createRecipeDto,
@@ -83,7 +83,7 @@ export class RecipeService {
       ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
       ...(mealType
         ? {
-            dish: {
+            meal: {
               mealType,
             },
           }
@@ -95,7 +95,7 @@ export class RecipeService {
       take: limit,
       where,
       orderBy: { createdAt: 'desc' },
-      include: { dish: true },
+      include: { meal: true },
     });
 
     return plainToInstance(
@@ -123,8 +123,8 @@ export class RecipeService {
   ): Promise<RecipeResponseDto> {
     const recipe = await this.getOwnedRecipeOrThrow(id, userId);
 
-    if (updateRecipeDto.dishId && updateRecipeDto.dishId !== recipe.dishId) {
-      await this.getOwnedDishOrThrow(updateRecipeDto.dishId, userId);
+    if (updateRecipeDto.mealId && updateRecipeDto.mealId !== recipe.mealId) {
+      await this.getOwnedMealOrThrow(updateRecipeDto.mealId, userId);
     }
 
     const updated = await this.recipeRepository.update(id, updateRecipeDto);

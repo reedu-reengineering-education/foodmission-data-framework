@@ -11,8 +11,8 @@ import {
 } from 'class-validator';
 import { MealType } from '@prisma/client';
 
-export class CreateDishDto {
-  @ApiProperty({ description: 'Dish name', example: 'Grilled chicken salad' })
+export class CreateMealDto {
+  @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
   @IsString()
   name: string;
 
@@ -20,7 +20,7 @@ export class CreateDishDto {
   @IsEnum(MealType)
   mealType: MealType;
 
-  @ApiPropertyOptional({ description: 'Calories for the dish', example: 520 })
+  @ApiPropertyOptional({ description: 'Calories for the meal', example: 520 })
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -58,7 +58,7 @@ export class CreateDishDto {
   pantryItemId?: string;
 
   @ApiPropertyOptional({
-    description: 'Barcode of the dish (if packaged)',
+    description: 'Barcode of the meal (if packaged)',
   })
   @IsOptional()
   @IsString()

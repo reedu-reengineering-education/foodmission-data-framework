@@ -29,7 +29,7 @@ export class QueryMealLogDto {
 
   @ApiPropertyOptional({
     enum: MealType,
-    description: 'Filter by underlying dish meal type',
+    description: 'Filter by underlying meal type',
   })
   @IsOptional()
   @IsEnum(MealType)

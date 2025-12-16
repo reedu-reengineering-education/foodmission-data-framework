@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { DishResponseDto } from '../../dish/dto/dish-response.dto';
+import { MealResponseDto } from '../../meal/dto/meal-response.dto';
 
 export class RecipeResponseDto {
   @ApiProperty({ description: 'Recipe id', format: 'uuid' })
@@ -11,9 +11,9 @@ export class RecipeResponseDto {
   @Expose()
   userId: string;
 
-  @ApiProperty({ description: 'Dish reference id', format: 'uuid' })
+  @ApiProperty({ description: 'Meal reference id', format: 'uuid' })
   @Expose()
-  dishId: string;
+  mealId: string;
 
   @ApiProperty({ description: 'Recipe title' })
   @Expose()
@@ -76,12 +76,12 @@ export class RecipeResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'Attached dish',
-    type: () => DishResponseDto,
+    description: 'Attached meal',
+    type: () => MealResponseDto,
   })
   @Expose()
-  @Type(() => DishResponseDto)
-  dish?: DishResponseDto;
+  @Type(() => MealResponseDto)
+  meal?: MealResponseDto;
 }
 
 export class MultipleRecipeResponseDto {

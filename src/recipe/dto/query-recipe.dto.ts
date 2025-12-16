@@ -16,7 +16,7 @@ import {
 
 export class QueryRecipeDto {
   @ApiPropertyOptional({
-    description: 'Filter by dish meal type',
+    description: 'Filter by meal type',
     enum: MealType,
   })
   @IsOptional()

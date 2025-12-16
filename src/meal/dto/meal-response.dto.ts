@@ -2,12 +2,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { MealType } from '@prisma/client';
 
-export class DishResponseDto {
-  @ApiProperty({ description: 'Dish id', format: 'uuid' })
+export class MealResponseDto {
+  @ApiProperty({ description: 'Meal id', format: 'uuid' })
   @Expose()
   id: string;
 
-  @ApiProperty({ description: 'Dish name' })
+  @ApiProperty({ description: 'Meal name' })
   @Expose()
   name: string;
 
@@ -52,12 +52,12 @@ export class DishResponseDto {
   updatedAt: Date;
 }
 
-export class MultipleDishResponseDto {
-  @ApiProperty({ type: [DishResponseDto] })
+export class MultipleMealResponseDto {
+  @ApiProperty({ type: [MealResponseDto] })
   @Expose()
-  data: DishResponseDto[];
+  data: MealResponseDto[];
 
-  @ApiProperty({ description: 'Total dishes' })
+  @ApiProperty({ description: 'Total meals' })
   @Expose()
   total: number;
 

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipeService } from './recipe.service';
 import { RecipeRepository } from '../repositories/recipe.repository';
-import { DishRepository } from '../../dish/repositories/dish.repository';
+import { MealRepository } from '../../meal/repositories/meal.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { MealType } from '@prisma/client';
 
@@ -17,7 +17,7 @@ describe('RecipeService', () => {
     delete: jest.fn(),
   };
 
-  const mockDishRepository = {
+  const mockMealRepository = {
     findById: jest.fn(),
   };
 
@@ -26,7 +26,7 @@ describe('RecipeService', () => {
       providers: [
         RecipeService,
         { provide: RecipeRepository, useValue: mockRecipeRepository },
-        { provide: DishRepository, useValue: mockDishRepository },
+        { provide: MealRepository, useValue: mockMealRepository },
       ],
     }).compile();
 
@@ -37,13 +37,13 @@ describe('RecipeService', () => {
     jest.clearAllMocks();
   });
 
-  it('should throw NotFound when dish is missing on create', async () => {
-    mockDishRepository.findById.mockResolvedValue(null);
+  it('should throw NotFound when meal is missing on create', async () => {
+    mockMealRepository.findById.mockResolvedValue(null);
 
     await expect(
       service.create(
         {
-          dishId: 'd1',
+          mealId: 'm1',
           title: 'R',
         } as any,
         userId,
@@ -51,16 +51,16 @@ describe('RecipeService', () => {
     ).rejects.toThrow(NotFoundException);
   });
 
-  it('should enforce dish ownership on create', async () => {
-    mockDishRepository.findById.mockResolvedValue({
-      id: 'd1',
+  it('should enforce meal ownership on create', async () => {
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm1',
       userId: 'other',
     });
 
     await expect(
       service.create(
         {
-          dishId: 'd1',
+          mealId: 'm1',
           title: 'R',
         } as any,
         userId,
@@ -68,26 +68,26 @@ describe('RecipeService', () => {
     ).rejects.toThrow(ForbiddenException);
   });
 
-  it('should create recipe when dish owned by user', async () => {
+  it('should create recipe when meal owned by user', async () => {
     const recipe = {
       id: 'r1',
-      dishId: 'd1',
+      mealId: 'm1',
       userId,
       title: 'R',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    mockDishRepository.findById.mockResolvedValue({ id: 'd1', userId });
+    mockMealRepository.findById.mockResolvedValue({ id: 'm1', userId });
     mockRecipeRepository.create.mockResolvedValue(recipe);
 
     const result = await service.create(
-      { dishId: 'd1', title: 'R' } as any,
+      { mealId: 'm1', title: 'R' } as any,
       userId,
     );
 
     expect(result.id).toBe('r1');
     expect(mockRecipeRepository.create).toHaveBeenCalledWith({
-      dishId: 'd1',
+      mealId: 'm1',
       title: 'R',
       userId,
     });
@@ -141,26 +141,26 @@ describe('RecipeService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['nuts'] },
         title: { contains: 'pasta', mode: 'insensitive' },
-        dish: { mealType: MealType.MEAT },
+        meal: { mealType: MealType.MEAT },
       },
       orderBy: { createdAt: 'desc' },
-      include: { dish: true },
+      include: { meal: true },
     });
   });
 
-  it('should ensure ownership when changing dish on update', async () => {
+  it('should ensure ownership when changing meal on update', async () => {
     mockRecipeRepository.findById.mockResolvedValue({
       id: 'r1',
-      dishId: 'd-old',
+      mealId: 'm-old',
       userId,
     });
-    mockDishRepository.findById.mockResolvedValue({
-      id: 'd2',
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm2',
       userId: 'other',
     });
 
     await expect(
-      service.update('r1', { dishId: 'd2' } as any, userId),
+      service.update('r1', { mealId: 'm2' } as any, userId),
     ).rejects.toThrow(ForbiddenException);
   });
 });

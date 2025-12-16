@@ -3870,7 +3870,7 @@
         ]
       }
     },
-    "/api/v1/dishes": {
+    "/api/v1/meals": {
       "post": {
         "operationId": "create",
         "parameters": [],
@@ -3879,18 +3879,18 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDishDto"
+                "$ref": "#/components/schemas/CreateMealDto"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Dish created successfully",
+            "description": "Meal created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DishResponseDto"
+                  "$ref": "#/components/schemas/MealResponseDto"
                 }
               }
             }
@@ -3951,9 +3951,9 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Create a dish",
+        "summary": "Create a meal",
         "tags": [
-          "dishes"
+          "meals"
         ]
       },
       "get": {
@@ -4007,11 +4007,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Dishes retrieved successfully",
+            "description": "Meals retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MultipleDishResponseDto"
+                  "$ref": "#/components/schemas/MultipleMealResponseDto"
                 }
               }
             }
@@ -4072,13 +4072,13 @@
             "JWT-auth": []
           }
         ],
-        "summary": "List dishes for the user",
+        "summary": "List meals for the user",
         "tags": [
-          "dishes"
+          "meals"
         ]
       }
     },
-    "/api/v1/dishes/{id}": {
+    "/api/v1/meals/{id}": {
       "get": {
         "operationId": "findOne",
         "parameters": [
@@ -4094,11 +4094,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Dish retrieved successfully",
+            "description": "Meal retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DishResponseDto"
+                  "$ref": "#/components/schemas/MealResponseDto"
                 }
               }
             }
@@ -4159,9 +4159,9 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Get a dish by id",
+        "summary": "Get a meal by id",
         "tags": [
-          "dishes"
+          "meals"
         ]
       },
       "patch": {
@@ -4182,18 +4182,18 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateDishDto"
+                "$ref": "#/components/schemas/UpdateMealDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Dish updated successfully",
+            "description": "Meal updated successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DishResponseDto"
+                  "$ref": "#/components/schemas/MealResponseDto"
                 }
               }
             }
@@ -4254,9 +4254,9 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Update a dish",
+        "summary": "Update a meal",
         "tags": [
-          "dishes"
+          "meals"
         ]
       },
       "delete": {
@@ -4274,7 +4274,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Dish deleted successfully"
+            "description": "Meal deleted successfully"
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
@@ -4332,9 +4332,9 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Delete a dish",
+        "summary": "Delete a meal",
         "tags": [
-          "dishes"
+          "meals"
         ]
       }
     },
@@ -4431,7 +4431,7 @@
             "name": "mealType",
             "required": false,
             "in": "query",
-            "description": "Filter by dish meal type",
+            "description": "Filter by meal type",
             "schema": {
               "type": "string",
               "enum": [
@@ -4966,7 +4966,7 @@
             "name": "mealType",
             "required": false,
             "in": "query",
-            "description": "Filter by underlying dish meal type",
+            "description": "Filter by underlying meal type",
             "schema": {
               "type": "string",
               "enum": [
@@ -6418,12 +6418,12 @@
           }
         }
       },
-      "CreateDishDto": {
+      "CreateMealDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Dish name",
+            "description": "Meal name",
             "example": "Grilled chicken salad"
           },
           "mealType": {
@@ -6439,7 +6439,7 @@
           },
           "calories": {
             "type": "number",
-            "description": "Calories for the dish",
+            "description": "Calories for the meal",
             "example": 520
           },
           "proteins": {
@@ -6468,7 +6468,7 @@
           },
           "barcode": {
             "type": "string",
-            "description": "Barcode of the dish (if packaged)"
+            "description": "Barcode of the meal (if packaged)"
           }
         },
         "required": [
@@ -6476,17 +6476,17 @@
           "mealType"
         ]
       },
-      "DishResponseDto": {
+      "MealResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "Dish id",
+            "description": "Meal id",
             "format": "uuid"
           },
           "name": {
             "type": "string",
-            "description": "Dish name"
+            "description": "Meal name"
           },
           "mealType": {
             "type": "string",
@@ -6549,18 +6549,18 @@
           "updatedAt"
         ]
       },
-      "MultipleDishResponseDto": {
+      "MultipleMealResponseDto": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DishResponseDto"
+              "$ref": "#/components/schemas/MealResponseDto"
             }
           },
           "total": {
             "type": "number",
-            "description": "Total dishes"
+            "description": "Total meals"
           },
           "page": {
             "type": "number",
@@ -6583,12 +6583,12 @@
           "totalPages"
         ]
       },
-      "UpdateDishDto": {
+      "UpdateMealDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Dish name",
+            "description": "Meal name",
             "example": "Grilled chicken salad"
           },
           "mealType": {
@@ -6604,7 +6604,7 @@
           },
           "calories": {
             "type": "number",
-            "description": "Calories for the dish",
+            "description": "Calories for the meal",
             "example": 520
           },
           "proteins": {
@@ -6633,16 +6633,16 @@
           },
           "barcode": {
             "type": "string",
-            "description": "Barcode of the dish (if packaged)"
+            "description": "Barcode of the meal (if packaged)"
           }
         }
       },
       "CreateRecipeDto": {
         "type": "object",
         "properties": {
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish identifier this recipe is based on",
+            "description": "Meal identifier this recipe is based on",
             "format": "uuid"
           },
           "title": {
@@ -6716,7 +6716,7 @@
           }
         },
         "required": [
-          "dishId",
+          "mealId",
           "title"
         ]
       },
@@ -6733,9 +6733,9 @@
             "description": "Owner user id",
             "format": "uuid"
           },
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish reference id",
+            "description": "Meal reference id",
             "format": "uuid"
           },
           "title": {
@@ -6806,11 +6806,11 @@
             "type": "string",
             "description": "Updated at"
           },
-          "dish": {
-            "description": "Attached dish",
+          "meal": {
+            "description": "Attached meal",
             "allOf": [
               {
-                "$ref": "#/components/schemas/DishResponseDto"
+                "$ref": "#/components/schemas/MealResponseDto"
               }
             ]
           }
@@ -6818,7 +6818,7 @@
         "required": [
           "id",
           "userId",
-          "dishId",
+          "mealId",
           "title",
           "rating",
           "ratingCount",
@@ -6863,9 +6863,9 @@
       "UpdateRecipeDto": {
         "type": "object",
         "properties": {
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish identifier this recipe is based on",
+            "description": "Meal identifier this recipe is based on",
             "format": "uuid"
           },
           "title": {
@@ -6942,9 +6942,9 @@
       "CreateMealLogDto": {
         "type": "object",
         "properties": {
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish consumed",
+            "description": "Meal consumed",
             "format": "uuid"
           },
           "typeOfMeal": {
@@ -6972,7 +6972,7 @@
           }
         },
         "required": [
-          "dishId",
+          "mealId",
           "typeOfMeal"
         ]
       },
@@ -6989,9 +6989,9 @@
             "description": "User id",
             "format": "uuid"
           },
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish id",
+            "description": "Meal id",
             "format": "uuid"
           },
           "typeOfMeal": {
@@ -7027,11 +7027,11 @@
             "type": "string",
             "description": "Updated at"
           },
-          "dish": {
-            "description": "Linked dish details",
+          "meal": {
+            "description": "Linked meal details",
             "allOf": [
               {
-                "$ref": "#/components/schemas/DishResponseDto"
+                "$ref": "#/components/schemas/MealResponseDto"
               }
             ]
           }
@@ -7039,7 +7039,7 @@
         "required": [
           "id",
           "userId",
-          "dishId",
+          "mealId",
           "typeOfMeal",
           "timestamp",
           "mealFromPantry",
@@ -7085,9 +7085,9 @@
       "UpdateMealLogDto": {
         "type": "object",
         "properties": {
-          "dishId": {
+          "mealId": {
             "type": "string",
-            "description": "Dish consumed",
+            "description": "Meal consumed",
             "format": "uuid"
           },
           "typeOfMeal": {

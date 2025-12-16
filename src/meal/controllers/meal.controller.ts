@@ -24,109 +24,109 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { DishService } from '../services/dish.service';
-import { CreateDishDto } from '../dto/create-dish.dto';
-import { UpdateDishDto } from '../dto/update-dish.dto';
+import { MealService } from '../services/meal.service';
+import { CreateMealDto } from '../dto/create-meal.dto';
+import { UpdateMealDto } from '../dto/update-meal.dto';
 import {
-  DishResponseDto,
-  MultipleDishResponseDto,
-} from '../dto/dish-response.dto';
-import { QueryDishDto } from '../dto/query-dish.dto';
+  MealResponseDto,
+  MultipleMealResponseDto,
+} from '../dto/meal-response.dto';
+import { QueryMealDto } from '../dto/query-meal.dto';
 
-@ApiTags('dishes')
-@Controller('dishes')
+@ApiTags('meals')
+@Controller('meals')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
-export class DishController {
-  constructor(private readonly dishService: DishService) {}
+export class MealController {
+  constructor(private readonly mealService: MealService) {}
 
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @ApiOperation({ summary: 'Create a dish' })
-  @ApiBody({ type: CreateDishDto })
+  @ApiOperation({ summary: 'Create a meal' })
+  @ApiBody({ type: CreateMealDto })
   @ApiResponse({
     status: 201,
-    description: 'Dish created successfully',
-    type: DishResponseDto,
+    description: 'Meal created successfully',
+    type: MealResponseDto,
   })
   @ApiCrudErrorResponses()
   create(
-    @Body() createDishDto: CreateDishDto,
+    @Body() createMealDto: CreateMealDto,
     @CurrentUser('id') userId: string,
-  ): Promise<DishResponseDto> {
-    return this.dishService.create(createDishDto, userId);
+  ): Promise<MealResponseDto> {
+    return this.mealService.create(createMealDto, userId);
   }
 
   @Get()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'List dishes for the user' })
+  @ApiOperation({ summary: 'List meals for the user' })
   @ApiQuery({ name: 'mealType', required: false })
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({
     status: 200,
-    description: 'Dishes retrieved successfully',
-    type: MultipleDishResponseDto,
+    description: 'Meals retrieved successfully',
+    type: MultipleMealResponseDto,
   })
   @ApiCrudErrorResponses()
   findAll(
     @CurrentUser('id') userId: string,
-    @Query() query: QueryDishDto,
-  ): Promise<MultipleDishResponseDto> {
-    return this.dishService.findAll(userId, query);
+    @Query() query: QueryMealDto,
+  ): Promise<MultipleMealResponseDto> {
+    return this.mealService.findAll(userId, query);
   }
 
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get a dish by id' })
+  @ApiOperation({ summary: 'Get a meal by id' })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Dish retrieved successfully',
-    type: DishResponseDto,
+    description: 'Meal retrieved successfully',
+    type: MealResponseDto,
   })
   @ApiCrudErrorResponses()
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
-  ): Promise<DishResponseDto> {
-    return this.dishService.findOne(id, userId);
+  ): Promise<MealResponseDto> {
+    return this.mealService.findOne(id, userId);
   }
 
   @Patch(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update a dish' })
+  @ApiOperation({ summary: 'Update a meal' })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiResponse({
     status: 200,
-    description: 'Dish updated successfully',
-    type: DishResponseDto,
+    description: 'Meal updated successfully',
+    type: MealResponseDto,
   })
   @ApiCrudErrorResponses()
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateDishDto: UpdateDishDto,
+    @Body() updateMealDto: UpdateMealDto,
     @CurrentUser('id') userId: string,
-  ): Promise<DishResponseDto> {
-    return this.dishService.update(id, updateDishDto, userId);
+  ): Promise<MealResponseDto> {
+    return this.mealService.update(id, updateMealDto, userId);
   }
 
   @Delete(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Delete a dish' })
+  @ApiOperation({ summary: 'Delete a meal' })
   @ApiParam({ name: 'id', format: 'uuid' })
-  @ApiResponse({ status: 200, description: 'Dish deleted successfully' })
+  @ApiResponse({ status: 200, description: 'Meal deleted successfully' })
   @ApiCrudErrorResponses()
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
   ): Promise<void> {
-    return this.dishService.remove(id, userId);
+    return this.mealService.remove(id, userId);
   }
 }
