@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -16,6 +15,7 @@ import {
 } from '../dto/dish-response.dto';
 import { QueryDishDto } from '../dto/query-dish.dto';
 import { Prisma } from '@prisma/client';
+import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 
 @Injectable()
 export class DishService {
@@ -25,6 +25,16 @@ export class DishService {
     private readonly dishRepository: DishRepository,
     private readonly pantryItemRepository: PantryItemRepository,
   ) {}
+
+  private getOwnedDishOrThrow(dishId: string, userId: string) {
+    return getOwnedEntityOrThrow(
+      dishId,
+      userId,
+      (id) => this.dishRepository.findById(id),
+      (d) => d.userId,
+      'Dish not found',
+    );
+  }
 
   async create(
     createDishDto: CreateDishDto,
@@ -99,7 +109,7 @@ export class DishService {
     if (!dish) {
       throw new NotFoundException('Dish not found');
     }
-    this.ensureOwnership(dish.userId, userId);
+    await this.getOwnedDishOrThrow(id, userId);
     return this.toResponseDto(dish);
   }
 
@@ -109,10 +119,7 @@ export class DishService {
     userId: string,
   ): Promise<DishResponseDto> {
     const dish = await this.dishRepository.findById(id);
-    if (!dish) {
-      throw new NotFoundException('Dish not found');
-    }
-    this.ensureOwnership(dish.userId, userId);
+    await this.getOwnedDishOrThrow(id, userId);
 
     if (
       updateDishDto.barcode &&
@@ -137,18 +144,8 @@ export class DishService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    const dish = await this.dishRepository.findById(id);
-    if (!dish) {
-      throw new NotFoundException('Dish not found');
-    }
-    this.ensureOwnership(dish.userId, userId);
+    await this.getOwnedDishOrThrow(id, userId);
     await this.dishRepository.delete(id);
-  }
-
-  private ensureOwnership(ownerId: string, userId: string) {
-    if (ownerId !== userId) {
-      throw new ForbiddenException('No permission to access this resource');
-    }
   }
 
   private toResponseDto(dish: any): DishResponseDto {
