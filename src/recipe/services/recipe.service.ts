@@ -1,9 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { DishRepository } from '../../dish/repositories/dish.repository';
@@ -15,6 +10,7 @@ import {
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
 import { Prisma } from '@prisma/client';
+import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 
 @Injectable()
 export class RecipeService {
@@ -25,17 +21,33 @@ export class RecipeService {
     private readonly dishRepository: DishRepository,
   ) {}
 
+  private getOwnedDishOrThrow(dishId: string, userId: string) {
+    return getOwnedEntityOrThrow(
+      dishId,
+      userId,
+      (id) => this.dishRepository.findById(id),
+      (d) => d.userId,
+      'Dish not found',
+    );
+  }
+
+  private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
+    return getOwnedEntityOrThrow(
+      recipeId,
+      userId,
+      (id) => this.recipeRepository.findById(id),
+      (r) => r.userId,
+      'Recipe not found',
+    );
+  }
+
   async create(
     createRecipeDto: CreateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
     this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
 
-    const dish = await this.dishRepository.findById(createRecipeDto.dishId);
-    if (!dish) {
-      throw new NotFoundException('Dish not found');
-    }
-    this.ensureOwnership(dish.userId, userId);
+    await this.getOwnedDishOrThrow(createRecipeDto.dishId, userId);
 
     const recipe = await this.recipeRepository.create({
       ...createRecipeDto,
@@ -100,12 +112,8 @@ export class RecipeService {
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
-    const recipe = await this.recipeRepository.findById(id);
-    if (!recipe) {
-      throw new NotFoundException('Recipe not found');
-    }
-    this.ensureOwnership(recipe.userId, userId);
-    return this.toResponse(recipe);
+    const ownedRecipe = await this.getOwnedRecipeOrThrow(id, userId);
+    return this.toResponse(ownedRecipe);
   }
 
   async update(
@@ -113,18 +121,10 @@ export class RecipeService {
     updateRecipeDto: UpdateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    const recipe = await this.recipeRepository.findById(id);
-    if (!recipe) {
-      throw new NotFoundException('Recipe not found');
-    }
-    this.ensureOwnership(recipe.userId, userId);
+    const recipe = await this.getOwnedRecipeOrThrow(id, userId);
 
     if (updateRecipeDto.dishId && updateRecipeDto.dishId !== recipe.dishId) {
-      const dish = await this.dishRepository.findById(updateRecipeDto.dishId);
-      if (!dish) {
-        throw new NotFoundException('Dish not found');
-      }
-      this.ensureOwnership(dish.userId, userId);
+      await this.getOwnedDishOrThrow(updateRecipeDto.dishId, userId);
     }
 
     const updated = await this.recipeRepository.update(id, updateRecipeDto);
@@ -132,18 +132,8 @@ export class RecipeService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    const recipe = await this.recipeRepository.findById(id);
-    if (!recipe) {
-      throw new NotFoundException('Recipe not found');
-    }
-    this.ensureOwnership(recipe.userId, userId);
+    await this.getOwnedRecipeOrThrow(id, userId);
     await this.recipeRepository.delete(id);
-  }
-
-  private ensureOwnership(ownerId: string, userId: string) {
-    if (ownerId !== userId) {
-      throw new ForbiddenException('No permission to access this resource');
-    }
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

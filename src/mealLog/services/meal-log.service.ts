@@ -1,9 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealLogRepository } from '../repositories/meal-log.repository';
 import { DishRepository } from '../../dish/repositories/dish.repository';
@@ -15,6 +10,7 @@ import {
 } from '../dto/meal-log-response.dto';
 import { QueryMealLogDto } from '../dto/query-meal-log.dto';
 import { Prisma } from '@prisma/client';
+import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 
 @Injectable()
 export class MealLogService {
@@ -25,15 +21,34 @@ export class MealLogService {
     private readonly dishRepository: DishRepository,
   ) {}
 
+  private getOwnedDishOrThrow(dishId: string, userId: string) {
+    return getOwnedEntityOrThrow(
+      dishId,
+      userId,
+      (id) => this.dishRepository.findById(id),
+      (d) => d.userId,
+      'Dish not found',
+    );
+  }
+
+  private getOwnedMealLogOrThrow(logId: string, userId: string) {
+    return getOwnedEntityOrThrow(
+      logId,
+      userId,
+      (id) => this.mealLogRepository.findById(id),
+      (log) => log.userId,
+      'Meal log not found',
+    );
+  }
+
   async create(
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const dish = await this.dishRepository.findById(createMealLogDto.dishId);
-    if (!dish) {
-      throw new NotFoundException('Dish not found');
-    }
-    this.ensureOwnership(dish.userId, userId);
+    const dish = await this.getOwnedDishOrThrow(
+      createMealLogDto.dishId,
+      userId,
+    );
 
     const mealFromPantry =
       createMealLogDto.mealFromPantry ?? Boolean(dish.pantryItemId);
@@ -110,12 +125,8 @@ export class MealLogService {
   }
 
   async findOne(id: string, userId: string): Promise<MealLogResponseDto> {
-    const mealLog = await this.mealLogRepository.findById(id);
-    if (!mealLog) {
-      throw new NotFoundException('Meal log not found');
-    }
-    this.ensureOwnership(mealLog.userId, userId);
-    return this.toResponse(mealLog);
+    const ownedMealLog = await this.getOwnedMealLogOrThrow(id, userId);
+    return this.toResponse(ownedMealLog);
   }
 
   async update(
@@ -123,18 +134,10 @@ export class MealLogService {
     updateMealLogDto: UpdateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const mealLog = await this.mealLogRepository.findById(id);
-    if (!mealLog) {
-      throw new NotFoundException('Meal log not found');
-    }
-    this.ensureOwnership(mealLog.userId, userId);
+    const mealLog = await this.getOwnedMealLogOrThrow(id, userId);
 
     if (updateMealLogDto.dishId && updateMealLogDto.dishId !== mealLog.dishId) {
-      const dish = await this.dishRepository.findById(updateMealLogDto.dishId);
-      if (!dish) {
-        throw new NotFoundException('Dish not found');
-      }
-      this.ensureOwnership(dish.userId, userId);
+      await this.getOwnedDishOrThrow(updateMealLogDto.dishId, userId);
     }
 
     const updated = await this.mealLogRepository.update(id, {
@@ -148,18 +151,8 @@ export class MealLogService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    const mealLog = await this.mealLogRepository.findById(id);
-    if (!mealLog) {
-      throw new NotFoundException('Meal log not found');
-    }
-    this.ensureOwnership(mealLog.userId, userId);
+    await this.getOwnedMealLogOrThrow(id, userId);
     await this.mealLogRepository.delete(id);
-  }
-
-  private ensureOwnership(ownerId: string, userId: string) {
-    if (ownerId !== userId) {
-      throw new ForbiddenException('No permission to access this resource');
-    }
   }
 
   private toResponse(log: any): MealLogResponseDto {
