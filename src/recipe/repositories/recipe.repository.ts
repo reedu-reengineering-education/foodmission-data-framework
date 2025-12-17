@@ -32,11 +32,23 @@ export interface UpdateRecipeData
 
 @Injectable()
 export class RecipeRepository
-  implements BaseRepository<Recipe, CreateRecipeData, UpdateRecipeData>
+  implements
+    BaseRepository<
+      Recipe,
+      CreateRecipeData,
+      UpdateRecipeData,
+      Prisma.RecipeWhereInput
+    >
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(options: FindAllOptions = {}): Promise<Recipe[]> {
+  async findAll(
+    options: FindAllOptions<
+      Prisma.RecipeWhereInput,
+      Prisma.RecipeOrderByWithRelationInput,
+      Prisma.RecipeInclude
+    > = {},
+  ): Promise<Recipe[]> {
     return this.prisma.recipe.findMany({
       skip: options.skip,
       take: options.take,
@@ -47,7 +59,11 @@ export class RecipeRepository
   }
 
   async findWithPagination(
-    options: FindAllOptions = {},
+    options: FindAllOptions<
+      Prisma.RecipeWhereInput,
+      Prisma.RecipeOrderByWithRelationInput,
+      Prisma.RecipeInclude
+    > = {},
   ): Promise<PaginatedResult<Recipe>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
@@ -70,7 +86,7 @@ export class RecipeRepository
       data,
       total,
       page,
-      limit: take,
+      limit: safeTake,
       totalPages,
     };
   }
@@ -78,22 +94,22 @@ export class RecipeRepository
   async findById(id: string): Promise<Recipe | null> {
     return this.prisma.recipe.findUnique({
       where: { id },
-      include: { meal: true },
+      include: { meal: true } as Prisma.RecipeInclude,
     });
   }
 
   async create(data: CreateRecipeData): Promise<Recipe> {
     return this.prisma.recipe.create({
-      data,
-      include: { meal: true },
+      data: data as Prisma.RecipeUncheckedCreateInput,
+      include: { meal: true } as Prisma.RecipeInclude,
     });
   }
 
   async update(id: string, data: UpdateRecipeData): Promise<Recipe> {
     return this.prisma.recipe.update({
       where: { id },
-      data,
-      include: { meal: true },
+      data: data as Prisma.RecipeUncheckedUpdateInput,
+      include: { meal: true } as Prisma.RecipeInclude,
     });
   }
 
@@ -101,7 +117,7 @@ export class RecipeRepository
     await this.prisma.recipe.delete({ where: { id } });
   }
 
-  async count(where?: any): Promise<number> {
+  async count(where?: Prisma.RecipeWhereInput): Promise<number> {
     return this.prisma.recipe.count({ where });
   }
 }

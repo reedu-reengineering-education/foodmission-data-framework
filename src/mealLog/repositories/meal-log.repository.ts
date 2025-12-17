@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { MealLog, TypeOfMeal } from '@prisma/client';
+import { MealLog, Prisma, TypeOfMeal } from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import { normalizePagination } from '../../common/utils/pagination';
 
 export interface CreateMealLogData {
   userId: string;
@@ -20,11 +21,23 @@ export type UpdateMealLogData = Partial<Omit<CreateMealLogData, 'userId'>>;
 
 @Injectable()
 export class MealLogRepository
-  implements BaseRepository<MealLog, CreateMealLogData, UpdateMealLogData>
+  implements
+    BaseRepository<
+      MealLog,
+      CreateMealLogData,
+      UpdateMealLogData,
+      Prisma.MealLogWhereInput
+    >
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(options: FindAllOptions = {}): Promise<MealLog[]> {
+  async findAll(
+    options: FindAllOptions<
+      Prisma.MealLogWhereInput,
+      Prisma.MealLogOrderByWithRelationInput,
+      Prisma.MealLogInclude
+    > = {},
+  ): Promise<MealLog[]> {
     return this.prisma.mealLog.findMany({
       skip: options.skip,
       take: options.take,
@@ -35,11 +48,14 @@ export class MealLogRepository
   }
 
   async findWithPagination(
-    options: FindAllOptions = {},
+    options: FindAllOptions<
+      Prisma.MealLogWhereInput,
+      Prisma.MealLogOrderByWithRelationInput,
+      Prisma.MealLogInclude
+    > = {},
   ): Promise<PaginatedResult<MealLog>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
-    const safeTake = take && take > 0 ? take : 10;
-    const safeSkip = skip && skip > 0 ? skip : 0;
+    const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
       this.prisma.mealLog.findMany({
@@ -59,7 +75,7 @@ export class MealLogRepository
       data,
       total,
       page,
-      limit: take,
+      limit: safeTake,
       totalPages,
     };
   }
@@ -67,22 +83,22 @@ export class MealLogRepository
   async findById(id: string): Promise<MealLog | null> {
     return this.prisma.mealLog.findUnique({
       where: { id },
-      include: { meal: true },
+      include: { meal: true } as Prisma.MealLogInclude,
     });
   }
 
   async create(data: CreateMealLogData): Promise<MealLog> {
     return this.prisma.mealLog.create({
-      data,
-      include: { meal: true },
+      data: data as Prisma.MealLogUncheckedCreateInput,
+      include: { meal: true } as Prisma.MealLogInclude,
     });
   }
 
   async update(id: string, data: UpdateMealLogData): Promise<MealLog> {
     return this.prisma.mealLog.update({
       where: { id },
-      data,
-      include: { meal: true },
+      data: data as Prisma.MealLogUncheckedUpdateInput,
+      include: { meal: true } as Prisma.MealLogInclude,
     });
   }
 
@@ -90,7 +106,7 @@ export class MealLogRepository
     await this.prisma.mealLog.delete({ where: { id } });
   }
 
-  async count(where?: any): Promise<number> {
+  async count(where?: Prisma.MealLogWhereInput): Promise<number> {
     return this.prisma.mealLog.count({ where });
   }
 }

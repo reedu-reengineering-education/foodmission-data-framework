@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -28,7 +29,8 @@ export interface UpdateFoodDto {
 
 @Injectable()
 export class FoodRepository
-  implements BaseRepository<Food, CreateFoodDto, UpdateFoodDto>
+  implements
+    BaseRepository<Food, CreateFoodDto, UpdateFoodDto, Prisma.FoodWhereInput>
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -149,7 +151,7 @@ export class FoodRepository
     });
   }
 
-  async count(where?: any): Promise<number> {
+  async count(where?: Prisma.FoodWhereInput): Promise<number> {
     return await this.prisma.food.count({ where });
   }
 }
