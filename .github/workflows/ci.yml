@@ -118,7 +118,7 @@ jobs:
           npx complexity-report src/
 
       - name: Upload code quality artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: code-quality-reports
           path: |
@@ -346,7 +346,7 @@ jobs:
           output-file: sbom.spdx.json
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sbom
           path: sbom.spdx.json
