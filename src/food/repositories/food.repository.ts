@@ -84,7 +84,7 @@ export class FoodRepository
       data,
       total,
       page,
-      limit: take,
+      limit: safeTake,
       totalPages,
     };
   }

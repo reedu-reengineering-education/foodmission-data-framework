@@ -106,11 +106,7 @@ export class MealService {
   }
 
   async findOne(id: string, userId: string): Promise<MealResponseDto> {
-    const meal = await this.mealRepository.findById(id);
-    if (!meal) {
-      throw new NotFoundException('Meal not found');
-    }
-    await this.getOwnedMealOrThrow(id, userId);
+    const meal = await this.getOwnedMealOrThrow(id, userId);
     return this.toResponseDto(meal);
   }
 
