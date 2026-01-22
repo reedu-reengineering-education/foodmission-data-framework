@@ -34,12 +34,19 @@ export class FoodRepository
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(options: FindAllOptions = {}): Promise<Food[]> {
+  async findAll(
+    options: FindAllOptions<
+      Prisma.FoodWhereInput,
+      Prisma.FoodOrderByWithRelationInput,
+      Prisma.FoodInclude
+    > = {},
+  ): Promise<Food[]> {
     return await this.prisma.food.findMany({
       skip: options.skip,
       take: options.take,
       where: options.where,
       orderBy: options.orderBy || { createdAt: 'desc' },
+      include: options.include,
     });
   }
 
@@ -62,9 +69,13 @@ export class FoodRepository
   }
 
   async findWithPagination(
-    options: FindAllOptions,
+    options: FindAllOptions<
+      Prisma.FoodWhereInput,
+      Prisma.FoodOrderByWithRelationInput,
+      Prisma.FoodInclude
+    > = {},
   ): Promise<PaginatedResult<Food>> {
-    const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
@@ -73,6 +84,7 @@ export class FoodRepository
         take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
+        include,
       }),
       this.count(where),
     ]);
@@ -91,7 +103,7 @@ export class FoodRepository
 
   async searchByName(
     name: string,
-    options: FindAllOptions = {},
+    options: FindAllOptions<Prisma.FoodWhereInput> = {},
   ): Promise<Food[]> {
     return await this.prisma.food.findMany({
       where: {
@@ -99,7 +111,7 @@ export class FoodRepository
           contains: name,
           mode: 'insensitive',
         },
-        ...options.where,
+        ...(options.where || {}),
       },
       skip: options.skip,
       take: options.take,

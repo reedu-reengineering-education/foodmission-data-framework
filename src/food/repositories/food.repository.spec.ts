@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { FoodRepository, UpdateFoodDto } from './food.repository';
 import { CreateFoodDto } from '../dto/create-food.dto';
@@ -68,7 +69,12 @@ describe('FoodRepository', () => {
     });
 
     it('should return foods with custom options', async () => {
-      const options = {
+      const options: {
+        skip: number;
+        take: number;
+        where: Prisma.FoodWhereInput;
+        orderBy: Prisma.FoodOrderByWithRelationInput;
+      } = {
         skip: 10,
         take: 5,
         where: { name: 'test' },
@@ -359,7 +365,7 @@ describe('FoodRepository', () => {
     });
 
     it('should handle pagination with where clause', async () => {
-      const where = { name: { contains: 'test' } };
+      const where: Prisma.FoodWhereInput = { name: { contains: 'test' } };
       mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
       mockPrismaService.food.count.mockResolvedValueOnce(5);
 
@@ -380,7 +386,7 @@ describe('FoodRepository', () => {
     });
 
     it('should handle pagination with custom orderBy', async () => {
-      const orderBy = { name: 'asc' };
+      const orderBy: Prisma.FoodOrderByWithRelationInput = { name: 'asc' };
       mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
       mockPrismaService.food.count.mockResolvedValueOnce(10);
 

@@ -12,10 +12,11 @@ import { normalizePagination } from '../../common/utils/pagination';
 // TypeScript may cache old types, so we extract from PrismaClient which has the meal delegate
 type MealDelegate = PrismaClient[Extract<keyof PrismaClient, 'meal'>];
 type Meal = Awaited<ReturnType<MealDelegate['create']>>;
-type MealFindManyArgs = Parameters<MealDelegate['findMany']>[0];
-type MealWhereInput = NonNullable<MealFindManyArgs['where']>;
-type MealOrderByWithRelationInput = NonNullable<MealFindManyArgs['orderBy']>;
-type MealInclude = NonNullable<MealFindManyArgs['include']>;
+// Use Prisma types directly - they exist in the Prisma namespace
+// Type assertions are needed due to TypeScript cache issues
+type MealWhereInput = Prisma.MealWhereInput;
+type MealOrderByWithRelationInput = Prisma.MealOrderByWithRelationInput;
+type MealInclude = Prisma.MealInclude;
 
 export interface CreateMealData {
   name: string;
