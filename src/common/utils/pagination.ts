@@ -15,7 +15,7 @@ export function normalizePagination(
   const safeTake =
     take !== undefined && take !== null && take > 0 ? take : defaults.take;
   const safeSkip =
-    skip !== undefined && skip !== null && skip > 0 ? skip : defaults.skip;
+    skip !== undefined && skip !== null && skip >= 0 ? skip : defaults.skip;
 
   return { skip: safeSkip, take: safeTake };
 }
