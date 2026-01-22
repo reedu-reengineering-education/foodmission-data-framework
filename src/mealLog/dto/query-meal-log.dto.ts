@@ -1,17 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { MealType, TypeOfMeal } from '@prisma/client';
-import {
-  IsBoolean,
-  IsDateString,
-  IsEnum,
-  IsInt,
-  IsOptional,
-  Min,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsBoolean, IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { TransformBooleanString } from '../../common/decorators/transformers';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
-export class QueryMealLogDto {
+export class QueryMealLogDto extends PaginationQueryDto {
   @ApiPropertyOptional({ description: 'From date ISO' })
   @IsOptional()
   @IsDateString()
@@ -46,18 +39,4 @@ export class QueryMealLogDto {
   @IsBoolean()
   @TransformBooleanString()
   eatenOut?: boolean;
-
-  @ApiPropertyOptional({ description: 'Page number', default: 1 })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Type(() => Number)
-  page?: number = 1;
-
-  @ApiPropertyOptional({ description: 'Items per page', default: 10 })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Type(() => Number)
-  limit?: number = 10;
 }
