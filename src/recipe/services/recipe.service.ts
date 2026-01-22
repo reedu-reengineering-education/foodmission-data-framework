@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
@@ -11,6 +10,8 @@ import {
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
 import { Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
+import { handlePrismaError } from '../../common/utils/error.utils';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class RecipeService {
@@ -49,11 +50,15 @@ export class RecipeService {
 
     await this.getOwnedMealOrThrow(createRecipeDto.mealId, userId);
 
-    const recipe = await this.recipeRepository.create({
-      ...createRecipeDto,
-      userId,
-    });
-    return this.toResponse(recipe);
+    try {
+      const recipe = await this.recipeRepository.create({
+        ...createRecipeDto,
+        userId,
+      });
+      return this.toResponse(recipe);
+    } catch (error) {
+      throw handlePrismaError(error, 'create recipe', 'Recipe');
+    }
   }
 
   async findAll(
@@ -90,25 +95,29 @@ export class RecipeService {
         : {}),
     };
 
-    const result = await this.recipeRepository.findWithPagination({
-      skip,
-      take: limit,
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: { meal: true },
-    });
+    try {
+      const result = await this.recipeRepository.findWithPagination({
+        skip,
+        take: limit,
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: { meal: true },
+      });
 
-    return plainToInstance(
-      MultipleRecipeResponseDto,
-      {
-        data: result.data.map((recipe) => this.toResponse(recipe)),
-        total: result.total,
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-      },
-      { excludeExtraneousValues: true },
-    );
+      return plainToInstance(
+        MultipleRecipeResponseDto,
+        {
+          data: result.data.map((recipe) => this.toResponse(recipe)),
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
+          totalPages: result.totalPages,
+        },
+        { excludeExtraneousValues: true },
+      );
+    } catch (error) {
+      throw handlePrismaError(error, 'find recipes', 'Recipe');
+    }
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
@@ -127,13 +136,21 @@ export class RecipeService {
       await this.getOwnedMealOrThrow(updateRecipeDto.mealId, userId);
     }
 
-    const updated = await this.recipeRepository.update(id, updateRecipeDto);
-    return this.toResponse(updated);
+    try {
+      const updated = await this.recipeRepository.update(id, updateRecipeDto);
+      return this.toResponse(updated);
+    } catch (error) {
+      throw handlePrismaError(error, 'update recipe', 'Recipe');
+    }
   }
 
   async remove(id: string, userId: string): Promise<void> {
     await this.getOwnedRecipeOrThrow(id, userId);
-    await this.recipeRepository.delete(id);
+    try {
+      await this.recipeRepository.delete(id);
+    } catch (error) {
+      throw handlePrismaError(error, 'delete recipe', 'Recipe');
+    }
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

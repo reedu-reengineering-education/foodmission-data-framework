@@ -4,6 +4,11 @@ import { MealLogRepository } from '../repositories/meal-log.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { MealType, TypeOfMeal } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  ResourceAlreadyExistsException,
+  ResourceNotFoundException,
+} from '../../common/exceptions/business.exception';
 
 describe('MealLogService', () => {
   let service: MealLogService;
@@ -118,6 +123,42 @@ describe('MealLogService', () => {
     expect(mockMealLogRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({ mealFromPantry: true }),
     );
+  });
+
+  it('should map Prisma unique error to ResourceAlreadyExistsException on create', async () => {
+    mockMealRepository.findById.mockResolvedValue({ id: 'm1', userId });
+    mockMealLogRepository.create.mockRejectedValue(
+      new PrismaClientKnownRequestError('dup', {
+        code: 'P2002',
+        clientVersion: '4.0.0',
+        meta: { target: ['mealId'] },
+      } as any),
+    );
+
+    await expect(
+      service.create(
+        { mealId: 'm1', typeOfMeal: TypeOfMeal.BREAKFAST },
+        userId,
+      ),
+    ).rejects.toBeInstanceOf(ResourceAlreadyExistsException);
+  });
+
+  it('should map Prisma not found error to ResourceNotFoundException on update', async () => {
+    mockMealLogRepository.findById.mockResolvedValue({
+      id: 'log-1',
+      userId,
+      mealId: 'm1',
+    });
+    mockMealLogRepository.update.mockRejectedValue(
+      new PrismaClientKnownRequestError('missing', {
+        code: 'P2025',
+        clientVersion: '4.0.0',
+      } as any),
+    );
+
+    await expect(
+      service.update('log-1', { typeOfMeal: TypeOfMeal.LUNCH }, userId),
+    ).rejects.toBeInstanceOf(ResourceNotFoundException);
   });
 
   it('should build filters for findAll including dates and nested mealType', async () => {

@@ -4,6 +4,11 @@ import { RecipeRepository } from '../repositories/recipe.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { MealType } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  ResourceAlreadyExistsException,
+  ResourceNotFoundException,
+} from '../../common/exceptions/business.exception';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -162,5 +167,38 @@ describe('RecipeService', () => {
     await expect(
       service.update('r1', { mealId: 'm2' } as any, userId),
     ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('should map Prisma unique error to ResourceAlreadyExistsException on create', async () => {
+    mockMealRepository.findById.mockResolvedValue({ id: 'm1', userId });
+    mockRecipeRepository.create.mockRejectedValue(
+      new PrismaClientKnownRequestError('dup', {
+        code: 'P2002',
+        clientVersion: '4.0.0',
+        meta: { target: ['title'] },
+      } as any),
+    );
+
+    await expect(
+      service.create({ mealId: 'm1', title: 'R' } as any, userId),
+    ).rejects.toBeInstanceOf(ResourceAlreadyExistsException);
+  });
+
+  it('should map Prisma not found error to ResourceNotFoundException on update', async () => {
+    mockRecipeRepository.findById.mockResolvedValue({
+      id: 'r1',
+      mealId: 'm1',
+      userId,
+    });
+    mockRecipeRepository.update.mockRejectedValue(
+      new PrismaClientKnownRequestError('missing', {
+        code: 'P2025',
+        clientVersion: '4.0.0',
+      } as any),
+    );
+
+    await expect(
+      service.update('r1', { title: 'X' } as any, userId),
+    ).rejects.toBeInstanceOf(ResourceNotFoundException);
   });
 });

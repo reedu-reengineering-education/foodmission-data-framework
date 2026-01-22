@@ -11,6 +11,7 @@ import {
 import { QueryMealLogDto } from '../dto/query-meal-log.dto';
 import { Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
+import { handlePrismaError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class MealLogService {
@@ -53,16 +54,20 @@ export class MealLogService {
     const mealFromPantry =
       createMealLogDto.mealFromPantry ?? Boolean(meal.pantryItemId);
 
-    const mealLog = await this.mealLogRepository.create({
-      ...createMealLogDto,
-      userId,
-      mealFromPantry,
-      timestamp: createMealLogDto.timestamp
-        ? new Date(createMealLogDto.timestamp)
-        : undefined,
-    });
+    try {
+      const mealLog = await this.mealLogRepository.create({
+        ...createMealLogDto,
+        userId,
+        mealFromPantry,
+        timestamp: createMealLogDto.timestamp
+          ? new Date(createMealLogDto.timestamp)
+          : undefined,
+      });
 
-    return this.toResponse(mealLog);
+      return this.toResponse(mealLog);
+    } catch (error) {
+      throw handlePrismaError(error, 'create meal log', 'MealLog');
+    }
   }
 
   async findAll(
@@ -103,25 +108,29 @@ export class MealLogService {
         : {}),
     };
 
-    const result = await this.mealLogRepository.findWithPagination({
-      skip,
-      take: limit,
-      where,
-      orderBy: { timestamp: 'desc' },
-      include: { meal: true },
-    });
+    try {
+      const result = await this.mealLogRepository.findWithPagination({
+        skip,
+        take: limit,
+        where,
+        orderBy: { timestamp: 'desc' },
+        include: { meal: true },
+      });
 
-    return plainToInstance(
-      MultipleMealLogResponseDto,
-      {
-        data: result.data.map((log) => this.toResponse(log)),
-        total: result.total,
-        page: result.page,
-        limit: result.limit,
-        totalPages: result.totalPages,
-      },
-      { excludeExtraneousValues: true },
-    );
+      return plainToInstance(
+        MultipleMealLogResponseDto,
+        {
+          data: result.data.map((log) => this.toResponse(log)),
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
+          totalPages: result.totalPages,
+        },
+        { excludeExtraneousValues: true },
+      );
+    } catch (error) {
+      throw handlePrismaError(error, 'find meal logs', 'MealLog');
+    }
   }
 
   async findOne(id: string, userId: string): Promise<MealLogResponseDto> {
@@ -140,19 +149,27 @@ export class MealLogService {
       await this.getOwnedMealOrThrow(updateMealLogDto.mealId, userId);
     }
 
-    const updated = await this.mealLogRepository.update(id, {
-      ...updateMealLogDto,
-      timestamp: updateMealLogDto.timestamp
-        ? new Date(updateMealLogDto.timestamp)
-        : undefined,
-    });
+    try {
+      const updated = await this.mealLogRepository.update(id, {
+        ...updateMealLogDto,
+        timestamp: updateMealLogDto.timestamp
+          ? new Date(updateMealLogDto.timestamp)
+          : undefined,
+      });
 
-    return this.toResponse(updated);
+      return this.toResponse(updated);
+    } catch (error) {
+      throw handlePrismaError(error, 'update meal log', 'MealLog');
+    }
   }
 
   async remove(id: string, userId: string): Promise<void> {
     await this.getOwnedMealLogOrThrow(id, userId);
-    await this.mealLogRepository.delete(id);
+    try {
+      await this.mealLogRepository.delete(id);
+    } catch (error) {
+      throw handlePrismaError(error, 'delete meal log', 'MealLog');
+    }
   }
 
   private toResponse(log: any): MealLogResponseDto {
