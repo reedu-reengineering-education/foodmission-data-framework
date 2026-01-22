@@ -3,7 +3,7 @@ import { Unit } from '@prisma/client';
 import { IsString, IsOptional, IsBoolean, IsEnum } from 'class-validator';
 import {
   TransformBooleanString,
-  TransformEmptyStringToUndefined,
+  TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
 
 export class QueryShoppingListItemDto {
@@ -19,7 +19,7 @@ export class QueryShoppingListItemDto {
     description: 'Filter by food ID',
     example: 'uuid-food-id',
   })
-  @TransformEmptyStringToUndefined()
+  @TransformTrimToUndefined()
   @IsString()
   @IsOptional()
   foodId?: string;
@@ -38,7 +38,7 @@ export class QueryShoppingListItemDto {
     example: 'KG',
     enum: Unit,
   })
-  @TransformEmptyStringToUndefined()
+  @TransformTrimToUndefined()
   @IsEnum(Unit)
   @IsOptional()
   unit?: Unit;
