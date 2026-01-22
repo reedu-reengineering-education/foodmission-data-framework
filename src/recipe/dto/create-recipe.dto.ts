@@ -83,6 +83,15 @@ export class CreateRecipeDto {
   sustainabilityScore?: number;
 
   @ApiPropertyOptional({
+    description: 'Estimated recipe price or cost',
+    example: 12.5,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price?: number;
+
+  @ApiPropertyOptional({
     description: 'Known allergens',
     type: [String],
     example: ['nuts', 'gluten'],

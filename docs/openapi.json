@@ -4428,6 +4428,26 @@
         "operationId": "findAll",
         "parameters": [
           {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
             "name": "mealType",
             "required": false,
             "in": "query",
@@ -4483,26 +4503,6 @@
             "description": "Search by title",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page",
-            "schema": {
-              "default": 10,
-              "type": "number"
             }
           }
         ],
@@ -4929,6 +4929,26 @@
         "operationId": "findAll",
         "parameters": [
           {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
             "name": "dateFrom",
             "required": false,
             "in": "query",
@@ -4994,26 +5014,6 @@
             "description": "Only meals eaten out",
             "schema": {
               "type": "boolean"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page",
-            "schema": {
-              "default": 10,
-              "type": "number"
             }
           }
         ],
@@ -6461,6 +6461,11 @@
             "description": "Sustainability score",
             "example": 0.72
           },
+          "price": {
+            "type": "number",
+            "description": "Estimated meal price or cost",
+            "example": 8.5
+          },
           "pantryItemId": {
             "type": "string",
             "description": "Link to pantry item if sourced from pantry",
@@ -6514,6 +6519,10 @@
           "sustainabilityScore": {
             "type": "number",
             "description": "Sustainability score"
+          },
+          "price": {
+            "type": "number",
+            "description": "Estimated price or cost"
           },
           "pantryItemId": {
             "type": "object",
@@ -6626,6 +6635,11 @@
             "description": "Sustainability score",
             "example": 0.72
           },
+          "price": {
+            "type": "number",
+            "description": "Estimated meal price or cost",
+            "example": 8.5
+          },
           "pantryItemId": {
             "type": "string",
             "description": "Link to pantry item if sourced from pantry",
@@ -6702,6 +6716,11 @@
             "type": "number",
             "description": "Sustainability score",
             "example": 0.65
+          },
+          "price": {
+            "type": "number",
+            "description": "Estimated recipe price or cost",
+            "example": 12.5
           },
           "allergens": {
             "description": "Known allergens",
@@ -6780,6 +6799,10 @@
           "sustainabilityScore": {
             "type": "number",
             "description": "Sustainability score"
+          },
+          "price": {
+            "type": "number",
+            "description": "Estimated price or cost"
           },
           "allergens": {
             "description": "Allergens",
@@ -6925,6 +6948,11 @@
             "type": "number",
             "description": "Sustainability score",
             "example": 0.65
+          },
+          "price": {
+            "type": "number",
+            "description": "Estimated recipe price or cost",
+            "example": 12.5
           },
           "allergens": {
             "description": "Known allergens",

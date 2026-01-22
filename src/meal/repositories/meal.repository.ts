@@ -25,6 +25,7 @@ export interface CreateMealData {
   proteins?: number;
   nutritionalInfo?: Prisma.InputJsonValue;
   sustainabilityScore?: number;
+  price?: number;
   pantryItemId?: string;
   barcode?: string;
   userId: string;

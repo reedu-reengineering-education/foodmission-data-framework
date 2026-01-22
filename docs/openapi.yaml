@@ -2752,6 +2752,20 @@ paths:
     get:
       operationId: findAll
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            default: 10
+            type: number
         - name: mealType
           required: false
           in: query
@@ -2792,20 +2806,6 @@ paths:
           description: Search by title
           schema:
             type: string
-        - name: page
-          required: false
-          in: query
-          description: Page number
-          schema:
-            default: 1
-            type: number
-        - name: limit
-          required: false
-          in: query
-          description: Items per page
-          schema:
-            default: 10
-            type: number
       responses:
         '200':
           description: Recipes retrieved successfully
@@ -3055,6 +3055,20 @@ paths:
     get:
       operationId: findAll
       parameters:
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            default: 10
+            type: number
         - name: dateFrom
           required: false
           in: query
@@ -3103,20 +3117,6 @@ paths:
           description: Only meals eaten out
           schema:
             type: boolean
-        - name: page
-          required: false
-          in: query
-          description: Page number
-          schema:
-            default: 1
-            type: number
-        - name: limit
-          required: false
-          in: query
-          description: Items per page
-          schema:
-            default: 10
-            type: number
       responses:
         '200':
           description: Meal logs retrieved successfully
@@ -4225,6 +4225,10 @@ components:
           type: number
           description: Sustainability score
           example: 0.72
+        price:
+          type: number
+          description: Estimated meal price or cost
+          example: 8.5
         pantryItemId:
           type: string
           description: Link to pantry item if sourced from pantry
@@ -4266,6 +4270,9 @@ components:
         sustainabilityScore:
           type: number
           description: Sustainability score
+        price:
+          type: number
+          description: Estimated price or cost
         pantryItemId:
           type: object
           description: Linked pantry item id
@@ -4344,6 +4351,10 @@ components:
           type: number
           description: Sustainability score
           example: 0.72
+        price:
+          type: number
+          description: Estimated meal price or cost
+          example: 8.5
         pantryItemId:
           type: string
           description: Link to pantry item if sourced from pantry
@@ -4403,6 +4414,10 @@ components:
           type: number
           description: Sustainability score
           example: 0.65
+        price:
+          type: number
+          description: Estimated recipe price or cost
+          example: 12.5
         allergens:
           description: Known allergens
           example: &ref_18
@@ -4461,6 +4476,9 @@ components:
         sustainabilityScore:
           type: number
           description: Sustainability score
+        price:
+          type: number
+          description: Estimated price or cost
         allergens:
           description: Allergens
           type: array
@@ -4565,6 +4583,10 @@ components:
           type: number
           description: Sustainability score
           example: 0.65
+        price:
+          type: number
+          description: Estimated recipe price or cost
+          example: 12.5
         allergens:
           description: Known allergens
           example: *ref_18

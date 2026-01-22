@@ -21,6 +21,7 @@ export interface CreateRecipeData {
   tags?: string[];
   nutritionalInfo?: Prisma.InputJsonValue;
   sustainabilityScore?: number;
+  price?: number;
   allergens?: string[];
 }
 

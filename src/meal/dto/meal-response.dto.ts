@@ -31,6 +31,10 @@ export class MealResponseDto {
   @Expose()
   sustainabilityScore?: number;
 
+  @ApiPropertyOptional({ description: 'Estimated price or cost' })
+  @Expose()
+  price?: number;
+
   @ApiPropertyOptional({ description: 'Linked pantry item id', format: 'uuid' })
   @Expose()
   pantryItemId?: string | null;

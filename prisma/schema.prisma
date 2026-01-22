@@ -150,6 +150,7 @@ model Meal {
   proteins            Int?
   nutritionalInfo     Json?
   sustainabilityScore Float?
+  price               Float?
   pantryItemId        String?
   barcode             String?    @unique
   userId              String
@@ -160,16 +161,14 @@ model Meal {
   user       User        @relation(fields: [userId], references: [id])
   recipes    Recipe[]
   mealLogs   MealLog[]
-
   @@index([userId])
   @@index([mealType])
-  @@map("dishes")
 }
 
 model Recipe {
   id                  String   @id @default(uuid())
   userId              String
-  mealId              String   @map("dishId")
+  mealId              String
   title               String
   description         String?
   instructions        String?
@@ -180,6 +179,7 @@ model Recipe {
   tags                String[]
   nutritionalInfo     Json?
   sustainabilityScore Float?
+  price               Float?
   allergens           String[]
   rating              Float    @default(0)
   ratingCount         Int      @default(0)
@@ -197,7 +197,7 @@ model Recipe {
 model MealLog {
   id             String     @id @default(uuid())
   userId         String
-  mealId         String     @map("dishId")
+  mealId         String
   typeOfMeal     TypeOfMeal
   timestamp      DateTime   @default(now())
   mealFromPantry Boolean    @default(false)

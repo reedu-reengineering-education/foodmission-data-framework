@@ -50,6 +50,15 @@ export class CreateMealDto {
   sustainabilityScore?: number;
 
   @ApiPropertyOptional({
+    description: 'Estimated meal price or cost',
+    example: 8.5,
+  })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price?: number;
+
+  @ApiPropertyOptional({
     description: 'Link to pantry item if sourced from pantry',
     format: 'uuid',
   })

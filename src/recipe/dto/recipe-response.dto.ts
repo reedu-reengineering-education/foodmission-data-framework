@@ -55,6 +55,10 @@ export class RecipeResponseDto {
   @Expose()
   sustainabilityScore?: number;
 
+  @ApiPropertyOptional({ description: 'Estimated price or cost' })
+  @Expose()
+  price?: number;
+
   @ApiPropertyOptional({ type: [String], description: 'Allergens' })
   @Expose()
   allergens?: string[];
