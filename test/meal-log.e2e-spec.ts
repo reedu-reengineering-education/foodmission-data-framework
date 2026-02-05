@@ -72,7 +72,7 @@ describe('MealLog API (e2e)', () => {
     authToken = 'mock-jwt-token-for-testing';
 
     // Create test food
-    const food = await prisma.food.create({
+    await prisma.food.create({
       data: {
         name: 'Test Oatmeal',
         description: 'Healthy breakfast oatmeal',
@@ -137,8 +137,6 @@ describe('MealLog API (e2e)', () => {
       });
 
       expect(new Date(response.body.timestamp).toISOString()).toBe(timestamp);
-      // Store for later tests
-      mealLogId = response.body.id;
     });
 
     it('should create meal log with default timestamp when not provided', async () => {
