@@ -322,7 +322,14 @@ curl -X GET "http://localhost:3000/api/v1/meal-logs?mealFromPantry=true" \
       "typeOfMeal": "BREAKFAST",
       "timestamp": "2025-02-05T08:00:00.000Z",
       "mealFromPantry": true,
-      "eatenOut": false
+      "eatenOut": false,
+      "createdAt": "2025-02-05T08:00:00.000Z",
+      "updatedAt": "2025-02-05T08:00:00.000Z",
+      "meal": {
+        "id": "meal-uuid",
+        "name": "Morning Oatmeal",
+        "mealType": "SALAD"
+      }
     }
   ],
   "total": 42,
@@ -346,7 +353,7 @@ curl -X PATCH http://localhost:3000/api/v1/meal-logs/{id} \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "typeOfMeal": "BRUNCH",
+    "typeOfMeal": "LUNCH",
     "timestamp": "2025-02-05T10:30:00Z",
     "eatenOut": true
   }'

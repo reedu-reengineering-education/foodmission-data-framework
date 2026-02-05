@@ -92,8 +92,16 @@ export class MealLogService {
     } = query;
     const skip = (page - 1) * limit;
 
+    // Sort query keys for consistent cache keys
+    const sortedQuery = Object.keys(query)
+      .sort()
+      .reduce((obj, key) => {
+        obj[key] = query[key];
+        return obj;
+      }, {} as QueryMealLogDto);
+
     // Generate cache key based on query parameters
-    const cacheKey = `meallog:list:${userId}:${JSON.stringify(query)}`;
+    const cacheKey = `meallog:list:${userId}:${JSON.stringify(sortedQuery)}`;
 
     // Try to get from cache first
     const cached =
@@ -231,6 +239,15 @@ export class MealLogService {
   /**
    * Invalidate all list cache entries for a specific user
    * Cache keys follow pattern: meallog:list:{userId}:*
+   *
+   * LIMITATION: Pattern-based cache deletion (SCAN + DEL) requires Redis-specific
+   * implementation. To maintain compatibility with any cache backend, we only clear
+   * common query patterns. Uncommon query combinations may serve stale data for up
+   * to 5 minutes (list cache TTL) after mutations.
+   *
+   * For Redis-specific implementation, consider using:
+   * - ioredis with SCAN command
+   * - cache-manager-redis-store with pattern deletion support
    */
   private async invalidateUserListCache(userId: string): Promise<void> {
     try {
