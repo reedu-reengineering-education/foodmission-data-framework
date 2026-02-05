@@ -8,6 +8,7 @@ This document provides comprehensive examples of how to use the FOODMISSION Data
 - [Food Management](#food-management)
 - [Category Management](#category-management)
 - [User Management](#user-management)
+- [Meal Logging](#meal-logging)
 - [OpenFoodFacts Integration](#openfoodfacts-integration)
 - [Error Handling](#error-handling)
 - [Rate Limiting](#rate-limiting)
@@ -239,6 +240,148 @@ curl -X PUT http://localhost:3000/api/v1/users/preferences \
     "allergies": ["shellfish"],
     "preferredCategories": ["Fruits", "Vegetables"]
   }'
+```
+
+## Meal Logging
+
+The Meal Logging API enables users to track their food consumption in a digital food diary. Each log records which meal was consumed, when, and contextual information like whether it was eaten out or came from pantry items.
+
+### Create a Meal Log
+
+Record a meal consumption event:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/meal-logs \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mealId": "meal-uuid",
+    "typeOfMeal": "BREAKFAST",
+    "timestamp": "2025-02-05T08:00:00Z",
+    "mealFromPantry": true,
+    "eatenOut": false
+  }'
+```
+
+**Response:**
+```json
+{
+  "id": "log-uuid",
+  "userId": "user-uuid",
+  "mealId": "meal-uuid",
+  "typeOfMeal": "BREAKFAST",
+  "timestamp": "2025-02-05T08:00:00.000Z",
+  "mealFromPantry": true,
+  "eatenOut": false,
+  "createdAt": "2025-02-05T10:00:00.000Z",
+  "updatedAt": "2025-02-05T10:00:00.000Z"
+}
+```
+
+**Field Descriptions:**
+- `mealId` (required): UUID of the meal being logged
+- `typeOfMeal` (required): Type of meal - `BREAKFAST`, `LUNCH`, `DINNER`, `SNACK`, or `SPECIAL_DRINKS`
+- `timestamp` (optional): When the meal was consumed (defaults to current time)
+- `mealFromPantry` (optional): Whether meal came from pantry items (auto-detected if meal has `pantryItemId`)
+- `eatenOut` (optional): Whether meal was eaten outside home
+
+### List Meal Logs
+
+Retrieve your meal history with filtering:
+
+```bash
+# Get all meal logs
+curl -X GET "http://localhost:3000/api/v1/meal-logs?page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filter by meal type
+curl -X GET "http://localhost:3000/api/v1/meal-logs?typeOfMeal=BREAKFAST" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filter by date range
+curl -X GET "http://localhost:3000/api/v1/meal-logs?dateFrom=2025-02-01&dateTo=2025-02-05" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filter meals eaten out
+curl -X GET "http://localhost:3000/api/v1/meal-logs?eatenOut=true" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filter meals from pantry
+curl -X GET "http://localhost:3000/api/v1/meal-logs?mealFromPantry=true" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": "log-uuid-1",
+      "userId": "user-uuid",
+      "mealId": "meal-uuid",
+      "typeOfMeal": "BREAKFAST",
+      "timestamp": "2025-02-05T08:00:00.000Z",
+      "mealFromPantry": true,
+      "eatenOut": false
+    }
+  ],
+  "total": 42,
+  "page": 1,
+  "limit": 10,
+  "totalPages": 5
+}
+```
+
+### Get Meal Log by ID
+
+```bash
+curl -X GET http://localhost:3000/api/v1/meal-logs/{id} \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Update Meal Log
+
+```bash
+curl -X PATCH http://localhost:3000/api/v1/meal-logs/{id} \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "typeOfMeal": "BRUNCH",
+    "timestamp": "2025-02-05T10:30:00Z",
+    "eatenOut": true
+  }'
+```
+
+### Delete Meal Log
+
+```bash
+curl -X DELETE http://localhost:3000/api/v1/meal-logs/{id} \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Common Use Cases
+
+**Log today's breakfast (timestamp defaults to now):**
+```bash
+curl -X POST http://localhost:3000/api/v1/meal-logs \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mealId": "oatmeal-meal-id",
+    "typeOfMeal": "BREAKFAST"
+  }'
+```
+
+**View this week's meals:**
+```bash
+curl -X GET "http://localhost:3000/api/v1/meal-logs?dateFrom=2025-01-29&dateTo=2025-02-05" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Track restaurant meals this month:**
+```bash
+curl -X GET "http://localhost:3000/api/v1/meal-logs?eatenOut=true&dateFrom=2025-02-01&dateTo=2025-02-28" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ## OpenFoodFacts Integration
