@@ -21,13 +21,14 @@ export class CreateShoppingListItemDto {
   @Min(1)
   quantity: number = 1;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The unit of measurement',
     example: 'KG',
     enum: Unit,
   })
   @IsNotEmpty()
   @IsEnum(Unit)
+  @IsOptional()
   unit: Unit = Unit.PIECES;
 
   @ApiPropertyOptional({

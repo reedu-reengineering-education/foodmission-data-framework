@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, ShoppingListItem, Unit } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
+import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { BaseRepository } from '../../common/interfaces/base-repository.interface';
 

@@ -3,6 +3,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ShoppingListItemController } from './shoppingListItem.controller';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
+import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemController', () => {
   let controller: ShoppingListItemController;
@@ -118,6 +119,36 @@ describe('ShoppingListItemController', () => {
         shoppingListId,
         userId,
       );
+    });
+  });
+
+  describe('create', () => {
+    it('should add an item to the shopping list', async () => {
+      // Arrange
+      const createDto = {
+        quantity: 2,
+        unit: Unit.KG,
+        notes: 'Test notes',
+        checked: false,
+        shoppingListId: 'list-1',
+        foodId: 'food-1',
+      };
+
+      const mockResponse = {
+        id: 'item-1',
+        ...createDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      service.create = jest.fn().mockResolvedValue(mockResponse);
+
+      // Act
+      const result = await controller.create(createDto, 'user-1');
+
+      // Assert
+      expect(service.create).toHaveBeenCalledWith(createDto, 'user-1');
+      expect(result).toEqual(mockResponse);
     });
   });
 });

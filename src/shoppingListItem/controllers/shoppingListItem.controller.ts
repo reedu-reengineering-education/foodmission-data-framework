@@ -21,7 +21,7 @@ import { ApiCrudErrorResponses } from '../../common/decorators/api-error-respons
 import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
-import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
+import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
 import { ShoppingListItemResponseDto } from '../dto/response-soppingListItem.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
