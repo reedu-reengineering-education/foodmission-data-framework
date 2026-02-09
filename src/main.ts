@@ -152,10 +152,7 @@ async function bootstrap() {
       'foods',
       'Food item management with OpenFoodFacts integration for nutritional data',
     )
-    .addTag(
-      'users',
-      'User profile management and dietary preferences configuration',
-    )
+    .addTag('users', 'User management (only admin)')
     .addTag(
       'health',
       'Application health checks, readiness probes, and monitoring metrics',

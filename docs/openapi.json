@@ -942,6 +942,76 @@
         ]
       }
     },
+    "/api/v1/profile/me": {
+      "get": {
+        "operationId": "getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile": {
+      "patch": {
+        "operationId": "updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/complete": {
+      "get": {
+        "operationId": "isComplete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Check whether basic profile is complete",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
     "/api/v1/foods": {
       "post": {
         "description": "Creates a new food item in the database. Requires user or admin role.",
@@ -4036,6 +4106,69 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "Date of birth (ISO date)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "number",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         },
         "required": [
@@ -4071,6 +4204,69 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "description": "Date of birth (ISO date)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "number",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
@@ -4097,6 +4293,74 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "ProfileUpdateDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "age": {
+            "type": "number",
+            "description": "Age in years"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "number",
+            "description": "Annual income"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },

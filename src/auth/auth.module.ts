@@ -7,7 +7,6 @@ import {
   AuthGuard,
 } from 'nest-keycloak-connect';
 import { AuthController } from './auth.controller';
-import { UserProfileService } from './user-profile.service';
 import { UserContextService } from './user-context.service';
 import { DatabaseModule } from '../database/database.module';
 import { UserModule } from '../user/user.module';
@@ -29,7 +28,6 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [AuthController],
   providers: [
-    UserProfileService,
     UserContextService,
     // Global guards for automatic JWT validation
     {
@@ -45,6 +43,6 @@ import { UserModule } from '../user/user.module';
       useClass: RoleGuard,
     },
   ],
-  exports: [UserProfileService, UserContextService],
+  exports: [UserContextService],
 })
 export class AuthModule {}

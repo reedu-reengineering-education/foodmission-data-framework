@@ -1,5 +1,5 @@
 import { AuthController } from './auth.controller';
-import { UserProfileService } from './user-profile.service';
+import { UserProfileService } from '../user/services/user-profile.service';
 
 describe('Stateless Authentication', () => {
   let controller: AuthController;
@@ -94,74 +94,6 @@ describe('Stateless Authentication', () => {
       await expect(controller.getProfile(req)).rejects.toThrow(
         'User not authenticated',
       );
-    });
-  });
-
-  describe('updatePreferences', () => {
-    it('should update user preferences', async () => {
-      const mockUser = { sub: 'keycloak-user-id' };
-      const preferences = { theme: 'dark', language: 'en' };
-      const updatedProfile = {
-        id: 'user-uuid',
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        keycloakId: 'keycloak-user-id',
-        preferences,
-        settings: {},
-      };
-
-      userProfileService.updatePreferences.mockResolvedValue(updatedProfile);
-
-      const req = {
-        user: {
-          ...mockUser,
-          email: 'test@example.com',
-          exp: Math.floor(Date.now() / 1000) + 3600,
-          iat: Math.floor(Date.now() / 1000),
-        },
-      };
-      const result = await controller.updatePreferences(req, preferences);
-
-      expect(userProfileService.updatePreferences).toHaveBeenCalledWith(
-        mockUser.sub,
-        preferences,
-      );
-      expect(result).toEqual(updatedProfile);
-    });
-  });
-
-  describe('updateSettings', () => {
-    it('should update user settings', async () => {
-      const mockUser = { sub: 'keycloak-user-id' };
-      const settings = { notifications: true, privacy: 'public' };
-      const updatedProfile = {
-        id: 'user-uuid',
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        keycloakId: 'keycloak-user-id',
-        preferences: {},
-        settings,
-      };
-
-      userProfileService.updateSettings.mockResolvedValue(updatedProfile);
-
-      const req = {
-        user: {
-          ...mockUser,
-          email: 'test@example.com',
-          exp: Math.floor(Date.now() / 1000) + 3600,
-          iat: Math.floor(Date.now() / 1000),
-        },
-      };
-      const result = await controller.updateSettings(req, settings);
-
-      expect(userProfileService.updateSettings).toHaveBeenCalledWith(
-        mockUser.sub,
-        settings,
-      );
-      expect(result).toEqual(updatedProfile);
     });
   });
 

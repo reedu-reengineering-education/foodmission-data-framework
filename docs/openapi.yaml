@@ -581,6 +581,46 @@ paths:
         - JWT-auth: []
       summary: Update user preferences
       tags: *ref_1
+  /api/v1/profile/me:
+    get:
+      operationId: getMyProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - JWT-auth: []
+      summary: Get current user profile
+      tags: &ref_2
+        - profile
+  /api/v1/profile:
+    patch:
+      operationId: updateProfile
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateDto'
+      responses:
+        '200':
+          description: ''
+      security:
+        - JWT-auth: []
+      summary: Update profile
+      tags: *ref_2
+  /api/v1/profile/complete:
+    get:
+      operationId: isComplete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - JWT-auth: []
+      summary: Check whether basic profile is complete
+      tags: *ref_2
   /api/v1/foods:
     post:
       description: Creates a new food item in the database. Requires user or admin role.
@@ -630,7 +670,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Create a new food item
-      tags: &ref_2
+      tags: &ref_3
         - foods
     get:
       description: >-
@@ -652,7 +692,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get all food items
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/search/openfoodfacts:
     get:
       description: >-
@@ -733,7 +773,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Search OpenFoodFacts database
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/import/openfoodfacts/{barcode}:
     post:
       description: Imports a food item from OpenFoodFacts database using barcode.
@@ -796,7 +836,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Import food from OpenFoodFacts
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/barcode/{barcode}:
     get:
       description: >-
@@ -836,7 +876,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by barcode
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/{id}:
     get:
       description: >-
@@ -877,7 +917,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by ID
-      tags: *ref_2
+      tags: *ref_3
     patch:
       description: Updates a food item by its ID. Requires user or admin role.
       operationId: update
@@ -933,7 +973,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Update food item
-      tags: *ref_2
+      tags: *ref_3
     delete:
       description: Deletes a food item by its ID. Requires admin role.
       operationId: remove
@@ -979,7 +1019,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Delete food item
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/{id}/openfoodfacts:
     get:
       description: >-
@@ -1022,7 +1062,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get OpenFoodFacts information for food item
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/health:
     get:
       operationId: check
@@ -1073,7 +1113,7 @@ paths:
         '503':
           description: Health check failed
       summary: Get application health status
-      tags: &ref_3
+      tags: &ref_4
         - Health
   /api/v1/health/ready:
     get:
@@ -1085,7 +1125,7 @@ paths:
         '503':
           description: Application is not ready
       summary: Get readiness probe status
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/health/live:
     get:
       operationId: liveness
@@ -1106,7 +1146,7 @@ paths:
                   info:
                     type: object
                     example:
-                      database: &ref_4
+                      database: &ref_5
                         status: up
                     additionalProperties:
                       type: object
@@ -1120,7 +1160,7 @@ paths:
                   error:
                     type: object
                     example:
-                      redis: &ref_5
+                      redis: &ref_6
                         status: down
                         message: Could not connect
                     additionalProperties:
@@ -1135,8 +1175,8 @@ paths:
                   details:
                     type: object
                     example:
-                      database: *ref_4
-                      redis: *ref_5
+                      database: *ref_5
+                      redis: *ref_6
                     additionalProperties:
                       type: object
                       required:
@@ -1146,7 +1186,7 @@ paths:
                           type: string
                       additionalProperties: true
       summary: Get liveness probe status
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/metrics:
     get:
       description: Returns application metrics in Prometheus format for scraping
@@ -1199,7 +1239,7 @@ paths:
         '200':
           description: Performance summary retrieved successfully
       summary: Get performance summary
-      tags: &ref_6
+      tags: &ref_7
         - Performance
   /api/v1/performance/cache/stats:
     get:
@@ -1209,7 +1249,7 @@ paths:
         '200':
           description: Cache statistics retrieved successfully
       summary: Get cache statistics
-      tags: *ref_6
+      tags: *ref_7
   /api/v1/performance/cache/hit-rate:
     get:
       operationId: getCacheHitRates
@@ -1218,7 +1258,7 @@ paths:
         '200':
           description: Cache hit rates retrieved successfully
       summary: Get cache hit rates by prefix
-      tags: *ref_6
+      tags: *ref_7
   /api/v1/performance/database/stats:
     get:
       operationId: getDatabaseStats
@@ -1227,7 +1267,7 @@ paths:
         '200':
           description: Database statistics retrieved successfully
       summary: Get database performance statistics
-      tags: *ref_6
+      tags: *ref_7
   /api/v1/shoppinglist:
     post:
       description: Creates a new ShoppingList in the database. Requires user or admin role.
@@ -1279,7 +1319,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Shopping List
-      tags: &ref_7
+      tags: &ref_8
         - shoppinglist
     get:
       operationId: findAll
@@ -1326,7 +1366,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get All Shoppinglists
-      tags: *ref_7
+      tags: *ref_8
   /api/v1/shoppinglist/{id}/items:
     get:
       description: Retrieve all items belonging to a shopping list with optional filters
@@ -1413,7 +1453,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get items for a specific shopping list
-      tags: *ref_7
+      tags: *ref_8
   /api/v1/shoppinglist/{id}:
     get:
       operationId: findById
@@ -1464,7 +1504,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list by ID
-      tags: *ref_7
+      tags: *ref_8
     patch:
       operationId: update
       parameters:
@@ -1520,7 +1560,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list
-      tags: *ref_7
+      tags: *ref_8
     delete:
       operationId: remove
       parameters:
@@ -1566,7 +1606,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete specific shopping list by ID
-      tags: *ref_7
+      tags: *ref_8
   /api/v1/shopping-list-items:
     post:
       description: >-
@@ -1620,7 +1660,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
-      tags: &ref_8
+      tags: &ref_9
         - shopping-list-items
   /api/v1/shopping-list-items/item/{id}:
     get:
@@ -1672,7 +1712,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/shopping-list-items/{id}:
     patch:
       description: Update quantity, unit, notes, or checked status of a shopping list item
@@ -1730,7 +1770,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list item
-      tags: *ref_8
+      tags: *ref_9
     delete:
       description: Delete a specific shopping list item by ID
       operationId: remove
@@ -1777,7 +1817,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/shopping-list-items/{id}/toggle-checked:
     patch:
       description: Quick endpoint to toggle the checked status of an item
@@ -1829,7 +1869,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/shopping-list-items/{shoppingListId}/clear-checked:
     delete:
       description: Remove all checked items from a specific shopping list
@@ -1877,7 +1917,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/pantry:
     post:
       description: >-
@@ -1928,7 +1968,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Pantry
-      tags: &ref_9
+      tags: &ref_10
         - pantry
     get:
       description: >-
@@ -1978,7 +2018,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all user pantries
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/pantry/{id}:
     get:
       description: >-
@@ -2024,7 +2064,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry by ID
-      tags: *ref_9
+      tags: *ref_10
     patch:
       description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
@@ -2077,7 +2117,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry
-      tags: *ref_9
+      tags: *ref_10
     delete:
       description: >-
         Deletes a specific pantry by ID. Only the pantry owner can delete their
@@ -2118,7 +2158,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete pantry
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/pantry-item:
     post:
       description: >-
@@ -2175,7 +2215,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
-      tags: &ref_10
+      tags: &ref_11
         - pantry-item
     get:
       description: >-
@@ -2258,7 +2298,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry items
-      tags: *ref_10
+      tags: *ref_11
   /api/v1/pantry-item/{id}:
     get:
       operationId: findById
@@ -2309,7 +2349,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
-      tags: *ref_10
+      tags: *ref_11
     patch:
       description: >-
         Update quantity, unit, notes, or expiry date of a pantry item. All
@@ -2368,7 +2408,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry item
-      tags: *ref_10
+      tags: *ref_11
     delete:
       description: Delete a specific pantry item by ID
       operationId: remove
@@ -2415,7 +2455,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from pantry
-      tags: *ref_10
+      tags: *ref_11
   /api/v1:
     get:
       description: >-
@@ -2603,6 +2643,54 @@ components:
         settings:
           type: object
           description: User settings
+        username:
+          type: string
+          description: Unique username
+        dateOfBirth:
+          type: string
+          description: Date of birth (ISO date)
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum: &ref_12
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        annualIncome:
+          type: number
+          description: Annual income (optional)
+        educationLevel:
+          type: string
+          description: Education level
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level (e.g., low, medium, high)
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
       required:
         - keycloakId
         - email
@@ -2629,6 +2717,49 @@ components:
         settings:
           type: object
           description: User settings
+        username:
+          type: string
+          description: Unique username
+        dateOfBirth:
+          type: string
+          description: Date of birth (ISO date)
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum: *ref_12
+        annualIncome:
+          type: number
+          description: Annual income (optional)
+        educationLevel:
+          type: string
+          description: Education level
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level (e.g., low, medium, high)
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
     UserPreferencesDto:
       type: object
       properties:
@@ -2647,6 +2778,57 @@ components:
           type: array
           items:
             type: string
+    ProfileUpdateDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Unique username
+        age:
+          type: number
+          description: Age in years
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        annualIncome:
+          type: number
+          description: Annual income
+        educationLevel:
+          type: string
+          description: Education level
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
     CreateFoodDto:
       type: object
       properties:

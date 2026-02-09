@@ -111,49 +111,4 @@ describe('UserController', () => {
       expect(repository.remove).toHaveBeenCalledWith('user-1');
     });
   });
-
-  describe('getPreferences', () => {
-    it('should return user preferences', async () => {
-      repository.findById.mockResolvedValue({
-        ...mockUser,
-        preferences: { theme: 'dark' },
-      } as any);
-
-      const result = await controller.getPreferences('user-1');
-
-      expect(result).toEqual({ theme: 'dark' });
-      expect(repository.findById).toHaveBeenCalledWith('user-1');
-    });
-
-    it('should throw when user not found', async () => {
-      repository.findById.mockResolvedValue(null as any);
-
-      await expect(controller.getPreferences('missing')).rejects.toThrow(Error);
-    });
-  });
-
-  describe('updatePreferences', () => {
-    it('should call repository.update with transformed preferences', async () => {
-      const prefs: UserPreferencesDto = {
-        dietaryRestrictions: ['vegan'],
-        allergies: ['nuts'],
-        preferredCategories: ['fruit'],
-      };
-      repository.update.mockResolvedValue({
-        ...mockUser,
-        preferences: prefs,
-      } as any);
-
-      const result = await controller.updatePreferences('user-1', prefs);
-
-      expect(result.preferences).toEqual(prefs);
-      expect(repository.update).toHaveBeenCalledWith('user-1', {
-        preferences: {
-          dietaryRestrictions: ['vegan'],
-          allergies: ['nuts'],
-          preferredCategories: ['fruit'],
-        },
-      });
-    });
-  });
 });

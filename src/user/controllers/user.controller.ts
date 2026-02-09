@@ -95,36 +95,36 @@ export class UserController {
     return this.userRepository.remove(id);
   }
 
-  @Get(':id/preferences')
-  @Roles('admin', 'user')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'Get user preferences' })
-  @ApiResponse({ status: 200, description: 'User preferences' })
-  async getPreferences(@Param('id') id: string) {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return user.preferences || {};
-  }
+  // @Get(':id/preferences')
+  // @Roles('admin', 'user')
+  // @ApiBearerAuth('JWT-auth')
+  // @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  // @ApiOperation({ summary: 'Get user preferences' })
+  // @ApiResponse({ status: 200, description: 'User preferences' })
+  // async getPreferences(@Param('id') id: string) {
+  //   const user = await this.userRepository.findById(id);
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
+  //   return user.preferences || {};
+  // }
 
-  @Patch(':id/preferences')
-  @Roles('admin', 'user')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'Update user preferences' })
-  @ApiResponse({ status: 200, description: 'Preferences updated successfully' })
-  async updatePreferences(
-    @Param('id') id: string,
-    @Body() preferencesDto: UserPreferencesDto,
-  ) {
-    const preferences = {
-      dietaryRestrictions: preferencesDto.dietaryRestrictions || [],
-      allergies: preferencesDto.allergies || [],
-      preferredCategories: preferencesDto.preferredCategories || [],
-    };
+  // @Patch(':id/preferences')
+  // @Roles('admin', 'user')
+  // @ApiBearerAuth('JWT-auth')
+  // @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  // @ApiOperation({ summary: 'Update user preferences' })
+  // @ApiResponse({ status: 200, description: 'Preferences updated successfully' })
+  // async updatePreferences(
+  //   @Param('id') id: string,
+  //   @Body() preferencesDto: UserPreferencesDto,
+  // ) {
+  //   const preferences = {
+  //     dietaryRestrictions: preferencesDto.dietaryRestrictions || [],
+  //     allergies: preferencesDto.allergies || [],
+  //     preferredCategories: preferencesDto.preferredCategories || [],
+  //   };
 
-    return this.userRepository.update(id, { preferences });
-  }
+  //   return this.userRepository.update(id, { preferences });
+  // }
 }

@@ -18,7 +18,7 @@ import {
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { UserProfileService } from './user-profile.service';
+import { UserProfileService } from '../user/services/user-profile.service';
 
 interface KeycloakUser {
   sub: string;
@@ -111,103 +111,6 @@ export class AuthController {
       given_name: user.given_name,
       family_name: user.family_name,
     });
-  }
-
-  @Put('profile/preferences')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
-  @ApiOperation({
-    summary: 'Update user preferences',
-    description:
-      'Update app-specific user preferences. Returns the updated user profile.',
-  })
-  @ApiBody({
-    description: 'User preferences object (JSON)',
-    schema: {
-      type: 'object',
-      example: {
-        dietaryRestrictions: ['vegetarian'],
-        allergies: ['nuts'],
-        theme: 'dark',
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'User preferences updated successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', format: 'uuid' },
-        email: { type: 'string', format: 'email' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        keycloakId: { type: 'string' },
-        preferences: { type: 'object' },
-        settings: { type: 'object' },
-      },
-    },
-  })
-  @ApiAuthenticatedErrorResponses()
-  async updatePreferences(
-    @Request() req: AuthenticatedRequest,
-    @Body() preferences: Record<string, unknown>,
-  ) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
-    return await this.userProfileService.updatePreferences(
-      user.sub,
-      preferences,
-    );
-  }
-
-  @Put('profile/settings')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
-  @ApiOperation({
-    summary: 'Update user settings',
-    description:
-      'Update app-specific user settings. Returns the updated user profile.',
-  })
-  @ApiBody({
-    description: 'User settings object (JSON)',
-    schema: {
-      type: 'object',
-      example: {
-        language: 'en',
-        notifications: true,
-        timezone: 'UTC',
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'User settings updated successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', format: 'uuid' },
-        email: { type: 'string', format: 'email' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        keycloakId: { type: 'string' },
-        preferences: { type: 'object' },
-        settings: { type: 'object' },
-      },
-    },
-  })
-  @ApiAuthenticatedErrorResponses()
-  async updateSettings(
-    @Request() req: AuthenticatedRequest,
-    @Body() settings: Record<string, unknown>,
-  ) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
-    return await this.userProfileService.updateSettings(user.sub, settings);
   }
 
   @Get('health')
