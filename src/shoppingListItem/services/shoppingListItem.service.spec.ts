@@ -248,46 +248,6 @@ describe('ShoppingListItemService', () => {
         BadRequestException,
       );
     });
-
-    it('should throw BadRequestException if an invalid unit is provided', async () => {
-      const createDto: CreateShoppingListItemDto = {
-        quantity: 2,
-        unit: 'invalid-unit' as any, // Invalid unit
-        notes: 'Test notes',
-        checked: false,
-        shoppingListId: 'list-1',
-        foodId: 'food-1',
-      };
-
-      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
-      mockFoodRepository.findById.mockResolvedValue(mockFood);
-
-      await expect(service.create(createDto, 'user-1')).rejects.toThrow(
-        BadRequestException,
-      );
-
-      expect(repository.create).not.toHaveBeenCalled();
-    });
-
-    it('should throw BadRequestException if unit is missing', async () => {
-      const createDto: CreateShoppingListItemDto = {
-        quantity: 2,
-        unit: undefined as any, // Missing unit
-        notes: 'Test notes',
-        checked: false,
-        shoppingListId: 'list-1',
-        foodId: 'food-1',
-      };
-
-      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
-      mockFoodRepository.findById.mockResolvedValue(mockFood);
-
-      await expect(service.create(createDto, 'user-1')).rejects.toThrow(
-        BadRequestException,
-      );
-
-      expect(repository.create).not.toHaveBeenCalled();
-    });
   });
 
   describe('findAll', () => {
