@@ -102,10 +102,11 @@ LOG_LEVEL=debug
 
 ```
 foodmission-data-framework/
-├── .devcontainer/          # DevContainer configuration
 ├── .github/               # GitHub Actions workflows
+├── backups/               # Backup files
 ├── docs/                  # Documentation
-├── k8s/                   # Kubernetes manifests
+├── keycloak/              # Keycloak configuration
+├── postman/               # Postman collections
 ├── prisma/                # Database schema and migrations
 │   ├── migrations/        # Database migrations
 │   ├── seeds/            # Database seed files
