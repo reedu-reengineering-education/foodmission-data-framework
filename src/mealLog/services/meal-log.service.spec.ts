@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MealLogService } from './meal-log.service';
 import { MealLogRepository } from '../repositories/meal-log.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
@@ -26,10 +27,17 @@ describe('MealLogService', () => {
     findById: jest.fn(),
   };
 
+  const mockCacheManager = {
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MealLogService,
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: MealLogRepository, useValue: mockMealLogRepository },
         { provide: MealRepository, useValue: mockMealRepository },
       ],
@@ -200,6 +208,187 @@ describe('MealLogService', () => {
       },
       orderBy: { timestamp: 'desc' },
       include: { meal: true },
+    });
+  });
+
+  describe('Caching', () => {
+    it('should cache findAll results and return cached data on second call', async () => {
+      const query = { page: 1, limit: 10 };
+      const paginationResult = {
+        data: [
+          { id: 'log1', userId, mealId: 'm1', typeOfMeal: TypeOfMeal.LUNCH },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      mockCacheManager.get.mockResolvedValueOnce(null); // Cache miss
+      mockMealLogRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
+
+      // First call - should hit database
+      await service.findAll(userId, query);
+
+      expect(mockCacheManager.get).toHaveBeenCalledWith(
+        `meallog:list:${userId}:${JSON.stringify(query)}`,
+      );
+      expect(mockMealLogRepository.findWithPagination).toHaveBeenCalledTimes(1);
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        `meallog:list:${userId}:${JSON.stringify(query)}`,
+        expect.any(Object),
+        300000, // 5 minutes
+      );
+
+      // Reset mocks for second call
+      jest.clearAllMocks();
+      mockCacheManager.get.mockResolvedValueOnce(paginationResult); // Cache hit
+
+      // Second call - should use cache
+      const result = await service.findAll(userId, query);
+
+      expect(mockCacheManager.get).toHaveBeenCalledTimes(1);
+      expect(mockMealLogRepository.findWithPagination).not.toHaveBeenCalled();
+      expect(result).toEqual(paginationResult);
+    });
+
+    it('should cache findOne results', async () => {
+      const logId = 'log-123';
+      const mealLog = {
+        id: logId,
+        userId,
+        mealId: 'm1',
+        typeOfMeal: TypeOfMeal.DINNER,
+      };
+
+      mockCacheManager.get.mockResolvedValueOnce(null); // Cache miss
+      mockMealLogRepository.findById.mockResolvedValue(mealLog);
+
+      // First call - should hit database
+      await service.findOne(logId, userId);
+
+      expect(mockCacheManager.get).toHaveBeenCalledWith(`meallog:${logId}`);
+      expect(mockMealLogRepository.findById).toHaveBeenCalledWith(logId);
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        `meallog:${logId}`,
+        expect.any(Object),
+        900000, // 15 minutes
+      );
+    });
+
+    it('should verify ownership even with cached data in findOne', async () => {
+      const logId = 'log-123';
+      const cachedLog = { id: logId, userId: 'different-user', mealId: 'm1' };
+
+      mockCacheManager.get.mockResolvedValueOnce(cachedLog); // Cache hit with different user
+      mockMealLogRepository.findById.mockResolvedValue(null);
+
+      await expect(service.findOne(logId, userId)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockMealLogRepository.findById).toHaveBeenCalledWith(logId);
+    });
+
+    it('should invalidate cache on create', async () => {
+      const meal = { id: 'm1', userId, pantryItemId: null };
+      const createDto = { mealId: 'm1', typeOfMeal: TypeOfMeal.BREAKFAST };
+      const createdLog = { id: 'log1', userId, ...createDto };
+
+      mockMealRepository.findById.mockResolvedValue(meal);
+      mockMealLogRepository.create.mockResolvedValue(createdLog);
+
+      await service.create(createDto, userId);
+
+      // Should invalidate common cache patterns
+      expect(mockCacheManager.del).toHaveBeenCalledWith(
+        `meallog:list:${userId}:{}`,
+      );
+      expect(mockCacheManager.del).toHaveBeenCalledWith(
+        `meallog:list:${userId}:{"page":1,"limit":10}`,
+      );
+    });
+
+    it('should invalidate cache on update', async () => {
+      const logId = 'log-123';
+      const mealLog = {
+        id: logId,
+        userId,
+        mealId: 'm1',
+        typeOfMeal: TypeOfMeal.LUNCH,
+      };
+      const updateDto = { typeOfMeal: TypeOfMeal.DINNER };
+      const updatedLog = { ...mealLog, ...updateDto };
+
+      mockMealLogRepository.findById.mockResolvedValue(mealLog);
+      mockMealLogRepository.update.mockResolvedValue(updatedLog);
+
+      await service.update(logId, updateDto, userId);
+
+      // Should delete specific log cache
+      expect(mockCacheManager.del).toHaveBeenCalledWith(`meallog:${logId}`);
+      // Should invalidate list cache
+      expect(mockCacheManager.del).toHaveBeenCalledWith(
+        `meallog:list:${userId}:{}`,
+      );
+    });
+
+    it('should invalidate cache on delete', async () => {
+      const logId = 'log-123';
+      const mealLog = { id: logId, userId, mealId: 'm1' };
+
+      mockMealLogRepository.findById.mockResolvedValue(mealLog);
+      mockMealLogRepository.delete.mockResolvedValue(undefined);
+
+      await service.remove(logId, userId);
+
+      // Should delete specific log cache
+      expect(mockCacheManager.del).toHaveBeenCalledWith(`meallog:${logId}`);
+      // Should invalidate list cache
+      expect(mockCacheManager.del).toHaveBeenCalledWith(
+        `meallog:list:${userId}:{}`,
+      );
+    });
+
+    it('should use correct TTL for list cache', async () => {
+      const query = { page: 1, limit: 5 };
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 5,
+        totalPages: 0,
+      };
+
+      mockCacheManager.get.mockResolvedValueOnce(null);
+      mockMealLogRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
+
+      await service.findAll(userId, query);
+
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(Object),
+        300000, // 5 minutes = 300000ms
+      );
+    });
+
+    it('should use correct TTL for individual log cache', async () => {
+      const logId = 'log-123';
+      const mealLog = { id: logId, userId, mealId: 'm1' };
+
+      mockCacheManager.get.mockResolvedValueOnce(null);
+      mockMealLogRepository.findById.mockResolvedValue(mealLog);
+
+      await service.findOne(logId, userId);
+
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(Object),
+        900000, // 15 minutes = 900000ms
+      );
     });
   });
 });
