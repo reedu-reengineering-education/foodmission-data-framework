@@ -12,10 +12,9 @@ export class PantryRepository {
   constructor(private prisma: PrismaService) {}
 
   async findByUserId(userId: string): Promise<PantryWithRelations | null> {
-    return this.prisma.pantry.findFirst({
+    return this.prisma.pantry.findUnique({
       where: { userId },
       include: { items: { include: { food: true } } },
-      orderBy: { createdAt: 'desc' },
     });
   }
 

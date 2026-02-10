@@ -40,7 +40,7 @@ export class PantryController {
   @ApiOperation({
     summary: 'Create a new Pantry',
     description:
-      'Creates a new pantry for the authenticated user. Users can have multiple pantries. If a pantry with the same title already exists for the user, returns a conflict error. Requires user or admin role.',
+      'Creates a new pantry for the authenticated user. Each user can only have one pantry. If a pantry already exists for the user, returns a conflict error. Requires user or admin role.',
   })
   @ApiBody({ type: CreatePantryDto })
   @ApiResponse({
@@ -50,7 +50,7 @@ export class PantryController {
   })
   @ApiResponse({
     status: 409,
-    description: 'A pantry with this title already exists for this user.',
+    description: 'User already has a pantry.',
   })
   @ApiCrudErrorResponses()
   async create(
@@ -60,109 +60,73 @@ export class PantryController {
     return this.pantryService.create(createPantryDto, userId);
   }
 
-  @Get()
+  @Patch()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get all user pantries',
-    description:
-      'Retrieves all pantries for the authenticated user with all items. Returns an empty array if no pantries exist.',
+    summary: 'Update user pantry',
+    description: 'Updates the pantry for the authenticated user.',
   })
-  @ApiResponse({
-    status: 200,
-    description: 'List of pantries retrieved successfully',
-    type: [PantryResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAllPantries(
-    @CurrentUser('id') userId: string,
-  ): Promise<PantryResponseDto[]> {
-    return this.pantryService.getAllPantriesByUserId(userId);
-  }
-
-  @Get(':id')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get pantry by ID',
-    description:
-      'Retrieves a specific pantry by ID for the authenticated user. Only the pantry owner can access it.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiResponse({
-    status: 200,
-    description: 'Pantry retrieved successfully',
-    type: PantryResponseDto,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No permission - user does not own this pantry',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Pantry not found',
-  })
-  @ApiCrudErrorResponses()
-  async getPantryById(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') userId: string,
-  ): Promise<PantryResponseDto> {
-    return this.pantryService.getPantryById(id, userId);
-  }
-
-  @Patch(':id')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Update pantry',
-    description:
-      'Updates the pantry title. Only the pantry owner can update their pantry.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiBody({ type: UpdatePantryDto })
   @ApiResponse({
     status: 200,
     description: 'Pantry updated successfully',
     type: PantryResponseDto,
   })
   @ApiResponse({
-    status: 403,
-    description: 'No permission - user does not own this pantry',
+    status: 404,
+    description: 'Pantry not found',
   })
   @ApiCrudErrorResponses()
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
+  async updateUserPantry(
     @Body() updatePantryDto: UpdatePantryDto,
     @CurrentUser('id') userId: string,
   ): Promise<PantryResponseDto> {
-    return this.pantryService.update(id, updatePantryDto, userId);
+    return this.pantryService.updateUserPantry(updatePantryDto, userId);
   }
 
-  @Delete(':id')
+  @Delete()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Delete pantry',
-    description:
-      'Deletes a specific pantry by ID. Only the pantry owner can delete their pantry. All pantry items will be deleted as well (cascade delete).',
+    summary: 'Delete user pantry',
+    description: 'Deletes the pantry for the authenticated user.',
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'Pantry deleted successfully',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No permission - user does not own this pantry',
   })
   @ApiResponse({
     status: 404,
     description: 'Pantry not found',
   })
   @ApiCrudErrorResponses()
-  async remove(
-    @Param('id', ParseUUIDPipe) id: string,
+  async deleteUserPantry(
     @CurrentUser('id') userId: string,
   ): Promise<void> {
-    return this.pantryService.remove(id, userId);
+    return this.pantryService.deleteUserPantry(userId);
+  }
+
+  @Get()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get user pantry',
+    description: 'Retrieves the pantry for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Pantry retrieved successfully',
+    type: PantryResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Pantry not found',
+  })
+  @ApiCrudErrorResponses()
+  async getUserPantry(
+    @CurrentUser('id') userId: string,
+  ): Promise<PantryResponseDto> {
+    return this.pantryService.getPantryByUserId(userId);
   }
 }

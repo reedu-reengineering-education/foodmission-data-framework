@@ -28,40 +28,16 @@ export class PantryService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async getPantryById(
-    pantryId: string,
-    userId: string,
-  ): Promise<PantryResponseDto> {
-    this.logger.log(`Getting pantry ${pantryId} for user: ${userId}`);
-
-    const pantry = await this.pantryRepository.findById(pantryId);
-
-    if (!pantry) {
-      throw new NotFoundException('Pantry not found');
-    }
-
-    if (pantry.userId !== userId) {
-      throw new ForbiddenException(
-        'No permission - user does not own this pantry',
-      );
-    }
-
-    return this.transformToResponseDto(pantry);
-  }
-
-  async getAllPantriesByUserId(userId: string): Promise<PantryResponseDto[]> {
-    this.logger.log(`Getting all pantries for user: ${userId}`);
-
-    const pantries = await this.pantryRepository.findAllByUserId(userId);
-
-    return pantries.map((pantry) => this.transformToResponseDto(pantry));
-  }
-
   async create(
     createPantryDto: CreatePantryDto,
     userId: string,
   ): Promise<PantryResponseDto> {
     try {
+      const existingPantry = await this.pantryRepository.findByUserId(userId);
+      if (existingPantry) {
+        throw new ConflictException('User already has a pantry.');
+      }
+
       const pantry = await this.pantryRepository.create({
         ...createPantryDto,
         userId,
@@ -91,41 +67,44 @@ export class PantryService {
     }
   }
 
-  async update(
-    id: string,
+  async getPantryByUserId(userId: string): Promise<PantryResponseDto> {
+    this.logger.log(`Getting pantry for user: ${userId}`);
+
+    const pantry = await this.pantryRepository.findByUserId(userId);
+
+    if (!pantry) {
+      throw new NotFoundException('Pantry not found');
+    }
+
+    return this.transformToResponseDto(pantry);
+  }
+
+  async updateUserPantry(
     updatePantryDto: UpdatePantryDto,
-    userId?: string,
+    userId: string,
   ): Promise<PantryResponseDto> {
     try {
-      const existingList = await this.pantryRepository.findById(id);
-      if (!existingList) {
+      const existingPantry = await this.pantryRepository.findByUserId(userId);
+      if (!existingPantry) {
         throw new NotFoundException('Pantry not found');
       }
-      if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
-      }
 
-      const pantry = await this.pantryRepository.update(id, updatePantryDto);
+      const pantry = await this.pantryRepository.update(
+        existingPantry.id,
+        updatePantryDto,
+      );
       return this.transformToResponseDto(pantry);
     } catch (error) {
       if (
         error instanceof ConflictException ||
         error instanceof BadRequestException ||
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException
+        error instanceof NotFoundException
       ) {
         throw error;
       }
 
       if (error instanceof PrismaClientKnownRequestError) {
         const businessException = handlePrismaError(error, 'update', 'pantry');
-
-        if (businessException instanceof ResourceAlreadyExistsException) {
-          throw new ConflictException(
-            'A pantry with this title already exists for this user.',
-          );
-        }
-
         throw businessException;
       }
 
@@ -133,19 +112,13 @@ export class PantryService {
     }
   }
 
-  async remove(id: string, userId?: string): Promise<void> {
-    try {
-      const existingList = await this.pantryRepository.findById(id);
-      if (!existingList) {
-        throw new NotFoundException('pantry not found');
-      }
-      if (existingList.userId !== userId) {
-        throw new ForbiddenException('No premission');
-      }
-      await this.pantryRepository.delete(id);
-    } catch (error) {
-      handleServiceError(error, 'Failed to delete pantry');
+  async deleteUserPantry(userId: string): Promise<void> {
+    const existingPantry = await this.pantryRepository.findByUserId(userId);
+    if (!existingPantry) {
+      throw new NotFoundException('Pantry not found');
     }
+
+    await this.pantryRepository.delete(existingPantry.id);
   }
 
   async validatePantryExists(

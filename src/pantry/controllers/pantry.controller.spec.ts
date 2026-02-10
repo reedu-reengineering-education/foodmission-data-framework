@@ -46,72 +46,50 @@ describe('PantryController', () => {
     });
   });
 
-  describe('getAllPantries', () => {
+  describe('getUserPantry', () => {
     const userId = TEST_IDS.USER;
-    const mockResponse = PantryTestBuilder.createPantryResponseDtoArray(2);
+    const mockResponse = PantryTestBuilder.createPantryResponseDto();
 
     it('should call service with userId and return result', async () => {
-      mockPantryService.getAllPantriesByUserId.mockResolvedValue(mockResponse);
+      mockPantryService.getPantryByUserId.mockResolvedValue(mockResponse);
 
-      const result = await controller.getAllPantries(userId);
+      const result = await controller.getUserPantry(userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.getAllPantriesByUserId).toHaveBeenCalledWith(userId);
-      expect(service.getAllPantriesByUserId).toHaveBeenCalledTimes(1);
+      expect(service.getPantryByUserId).toHaveBeenCalledWith(userId);
+      expect(service.getPantryByUserId).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('getPantryById', () => {
+  describe('updateUserPantry', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
-    const mockResponse = PantryTestBuilder.createPantryResponseDto({
-      id: pantryId,
-      userId: userId,
-    });
-
-    it('should call service with pantryId and userId and return result', async () => {
-      mockPantryService.getPantryById.mockResolvedValue(mockResponse);
-
-      const result = await controller.getPantryById(pantryId, userId);
-
-      expect(result).toEqual(mockResponse);
-      expect(service.getPantryById).toHaveBeenCalledWith(pantryId, userId);
-      expect(service.getPantryById).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('update', () => {
-    const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const updateDto = PantryTestBuilder.createUpdatePantryDto();
     const mockResponse = PantryTestBuilder.createPantryResponseDto({
-      id: pantryId,
       userId: userId,
       title: updateDto.title,
     });
 
     it('should call service with correct parameters and return result', async () => {
-      mockPantryService.update.mockResolvedValue(mockResponse);
+      mockPantryService.updateUserPantry.mockResolvedValue(mockResponse);
 
-      const result = await controller.update(pantryId, updateDto, userId);
+      const result = await controller.updateUserPantry(updateDto, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.update).toHaveBeenCalledWith(pantryId, updateDto, userId);
-      expect(service.update).toHaveBeenCalledTimes(1);
+      expect(service.updateUserPantry).toHaveBeenCalledWith(updateDto, userId);
+      expect(service.updateUserPantry).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('remove', () => {
+  describe('deleteUserPantry', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
 
-    it('should call service with pantryId and userId', async () => {
-      mockPantryService.remove.mockResolvedValue(undefined);
+    it('should call service with userId', async () => {
+      mockPantryService.deleteUserPantry.mockResolvedValue(undefined);
 
-      await controller.remove(pantryId, userId);
+      await controller.deleteUserPantry(userId);
 
-      expect(service.remove).toHaveBeenCalledWith(pantryId, userId);
-      expect(service.remove).toHaveBeenCalledTimes(1);
+      expect(service.deleteUserPantry).toHaveBeenCalledWith(userId);
+      expect(service.deleteUserPantry).toHaveBeenCalledTimes(1);
     });
   });
 });

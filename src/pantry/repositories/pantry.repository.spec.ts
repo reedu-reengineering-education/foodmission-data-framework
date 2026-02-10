@@ -73,14 +73,14 @@ describe('PantryRepository', () => {
 
   describe('findByUserId', () => {
     it('should return a pantry with relations for a given userId', async () => {
-      mockPrismaService.pantry.findFirst.mockResolvedValue(
+      mockPrismaService.pantry.findUnique.mockResolvedValue(
         mockPantryWithRelations,
       );
 
       const result = await repository.findByUserId(TEST_IDS.USER);
 
       expect(result).toEqual(mockPantryWithRelations);
-      expect(prisma.pantry.findFirst).toHaveBeenCalledWith({
+      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
         where: { userId: TEST_IDS.USER },
         include: {
           items: {
@@ -89,18 +89,17 @@ describe('PantryRepository', () => {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
-      expect(prisma.pantry.findFirst).toHaveBeenCalledTimes(1);
+      expect(prisma.pantry.findUnique).toHaveBeenCalledTimes(1);
     });
 
     it('should return null if pantry does not exist for userId', async () => {
-      mockPrismaService.pantry.findFirst.mockResolvedValue(null);
+      mockPrismaService.pantry.findUnique.mockResolvedValue(null);
 
       const result = await repository.findByUserId('non-existent-user');
 
       expect(result).toBeNull();
-      expect(prisma.pantry.findFirst).toHaveBeenCalledWith({
+      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
         where: { userId: 'non-existent-user' },
         include: {
           items: {
@@ -109,7 +108,6 @@ describe('PantryRepository', () => {
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
       });
     });
   });
