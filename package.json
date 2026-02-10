@@ -80,9 +80,9 @@
     "dev:setup": "./scripts/dev-setup.sh",
     "dev:reset": "./scripts/db-reset.sh",
     "ci:test": "./scripts/ci-local-test.sh",
-    "docker:up": "docker compose -f docker-compose.dev.yml up -d",
-    "docker:down": "docker compose -f docker-compose.dev.yml down",
-    "docker:logs": "docker compose -f docker-compose.dev.yml logs -f",
+    "docker:up": "docker compose -f docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker-compose.yml down",
+    "docker:logs": "docker compose -f docker-compose.yml logs -f",
     "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
     "docs:generate:ci": "./scripts/ci-docs-generate.sh",
     "openapi:generate": "node scripts/generate-openapi.js",
@@ -151,5 +151,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.0"
+  },
+  "volta": {
+    "node": "22.22.0"
   }
 }

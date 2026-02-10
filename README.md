@@ -473,7 +473,7 @@ docker-compose up -d
 
 ```bash
 # Development
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Production
 docker-compose -f docker-compose.prod.yml up -d

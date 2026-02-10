@@ -171,7 +171,7 @@ docker run -d \
 #### Development
 
 ```yaml
-# docker-compose.dev.yml
+# docker-compose.yml
 version: '3.8'
 
 services:
@@ -258,7 +258,7 @@ services:
 
 ```bash
 # Development
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Production
 docker-compose -f docker-compose.prod.yml up -d
