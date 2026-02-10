@@ -73,7 +73,7 @@ This project supports custom Keycloak themes via .jar files from external reposi
 
 3. **Restart Keycloak**:
    ```bash
-   docker-compose -f docker-compose.dev.yml restart keycloak
+   docker-compose -f docker-compose.yml restart keycloak
    ```
 
 ### Option 2: Manual Theme Installation
