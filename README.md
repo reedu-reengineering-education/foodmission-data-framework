@@ -469,36 +469,15 @@ docker build -t foodmission-data-framework .
 docker-compose up -d
 ```
 
-#### Environment-Specific Deployments
+#### Docker Compose Services
 
-```bash
-# Development
-docker-compose -f docker-compose.yml up -d
+The `docker-compose.yml` file includes:
 
-# Production
-docker-compose -f docker-compose.prod.yml up -d
-```
+- **PostgreSQL**: Database server with test database initialization
+- **Redis**: Cache and session store
+- **Keycloak**: Authentication and authorization server
 
-### Kubernetes Deployment
-
-The project includes Kubernetes manifests in the `k8s/` directory:
-
-```bash
-# Deploy to Kubernetes
-kubectl apply -f k8s/
-
-# Or use the deployment script
-./k8s/deploy.sh
-```
-
-#### Kubernetes Resources
-
-- **Deployment**: Application pods with auto-scaling
-- **Service**: Load balancer for the application
-- **ConfigMap**: Environment configuration
-- **Secret**: Sensitive configuration data
-- **Ingress**: External access configuration
-- **HPA**: Horizontal Pod Autoscaler
+For production deployments, create a custom docker-compose file or use container orchestration platforms with appropriate environment configurations.
 
 ### CI/CD Pipeline
 
