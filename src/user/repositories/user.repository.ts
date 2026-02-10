@@ -8,10 +8,8 @@ export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    // Cast DTO to any to avoid tight coupling between DTO shapes and Prisma generated types
-    // (Prisma client types can be regenerated and are sometimes stricter than DTOs).
     return this.prisma.user.create({
-      data: createUserDto as any,
+      data: createUserDto,
     });
   }
 
@@ -44,7 +42,7 @@ export class UserRepository {
   async update(id: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
       where: { id },
-      data: updateUserDto as any,
+      data: updateUserDto,
     });
   }
 

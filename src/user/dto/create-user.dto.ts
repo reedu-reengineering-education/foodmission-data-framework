@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsObject,
   IsEnum,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -15,6 +16,35 @@ export enum GenderLocal {
   OTHER = 'OTHER',
   UNSPECIFIED = 'UNSPECIFIED',
   PREFER_NOT_TO_SAY = 'PREFER_NOT_TO_SAY',
+}
+
+// Mirror Prisma enums for validation and OpenAPI docs
+export enum ActivityLevel {
+  SEDENTARY = 'SEDENTARY',
+  LIGHT = 'LIGHT',
+  MODERATE = 'MODERATE',
+  ACTIVE = 'ACTIVE',
+  VERY_ACTIVE = 'VERY_ACTIVE',
+}
+
+export enum AnnualIncomeLevel {
+  BELOW_10000 = 'BELOW_10000',
+  FROM_10000_TO_19999 = 'FROM_10000_TO_19999',
+  FROM_20000_TO_34999 = 'FROM_20000_TO_34999',
+  FROM_35000_TO_49999 = 'FROM_35000_TO_49999',
+  FROM_50000_TO_74999 = 'FROM_50000_TO_74999',
+  FROM_75000_TO_99999 = 'FROM_75000_TO_99999',
+  ABOVE_100000 = 'ABOVE_100000',
+}
+
+export enum EducationLevel {
+  NO_FORMAL_EDUCATION = 'NO_FORMAL_EDUCATION',
+  PRIMARY = 'PRIMARY',
+  SECONDARY = 'SECONDARY',
+  VOCATIONAL = 'VOCATIONAL',
+  BACHELORS = 'BACHELORS',
+  MASTERS = 'MASTERS',
+  DOCTORATE = 'DOCTORATE',
 }
 
 export class CreateUserDto {
@@ -54,10 +84,10 @@ export class CreateUserDto {
   @IsString()
   username?: string;
 
-  @ApiProperty({ description: 'Date of birth (ISO date)', required: false })
+  @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
   @IsOptional()
-  @IsString()
-  dateOfBirth?: string; // Use ISO string for DTO; persisted as DateTime in DB
+  @IsNumber()
+  yearOfBirth?: number; // Persisted as yearOfBirth (Int) in DB
 
   @ApiProperty({ description: 'Country', required: false })
   @IsOptional()
@@ -91,12 +121,13 @@ export class CreateUserDto {
 
   @ApiProperty({ description: 'Annual income (optional)', required: false })
   @IsOptional()
-  annualIncome?: number;
+  @IsEnum(AnnualIncomeLevel)
+  annualIncome?: AnnualIncomeLevel;
 
   @ApiProperty({ description: 'Education level', required: false })
   @IsOptional()
-  @IsString()
-  educationLevel?: string;
+  @IsEnum(EducationLevel)
+  educationLevel?: EducationLevel;
 
   @ApiProperty({ description: 'Weight in kg', required: false })
   @IsOptional()
@@ -111,8 +142,8 @@ export class CreateUserDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
-  activityLevel?: string;
+  @IsEnum(ActivityLevel)
+  activityLevel?: ActivityLevel;
 
   @ApiProperty({ description: 'Health goals (JSON)', required: false })
   @IsOptional()

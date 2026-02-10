@@ -9,8 +9,6 @@ describe('Stateless Authentication', () => {
   beforeEach(() => {
     userProfileService = {
       getOrCreateProfile: jest.fn(),
-      updatePreferences: jest.fn(),
-      updateSettings: jest.fn(),
     } as any;
 
     // Mock environment variables
@@ -22,7 +20,8 @@ describe('Stateless Authentication', () => {
       FRONTEND_URL: 'http://localhost:3000',
     };
 
-    controller = new AuthController(userProfileService);
+    const authService = { register: jest.fn(), login: jest.fn() } as any;
+    controller = new AuthController(userProfileService as any, authService);
   });
 
   afterEach(() => {

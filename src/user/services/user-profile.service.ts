@@ -1,5 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
+import {
+  ActivityLevel,
+  AnnualIncomeLevel,
+  EducationLevel,
+} from '../dto/create-user.dto';
 
 export interface UserProfile {
   id: string;
@@ -10,18 +15,18 @@ export interface UserProfile {
   preferences?: Record<string, unknown>;
   settings?: Record<string, unknown>;
   username?: string;
-  dateOfBirth?: string;
+  yearOfBirth?: number;
   country?: string;
   region?: string;
   zip?: string;
   language?: string;
 
   gender?: string | null;
-  annualIncome?: number;
-  educationLevel?: string;
+  annualIncome?: AnnualIncomeLevel | null;
+  educationLevel?: EducationLevel | null;
   weightKg?: number;
   heightCm?: number;
-  activityLevel?: string;
+  activityLevel?: ActivityLevel | null;
   healthGoals?: Record<string, unknown>;
   nutritionTargets?: Record<string, unknown>;
 }
@@ -49,36 +54,6 @@ export class UserProfileService {
     }
 
     return this.formatUserProfile(user);
-  }
-
-  async updatePreferences(
-    keycloakId: string,
-    preferences: Record<string, unknown>,
-  ): Promise<UserProfile> {
-    const user = await this.userRepository.findByKeycloakId(keycloakId);
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    const updatedUser = await this.userRepository.update(user.id, {
-      preferences,
-    });
-
-    return this.formatUserProfile(updatedUser);
-  }
-
-  async updateSettings(
-    keycloakId: string,
-    settings: Record<string, unknown>,
-  ): Promise<UserProfile> {
-    const user = await this.userRepository.findByKeycloakId(keycloakId);
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    const updatedUser = await this.userRepository.update(user.id, { settings });
-
-    return this.formatUserProfile(updatedUser);
   }
 
   async updateProfile(keycloakId: string, payload: any): Promise<UserProfile> {
@@ -116,13 +91,14 @@ export class UserProfileService {
     if (payload.zip !== undefined) updateData.zip = payload.zip;
     if (payload.language !== undefined) updateData.language = payload.language;
 
-    if (payload.dateOfBirth) {
-      updateData.dateOfBirth = new Date(payload.dateOfBirth);
-    } else if (payload.age !== undefined && payload.age !== null) {
-      const now = new Date();
-      const dob = new Date(now);
-      dob.setUTCFullYear(dob.getUTCFullYear() - Number(payload.age));
-      updateData.dateOfBirth = dob;
+    // Accept yearOfBirth (preferred). Persist to DB as dateOfBirth = Jan 1 of year.
+    if (payload.yearOfBirth !== undefined && payload.yearOfBirth !== null) {
+      const y = Number(payload.yearOfBirth);
+      if (!Number.isFinite(y) || y < 1900 || y > new Date().getUTCFullYear()) {
+        throw new BadRequestException('Invalid yearOfBirth');
+      }
+      // Persist the numeric year into the DB field `yearOfBirth` (Int). Migration to apply by user.
+      updateData.yearOfBirth = Math.trunc(y);
     }
 
     const extendedFields = [
@@ -137,7 +113,41 @@ export class UserProfileService {
     ];
 
     for (const f of extendedFields) {
-      if (payload[f] !== undefined) updateData[f] = payload[f];
+      if (payload[f] === undefined) continue;
+
+      // Strict enum validation for the new profile fields.
+      if (f === 'annualIncome') {
+        if (!Object.values(AnnualIncomeLevel).includes(payload[f])) {
+          throw new BadRequestException(
+            `Invalid annualIncome value. Allowed: ${Object.values(AnnualIncomeLevel).join(', ')}`,
+          );
+        }
+        updateData.annualIncome = payload[f];
+        continue;
+      }
+
+      if (f === 'educationLevel') {
+        if (!Object.values(EducationLevel).includes(payload[f])) {
+          throw new BadRequestException(
+            `Invalid educationLevel value. Allowed: ${Object.values(EducationLevel).join(', ')}`,
+          );
+        }
+        updateData.educationLevel = payload[f];
+        continue;
+      }
+
+      if (f === 'activityLevel') {
+        if (!Object.values(ActivityLevel).includes(payload[f])) {
+          throw new BadRequestException(
+            `Invalid activityLevel value. Allowed: ${Object.values(ActivityLevel).join(', ')}`,
+          );
+        }
+        updateData.activityLevel = payload[f];
+        continue;
+      }
+
+      // Gender is validated at the DTO level; pass through other extended fields directly.
+      updateData[f] = payload[f];
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -153,7 +163,8 @@ export class UserProfileService {
     if (!user) return false;
     return Boolean(
       (user as any).username &&
-        (user as any).dateOfBirth &&
+        (user as any).yearOfBirth !== undefined &&
+        (user as any).yearOfBirth !== null &&
         (user as any).country &&
         (user as any).region &&
         (user as any).zip &&
@@ -162,9 +173,8 @@ export class UserProfileService {
   }
 
   private formatUserProfile(user: any): UserProfile {
-    const dobIso = user.dateOfBirth
-      ? new Date(user.dateOfBirth).toISOString()
-      : undefined;
+    // After migration the DB stores the year of birth as an integer in `yearOfBirth`.
+    const yearOfBirth = user.yearOfBirth ?? undefined;
 
     return {
       id: user.id,
@@ -175,7 +185,7 @@ export class UserProfileService {
       preferences: user.preferences as Record<string, unknown>,
       settings: user.settings as Record<string, unknown>,
       username: user.username,
-      dateOfBirth: dobIso,
+      yearOfBirth,
       country: user.country,
       region: user.region,
       zip: user.zip,

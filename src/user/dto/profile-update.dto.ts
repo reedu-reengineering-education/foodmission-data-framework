@@ -1,6 +1,17 @@
-import { IsString, IsOptional, IsNumber, IsObject, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsObject,
+  IsEnum,
+  IsNumber,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { GenderLocal } from './create-user.dto';
+import {
+  GenderLocal,
+  ActivityLevel,
+  AnnualIncomeLevel,
+  EducationLevel,
+} from './create-user.dto';
 
 export class ProfileUpdateDto {
   @ApiProperty({ description: 'Unique username', required: false })
@@ -8,10 +19,10 @@ export class ProfileUpdateDto {
   @IsString()
   username?: string;
 
-  @ApiProperty({ description: 'Age in years', required: false })
+  @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
   @IsOptional()
   @IsNumber()
-  age?: number;
+  yearOfBirth?: number;
 
   @ApiProperty({ description: 'Country', required: false })
   @IsOptional()
@@ -34,20 +45,32 @@ export class ProfileUpdateDto {
   language?: string;
 
   // Extended profile fields
-  @ApiProperty({ description: 'Gender', required: false, enum: Object.values(GenderLocal) })
+  @ApiProperty({
+    description: 'Gender',
+    required: false,
+    enum: Object.values(GenderLocal),
+  })
   @IsOptional()
   @IsEnum(GenderLocal)
   gender?: GenderLocal | null;
 
-  @ApiProperty({ description: 'Annual income', required: false })
+  @ApiProperty({
+    description: 'Annual income',
+    required: false,
+    enum: Object.values(AnnualIncomeLevel),
+  })
   @IsOptional()
-  @IsNumber()
-  annualIncome?: number;
+  @IsEnum(AnnualIncomeLevel)
+  annualIncome?: AnnualIncomeLevel;
 
-  @ApiProperty({ description: 'Education level', required: false })
+  @ApiProperty({
+    description: 'Education level',
+    required: false,
+    enum: Object.values(EducationLevel),
+  })
   @IsOptional()
-  @IsString()
-  educationLevel?: string;
+  @IsEnum(EducationLevel)
+  educationLevel?: EducationLevel;
 
   @ApiProperty({ description: 'Weight in kg', required: false })
   @IsOptional()
@@ -59,10 +82,14 @@ export class ProfileUpdateDto {
   @IsNumber()
   heightCm?: number;
 
-  @ApiProperty({ description: 'Activity level', required: false })
+  @ApiProperty({
+    description: 'Activity level',
+    required: false,
+    enum: Object.values(ActivityLevel),
+  })
   @IsOptional()
-  @IsString()
-  activityLevel?: string;
+  @IsEnum(ActivityLevel)
+  activityLevel?: ActivityLevel;
 
   @ApiProperty({ description: 'Health goals (JSON)', required: false })
   @IsOptional()

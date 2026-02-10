@@ -4,8 +4,6 @@ import {
   Request,
   UnauthorizedException,
   UseGuards,
-  Put,
-  Body,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,12 +11,15 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
-  ApiBody,
 } from '@nestjs/swagger';
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UserProfileService } from '../user/services/user-profile.service';
+import { Body, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 interface KeycloakUser {
   sub: string;
@@ -44,7 +45,10 @@ interface AuthenticatedRequest {
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
 export class AuthController {
-  constructor(private readonly userProfileService: UserProfileService) {}
+  constructor(
+    private readonly userProfileService: UserProfileService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get('info')
   @Public()
@@ -92,6 +96,7 @@ export class AuthController {
         email: { type: 'string', format: 'email' },
         firstName: { type: 'string' },
         lastName: { type: 'string' },
+        yearOfBirth: { type: 'int' },
         keycloakId: { type: 'string' },
         preferences: { type: 'object' },
         settings: { type: 'object' },
@@ -138,6 +143,22 @@ export class AuthController {
   })
   healthCheck() {
     return { status: 'ok', service: 'auth' };
+  }
+
+  @Post('register')
+  @Public()
+  @ApiOperation({
+    summary: 'Register a new user in Keycloak and create local user',
+  })
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  @Post('login')
+  @Public()
+  @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
+  async login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
   }
 
   @Get('token-info')

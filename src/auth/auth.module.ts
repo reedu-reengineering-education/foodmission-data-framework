@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import {
   KeycloakConnectModule,
@@ -7,6 +8,7 @@ import {
   AuthGuard,
 } from 'nest-keycloak-connect';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { UserContextService } from './user-context.service';
 import { DatabaseModule } from '../database/database.module';
 import { UserModule } from '../user/user.module';
@@ -15,6 +17,7 @@ import { UserModule } from '../user/user.module';
   imports: [
     DatabaseModule,
     UserModule,
+    HttpModule,
     ConfigModule,
     KeycloakConnectModule.register({
       authServerUrl: process.env.KEYCLOAK_BASE_URL!,
@@ -28,6 +31,7 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [AuthController],
   providers: [
+    AuthService,
     UserContextService,
     // Global guards for automatic JWT validation
     {
