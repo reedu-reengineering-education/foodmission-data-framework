@@ -14,13 +14,13 @@ import {
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
-import { CreateShoppingListItemDto } from '../dto/create-soppingListItem.dto';
+import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
 import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
-} from '../dto/response-soppingListItem.dto';
-import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
+} from '../dto/response-shoppingListItem.dto';
+import { UpdateShoppingListItemDto } from '../dto/update-shoppingListItem.dto';
 import { plainToInstance } from 'class-transformer';
 import {
   ShoppingListItemRepository,

@@ -3969,7 +3969,6 @@ components:
           example: uuid-food-id
       required:
         - quantity
-        - unit
         - checked
         - shoppingListId
         - foodId

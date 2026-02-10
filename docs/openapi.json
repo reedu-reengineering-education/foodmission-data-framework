@@ -6132,7 +6132,6 @@
         },
         "required": [
           "quantity",
-          "unit",
           "checked",
           "shoppingListId",
           "foodId"

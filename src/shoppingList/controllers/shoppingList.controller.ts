@@ -32,7 +32,7 @@ import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
-import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-soppingListItem.dto';
+import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
 
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')
