@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { normalizePagination } from '../../common/utils/pagination';
 
 type Food = Awaited<ReturnType<PrismaService['food']['create']>>;
 import {
@@ -27,16 +29,24 @@ export interface UpdateFoodDto {
 
 @Injectable()
 export class FoodRepository
-  implements BaseRepository<Food, CreateFoodDto, UpdateFoodDto>
+  implements
+    BaseRepository<Food, CreateFoodDto, UpdateFoodDto, Prisma.FoodWhereInput>
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(options: FindAllOptions = {}): Promise<Food[]> {
+  async findAll(
+    options: FindAllOptions<
+      Prisma.FoodWhereInput,
+      Prisma.FoodOrderByWithRelationInput,
+      Prisma.FoodInclude
+    > = {},
+  ): Promise<Food[]> {
     return await this.prisma.food.findMany({
       skip: options.skip,
       take: options.take,
       where: options.where,
       orderBy: options.orderBy || { createdAt: 'desc' },
+      include: options.include,
     });
   }
 
@@ -59,35 +69,41 @@ export class FoodRepository
   }
 
   async findWithPagination(
-    options: FindAllOptions,
+    options: FindAllOptions<
+      Prisma.FoodWhereInput,
+      Prisma.FoodOrderByWithRelationInput,
+      Prisma.FoodInclude
+    > = {},
   ): Promise<PaginatedResult<Food>> {
-    const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip = 0, take = 10, where, orderBy, include } = options;
+    const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
       this.prisma.food.findMany({
-        skip,
-        take,
+        skip: safeSkip,
+        take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
+        include,
       }),
       this.count(where),
     ]);
 
-    const page = Math.floor(skip / take) + 1;
-    const totalPages = Math.ceil(total / take);
+    const page = Math.floor(safeSkip / safeTake) + 1;
+    const totalPages = Math.ceil(total / safeTake);
 
     return {
       data,
       total,
       page,
-      limit: take,
+      limit: safeTake,
       totalPages,
     };
   }
 
   async searchByName(
     name: string,
-    options: FindAllOptions = {},
+    options: FindAllOptions<Prisma.FoodWhereInput> = {},
   ): Promise<Food[]> {
     return await this.prisma.food.findMany({
       where: {
@@ -95,7 +111,7 @@ export class FoodRepository
           contains: name,
           mode: 'insensitive',
         },
-        ...options.where,
+        ...(options.where || {}),
       },
       skip: options.skip,
       take: options.take,
@@ -147,7 +163,7 @@ export class FoodRepository
     });
   }
 
-  async count(where?: any): Promise<number> {
+  async count(where?: Prisma.FoodWhereInput): Promise<number> {
     return await this.prisma.food.count({ where });
   }
 }
