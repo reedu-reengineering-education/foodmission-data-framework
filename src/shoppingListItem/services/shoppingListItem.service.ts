@@ -19,8 +19,8 @@ import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
-} from '../dto/response-soppingListItem.dto';
-import { UpdateShoppingListItemDto } from '../dto/update-soppingListItem.dto';
+} from '../dto/response-shoppingListItem.dto';
+import { UpdateShoppingListItemDto } from '../dto/update-shoppingListItem.dto';
 import { plainToInstance } from 'class-transformer';
 import {
   ShoppingListItemRepository,
