@@ -19,7 +19,8 @@ async function bootstrap() {
   app.enableCors(securityService.getCorsConfiguration());
 
   // Apply global exception filters for better error formatting
-  app.useGlobalFilters(new ValidationExceptionFilter());
+  const loggingService = app.get('LoggingService');
+  app.useGlobalFilters(new ValidationExceptionFilter(loggingService));
 
   // Enable validation pipes globally with input sanitization
   app.useGlobalPipes(
