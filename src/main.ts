@@ -31,7 +31,7 @@ async function bootstrap() {
       disableErrorMessages: false,
       validationError: {
         target: false,
-        value: true,
+        value: false,
       },
     }),
   );
