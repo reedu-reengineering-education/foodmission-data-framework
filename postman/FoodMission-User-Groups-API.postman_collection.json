@@ -1,0 +1,547 @@
+{
+	"info": {
+		"_postman_id": "user-groups-api-collection",
+		"name": "FoodMission User Groups API",
+		"description": "Collection for FoodMission User Groups API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment.\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/...`\n\n**Features:**\n- Create and manage groups for family/household collaboration\n- Join groups via invite codes\n- Add virtual members (members without accounts, e.g., children)\n- Admin vs Member roles for permission control",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Group Management",
+			"item": [
+				{
+					"name": "Create Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My Family\",\n  \"description\": \"Our family shopping and meal planning group\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups"
+							]
+						},
+						"description": "Creates a new group. The creator becomes the first admin automatically. Returns the group with its unique invite code.\n\n**Rate Limit:** 5 requests per minute"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('group_id', jsonData.id);",
+									"    pm.environment.set('invite_code', jsonData.inviteCode);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Get All My Groups",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups"
+							]
+						},
+						"description": "Retrieves all groups where the authenticated user is a member."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (Array.isArray(jsonData) && jsonData.length > 0) {",
+									"        pm.environment.set('group_id', jsonData[0].id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Group by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Retrieves a specific group by ID. Returns 403 if not a member."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Family Name\",\n  \"description\": \"Updated description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Updates group name and/or description. **Admin only.**"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Deletes a group and all its memberships/virtual members. **Admin only.**"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invite & Join",
+			"item": [
+				{
+					"name": "Join Group by Invite Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"inviteCode\": \"{{invite_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/join",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"join"
+							]
+						},
+						"description": "Joins an existing group using the invite code. Returns 409 if already a member.\n\n**Rate Limit:** 10 requests per minute"
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/leave",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"leave"
+							]
+						},
+						"description": "Leaves a group. Last admin cannot leave without transferring rights."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invite Code",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/invite-code",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"invite-code"
+							]
+						},
+						"description": "Returns the current invite code for the group. **Admin only.**"
+					},
+					"response": []
+				},
+				{
+					"name": "Regenerate Invite Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/regenerate-code",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"regenerate-code"
+							]
+						},
+						"description": "Generates a new invite code, invalidating the old one. **Admin only.**\n\n**Rate Limit:** 3 requests per minute"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('invite_code', jsonData.inviteCode);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Member Management",
+			"item": [
+				{
+					"name": "Get All Members",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/members",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"members"
+							]
+						},
+						"description": "Returns all registered members and virtual members of the group."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/members/{{membership_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"members",
+								"{{membership_id}}"
+							]
+						},
+						"description": "Removes a registered member from the group. **Admin only.**"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Virtual Members",
+			"item": [
+				{
+					"name": "Add Virtual Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nickname\": \"Little Timmy\",\n  \"age\": 8,\n  \"gender\": \"MALE\",\n  \"physicalActivityLevel\": \"VERY_ACTIVE\",\n  \"dietaryPreference\": \"NONE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"virtual-members"
+							]
+						},
+						"description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.\n\n**Available enums:**\n- gender: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY\n- physicalActivityLevel: SEDENTARY, LIGHTLY_ACTIVE, MODERATELY_ACTIVE, VERY_ACTIVE, EXTREMELY_ACTIVE\n- dietaryPreference: NONE, VEGETARIAN, VEGAN, PESCATARIAN, KETO, PALEO, GLUTEN_FREE, LACTOSE_FREE, HALAL, KOSHER, OTHER\n\n**Rate Limit:** 10 requests per minute"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('virtual_member_id', jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Virtual Member",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nickname\": \"Timmy (updated)\",\n  \"age\": 9\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members/{{virtual_member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"virtual-members",
+								"{{virtual_member_id}}"
+							]
+						},
+						"description": "Updates virtual member information. Any group member can update."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Virtual Member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members/{{virtual_member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"virtual-members",
+								"{{virtual_member_id}}"
+							]
+						},
+						"description": "Removes a virtual member from the group. Any group member can remove."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000"
+		}
+	]
+}

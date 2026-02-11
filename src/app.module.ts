@@ -24,6 +24,7 @@ import { MealModule } from './meal/meal.module';
 import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
+import { UserGroupModule } from './userGroup/userGroup.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     MealItemModule,
     RecipeModule,
     MealLogModule,
+    UserGroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
