@@ -28,21 +28,22 @@ model Food {
 }
 
 model User {
-  id                             String         @id @default(uuid())
-  keycloakId                     String         @unique
-  email                          String         @unique
-  firstName                      String
-  lastName                       String
-  preferences                    Json           @default("{}") // Flexible JSON for app-specific preferences
-  settings                       Json           @default("{}") // Flexible JSON for app-specific settings
-  createdAt                      DateTime       @default(now())
-  updatedAt                      DateTime       @updatedAt
-  shouldAutoAddToPantry Boolean        @default(true)
-  shoppingList                   ShoppingList[]
-  pantry                         Pantry[]
-  recipes                        Recipe[]
-  meals                          Meal[]
-  mealLogs                       MealLog[]
+  id                    String            @id @default(uuid())
+  keycloakId            String            @unique
+  email                 String            @unique
+  firstName             String
+  lastName              String
+  preferences           Json              @default("{}") // Flexible JSON for app-specific preferences
+  settings              Json              @default("{}") // Flexible JSON for app-specific settings
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  shouldAutoAddToPantry Boolean           @default(true)
+  shoppingList          ShoppingList[]
+  pantry                Pantry[]
+  recipes               Recipe[]
+  meals                 Meal[]
+  mealLogs              MealLog[]
+  groupMemberships      GroupMembership[]
 
   @@index([email])
   @@index([createdAt])
@@ -211,4 +212,99 @@ model MealLog {
   @@index([userId, timestamp])
   @@index([typeOfMeal])
   @@map("meal_logs")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+enum AnnualIncomeLevel {
+  BELOW_10000
+  FROM_10000_TO_19999
+  FROM_20000_TO_34999
+  FROM_35000_TO_49999
+  FROM_50000_TO_74999
+  FROM_75000_TO_99999
+  ABOVE_100000
+}
+
+enum DietaryPreference {
+  NONE
+  VEGETARIAN
+  VEGAN
+  PESCATARIAN
+  KETO
+  PALEO
+  GLUTEN_FREE
+  LACTOSE_FREE
+  HALAL
+  KOSHER
+  OTHER
+}
+
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+model UserGroup {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  inviteCode  String   @unique @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  memberships    GroupMembership[]
+  virtualMembers VirtualMember[]
+
+  @@index([inviteCode])
+  @@index([createdBy])
+  @@map("user_groups")
+}
+
+model GroupMembership {
+  id       String    @id @default(uuid())
+  userId   String
+  groupId  String
+  role     GroupRole @default(MEMBER)
+  joinedAt DateTime  @default(now())
+
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+  @@index([groupId])
+  @@map("group_memberships")
+}
+
+model VirtualMember {
+  id                    String                 @id @default(uuid())
+  groupId               String
+  nickname              String
+  age                   Int?
+  gender                Gender?
+  preferences           Json                  @default("{}")
+  activityLevel         ActivityLevel?
+  annualIncome          AnnualIncomeLevel?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  createdBy             String
+
+  group UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@map("virtual_members")
 }
