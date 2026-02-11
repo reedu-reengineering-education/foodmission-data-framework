@@ -3,20 +3,29 @@ import {
   Catch,
   ArgumentsHost,
   BadRequestException,
+  Injectable,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { LoggingService } from '../logging/logging.service';
+import { generateCorrelationId } from '../utils/error.utils';
 
+@Injectable()
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
+  constructor(private readonly loggingService: LoggingService) {}
+
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest();
+    const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
     // Extract validation errors
     const validationErrors = this.formatValidationErrors(exceptionResponse);
+
+    // Get correlation ID from various sources, consistent with GlobalExceptionFilter
+    const correlationId = this.getCorrelationId(request);
 
     response.status(status).json({
       statusCode: status,
@@ -24,7 +33,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       error: 'VALIDATION_ERROR',
       timestamp: new Date().toISOString(),
       path: request.url,
-      correlationId: request.headers['x-correlation-id'] || this.generateCorrelationId(),
+      correlationId,
       details: {
         errors: validationErrors,
       },
@@ -41,14 +50,14 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         if (typeof error === 'string') {
           return error;
         }
-        
+
         // Handle class-validator error format
         if (error.constraints) {
           const field = error.property;
           const constraints = Object.values(error.constraints);
           return constraints.map((msg: any) => `${field}: ${msg}`).join(', ');
         }
-        
+
         return JSON.stringify(error);
       });
     }
@@ -62,7 +71,14 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     return ['Validation failed'];
   }
 
-  private generateCorrelationId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  private getCorrelationId(request: Request): string {
+    // Try to get correlation ID from various sources, matching GlobalExceptionFilter logic
+    return (
+      (request.headers['x-correlation-id'] as string) ||
+      (request.headers['x-request-id'] as string) ||
+      (request as any).correlationId ||
+      this.loggingService.getCorrelationId() ||
+      generateCorrelationId()
+    );
   }
 }
