@@ -102,10 +102,11 @@ LOG_LEVEL=debug
 
 ```
 foodmission-data-framework/
-├── .devcontainer/          # DevContainer configuration
 ├── .github/               # GitHub Actions workflows
+├── backups/               # Backup files
 ├── docs/                  # Documentation
-├── k8s/                   # Kubernetes manifests
+├── keycloak/              # Keycloak configuration
+├── postman/               # Postman collections
 ├── prisma/                # Database schema and migrations
 │   ├── migrations/        # Database migrations
 │   ├── seeds/            # Database seed files
@@ -127,7 +128,7 @@ foodmission-data-framework/
 │   ├── *.e2e-spec.ts     # End-to-end tests
 │   ├── *.integration.spec.ts # Integration tests
 │   └── setup.ts          # Test setup
-├── docker-compose.dev.yml # Development services
+├── docker-compose.yml # Development services
 ├── Dockerfile            # Container definition
 ├── jest.config.js        # Jest configuration
 ├── package.json          # Dependencies and scripts

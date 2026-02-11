@@ -31,7 +31,7 @@ check_database() {
     
     if ! pg_isready -h localhost -p 5432 -U postgres > /dev/null 2>&1; then
         echo -e "${RED}❌ PostgreSQL is not running. Please start PostgreSQL first.${NC}"
-        echo "You can start it with: docker-compose -f docker-compose.dev.yml up -d postgres"
+        echo "You can start it with: docker compose -f docker-compose.yml up -d postgres"
         exit 1
     fi
     

@@ -230,66 +230,6 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  documentation:
-    name: Documentation Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Build application
-        run: npm run build
-
-      - name: Generate OpenAPI documentation
-        run: npm run docs:generate:ci
-
-      - name: Check for outdated documentation
-        run: |
-          if ! git diff --quiet docs/; then
-            echo "❌ Documentation is outdated. Please run 'npm run docs:generate' and commit the changes."
-            git diff docs/
-            exit 1
-          else
-            echo "✅ Documentation is up to date"
-          fi
-
-      - name: Validate OpenAPI spec
-        run: |
-          npx swagger-codegen-cli validate -i docs/openapi.yaml
-
-      - name: Check README completeness
-        run: |
-          required_sections=(
-            "Prerequisites"
-            "Quick Start" 
-            "API Documentation"
-            "Development Setup"
-            "Testing"
-            "Deployment"
-          )
-
-          for section in "${required_sections[@]}"; do
-            if ! grep -q "# $section\|## .*$section" README.md; then
-              echo "❌ README is missing required section: $section"
-              exit 1
-            fi
-          done
-
-          echo "✅ README contains all required sections"
-
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest

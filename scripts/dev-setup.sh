@@ -14,11 +14,11 @@ fi
 
 # Start services
 echo "📦 Starting Docker services..."
-docker compose -f docker-compose.dev.yml up -d postgres redis
+docker compose -f docker-compose.yml up -d postgres redis
 
 # Wait for PostgreSQL to be ready
 echo "⏳ Waiting for PostgreSQL to be ready..."
-until docker compose -f docker-compose.dev.yml exec postgres pg_isready -U postgres; do
+until docker compose -f docker-compose.yml exec postgres pg_isready -U postgres; do
     sleep 2
 done
 
