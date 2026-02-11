@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
+import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,9 @@ async function bootstrap() {
   // Enable CORS with security configuration
   app.enableCors(securityService.getCorsConfiguration());
 
+  // Apply global exception filters for better error formatting
+  app.useGlobalFilters(new ValidationExceptionFilter());
+
   // Enable validation pipes globally with input sanitization
   app.useGlobalPipes(
     new InputSanitizationPipe(securityService),
@@ -24,10 +28,10 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-      disableErrorMessages: process.env.NODE_ENV === 'production',
+      disableErrorMessages: false,
       validationError: {
         target: false,
-        value: false,
+        value: true,
       },
     }),
   );
