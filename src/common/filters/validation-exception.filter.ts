@@ -12,8 +12,15 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest();
-    const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
+
+    // Only handle validation pipe exceptions (those with array of validation messages)
+    // Let other BadRequestExceptions fall through to global exception handler
+    if (!this.isValidationPipeException(exceptionResponse)) {
+      throw exception;
+    }
+
+    const status = exception.getStatus();
 
     // Extract validation errors
     const validationErrors = this.formatValidationErrors(exceptionResponse);
@@ -29,6 +36,19 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         errors: validationErrors,
       },
     });
+  }
+
+  private isValidationPipeException(exceptionResponse: any): boolean {
+    // ValidationPipe exceptions have a specific structure:
+    // - response is an object with a 'message' property
+    // - the 'message' property is an array of strings (validation errors)
+    return (
+      typeof exceptionResponse === 'object' &&
+      exceptionResponse !== null &&
+      'message' in exceptionResponse &&
+      Array.isArray(exceptionResponse.message) &&
+      exceptionResponse.message.length > 0
+    );
   }
 
   private formatValidationErrors(exceptionResponse: any): string[] {
