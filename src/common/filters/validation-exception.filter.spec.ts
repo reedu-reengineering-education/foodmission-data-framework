@@ -2,16 +2,28 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { ArgumentsHost } from '@nestjs/common';
 import { ValidationExceptionFilter } from './validation-exception.filter';
+import { LoggingService } from '../logging/logging.service';
 
 describe('ValidationExceptionFilter', () => {
   let filter: ValidationExceptionFilter;
   let mockResponse: any;
   let mockRequest: any;
   let mockHost: ArgumentsHost;
+  let mockLoggingService: jest.Mocked<Partial<LoggingService>>;
 
   beforeEach(async () => {
+    mockLoggingService = {
+      getCorrelationId: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ValidationExceptionFilter],
+      providers: [
+        ValidationExceptionFilter,
+        {
+          provide: LoggingService,
+          useValue: mockLoggingService,
+        },
+      ],
     }).compile();
 
     filter = module.get<ValidationExceptionFilter>(ValidationExceptionFilter);
