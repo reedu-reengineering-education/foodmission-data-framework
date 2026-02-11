@@ -5,6 +5,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { of } from 'rxjs';
 import { CacheInterceptor } from './cache.interceptor';
 import { LoggingService } from '../common/logging/logging.service';
+import { createMockLoggingService } from '../common/testing';
 
 describe('CacheInterceptor', () => {
   let interceptor: CacheInterceptor;
@@ -23,10 +24,7 @@ describe('CacheInterceptor', () => {
       getAllAndOverride: jest.fn(),
     };
 
-    const mockLoggingService = {
-      debug: jest.fn(),
-      error: jest.fn(),
-    };
+    const mockLoggingService = createMockLoggingService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

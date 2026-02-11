@@ -5,6 +5,7 @@ import { GlobalExceptionFilter } from './global-exception.filter';
 import { LoggingService } from '../logging/logging.service';
 import { ResourceNotFoundException } from '../exceptions/business.exception';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { createMockLoggingService } from '../testing/mock-factories';
 
 describe('GlobalExceptionFilter', () => {
   let filter: GlobalExceptionFilter;
@@ -14,14 +15,7 @@ describe('GlobalExceptionFilter', () => {
   let mockHost: ArgumentsHost;
 
   beforeEach(async () => {
-    const mockLoggingService = {
-      setCorrelationId: jest.fn(),
-      getCorrelationId: jest.fn(),
-      setRequestContext: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      logWithMeta: jest.fn(),
-    };
+    const mockLoggingService = createMockLoggingService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
