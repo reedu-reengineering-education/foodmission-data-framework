@@ -78,8 +78,6 @@ export class UserProfileService {
     const badKeys = Object.keys(payload || {}).filter((k) =>
       forbidden.includes(k),
     );
-    console.log(payload);
-    console.log(badKeys);
     if (badKeys.length > 0) {
       throw new BadRequestException(
         `Attempted to update protected fields: ${badKeys.join(', ')}`,

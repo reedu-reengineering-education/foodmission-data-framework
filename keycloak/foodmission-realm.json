@@ -3,16 +3,7 @@
   "realm": "foodmission",
   "displayName": "FOODMISSION",
   "loginTheme": "keycloakify-foodmission-ui",
-  "supportedLocales": [
-    "en",
-    "no",
-    "es",
-    "it",
-    "sl",
-    "pl",
-    "nl",
-    "el"
-  ],
+  "supportedLocales": ["en", "no", "es", "it", "sl", "pl", "nl", "el"],
   "internationalizationEnabled": true,
   "enabled": true,
   "sslRequired": "external",
@@ -119,30 +110,53 @@
             "claim.name": "email",
             "jsonType.label": "String"
           }
-        },
+        }
+      ]
+    },
+    {
+      "clientId": "foodmission-service",
+      "name": "FOODMISSION Service Account",
+      "description": "Service account to manage users",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "foodmission-service-secret-2026",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:3001/*",
+        "http://127.0.0.1:3000/*",
+        "http://127.0.0.1:3001/*"
+      ],
+      "webOrigins": [],
+      "fullScopeAllowed": false,
+      "protocolMappers": [
         {
-          "name": "given name",
+          "name": "username",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-property-mapper",
           "config": {
             "userinfo.token.claim": "true",
-            "user.attribute": "firstName",
+            "user.attribute": "username",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "given_name",
+            "claim.name": "preferred_username",
             "jsonType.label": "String"
           }
         },
         {
-          "name": "family name",
+          "name": "email",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-property-mapper",
           "config": {
             "userinfo.token.claim": "true",
-            "user.attribute": "lastName",
+            "user.attribute": "email",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "family_name",
+            "claim.name": "email",
             "jsonType.label": "String"
           }
         }

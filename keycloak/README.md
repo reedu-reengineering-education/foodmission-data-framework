@@ -162,7 +162,7 @@ curl -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
 - **Brute Force Protection**: Disabled for development
 - **Email Verification**: Disabled for development
 - **Remember Me**: Disabled
-- **User Registration**: Disabled (admin creates users)
+- **User Registration**: Limited through service account
 
 ## 🔄 Updating the Configuration
 

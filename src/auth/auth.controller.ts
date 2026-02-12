@@ -20,6 +20,7 @@ import { Body, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
 
 interface KeycloakUser {
   sub: string;
@@ -159,6 +160,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('logout')
+  @Public()
+  @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
+  async logout(@Body() dto: LogoutDto) {
+    return this.authService.logout(dto.token, dto.tokenTypeHint);
   }
 
   @Get('token-info')

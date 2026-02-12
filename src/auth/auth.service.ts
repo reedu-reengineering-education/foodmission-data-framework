@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { AxiosResponse } from 'axios';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UserRepository } from '../user/repositories/user.repository';
@@ -34,9 +35,12 @@ export class AuthService {
     // If admin registration fails and self-registration is enabled, fall back to public registration.
     const params = new URLSearchParams();
     params.append('grant_type', 'client_credentials');
-    params.append('client_id', process.env.KEYCLOAK_CLIENT_ID || '');
-    if (process.env.KEYCLOAK_CLIENT_SECRET)
-      params.append('client_secret', process.env.KEYCLOAK_CLIENT_SECRET);
+    params.append('client_id', process.env.KEYCLOAK_SERVICE_CLIENT_ID || '');
+    if (process.env.KEYCLOAK_SERVICE_CLIENT_SECRET)
+      params.append(
+        'client_secret',
+        process.env.KEYCLOAK_SERVICE_CLIENT_SECRET,
+      );
 
     let tokenResp: any;
     try {
@@ -225,6 +229,44 @@ export class AuthService {
       throw new InternalServerErrorException(
         'Failed to persist local user after Keycloak registration',
       );
+    }
+  }
+
+  /**
+   * Revoke a token at Keycloak (refresh or access token) using client credentials.
+   * Returns true if Keycloak returned a 200 response.
+   */
+  async logout(
+    token: string,
+    tokenTypeHint?: string,
+  ): Promise<{ revoked: boolean }> {
+    const revokeEndpoint = `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/revoke`;
+
+    const params = new URLSearchParams();
+    params.append('token', token);
+    if (tokenTypeHint) params.append('token_type_hint', tokenTypeHint);
+    // Use service client credentials to authenticate revocation request
+    const clientId = process.env.KEYCLOAK_CLIENT_ID;
+    const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET;
+
+    if (clientId) params.append('client_id', clientId);
+    if (clientSecret) params.append('client_secret', clientSecret);
+
+    try {
+      const resp: AxiosResponse = await firstValueFrom(
+        this.httpService.post(revokeEndpoint, params.toString(), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        }),
+      );
+
+      // Keycloak returns 200 on success (empty body)
+      return { revoked: resp.status === 200 };
+    } catch (err: any) {
+      this.logger.warn(
+        'Keycloak token revoke error',
+        err?.response?.data || err?.message || err,
+      );
+      return { revoked: false };
     }
   }
 
