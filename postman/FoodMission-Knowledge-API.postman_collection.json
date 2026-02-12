@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "knowledge-api-collection",
+		"name": "FoodMission Knowledge API",
+		"description": "Collection for FoodMission Knowledge/Quiz API endpoints.\n\n**IMPORTANT:** Make sure the `base_url` variable is set to `http://localhost:3000` (or your backend server URL) in your Postman environment.\n\nThe API uses the global prefix `/api/v1`, so all endpoints are under `/api/v1/knowledge`.\n\n**Authentication:** All endpoints require a valid JWT token with 'user' or 'admin' role.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Knowledge/Quiz",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Nutrition Basics Quiz\",\n  \"description\": \"Test your knowledge about basic nutrition concepts\",\n  \"available\": true,\n  \"content\": {\n    \"questions\": [\n      {\n        \"question\": \"Which vitamin is primarily obtained from sunlight?\",\n        \"options\": [\"Vitamin A\", \"Vitamin B12\", \"Vitamin C\", \"Vitamin D\"],\n        \"correctAnswer\": \"Vitamin D\"\n      },\n      {\n        \"question\": \"What is the main function of protein in the body?\",\n        \"options\": [\"Energy source\", \"Building and repairing tissues\", \"Storing vitamins\", \"Regulating body temperature\"],\n        \"correctAnswer\": \"Building and repairing tissues\"\n      },\n      {\n        \"question\": \"How many calories are in one gram of fat?\",\n        \"options\": [\"4 calories\", \"7 calories\", \"9 calories\", \"11 calories\"],\n        \"correctAnswer\": \"9 calories\"\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge"
+					]
+				},
+				"description": "Creates a new knowledge/quiz item. Requires authentication.\n\n**Rate Limit:** 5 requests per minute\n\n**Validation:**\n- At least 2 options per question\n- correctAnswer must be one of the options"
+			},
+			"response": [],
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const jsonData = pm.response.json();",
+							"    pm.environment.set('knowledge_id', jsonData.id);",
+							"    console.log('Knowledge ID saved:', jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		},
+		{
+			"name": "Get All Knowledge (Paginated)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge?page=1&limit=10&available=true",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1",
+							"description": "Page number (default: 1)"
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"description": "Items per page (default: 10, max: 100)"
+						},
+						{
+							"key": "available",
+							"value": "true",
+							"description": "Filter by availability (optional)"
+						}
+					]
+				},
+				"description": "Retrieves a paginated list of knowledge items with user progress if available.\n\n**Rate Limit:** 10 requests per minute\n\n**Query Parameters:**\n- `page`: Page number\n- `limit`: Items per page (max 100)\n- `available`: Filter by availability (true/false)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Knowledge by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}"
+					]
+				},
+				"description": "Retrieves a specific knowledge item by ID with user progress if available.\n\n**Rate Limit:** 10 requests per minute"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Knowledge",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Advanced Nutrition Quiz\",\n  \"description\": \"Updated description with more advanced topics\",\n  \"available\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}"
+					]
+				},
+				"description": "Updates a knowledge item. Only the owner can update.\n\n**Rate Limit:** 5 requests per minute\n\n**Note:** All fields are optional. Only provided fields will be updated."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Knowledge Content",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"content\": {\n    \"questions\": [\n      {\n        \"question\": \"What is the recommended daily water intake?\",\n        \"options\": [\"1 liter\", \"2 liters\", \"3 liters\", \"4 liters\"],\n        \"correctAnswer\": \"2 liters\"\n      },\n      {\n        \"question\": \"Which mineral is essential for bone health?\",\n        \"options\": [\"Iron\", \"Calcium\", \"Zinc\", \"Magnesium\"],\n        \"correctAnswer\": \"Calcium\"\n      }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}"
+					]
+				},
+				"description": "Updates the quiz content (questions). Only the owner can update.\n\n**Rate Limit:** 5 requests per minute"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Knowledge",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}"
+					]
+				},
+				"description": "Deletes a knowledge item. Only the owner can delete.\n\n**Rate Limit:** 5 requests per minute\n\n**Cascade:** Also deletes all user progress for this knowledge item."
+			},
+			"response": []
+		},
+		{
+			"name": "Get All User Progress",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/progress/all",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"progress",
+						"all"
+					]
+				},
+				"description": "Retrieves all progress entries for the authenticated user across all knowledge items.\n\n**Rate Limit:** 10 requests per minute"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Progress for Knowledge",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}/progress",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}",
+						"progress"
+					]
+				},
+				"description": "Retrieves the authenticated user's progress for a specific knowledge item.\n\n**Rate Limit:** 10 requests per minute\n\n**Returns 404** if no progress exists yet."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Progress (Start Quiz)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"completed\": false,\n  \"progress\": {\n    \"currentQuestionIndex\": 0,\n    \"answers\": [],\n    \"score\": 0\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}/progress",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}",
+						"progress"
+					]
+				},
+				"description": "Creates or updates progress for a knowledge item. Use this to start a quiz or save current state.\n\n**Rate Limit:** 10 requests per minute\n\n**Upsert:** Creates if doesn't exist, updates if it does."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Progress (In Progress)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"completed\": false,\n  \"progress\": {\n    \"currentQuestionIndex\": 1,\n    \"answers\": [\n      {\n        \"questionIndex\": 0,\n        \"selectedAnswer\": \"Vitamin D\",\n        \"isCorrect\": true\n      }\n    ],\n    \"score\": 1\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}/progress",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}",
+						"progress"
+					]
+				},
+				"description": "Updates progress while taking the quiz. Save after each answered question."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Progress (Complete Quiz)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"completed\": true,\n  \"progress\": {\n    \"currentQuestionIndex\": 3,\n    \"answers\": [\n      {\n        \"questionIndex\": 0,\n        \"selectedAnswer\": \"Vitamin D\",\n        \"isCorrect\": true\n      },\n      {\n        \"questionIndex\": 1,\n        \"selectedAnswer\": \"Building and repairing tissues\",\n        \"isCorrect\": true\n      },\n      {\n        \"questionIndex\": 2,\n        \"selectedAnswer\": \"9 calories\",\n        \"isCorrect\": true\n      }\n    ],\n    \"score\": 3,\n    \"totalQuestions\": 3,\n    \"percentage\": 100,\n    \"completedAt\": \"2026-02-12T20:00:00Z\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}/progress",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}",
+						"progress"
+					]
+				},
+				"description": "Marks the quiz as completed with final score and answers."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Progress (Reset)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/v1/knowledge/{{knowledge_id}}/progress",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"knowledge",
+						"{{knowledge_id}}",
+						"progress"
+					]
+				},
+				"description": "Deletes the user's progress for a knowledge item. Use this to reset/restart a quiz.\n\n**Rate Limit:** 5 requests per minute"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "your_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "knowledge_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
