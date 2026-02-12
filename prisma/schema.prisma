@@ -43,6 +43,8 @@ model User {
   recipes                        Recipe[]
   meals                          Meal[]
   mealLogs                       MealLog[]
+  challenges                     Challenges[]
+  Missions                       Missions[]
 
   @@index([email])
   @@index([createdAt])
@@ -211,4 +213,28 @@ model MealLog {
   @@index([userId, timestamp])
   @@index([typeOfMeal])
   @@map("meal_logs")
+}
+
+model Missions {
+  id             String     @id @default(uuid())
+  userId         String
+  title          String
+  description    String 
+  available      Boolean    @default(false)
+  completed      Boolean    @default(false)
+  progress       Float
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+}
+
+model Challenges {
+  id             String     @id @default(uuid())
+  userId         String
+  title          String
+  description    String 
+  available      Boolean    @default(false)
+  completed      Boolean    @default(false)
+  progress       Float
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
 }

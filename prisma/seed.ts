@@ -5,6 +5,8 @@ import { seedShoppingLists } from './seeds/shoppingList';
 import { seedShoppingListItems } from './seeds/shoppingListItem';
 import { seedPantries } from './seeds/pantry';
 import { seedPantryItems } from './seeds/pantryItem';
+import { seedMissions } from './seeds/missions';
+import { seedChallenges } from './seeds/challenges';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +27,10 @@ async function main() {
 
     const pantryItem = await seedPantryItems(prisma);
 
+    const challenges = await seedChallenges(prisma);
+
+    const missions = await seedMissions(prisma);
+
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
@@ -33,7 +39,8 @@ async function main() {
     console.log(`   - ShoppingList: ${shoppingList.length}`);
     console.log(`   - ShoppingListItem: ${shoppingListItem.length}`);
     console.log(`   - pantry: ${pantry.length}`);
-    console.log(`   - pantryItem: ${pantryItem.length}`);
+    console.log(`   - Challenges: ${challenges.length}`);
+    console.log(`   - Missions: ${missions.length}`);
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;
