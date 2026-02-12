@@ -39,6 +39,7 @@ async function main() {
     console.log(`   - ShoppingList: ${shoppingList.length}`);
     console.log(`   - ShoppingListItem: ${shoppingListItem.length}`);
     console.log(`   - pantry: ${pantry.length}`);
+    console.log(`   - pantryItem: ${pantryItem.length}`);
     console.log(`   - Challenges: ${challenges.length}`);
     console.log(`   - Missions: ${missions.length}`);
   } catch (error) {
