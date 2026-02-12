@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import {
   ActivityLevel,
@@ -203,7 +207,7 @@ export class UserProfileService {
   async getUserIdFromKeycloakId(keycloakId: string): Promise<string> {
     const user = await this.userRepository.findByKeycloakId(keycloakId);
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
     return user.id;
   }

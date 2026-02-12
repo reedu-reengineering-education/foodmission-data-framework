@@ -4,6 +4,8 @@ import {
   IsObject,
   IsEnum,
   IsNumber,
+  IsInt,
+  IsPositive,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -14,14 +16,9 @@ import {
 } from './create-user.dto';
 
 export class ProfileUpdateDto {
-  @ApiProperty({ description: 'Unique username', required: false })
-  @IsOptional()
-  @IsString()
-  username?: string;
-
   @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   yearOfBirth?: number;
 
   @ApiProperty({ description: 'Country', required: false })
@@ -72,11 +69,13 @@ export class ProfileUpdateDto {
   @IsEnum(EducationLevel)
   educationLevel?: EducationLevel;
 
+  @IsPositive()
   @ApiProperty({ description: 'Weight in kg', required: false })
   @IsOptional()
   @IsNumber()
   weightKg?: number;
 
+  @IsPositive()
   @ApiProperty({ description: 'Height in cm', required: false })
   @IsOptional()
   @IsNumber()

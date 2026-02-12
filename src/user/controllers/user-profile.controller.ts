@@ -1,4 +1,11 @@
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Body,
+  UseGuards,
+  NotFoundException,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserProfileService } from '../services/user-profile.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
@@ -35,12 +42,8 @@ export class UserProfileController {
     @Body() payload: ProfileUpdateDto,
   ) {
     const user = await this.userProfileService.getProfileByUserId(userId);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundException('User not found');
 
-    const keycloakId = user.keycloakId;
-
-    // Remove keys with value `undefined` to avoid sending e.g. { username: undefined }
-    // which would make Object.keys(payload) include protected fields.
     const cleanedPayload: Record<string, any> = {};
     if (payload && typeof payload === 'object') {
       for (const [k, v] of Object.entries(payload)) {
@@ -49,10 +52,13 @@ export class UserProfileController {
     }
 
     if (Object.keys(cleanedPayload).length > 0) {
-      await this.userProfileService.updateProfile(keycloakId, cleanedPayload);
+      return this.userProfileService.updateProfile(
+        user.keycloakId,
+        cleanedPayload,
+      );
     }
 
-    return this.userProfileService.getProfileByUserId(userId);
+    return user;
   }
 
   @Get('complete')

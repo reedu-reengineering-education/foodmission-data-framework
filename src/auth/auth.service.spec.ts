@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { HttpService } from '@nestjs/axios';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserProfileService } from '../user/services/user-profile.service';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { HttpException } from '@nestjs/common';
 
 describe('AuthService.register', () => {
