@@ -22,6 +22,7 @@ import { PantryItemModule } from './pantryItem/pantry.module';
 import { MealModule } from './meal/meal.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     MealModule,
     RecipeModule,
     MealLogModule,
+    KnowledgeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

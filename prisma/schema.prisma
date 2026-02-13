@@ -43,6 +43,8 @@ model User {
   recipes                        Recipe[]
   meals                          Meal[]
   mealLogs                       MealLog[]
+  knowledge                      Knowledge[]
+  knowledgeProgress              UserKnowledgeProgress[]
 
   @@index([email])
   @@index([createdAt])
@@ -211,4 +213,41 @@ model MealLog {
   @@index([userId, timestamp])
   @@index([typeOfMeal])
   @@map("meal_logs")
+}
+
+model Knowledge {
+  id          String   @id @default(uuid())
+  userId      String   // Creator/owner of the knowledge item. For admin-created global quizzes, use a system user or extend with isGlobal field
+  title       String
+  description String?
+  available   Boolean  @default(true)
+  content     Json     // Stores quiz data: { questions: [{ question, options, correctAnswer }] }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userProgress      UserKnowledgeProgress[]
+
+  @@index([userId])
+  @@index([available])
+  @@map("knowledge")
+}
+
+model UserKnowledgeProgress {
+  id            String   @id @default(uuid())
+  userId        String
+  knowledgeId   String
+  completed     Boolean  @default(false)
+  progress      Json     @default("{}") // Stores: { currentQuestionIndex, answers, score }
+  lastAccessedAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  knowledge  Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, knowledgeId])
+  @@index([userId])
+  @@index([knowledgeId])
+  @@map("user_knowledge_progress")
 }
