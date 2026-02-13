@@ -21,6 +21,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
+import { RefreshDto } from './dto/refresh.dto';
 
 interface KeycloakUser {
   sub: string;
@@ -170,6 +171,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
   async logout(@Body() dto: LogoutDto) {
     return this.authService.logout(dto.token, dto.tokenTypeHint);
+  }
+
+  @Post('refresh')
+  @Public()
+  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @ApiOperation({ summary: 'Exchange refresh token for new tokens' })
+  async refresh(@Body() dto: RefreshDto) {
+    return this.authService.refresh(dto.token);
   }
 
   @Get('token-info')

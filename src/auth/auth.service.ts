@@ -299,6 +299,39 @@ export class AuthService {
     }
   }
 
+  /**
+   * Refresh an access token using a refresh token.
+   * Returns the token response from Keycloak (access_token, refresh_token, expires_in, ...)
+   */
+  async refresh(refreshToken: string): Promise<any> {
+    const params = new URLSearchParams();
+    params.append('grant_type', 'refresh_token');
+    params.append('refresh_token', refreshToken);
+
+    // Use the client credentials corresponding to the application client where applicable.
+    const clientId = process.env.KEYCLOAK_CLIENT_ID || '';
+    const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET || '';
+    if (clientId) params.append('client_id', clientId);
+    if (clientSecret) params.append('client_secret', clientSecret);
+
+    try {
+      const tokenResp = await firstValueFrom(
+        this.httpService.post(this.tokenEndpoint(), params.toString(), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        }),
+      );
+
+      return tokenResp.data;
+    } catch (err: any) {
+      const status = err?.response?.status || 502;
+      const data = err?.response?.data || {
+        message: 'Failed to refresh token: ' + (err?.message || 'Unknown'),
+      };
+      this.logger.error('Keycloak refresh token error', data);
+      throw new HttpException(data, status);
+    }
+  }
+
   async login(dto: LoginDto) {
     // Resource Owner Password Credentials Grant to Keycloak
     const params = new URLSearchParams();
