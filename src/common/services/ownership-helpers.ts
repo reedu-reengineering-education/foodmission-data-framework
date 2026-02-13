@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 type Finder<T> = (id: string) => Promise<T | null>;
 type OwnershipGetter<T> = (entity: T) => string;
@@ -15,7 +15,7 @@ export async function getOwnedEntityOrThrow<T>(
     throw new NotFoundException(notFoundMessage);
   }
   if (getOwnerId(entity) !== userId) {
-    throw new ForbiddenException('No permission to access this resource');
+    throw new NotFoundException(notFoundMessage);
   }
   return entity;
 }
