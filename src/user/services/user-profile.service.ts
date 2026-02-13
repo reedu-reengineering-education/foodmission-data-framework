@@ -62,7 +62,7 @@ export class UserProfileService {
 
   async updateProfile(keycloakId: string, payload: any): Promise<UserProfile> {
     const user = await this.userRepository.findByKeycloakId(keycloakId);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundException('User not found');
 
     const updateData: any = {};
 
@@ -116,37 +116,6 @@ export class UserProfileService {
 
     for (const f of extendedFields) {
       if (payload[f] === undefined) continue;
-
-      // Strict enum validation for the new profile fields.
-      if (f === 'annualIncome') {
-        if (!Object.values(AnnualIncomeLevel).includes(payload[f])) {
-          throw new BadRequestException(
-            `Invalid annualIncome value. Allowed: ${Object.values(AnnualIncomeLevel).join(', ')}`,
-          );
-        }
-        updateData.annualIncome = payload[f];
-        continue;
-      }
-
-      if (f === 'educationLevel') {
-        if (!Object.values(EducationLevel).includes(payload[f])) {
-          throw new BadRequestException(
-            `Invalid educationLevel value. Allowed: ${Object.values(EducationLevel).join(', ')}`,
-          );
-        }
-        updateData.educationLevel = payload[f];
-        continue;
-      }
-
-      if (f === 'activityLevel') {
-        if (!Object.values(ActivityLevel).includes(payload[f])) {
-          throw new BadRequestException(
-            `Invalid activityLevel value. Allowed: ${Object.values(ActivityLevel).join(', ')}`,
-          );
-        }
-        updateData.activityLevel = payload[f];
-        continue;
-      }
 
       // Gender is validated at the DTO level; pass through other extended fields directly.
       updateData[f] = payload[f];

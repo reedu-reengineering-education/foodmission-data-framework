@@ -49,6 +49,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 This project uses Node.js 22 with npm 10.x. To ensure you're using the correct versions:
 
 **Using nvm (recommended):**
+
 ```bash
 # Install nvm if you haven't already: https://github.com/nvm-sh/nvm
 nvm install 22
@@ -116,7 +117,7 @@ KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
-KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"  
+KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
@@ -139,6 +140,7 @@ npm run docker:up
 ```
 
 Keycloak Admin Console will be available at `http://localhost:8080`
+
 - Default username: `admin`
 - Default password: `admin`
 
@@ -149,12 +151,13 @@ Keycloak Admin Console will be available at `http://localhost:8080`
 3. In the top-left corner, click the realm dropdown (shows "master" by default)
 4. Click **"Create Realm"** (or **"Add realm"**)
 5. Click the **"Browse..."** button
-6. Navigate to and select: `keycloak/foodmission-realm.json` in your project directory
+6. Navigate to and select: `keycloak/foodmission-realm.dev.json` in your project directory
 7. Click **"Create"** (or **"Import"**)
 
 The imported realm includes:
+
 - **Realm**: `foodmission`
-- **Client**: `foodmission-api` 
+- **Client**: `foodmission-api & foodmission-service`
 - **Pre-configured users**:
   - `admin` user with `admin` and `user` roles
   - `developer` user with `user` role
@@ -180,12 +183,14 @@ KEYCLOAK_CLIENT_SECRET="your-actual-client-secret-here"
 ```
 
 **Security Best Practices:**
+
 - Use environment variables or a secret manager for sensitive values
 - Never hardcode secrets in code or commit them to version control
 - Use different secrets for development, staging, and production environments
 - Rotate secrets regularly
 
 To find your client secret:
+
 1. Go to Keycloak Admin Console → Clients → `foodmission-api`
 2. Go to the "Credentials" tab
 3. Copy the "Client Secret" value
@@ -227,6 +232,7 @@ curl http://localhost:3000/api/v1/auth/admin-only \
 ```
 
 **Security Best Practices:**
+
 - ✅ Always use environment variables for secrets
 - ✅ Never include secrets directly in command-line arguments
 - ✅ Never commit secrets to version control

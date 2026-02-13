@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsObject,
   IsEnum,
-  IsNumber,
+  IsInt,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -60,12 +60,12 @@ export class CreateUserDto {
 
   @ApiProperty({ description: 'User first name' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   firstName: string;
 
   @ApiProperty({ description: 'User last name' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   lastName: string;
 
   @ApiProperty({ description: 'User preferences', required: false })
@@ -86,7 +86,7 @@ export class CreateUserDto {
 
   @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   yearOfBirth?: number; // Persisted as yearOfBirth (Int) in DB
 
   @ApiProperty({ description: 'Country', required: false })

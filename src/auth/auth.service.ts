@@ -3,6 +3,7 @@ import {
   Logger,
   HttpException,
   InternalServerErrorException,
+  ConflictException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -226,9 +227,37 @@ export class AuthService {
       // If repository already threw a Nest HttpException (e.g. Conflict), rethrow it so caller sees appropriate status
       if (repoErr instanceof HttpException) throw repoErr;
 
-      throw new InternalServerErrorException(
-        'Failed to persist local user after Keycloak registration',
-      );
+      // Handle common Prisma unique-constraint error explicitly if repository didn't translate it
+      if (
+        repoErr?.name === 'PrismaClientKnownRequestError' &&
+        repoErr?.code === 'P2002'
+      ) {
+        const targets = repoErr?.meta?.target || [];
+        const fields = Array.isArray(targets)
+          ? targets.join(', ')
+          : String(targets);
+        this.logger.warn('Prisma unique constraint (P2002)', { fields });
+        throw new ConflictException(`Unique constraint failed: ${fields}`);
+      }
+
+      // Fallback: include the original error message and a safe details object for debugging
+      const shortMessage =
+        repoErr?.message || 'Failed to persist local user (unknown DB error)';
+
+      // Build a safe details object (non-sensitive)
+      let details: any = {};
+      try {
+        details = JSON.parse(
+          JSON.stringify(repoErr, Object.getOwnPropertyNames(repoErr)),
+        );
+      } catch {
+        details = { name: repoErr?.name, message: repoErr?.message };
+      }
+
+      throw new InternalServerErrorException({
+        message: `Failed to persist local user after Keycloak registration: ${shortMessage}`,
+        details,
+      });
     }
   }
 

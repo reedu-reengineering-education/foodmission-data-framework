@@ -97,7 +97,7 @@ export class AuthController {
         email: { type: 'string', format: 'email' },
         firstName: { type: 'string' },
         lastName: { type: 'string' },
-        yearOfBirth: { type: 'int' },
+        yearOfBirth: { type: 'integer' },
         keycloakId: { type: 'string' },
         preferences: { type: 'object' },
         settings: { type: 'object' },
@@ -148,6 +148,7 @@ export class AuthController {
 
   @Post('register')
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiOperation({
     summary: 'Register a new user in Keycloak and create local user',
   })
@@ -157,6 +158,7 @@ export class AuthController {
 
   @Post('login')
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 900000 } })
   @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
@@ -164,6 +166,7 @@ export class AuthController {
 
   @Post('logout')
   @Public()
+  @Throttle({ default: { limit: 20, ttl: 900000 } })
   @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
   async logout(@Body() dto: LogoutDto) {
     return this.authService.logout(dto.token, dto.tokenTypeHint);

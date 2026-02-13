@@ -23,10 +23,12 @@ export class RegisterDto {
   email: string;
 
   @ApiProperty({ description: 'First name' })
+  @IsOptional()
   @IsString()
   firstName: string;
 
   @ApiProperty({ description: 'Last name' })
+  @IsOptional()
   @IsString()
   lastName: string;
 

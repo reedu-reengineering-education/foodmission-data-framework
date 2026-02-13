@@ -173,7 +173,7 @@ If you need to modify the realm configuration:
    - Go to **Realm Settings** → **Action** → **Partial export**
    - Select what to export (users, clients, roles, etc.)
    - Download the JSON file
-3. Replace `foodmission-realm.json` with the new configuration
+3. Replace `foodmission-realm.dev.json` with the new configuration
 
 ## 🐳 Docker Compose Alternative
 
