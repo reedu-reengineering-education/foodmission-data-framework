@@ -36,26 +36,26 @@ model Food {
 
   // --- Nutriments (per 100 g) ---
   nutritionDataPer String? // "100g" or "serving" — basis of nutrition values
-  energyKcal100g     Float?
-  energyKj100g       Float?
-  fat100g            Float?
-  saturatedFat100g   Float?
-  transFat100g       Float?
-  cholesterol100g    Float?
-  carbohydrates100g  Float?
-  sugars100g         Float?
-  addedSugars100g    Float?
-  fiber100g          Float?
-  proteins100g       Float?
-  salt100g           Float?
-  sodium100g         Float?
-  vitaminA100g       Float?
-  vitaminC100g       Float?
-  calcium100g        Float?
-  iron100g           Float?
-  potassium100g      Float?
-  magnesium100g      Float?
-  zinc100g           Float?
+  energyKcal     Float?
+  energyKj       Float?
+  fat            Float?
+  saturatedFat   Float?
+  transFat       Float?
+  cholesterol    Float?
+  carbohydrates  Float?
+  sugars         Float?
+  addedSugars    Float?
+  fiber          Float?
+  proteins       Float?
+  salt           Float?
+  sodium         Float?
+  vitaminA       Float?
+  vitaminC       Float?
+  calcium        Float?
+  iron           Float?
+  potassium      Float?
+  magnesium      Float?
+  zinc           Float?
 
   // --- Full nutriments JSON (everything from OpenFoodFacts as-is) ---
   nutrimentsRaw Json? // Complete nutriments object for fields not covered above
@@ -94,6 +94,184 @@ model Food {
   @@index([nutriscoreGrade])
   @@index([novaGroup])
   @@map("foods")
+}
+
+model FoodCategory {
+  id        String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // --- NEVO metadata ---
+  nevoVersion      String   // e.g. "NEVO-Online 2025 9.0"
+  foodGroup        String   // e.g. "Potatoes and tubers"
+  nevoCode         Int      @unique // NEVO food identifier
+  foodName         String   // English food name
+  synonym          String?  // Synonym if available
+  quantity         String?  // e.g. "per 100g"
+  containsTracesOf String?  // Traces of allergens
+  isFortifiedWith  String?  // Fortification info
+
+  // --- Energy ---
+  energyKj     Float? // Energy (kJ)
+  energyKcal   Float? // Energy (kcal)
+
+  // --- Macronutrients ---
+  water              Float? // Water (g)
+  proteins           Float? // Protein total (g)
+  proteinsPlant      Float? // Protein plant (g)
+  proteinsAnimal     Float? // Protein animal (g)
+  nitrogenTotal      Float? // Nitrogen total (g)
+  tryptophan         Float? // Tryptophan (mg)
+  fat                Float? // Fat total (g)
+  carbohydrates      Float? // Carbohydrates total (g)
+  sugars             Float? // Sugars (g)
+  addedSugars        Float? // Non-milk extrinsic sugars / added + free sugars (g)
+  starch             Float? // Starch (g)
+  polyols            Float? // Polyols (g)
+  fiber              Float? // Dietary fibre total (g)
+  alcohol            Float? // Alcohol (g)
+  organicAcids       Float? // Organic acids (g)
+  ash                Float? // Ash (g)
+
+  // --- Fatty acids summary ---
+  fattyAcidsTotal    Float? // Fatty acids total (g)
+  saturatedFat       Float? // Saturated fatty acids (g)
+  monoUnsaturatedFat Float? // Mono-unsaturated fatty acids cis (g)
+  polyUnsaturatedFat Float? // Poly-unsaturated fatty acids (g)
+  omega3Fat          Float? // Poly-unsaturated fatty acids n-3 (g)
+  omega6Fat          Float? // Poly-unsaturated fatty acids n-6 (g)
+  transFat           Float? // Trans fatty acids (g)
+
+  // --- Minerals ---
+  chloride     Float? // Chloride (mg)
+  sodium       Float? // Sodium (mg)
+  potassium    Float? // Potassium (mg)
+  calcium      Float? // Calcium (mg)
+  phosphorus   Float? // Phosphorus (mg)
+  magnesium    Float? // Magnesium (mg)
+  iron         Float? // Iron (mg)
+  ironHaem     Float? // Haem iron (mg)
+  ironNonHaem  Float? // Non-haem iron (mg)
+  copper       Float? // Copper (mg)
+  selenium     Float? // Selenium (µg)
+  zinc         Float? // Zinc (mg)
+  iodine       Float? // Iodine (µg)
+
+  // --- Vitamins ---
+  vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
+  vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
+  retinol              Float? // Retinol (µg)
+  betaCarotene         Float? // Beta-carotene total (µg)
+  alphaCarotene        Float? // Alpha-carotene (µg)
+  lutein               Float? // Lutein (µg)
+  zeaxanthin           Float? // Zeaxanthin (µg)
+  betaCryptoxanthin    Float? // Beta-cryptoxanthin (µg)
+  lycopene             Float? // Lycopene (µg)
+  vitaminD             Float? // Vitamin D (µg)
+  hydroxyCholecalciferol Float? // 25-hydroxycholecalciferol (µg)
+  cholecalciferol      Float? // Cholecalciferol / D3 (µg)
+  ergocalciferol       Float? // Ergocalciferol / D2 (µg)
+  vitaminE             Float? // Vitamin E (mg)
+  alphaTocopherol      Float? // Alpha-tocopherol (mg)
+  betaTocopherol       Float? // Beta-tocopherol (mg)
+  deltaTocopherol      Float? // Delta-tocopherol (mg)
+  gammaTocopherol      Float? // Gamma-tocopherol (mg)
+  vitaminK             Float? // Vitamin K (µg)
+  vitaminK1            Float? // Vitamin K1 (µg)
+  vitaminK2            Float? // Vitamin K2 (µg)
+  thiamin              Float? // Thiamin / B1 (mg)
+  riboflavin           Float? // Riboflavin / B2 (mg)
+  vitaminB6            Float? // Vitamin B6 (mg)
+  vitaminB12           Float? // Vitamin B12 (µg)
+  niacinEquivalents    Float? // Niacin equivalents (mg)
+  niacin               Float? // Niacin (mg)
+  folateTotal          Float? // Folate total (µg)
+  folateFood           Float? // Folate food (µg)
+  folicAcid            Float? // Folic acid (µg)
+  vitaminC             Float? // Vitamin C (mg)
+
+  // --- Individual saturated fatty acids (g) ---
+  fa4_0 Float?
+  fa6_0 Float?
+  fa8_0 Float?
+  fa10_0 Float?
+  fa11_0 Float?
+  fa12_0 Float?
+  fa13_0 Float?
+  fa14_0 Float?
+  fa15_0 Float?
+  fa16_0 Float?
+  fa17_0 Float?
+  fa18_0 Float?
+  fa19_0 Float?
+  fa20_0 Float?
+  fa21_0 Float?
+  fa22_0 Float?
+  fa23_0 Float?
+  fa24_0 Float?
+  fa25_0 Float?
+  fa26_0 Float?
+  saturatedFatRemainder Float? // Saturated fatty acids unknown/remainder (g)
+
+  // --- Individual cis-monounsaturated fatty acids (g) ---
+  fa10_1cis Float?
+  fa12_1cis Float?
+  fa14_1cis Float?
+  fa16_1cis Float?
+  fa18_1cis Float?
+  fa20_1cis Float?
+  fa22_1cis Float?
+  fa24_1cis Float?
+  monoUnsaturatedFatRemainder Float? // Cis-monounsaturated fatty acids unknown/remainder (g)
+
+  // --- Individual polyunsaturated fatty acids (g) ---
+  fa18_2cn6 Float?
+  fa18_2cn9 Float?
+  fa18_2ct Float?
+  fa18_2tc Float?
+  fa18_2r Float?
+  fa18_3cn3 Float?
+  fa18_3cn6 Float?
+  fa18_4cn3 Float?
+  fa20_2cn6 Float?
+  fa20_3cn9 Float?
+  fa20_3cn6 Float?
+  fa20_3cn3 Float?
+  fa20_4cn6 Float?
+  fa20_4cn3 Float?
+  fa20_5cn3 Float?
+  fa21_5cn3 Float?
+  fa22_2cn6 Float?
+  fa22_2cn3 Float?
+  fa22_3cn3 Float?
+  fa22_4cn6 Float?
+  fa22_5cn6 Float?
+  fa22_5cn3 Float?
+  fa22_6cn3 Float?
+  fa24_2cn6 Float?
+  polyUnsaturatedFatRemainder Float? // Polyunsaturated fatty acids unknown/remainder (g)
+
+  // --- Individual trans fatty acids (g) ---
+  fa10_1trans Float?
+  fa12_1trans Float?
+  fa14_1trans Float?
+  fa16_1trans Float?
+  fa18_1trans Float?
+  fa18_2ttN6 Float?
+  fa18_3tttN3 Float?
+  fa20_1trans Float?
+  fa20_2tt Float?
+  fa22_1trans Float?
+  fa24_1trans Float?
+  transFatRemainder Float? // Trans fatty acids unknown/remainder (g)
+
+  // --- Other ---
+  fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
+
+  @@index([foodGroup])
+  @@index([foodName])
+  @@index([nevoCode])
+  @@map("food_categories")
 }
 
 model User {

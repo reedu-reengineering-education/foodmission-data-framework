@@ -381,7 +381,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  energyKcal100g?: number;
+  energyKcal?: number;
 
   @ApiProperty({
     description: 'Energy in kJ per 100g',
@@ -389,7 +389,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  energyKj100g?: number;
+  energyKj?: number;
 
   @ApiProperty({
     description: 'Fat in g per 100g',
@@ -397,7 +397,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  fat100g?: number;
+  fat?: number;
 
   @ApiProperty({
     description: 'Saturated fat in g per 100g',
@@ -405,21 +405,21 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  saturatedFat100g?: number;
+  saturatedFat?: number;
 
   @ApiProperty({
     description: 'Trans fat in g per 100g',
     required: false,
   })
   @Expose()
-  transFat100g?: number;
+  transFat?: number;
 
   @ApiProperty({
     description: 'Cholesterol in mg per 100g',
     required: false,
   })
   @Expose()
-  cholesterol100g?: number;
+  cholesterol?: number;
 
   @ApiProperty({
     description: 'Carbohydrates in g per 100g',
@@ -427,7 +427,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  carbohydrates100g?: number;
+  carbohydrates?: number;
 
   @ApiProperty({
     description: 'Sugars in g per 100g',
@@ -435,14 +435,14 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  sugars100g?: number;
+  sugars?: number;
 
   @ApiProperty({
     description: 'Added sugars in g per 100g',
     required: false,
   })
   @Expose()
-  addedSugars100g?: number;
+  addedSugars?: number;
 
   @ApiProperty({
     description: 'Fiber in g per 100g',
@@ -450,7 +450,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  fiber100g?: number;
+  fiber?: number;
 
   @ApiProperty({
     description: 'Proteins in g per 100g',
@@ -458,7 +458,7 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  proteins100g?: number;
+  proteins?: number;
 
   @ApiProperty({
     description: 'Salt in g per 100g',
@@ -466,42 +466,42 @@ export class FoodResponseDto {
     required: false,
   })
   @Expose()
-  salt100g?: number;
+  salt?: number;
 
   @ApiProperty({
     description: 'Sodium in g per 100g',
     required: false,
   })
   @Expose()
-  sodium100g?: number;
+  sodium?: number;
 
   @ApiProperty({ description: 'Vitamin A in µg per 100g', required: false })
   @Expose()
-  vitaminA100g?: number;
+  vitaminA?: number;
 
   @ApiProperty({ description: 'Vitamin C in mg per 100g', required: false })
   @Expose()
-  vitaminC100g?: number;
+  vitaminC?: number;
 
   @ApiProperty({ description: 'Calcium in mg per 100g', required: false })
   @Expose()
-  calcium100g?: number;
+  calcium?: number;
 
   @ApiProperty({ description: 'Iron in mg per 100g', required: false })
   @Expose()
-  iron100g?: number;
+  iron?: number;
 
   @ApiProperty({ description: 'Potassium in mg per 100g', required: false })
   @Expose()
-  potassium100g?: number;
+  potassium?: number;
 
   @ApiProperty({ description: 'Magnesium in mg per 100g', required: false })
   @Expose()
-  magnesium100g?: number;
+  magnesium?: number;
 
   @ApiProperty({ description: 'Zinc in mg per 100g', required: false })
   @Expose()
-  zinc100g?: number;
+  zinc?: number;
 
   // --- Scores & grades ---
 

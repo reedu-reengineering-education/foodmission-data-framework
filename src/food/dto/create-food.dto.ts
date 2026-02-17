@@ -154,32 +154,32 @@ export class CreateFoodDto {
   @ApiProperty({ description: 'Energy in kcal per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  energyKcal100g?: number;
+  energyKcal?: number;
 
   @ApiProperty({ description: 'Energy in kJ per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  energyKj100g?: number;
+  energyKj?: number;
 
   @ApiProperty({ description: 'Fat in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  fat100g?: number;
+  fat?: number;
 
   @ApiProperty({ description: 'Saturated fat in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  saturatedFat100g?: number;
+  saturatedFat?: number;
 
   @ApiProperty({ description: 'Trans fat in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  transFat100g?: number;
+  transFat?: number;
 
   @ApiProperty({ description: 'Cholesterol in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  cholesterol100g?: number;
+  cholesterol?: number;
 
   @ApiProperty({
     description: 'Carbohydrates in g per 100g',
@@ -187,72 +187,72 @@ export class CreateFoodDto {
   })
   @IsOptional()
   @IsNumber()
-  carbohydrates100g?: number;
+  carbohydrates?: number;
 
   @ApiProperty({ description: 'Sugars in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  sugars100g?: number;
+  sugars?: number;
 
   @ApiProperty({ description: 'Added sugars in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  addedSugars100g?: number;
+  addedSugars?: number;
 
   @ApiProperty({ description: 'Fiber in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  fiber100g?: number;
+  fiber?: number;
 
   @ApiProperty({ description: 'Proteins in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  proteins100g?: number;
+  proteins?: number;
 
   @ApiProperty({ description: 'Salt in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  salt100g?: number;
+  salt?: number;
 
   @ApiProperty({ description: 'Sodium in g per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  sodium100g?: number;
+  sodium?: number;
 
   @ApiProperty({ description: 'Vitamin A in µg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  vitaminA100g?: number;
+  vitaminA?: number;
 
   @ApiProperty({ description: 'Vitamin C in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  vitaminC100g?: number;
+  vitaminC?: number;
 
   @ApiProperty({ description: 'Calcium in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  calcium100g?: number;
+  calcium?: number;
 
   @ApiProperty({ description: 'Iron in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  iron100g?: number;
+  iron?: number;
 
   @ApiProperty({ description: 'Potassium in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  potassium100g?: number;
+  potassium?: number;
 
   @ApiProperty({ description: 'Magnesium in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  magnesium100g?: number;
+  magnesium?: number;
 
   @ApiProperty({ description: 'Zinc in mg per 100g', required: false })
   @IsOptional()
   @IsNumber()
-  zinc100g?: number;
+  zinc?: number;
 
   // --- Scores ---
 
