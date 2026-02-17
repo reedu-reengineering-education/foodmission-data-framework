@@ -1,18 +1,22 @@
-export interface BaseRepository<T, CreateDto, UpdateDto> {
+export interface BaseRepository<T, CreateDto, UpdateDto, TWhereInput = never> {
   findAll(options?: FindAllOptions): Promise<T[]>;
   findById(id: string): Promise<T | null>;
   create(data: CreateDto): Promise<T>;
   update(id: string, data: UpdateDto): Promise<T>;
   delete(id: string): Promise<void>;
-  count(where?: any): Promise<number>;
+  count(where?: TWhereInput): Promise<number>;
 }
 
-export interface FindAllOptions {
+export interface FindAllOptions<
+  TWhereInput = never,
+  TOrderBy = never,
+  TInclude = never,
+> {
   skip?: number;
   take?: number;
-  where?: any;
-  orderBy?: any;
-  include?: any;
+  where?: TWhereInput;
+  orderBy?: TOrderBy;
+  include?: TInclude;
 }
 
 export interface PaginatedResult<T> {

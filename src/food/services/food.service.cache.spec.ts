@@ -8,6 +8,7 @@ import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { LoggingService } from '../../common/logging/logging.service';
 import { Reflector } from '@nestjs/core';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { createMockLoggingService } from '../../common/testing';
 
 describe('FoodService - Caching Integration', () => {
   let service: FoodService;
@@ -46,12 +47,7 @@ describe('FoodService - Caching Integration', () => {
       del: jest.fn(),
     };
 
-    const mockLoggingService = {
-      debug: jest.fn(),
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-    };
+    const mockLoggingService = createMockLoggingService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

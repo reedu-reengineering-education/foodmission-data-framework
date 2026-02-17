@@ -19,6 +19,9 @@ import { ShoppingListModule } from './shoppingList/shoppingList.module';
 import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
 import { PantryModule } from './pantry/pantry.module';
 import { PantryItemModule } from './pantryItem/pantry.module';
+import { MealModule } from './meal/meal.module';
+import { RecipeModule } from './recipe/recipe.module';
+import { MealLogModule } from './mealLog/meal-log.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { PantryItemModule } from './pantryItem/pantry.module';
     ShoppingListItemModule,
     PantryModule,
     PantryItemModule,
+    MealModule,
+    RecipeModule,
+    MealLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
