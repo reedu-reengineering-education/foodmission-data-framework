@@ -8,9 +8,9 @@ import { HttpException } from '@nestjs/common';
 
 describe('AuthService.register', () => {
   let service: AuthService;
-  let mockHttpService: Partial<HttpService> & any;
-  let mockUserRepo: Partial<UserRepository> & any;
-  let mockProfileService: Partial<UserProfileService> & any;
+  let mockHttpService: jest.Mocked<Partial<HttpService>>;
+  let mockUserRepo: jest.Mocked<Partial<UserRepository>>;
+  let mockProfileService: jest.Mocked<Partial<UserProfileService>>;
 
   beforeEach(async () => {
     mockHttpService = {
