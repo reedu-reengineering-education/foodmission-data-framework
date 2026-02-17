@@ -20,17 +20,71 @@ describe('FoodService - Caching Integration', () => {
     name: 'Test Food',
     description: 'Test Description',
     barcode: '1234567890',
-    openFoodFactsId: 'off123',
     createdAt: new Date(),
     updatedAt: new Date(),
     createdBy: 'user123',
+    // Product metadata
+    brands: null,
+    categories: [],
+    labels: [],
+    quantity: null,
+    servingSize: null,
+    ingredientsText: null,
+    allergens: [],
+    traces: [],
+    countries: [],
+    origins: null,
+    manufacturingPlaces: null,
+    imageUrl: null,
+    imageFrontUrl: null,
+    // Nutriments
+    nutritionDataPer: null,
+    energyKcal100g: null,
+    energyKj100g: null,
+    fat100g: null,
+    saturatedFat100g: null,
+    transFat100g: null,
+    cholesterol100g: null,
+    carbohydrates100g: null,
+    sugars100g: null,
+    addedSugars100g: null,
+    fiber100g: null,
+    proteins100g: null,
+    salt100g: null,
+    sodium100g: null,
+    vitaminA100g: null,
+    vitaminC100g: null,
+    calcium100g: null,
+    iron100g: null,
+    potassium100g: null,
+    magnesium100g: null,
+    zinc100g: null,
+    nutrimentsRaw: null,
+    // Scores
+    nutriscoreGrade: null,
+    nutriscoreScore: null,
+    novaGroup: null,
+    ecoscoreGrade: null,
+    carbonFootprint: null,
+    nutrientLevels: null,
+    // Diet analysis
+    isVegan: null,
+    isVegetarian: null,
+    isPalmOilFree: null,
+    ingredientsAnalysisTags: [],
+    // Packaging
+    packagingTags: [],
+    packagingMaterials: [],
+    packagingRecycling: [],
+    packagingText: null,
+    // Data quality
+    completeness: null,
   };
 
   beforeEach(async () => {
     const mockFoodRepository = {
       findById: jest.fn(),
       findByBarcode: jest.fn(),
-      findByOpenFoodFactsId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -90,12 +144,11 @@ describe('FoodService - Caching Integration', () => {
       const result = await service.findOne('123');
 
       expect(foodRepository.findById).toHaveBeenCalledWith('123');
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         id: mockFood.id,
         name: mockFood.name,
         description: mockFood.description,
         barcode: mockFood.barcode,
-        openFoodFactsId: mockFood.openFoodFactsId,
         createdAt: mockFood.createdAt,
         updatedAt: mockFood.updatedAt,
         createdBy: mockFood.createdBy,
@@ -169,7 +222,6 @@ describe('FoodService - Caching Integration', () => {
 
     it('should create food successfully', async () => {
       foodRepository.findByBarcode.mockResolvedValue(null);
-      foodRepository.findByOpenFoodFactsId.mockResolvedValue(null);
       foodRepository.create.mockResolvedValue({
         ...mockFood,
         ...createFoodDto,
@@ -188,21 +240,6 @@ describe('FoodService - Caching Integration', () => {
       foodRepository.findByBarcode.mockResolvedValue(mockFood);
 
       await expect(service.create(createFoodDto, userId)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(foodRepository.create).not.toHaveBeenCalled();
-    });
-
-    it('should throw BadRequestException when OpenFoodFacts ID already exists', async () => {
-      const createDtoWithOffId = {
-        ...createFoodDto,
-        openFoodFactsId: 'existing-off-id',
-      };
-
-      foodRepository.findByBarcode.mockResolvedValue(null);
-      foodRepository.findByOpenFoodFactsId.mockResolvedValue(mockFood);
-
-      await expect(service.create(createDtoWithOffId, userId)).rejects.toThrow(
         BadRequestException,
       );
       expect(foodRepository.create).not.toHaveBeenCalled();

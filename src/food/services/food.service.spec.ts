@@ -17,10 +17,65 @@ describe('FoodService', () => {
     name: 'Test Food',
     description: 'Test Description',
     barcode: '1234567890',
-    openFoodFactsId: 'off-123',
     createdBy: 'user-1',
     createdAt: new Date(),
     updatedAt: new Date(),
+    // Product metadata
+    brands: null,
+    categories: [],
+    labels: [],
+    quantity: null,
+    servingSize: null,
+    ingredientsText: null,
+    allergens: [],
+    traces: [],
+    countries: [],
+    origins: null,
+    manufacturingPlaces: null,
+    imageUrl: null,
+    imageFrontUrl: null,
+    // Nutriments
+    nutritionDataPer: null,
+    energyKcal100g: null,
+    energyKj100g: null,
+    fat100g: null,
+    saturatedFat100g: null,
+    transFat100g: null,
+    cholesterol100g: null,
+    carbohydrates100g: null,
+    sugars100g: null,
+    addedSugars100g: null,
+    fiber100g: null,
+    proteins100g: null,
+    salt100g: null,
+    sodium100g: null,
+    vitaminA100g: null,
+    vitaminC100g: null,
+    calcium100g: null,
+    iron100g: null,
+    potassium100g: null,
+    magnesium100g: null,
+    zinc100g: null,
+    nutrimentsRaw: null,
+    // Scores
+    nutriscoreGrade: null,
+    nutriscoreScore: null,
+    novaGroup: null,
+    ecoscoreGrade: null,
+    carbonFootprint: null,
+    nutrientLevels: null,
+    // Diet analysis
+    isVegan: null,
+    isVegetarian: null,
+    isPalmOilFree: null,
+    ingredientsAnalysisTags: [],
+    // Packaging
+    packagingTags: [],
+    packagingMaterials: [],
+    packagingRecycling: [],
+    packagingText: null,
+    // Data quality
+    completeness: null,
   };
 
   const mockOpenFoodFactsProduct = {
@@ -48,7 +103,6 @@ describe('FoodService', () => {
     create: jest.fn(),
     findById: jest.fn(),
     findByBarcode: jest.fn(),
-    findByOpenFoodFactsId: jest.fn(),
     findWithPagination: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -113,19 +167,6 @@ describe('FoodService', () => {
       foodRepository.findByBarcode.mockResolvedValueOnce(mockFood);
 
       await expect(service.create(createFoodDto, userId)).rejects.toThrow(
-        BadRequestException,
-      );
-    });
-
-    it('should throw BadRequestException if OpenFoodFacts ID already exists', async () => {
-      const createDtoWithOffId = {
-        ...createFoodDto,
-        openFoodFactsId: 'off-123',
-      };
-      foodRepository.findByBarcode.mockResolvedValueOnce(null);
-      foodRepository.findByOpenFoodFactsId.mockResolvedValueOnce(mockFood);
-
-      await expect(service.create(createDtoWithOffId, userId)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -448,9 +489,9 @@ describe('FoodService', () => {
   describe('importFromOpenFoodFacts', () => {
     it('should import food from OpenFoodFacts successfully', async () => {
       foodRepository.findByBarcode.mockResolvedValueOnce(null);
-      openFoodFactsService.getProductByBarcode
-        .mockResolvedValueOnce(mockOpenFoodFactsProduct) // First call for import
-        .mockResolvedValueOnce(mockOpenFoodFactsProduct); // Second call for getting info
+      openFoodFactsService.getProductByBarcode.mockResolvedValueOnce(
+        mockOpenFoodFactsProduct,
+      );
       foodRepository.create.mockResolvedValueOnce(mockFood);
 
       const result = await service.importFromOpenFoodFacts(
@@ -459,7 +500,7 @@ describe('FoodService', () => {
       );
 
       expect(result).toBeDefined();
-      expect(result.openFoodFactsInfo).toBeDefined();
+      expect(result.name).toBeDefined();
       expect(openFoodFactsService.getProductByBarcode).toHaveBeenCalledWith(
         '1234567890',
       );

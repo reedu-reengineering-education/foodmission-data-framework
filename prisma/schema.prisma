@@ -11,19 +11,88 @@ datasource db {
 }
 
 model Food {
-  id               String             @id @default(uuid())
-  name             String
-  description      String?
-  barcode          String?            @unique
-  openFoodFactsId  String?            @unique
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  createdBy        String
+  id              String @id @default(uuid())
+  name            String
+  description     String?
+  barcode         String? @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  createdBy       String
+
+  // --- Product metadata ---
+  brands          String?
+  categories      String[] // OpenFoodFacts category tags e.g. ["en:spreads","en:sweet-spreads"]
+  labels          String[] // e.g. ["en:vegetarian","en:no-gluten"]
+  quantity        String? // e.g. "400 g"
+  servingSize     String? // e.g. "15 g"
+  ingredientsText String?
+  allergens       String[] // e.g. ["en:milk","en:nuts","en:soybeans"]
+  traces          String[] // possible cross-contamination allergens
+  countries       String[] // where sold, e.g. ["en:france","en:germany"]
+  origins         String? // where ingredients come from, e.g. "European Union"
+  manufacturingPlaces String? // where product is manufactured
+  imageUrl        String?
+  imageFrontUrl   String?
+
+  // --- Nutriments (per 100 g) ---
+  nutritionDataPer String? // "100g" or "serving" — basis of nutrition values
+  energyKcal100g     Float?
+  energyKj100g       Float?
+  fat100g            Float?
+  saturatedFat100g   Float?
+  transFat100g       Float?
+  cholesterol100g    Float?
+  carbohydrates100g  Float?
+  sugars100g         Float?
+  addedSugars100g    Float?
+  fiber100g          Float?
+  proteins100g       Float?
+  salt100g           Float?
+  sodium100g         Float?
+  vitaminA100g       Float?
+  vitaminC100g       Float?
+  calcium100g        Float?
+  iron100g           Float?
+  potassium100g      Float?
+  magnesium100g      Float?
+  zinc100g           Float?
+
+  // --- Full nutriments JSON (everything from OpenFoodFacts as-is) ---
+  nutrimentsRaw Json? // Complete nutriments object for fields not covered above
+
+  // --- Scores & grades ---
+  nutriscoreGrade String? // A, B, C, D, E
+  nutriscoreScore Int?
+  novaGroup       Int? // 1 = unprocessed, 4 = ultra-processed
+  ecoscoreGrade   String? // a, b, c, d, e, unknown
+  carbonFootprint Float? // CO₂ from known ingredients (kg CO₂e / kg product)
+
+  // --- Nutrient levels (traffic lights) ---
+  nutrientLevels Json? // { fat: "high", sugars: "high", salt: "low", "saturated-fat": "high" }
+
+  // --- Diet / ingredient analysis ---
+  isVegan      Boolean?
+  isVegetarian Boolean?
+  isPalmOilFree Boolean?
+  ingredientsAnalysisTags String[] // raw tags e.g. ["en:palm-oil","en:non-vegan","en:vegetarian"]
+
+  // --- Packaging ---
+  packagingTags     String[] // e.g. ["en:plastic","fr:pot-en-verre"]
+  packagingMaterials String[] // e.g. ["en:clear-glass","en:pp-5-polypropylene"]
+  packagingRecycling String[] // e.g. ["en:recycle-in-glass-bin"]
+  packagingText     String?
+
+  // --- Data quality ---
+  completeness Float? // 0.0 - 1.0
+
+  // --- Relations ---
   shoppingListItem ShoppingListItem[]
   pantryItem       PantryItem[]
 
   @@index([name])
   @@index([createdAt])
+  @@index([nutriscoreGrade])
+  @@index([novaGroup])
   @@map("foods")
 }
 

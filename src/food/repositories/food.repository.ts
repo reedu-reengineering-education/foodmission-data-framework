@@ -16,15 +16,131 @@ export interface CreateFoodDto {
   name: string;
   description?: string;
   barcode?: string;
-  openFoodFactsId?: string;
   createdBy: string;
+
+  // Product metadata
+  brands?: string;
+  categories?: string[];
+  labels?: string[];
+  quantity?: string;
+  servingSize?: string;
+  ingredientsText?: string;
+  allergens?: string[];
+  traces?: string[];
+  countries?: string[];
+  origins?: string;
+  manufacturingPlaces?: string;
+  imageUrl?: string;
+  imageFrontUrl?: string;
+
+  // Nutriments per 100g
+  nutritionDataPer?: string;
+  energyKcal100g?: number;
+  energyKj100g?: number;
+  fat100g?: number;
+  saturatedFat100g?: number;
+  transFat100g?: number;
+  cholesterol100g?: number;
+  carbohydrates100g?: number;
+  sugars100g?: number;
+  addedSugars100g?: number;
+  fiber100g?: number;
+  proteins100g?: number;
+  salt100g?: number;
+  sodium100g?: number;
+  vitaminA100g?: number;
+  vitaminC100g?: number;
+  calcium100g?: number;
+  iron100g?: number;
+  potassium100g?: number;
+  magnesium100g?: number;
+  zinc100g?: number;
+  nutrimentsRaw?: any;
+
+  // Scores
+  nutriscoreGrade?: string;
+  nutriscoreScore?: number;
+  novaGroup?: number;
+  ecoscoreGrade?: string;
+  carbonFootprint?: number;
+  nutrientLevels?: any;
+
+  // Diet analysis
+  isVegan?: boolean;
+  isVegetarian?: boolean;
+  isPalmOilFree?: boolean;
+  ingredientsAnalysisTags?: string[];
+
+  // Packaging
+  packagingTags?: string[];
+  packagingMaterials?: string[];
+  packagingRecycling?: string[];
+  packagingText?: string;
+
+  // Data quality
+  completeness?: number;
 }
 
 export interface UpdateFoodDto {
   name?: string;
   description?: string;
   barcode?: string;
-  openFoodFactsId?: string;
+
+  brands?: string;
+  categories?: string[];
+  labels?: string[];
+  quantity?: string;
+  servingSize?: string;
+  ingredientsText?: string;
+  allergens?: string[];
+  traces?: string[];
+  countries?: string[];
+  origins?: string;
+  manufacturingPlaces?: string;
+  imageUrl?: string;
+  imageFrontUrl?: string;
+
+  nutritionDataPer?: string;
+  energyKcal100g?: number;
+  energyKj100g?: number;
+  fat100g?: number;
+  saturatedFat100g?: number;
+  transFat100g?: number;
+  cholesterol100g?: number;
+  carbohydrates100g?: number;
+  sugars100g?: number;
+  addedSugars100g?: number;
+  fiber100g?: number;
+  proteins100g?: number;
+  salt100g?: number;
+  sodium100g?: number;
+  vitaminA100g?: number;
+  vitaminC100g?: number;
+  calcium100g?: number;
+  iron100g?: number;
+  potassium100g?: number;
+  magnesium100g?: number;
+  zinc100g?: number;
+  nutrimentsRaw?: any;
+
+  nutriscoreGrade?: string;
+  nutriscoreScore?: number;
+  novaGroup?: number;
+  ecoscoreGrade?: string;
+  carbonFootprint?: number;
+  nutrientLevels?: any;
+
+  isVegan?: boolean;
+  isVegetarian?: boolean;
+  isPalmOilFree?: boolean;
+  ingredientsAnalysisTags?: string[];
+
+  packagingTags?: string[];
+  packagingMaterials?: string[];
+  packagingRecycling?: string[];
+  packagingText?: string;
+
+  completeness?: number;
 }
 
 @Injectable()
@@ -59,12 +175,6 @@ export class FoodRepository
   async findByBarcode(barcode: string): Promise<Food | null> {
     return await this.prisma.food.findUnique({
       where: { barcode },
-    });
-  }
-
-  async findByOpenFoodFactsId(openFoodFactsId: string): Promise<Food | null> {
-    return await this.prisma.food.findUnique({
-      where: { openFoodFactsId },
     });
   }
 

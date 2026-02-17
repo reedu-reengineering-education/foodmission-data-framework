@@ -17,7 +17,6 @@ describe('FoodController', () => {
     name: 'Test Food',
     description: 'Test Description',
     barcode: '1234567890',
-    openFoodFactsId: 'off-123',
     createdAt: new Date(),
     updatedAt: new Date(),
     createdBy: 'user-1',

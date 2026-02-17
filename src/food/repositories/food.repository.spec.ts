@@ -13,7 +13,6 @@ describe('FoodRepository', () => {
     name: 'Test Food',
     description: 'Test Description',
     barcode: '1234567890',
-    openFoodFactsId: 'off-123',
     createdBy: 'user-1',
     createdAt: new Date(),
     updatedAt: new Date(),

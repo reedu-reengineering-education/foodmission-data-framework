@@ -41,18 +41,6 @@ export class FoodService {
       }
     }
 
-    // Check if OpenFoodFacts ID already exists
-    if (createFoodDto.openFoodFactsId) {
-      const existingFood = await this.foodRepository.findByOpenFoodFactsId(
-        createFoodDto.openFoodFactsId,
-      );
-      if (existingFood) {
-        throw new BadRequestException(
-          'Food with this OpenFoodFacts ID already exists',
-        );
-      }
-    }
-
     const food = await this.foodRepository.create({
       ...createFoodDto,
       createdBy: userId,
@@ -196,22 +184,6 @@ export class FoodService {
       }
     }
 
-    // Check if OpenFoodFacts ID already exists (excluding current food)
-    if (
-      updateFoodDto.openFoodFactsId &&
-      updateFoodDto.openFoodFactsId !== existingFood.openFoodFactsId
-    ) {
-      const existingFoodWithOffId =
-        await this.foodRepository.findByOpenFoodFactsId(
-          updateFoodDto.openFoodFactsId,
-        );
-      if (existingFoodWithOffId && existingFoodWithOffId.id !== id) {
-        throw new BadRequestException(
-          'Food with this OpenFoodFacts ID already exists',
-        );
-      }
-    }
-
     const updatedFood = await this.foodRepository.update(id, updateFoodDto);
     return this.transformToResponseDto(updatedFood);
   }
@@ -260,25 +232,50 @@ export class FoodService {
       throw new NotFoundException('Product not found in OpenFoodFacts');
     }
 
-    // Create food from OpenFoodFacts data
-    const createFoodDto: CreateFoodDto = {
+    // Create food from OpenFoodFacts data with all enriched fields
+    const food = await this.foodRepository.create({
       name: productInfo.name,
       description: productInfo.genericName,
       barcode: productInfo.barcode,
-      openFoodFactsId: productInfo.barcode, // Use barcode as OpenFoodFacts ID
-    };
-
-    const food = await this.foodRepository.create({
-      ...createFoodDto,
       createdBy,
+      brands: productInfo.brands?.join(', '),
+      categories: productInfo.categories || [],
+      labels: productInfo.labels || [],
+      quantity: productInfo.quantity,
+      servingSize: productInfo.servingSize,
+      ingredientsText: productInfo.ingredients,
+      allergens: productInfo.allergens || [],
+      traces: productInfo.traces || [],
+      countries: productInfo.countries || [],
+      origins: productInfo.origins,
+      manufacturingPlaces: productInfo.manufacturingPlaces,
+      imageUrl: productInfo.imageUrl,
+      imageFrontUrl: productInfo.imageFrontUrl,
+      nutritionDataPer: productInfo.nutritionDataPer,
+      energyKcal100g: productInfo.nutritionalInfo?.energyKcal,
+      energyKj100g: productInfo.nutritionalInfo?.energyKj,
+      fat100g: productInfo.nutritionalInfo?.fat,
+      saturatedFat100g: productInfo.nutritionalInfo?.saturatedFat,
+      transFat100g: productInfo.nutritionalInfo?.transFat,
+      cholesterol100g: productInfo.nutritionalInfo?.cholesterol,
+      carbohydrates100g: productInfo.nutritionalInfo?.carbohydrates,
+      sugars100g: productInfo.nutritionalInfo?.sugars,
+      fiber100g: productInfo.nutritionalInfo?.fiber,
+      proteins100g: productInfo.nutritionalInfo?.proteins,
+      salt100g: productInfo.nutritionalInfo?.salt,
+      sodium100g: productInfo.nutritionalInfo?.sodium,
+      vitaminA100g: productInfo.nutritionalInfo?.vitaminA,
+      vitaminC100g: productInfo.nutritionalInfo?.vitaminC,
+      calcium100g: productInfo.nutritionalInfo?.calcium,
+      iron100g: productInfo.nutritionalInfo?.iron,
+      nutriscoreGrade: productInfo.nutritionGrade,
+      novaGroup: productInfo.novaGroup,
+      ecoscoreGrade: productInfo.ecoscoreGrade,
+      carbonFootprint: productInfo.carbonFootprint,
+      completeness: productInfo.completeness,
     });
-    const responseDto = this.transformToResponseDto(food);
 
-    // Include OpenFoodFacts data in response
-    const offInfo = await this.getOpenFoodFactsInfo(barcode);
-    responseDto.openFoodFactsInfo = offInfo || undefined;
-
-    return responseDto;
+    return this.transformToResponseDto(food);
   }
 
   async getOpenFoodFactsInfo(
@@ -319,10 +316,70 @@ export class FoodService {
       name: food.name,
       description: food.description,
       barcode: food.barcode,
-      openFoodFactsId: food.openFoodFactsId,
       createdAt: food.createdAt,
       updatedAt: food.updatedAt,
       createdBy: food.createdBy,
+
+      // Product metadata
+      brands: food.brands,
+      categories: food.categories,
+      labels: food.labels,
+      quantity: food.quantity,
+      servingSize: food.servingSize,
+      ingredientsText: food.ingredientsText,
+      allergens: food.allergens,
+      traces: food.traces,
+      countries: food.countries,
+      origins: food.origins,
+      manufacturingPlaces: food.manufacturingPlaces,
+      imageUrl: food.imageUrl,
+      imageFrontUrl: food.imageFrontUrl,
+
+      // Nutriments
+      nutritionDataPer: food.nutritionDataPer,
+      energyKcal100g: food.energyKcal100g,
+      energyKj100g: food.energyKj100g,
+      fat100g: food.fat100g,
+      saturatedFat100g: food.saturatedFat100g,
+      transFat100g: food.transFat100g,
+      cholesterol100g: food.cholesterol100g,
+      carbohydrates100g: food.carbohydrates100g,
+      sugars100g: food.sugars100g,
+      addedSugars100g: food.addedSugars100g,
+      fiber100g: food.fiber100g,
+      proteins100g: food.proteins100g,
+      salt100g: food.salt100g,
+      sodium100g: food.sodium100g,
+      vitaminA100g: food.vitaminA100g,
+      vitaminC100g: food.vitaminC100g,
+      calcium100g: food.calcium100g,
+      iron100g: food.iron100g,
+      potassium100g: food.potassium100g,
+      magnesium100g: food.magnesium100g,
+      zinc100g: food.zinc100g,
+
+      // Scores
+      nutriscoreGrade: food.nutriscoreGrade,
+      nutriscoreScore: food.nutriscoreScore,
+      novaGroup: food.novaGroup,
+      ecoscoreGrade: food.ecoscoreGrade,
+      carbonFootprint: food.carbonFootprint,
+      nutrientLevels: food.nutrientLevels,
+
+      // Diet analysis
+      isVegan: food.isVegan,
+      isVegetarian: food.isVegetarian,
+      isPalmOilFree: food.isPalmOilFree,
+      ingredientsAnalysisTags: food.ingredientsAnalysisTags,
+
+      // Packaging
+      packagingTags: food.packagingTags,
+      packagingMaterials: food.packagingMaterials,
+      packagingRecycling: food.packagingRecycling,
+      packagingText: food.packagingText,
+
+      // Quality
+      completeness: food.completeness,
     });
   }
 }
