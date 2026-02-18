@@ -769,6 +769,33 @@
         "tags": [
           "profile"
         ]
+      },
+      "delete": {
+        "operationId": "deleteMe",
+        "parameters": [
+          {
+            "name": "deleteAll",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete current user (optionally cascade all data)",
+        "tags": [
+          "profile"
+        ]
       }
     },
     "/api/v1/profile": {

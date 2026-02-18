@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
+import { PrismaService } from '../../database/prisma.service';
 import {
   ActivityLevel,
   AnnualIncomeLevel,
@@ -37,7 +38,10 @@ export interface UserProfile {
 
 @Injectable()
 export class UserProfileService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async getOrCreateProfile(keycloakUser: {
     sub: string;
@@ -187,14 +191,30 @@ export class UserProfileService {
       return null;
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName ?? '',
-      lastName: user.lastName ?? '',
-      keycloakId: user.keycloakId,
-      preferences: user.preferences as Record<string, unknown>,
-      settings: user.settings as Record<string, unknown>,
-    };
+    return this.formatUserProfile(user);
+  }
+
+  /**
+   * Delete a user by internal userId. If cascade=true, delete all related data (pantry, shoppingList, recipes, meals, mealLogs, etc).
+   * If cascade=false, only delete the user record (FKs must be nullable or ON DELETE SET NULL/RESTRICT).
+   */
+  async deleteUserById(userId: string, cascade = false): Promise<void> {
+    if (cascade) {
+      // Delete related entities first (order matters for FK constraints)
+      // Adjust as needed for your schema
+      await this.prisma.mealLog.deleteMany({ where: { userId } });
+      await this.prisma.meal.deleteMany({ where: { userId } });
+      await this.prisma.recipe.deleteMany({ where: { userId } });
+      await this.prisma.pantryItem.deleteMany({
+        where: { pantry: { userId } },
+      });
+      await this.prisma.pantry.deleteMany({ where: { userId } });
+      await this.prisma.shoppingListItem.deleteMany({
+        where: { shoppingList: { userId } },
+      });
+      await this.prisma.shoppingList.deleteMany({ where: { userId } });
+      // Add more as needed
+    }
+    await this.userRepository.remove(userId);
   }
 }

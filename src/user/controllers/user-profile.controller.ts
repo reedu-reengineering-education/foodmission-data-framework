@@ -5,6 +5,8 @@ import {
   Body,
   UseGuards,
   NotFoundException,
+  Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserProfileService } from '../services/user-profile.service';
@@ -64,7 +66,10 @@ export class UserProfileController {
   @Get('complete')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Check whether basic profile is complete' })
+  @ApiOperation({
+    summary:
+      'Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)',
+  })
   async isComplete(@CurrentUser('id') userId: string) {
     const user = await this.userProfileService.getProfileByUserId(userId);
     if (!user) return { complete: false };
@@ -72,5 +77,21 @@ export class UserProfileController {
       user.keycloakId,
     );
     return { complete: ok };
+  }
+
+  @Delete('me')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Delete current user (optionally cascade all data)',
+  })
+  async deleteMe(
+    @CurrentUser('id') userId: string,
+    @Query('deleteAll') deleteAll: string = 'false',
+  ) {
+    // deleteAll is a string ('true' or 'false') from query param
+    const cascade = deleteAll === 'true';
+    await this.userProfileService.deleteUserById(userId, cascade);
+    return { deleted: true, cascade };
   }
 }

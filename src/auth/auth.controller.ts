@@ -85,7 +85,8 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @ApiOperation({
-    summary: 'Get authenticated user profile',
+    summary:
+      'Get and create authenticated user profile (deprecated possibly depending on registration flow)',
     description:
       'Returns the profile information of the currently authenticated user. Automatically creates user record if not exists.',
   })
