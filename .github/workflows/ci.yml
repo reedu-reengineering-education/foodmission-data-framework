@@ -316,7 +316,7 @@ jobs:
 
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: /tmp/digests
           pattern: digests-*-${{ github.run_id }}
@@ -356,7 +356,7 @@ jobs:
 
       - name: Update PR description with image info
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
