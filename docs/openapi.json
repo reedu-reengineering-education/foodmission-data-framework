@@ -69,6 +69,9 @@
                     "lastName": {
                       "type": "string"
                     },
+                    "yearOfBirth": {
+                      "type": "integer"
+                    },
                     "keycloakId": {
                       "type": "string"
                     },
@@ -132,220 +135,6 @@
         ]
       }
     },
-    "/api/v1/auth/profile/preferences": {
-      "put": {
-        "description": "Update app-specific user preferences. Returns the updated user profile.",
-        "operationId": "updatePreferences",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User preferences object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "dietaryRestrictions": [
-                    "vegetarian"
-                  ],
-                  "allergies": [
-                    "nuts"
-                  ],
-                  "theme": "dark"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User preferences updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user preferences",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/v1/auth/profile/settings": {
-      "put": {
-        "description": "Update app-specific user settings. Returns the updated user profile.",
-        "operationId": "updateSettings",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User settings object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "language": "en",
-                  "notifications": true,
-                  "timezone": "UTC"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User settings updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user settings",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
     "/api/v1/auth/health": {
       "get": {
         "description": "Returns the health status of the authentication service. This endpoint is public.",
@@ -374,6 +163,106 @@
           }
         },
         "summary": "Authentication service health check",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Register a new user in Keycloak and create local user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Login user via Keycloak and return tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Logout by revoking token at Keycloak",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Exchange refresh token for new tokens",
         "tags": [
           "auth"
         ]
@@ -862,14 +751,32 @@
         ]
       }
     },
-    "/api/v1/users/{id}/preferences": {
+    "/api/v1/profile/me": {
       "get": {
-        "operationId": "getPreferences",
+        "operationId": "getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "profile"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteMe",
         "parameters": [
           {
-            "name": "id",
+            "name": "deleteAll",
             "required": true,
-            "in": "path",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -877,68 +784,67 @@
         ],
         "responses": {
           "200": {
-            "description": "User preferences"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
-          {
             "JWT-auth": []
           }
         ],
-        "summary": "Get user preferences",
+        "summary": "Delete current user (optionally cascade all data)",
         "tags": [
-          "users"
+          "profile"
         ]
-      },
+      }
+    },
+    "/api/v1/profile": {
       "patch": {
-        "operationId": "updatePreferences",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "updateProfile",
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserPreferencesDto"
+                "$ref": "#/components/schemas/ProfileUpdateDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Preferences updated successfully"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/complete": {
+      "get": {
+        "operationId": "isComplete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
           {
             "JWT-auth": []
           }
         ],
-        "summary": "Update user preferences",
+        "summary": "Check whether basic profile is complete",
         "tags": [
-          "users"
+          "profile"
         ]
       }
     },
@@ -5490,6 +5396,103 @@
           "path"
         ]
       },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Desired username"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region/state"
+          },
+          "zip": {
+            "type": "string",
+            "description": "Postal code"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "email",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username or email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token to revoke (refresh or access token)"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Refresh token to exchange for new tokens"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -5516,6 +5519,69 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         },
         "required": [
@@ -5551,32 +5617,158 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
-      "UserPreferencesDto": {
+      "ProfileUpdateDto": {
         "type": "object",
         "properties": {
-          "dietaryRestrictions": {
-            "description": "Dietary restrictions",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
           },
-          "allergies": {
-            "description": "Food allergies",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "country": {
+            "type": "string",
+            "description": "Country"
           },
-          "preferredCategories": {
-            "description": "Preferred food categories",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level",
+            "enum": [
+              "NO_FORMAL_EDUCATION",
+              "PRIMARY",
+              "SECONDARY",
+              "VOCATIONAL",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
