@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserProfileService } from './user-profile.service';
 import { UserRepository } from '../repositories/user.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { KeycloakAdminService } from '../../auth/keycloak-admin.service';
+import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { NotFoundException } from '@nestjs/common';
 
 describe('UserProfileService - deleteUserById', () => {

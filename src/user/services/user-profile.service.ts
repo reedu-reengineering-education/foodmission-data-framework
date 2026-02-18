@@ -10,7 +10,7 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from '../dto/create-user.dto';
-import { KeycloakAdminService } from '../../auth/keycloak-admin.service';
+import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 
 export interface UserProfile {
   id: string;
