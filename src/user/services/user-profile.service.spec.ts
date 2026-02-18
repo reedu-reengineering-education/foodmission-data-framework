@@ -2,12 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserProfileService } from './user-profile.service';
 import { UserRepository } from '../repositories/user.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { KeycloakAdminService } from '../../auth/keycloak-admin.service';
 import { NotFoundException } from '@nestjs/common';
 
 describe('UserProfileService - deleteUserById', () => {
   let service: UserProfileService;
   let userRepository: jest.Mocked<UserRepository>;
   let prisma: jest.Mocked<PrismaService>;
+  let keycloakAdminService: jest.Mocked<KeycloakAdminService>;
 
   const mockUser = {
     id: 'user-1',
@@ -60,6 +62,10 @@ describe('UserProfileService - deleteUserById', () => {
       } as any,
     };
 
+    const mockKeycloakAdmin: Partial<jest.Mocked<KeycloakAdminService>> = {
+      deleteUser: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserProfileService,
@@ -71,12 +77,17 @@ describe('UserProfileService - deleteUserById', () => {
           provide: PrismaService,
           useValue: mockPrisma,
         },
+        {
+          provide: KeycloakAdminService,
+          useValue: mockKeycloakAdmin,
+        },
       ],
     }).compile();
 
     service = module.get<UserProfileService>(UserProfileService);
     userRepository = module.get(UserRepository);
     prisma = module.get(PrismaService);
+    keycloakAdminService = module.get(KeycloakAdminService);
   });
 
   afterEach(() => {
@@ -85,11 +96,14 @@ describe('UserProfileService - deleteUserById', () => {
 
   describe('deleteUserById without cascade', () => {
     it('should delete only user record when cascade is false', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
 
       await service.deleteUserById('user-1', false);
 
+      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
+      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
       expect(prisma.mealLog.deleteMany).not.toHaveBeenCalled();
       expect(prisma.meal.deleteMany).not.toHaveBeenCalled();
       expect(prisma.recipe.deleteMany).not.toHaveBeenCalled();
@@ -100,17 +114,36 @@ describe('UserProfileService - deleteUserById', () => {
     });
 
     it('should delete only user record when cascade is not provided (default)', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
 
       await service.deleteUserById('user-1');
 
+      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
+      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
       expect(prisma.mealLog.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when user not found', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.deleteUserById('nonexistent-id')).rejects.toThrow(
+        NotFoundException,
+      );
+      await expect(service.deleteUserById('nonexistent-id')).rejects.toThrow(
+        'User not found',
+      );
+
+      expect(userRepository.findById).toHaveBeenCalledWith('nonexistent-id');
+      expect(userRepository.remove).not.toHaveBeenCalled();
+      expect(keycloakAdminService.deleteUser).not.toHaveBeenCalled();
     });
   });
 
   describe('deleteUserById with cascade', () => {
     it('should delete all related data when cascade is true', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 5 });
       (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 3 });
       (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 2 });
@@ -127,6 +160,9 @@ describe('UserProfileService - deleteUserById', () => {
       (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
 
       await service.deleteUserById('user-1', true);
+
+      // Verify user is fetched first
+      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
 
       // Verify all related entities are deleted in correct order
       expect(prisma.mealLog.deleteMany).toHaveBeenCalledWith({
@@ -151,11 +187,15 @@ describe('UserProfileService - deleteUserById', () => {
         where: { userId: 'user-1' },
       });
 
-      // Verify user is deleted last
+      // Verify user is deleted from database
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
+
+      // Verify user is deleted from Keycloak
+      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
     });
 
     it('should delete user even if there are no related records', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
       (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
       (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
@@ -173,10 +213,13 @@ describe('UserProfileService - deleteUserById', () => {
 
       await service.deleteUserById('user-1', true);
 
+      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
+      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
     });
 
     it('should propagate errors from Prisma operations', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       const error = new Error('Database constraint violation');
       (prisma.mealLog.deleteMany as jest.Mock).mockRejectedValue(error);
 
@@ -186,9 +229,11 @@ describe('UserProfileService - deleteUserById', () => {
 
       // Verify user was not deleted if cascade deletion fails
       expect(userRepository.remove).not.toHaveBeenCalled();
+      expect(keycloakAdminService.deleteUser).not.toHaveBeenCalled();
     });
 
     it('should propagate errors from user deletion', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
       (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
       (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
@@ -203,11 +248,11 @@ describe('UserProfileService - deleteUserById', () => {
         count: 0,
       });
 
-      const error = new Error('User not found');
+      const error = new Error('User deletion failed');
       (userRepository.remove as jest.Mock).mockRejectedValue(error);
 
       await expect(service.deleteUserById('user-1', true)).rejects.toThrow(
-        'User not found',
+        'User deletion failed',
       );
     });
   });

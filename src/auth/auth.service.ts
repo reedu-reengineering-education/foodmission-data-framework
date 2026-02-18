@@ -388,4 +388,65 @@ export class AuthService {
 
     return tokens;
   }
+
+  /**
+   * Delete a user from Keycloak by their Keycloak ID (sub).
+   * Uses service account credentials to get admin access.
+   */
+  async deleteKeycloakUser(keycloakId: string): Promise<void> {
+    // Get service account token
+    const params = new URLSearchParams();
+    params.append('grant_type', 'client_credentials');
+    params.append('client_id', process.env.KEYCLOAK_SERVICE_CLIENT_ID || '');
+    if (process.env.KEYCLOAK_SERVICE_CLIENT_SECRET) {
+      params.append(
+        'client_secret',
+        process.env.KEYCLOAK_SERVICE_CLIENT_SECRET,
+      );
+    }
+
+    let tokenResp: AxiosResponse;
+    try {
+      tokenResp = await firstValueFrom(
+        this.httpService.post(this.tokenEndpoint(), params.toString(), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        }),
+      );
+    } catch (err: any) {
+      const status = err?.response?.status || 500;
+      const data = err?.response?.data || {
+        error: 'token_error',
+        error_description: 'Failed to obtain service account token',
+      };
+      this.logger.error(
+        'Failed to get service account token for user deletion',
+        data,
+      );
+      throw new HttpException(data, status);
+    }
+
+    const accessToken = tokenResp.data.access_token;
+
+    // Delete the user from Keycloak
+    const deleteUrl = `${this.adminUsersEndpoint()}/${keycloakId}`;
+    try {
+      await firstValueFrom(
+        this.httpService.delete(deleteUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }),
+      );
+      this.logger.log(`Successfully deleted Keycloak user: ${keycloakId}`);
+    } catch (err: any) {
+      const status = err?.response?.status || 500;
+      const data = err?.response?.data || {
+        error: 'delete_error',
+        error_description: 'Failed to delete user from Keycloak',
+      };
+      this.logger.error(`Failed to delete Keycloak user ${keycloakId}`, data);
+      throw new HttpException(data, status);
+    }
+  }
 }

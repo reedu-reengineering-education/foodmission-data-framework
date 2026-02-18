@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import {
@@ -10,13 +10,14 @@ import {
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserContextService } from './user-context.service';
+import { KeycloakAdminService } from './keycloak-admin.service';
 import { DatabaseModule } from '../database/database.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
     DatabaseModule,
-    UserModule,
+    forwardRef(() => UserModule),
     HttpModule,
     ConfigModule,
     KeycloakConnectModule.register({
@@ -33,6 +34,7 @@ import { UserModule } from '../user/user.module';
   providers: [
     AuthService,
     UserContextService,
+    KeycloakAdminService,
     // Global guards for automatic JWT validation
     {
       provide: 'APP_GUARD',
@@ -47,6 +49,6 @@ import { UserModule } from '../user/user.module';
       useClass: RoleGuard,
     },
   ],
-  exports: [UserContextService],
+  exports: [UserContextService, KeycloakAdminService],
 })
 export class AuthModule {}

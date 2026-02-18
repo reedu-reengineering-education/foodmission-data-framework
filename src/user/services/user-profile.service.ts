@@ -10,6 +10,7 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from '../dto/create-user.dto';
+import { KeycloakAdminService } from '../../auth/keycloak-admin.service';
 
 export interface UserProfile {
   id: string;
@@ -41,6 +42,7 @@ export class UserProfileService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly prisma: PrismaService,
+    private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -197,8 +199,15 @@ export class UserProfileService {
   /**
    * Delete a user by internal userId. If cascade=true, delete all related data (pantry, shoppingList, recipes, meals, mealLogs, etc).
    * If cascade=false, only delete the user record (FKs must be nullable or ON DELETE SET NULL/RESTRICT).
+   * Also deletes the user from Keycloak.
    */
   async deleteUserById(userId: string, cascade = false): Promise<void> {
+    // First, get the user to retrieve keycloakId
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     if (cascade) {
       // Delete related entities first (order matters for FK constraints)
       // Adjust as needed for your schema
@@ -215,6 +224,11 @@ export class UserProfileService {
       await this.prisma.shoppingList.deleteMany({ where: { userId } });
       // Add more as needed
     }
+
+    // Delete from local database
     await this.userRepository.remove(userId);
+
+    // Delete from Keycloak
+    await this.keycloakAdminService.deleteUser(user.keycloakId);
   }
 }
