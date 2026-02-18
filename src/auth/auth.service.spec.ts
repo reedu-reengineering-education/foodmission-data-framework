@@ -51,16 +51,12 @@ describe('AuthService.register', () => {
       username: 'u1',
       password: 'p',
       email: 'e@example.com',
-      firstName: 'First',
-      lastName: 'Last',
     };
 
     // Mock KeycloakAdminService.createUser to return a user with ID
     const kcUser = {
       id: 'kc-1',
       email: dto.email,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
     };
     (mockKeycloakAdminService.createUser as jest.Mock).mockResolvedValue(
       kcUser,
@@ -76,8 +72,6 @@ describe('AuthService.register', () => {
     expect(mockKeycloakAdminService.createUser).toHaveBeenCalledWith({
       username: dto.username,
       email: dto.email,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
       password: dto.password,
     });
   });
@@ -87,8 +81,6 @@ describe('AuthService.register', () => {
       username: 'u2',
       password: 'p',
       email: 'e2@example.com',
-      firstName: 'F2',
-      lastName: 'L2',
     };
 
     // Mock KeycloakAdminService to return user with extracted ID
@@ -111,8 +103,6 @@ describe('AuthService.register', () => {
       username: 'u3',
       password: 'p',
       email: 'e3@example.com',
-      firstName: 'F3',
-      lastName: 'L3',
     };
 
     // Mock KeycloakAdminService.createUser
