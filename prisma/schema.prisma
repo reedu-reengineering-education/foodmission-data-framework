@@ -552,6 +552,15 @@ enum MealType {
   MEAT
   PASTA
   RICE
+<<<<<<< HEAD
+=======
+  VEGAN
+}
+
+enum DietaryPreference {
+  NONE
+  VEGETARIAN
+>>>>>>> 8237ae5 (fix: schema.prisma after merging main)
   VEGAN
 }
 
