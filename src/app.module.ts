@@ -21,6 +21,7 @@ import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.modu
 import { PantryModule } from './pantry/pantry.module';
 import { PantryItemModule } from './pantryItem/pantry.module';
 import { MealModule } from './meal/meal.module';
+import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
 
@@ -41,6 +42,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     PantryModule,
     PantryItemModule,
     MealModule,
+    MealItemModule,
     RecipeModule,
     MealLogModule,
   ],
