@@ -189,9 +189,9 @@ describe('Cache E2E', () => {
       // Delete using cache manager directly
       await cacheManager.del(key);
 
-      // Verify it's gone
+      // Verify it's gone (cache manager returns null for missing keys)
       const deletedValue = await cacheManager.get(key);
-      expect(deletedValue).toBeUndefined();
+      expect(deletedValue).toBeNull();
     });
   });
 

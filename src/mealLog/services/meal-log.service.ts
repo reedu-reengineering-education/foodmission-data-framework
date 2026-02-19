@@ -51,8 +51,7 @@ export class MealLogService {
       userId,
     );
 
-    const mealFromPantry =
-      createMealLogDto.mealFromPantry ?? Boolean(meal.pantryItemId);
+    const mealFromPantry = createMealLogDto.mealFromPantry ?? false;
 
     try {
       const mealLog = await this.mealLogRepository.create({

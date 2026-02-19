@@ -6,9 +6,11 @@ import {
   IsInt,
   IsBoolean,
   IsOptional,
+  IsUUID,
   Min,
   MaxLength,
   IsEnum,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateShoppingListItemDto {
@@ -56,16 +58,34 @@ export class CreateShoppingListItemDto {
   @IsNotEmpty()
   shoppingListId: string;
 
-  @ApiProperty({
-    description: 'The ID of the food item',
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food item (provide either foodId or foodCategoryId)',
     example: 'uuid-food-id',
   })
-  @IsString()
+  @IsUUID()
+  @ValidateIf((o) => !o.foodCategoryId)
   @IsNotEmpty()
-  foodId: string;
+  foodId?: string;
 
-  constructor(foodId: string, quantity: number, unit: Unit = Unit.PIECES) {
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food category (provide either foodId or foodCategoryId)',
+    example: 'uuid-food-category-id',
+  })
+  @IsUUID()
+  @ValidateIf((o) => !o.foodId)
+  @IsNotEmpty()
+  foodCategoryId?: string;
+
+  constructor(
+    foodId?: string,
+    foodCategoryId?: string,
+    quantity: number = 1,
+    unit: Unit = Unit.PIECES,
+  ) {
     this.foodId = foodId;
+    this.foodCategoryId = foodCategoryId;
     this.quantity = quantity;
     this.unit = unit;
   }

@@ -47,6 +47,12 @@ export class PantryItemService {
       );
     }
 
+    if (!createShoppingListItemDto.foodId) {
+      throw new BadRequestException(
+        'Only food items (not food categories) can be added to pantry from shopping list',
+      );
+    }
+
     const createPantryItemDto = new CreatePantryItemDto(
       pantryId,
       createShoppingListItemDto.foodId,

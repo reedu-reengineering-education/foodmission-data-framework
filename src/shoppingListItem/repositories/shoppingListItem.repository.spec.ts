@@ -97,6 +97,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
       });
       expect(result).toEqual(mockShoppingListItem);
@@ -122,6 +123,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
         orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
       });
@@ -154,6 +156,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
         orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
       });
@@ -193,6 +196,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
       });
       expect(result).toEqual(mockShoppingListItem);
@@ -236,6 +240,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
       });
       expect(result).toEqual(mockShoppingListItem);
@@ -259,6 +264,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
       });
       expect(result).toEqual(updatedItem);
@@ -292,6 +298,7 @@ describe('ShoppingListItemRepository', () => {
         include: {
           shoppingList: true,
           food: true,
+          foodCategory: true,
         },
       });
       expect(result).toEqual(toggledItem);

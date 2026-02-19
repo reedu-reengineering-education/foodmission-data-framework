@@ -16,6 +16,7 @@ import { PantryItemService } from '../../pantryItem/services/pantryItem.service'
 import { PantryService } from '../../pantry/services/pantry.service';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { FoodRepository } from '../../food/repositories/food.repository';
+import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
 
 describe('ShoppingListItemService', () => {
@@ -41,7 +42,9 @@ describe('ShoppingListItemService', () => {
     notes: 'Test notes',
     checked: false,
     shoppingListId: 'list-1',
+    itemType: 'food' as const,
     foodId: 'food-1',
+    foodCategoryId: null,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
     shoppingList: {
@@ -116,7 +119,8 @@ describe('ShoppingListItemService', () => {
       // Data quality
       completeness: null,
     },
-  };
+    foodCategory: null,
+  } as any; // Type assertion for test mock with polymorphic fields
 
   const mockShoppingList = {
     id: 'list-1',
@@ -150,6 +154,10 @@ describe('ShoppingListItemService', () => {
   };
 
   const mockFoodRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockFoodCategoryRepository = {
     findById: jest.fn(),
   };
 
@@ -196,6 +204,10 @@ describe('ShoppingListItemService', () => {
         {
           provide: FoodRepository,
           useValue: mockFoodRepository,
+        },
+        {
+          provide: FoodCategoryRepository,
+          useValue: mockFoodCategoryRepository,
         },
         {
           provide: ShoppingListRepository,
@@ -252,7 +264,12 @@ describe('ShoppingListItemService', () => {
         'list-1',
         'food-1',
       );
-      expect(repository.create).toHaveBeenCalledWith(createDto);
+      expect(repository.create).toHaveBeenCalledWith({
+        ...createDto,
+        itemType: 'food',
+        foodId: 'food-1',
+        foodCategoryId: undefined,
+      });
 
       expect(result.id).toBe('1');
       expect(result.quantity).toBe(2);

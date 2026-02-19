@@ -658,6 +658,7 @@ describe('PantryItemService', () => {
     it('should create pantry item from shopping list when valid data is provided', async () => {
       const dto = new CreateShoppingListItemDto(
         TEST_IDS.FOOD,
+        undefined, // foodCategoryId
         TEST_DATA.QUANTITY,
         Unit.KG,
       );
@@ -693,6 +694,7 @@ describe('PantryItemService', () => {
       ) => {
         const dto = new CreateShoppingListItemDto(
           TEST_IDS.FOOD,
+          undefined, // foodCategoryId
           TEST_DATA.QUANTITY,
           Unit.KG,
         );
