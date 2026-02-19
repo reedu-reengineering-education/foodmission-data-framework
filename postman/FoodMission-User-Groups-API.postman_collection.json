@@ -426,7 +426,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"nickname\": \"Little Timmy\",\n  \"age\": 8,\n  \"gender\": \"MALE\",\n  \"physicalActivityLevel\": \"VERY_ACTIVE\",\n  \"dietaryPreference\": \"NONE\"\n}",
+							"raw": "{\n  \"nickname\": \"Little Timmy\",\n  \"age\": 8,\n  \"gender\": \"MALE\",\n  \"activityLevel\": \"VERY_ACTIVE\",\n  \"preferences\": {\n    \"dietaryPreference\": \"NONE\"\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -446,7 +446,7 @@
 								"virtual-members"
 							]
 						},
-						"description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.\n\n**Available enums:**\n- gender: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY\n- physicalActivityLevel: SEDENTARY, LIGHTLY_ACTIVE, MODERATELY_ACTIVE, VERY_ACTIVE, EXTREMELY_ACTIVE\n- dietaryPreference: NONE, VEGETARIAN, VEGAN, PESCATARIAN, KETO, PALEO, GLUTEN_FREE, LACTOSE_FREE, HALAL, KOSHER, OTHER\n\n**Rate Limit:** 10 requests per minute"
+						"description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.\n\n**Available enums:**\n- gender: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY\n- activityLevel: SEDENTARY, LIGHT, MODERATE, ACTIVE, VERY_ACTIVE\n- annualIncome: BELOW_10000, FROM_10000_TO_19999, FROM_20000_TO_34999, FROM_35000_TO_49999, FROM_50000_TO_74999, FROM_75000_TO_99999, ABOVE_100000\n\n**Note:** Use 'preferences' object for custom data like dietaryPreference (e.g., {\"preferences\": {\"dietaryPreference\": \"VEGETARIAN\"}})\n\n**Rate Limit:** 10 requests per minute"
 					},
 					"response": [],
 					"event": [
