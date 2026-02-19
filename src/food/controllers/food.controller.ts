@@ -55,7 +55,7 @@ export class FoodController {
 
   @Post()
   @CacheEvict(['foods:list', 'foods:count'])
-  @Roles('user', 'admin')
+  @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute for creating foods
@@ -259,7 +259,7 @@ export class FoodController {
 
   @Patch(':id')
   @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
-  @Roles('user', 'admin')
+  @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({
