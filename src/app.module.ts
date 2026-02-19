@@ -5,6 +5,7 @@ import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { FoodModule } from './food/food.module';
+import { FoodCategoryModule } from './foodCategory/food-category.module';
 import { UserModule } from './user/user.module';
 
 import { HealthModule } from './health/health.module';
@@ -32,6 +33,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     AuthModule,
     UserModule,
     FoodModule,
+    FoodCategoryModule,
     HealthModule,
     MonitoringModule,
     ShoppingListModule,
