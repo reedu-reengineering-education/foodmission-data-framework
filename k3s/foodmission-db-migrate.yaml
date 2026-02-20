@@ -1,0 +1,39 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-migrate
+  namespace: foodmission
+spec:
+  template:
+    spec:
+      containers:
+      - name: migrate
+        image: ghcr.io/reedu-reengineering-education/foodmission-data-framework:latest
+        imagePullPolicy: Always
+        command: ["npx", "prisma", "migrate", "deploy"]
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DATABASE_URL
+            value: "postgresql://foodmission_user:xxxxxxxxx@10.0.0.5:5432/foodmission"
+          - name: SESSION_SECRET
+            value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          - name: ENCRYPTION_KEY
+            value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          - name: KEYCLOAK_BASE_URL
+            value: "https://staging.auth.api.foodmission.eu"
+          - name: KEYCLOAK_REALM
+            value: "foodmission"
+          - name: KEYCLOAK_CLIENT_ID
+            value: "foodmission-api"
+          - name: KEYCLOAK_CLIENT_SECRET
+            value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          - name: KEYCLOAK_REDIRECT_URI
+            value: "https://staging.api.foodmission.eu/auth/callback"
+          - name: KEYCLOAK_SERVICE_CLIENT_ID
+            value: "foodmission-service"
+          - name: KEYCLOAK_SERVICE_CLIENT_SECRET
+            value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        # Add other env vars if needed
+      restartPolicy: Never
