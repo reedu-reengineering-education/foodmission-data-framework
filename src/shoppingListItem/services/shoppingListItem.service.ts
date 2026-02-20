@@ -423,13 +423,22 @@ export class ShoppingListItemService {
     try {
       const pantryId = await this.pantryService.validatePantryExists(userId);
 
+      const dto = item.foodId
+        ? new CreateShoppingListItemDto(
+            item.foodId,
+            undefined,
+            item.quantity,
+            item.unit,
+          )
+        : new CreateShoppingListItemDto(
+            undefined,
+            item.foodCategoryId!,
+            item.quantity,
+            item.unit,
+          );
+
       await this.pantryItemService.createFromShoppingList(
-        new CreateShoppingListItemDto(
-          item.foodId ?? undefined,
-          item.foodCategoryId ?? undefined,
-          item.quantity,
-          item.unit,
-        ),
+        dto,
         userId,
         pantryId,
       );
