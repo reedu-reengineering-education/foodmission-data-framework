@@ -67,14 +67,26 @@ export class CreateMealItemDto {
   notes?: string;
 
   constructor(
+    foodId: string,
+    foodCategoryId: undefined,
+    quantity?: number,
+    unit?: Unit,
+  );
+  constructor(
+    foodId: undefined,
+    foodCategoryId: string,
+    quantity?: number,
+    unit?: Unit,
+  );
+  constructor(
     foodId?: string,
     foodCategoryId?: string,
-    quantity: number = 1,
-    unit: Unit = Unit.PIECES,
+    quantity?: number,
+    unit?: Unit,
   ) {
     this.foodId = foodId;
     this.foodCategoryId = foodCategoryId;
-    this.quantity = quantity;
-    this.unit = unit;
+    this.quantity = quantity ?? 1;
+    this.unit = unit ?? Unit.PIECES;
   }
 }
