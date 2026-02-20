@@ -55,6 +55,8 @@ paths:
                     type: string
                   lastName:
                     type: string
+                  yearOfBirth:
+                    type: integer
                   keycloakId:
                     type: string
                   preferences:
@@ -85,139 +87,9 @@ paths:
             - profile
             - email
         - JWT-auth: []
-      summary: Get authenticated user profile
-      tags: *ref_0
-  /api/v1/auth/profile/preferences:
-    put:
-      description: Update app-specific user preferences. Returns the updated user profile.
-      operationId: updatePreferences
-      parameters: []
-      requestBody:
-        required: true
-        description: User preferences object (JSON)
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                dietaryRestrictions:
-                  - vegetarian
-                allergies:
-                  - nuts
-                theme: dark
-      responses:
-        '200':
-          description: User preferences updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  email:
-                    type: string
-                    format: email
-                  firstName:
-                    type: string
-                  lastName:
-                    type: string
-                  keycloakId:
-                    type: string
-                  preferences:
-                    type: object
-                  settings:
-                    type: object
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-        - JWT-auth: []
-      summary: Update user preferences
-      tags: *ref_0
-  /api/v1/auth/profile/settings:
-    put:
-      description: Update app-specific user settings. Returns the updated user profile.
-      operationId: updateSettings
-      parameters: []
-      requestBody:
-        required: true
-        description: User settings object (JSON)
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                language: en
-                notifications: true
-                timezone: UTC
-      responses:
-        '200':
-          description: User settings updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                  email:
-                    type: string
-                    format: email
-                  firstName:
-                    type: string
-                  lastName:
-                    type: string
-                  keycloakId:
-                    type: string
-                  preferences:
-                    type: object
-                  settings:
-                    type: object
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-        - JWT-auth: []
-      summary: Update user settings
+      summary: >-
+        Get and create authenticated user profile (deprecated possibly depending
+        on registration flow)
       tags: *ref_0
   /api/v1/auth/health:
     get:
@@ -241,6 +113,66 @@ paths:
                     type: string
                     example: auth
       summary: Authentication service health check
+      tags: *ref_0
+  /api/v1/auth/register:
+    post:
+      operationId: register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: ''
+      summary: Register a new user in Keycloak and create local user
+      tags: *ref_0
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '201':
+          description: ''
+      summary: Login user via Keycloak and return tokens
+      tags: *ref_0
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutDto'
+      responses:
+        '201':
+          description: ''
+      summary: Logout by revoking token at Keycloak
+      tags: *ref_0
+  /api/v1/auth/refresh:
+    post:
+      operationId: refresh
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshDto'
+      responses:
+        '201':
+          description: ''
+      summary: Exchange refresh token for new tokens
       tags: *ref_0
   /api/v1/auth/token-info:
     get:
@@ -536,51 +468,63 @@ paths:
         - JWT-auth: []
       summary: Delete user
       tags: *ref_1
-  /api/v1/users/{id}/preferences:
+  /api/v1/profile/me:
     get:
-      operationId: getPreferences
+      operationId: getMyProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - JWT-auth: []
+      summary: Get current user profile
+      tags: &ref_2
+        - profile
+    delete:
+      operationId: deleteMe
       parameters:
-        - name: id
+        - name: deleteAll
           required: true
-          in: path
+          in: query
           schema:
             type: string
       responses:
         '200':
-          description: User preferences
+          description: ''
       security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
         - JWT-auth: []
-      summary: Get user preferences
-      tags: *ref_1
+      summary: Delete current user (optionally cascade all data)
+      tags: *ref_2
+  /api/v1/profile:
     patch:
-      operationId: updatePreferences
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
+      operationId: updateProfile
+      parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserPreferencesDto'
+              $ref: '#/components/schemas/ProfileUpdateDto'
       responses:
         '200':
-          description: Preferences updated successfully
+          description: ''
       security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
         - JWT-auth: []
-      summary: Update user preferences
-      tags: *ref_1
+      summary: Update profile
+      tags: *ref_2
+  /api/v1/profile/complete:
+    get:
+      operationId: isComplete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - JWT-auth: []
+      summary: >-
+        Check whether basic profile is complete (needs: username, yearOfBirth,
+        country, region, zip, language)
+      tags: *ref_2
   /api/v1/foods:
     post:
       description: Creates a new food item in the database. Requires user or admin role.
@@ -630,7 +574,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Create a new food item
-      tags: &ref_2
+      tags: &ref_3
         - foods
     get:
       description: >-
@@ -652,7 +596,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get all food items
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/search/openfoodfacts:
     get:
       description: >-
@@ -733,7 +677,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Search OpenFoodFacts database
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/import/openfoodfacts/{barcode}:
     post:
       description: Imports a food item from OpenFoodFacts database using barcode.
@@ -796,7 +740,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Import food from OpenFoodFacts
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/barcode/{barcode}:
     get:
       description: >-
@@ -836,7 +780,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by barcode
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/{id}:
     get:
       description: >-
@@ -877,7 +821,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Find food by ID
-      tags: *ref_2
+      tags: *ref_3
     patch:
       description: Updates a food item by its ID. Requires user or admin role.
       operationId: update
@@ -933,7 +877,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Update food item
-      tags: *ref_2
+      tags: *ref_3
     delete:
       description: Deletes a food item by its ID. Requires admin role.
       operationId: remove
@@ -979,7 +923,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Delete food item
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/foods/{id}/openfoodfacts:
     get:
       description: >-
@@ -1022,7 +966,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get OpenFoodFacts information for food item
-      tags: *ref_2
+      tags: *ref_3
   /api/v1/food-categories:
     post:
       description: 'Admin only: Create a new food category with nutritional data'
@@ -1047,10 +991,10 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin role required
-      security: &ref_3
+      security: &ref_4
         - JWT-auth: []
       summary: Create a new food category
-      tags: &ref_4
+      tags: &ref_5
         - food-categories
     get:
       description: Get a paginated list of food categories with optional filtering
@@ -1089,9 +1033,9 @@ paths:
       responses:
         '200':
           description: Food categories retrieved successfully
-      security: *ref_3
+      security: *ref_4
       summary: Get all food categories
-      tags: *ref_4
+      tags: *ref_5
   /api/v1/food-categories/food-groups:
     get:
       description: >-
@@ -1114,9 +1058,9 @@ paths:
                 type: array
                 items:
                   type: string
-      security: *ref_3
+      security: *ref_4
       summary: Get all unique food groups
-      tags: *ref_4
+      tags: *ref_5
   /api/v1/food-categories/{id}:
     get:
       description: Get detailed information about a specific food category
@@ -1136,9 +1080,9 @@ paths:
                 $ref: '#/components/schemas/FoodCategoryResponseDto'
         '404':
           description: Food category not found
-      security: *ref_3
+      security: *ref_4
       summary: Get food category by ID
-      tags: *ref_4
+      tags: *ref_5
     patch:
       description: 'Admin only: Update a food category by ID'
       operationId: update
@@ -1169,9 +1113,9 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_3
+      security: *ref_4
       summary: Update food category
-      tags: *ref_4
+      tags: *ref_5
     delete:
       description: 'Admin only: Delete a food category by ID'
       operationId: delete
@@ -1190,9 +1134,9 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_3
+      security: *ref_4
       summary: Delete food category
-      tags: *ref_4
+      tags: *ref_5
   /api/v1/health:
     get:
       operationId: check
@@ -1243,7 +1187,7 @@ paths:
         '503':
           description: Health check failed
       summary: Get application health status
-      tags: &ref_5
+      tags: &ref_6
         - Health
   /api/v1/health/ready:
     get:
@@ -1255,7 +1199,7 @@ paths:
         '503':
           description: Application is not ready
       summary: Get readiness probe status
-      tags: *ref_5
+      tags: *ref_6
   /api/v1/health/live:
     get:
       operationId: liveness
@@ -1276,7 +1220,7 @@ paths:
                   info:
                     type: object
                     example:
-                      database: &ref_6
+                      database: &ref_7
                         status: up
                     additionalProperties:
                       type: object
@@ -1290,7 +1234,7 @@ paths:
                   error:
                     type: object
                     example:
-                      redis: &ref_7
+                      redis: &ref_8
                         status: down
                         message: Could not connect
                     additionalProperties:
@@ -1305,8 +1249,8 @@ paths:
                   details:
                     type: object
                     example:
-                      database: *ref_6
-                      redis: *ref_7
+                      database: *ref_7
+                      redis: *ref_8
                     additionalProperties:
                       type: object
                       required:
@@ -1316,7 +1260,7 @@ paths:
                           type: string
                       additionalProperties: true
       summary: Get liveness probe status
-      tags: *ref_5
+      tags: *ref_6
   /api/v1/metrics:
     get:
       description: Returns application metrics in Prometheus format for scraping
@@ -1369,7 +1313,7 @@ paths:
         '200':
           description: Performance summary retrieved successfully
       summary: Get performance summary
-      tags: &ref_8
+      tags: &ref_9
         - Performance
   /api/v1/performance/cache/stats:
     get:
@@ -1379,7 +1323,7 @@ paths:
         '200':
           description: Cache statistics retrieved successfully
       summary: Get cache statistics
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/performance/cache/hit-rate:
     get:
       operationId: getCacheHitRates
@@ -1388,7 +1332,7 @@ paths:
         '200':
           description: Cache hit rates retrieved successfully
       summary: Get cache hit rates by prefix
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/performance/database/stats:
     get:
       operationId: getDatabaseStats
@@ -1397,7 +1341,7 @@ paths:
         '200':
           description: Database statistics retrieved successfully
       summary: Get database performance statistics
-      tags: *ref_8
+      tags: *ref_9
   /api/v1/shoppinglist:
     post:
       description: Creates a new ShoppingList in the database. Requires user or admin role.
@@ -1449,7 +1393,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Shopping List
-      tags: &ref_9
+      tags: &ref_10
         - shoppinglist
     get:
       operationId: findAll
@@ -1496,7 +1440,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Get All Shoppinglists
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/shoppinglist/{id}/items:
     get:
       description: Retrieve all items belonging to a shopping list with optional filters
@@ -1583,7 +1527,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get items for a specific shopping list
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/shoppinglist/{id}:
     get:
       operationId: findById
@@ -1634,7 +1578,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list by ID
-      tags: *ref_9
+      tags: *ref_10
     patch:
       operationId: update
       parameters:
@@ -1690,7 +1634,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list
-      tags: *ref_9
+      tags: *ref_10
     delete:
       operationId: remove
       parameters:
@@ -1736,7 +1680,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete specific shopping list by ID
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/shopping-list-items:
     post:
       description: >-
@@ -1790,7 +1734,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
-      tags: &ref_10
+      tags: &ref_11
         - shopping-list-items
   /api/v1/shopping-list-items/item/{id}:
     get:
@@ -1842,7 +1786,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
-      tags: *ref_10
+      tags: *ref_11
   /api/v1/shopping-list-items/{id}:
     patch:
       description: Update quantity, unit, notes, or checked status of a shopping list item
@@ -1900,7 +1844,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list item
-      tags: *ref_10
+      tags: *ref_11
     delete:
       description: Delete a specific shopping list item by ID
       operationId: remove
@@ -1947,7 +1891,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
-      tags: *ref_10
+      tags: *ref_11
   /api/v1/shopping-list-items/{id}/toggle-checked:
     patch:
       description: Quick endpoint to toggle the checked status of an item
@@ -1999,7 +1943,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
-      tags: *ref_10
+      tags: *ref_11
   /api/v1/shopping-list-items/{shoppingListId}/clear-checked:
     delete:
       description: Remove all checked items from a specific shopping list
@@ -2047,7 +1991,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
-      tags: *ref_10
+      tags: *ref_11
   /api/v1/pantry:
     post:
       description: >-
@@ -2098,7 +2042,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Pantry
-      tags: &ref_11
+      tags: &ref_12
         - pantry
     get:
       description: >-
@@ -2148,7 +2092,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all user pantries
-      tags: *ref_11
+      tags: *ref_12
   /api/v1/pantry/{id}:
     get:
       description: >-
@@ -2194,7 +2138,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry by ID
-      tags: *ref_11
+      tags: *ref_12
     patch:
       description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
@@ -2247,7 +2191,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry
-      tags: *ref_11
+      tags: *ref_12
     delete:
       description: >-
         Deletes a specific pantry by ID. Only the pantry owner can delete their
@@ -2288,7 +2232,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete pantry
-      tags: *ref_11
+      tags: *ref_12
   /api/v1/pantry-item:
     post:
       description: >-
@@ -2345,7 +2289,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
-      tags: &ref_12
+      tags: &ref_13
         - pantry-item
     get:
       description: >-
@@ -2428,7 +2372,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry items
-      tags: *ref_12
+      tags: *ref_13
   /api/v1/pantry-item/{id}:
     get:
       operationId: findById
@@ -2479,7 +2423,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
-      tags: *ref_12
+      tags: *ref_13
     patch:
       description: >-
         Update quantity, unit, notes, or expiry date of a pantry item. All
@@ -2538,7 +2482,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry item
-      tags: *ref_12
+      tags: *ref_13
     delete:
       description: Delete a specific pantry item by ID
       operationId: remove
@@ -2585,7 +2529,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from pantry
-      tags: *ref_12
+      tags: *ref_13
   /api/v1/meals:
     post:
       operationId: create
@@ -2636,7 +2580,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal
-      tags: &ref_13
+      tags: &ref_14
         - meals
     get:
       operationId: findAll
@@ -2713,7 +2657,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meals for the user
-      tags: *ref_13
+      tags: *ref_14
   /api/v1/meals/{id}:
     get:
       operationId: findOne
@@ -2764,7 +2708,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get a meal by id
-      tags: *ref_13
+      tags: *ref_14
     patch:
       operationId: update
       parameters:
@@ -2820,7 +2764,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a meal
-      tags: *ref_13
+      tags: *ref_14
     delete:
       operationId: remove
       parameters:
@@ -2866,7 +2810,222 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete a meal
-      tags: *ref_13
+      tags: *ref_14
+  /api/v1/meals/{mealId}/items:
+    post:
+      description: >-
+        Adds a specific food product or food category to a meal. Either foodId
+        or foodCategoryId must be provided, but not both.
+      operationId: create
+      parameters:
+        - name: mealId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMealItemDto'
+      responses:
+        '201':
+          description: Meal item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: &ref_15
+        - JWT-auth: []
+      summary: Add a food item to a meal
+      tags: &ref_16
+        - meal-items
+    get:
+      description: Retrieves all food items (products and categories) for a specific meal
+      operationId: findByMealId
+      parameters:
+        - name: mealId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meal items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_15
+      summary: Get all items in a meal
+      tags: *ref_16
+  /api/v1/meals/{mealId}/items/{id}:
+    get:
+      description: Retrieves a specific item from a meal by its ID
+      operationId: findById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meal item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_15
+      summary: Get a specific meal item
+      tags: *ref_16
+    patch:
+      description: >-
+        Updates an existing meal item. Can change the food/category reference,
+        quantity, unit, or notes.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMealItemDto'
+      responses:
+        '200':
+          description: Meal item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_15
+      summary: Update a meal item
+      tags: *ref_16
+    delete:
+      description: Removes a specific item from a meal
+      operationId: delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Meal item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_15
+      summary: Remove a meal item
+      tags: *ref_16
   /api/v1/recipes:
     post:
       operationId: create
@@ -2917,7 +3076,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a recipe
-      tags: &ref_14
+      tags: &ref_17
         - recipes
     get:
       operationId: findAll
@@ -3016,7 +3175,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List recipes
-      tags: *ref_14
+      tags: *ref_17
   /api/v1/recipes/{id}:
     get:
       operationId: findOne
@@ -3067,7 +3226,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get recipe by id
-      tags: *ref_14
+      tags: *ref_17
     patch:
       operationId: update
       parameters:
@@ -3123,7 +3282,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update recipe
-      tags: *ref_14
+      tags: *ref_17
     delete:
       operationId: remove
       parameters:
@@ -3169,7 +3328,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete recipe
-      tags: *ref_14
+      tags: *ref_17
   /api/v1/meal-logs:
     post:
       operationId: create
@@ -3220,7 +3379,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal log
-      tags: &ref_15
+      tags: &ref_18
         - meal-logs
     get:
       operationId: findAll
@@ -3327,7 +3486,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meal logs
-      tags: *ref_15
+      tags: *ref_18
   /api/v1/meal-logs/{id}:
     get:
       operationId: findOne
@@ -3378,7 +3537,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get meal log by id
-      tags: *ref_15
+      tags: *ref_18
     patch:
       operationId: update
       parameters:
@@ -3434,7 +3593,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update meal log
-      tags: *ref_15
+      tags: *ref_18
     delete:
       operationId: remove
       parameters:
@@ -3480,7 +3639,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete meal log
-      tags: *ref_15
+      tags: *ref_18
   /api/v1:
     get:
       description: >-
@@ -3647,6 +3806,76 @@ components:
         - error
         - timestamp
         - path
+    RegisterDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Desired username
+        password:
+          type: string
+          description: Password
+        email:
+          type: string
+          description: Email address
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        yearOfBirth:
+          type: number
+          description: Year of birth
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region/state
+        zip:
+          type: string
+          description: Postal code
+      required:
+        - username
+        - password
+        - email
+        - firstName
+        - lastName
+    LoginDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username or email
+        password:
+          type: string
+          description: Password
+      required:
+        - username
+        - password
+    LogoutDto:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token to revoke (refresh or access token)
+        tokenTypeHint:
+          type: string
+          description: Optional token type hint
+      required:
+        - token
+    RefreshDto:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Refresh token to exchange for new tokens
+        tokenTypeHint:
+          type: string
+          description: Optional token type hint
+      required:
+        - token
     CreateUserDto:
       type: object
       properties:
@@ -3668,6 +3897,54 @@ components:
         settings:
           type: object
           description: User settings
+        username:
+          type: string
+          description: Unique username
+        yearOfBirth:
+          type: number
+          description: Year of birth (YYYY)
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum: &ref_19
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        annualIncome:
+          type: string
+          description: Annual income (optional)
+        educationLevel:
+          type: string
+          description: Education level
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level (e.g., low, medium, high)
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
       required:
         - keycloakId
         - email
@@ -3694,24 +3971,119 @@ components:
         settings:
           type: object
           description: User settings
-    UserPreferencesDto:
+        username:
+          type: string
+          description: Unique username
+        yearOfBirth:
+          type: number
+          description: Year of birth (YYYY)
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum: *ref_19
+        annualIncome:
+          type: string
+          description: Annual income (optional)
+        educationLevel:
+          type: string
+          description: Education level
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level (e.g., low, medium, high)
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
+    ProfileUpdateDto:
       type: object
       properties:
-        dietaryRestrictions:
-          description: Dietary restrictions
-          type: array
-          items:
-            type: string
-        allergies:
-          description: Food allergies
-          type: array
-          items:
-            type: string
-        preferredCategories:
-          description: Preferred food categories
-          type: array
-          items:
-            type: string
+        yearOfBirth:
+          type: number
+          description: Year of birth (YYYY)
+        country:
+          type: string
+          description: Country
+        region:
+          type: string
+          description: Region / state / province
+        zip:
+          type: string
+          description: ZIP / postal code
+        language:
+          type: string
+          description: Language preference
+        gender:
+          type: string
+          description: Gender
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        annualIncome:
+          type: string
+          description: Annual income
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        educationLevel:
+          type: string
+          description: Education level
+          enum:
+            - NO_FORMAL_EDUCATION
+            - PRIMARY
+            - SECONDARY
+            - VOCATIONAL
+            - BACHELORS
+            - MASTERS
+            - DOCTORATE
+        weightKg:
+          type: number
+          description: Weight in kg
+        heightCm:
+          type: number
+          description: Height in cm
+        activityLevel:
+          type: string
+          description: Activity level
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        healthGoals:
+          type: object
+          description: Health goals (JSON)
+        nutritionTargets:
+          type: object
+          description: Nutrition targets (JSON)
     CreateFoodDto:
       type: object
       properties:
@@ -3848,7 +4220,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_16
+          enum: &ref_20
             - A
             - B
             - C
@@ -4457,7 +4829,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_16
+          enum: *ref_20
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -4984,10 +5356,21 @@ components:
           type: string
           description: The ID of the shopping list
           example: uuid-shopping-list-id
-        foodId:
+        itemType:
           type: string
-          description: The ID of the food item
+          description: The type of item (food or food_category)
+          example: food
+          enum:
+            - food
+            - food_category
+        foodId:
+          type: object
+          description: The ID of the food item (if itemType is food)
           example: uuid-food-id
+        foodCategoryId:
+          type: object
+          description: The ID of the food category (if itemType is food_category)
+          example: uuid-food-category-id
         createdAt:
           format: date-time
           type: string
@@ -5003,20 +5386,23 @@ components:
           allOf:
             - $ref: '#/components/schemas/ShoppingListResponseDto'
         food:
-          description: Associated food item
+          description: Associated food item (if itemType is food)
           allOf:
             - $ref: '#/components/schemas/FoodResponseDto'
+        foodCategory:
+          description: Associated food category (if itemType is food_category)
+          allOf:
+            - $ref: '#/components/schemas/FoodCategoryResponseDto'
       required:
         - id
         - quantity
         - unit
         - checked
         - shoppingListId
-        - foodId
+        - itemType
         - createdAt
         - updatedAt
         - shoppingList
-        - food
     MultipleShoppingListItemResponseDto:
       type: object
       properties:
@@ -5071,13 +5457,18 @@ components:
           example: uuid-shopping-list-id
         foodId:
           type: string
-          description: The ID of the food item
+          description: The ID of the food item (provide either foodId or foodCategoryId)
           example: uuid-food-id
+        foodCategoryId:
+          type: string
+          description: >-
+            The ID of the food category (provide either foodId or
+            foodCategoryId)
+          example: uuid-food-category-id
       required:
         - quantity
         - checked
         - shoppingListId
-        - foodId
     UpdateShoppingListItemDto:
       type: object
       properties:
@@ -5304,7 +5695,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_17
+          enum: &ref_21
             - SALAD
             - MEAT
             - PASTA
@@ -5322,7 +5713,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_18
+          example: &ref_22
             carbs: 40
             fats: 20
             sugar: 5
@@ -5438,7 +5829,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_17
+          enum: *ref_21
           description: Meal type
         calories:
           type: number
@@ -5451,7 +5842,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_18
+          example: *ref_22
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -5467,6 +5858,162 @@ components:
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
+    CreateMealItemDto:
+      type: object
+      properties:
+        mealId:
+          type: string
+          description: UUID of the meal this item belongs to
+          example: 550e8400-e29b-41d4-a716-446655440000
+        foodId:
+          type: string
+          description: >-
+            UUID of the specific food product (OpenFoodFacts). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440001
+        foodCategoryId:
+          type: string
+          description: >-
+            UUID of the food category (NEVO generic). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440002
+        quantity:
+          type: number
+          description: Quantity of the item
+          example: 2
+          default: 1
+        unit:
+          type: string
+          description: Unit of measurement
+          enum: &ref_23
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
+          example: PIECES
+          default: PIECES
+        notes:
+          type: string
+          description: Optional notes about this meal item
+          example: Extra spicy
+      required:
+        - mealId
+        - quantity
+        - unit
+    MealItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the meal item
+          example: 550e8400-e29b-41d4-a716-446655440000
+        mealId:
+          type: string
+          description: UUID of the meal this item belongs to
+          example: 550e8400-e29b-41d4-a716-446655440001
+        itemType:
+          type: string
+          description: >-
+            Type of item - either a specific food product or a generic food
+            category
+          enum:
+            - food
+            - food_category
+          example: food
+        foodId:
+          type: object
+          description: UUID of the specific food product (if itemType is "food")
+          example: 550e8400-e29b-41d4-a716-446655440002
+          nullable: true
+        foodCategoryId:
+          type: object
+          description: UUID of the food category (if itemType is "food_category")
+          example: 550e8400-e29b-41d4-a716-446655440003
+          nullable: true
+        quantity:
+          type: number
+          description: Quantity of the item
+          example: 2
+        unit:
+          type: string
+          description: Unit of measurement
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
+          example: PIECES
+        notes:
+          type: string
+          description: Optional notes about this meal item
+          example: Extra spicy
+          nullable: true
+        food:
+          description: Food product details (if itemType is "food")
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/FoodResponseDto'
+        foodCategory:
+          description: Food category details (if itemType is "food_category")
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/FoodCategoryResponseDto'
+        createdAt:
+          format: date-time
+          type: string
+          description: Timestamp when the meal item was created
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          format: date-time
+          type: string
+          description: Timestamp when the meal item was last updated
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+        - id
+        - mealId
+        - itemType
+        - quantity
+        - unit
+        - createdAt
+        - updatedAt
+    UpdateMealItemDto:
+      type: object
+      properties:
+        mealId:
+          type: string
+          description: UUID of the meal this item belongs to
+          example: 550e8400-e29b-41d4-a716-446655440000
+        foodId:
+          type: string
+          description: >-
+            UUID of the specific food product (OpenFoodFacts). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440001
+        foodCategoryId:
+          type: string
+          description: >-
+            UUID of the food category (NEVO generic). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440002
+        quantity:
+          type: number
+          description: Quantity of the item
+          example: 2
+          default: 1
+        unit:
+          type: string
+          description: Unit of measurement
+          enum: *ref_23
+          example: PIECES
+          default: PIECES
+        notes:
+          type: string
+          description: Optional notes about this meal item
+          example: Extra spicy
     CreateRecipeDto:
       type: object
       properties:
@@ -5502,7 +6049,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_19
+          example: &ref_24
             - vegan
             - quick
           type: array
@@ -5511,7 +6058,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_20
+          example: &ref_25
             carbs: 50
             fats: 10
             fiber: 8
@@ -5525,7 +6072,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_21
+          example: &ref_26
             - nuts
             - gluten
           type: array
@@ -5676,14 +6223,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_19
+          example: *ref_24
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_20
+          example: *ref_25
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -5694,7 +6241,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_21
+          example: *ref_26
           type: array
           items:
             type: string
@@ -5708,7 +6255,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_22
+          enum: &ref_27
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -5816,7 +6363,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_22
+          enum: *ref_27
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)

@@ -4,8 +4,6 @@ import {
   Request,
   UnauthorizedException,
   UseGuards,
-  Put,
-  Body,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -13,12 +11,17 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
-  ApiBody,
 } from '@nestjs/swagger';
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { UserProfileService } from './user-profile.service';
+import { UserProfileService } from '../user/services/user-profile.service';
+import { Body, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
+import { RefreshDto } from './dto/refresh.dto';
 
 interface KeycloakUser {
   sub: string;
@@ -44,7 +47,10 @@ interface AuthenticatedRequest {
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
 export class AuthController {
-  constructor(private readonly userProfileService: UserProfileService) {}
+  constructor(
+    private readonly userProfileService: UserProfileService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get('info')
   @Public()
@@ -79,7 +85,8 @@ export class AuthController {
   @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @ApiOperation({
-    summary: 'Get authenticated user profile',
+    summary:
+      'Get and create authenticated user profile (deprecated possibly depending on registration flow)',
     description:
       'Returns the profile information of the currently authenticated user. Automatically creates user record if not exists.',
   })
@@ -92,6 +99,7 @@ export class AuthController {
         email: { type: 'string', format: 'email' },
         firstName: { type: 'string' },
         lastName: { type: 'string' },
+        yearOfBirth: { type: 'integer' },
         keycloakId: { type: 'string' },
         preferences: { type: 'object' },
         settings: { type: 'object' },
@@ -111,103 +119,6 @@ export class AuthController {
       given_name: user.given_name,
       family_name: user.family_name,
     });
-  }
-
-  @Put('profile/preferences')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
-  @ApiOperation({
-    summary: 'Update user preferences',
-    description:
-      'Update app-specific user preferences. Returns the updated user profile.',
-  })
-  @ApiBody({
-    description: 'User preferences object (JSON)',
-    schema: {
-      type: 'object',
-      example: {
-        dietaryRestrictions: ['vegetarian'],
-        allergies: ['nuts'],
-        theme: 'dark',
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'User preferences updated successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', format: 'uuid' },
-        email: { type: 'string', format: 'email' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        keycloakId: { type: 'string' },
-        preferences: { type: 'object' },
-        settings: { type: 'object' },
-      },
-    },
-  })
-  @ApiAuthenticatedErrorResponses()
-  async updatePreferences(
-    @Request() req: AuthenticatedRequest,
-    @Body() preferences: Record<string, unknown>,
-  ) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
-    return await this.userProfileService.updatePreferences(
-      user.sub,
-      preferences,
-    );
-  }
-
-  @Put('profile/settings')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile'], 'keycloak-oauth2')
-  @ApiOperation({
-    summary: 'Update user settings',
-    description:
-      'Update app-specific user settings. Returns the updated user profile.',
-  })
-  @ApiBody({
-    description: 'User settings object (JSON)',
-    schema: {
-      type: 'object',
-      example: {
-        language: 'en',
-        notifications: true,
-        timezone: 'UTC',
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'User settings updated successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', format: 'uuid' },
-        email: { type: 'string', format: 'email' },
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        keycloakId: { type: 'string' },
-        preferences: { type: 'object' },
-        settings: { type: 'object' },
-      },
-    },
-  })
-  @ApiAuthenticatedErrorResponses()
-  async updateSettings(
-    @Request() req: AuthenticatedRequest,
-    @Body() settings: Record<string, unknown>,
-  ) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
-    return await this.userProfileService.updateSettings(user.sub, settings);
   }
 
   @Get('health')
@@ -235,6 +146,40 @@ export class AuthController {
   })
   healthCheck() {
     return { status: 'ok', service: 'auth' };
+  }
+
+  @Post('register')
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  @ApiOperation({
+    summary: 'Register a new user in Keycloak and create local user',
+  })
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  @Post('login')
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 900000 } })
+  @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
+  async login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
+
+  @Post('logout')
+  @Public()
+  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
+  async logout(@Body() dto: LogoutDto) {
+    return this.authService.logout(dto.token, dto.tokenTypeHint);
+  }
+
+  @Post('refresh')
+  @Public()
+  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @ApiOperation({ summary: 'Exchange refresh token for new tokens' })
+  async refresh(@Body() dto: RefreshDto) {
+    return this.authService.refresh(dto.token);
   }
 
   @Get('token-info')

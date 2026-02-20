@@ -69,6 +69,9 @@
                     "lastName": {
                       "type": "string"
                     },
+                    "yearOfBirth": {
+                      "type": "integer"
+                    },
                     "keycloakId": {
                       "type": "string"
                     },
@@ -126,221 +129,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Get authenticated user profile",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/v1/auth/profile/preferences": {
-      "put": {
-        "description": "Update app-specific user preferences. Returns the updated user profile.",
-        "operationId": "updatePreferences",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User preferences object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "dietaryRestrictions": [
-                    "vegetarian"
-                  ],
-                  "allergies": [
-                    "nuts"
-                  ],
-                  "theme": "dark"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User preferences updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user preferences",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/v1/auth/profile/settings": {
-      "put": {
-        "description": "Update app-specific user settings. Returns the updated user profile.",
-        "operationId": "updateSettings",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User settings object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "language": "en",
-                  "notifications": true,
-                  "timezone": "UTC"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User settings updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user settings",
+        "summary": "Get and create authenticated user profile (deprecated possibly depending on registration flow)",
         "tags": [
           "auth"
         ]
@@ -374,6 +163,106 @@
           }
         },
         "summary": "Authentication service health check",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Register a new user in Keycloak and create local user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Login user via Keycloak and return tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Logout by revoking token at Keycloak",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Exchange refresh token for new tokens",
         "tags": [
           "auth"
         ]
@@ -862,14 +751,32 @@
         ]
       }
     },
-    "/api/v1/users/{id}/preferences": {
+    "/api/v1/profile/me": {
       "get": {
-        "operationId": "getPreferences",
+        "operationId": "getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "profile"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteMe",
         "parameters": [
           {
-            "name": "id",
+            "name": "deleteAll",
             "required": true,
-            "in": "path",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -877,68 +784,67 @@
         ],
         "responses": {
           "200": {
-            "description": "User preferences"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
-          {
             "JWT-auth": []
           }
         ],
-        "summary": "Get user preferences",
+        "summary": "Delete current user (optionally cascade all data)",
         "tags": [
-          "users"
+          "profile"
         ]
-      },
+      }
+    },
+    "/api/v1/profile": {
       "patch": {
-        "operationId": "updatePreferences",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "updateProfile",
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserPreferencesDto"
+                "$ref": "#/components/schemas/ProfileUpdateDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Preferences updated successfully"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/complete": {
+      "get": {
+        "operationId": "isComplete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
           {
             "JWT-auth": []
           }
         ],
-        "summary": "Update user preferences",
+        "summary": "Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)",
         "tags": [
-          "users"
+          "profile"
         ]
       }
     },
@@ -4622,6 +4528,371 @@
         ]
       }
     },
+    "/api/v1/meals/{mealId}/items": {
+      "post": {
+        "description": "Adds a specific food product or food category to a meal. Either foodId or foodCategoryId must be provided, but not both.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "mealId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMealItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Meal item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Add a food item to a meal",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all food items (products and categories) for a specific meal",
+        "operationId": "findByMealId",
+        "parameters": [
+          {
+            "name": "mealId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MealItemResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all items in a meal",
+        "tags": [
+          "meal-items"
+        ]
+      }
+    },
+    "/api/v1/meals/{mealId}/items/{id}": {
+      "get": {
+        "description": "Retrieves a specific item from a meal by its ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal item retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get a specific meal item",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "patch": {
+        "description": "Updates an existing meal item. Can change the food/category reference, quantity, unit, or notes.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMealItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Meal item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update a meal item",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "delete": {
+        "description": "Removes a specific item from a meal",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Meal item deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Remove a meal item",
+        "tags": [
+          "meal-items"
+        ]
+      }
+    },
     "/api/v1/recipes": {
       "post": {
         "operationId": "create",
@@ -5774,6 +6045,103 @@
           "path"
         ]
       },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Desired username"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region/state"
+          },
+          "zip": {
+            "type": "string",
+            "description": "Postal code"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "email",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username or email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token to revoke (refresh or access token)"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Refresh token to exchange for new tokens"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -5800,6 +6168,69 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         },
         "required": [
@@ -5835,32 +6266,158 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
-      "UserPreferencesDto": {
+      "ProfileUpdateDto": {
         "type": "object",
         "properties": {
-          "dietaryRestrictions": {
-            "description": "Dietary restrictions",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
           },
-          "allergies": {
-            "description": "Food allergies",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "country": {
+            "type": "string",
+            "description": "Country"
           },
-          "preferredCategories": {
-            "description": "Preferred food categories",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level",
+            "enum": [
+              "NO_FORMAL_EDUCATION",
+              "PRIMARY",
+              "SECONDARY",
+              "VOCATIONAL",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
@@ -7534,10 +8091,24 @@
             "description": "The ID of the shopping list",
             "example": "uuid-shopping-list-id"
           },
-          "foodId": {
+          "itemType": {
             "type": "string",
-            "description": "The ID of the food item",
+            "description": "The type of item (food or food_category)",
+            "example": "food",
+            "enum": [
+              "food",
+              "food_category"
+            ]
+          },
+          "foodId": {
+            "type": "object",
+            "description": "The ID of the food item (if itemType is food)",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "object",
+            "description": "The ID of the food category (if itemType is food_category)",
+            "example": "uuid-food-category-id"
           },
           "createdAt": {
             "format": "date-time",
@@ -7560,10 +8131,18 @@
             ]
           },
           "food": {
-            "description": "Associated food item",
+            "description": "Associated food item (if itemType is food)",
             "allOf": [
               {
                 "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "Associated food category (if itemType is food_category)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
               }
             ]
           }
@@ -7574,11 +8153,10 @@
           "unit",
           "checked",
           "shoppingListId",
-          "foodId",
+          "itemType",
           "createdAt",
           "updatedAt",
-          "shoppingList",
-          "food"
+          "shoppingList"
         ]
       },
       "MultipleShoppingListItemResponseDto": {
@@ -7650,15 +8228,19 @@
           },
           "foodId": {
             "type": "string",
-            "description": "The ID of the food item",
+            "description": "The ID of the food item (provide either foodId or foodCategoryId)",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category (provide either foodId or foodCategoryId)",
+            "example": "uuid-food-category-id"
           }
         },
         "required": [
           "quantity",
           "checked",
-          "shoppingListId",
-          "foodId"
+          "shoppingListId"
         ]
       },
       "UpdateShoppingListItemDto": {
@@ -8171,6 +8753,200 @@
           "barcode": {
             "type": "string",
             "description": "Barcode of the meal (if packaged)"
+          }
+        }
+      },
+      "CreateMealItemDto": {
+        "type": "object",
+        "properties": {
+          "mealId": {
+            "type": "string",
+            "description": "UUID of the meal this item belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440002"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of the item",
+            "example": 2,
+            "default": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ],
+            "example": "PIECES",
+            "default": "PIECES"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about this meal item",
+            "example": "Extra spicy"
+          }
+        },
+        "required": [
+          "mealId",
+          "quantity",
+          "unit"
+        ]
+      },
+      "MealItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the meal item",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "mealId": {
+            "type": "string",
+            "description": "UUID of the meal this item belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "itemType": {
+            "type": "string",
+            "description": "Type of item - either a specific food product or a generic food category",
+            "enum": [
+              "food",
+              "food_category"
+            ],
+            "example": "food"
+          },
+          "foodId": {
+            "type": "object",
+            "description": "UUID of the specific food product (if itemType is \"food\")",
+            "example": "550e8400-e29b-41d4-a716-446655440002",
+            "nullable": true
+          },
+          "foodCategoryId": {
+            "type": "object",
+            "description": "UUID of the food category (if itemType is \"food_category\")",
+            "example": "550e8400-e29b-41d4-a716-446655440003",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of the item",
+            "example": 2
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ],
+            "example": "PIECES"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about this meal item",
+            "example": "Extra spicy",
+            "nullable": true
+          },
+          "food": {
+            "description": "Food product details (if itemType is \"food\")",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "Food category details (if itemType is \"food_category\")",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when the meal item was created",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when the meal item was last updated",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "mealId",
+          "itemType",
+          "quantity",
+          "unit",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateMealItemDto": {
+        "type": "object",
+        "properties": {
+          "mealId": {
+            "type": "string",
+            "description": "UUID of the meal this item belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440002"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of the item",
+            "example": 2,
+            "default": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ],
+            "example": "PIECES",
+            "default": "PIECES"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about this meal item",
+            "example": "Extra spicy"
           }
         }
       },

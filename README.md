@@ -118,6 +118,9 @@ KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYC
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
 KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"
+KEYCLOAK_SERVICE_CLIENT_ID="foodmission-service"
+KEYCLOAK_SERVICE_CLIENT_SECRET="foodmission-service-secret"
+
 
 # OpenFoodFacts
 OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
@@ -151,13 +154,13 @@ Keycloak Admin Console will be available at `http://localhost:8080`
 3. In the top-left corner, click the realm dropdown (shows "master" by default)
 4. Click **"Create Realm"** (or **"Add realm"**)
 5. Click the **"Browse..."** button
-6. Navigate to and select: `keycloak/foodmission-realm.json` in your project directory
+6. Navigate to and select: `keycloak/foodmission-realm.dev.json` in your project directory
 7. Click **"Create"** (or **"Import"**)
 
 The imported realm includes:
 
 - **Realm**: `foodmission`
-- **Client**: `foodmission-api`
+- **Client**: `foodmission-api & foodmission-service`
 - **Pre-configured users**:
   - `admin` user with `admin` and `user` roles
   - `developer` user with `user` role
