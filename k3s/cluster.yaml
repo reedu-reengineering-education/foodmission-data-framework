@@ -1,6 +1,7 @@
 cluster_name: foodmission-k3s
 protect_against_deletion: false
-kubeconfig_path: "./kubeconfig"
+kubeconfig_path: "~/.kube/config"  # Default location for kubeconfig
+protect_against_deletion: true
 k3s_version: v1.35.0+k3s1
 
 networking:
@@ -21,13 +22,19 @@ addons:
 
 # The Control Plane
 masters_pool:
-  instance_type: cx23 # Smallest instance for master
-  instance_count: 1
-  location: fsn1
+  instance_type: cpx22 # Smallest instance for master
+  instance_count: 3  # HA masters
+  locations:
+    - fsn1
+    - hel1
+    - nbg1
 
 # The Worker Plane (Required by the tool)
 worker_node_pools:
   - name: workers
-    instance_type: cx33 # Slightly more RAM for Keycloak/Java
-    instance_count: 2
-    location: fsn1
+    instance_type: cpx32
+    locations:
+      - fsn1
+      - hel1
+      - nbg1
+    instance_count: 3

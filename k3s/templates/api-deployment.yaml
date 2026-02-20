@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: {{ .Values.api.image }}
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: log-storage
+          mountPath: /app/logs
+        ports:
+        - containerPort: 3000
+        envFrom:
+          - secretRef:
+              name: foodmission-api-secret
+        # All environment variables are now loaded from the secret foodmission-api-secret
+      volumes:
+      - name: log-storage
+        emptyDir: {}

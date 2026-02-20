@@ -1,3 +1,6 @@
+# Install PostgreSQL
+apt install postgresql
+
 # Enter the PostgreSQL terminal as the admin user
 sudo -u postgres psql
 

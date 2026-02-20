@@ -1,0 +1,40 @@
+# Namespace for all resources
+# Change this per environment (e.g., foodmission-test, foodmission-staging, foodmission-prod)
+namespace: foodmission  # Change if you want a different namespace
+
+# ClusterIssuer is a cluster-wide resource - only enable for first install
+clusterIssuer:
+  enabled: false  # Set to true only if ClusterIssuer doesn't exist yet
+
+keycloak:
+  image: ghcr.io/reedu-reengineering-education/foodmission-keycloak:main  # Change image/tag as needed
+  hostname: staging.auth.api.foodmission.eu  # Change per environment
+  db:
+    url: jdbc:postgresql://10.0.0.5:5432/keycloak  # Change DB host/user/db as needed
+    username: keycloak_user  # Change per environment
+    password: CHANGEME  # Set real secret in your actual values file
+  admin:
+    user: admin  # Change if needed
+    password: CHANGEME  # Set real secret in your actual values file
+
+api:
+  image: ghcr.io/reedu-reengineering-education/foodmission-data-framework:latest  # Change image/tag as needed
+  hostname: staging.api.foodmission.eu  # Change per environment
+  db:
+    url: postgresql://foodmission_user:CHANGEME@10.0.0.5:5432/foodmission  # Change DB host/user/db as needed
+  sessionSecret: CHANGEME  # Set real secret in your actual values file
+  encryptionKey: CHANGEME  # Set real secret in your actual values file
+  keycloak:
+    baseUrl: https://staging.auth.api.foodmission.eu  # Change per environment
+    realm: foodmission  # Change if needed
+    clientId: foodmission-api  # Change if needed
+    clientSecret: CHANGEME  # Set real secret in your actual values file
+    redirectUri: https://staging.api.foodmission.eu/auth/callback  # Change per environment
+    serviceClientId: foodmission-service  # Change if needed
+    serviceClientSecret: CHANGEME  # Set real secret in your actual values file
+
+ingress:
+  tlsSecret: foodmission-tls-cert  # Change if your TLS secret has a different name
+  hosts:
+    - staging.auth.api.foodmission.eu  # Change per environment
+    - staging.api.foodmission.eu  # Change per environment

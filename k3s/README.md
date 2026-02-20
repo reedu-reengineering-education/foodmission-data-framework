@@ -1,30 +1,75 @@
-## FOODMISSION k3s
+# FoodMission Helm Chart
 
-__Export your Hetzner Token__
-```
-export HCLOUD_TOKEN=<your_hetzner_token>
-```
+This folder is now a Helm chart for deploying FoodMission services.
 
-__setup cluster__
-```
-hetzner-k3s create --config cluster.yaml
-helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace -f nginx-values.yaml
+## Structure
+- `Chart.yaml`: Helm chart metadata
+- `values.yaml`: Central config for all services and secrets
+- `templates/`: All Kubernetes manifests as Helm templates
+
+## Notes
+- Do NOT store real secrets in `values.yaml` if checked into git. Use CI/CD or Helm secrets for production.
+- Example secrets and config are provided in `values.yaml`.
+
+## Ingress-NGINX and Cert-Manager Setup (Only Needed on a Fresh Cluster)
+
+If your cluster does not already have ingress-nginx and cert-manager installed, run:
+
+```sh
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  -f nginx-values.yaml
+
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
-kubectl apply -f ./foodmission-keycloak.yaml
 ```
 
-__delete cluster__
-```
-hetzner-k3s delete --config cluster.yaml
+Example `nginx-values.yaml` for Hetzner Cloud load balancer:
+
+```yaml
+controller:
+  service:
+    annotations:
+      # Tell Hetzner where to create the LB
+      load-balancer.hetzner.cloud/location: fsn1
+      # Use the private network for communication between LB and nodes
+      load-balancer.hetzner.cloud/use-private-ip: "true"
+      # Optional: Name your LB in the Hetzner console
+      load-balancer.hetzner.cloud/name: "k3s-nginx-lb"
 ```
 
-__database migration__
-```
-kubectl apply -f foodmission-db-migrate.yaml -n foodmission
-kubectl wait --for=condition=complete job/prisma-migrate -n foodmission
+## Environment-Specific Configuration
+
+For different environments (test, staging, prod), use separate values files:
+
+- `values.test.yaml`
+- `values.staging.yaml`
+- `values.prod.yaml`
+
+Each file should contain the configuration and secrets for its environment. Do NOT commit real secrets to git—use example or placeholder values in files you share.
+
+To deploy with a specific environment file:
+
+```sh
+helm upgrade --install foodmission . -f values.staging.yaml
 ```
 
-__pull and restart__
+This approach keeps your environments isolated, reproducible, and easy to manage.
+
+## Environment Isolation with Namespaces
+
+For strong isolation between test, staging, and production, use a separate Kubernetes namespace for each environment. Set the `namespace` value in each environment's values file:
+
+- `values.test.yaml`: `namespace: foodmission-test`
+- `values.staging.yaml`: `namespace: foodmission-staging`
+- `values.prod.yaml`: `namespace: foodmission-prod`
+
+Deploy with:
+
+```sh
+helm upgrade --install foodmission-test . -f values.test.yaml
+helm upgrade --install foodmission-staging . -f values.staging.yaml
+helm upgrade --install foodmission-prod . -f values.prod.yaml
 ```
-kubectl rollout restart deployment/api -n foodmission
-```
+
+This ensures resources for each environment are fully separated and managed independently.

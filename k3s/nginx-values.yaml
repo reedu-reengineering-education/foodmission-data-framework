@@ -1,9 +1,0 @@
-controller:
-  service:
-    annotations:
-      # Tell Hetzner where to create the LB
-      load-balancer.hetzner.cloud/location: fsn1 
-      # Use the private network for communication between LB and nodes
-      load-balancer.hetzner.cloud/use-private-ip: "true"
-      # Optional: Name your LB in the Hetzner console
-      load-balancer.hetzner.cloud/name: "k3s-nginx-lb"
