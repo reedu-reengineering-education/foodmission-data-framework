@@ -67,7 +67,6 @@ describe('MealLogService', () => {
       mealId: 'm1',
       userId,
       typeOfMeal: TypeOfMeal.LUNCH,
-      mealFromPantry: false,
       eatenOut: false,
       timestamp: new Date(),
       createdAt: new Date(),

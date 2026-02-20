@@ -10,6 +10,7 @@ import {
   Min,
   MaxLength,
   IsEnum,
+  ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -22,13 +23,25 @@ export class CreatePantryItemDto {
   @IsUUID()
   pantryId: string;
 
-  @ApiProperty({
-    description: 'The ID of the food item to add',
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.',
     example: 'uuid-food-id',
   })
-  @IsNotEmpty()
   @IsUUID()
-  foodId: string;
+  @ValidateIf((o) => !o.foodCategoryId)
+  @IsNotEmpty()
+  foodId?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.',
+    example: 'uuid-food-category-id',
+  })
+  @IsUUID()
+  @ValidateIf((o) => !o.foodId)
+  @IsNotEmpty()
+  foodCategoryId?: string;
 
   @ApiProperty({
     description: 'The quantity of the item',
@@ -72,13 +85,36 @@ export class CreatePantryItemDto {
   constructor(
     pantryId: string,
     foodId: string,
+    foodCategoryId: undefined,
     quantity: number,
+    unit?: Unit,
+    notes?: string,
+    expiryDate?: Date,
+  );
+  constructor(
+    pantryId: string,
+    foodId: undefined,
+    foodCategoryId: string,
+    quantity: number,
+    unit?: Unit,
+    notes?: string,
+    expiryDate?: Date,
+  );
+  constructor(
+    pantryId: string,
+    foodId?: string,
+    foodCategoryId?: string,
+    quantity: number = 1,
     unit: Unit = Unit.PIECES,
     notes?: string,
     expiryDate?: Date,
   ) {
+    if (!foodId && !foodCategoryId) {
+      throw new Error('Either foodId or foodCategoryId must be provided');
+    }
     this.pantryId = pantryId;
     this.foodId = foodId;
+    this.foodCategoryId = foodCategoryId;
     this.quantity = quantity;
     this.unit = unit;
     this.notes = notes;

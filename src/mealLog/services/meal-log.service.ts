@@ -46,18 +46,10 @@ export class MealLogService {
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const meal = await this.getOwnedMealOrThrow(
-      createMealLogDto.mealId,
-      userId,
-    );
-
-    const mealFromPantry = createMealLogDto.mealFromPantry ?? false;
-
     try {
       const mealLog = await this.mealLogRepository.create({
         ...createMealLogDto,
         userId,
-        mealFromPantry,
         timestamp: createMealLogDto.timestamp
           ? new Date(createMealLogDto.timestamp)
           : undefined,

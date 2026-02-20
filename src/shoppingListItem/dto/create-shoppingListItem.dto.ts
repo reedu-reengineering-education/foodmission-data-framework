@@ -79,11 +79,26 @@ export class CreateShoppingListItemDto {
   foodCategoryId?: string;
 
   constructor(
+    foodId: string,
+    foodCategoryId: undefined,
+    quantity?: number,
+    unit?: Unit,
+  );
+  constructor(
+    foodId: undefined,
+    foodCategoryId: string,
+    quantity?: number,
+    unit?: Unit,
+  );
+  constructor(
     foodId?: string,
     foodCategoryId?: string,
     quantity: number = 1,
     unit: Unit = Unit.PIECES,
   ) {
+    if (!foodId && !foodCategoryId) {
+      throw new Error('Either foodId or foodCategoryId must be provided');
+    }
     this.foodId = foodId;
     this.foodCategoryId = foodCategoryId;
     this.quantity = quantity;

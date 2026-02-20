@@ -84,6 +84,12 @@ export class PantryItemController {
     type: String,
   })
   @ApiQuery({
+    name: 'foodCategoryId',
+    required: false,
+    description: 'Filter by food category ID (UUID)',
+    type: String,
+  })
+  @ApiQuery({
     name: 'unit',
     required: false,
     description: 'Filter by unit (PIECES, G, KG, ML, L, CUPS)',
