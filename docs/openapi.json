@@ -3698,6 +3698,16 @@
             }
           },
           {
+            "name": "foodCategoryId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by food category ID (UUID)",
+            "schema": {
+              "example": "uuid-food-category-id",
+              "type": "string"
+            }
+          },
+          {
             "name": "unit",
             "required": false,
             "in": "query",
@@ -8351,11 +8361,24 @@
             "description": "The ID of the food item",
             "example": "uuid-food-id"
           },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category",
+            "example": "uuid-food-category-id"
+          },
           "food": {
             "description": "The food item details",
             "allOf": [
               {
                 "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "The food category details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
               }
             ]
           }
@@ -8364,8 +8387,7 @@
           "id",
           "quantity",
           "unit",
-          "pantryId",
-          "foodId"
+          "pantryId"
         ]
       },
       "PantryResponseDto": {
@@ -8425,8 +8447,13 @@
           },
           "foodId": {
             "type": "string",
-            "description": "The ID of the food item to add",
+            "description": "The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
+            "example": "uuid-food-category-id"
           },
           "quantity": {
             "type": "number",
@@ -8463,7 +8490,6 @@
         },
         "required": [
           "pantryId",
-          "foodId",
           "quantity"
         ]
       },
@@ -8520,6 +8546,11 @@
             "type": "string",
             "description": "The ID of the food item",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category (NEVO generic)",
+            "example": "uuid-food-category-id"
           }
         }
       },
@@ -8570,11 +8601,6 @@
             "type": "number",
             "description": "Estimated meal price or cost",
             "example": 8.5
-          },
-          "pantryItemId": {
-            "type": "string",
-            "description": "Link to pantry item if sourced from pantry",
-            "format": "uuid"
           },
           "barcode": {
             "type": "string",
@@ -8628,11 +8654,6 @@
           "price": {
             "type": "number",
             "description": "Estimated price or cost"
-          },
-          "pantryItemId": {
-            "type": "object",
-            "description": "Linked pantry item id",
-            "format": "uuid"
           },
           "barcode": {
             "type": "object",
@@ -8744,11 +8765,6 @@
             "type": "number",
             "description": "Estimated meal price or cost",
             "example": 8.5
-          },
-          "pantryItemId": {
-            "type": "string",
-            "description": "Link to pantry item if sourced from pantry",
-            "format": "uuid"
           },
           "barcode": {
             "type": "string",

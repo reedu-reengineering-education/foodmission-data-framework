@@ -1,4 +1,5 @@
 import {
+  Allow,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -6,18 +7,33 @@ import {
   IsString,
   IsUUID,
   Min,
+  Validate,
   ValidateIf,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 
+@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
+class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+  validate(_: unknown, args: ValidationArguments): boolean {
+    const obj = args.object as CreateMealItemDto;
+    const hasFood = !!obj.foodId;
+    const hasCategory = !!obj.foodCategoryId;
+    return hasFood !== hasCategory; // exactly one must be true (XOR)
+  }
+
+  defaultMessage(): string {
+    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+  }
+}
+
 export class CreateMealItemDto {
-  @ApiProperty({
-    description: 'UUID of the meal this item belongs to',
-    example: '550e8400-e29b-41d4-a716-446655440000',
-  })
-  @IsUUID()
-  @IsNotEmpty()
+  // mealId comes from URL path parameter, assigned by controller
+  // @Allow() permits the property without validation
+  @Allow()
   mealId: string;
 
   @ApiPropertyOptional({
@@ -28,6 +44,7 @@ export class CreateMealItemDto {
   @IsUUID()
   @ValidateIf((o) => !o.foodCategoryId)
   @IsNotEmpty()
+  @Validate(ExclusiveFoodReferenceConstraint)
   foodId?: string;
 
   @ApiPropertyOptional({
@@ -65,31 +82,4 @@ export class CreateMealItemDto {
   @IsOptional()
   @IsString()
   notes?: string;
-
-  constructor(
-    foodId: string,
-    foodCategoryId: undefined,
-    quantity?: number,
-    unit?: Unit,
-  );
-  constructor(
-    foodId: undefined,
-    foodCategoryId: string,
-    quantity?: number,
-    unit?: Unit,
-  );
-  constructor(
-    foodId?: string,
-    foodCategoryId?: string,
-    quantity: number = 1,
-    unit: Unit = Unit.PIECES,
-  ) {
-    if (!foodId && !foodCategoryId) {
-      throw new Error('Either foodId or foodCategoryId must be provided');
-    }
-    this.foodId = foodId;
-    this.foodCategoryId = foodCategoryId;
-    this.quantity = quantity;
-    this.unit = unit;
-  }
 }

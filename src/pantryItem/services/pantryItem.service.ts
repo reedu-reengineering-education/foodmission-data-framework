@@ -55,13 +55,12 @@ export class PantryItemService {
       );
     }
 
-    const createPantryItemDto = new CreatePantryItemDto(
+    const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
       pantryId,
-      createShoppingListItemDto.foodId,
-      undefined,
-      createShoppingListItemDto.quantity,
-      createShoppingListItemDto.unit,
-    );
+      foodId: createShoppingListItemDto.foodId,
+      quantity: createShoppingListItemDto.quantity,
+      unit: createShoppingListItemDto.unit,
+    });
 
     return this.create(createPantryItemDto, userId);
   }

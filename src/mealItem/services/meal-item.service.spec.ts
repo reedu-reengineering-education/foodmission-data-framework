@@ -162,14 +162,13 @@ describe('MealItemService', () => {
 
   describe('create', () => {
     it('should create a meal item with food', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
-      createDto.notes = 'Test notes';
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+        notes: 'Test notes',
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodRepository.findById.mockResolvedValue(mockFood);
@@ -197,13 +196,12 @@ describe('MealItemService', () => {
     });
 
     it('should create a meal item with food category', async () => {
-      const createDto = new CreateMealItemDto(
-        undefined,
-        TEST_IDS.FOOD_CATEGORY,
-        1,
-        Unit.G,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodCategoryId: TEST_IDS.FOOD_CATEGORY,
+        quantity: 1,
+        unit: Unit.G,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodCategoryRepository.findById.mockResolvedValue(mockFoodCategory);
@@ -232,13 +230,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if meal does not exist', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+      });
 
       mockMealRepository.findById.mockResolvedValue(null);
 
@@ -249,13 +246,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if meal belongs to different user', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
 
@@ -265,13 +261,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if food does not exist', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodRepository.findById.mockResolvedValue(null);
@@ -282,13 +277,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if food category does not exist', async () => {
-      const createDto = new CreateMealItemDto(
-        undefined,
-        TEST_IDS.FOOD_CATEGORY,
-        1,
-        Unit.G,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodCategoryId: TEST_IDS.FOOD_CATEGORY,
+        quantity: 1,
+        unit: Unit.G,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodCategoryRepository.findById.mockResolvedValue(null);
@@ -299,13 +293,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if food already exists in meal', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodRepository.findById.mockResolvedValue(mockFood);
@@ -319,13 +312,12 @@ describe('MealItemService', () => {
     });
 
     it('should throw DatabaseOperationException if food category already exists in meal', async () => {
-      const createDto = new CreateMealItemDto(
-        undefined,
-        TEST_IDS.FOOD_CATEGORY,
-        1,
-        Unit.G,
-      );
-      createDto.mealId = TEST_IDS.MEAL;
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        mealId: TEST_IDS.MEAL,
+        foodCategoryId: TEST_IDS.FOOD_CATEGORY,
+        quantity: 1,
+        unit: Unit.G,
+      });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
       mockFoodCategoryRepository.findById.mockResolvedValue(mockFoodCategory);

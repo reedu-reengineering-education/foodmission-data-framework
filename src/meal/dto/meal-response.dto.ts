@@ -35,10 +35,6 @@ export class MealResponseDto {
   @Expose()
   price?: number;
 
-  @ApiPropertyOptional({ description: 'Linked pantry item id', format: 'uuid' })
-  @Expose()
-  pantryItemId?: string | null;
-
   @ApiPropertyOptional({ description: 'Barcode' })
   @Expose()
   barcode?: string | null;

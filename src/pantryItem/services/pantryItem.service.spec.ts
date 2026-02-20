@@ -665,12 +665,11 @@ describe('PantryItemService', () => {
     const pantryId = TEST_IDS.PANTRY;
 
     it('should create pantry item from shopping list when valid data is provided', async () => {
-      const dto = new CreateShoppingListItemDto(
-        TEST_IDS.FOOD,
-        undefined, // foodCategoryId
-        TEST_DATA.QUANTITY,
-        Unit.KG,
-      );
+      const dto = Object.assign(new CreateShoppingListItemDto(), {
+        foodId: TEST_IDS.FOOD,
+        quantity: TEST_DATA.QUANTITY,
+        unit: Unit.KG,
+      });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
       setupSuccessfulCreateMocks();
@@ -701,12 +700,11 @@ describe('PantryItemService', () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _description,
       ) => {
-        const dto = new CreateShoppingListItemDto(
-          TEST_IDS.FOOD,
-          undefined, // foodCategoryId
-          TEST_DATA.QUANTITY,
-          Unit.KG,
-        );
+        const dto = Object.assign(new CreateShoppingListItemDto(), {
+          foodId: TEST_IDS.FOOD,
+          quantity: TEST_DATA.QUANTITY,
+          unit: Unit.KG,
+        });
 
         await expect(
           service.createFromShoppingList(

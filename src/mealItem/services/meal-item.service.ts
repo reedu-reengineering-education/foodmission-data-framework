@@ -33,6 +33,7 @@ export class MealItemService {
 
       // Validate meal exists and belongs to user
       const meal = await this.mealRepository.findById(mealId);
+      console.log(createMealItemDto);
       if (!meal) {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
       }

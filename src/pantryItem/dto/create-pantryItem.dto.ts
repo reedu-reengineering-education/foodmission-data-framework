@@ -11,8 +11,26 @@ import {
   MaxLength,
   IsEnum,
   ValidateIf,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+
+@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
+class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+  validate(_: unknown, args: ValidationArguments): boolean {
+    const obj = args.object as CreatePantryItemDto;
+    const hasFood = !!obj.foodId;
+    const hasCategory = !!obj.foodCategoryId;
+    return hasFood !== hasCategory; // exactly one must be true (XOR)
+  }
+
+  defaultMessage(): string {
+    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+  }
+}
 
 export class CreatePantryItemDto {
   @ApiProperty({
@@ -31,6 +49,7 @@ export class CreatePantryItemDto {
   @IsUUID()
   @ValidateIf((o) => !o.foodCategoryId)
   @IsNotEmpty()
+  @Validate(ExclusiveFoodReferenceConstraint)
   foodId?: string;
 
   @ApiPropertyOptional({
@@ -81,43 +100,4 @@ export class CreatePantryItemDto {
   @IsOptional()
   @IsDateString()
   expiryDate?: Date;
-
-  constructor(
-    pantryId: string,
-    foodId: string,
-    foodCategoryId: undefined,
-    quantity: number,
-    unit?: Unit,
-    notes?: string,
-    expiryDate?: Date,
-  );
-  constructor(
-    pantryId: string,
-    foodId: undefined,
-    foodCategoryId: string,
-    quantity: number,
-    unit?: Unit,
-    notes?: string,
-    expiryDate?: Date,
-  );
-  constructor(
-    pantryId: string,
-    foodId?: string,
-    foodCategoryId?: string,
-    quantity: number = 1,
-    unit: Unit = Unit.PIECES,
-    notes?: string,
-    expiryDate?: Date,
-  ) {
-    if (!foodId && !foodCategoryId) {
-      throw new Error('Either foodId or foodCategoryId must be provided');
-    }
-    this.pantryId = pantryId;
-    this.foodId = foodId;
-    this.foodCategoryId = foodCategoryId;
-    this.quantity = quantity;
-    this.unit = unit;
-    this.notes = notes;
-    this.expiryDate = expiryDate;
-  }
 }

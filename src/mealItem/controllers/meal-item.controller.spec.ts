@@ -92,13 +92,12 @@ describe('MealItemController', () => {
 
   describe('create', () => {
     it('should create a meal item', async () => {
-      const createDto = new CreateMealItemDto(
-        TEST_IDS.FOOD,
-        undefined,
-        2,
-        Unit.PIECES,
-      );
-      createDto.notes = 'Test notes';
+      const createDto = Object.assign(new CreateMealItemDto(), {
+        foodId: TEST_IDS.FOOD,
+        quantity: 2,
+        unit: Unit.PIECES,
+        notes: 'Test notes',
+      });
 
       mockMealItemService.create.mockResolvedValue(mockMealItemWithFood);
 
