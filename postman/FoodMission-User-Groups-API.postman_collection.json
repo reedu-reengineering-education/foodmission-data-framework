@@ -128,7 +128,7 @@
 								"{{group_id}}"
 							]
 						},
-						"description": "Retrieves a specific group by ID. Returns 403 if not a member."
+						"description": "Retrieves a specific group by ID including all members (registered and virtual). Returns 403 if not a member."
 					},
 					"response": []
 				},
@@ -268,7 +268,7 @@
 								"leave"
 							]
 						},
-						"description": "Leaves a group. Last admin cannot leave without transferring rights."
+						"description": "Leaves a group. Last admin cannot leave without transferring rights. If last member, group is automatically deleted."
 					},
 					"response": []
 				},
@@ -298,7 +298,21 @@
 						},
 						"description": "Returns the current invite code for the group. **Admin only.**"
 					},
-					"response": []
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('invite_code', jsonData.inviteCode);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
 				},
 				{
 					"name": "Regenerate Invite Code",
@@ -371,7 +385,129 @@
 								"members"
 							]
 						},
-						"description": "Returns all registered members and virtual members of the group."
+						"description": "Returns all registered members and virtual members of the group. Each member has an 'isVirtual' flag to distinguish between registered users and virtual members."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (Array.isArray(jsonData) && jsonData.length > 0) {",
+									"        pm.environment.set('membership_id', jsonData[0].id);",
+									"        const virtualMember = jsonData.find(m => m.isVirtual);",
+									"        if (virtualMember) {",
+									"            pm.environment.set('virtual_member_id', virtualMember.id);",
+									"        }",
+									"        const registeredMember = jsonData.find(m => !m.isVirtual);",
+									"        if (registeredMember) {",
+									"            pm.environment.set('target_membership_id', registeredMember.id);",
+									"        }",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Add Member (Virtual)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nickname\": \"Little Timmy\",\n  \"age\": 8,\n  \"gender\": \"MALE\",\n  \"activityLevel\": \"VERY_ACTIVE\",\n  \"preferences\": {\n    \"dietaryPreference\": \"NONE\",\n    \"allergies\": [\"peanuts\"]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/members",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"members"
+							]
+						},
+						"description": "Adds a virtual member (member without an account, e.g., child or dependent). Any group member can add virtual members.\n\n**Available enums:**\n- gender: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY\n- activityLevel: SEDENTARY, LIGHT, MODERATE, ACTIVE, VERY_ACTIVE\n- annualIncome: BELOW_10000, FROM_10000_TO_19999, FROM_20000_TO_34999, FROM_35000_TO_49999, FROM_50000_TO_74999, FROM_75000_TO_99999, ABOVE_100000\n\n**Note:** Use 'preferences' object for custom data like dietaryPreference, allergies, etc.\n\n**Rate Limit:** 10 requests per minute"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.environment.set('virtual_member_id', jsonData.id);",
+									"    pm.environment.set('membership_id', jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Member (Virtual)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nickname\": \"Timmy (updated)\",\n  \"age\": 9,\n  \"preferences\": {\n    \"dietaryPreference\": \"VEGETARIAN\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/members/{{virtual_member_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"{{group_id}}",
+								"members",
+								"{{virtual_member_id}}"
+							]
+						},
+						"description": "Updates virtual member information. Only works for virtual members, not registered users. Any group member can update.\n\nReturns 400 if trying to update a registered user profile."
 					},
 					"response": []
 				},
@@ -400,41 +536,23 @@
 								"{{membership_id}}"
 							]
 						},
-						"description": "Removes a registered member from the group. **Admin only.**"
+						"description": "Removes a member from the group.\n\n**Permission rules:**\n- Virtual members: Any group member can remove\n- Registered members: Admin only (use /leave endpoint to remove yourself)\n\nReturns 400 if admin tries to remove themselves (must use /leave endpoint)."
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Virtual Members",
-			"item": [
+				},
 				{
-					"name": "Add Virtual Member",
+					"name": "Transfer Admin Rights",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
 								"key": "Authorization",
 								"value": "Bearer {{jwt_token}}",
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"nickname\": \"Little Timmy\",\n  \"age\": 8,\n  \"gender\": \"MALE\",\n  \"activityLevel\": \"VERY_ACTIVE\",\n  \"preferences\": {\n    \"dietaryPreference\": \"NONE\"\n  }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members",
+							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/members/{{target_membership_id}}/make-admin",
 							"host": [
 								"{{base_url}}"
 							],
@@ -443,95 +561,12 @@
 								"v1",
 								"groups",
 								"{{group_id}}",
-								"virtual-members"
+								"members",
+								"{{target_membership_id}}",
+								"make-admin"
 							]
 						},
-						"description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.\n\n**Available enums:**\n- gender: MALE, FEMALE, OTHER, PREFER_NOT_TO_SAY\n- activityLevel: SEDENTARY, LIGHT, MODERATE, ACTIVE, VERY_ACTIVE\n- annualIncome: BELOW_10000, FROM_10000_TO_19999, FROM_20000_TO_34999, FROM_35000_TO_49999, FROM_50000_TO_74999, FROM_75000_TO_99999, ABOVE_100000\n\n**Note:** Use 'preferences' object for custom data like dietaryPreference (e.g., {\"preferences\": {\"dietaryPreference\": \"VEGETARIAN\"}})\n\n**Rate Limit:** 10 requests per minute"
-					},
-					"response": [],
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 201) {",
-									"    const jsonData = pm.response.json();",
-									"    pm.environment.set('virtual_member_id', jsonData.id);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					]
-				},
-				{
-					"name": "Update Virtual Member",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"nickname\": \"Timmy (updated)\",\n  \"age\": 9\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members/{{virtual_member_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"groups",
-								"{{group_id}}",
-								"virtual-members",
-								"{{virtual_member_id}}"
-							]
-						},
-						"description": "Updates virtual member information. Any group member can update."
-					},
-					"response": []
-				},
-				{
-					"name": "Remove Virtual Member",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt_token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/groups/{{group_id}}/virtual-members/{{virtual_member_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"groups",
-								"{{group_id}}",
-								"virtual-members",
-								"{{virtual_member_id}}"
-							]
-						},
-						"description": "Removes a virtual member from the group. Any group member can remove."
+						"description": "Promotes a registered member to admin role. **Admin only.**\n\n**Restrictions:**\n- Target must be a registered user (not a virtual member)\n- Target cannot already be an admin\n\n**Note:** This is required before the last admin can leave the group."
 					},
 					"response": []
 				}

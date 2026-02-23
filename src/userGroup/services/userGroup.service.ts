@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { GroupRole } from '@prisma/client';
 import { UserGroupRepository } from '../repositories/userGroup.repository';
@@ -19,6 +12,19 @@ import { CreateMemberDto } from '../dto/create-member.dto';
 import { UpdateMemberDto } from '../dto/update-member.dto';
 import { UserGroupResponseDto } from '../dto/response-userGroup.dto';
 import { MemberResponseDto } from '../dto/response-member.dto';
+import {
+  GroupNotFoundException,
+  GroupMemberNotFoundException,
+  NotGroupMemberException,
+  GroupAdminRequiredException,
+  GroupAlreadyMemberException,
+  InvalidInviteCodeException,
+  LastAdminCannotLeaveException,
+  CannotUpdateRegisteredUserException,
+  UseSelfLeaveEndpointException,
+  VirtualMemberCannotBeAdminException,
+  AlreadyAdminException,
+} from '../../common/exceptions/business.exception';
 
 @Injectable()
 export class UserGroupService {
@@ -49,17 +55,14 @@ export class UserGroupService {
   ): Promise<UserGroupResponseDto> {
     this.logger.log(`Getting group ${groupId} for user: ${userId}`);
 
-    const group = await this.userGroupRepository.findById(groupId);
-    if (!group) {
-      throw new NotFoundException('Group not found');
-    }
+    const group = await this.getGroupOrThrow(groupId);
 
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
     );
     if (!membership) {
-      throw new ForbiddenException('You are not a member of this group');
+      throw new NotGroupMemberException(groupId);
     }
 
     return this.transformToGroupDto(group);
@@ -100,13 +103,13 @@ export class UserGroupService {
 
     const group = await this.userGroupRepository.findByInviteCode(inviteCode);
     if (!group) {
-      throw new NotFoundException('Invalid invite code');
+      throw new InvalidInviteCodeException(inviteCode);
     }
 
     const existingMembership =
       await this.membershipRepository.findByUserAndGroup(userId, group.id);
     if (existingMembership) {
-      throw new ConflictException('You are already a member of this group');
+      throw new GroupAlreadyMemberException(group.id, userId);
     }
 
     await this.membershipRepository.create({
@@ -127,7 +130,7 @@ export class UserGroupService {
       groupId,
     );
     if (!membership) {
-      throw new NotFoundException('You are not a member of this group');
+      throw new NotGroupMemberException(groupId);
     }
 
     const memberCount = await this.membershipRepository.countMembers(groupId);
@@ -141,9 +144,7 @@ export class UserGroupService {
     if (membership.role === GroupRole.ADMIN) {
       const adminCount = await this.membershipRepository.countAdmins(groupId);
       if (adminCount <= 1) {
-        throw new BadRequestException(
-          'Cannot leave: you are the last admin. Transfer admin rights to another member first.',
-        );
+        throw new LastAdminCannotLeaveException(groupId);
       }
     }
 
@@ -170,10 +171,7 @@ export class UserGroupService {
 
     await this.requireAdmin(userId, groupId);
 
-    const group = await this.userGroupRepository.findById(groupId);
-    if (!group) {
-      throw new NotFoundException('Group not found');
-    }
+    const group = await this.getGroupOrThrow(groupId);
 
     return { inviteCode: group.inviteCode };
   }
@@ -225,15 +223,10 @@ export class UserGroupService {
 
     await this.requireMember(userId, groupId);
 
-    const membership = await this.membershipRepository.findById(memberId);
-    if (!membership || membership.groupId !== groupId) {
-      throw new NotFoundException('Member not found');
-    }
+    const membership = await this.getMemberOrThrow(memberId, groupId);
 
     if (!this.membershipRepository.isVirtual(membership)) {
-      throw new BadRequestException(
-        'Cannot update registered user profile through this endpoint',
-      );
+      throw new CannotUpdateRegisteredUserException(memberId);
     }
 
     const updated = await this.membershipRepository.updateVirtualMember(
@@ -242,7 +235,6 @@ export class UserGroupService {
     );
     return this.transformToMemberDto(updated);
   }
-
   async removeMember(
     groupId: string,
     membershipId: string,
@@ -252,10 +244,7 @@ export class UserGroupService {
       `Removing member ${membershipId} from group ${groupId} by user ${userId}`,
     );
 
-    const membership = await this.membershipRepository.findById(membershipId);
-    if (!membership || membership.groupId !== groupId) {
-      throw new NotFoundException('Member not found');
-    }
+    const membership = await this.getMemberOrThrow(membershipId, groupId);
 
     if (this.membershipRepository.isVirtual(membership)) {
       await this.requireMember(userId, groupId);
@@ -263,7 +252,7 @@ export class UserGroupService {
       await this.requireAdmin(userId, groupId);
 
       if (membership.userId === userId) {
-        throw new BadRequestException('Use leave endpoint to leave the group');
+        throw new UseSelfLeaveEndpointException();
       }
     }
 
@@ -281,20 +270,17 @@ export class UserGroupService {
 
     await this.requireAdmin(userId, groupId);
 
-    const targetMembership =
-      await this.membershipRepository.findById(targetMembershipId);
-    if (!targetMembership || targetMembership.groupId !== groupId) {
-      throw new NotFoundException('Target member not found in this group');
-    }
+    const targetMembership = await this.getMemberOrThrow(
+      targetMembershipId,
+      groupId,
+    );
 
     if (this.membershipRepository.isVirtual(targetMembership)) {
-      throw new BadRequestException(
-        'Virtual members cannot be promoted to admin',
-      );
+      throw new VirtualMemberCannotBeAdminException(targetMembershipId);
     }
 
     if (targetMembership.role === GroupRole.ADMIN) {
-      throw new BadRequestException('Target is already an admin');
+      throw new AlreadyAdminException(targetMembershipId);
     }
 
     const updated = await this.membershipRepository.updateRoleById(
@@ -305,37 +291,47 @@ export class UserGroupService {
     return this.transformToMemberDto(updated);
   }
 
-  private async requireMember(userId: string, groupId: string): Promise<void> {
+  private async getGroupOrThrow(groupId: string) {
     const group = await this.userGroupRepository.findById(groupId);
     if (!group) {
-      throw new NotFoundException('Group not found');
+      throw new GroupNotFoundException(groupId);
     }
+    return group;
+  }
+
+  private async getMemberOrThrow(memberId: string, groupId: string) {
+    const membership = await this.membershipRepository.findById(memberId);
+    if (!membership || membership.groupId !== groupId) {
+      throw new GroupMemberNotFoundException(memberId);
+    }
+    return membership;
+  }
+
+  private async requireMember(userId: string, groupId: string): Promise<void> {
+    await this.getGroupOrThrow(groupId);
 
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
     );
     if (!membership) {
-      throw new ForbiddenException('You are not a member of this group');
+      throw new NotGroupMemberException(groupId);
     }
   }
 
   private async requireAdmin(userId: string, groupId: string): Promise<void> {
-    const group = await this.userGroupRepository.findById(groupId);
-    if (!group) {
-      throw new NotFoundException('Group not found');
-    }
+    await this.getGroupOrThrow(groupId);
 
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
     );
     if (!membership) {
-      throw new ForbiddenException('You are not a member of this group');
+      throw new NotGroupMemberException(groupId);
     }
 
     if (membership.role !== GroupRole.ADMIN) {
-      throw new ForbiddenException('Admin privileges required');
+      throw new GroupAdminRequiredException(groupId);
     }
   }
 

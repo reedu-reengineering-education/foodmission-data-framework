@@ -234,3 +234,87 @@ export class KeycloakServiceException extends ExternalServiceException {
     super('Keycloak', operation, reason, details);
   }
 }
+
+/**
+ * UserGroup-specific exceptions
+ */
+export class GroupNotFoundException extends ResourceNotFoundException {
+  constructor(identifier: string) {
+    super('Group', identifier);
+  }
+}
+
+export class GroupMemberNotFoundException extends ResourceNotFoundException {
+  constructor(identifier: string) {
+    super('GroupMember', identifier);
+  }
+}
+
+export class NotGroupMemberException extends AuthorizationException {
+  constructor(groupId: string) {
+    super('group', 'access', { groupId, reason: 'not a member' });
+  }
+}
+
+export class GroupAdminRequiredException extends AuthorizationException {
+  constructor(groupId: string) {
+    super('group', 'modify', { groupId, reason: 'admin privileges required' });
+  }
+}
+
+export class GroupAlreadyMemberException extends ResourceAlreadyExistsException {
+  constructor(groupId: string, userId: string) {
+    super('GroupMembership', `${groupId}/${userId}`);
+  }
+}
+
+export class InvalidInviteCodeException extends BusinessValidationException {
+  constructor(inviteCode: string) {
+    super('inviteCode', inviteCode, 'Invalid or expired invite code');
+  }
+}
+
+export class LastAdminCannotLeaveException extends InvalidOperationException {
+  constructor(groupId: string) {
+    super(
+      'leave',
+      'you are the last admin - transfer admin rights to another member first',
+      { groupId },
+    );
+  }
+}
+
+export class CannotUpdateRegisteredUserException extends InvalidOperationException {
+  constructor(memberId: string) {
+    super(
+      'updateMember',
+      'cannot update registered user profile through this endpoint',
+      {
+        memberId,
+      },
+    );
+  }
+}
+
+export class UseSelfLeaveEndpointException extends InvalidOperationException {
+  constructor() {
+    super(
+      'removeMember',
+      'use /leave endpoint to remove yourself from the group',
+    );
+  }
+}
+
+export class VirtualMemberCannotBeAdminException extends InvalidOperationException {
+  constructor(memberId: string) {
+    super('transferAdmin', 'virtual members cannot be promoted to admin', {
+      memberId,
+    });
+  }
+}
+
+export class AlreadyAdminException extends InvalidOperationException {
+  constructor(memberId: string) {
+    super('transferAdmin', 'target is already an admin', { memberId });
+  }
+}

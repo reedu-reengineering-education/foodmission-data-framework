@@ -2,15 +2,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserGroupService } from './userGroup.service';
 import { UserGroupRepository } from '../repositories/userGroup.repository';
 import { GroupMembershipRepository } from '../repositories/groupMembership.repository';
-import {
-  ForbiddenException,
-  NotFoundException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
 import { GroupRole } from '@prisma/client';
 import { UserGroupTestBuilder } from '../test-utils/userGroup-test-builders';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
+import {
+  GroupNotFoundException,
+  GroupMemberNotFoundException,
+  NotGroupMemberException,
+  GroupAdminRequiredException,
+  GroupAlreadyMemberException,
+  InvalidInviteCodeException,
+  LastAdminCannotLeaveException,
+  CannotUpdateRegisteredUserException,
+  UseSelfLeaveEndpointException,
+  VirtualMemberCannotBeAdminException,
+  AlreadyAdminException,
+} from '../../common/exceptions/business.exception';
 
 describe('UserGroupService', () => {
   let service: UserGroupService;
@@ -113,21 +120,21 @@ describe('UserGroupService', () => {
       expect(result.id).toBe(groupId);
     });
 
-    it('should throw NotFoundException when group not found', async () => {
+    it('should throw GroupNotFoundException when group not found', async () => {
       mockUserGroupRepository.findById.mockResolvedValue(null);
 
       await expect(service.findById(groupId, userId)).rejects.toThrow(
-        NotFoundException,
+        GroupNotFoundException,
       );
     });
 
-    it('should throw ForbiddenException when user is not a member', async () => {
+    it('should throw NotGroupMemberException when user is not a member', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(service.findById(groupId, userId)).rejects.toThrow(
-        ForbiddenException,
+        NotGroupMemberException,
       );
     });
   });
@@ -182,7 +189,7 @@ describe('UserGroupService', () => {
       expect(result.name).toBe(updateDto.name);
     });
 
-    it('should throw ForbiddenException when user is not admin', async () => {
+    it('should throw GroupAdminRequiredException when user is not admin', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
@@ -192,7 +199,7 @@ describe('UserGroupService', () => {
       );
 
       await expect(service.update(groupId, updateDto, userId)).rejects.toThrow(
-        ForbiddenException,
+        GroupAdminRequiredException,
       );
     });
   });
@@ -223,15 +230,15 @@ describe('UserGroupService', () => {
       });
     });
 
-    it('should throw NotFoundException for invalid invite code', async () => {
+    it('should throw InvalidInviteCodeException for invalid invite code', async () => {
       mockUserGroupRepository.findByInviteCode.mockResolvedValue(null);
 
       await expect(
         service.joinByInviteCode('invalid-code', userId),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(InvalidInviteCodeException);
     });
 
-    it('should throw ConflictException when already a member', async () => {
+    it('should throw GroupAlreadyMemberException when already a member', async () => {
       const mockGroup = { id: TEST_IDS.USER_GROUP, inviteCode };
       const mockMembership = { userId, groupId: TEST_IDS.USER_GROUP };
 
@@ -242,7 +249,7 @@ describe('UserGroupService', () => {
 
       await expect(
         service.joinByInviteCode(inviteCode, userId),
-      ).rejects.toThrow(ConflictException);
+      ).rejects.toThrow(GroupAlreadyMemberException);
     });
   });
 
@@ -265,15 +272,15 @@ describe('UserGroupService', () => {
       );
     });
 
-    it('should throw NotFoundException when not a member', async () => {
+    it('should throw NotGroupMemberException when not a member', async () => {
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(service.leave(groupId, userId)).rejects.toThrow(
-        NotFoundException,
+        NotGroupMemberException,
       );
     });
 
-    it('should throw BadRequestException when last admin tries to leave', async () => {
+    it('should throw LastAdminCannotLeaveException when last admin tries to leave', async () => {
       const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
@@ -282,7 +289,7 @@ describe('UserGroupService', () => {
       mockMembershipRepository.countAdmins.mockResolvedValue(1);
 
       await expect(service.leave(groupId, userId)).rejects.toThrow(
-        BadRequestException,
+        LastAdminCannotLeaveException,
       );
     });
 
@@ -351,14 +358,249 @@ describe('UserGroupService', () => {
       expect(mockMembershipRepository.createVirtualMember).toHaveBeenCalled();
     });
 
-    it('should throw ForbiddenException when not a member', async () => {
+    it('should throw NotGroupMemberException when not a member', async () => {
       const mockGroup = { id: groupId };
       mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(
         service.addMember(groupId, createDto, userId),
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow(NotGroupMemberException);
+    });
+  });
+
+  describe('updateMember', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const memberId = TEST_IDS.VIRTUAL_MEMBER;
+    const updateDto = { nickname: 'Updated Nickname' };
+
+    it('should update virtual member when user is a member', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+      const mockVirtualMember = {
+        id: memberId,
+        nickname: 'Child',
+        groupId,
+        createdBy: userId,
+        userId: null,
+        role: GroupRole.MEMBER,
+        joinedAt: new Date(),
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(mockVirtualMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(true);
+      mockMembershipRepository.updateVirtualMember.mockResolvedValue({
+        ...mockVirtualMember,
+        nickname: updateDto.nickname,
+      });
+
+      const result = await service.updateMember(
+        groupId,
+        memberId,
+        updateDto,
+        userId,
+      );
+
+      expect(mockMembershipRepository.updateVirtualMember).toHaveBeenCalledWith(
+        memberId,
+        updateDto,
+      );
+    });
+
+    it('should throw GroupMemberNotFoundException when member not found', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.updateMember(groupId, memberId, updateDto, userId),
+      ).rejects.toThrow(GroupMemberNotFoundException);
+    });
+
+    it('should throw CannotUpdateRegisteredUserException when trying to update registered user', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+      const mockRegisteredMember = {
+        id: memberId,
+        groupId,
+        userId: TEST_IDS.USER,
+        role: GroupRole.MEMBER,
+        joinedAt: new Date(),
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(mockRegisteredMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(false);
+
+      await expect(
+        service.updateMember(groupId, memberId, updateDto, userId),
+      ).rejects.toThrow(CannotUpdateRegisteredUserException);
+    });
+  });
+
+  describe('removeMember', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const membershipId = TEST_IDS.GROUP_MEMBERSHIP;
+
+    it('should remove virtual member when user is a member', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+      const mockVirtualMember = {
+        id: membershipId,
+        groupId,
+        userId: null,
+        role: GroupRole.MEMBER,
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findById.mockResolvedValue(mockVirtualMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(true);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await service.removeMember(groupId, membershipId, userId);
+
+      expect(mockMembershipRepository.deleteById).toHaveBeenCalledWith(
+        membershipId,
+      );
+    });
+
+    it('should throw BadRequestException when admin tries to remove themselves', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockRegisteredMember = {
+        id: membershipId,
+        groupId,
+        userId,
+        role: GroupRole.ADMIN,
+      };
+
+      mockMembershipRepository.findById.mockResolvedValue(mockRegisteredMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(false);
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await expect(
+        service.removeMember(groupId, membershipId, userId),
+      ).rejects.toThrow(UseSelfLeaveEndpointException);
+    });
+  });
+
+  describe('transferAdmin', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const targetMembershipId = 'target-membership-id';
+
+    it('should promote member to admin', async () => {
+      const mockGroup = { id: groupId };
+      const mockAdminMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockTargetMembership = {
+        id: targetMembershipId,
+        groupId,
+        userId: 'other-user-id',
+        role: GroupRole.MEMBER,
+        joinedAt: new Date(),
+      };
+      const updatedMembership = {
+        ...mockTargetMembership,
+        role: GroupRole.ADMIN,
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockAdminMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(mockTargetMembership);
+      mockMembershipRepository.isVirtual.mockReturnValue(false);
+      mockMembershipRepository.updateRoleById.mockResolvedValue(
+        updatedMembership,
+      );
+
+      const result = await service.transferAdmin(
+        groupId,
+        targetMembershipId,
+        userId,
+      );
+
+      expect(mockMembershipRepository.updateRoleById).toHaveBeenCalledWith(
+        targetMembershipId,
+        GroupRole.ADMIN,
+      );
+    });
+
+    it('should throw VirtualMemberCannotBeAdminException when target is virtual member', async () => {
+      const mockGroup = { id: groupId };
+      const mockAdminMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockVirtualMember = {
+        id: targetMembershipId,
+        groupId,
+        userId: null,
+        role: GroupRole.MEMBER,
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockAdminMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(mockVirtualMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(true);
+
+      await expect(
+        service.transferAdmin(groupId, targetMembershipId, userId),
+      ).rejects.toThrow(VirtualMemberCannotBeAdminException);
+    });
+
+    it('should throw AlreadyAdminException when target is already admin', async () => {
+      const mockGroup = { id: groupId };
+      const mockAdminMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockExistingAdmin = {
+        id: targetMembershipId,
+        groupId,
+        userId: 'other-user-id',
+        role: GroupRole.ADMIN,
+      };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockAdminMembership,
+      );
+      mockMembershipRepository.findById.mockResolvedValue(mockExistingAdmin);
+      mockMembershipRepository.isVirtual.mockReturnValue(false);
+
+      await expect(
+        service.transferAdmin(groupId, targetMembershipId, userId),
+      ).rejects.toThrow(AlreadyAdminException);
+    });
+
+    it('should throw GroupAdminRequiredException when user is not admin', async () => {
+      const mockGroup = { id: groupId };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await expect(
+        service.transferAdmin(groupId, targetMembershipId, userId),
+      ).rejects.toThrow(GroupAdminRequiredException);
     });
   });
 });
