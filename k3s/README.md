@@ -73,3 +73,26 @@ helm upgrade --install foodmission-prod . -f values.prod.yaml
 ```
 
 This ensures resources for each environment are fully separated and managed independently.
+
+### Namespace Creation
+
+By default, the chart assumes the namespace already exists. There are two ways to handle namespace creation:
+
+**Option 1: Use `--create-namespace` flag (recommended for new deployments)**
+
+```sh
+helm upgrade --install foodmission-prod . -f values.prod.yaml --create-namespace --namespace foodmission-prod
+```
+
+This tells Helm to create the namespace before running any hooks or deploying resources.
+
+**Option 2: Enable namespace creation in values**
+
+Set `createNamespace: true` in your values file to have the chart create the namespace:
+
+```yaml
+createNamespace: true
+namespace: foodmission-prod
+```
+
+> **Note:** If the namespace already exists and wasn't created by Helm, you'll get an ownership error. In that case, either delete the namespace first, add the required Helm labels manually, or use the default behavior (don't create the namespace in the chart).
