@@ -3,11 +3,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MissionService } from './mission.service';
 import { MissionRepository } from '../repositories/mission.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ConflictException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 describe('MissionService', () => {
 	let service: MissionService;
 	let repository: MissionRepository;
+
+	const mockMission = {
+		id: 'm1',
+		title: 'Test Mission',
+		description: 'Test Description',
+		available: true,
+		startDate: new Date(),
+		endDate: new Date(),
+		missionProgresses: [{ userId: 'u1', progress: 50 }],
+	};
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -39,24 +50,45 @@ describe('MissionService', () => {
 	});
 
 	describe('create', () => {
+		const createDto = { title: 't', description: 'd', available: true, startDate: new Date(), endDate: new Date() };
+
 		it('should call repository.create and return transformed result', async () => {
-			const dto = { title: 't', description: 'd', available: true, startDate: new Date(), endDate: new Date() };
-			const mockMission = { ...dto, id: 'm1', progress: 0 };
 			(repository.create as jest.Mock).mockResolvedValue(mockMission);
-			const result = await service.create(dto, 'u1');
-			expect(repository.create).toHaveBeenCalledWith({ ...dto, userId: 'u1' });
-			expect(result).toMatchObject({ id: 'm1', title: 't' });
+			const result = await service.create(createDto, 'u1');
+			expect(repository.create).toHaveBeenCalledWith({ ...createDto, userId: 'u1' });
+			expect(result).toMatchObject({ id: 'm1', title: 'Test Mission' });
+		});
+
+		it('should rethrow ConflictException', async () => {
+			(repository.create as jest.Mock).mockRejectedValue(new ConflictException('Conflict'));
+			await expect(service.create(createDto, 'u1')).rejects.toThrow(ConflictException);
+		});
+
+		it('should rethrow BadRequestException', async () => {
+			(repository.create as jest.Mock).mockRejectedValue(new BadRequestException('Bad Request'));
+			await expect(service.create(createDto, 'u1')).rejects.toThrow(BadRequestException);
+		});
+
+		it('should handle PrismaClientKnownRequestError', async () => {
+			const prismaError = new PrismaClientKnownRequestError('Error', { code: 'P2002', clientVersion: '5.0.0' });
+			(repository.create as jest.Mock).mockRejectedValue(prismaError);
+			await expect(service.create(createDto, 'u1')).rejects.toThrow();
+		});
+
+		it('should throw BadRequestException for unexpected errors', async () => {
+			(repository.create as jest.Mock).mockRejectedValue(new Error('Unexpected'));
+			await expect(service.create(createDto, 'u1')).rejects.toThrow(BadRequestException);
 		});
 	});
 
 	describe('getMissionById', () => {
 		it('should return mission if found', async () => {
-			const mockMission = { id: 'm1', title: 't', description: 'd', startDate: new Date(), endDate: new Date(), progress: 0, available: true };
 			(repository.findById as jest.Mock).mockResolvedValue(mockMission);
 			const result = await service.getMissionById('m1');
 			expect(repository.findById).toHaveBeenCalledWith('m1');
-			expect(result).toMatchObject({ id: 'm1', title: 't' });
+			expect(result).toMatchObject({ id: 'm1', title: 'Test Mission' });
 		});
+
 		it('should throw NotFoundException if mission not found', async () => {
 			(repository.findById as jest.Mock).mockResolvedValue(null);
 			await expect(service.getMissionById('m1')).rejects.toThrow(NotFoundException);
@@ -64,12 +96,44 @@ describe('MissionService', () => {
 	});
 
 	describe('update', () => {
+		const updateDto = { available: true };
+
 		it('should call repository.update and return transformed result', async () => {
-			const updatedMission = { id: 'm1', title: 't', description: 'd', available: true, startDate: new Date(), endDate: new Date(), missionProgresses: [] };
-			(repository.update as jest.Mock).mockResolvedValue(updatedMission);
-			const result = await service.update('m1', { available: true });
-			expect(repository.update).toHaveBeenCalledWith('m1', { available: true });
+			(repository.update as jest.Mock).mockResolvedValue(mockMission);
+			const result = await service.update('m1', updateDto);
+			expect(repository.update).toHaveBeenCalledWith('m1', updateDto);
 			expect(result).toMatchObject({ id: 'm1', available: true });
+		});
+
+		it('should rethrow ConflictException', async () => {
+			(repository.update as jest.Mock).mockRejectedValue(new ConflictException('Conflict'));
+			await expect(service.update('m1', updateDto)).rejects.toThrow(ConflictException);
+		});
+
+		it('should rethrow BadRequestException', async () => {
+			(repository.update as jest.Mock).mockRejectedValue(new BadRequestException('Bad Request'));
+			await expect(service.update('m1', updateDto)).rejects.toThrow(BadRequestException);
+		});
+
+		it('should rethrow NotFoundException', async () => {
+			(repository.update as jest.Mock).mockRejectedValue(new NotFoundException('Not Found'));
+			await expect(service.update('m1', updateDto)).rejects.toThrow(NotFoundException);
+		});
+
+		it('should rethrow ForbiddenException', async () => {
+			(repository.update as jest.Mock).mockRejectedValue(new ForbiddenException('Forbidden'));
+			await expect(service.update('m1', updateDto)).rejects.toThrow(ForbiddenException);
+		});
+
+		it('should handle PrismaClientKnownRequestError', async () => {
+			const prismaError = new PrismaClientKnownRequestError('Error', { code: 'P2002', clientVersion: '5.0.0' });
+			(repository.update as jest.Mock).mockRejectedValue(prismaError);
+			await expect(service.update('m1', updateDto)).rejects.toThrow();
+		});
+
+		it('should throw BadRequestException for unexpected errors', async () => {
+			(repository.update as jest.Mock).mockRejectedValue(new Error('Unexpected'));
+			await expect(service.update('m1', updateDto)).rejects.toThrow(BadRequestException);
 		});
 	});
 
@@ -78,6 +142,11 @@ describe('MissionService', () => {
 			(repository.delete as jest.Mock).mockResolvedValue(undefined);
 			await service.remove('m1');
 			expect(repository.delete).toHaveBeenCalledWith('m1');
+		});
+
+		it('should throw BadRequestException on error', async () => {
+			(repository.delete as jest.Mock).mockRejectedValue(new Error('DB Error'));
+			await expect(service.remove('m1')).rejects.toThrow(BadRequestException);
 		});
 	});
 });
