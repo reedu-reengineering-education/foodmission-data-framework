@@ -33,8 +33,8 @@ masters_pool:
 worker_node_pools:
   - name: workers
     instance_type: cpx32
-    locations:
-      - fsn1
-      - hel1
-      - nbg1
-    instance_count: 3
+    location: fsn1
+    autoscaling:
+      enabled: true
+      min_instances: 2
+      max_instances: 5
