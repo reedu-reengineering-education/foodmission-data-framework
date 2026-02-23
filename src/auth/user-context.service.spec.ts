@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserContextService } from './user-context.service';
-import { UserProfileService } from './user-profile.service';
+import { UserProfileService } from '../user/services/user-profile.service';
 
 describe('UserContextService', () => {
   let service: UserContextService;
