@@ -7,7 +7,7 @@ import { seedPantries } from './seeds/pantry';
 import { seedPantryItems } from './seeds/pantryItem';
 import { seedFoodCategories } from './seeds/foodCategories';
 import { seedUserGroups } from './seeds/userGroups';
-import { seedVirtualMembers } from './seeds/virtualMembers';
+import { seedVirtualMembers } from './seeds/groupMembers';
 
 const prisma = new PrismaClient();
 

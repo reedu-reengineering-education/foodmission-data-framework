@@ -1,9 +1,10 @@
 import {
   PrismaClient,
-  VirtualMember,
+  GroupMembership,
   Gender,
   ActivityLevel,
   AnnualIncomeLevel,
+  GroupRole,
 } from '@prisma/client';
 
 export interface VirtualMemberSeedData {
@@ -35,12 +36,16 @@ export const virtualMemberData: VirtualMemberSeedData[] = [
   },
 ];
 
+/**
+ * Seeds virtual members as GroupMembership records with userId = null.
+ * Virtual members are dependents without their own accounts.
+ */
 export async function seedVirtualMembers(
   prisma: PrismaClient,
-): Promise<VirtualMember[]> {
+): Promise<GroupMembership[]> {
   console.log('👥 Seeding virtual members...');
 
-  const createdMembers: VirtualMember[] = [];
+  const createdMembers: GroupMembership[] = [];
 
   for (const vmData of virtualMemberData) {
     // Find the group
@@ -67,11 +72,12 @@ export async function seedVirtualMembers(
       continue;
     }
 
-    // Check if virtual member already exists
-    const existingVM = await prisma.virtualMember.findFirst({
+    // Check if virtual member already exists (same nickname in same group with null userId)
+    const existingVM = await prisma.groupMembership.findFirst({
       where: {
         groupId: group.id,
         nickname: vmData.nickname,
+        userId: null,
       },
     });
 
@@ -83,10 +89,12 @@ export async function seedVirtualMembers(
       continue;
     }
 
-    // Create the virtual member
-    const virtualMember = await prisma.virtualMember.create({
+    // Create the virtual member as a GroupMembership with userId = null
+    const virtualMember = await prisma.groupMembership.create({
       data: {
         groupId: group.id,
+        userId: null, // Virtual members have no associated user account
+        role: GroupRole.MEMBER,
         createdBy: creator.id,
         nickname: vmData.nickname,
         age: vmData.age,

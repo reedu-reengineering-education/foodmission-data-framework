@@ -28,10 +28,9 @@ import {
   UpdateUserGroupDto,
   UserGroupResponseDto,
   JoinGroupDto,
-  CreateVirtualMemberDto,
-  UpdateVirtualMemberDto,
-  VirtualMemberResponseDto,
-  GroupMemberResponseDto,
+  CreateMemberDto,
+  UpdateMemberDto,
+  MemberResponseDto,
 } from '../dto';
 
 @ApiTags('groups')
@@ -255,25 +254,82 @@ export class UserGroupController {
   @ApiOperation({
     summary: 'Get all members',
     description:
-      'Returns all registered members and virtual members of the group.',
+      'Returns all members of the group (both registered users and virtual members). Use the `isVirtual` field to distinguish between them.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
     description: 'Members list',
-    schema: {
-      properties: {
-        members: { type: 'array', items: { $ref: '#/components/schemas/GroupMemberResponseDto' } },
-        virtualMembers: { type: 'array', items: { $ref: '#/components/schemas/VirtualMemberResponseDto' } },
-      },
-    },
+    type: [MemberResponseDto],
   })
   @ApiCrudErrorResponses()
   async getMembers(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
-  ): Promise<{ members: GroupMemberResponseDto[]; virtualMembers: VirtualMemberResponseDto[] }> {
+  ): Promise<MemberResponseDto[]> {
     return this.userGroupService.getMembers(id, userId);
+  }
+
+  @Post(':id/members')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @ApiOperation({
+    summary: 'Add a virtual member',
+    description:
+      'Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.',
+  })
+  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiBody({ type: CreateMemberDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Virtual member added',
+    type: MemberResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  async addMember(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() createDto: CreateMemberDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<MemberResponseDto> {
+    return this.userGroupService.addMember(id, createDto, userId);
+  }
+
+  @Patch(':id/members/:memberId')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Update a virtual member',
+    description:
+      'Updates virtual member information. Any group member can update. Cannot update registered users.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'Group ID',
+  })
+  @ApiParam({
+    name: 'memberId',
+    type: 'string',
+    format: 'uuid',
+    description: 'Membership ID',
+  })
+  @ApiBody({ type: UpdateMemberDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Member updated',
+    type: MemberResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Cannot update registered users' })
+  @ApiCrudErrorResponses()
+  async updateMember(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('memberId', ParseUUIDPipe) memberId: string,
+    @Body() updateDto: UpdateMemberDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<MemberResponseDto> {
+    return this.userGroupService.updateMember(id, memberId, updateDto, userId);
   }
 
   @Delete(':id/members/:memberId')
@@ -281,12 +337,26 @@ export class UserGroupController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Remove a member',
-    description: 'Removes a registered member from the group. Admin only.',
+    description:
+      'Removes a member from the group. Admin required for registered users; any member can remove virtual members.',
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Group ID' })
-  @ApiParam({ name: 'memberId', type: 'string', format: 'uuid', description: 'Membership ID' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'Group ID',
+  })
+  @ApiParam({
+    name: 'memberId',
+    type: 'string',
+    format: 'uuid',
+    description: 'Membership ID',
+  })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
+  @ApiResponse({
+    status: 403,
+    description: 'Admin privileges required for registered users',
+  })
   @ApiCrudErrorResponses()
   async removeMember(
     @Param('id', ParseUUIDPipe) id: string,
@@ -302,16 +372,29 @@ export class UserGroupController {
   @ApiOperation({
     summary: 'Promote member to admin',
     description:
-      'Promotes a regular member to admin role. Existing admin only. Use this before leaving if you are the last admin.',
+      'Promotes a regular member to admin role. Existing admin only. Only registered users can be promoted. Use this before leaving if you are the last admin.',
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Group ID' })
-  @ApiParam({ name: 'memberId', type: 'string', format: 'uuid', description: 'Membership ID to promote' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'Group ID',
+  })
+  @ApiParam({
+    name: 'memberId',
+    type: 'string',
+    format: 'uuid',
+    description: 'Membership ID to promote',
+  })
   @ApiResponse({
     status: 200,
     description: 'Member promoted to admin',
-    type: GroupMemberResponseDto,
+    type: MemberResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Target is already an admin' })
+  @ApiResponse({
+    status: 400,
+    description: 'Target is already an admin or is a virtual member',
+  })
   @ApiResponse({ status: 403, description: 'Admin privileges required' })
   @ApiResponse({ status: 404, description: 'Member not found' })
   @ApiCrudErrorResponses()
@@ -319,78 +402,7 @@ export class UserGroupController {
     @Param('id', ParseUUIDPipe) id: string,
     @Param('memberId', ParseUUIDPipe) memberId: string,
     @CurrentUser('id') userId: string,
-  ): Promise<GroupMemberResponseDto> {
+  ): Promise<MemberResponseDto> {
     return this.userGroupService.transferAdmin(id, memberId, userId);
-  }
-
-  // ========== Virtual Members ==========
-
-  @Post(':id/virtual-members')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
-  @ApiOperation({
-    summary: 'Add a virtual member',
-    description:
-      'Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiBody({ type: CreateVirtualMemberDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Virtual member added',
-    type: VirtualMemberResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async addVirtualMember(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() createDto: CreateVirtualMemberDto,
-    @CurrentUser('id') userId: string,
-  ): Promise<VirtualMemberResponseDto> {
-    return this.userGroupService.addVirtualMember(id, createDto, userId);
-  }
-
-  @Patch(':id/virtual-members/:vmId')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Update a virtual member',
-    description: 'Updates virtual member information. Any group member can update.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Group ID' })
-  @ApiParam({ name: 'vmId', type: 'string', format: 'uuid', description: 'Virtual member ID' })
-  @ApiBody({ type: UpdateVirtualMemberDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Virtual member updated',
-    type: VirtualMemberResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async updateVirtualMember(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Param('vmId', ParseUUIDPipe) vmId: string,
-    @Body() updateDto: UpdateVirtualMemberDto,
-    @CurrentUser('id') userId: string,
-  ): Promise<VirtualMemberResponseDto> {
-    return this.userGroupService.updateVirtualMember(id, vmId, updateDto, userId);
-  }
-
-  @Delete(':id/virtual-members/:vmId')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Remove a virtual member',
-    description: 'Removes a virtual member from the group. Any group member can remove.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Group ID' })
-  @ApiParam({ name: 'vmId', type: 'string', format: 'uuid', description: 'Virtual member ID' })
-  @ApiResponse({ status: 200, description: 'Virtual member removed' })
-  @ApiCrudErrorResponses()
-  async removeVirtualMember(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Param('vmId', ParseUUIDPipe) vmId: string,
-    @CurrentUser('id') userId: string,
-  ): Promise<void> {
-    return this.userGroupService.removeVirtualMember(id, vmId, userId);
   }
 }

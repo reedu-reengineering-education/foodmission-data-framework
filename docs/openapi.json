@@ -6738,7 +6738,7 @@
     },
     "/api/v1/groups/{id}/members": {
       "get": {
-        "description": "Returns all registered members and virtual members of the group.",
+        "description": "Returns all members of the group (both registered users and virtual members). Use the `isVirtual` field to distinguish between them.",
         "operationId": "getMembers",
         "parameters": [
           {
@@ -6757,19 +6757,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "members": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/GroupMemberResponseDto"
-                      }
-                    },
-                    "virtualMembers": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/VirtualMemberResponseDto"
-                      }
-                    }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberResponseDto"
                   }
                 }
               }
@@ -6835,175 +6825,10 @@
         "tags": [
           "groups"
         ]
-      }
-    },
-    "/api/v1/groups/{id}/members/{memberId}": {
-      "delete": {
-        "description": "Removes a registered member from the group. Admin only.",
-        "operationId": "removeMember",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Group ID",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          },
-          {
-            "name": "memberId",
-            "required": true,
-            "in": "path",
-            "description": "Membership ID",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Member removed successfully"
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Admin privileges required"
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Remove a member",
-        "tags": [
-          "groups"
-        ]
-      }
-    },
-    "/api/v1/groups/{id}/members/{memberId}/make-admin": {
-      "post": {
-        "description": "Promotes a regular member to admin role. Existing admin only. Use this before leaving if you are the last admin.",
-        "operationId": "transferAdmin",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Group ID",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          },
-          {
-            "name": "memberId",
-            "required": true,
-            "in": "path",
-            "description": "Membership ID to promote",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Member promoted to admin",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GroupMemberResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Target is already an admin"
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Admin privileges required"
-          },
-          "404": {
-            "description": "Member not found"
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Promote member to admin",
-        "tags": [
-          "groups"
-        ]
-      }
-    },
-    "/api/v1/groups/{id}/virtual-members": {
+      },
       "post": {
         "description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.",
-        "operationId": "addVirtualMember",
+        "operationId": "addMember",
         "parameters": [
           {
             "name": "id",
@@ -7020,7 +6845,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateVirtualMemberDto"
+                "$ref": "#/components/schemas/CreateMemberDto"
               }
             }
           }
@@ -7031,7 +6856,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VirtualMemberResponseDto"
+                  "$ref": "#/components/schemas/MemberResponseDto"
                 }
               }
             }
@@ -7098,10 +6923,10 @@
         ]
       }
     },
-    "/api/v1/groups/{id}/virtual-members/{vmId}": {
+    "/api/v1/groups/{id}/members/{memberId}": {
       "patch": {
-        "description": "Updates virtual member information. Any group member can update.",
-        "operationId": "updateVirtualMember",
+        "description": "Updates virtual member information. Any group member can update. Cannot update registered users.",
+        "operationId": "updateMember",
         "parameters": [
           {
             "name": "id",
@@ -7114,10 +6939,10 @@
             }
           },
           {
-            "name": "vmId",
+            "name": "memberId",
             "required": true,
             "in": "path",
-            "description": "Virtual member ID",
+            "description": "Membership ID",
             "schema": {
               "format": "uuid",
               "type": "string"
@@ -7129,31 +6954,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateVirtualMemberDto"
+                "$ref": "#/components/schemas/UpdateMemberDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Virtual member updated",
+            "description": "Member updated",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VirtualMemberResponseDto"
+                  "$ref": "#/components/schemas/MemberResponseDto"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Cannot update registered users"
           },
           "401": {
             "description": "Unauthorized - Authentication required or invalid token",
@@ -7207,8 +7025,8 @@
         ]
       },
       "delete": {
-        "description": "Removes a virtual member from the group. Any group member can remove.",
-        "operationId": "removeVirtualMember",
+        "description": "Removes a member from the group. Admin required for registered users; any member can remove virtual members.",
+        "operationId": "removeMember",
         "parameters": [
           {
             "name": "id",
@@ -7221,10 +7039,10 @@
             }
           },
           {
-            "name": "vmId",
+            "name": "memberId",
             "required": true,
             "in": "path",
-            "description": "Virtual member ID",
+            "description": "Membership ID",
             "schema": {
               "format": "uuid",
               "type": "string"
@@ -7233,7 +7051,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Virtual member removed"
+            "description": "Member removed successfully"
           },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
@@ -7256,14 +7074,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
+            "description": "Admin privileges required for registered users"
           },
           "404": {
             "description": "Not Found - Resource does not exist",
@@ -7291,7 +7102,85 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Remove a virtual member",
+        "summary": "Remove a member",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/members/{memberId}/make-admin": {
+      "post": {
+        "description": "Promotes a regular member to admin role. Existing admin only. Only registered users can be promoted. Use this before leaving if you are the last admin.",
+        "operationId": "transferAdmin",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Group ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "description": "Membership ID to promote",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member promoted to admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Target is already an admin or is a virtual member"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Admin privileges required"
+          },
+          "404": {
+            "description": "Member not found"
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Promote member to admin",
         "tags": [
           "groups"
         ]
@@ -10719,18 +10608,13 @@
           "name"
         ]
       },
-      "GroupMemberResponseDto": {
+      "MemberResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "description": "The unique identifier of the membership",
             "example": "uuid-membership-id"
-          },
-          "userId": {
-            "type": "string",
-            "description": "The user ID of the member",
-            "example": "uuid-user-id"
           },
           "role": {
             "type": "string",
@@ -10744,65 +10628,57 @@
           "joinedAt": {
             "format": "date-time",
             "type": "string",
-            "description": "When the user joined the group"
+            "description": "When the member joined the group"
+          },
+          "isVirtual": {
+            "type": "boolean",
+            "description": "Whether this is a virtual member (true) or registered user (false)",
+            "example": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "The user ID (only for registered users)",
+            "example": "uuid-user-id"
           },
           "firstName": {
             "type": "string",
-            "description": "First name of the user",
+            "description": "First name (only for registered users)",
             "example": "John"
           },
           "lastName": {
             "type": "string",
-            "description": "Last name of the user",
+            "description": "Last name (only for registered users)",
             "example": "Doe"
           },
           "email": {
             "type": "string",
-            "description": "Email of the user",
+            "description": "Email (only for registered users)",
             "example": "john@example.com"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "role",
-          "joinedAt",
-          "firstName",
-          "lastName",
-          "email"
-        ]
-      },
-      "VirtualMemberResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the virtual member",
-            "example": "uuid-virtual-member-id"
           },
           "nickname": {
             "type": "string",
-            "description": "Nickname of the virtual member",
+            "description": "Nickname (primarily for virtual members, optional display name for registered)",
             "example": "Little Timmy"
           },
           "age": {
             "type": "number",
-            "description": "Age of the virtual member",
+            "description": "Age (only for virtual members)",
             "example": 8
           },
           "gender": {
             "type": "string",
-            "description": "Gender of the virtual member",
+            "description": "Gender (only for virtual members)",
             "enum": [
               "MALE",
               "FEMALE",
               "OTHER",
+              "UNSPECIFIED",
               "PREFER_NOT_TO_SAY"
             ]
           },
           "activityLevel": {
             "type": "string",
-            "description": "Physical activity level",
+            "description": "Physical activity level (only for virtual members)",
             "enum": [
               "SEDENTARY",
               "LIGHT",
@@ -10813,7 +10689,7 @@
           },
           "annualIncome": {
             "type": "string",
-            "description": "Annual income level",
+            "description": "Annual income level (only for virtual members)",
             "enum": [
               "BELOW_10000",
               "FROM_10000_TO_19999",
@@ -10826,24 +10702,18 @@
           },
           "preferences": {
             "type": "object",
-            "description": "Free-form preferences (JSON)"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "When the virtual member was created"
+            "description": "Free-form preferences (only for virtual members)"
           },
           "createdBy": {
             "type": "string",
-            "description": "User ID who created this virtual member",
-            "example": "uuid-user-id"
+            "description": "ID of the user who created this virtual member"
           }
         },
         "required": [
           "id",
-          "nickname",
-          "createdAt",
-          "createdBy"
+          "role",
+          "joinedAt",
+          "isVirtual"
         ]
       },
       "UserGroupResponseDto": {
@@ -10880,17 +10750,10 @@
             "description": "When the group was created"
           },
           "members": {
-            "description": "List of registered members in the group",
+            "description": "List of all members (both registered users and virtual members). Use `isVirtual` to distinguish.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GroupMemberResponseDto"
-            }
-          },
-          "virtualMembers": {
-            "description": "List of virtual members (without accounts)",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VirtualMemberResponseDto"
+              "$ref": "#/components/schemas/MemberResponseDto"
             }
           }
         },
@@ -10900,8 +10763,7 @@
           "inviteCode",
           "createdBy",
           "createdAt",
-          "members",
-          "virtualMembers"
+          "members"
         ]
       },
       "UpdateUserGroupDto": {
@@ -10934,7 +10796,7 @@
           "inviteCode"
         ]
       },
-      "CreateVirtualMemberDto": {
+      "CreateMemberDto": {
         "type": "object",
         "properties": {
           "nickname": {
@@ -10957,6 +10819,7 @@
               "MALE",
               "FEMALE",
               "OTHER",
+              "UNSPECIFIED",
               "PREFER_NOT_TO_SAY"
             ]
           },
@@ -10986,9 +10849,9 @@
           },
           "preferences": {
             "type": "object",
-            "description": "Free-form preferences (JSON)",
+            "description": "Free-form preferences (JSON object)",
             "example": {
-              "dietaryPreference": "vegetarian"
+              "dietaryPreference": "VEGETARIAN"
             }
           }
         },
@@ -10996,7 +10859,7 @@
           "nickname"
         ]
       },
-      "UpdateVirtualMemberDto": {
+      "UpdateMemberDto": {
         "type": "object",
         "properties": {
           "nickname": {
@@ -11019,6 +10882,7 @@
               "MALE",
               "FEMALE",
               "OTHER",
+              "UNSPECIFIED",
               "PREFER_NOT_TO_SAY"
             ]
           },
@@ -11048,9 +10912,9 @@
           },
           "preferences": {
             "type": "object",
-            "description": "Free-form preferences (JSON)",
+            "description": "Free-form preferences (JSON object)",
             "example": {
-              "dietaryPreference": "vegetarian"
+              "dietaryPreference": "VEGETARIAN"
             }
           }
         }

@@ -9,15 +9,16 @@ import {
 import { plainToClass } from 'class-transformer';
 import { GroupRole } from '@prisma/client';
 import { UserGroupRepository } from '../repositories/userGroup.repository';
-import { GroupMembershipRepository } from '../repositories/groupMembership.repository';
-import { VirtualMemberRepository } from '../repositories/virtualMember.repository';
+import {
+  GroupMembershipRepository,
+  GroupMembershipWithUser,
+} from '../repositories/groupMembership.repository';
 import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
 import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
-import { CreateVirtualMemberDto } from '../dto/create-virtualMember.dto';
-import { UpdateVirtualMemberDto } from '../dto/update-virtualMember.dto';
+import { CreateMemberDto } from '../dto/create-member.dto';
+import { UpdateMemberDto } from '../dto/update-member.dto';
 import { UserGroupResponseDto } from '../dto/response-userGroup.dto';
-import { GroupMemberResponseDto } from '../dto/response-groupMember.dto';
-import { VirtualMemberResponseDto } from '../dto/response-virtualMember.dto';
+import { MemberResponseDto } from '../dto/response-member.dto';
 
 @Injectable()
 export class UserGroupService {
@@ -26,10 +27,7 @@ export class UserGroupService {
   constructor(
     private readonly userGroupRepository: UserGroupRepository,
     private readonly membershipRepository: GroupMembershipRepository,
-    private readonly virtualMemberRepository: VirtualMemberRepository,
   ) {}
-
-  // ========== Group CRUD ==========
 
   async create(
     createDto: CreateUserGroupDto,
@@ -56,7 +54,6 @@ export class UserGroupService {
       throw new NotFoundException('Group not found');
     }
 
-    // Check if user is a member
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
@@ -95,8 +92,6 @@ export class UserGroupService {
     await this.userGroupRepository.delete(groupId);
   }
 
-  // ========== Invite Code & Join ==========
-
   async joinByInviteCode(
     inviteCode: string,
     userId: string,
@@ -108,7 +103,6 @@ export class UserGroupService {
       throw new NotFoundException('Invalid invite code');
     }
 
-    // Check if already a member
     const existingMembership =
       await this.membershipRepository.findByUserAndGroup(userId, group.id);
     if (existingMembership) {
@@ -121,7 +115,6 @@ export class UserGroupService {
       role: GroupRole.MEMBER,
     });
 
-    // Refetch group with updated memberships
     const updatedGroup = await this.userGroupRepository.findById(group.id);
     return this.transformToGroupDto(updatedGroup);
   }
@@ -139,14 +132,12 @@ export class UserGroupService {
 
     const memberCount = await this.membershipRepository.countMembers(groupId);
 
-    // If last member, delete the group entirely
     if (memberCount <= 1) {
       this.logger.log(`Last member leaving group ${groupId}, deleting group`);
       await this.userGroupRepository.delete(groupId);
       return;
     }
 
-    // If admin but not last member, check if other admins exist
     if (membership.role === GroupRole.ADMIN) {
       const adminCount = await this.membershipRepository.countAdmins(groupId);
       if (adminCount <= 1) {
@@ -187,27 +178,69 @@ export class UserGroupService {
     return { inviteCode: group.inviteCode };
   }
 
-  // ========== Member Management ==========
-
   async getMembers(
     groupId: string,
     userId: string,
-  ): Promise<{ members: GroupMemberResponseDto[]; virtualMembers: VirtualMemberResponseDto[] }> {
+  ): Promise<MemberResponseDto[]> {
     this.logger.log(`Getting members for group ${groupId}`);
 
     await this.requireMember(userId, groupId);
 
     const memberships =
       await this.membershipRepository.findAllByGroupId(groupId);
-    const virtualMembers =
-      await this.virtualMemberRepository.findAllByGroupId(groupId);
 
-    return {
-      members: memberships.map((m) => this.transformToMemberDto(m)),
-      virtualMembers: virtualMembers.map((vm) =>
-        this.transformToVirtualMemberDto(vm),
-      ),
-    };
+    return memberships.map((m) => this.transformToMemberDto(m));
+  }
+
+  async addMember(
+    groupId: string,
+    createDto: CreateMemberDto,
+    userId: string,
+  ): Promise<MemberResponseDto> {
+    this.logger.log(`Adding virtual member to group ${groupId}`);
+
+    await this.requireMember(userId, groupId);
+
+    const membership = await this.membershipRepository.createVirtualMember({
+      groupId,
+      createdBy: userId,
+      nickname: createDto.nickname,
+      age: createDto.age,
+      gender: createDto.gender,
+      activityLevel: createDto.activityLevel,
+      annualIncome: createDto.annualIncome,
+      preferences: createDto.preferences,
+    });
+
+    return this.transformToMemberDto(membership);
+  }
+
+  async updateMember(
+    groupId: string,
+    memberId: string,
+    updateDto: UpdateMemberDto,
+    userId: string,
+  ): Promise<MemberResponseDto> {
+    this.logger.log(`Updating member ${memberId}`);
+
+    await this.requireMember(userId, groupId);
+
+    const membership = await this.membershipRepository.findById(memberId);
+    if (!membership || membership.groupId !== groupId) {
+      throw new NotFoundException('Member not found');
+    }
+
+    if (!this.membershipRepository.isVirtual(membership)) {
+      throw new BadRequestException(
+        'Cannot update registered user profile through this endpoint',
+      );
+    }
+
+    const updated = await this.membershipRepository.updateVirtualMember(
+      memberId,
+      updateDto,
+    );
+    return this.transformToMemberDto(updated);
   }
 
   async removeMember(
@@ -219,16 +252,19 @@ export class UserGroupService {
       `Removing member ${membershipId} from group ${groupId} by user ${userId}`,
     );
 
-    await this.requireAdmin(userId, groupId);
-
     const membership = await this.membershipRepository.findById(membershipId);
     if (!membership || membership.groupId !== groupId) {
-      throw new NotFoundException('Membership not found');
+      throw new NotFoundException('Member not found');
     }
 
-    // Cannot remove yourself via this endpoint
-    if (membership.userId === userId) {
-      throw new BadRequestException('Use leave endpoint to leave the group');
+    if (this.membershipRepository.isVirtual(membership)) {
+      await this.requireMember(userId, groupId);
+    } else {
+      await this.requireAdmin(userId, groupId);
+
+      if (membership.userId === userId) {
+        throw new BadRequestException('Use leave endpoint to leave the group');
+      }
     }
 
     await this.membershipRepository.deleteById(membershipId);
@@ -238,7 +274,7 @@ export class UserGroupService {
     groupId: string,
     targetMembershipId: string,
     userId: string,
-  ): Promise<GroupMemberResponseDto> {
+  ): Promise<MemberResponseDto> {
     this.logger.log(
       `Transferring admin to ${targetMembershipId} in group ${groupId} by ${userId}`,
     );
@@ -249,6 +285,12 @@ export class UserGroupService {
       await this.membershipRepository.findById(targetMembershipId);
     if (!targetMembership || targetMembership.groupId !== groupId) {
       throw new NotFoundException('Target member not found in this group');
+    }
+
+    if (this.membershipRepository.isVirtual(targetMembership)) {
+      throw new BadRequestException(
+        'Virtual members cannot be promoted to admin',
+      );
     }
 
     if (targetMembership.role === GroupRole.ADMIN) {
@@ -262,69 +304,6 @@ export class UserGroupService {
 
     return this.transformToMemberDto(updated);
   }
-
-  // ========== Virtual Members ==========
-
-  async addVirtualMember(
-    groupId: string,
-    createDto: CreateVirtualMemberDto,
-    userId: string,
-  ): Promise<VirtualMemberResponseDto> {
-    this.logger.log(`Adding virtual member to group ${groupId}`);
-
-    await this.requireMember(userId, groupId);
-
-    const virtualMember = await this.virtualMemberRepository.create(
-      groupId,
-      userId,
-      createDto,
-    );
-
-    return this.transformToVirtualMemberDto(virtualMember);
-  }
-
-  async updateVirtualMember(
-    groupId: string,
-    virtualMemberId: string,
-    updateDto: UpdateVirtualMemberDto,
-    userId: string,
-  ): Promise<VirtualMemberResponseDto> {
-    this.logger.log(`Updating virtual member ${virtualMemberId}`);
-
-    await this.requireMember(userId, groupId);
-
-    const virtualMember =
-      await this.virtualMemberRepository.findById(virtualMemberId);
-    if (!virtualMember || virtualMember.groupId !== groupId) {
-      throw new NotFoundException('Virtual member not found');
-    }
-
-    const updated = await this.virtualMemberRepository.update(
-      virtualMemberId,
-      updateDto,
-    );
-    return this.transformToVirtualMemberDto(updated);
-  }
-
-  async removeVirtualMember(
-    groupId: string,
-    virtualMemberId: string,
-    userId: string,
-  ): Promise<void> {
-    this.logger.log(`Removing virtual member ${virtualMemberId}`);
-
-    await this.requireMember(userId, groupId);
-
-    const virtualMember =
-      await this.virtualMemberRepository.findById(virtualMemberId);
-    if (!virtualMember || virtualMember.groupId !== groupId) {
-      throw new NotFoundException('Virtual member not found');
-    }
-
-    await this.virtualMemberRepository.delete(virtualMemberId);
-  }
-
-  // ========== Helpers ==========
 
   private async requireMember(userId: string, groupId: string): Promise<void> {
     const group = await this.userGroupRepository.findById(groupId);
@@ -365,36 +344,40 @@ export class UserGroupService {
       excludeExtraneousValues: true,
     });
 
-    // Transform nested relations
     dto.members = (group.memberships || []).map((m: any) =>
       this.transformToMemberDto(m),
-    );
-    dto.virtualMembers = (group.virtualMembers || []).map((vm: any) =>
-      this.transformToVirtualMemberDto(vm),
     );
 
     return dto;
   }
 
-  private transformToMemberDto(membership: any): GroupMemberResponseDto {
+  private transformToMemberDto(
+    membership: GroupMembershipWithUser,
+  ): MemberResponseDto {
+    const isVirtual = this.membershipRepository.isVirtual(membership);
+
     return plainToClass(
-      GroupMemberResponseDto,
+      MemberResponseDto,
       {
         id: membership.id,
-        userId: membership.userId,
         role: membership.role,
         joinedAt: membership.joinedAt,
+        isVirtual,
+        // Registered user fields
+        userId: membership.userId,
         firstName: membership.user?.firstName,
         lastName: membership.user?.lastName,
         email: membership.user?.email,
+        // Virtual member fields
+        nickname: membership.nickname,
+        age: membership.age,
+        gender: membership.gender,
+        activityLevel: membership.activityLevel,
+        annualIncome: membership.annualIncome,
+        preferences: membership.preferences,
+        createdBy: membership.createdBy,
       },
       { excludeExtraneousValues: true },
     );
-  }
-
-  private transformToVirtualMemberDto(vm: any): VirtualMemberResponseDto {
-    return plainToClass(VirtualMemberResponseDto, vm, {
-      excludeExtraneousValues: true,
-    });
   }
 }

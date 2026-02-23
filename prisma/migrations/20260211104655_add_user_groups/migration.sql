@@ -1,9 +1,7 @@
-
-
-
-
+-- CreateEnum
 CREATE TYPE "GroupRole" AS ENUM ('ADMIN', 'MEMBER');
 
+-- CreateTable: user_groups
 CREATE TABLE "user_groups" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -16,32 +14,27 @@ CREATE TABLE "user_groups" (
     CONSTRAINT "user_groups_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
+-- CreateTable: group_memberships (unified - includes virtual members)
 CREATE TABLE "group_memberships" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "groupId" TEXT NOT NULL,
     "role" "GroupRole" NOT NULL DEFAULT 'MEMBER',
     "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "group_memberships_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "virtual_members" (
-    "id" TEXT NOT NULL,
-    "groupId" TEXT NOT NULL,
-    "nickname" TEXT NOT NULL,
+    
+    -- For registered users (NULL = virtual member)
+    "userId" TEXT,
+    
+    -- Virtual member profile fields
+    "nickname" TEXT,
     "age" INTEGER,
     "gender" "Gender",
     "preferences" JSONB NOT NULL DEFAULT '{}',
     "activityLevel" "ActivityLevel",
     "annualIncome" "AnnualIncomeLevel",
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "createdBy" TEXT NOT NULL,
+    "createdBy" TEXT,
+    "updatedAt" TIMESTAMP(3),
 
-    CONSTRAINT "virtual_members_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "group_memberships_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -56,17 +49,18 @@ CREATE INDEX "user_groups_createdBy_idx" ON "user_groups"("createdBy");
 -- CreateIndex
 CREATE INDEX "group_memberships_groupId_idx" ON "group_memberships"("groupId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "group_memberships_userId_groupId_key" ON "group_memberships"("userId", "groupId");
+-- CreateIndex: partial unique index for registered users only
+CREATE UNIQUE INDEX "group_memberships_userId_groupId_key" 
+ON "group_memberships"("userId", "groupId") 
+WHERE "userId" IS NOT NULL;
 
 -- CreateIndex
-CREATE INDEX "virtual_members_groupId_idx" ON "virtual_members"("groupId");
+CREATE INDEX "group_memberships_createdBy_idx" ON "group_memberships"("createdBy");
 
 -- AddForeignKey
-ALTER TABLE "group_memberships" ADD CONSTRAINT "group_memberships_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "group_memberships" ADD CONSTRAINT "group_memberships_userId_fkey" 
+FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "group_memberships" ADD CONSTRAINT "group_memberships_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "user_groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "virtual_members" ADD CONSTRAINT "virtual_members_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "user_groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "group_memberships" ADD CONSTRAINT "group_memberships_groupId_fkey" 
+FOREIGN KEY ("groupId") REFERENCES "user_groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;

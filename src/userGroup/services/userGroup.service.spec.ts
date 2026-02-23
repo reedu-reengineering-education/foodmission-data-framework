@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserGroupService } from './userGroup.service';
 import { UserGroupRepository } from '../repositories/userGroup.repository';
 import { GroupMembershipRepository } from '../repositories/groupMembership.repository';
-import { VirtualMemberRepository } from '../repositories/virtualMember.repository';
 import {
   ForbiddenException,
   NotFoundException,
@@ -37,14 +36,9 @@ describe('UserGroupService', () => {
     deleteById: jest.fn(),
     countAdmins: jest.fn(),
     countMembers: jest.fn(),
-  };
-
-  const mockVirtualMemberRepository = {
-    create: jest.fn(),
-    findById: jest.fn(),
-    findAllByGroupId: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
+    createVirtualMember: jest.fn(),
+    updateVirtualMember: jest.fn(),
+    isVirtual: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -58,10 +52,6 @@ describe('UserGroupService', () => {
         {
           provide: GroupMembershipRepository,
           useValue: mockMembershipRepository,
-        },
-        {
-          provide: VirtualMemberRepository,
-          useValue: mockVirtualMemberRepository,
         },
       ],
     }).compile();
@@ -86,7 +76,6 @@ describe('UserGroupService', () => {
         createdBy: userId,
         createdAt: new Date(),
         memberships: [],
-        virtualMembers: [],
       };
       mockUserGroupRepository.create.mockResolvedValue(mockGroup);
 
@@ -202,9 +191,9 @@ describe('UserGroupService', () => {
         mockMembership,
       );
 
-      await expect(
-        service.update(groupId, updateDto, userId),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.update(groupId, updateDto, userId)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
@@ -327,35 +316,39 @@ describe('UserGroupService', () => {
     });
   });
 
-  describe('addVirtualMember', () => {
+  describe('addMember', () => {
     const userId = TEST_IDS.USER;
     const groupId = TEST_IDS.USER_GROUP;
-    const createDto = UserGroupTestBuilder.createCreateVirtualMemberDto();
+    const createDto = UserGroupTestBuilder.createCreateMemberDto();
 
     it('should add virtual member when user is a member', async () => {
       const mockGroup = { id: groupId };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
       const mockVirtualMember = {
         id: TEST_IDS.VIRTUAL_MEMBER,
-        ...createDto,
+        nickname: createDto.nickname,
+        age: createDto.age,
         groupId,
         createdBy: userId,
+        userId: null,
+        role: GroupRole.MEMBER,
+        joinedAt: new Date(),
       };
 
       mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
-      mockVirtualMemberRepository.create.mockResolvedValue(mockVirtualMember);
+      mockMembershipRepository.createVirtualMember.mockResolvedValue(
+        mockVirtualMember,
+      );
+      mockMembershipRepository.isVirtual.mockReturnValue(true); // userId is null
 
-      const result = await service.addVirtualMember(groupId, createDto, userId);
+      const result = await service.addMember(groupId, createDto, userId);
 
       expect(result.id).toBe(TEST_IDS.VIRTUAL_MEMBER);
-      expect(mockVirtualMemberRepository.create).toHaveBeenCalledWith(
-        groupId,
-        userId,
-        createDto,
-      );
+      expect(result.isVirtual).toBe(true);
+      expect(mockMembershipRepository.createVirtualMember).toHaveBeenCalled();
     });
 
     it('should throw ForbiddenException when not a member', async () => {
@@ -364,7 +357,7 @@ describe('UserGroupService', () => {
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(
-        service.addVirtualMember(groupId, createDto, userId),
+        service.addMember(groupId, createDto, userId),
       ).rejects.toThrow(ForbiddenException);
     });
   });

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
+  IsNotEmpty,
   MaxLength,
   IsOptional,
   IsInt,
@@ -9,23 +10,18 @@ import {
   IsEnum,
   IsObject,
 } from 'class-validator';
-import {
-  Gender,
-  ActivityLevel,
-  AnnualIncomeLevel,
-} from '@prisma/client';
+import { Gender, ActivityLevel, AnnualIncomeLevel } from '@prisma/client';
 
-export class UpdateVirtualMemberDto {
+export class CreateMemberDto {
   @ApiProperty({
     description: 'Nickname of the virtual member',
     example: 'Little Timmy',
     maxLength: 255,
-    required: false,
   })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(255)
-  nickname?: string;
+  nickname: string;
 
   @ApiProperty({
     description: 'Age of the virtual member',
@@ -68,11 +64,11 @@ export class UpdateVirtualMemberDto {
   annualIncome?: AnnualIncomeLevel;
 
   @ApiProperty({
-    description: 'Free-form preferences (JSON)',
-    example: { dietaryPreference: 'vegetarian' },
+    description: 'Free-form preferences (JSON object)',
+    example: { dietaryPreference: 'VEGETARIAN' },
     required: false,
   })
   @IsObject()
   @IsOptional()
-  preferences?: Record<string, unknown>;
+  preferences?: object;
 }

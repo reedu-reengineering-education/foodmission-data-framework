@@ -1,10 +1,9 @@
 import { GroupRole } from '@prisma/client';
 import { UserGroupResponseDto } from '../dto/response-userGroup.dto';
-import { GroupMemberResponseDto } from '../dto/response-groupMember.dto';
-import { VirtualMemberResponseDto } from '../dto/response-virtualMember.dto';
+import { MemberResponseDto } from '../dto/response-member.dto';
 import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
 import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
-import { CreateVirtualMemberDto } from '../dto/create-virtualMember.dto';
+import { CreateMemberDto } from '../dto/create-member.dto';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 
 export class UserGroupTestBuilder {
@@ -19,7 +18,6 @@ export class UserGroupTestBuilder {
       createdBy: TEST_IDS.USER,
       createdAt: new Date(),
       members: [],
-      virtualMembers: [],
       ...overrides,
     };
   }
@@ -55,14 +53,18 @@ export class UserGroupTestBuilder {
     };
   }
 
-  static createGroupMemberResponseDto(
-    overrides?: Partial<GroupMemberResponseDto>,
-  ): GroupMemberResponseDto {
+  /**
+   * Creates a mock MemberResponseDto for a registered user.
+   */
+  static createRegisteredMemberResponseDto(
+    overrides?: Partial<MemberResponseDto>,
+  ): MemberResponseDto {
     return {
       id: TEST_IDS.GROUP_MEMBERSHIP,
-      userId: TEST_IDS.USER,
       role: GroupRole.MEMBER,
       joinedAt: new Date(),
+      isVirtual: false,
+      userId: TEST_IDS.USER,
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@example.com',
@@ -70,26 +72,38 @@ export class UserGroupTestBuilder {
     };
   }
 
+  /**
+   * Creates a mock MemberResponseDto for a virtual member.
+   */
   static createVirtualMemberResponseDto(
-    overrides?: Partial<VirtualMemberResponseDto>,
-  ): VirtualMemberResponseDto {
+    overrides?: Partial<MemberResponseDto>,
+  ): MemberResponseDto {
     return {
       id: TEST_IDS.VIRTUAL_MEMBER,
+      role: GroupRole.MEMBER,
+      joinedAt: new Date(),
+      isVirtual: true,
       nickname: TEST_DATA.VIRTUAL_MEMBER_NICKNAME,
       age: 10,
-      createdAt: new Date(),
       createdBy: TEST_IDS.USER,
       ...overrides,
     };
   }
 
-  static createCreateVirtualMemberDto(
-    overrides?: Partial<CreateVirtualMemberDto>,
-  ): CreateVirtualMemberDto {
+  /**
+   * Creates a CreateMemberDto for adding a virtual member.
+   */
+  static createCreateMemberDto(
+    overrides?: Partial<CreateMemberDto>,
+  ): CreateMemberDto {
     return {
       nickname: TEST_DATA.VIRTUAL_MEMBER_NICKNAME,
       age: 10,
       ...overrides,
     };
   }
+
+  // Deprecated - use createRegisteredMemberResponseDto instead
+  static createGroupMemberResponseDto =
+    UserGroupTestBuilder.createRegisteredMemberResponseDto;
 }

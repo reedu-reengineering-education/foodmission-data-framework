@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { GroupMemberResponseDto } from './response-groupMember.dto';
-import { VirtualMemberResponseDto } from './response-virtualMember.dto';
+import { MemberResponseDto } from './response-member.dto';
 
 export class UserGroupResponseDto {
   @ApiProperty({
@@ -47,18 +46,11 @@ export class UserGroupResponseDto {
   createdAt: Date;
 
   @ApiProperty({
-    description: 'List of registered members in the group',
-    type: [GroupMemberResponseDto],
+    description:
+      'List of all members (both registered users and virtual members). Use `isVirtual` to distinguish.',
+    type: [MemberResponseDto],
   })
   @Expose()
-  @Type(() => GroupMemberResponseDto)
-  members: GroupMemberResponseDto[];
-
-  @ApiProperty({
-    description: 'List of virtual members (without accounts)',
-    type: [VirtualMemberResponseDto],
-  })
-  @Expose()
-  @Type(() => VirtualMemberResponseDto)
-  virtualMembers: VirtualMemberResponseDto[];
+  @Type(() => MemberResponseDto)
+  members: MemberResponseDto[];
 }

@@ -48,7 +48,8 @@ describe('UserGroupController', () => {
 
   describe('findAll', () => {
     const userId = TEST_IDS.USER;
-    const mockResponse = UserGroupTestBuilder.createUserGroupResponseDtoArray(2);
+    const mockResponse =
+      UserGroupTestBuilder.createUserGroupResponseDtoArray(2);
 
     it('should call service with userId and return result', async () => {
       mockUserGroupService.findAllByUserId.mockResolvedValue(mockResponse);
@@ -169,17 +170,20 @@ describe('UserGroupController', () => {
       const result = await controller.regenerateInviteCode(groupId, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.regenerateInviteCode).toHaveBeenCalledWith(groupId, userId);
+      expect(service.regenerateInviteCode).toHaveBeenCalledWith(
+        groupId,
+        userId,
+      );
     });
   });
 
   describe('getMembers', () => {
     const userId = TEST_IDS.USER;
     const groupId = TEST_IDS.USER_GROUP;
-    const mockResponse = {
-      members: [UserGroupTestBuilder.createGroupMemberResponseDto()],
-      virtualMembers: [UserGroupTestBuilder.createVirtualMemberResponseDto()],
-    };
+    const mockResponse = [
+      UserGroupTestBuilder.createRegisteredMemberResponseDto(),
+      UserGroupTestBuilder.createVirtualMemberResponseDto(),
+    ];
 
     it('should call service and return members list', async () => {
       mockUserGroupService.getMembers.mockResolvedValue(mockResponse);
@@ -191,19 +195,19 @@ describe('UserGroupController', () => {
     });
   });
 
-  describe('addVirtualMember', () => {
+  describe('addMember', () => {
     const userId = TEST_IDS.USER;
     const groupId = TEST_IDS.USER_GROUP;
-    const createDto = UserGroupTestBuilder.createCreateVirtualMemberDto();
+    const createDto = UserGroupTestBuilder.createCreateMemberDto();
     const mockResponse = UserGroupTestBuilder.createVirtualMemberResponseDto();
 
-    it('should call service and return virtual member', async () => {
-      mockUserGroupService.addVirtualMember.mockResolvedValue(mockResponse);
+    it('should call service and return created member', async () => {
+      mockUserGroupService.addMember.mockResolvedValue(mockResponse);
 
-      const result = await controller.addVirtualMember(groupId, createDto, userId);
+      const result = await controller.addMember(groupId, createDto, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.addVirtualMember).toHaveBeenCalledWith(
+      expect(service.addMember).toHaveBeenCalledWith(
         groupId,
         createDto,
         userId,

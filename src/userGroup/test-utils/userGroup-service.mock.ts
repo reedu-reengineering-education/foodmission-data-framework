@@ -13,11 +13,10 @@ export const createMockUserGroupService = (): jest.Mocked<
     | 'regenerateInviteCode'
     | 'getInviteCode'
     | 'getMembers'
+    | 'addMember'
+    | 'updateMember'
     | 'removeMember'
     | 'transferAdmin'
-    | 'addVirtualMember'
-    | 'updateVirtualMember'
-    | 'removeVirtualMember'
   >
 > => ({
   create: jest.fn(),
@@ -30,9 +29,8 @@ export const createMockUserGroupService = (): jest.Mocked<
   regenerateInviteCode: jest.fn(),
   getInviteCode: jest.fn(),
   getMembers: jest.fn(),
+  addMember: jest.fn(),
+  updateMember: jest.fn(),
   removeMember: jest.fn(),
   transferAdmin: jest.fn(),
-  addVirtualMember: jest.fn(),
-  updateVirtualMember: jest.fn(),
-  removeVirtualMember: jest.fn(),
 });
