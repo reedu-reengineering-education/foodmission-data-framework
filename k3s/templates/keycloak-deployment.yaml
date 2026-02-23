@@ -16,6 +16,13 @@ spec:
       containers:
       - name: keycloak
         image: {{ .Values.keycloak.image }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
         args: ["start"]
         env:
           - name: KC_DB
