@@ -1325,6 +1325,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
       summary: Get All Shoppinglists
       tags: *ref_7
   /api/v1/shoppinglist/{id}/items:

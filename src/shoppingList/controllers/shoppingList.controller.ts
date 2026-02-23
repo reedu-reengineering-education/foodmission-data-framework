@@ -64,7 +64,8 @@ export class ShoppingListController {
   }
 
   @Get()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get All Shoppinglists',
   })

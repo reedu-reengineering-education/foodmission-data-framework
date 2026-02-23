@@ -2085,6 +2085,11 @@
             }
           }
         },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get All Shoppinglists",
         "tags": [
           "shoppinglist"
