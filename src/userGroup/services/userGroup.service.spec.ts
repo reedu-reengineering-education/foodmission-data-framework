@@ -204,6 +204,50 @@ describe('UserGroupService', () => {
     });
   });
 
+  describe('remove', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+
+    it('should delete group when user is admin', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await service.remove(groupId, userId);
+
+      expect(mockUserGroupRepository.delete).toHaveBeenCalledWith(groupId);
+    });
+
+    it('should throw GroupAdminRequiredException when user is not admin', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await expect(service.remove(groupId, userId)).rejects.toThrow(
+        GroupAdminRequiredException,
+      );
+    });
+
+    it('should throw NotGroupMemberException when user is not a member', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
+
+      await expect(service.remove(groupId, userId)).rejects.toThrow(
+        NotGroupMemberException,
+      );
+    });
+  });
+
   describe('joinByInviteCode', () => {
     const userId = TEST_IDS.USER;
     const inviteCode = TEST_DATA.INVITE_CODE;
@@ -320,6 +364,150 @@ describe('UserGroupService', () => {
 
       expect(mockUserGroupRepository.delete).toHaveBeenCalledWith(groupId);
       expect(mockMembershipRepository.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('regenerateInviteCode', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+
+    it('should regenerate invite code when user is admin', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const newInviteCode = 'new-invite-code-456';
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+      mockUserGroupRepository.regenerateInviteCode.mockResolvedValue({
+        ...mockGroup,
+        inviteCode: newInviteCode,
+      });
+
+      const result = await service.regenerateInviteCode(groupId, userId);
+
+      expect(result.inviteCode).toBe(newInviteCode);
+      expect(mockUserGroupRepository.regenerateInviteCode).toHaveBeenCalledWith(
+        groupId,
+      );
+    });
+
+    it('should throw GroupAdminRequiredException when user is not admin', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await expect(
+        service.regenerateInviteCode(groupId, userId),
+      ).rejects.toThrow(GroupAdminRequiredException);
+    });
+  });
+
+  describe('getInviteCode', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+
+    it('should return invite code when user is admin', async () => {
+      const mockGroup = {
+        id: groupId,
+        inviteCode: TEST_DATA.INVITE_CODE,
+        memberships: [],
+        virtualMembers: [],
+      };
+      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      const result = await service.getInviteCode(groupId, userId);
+
+      expect(result.inviteCode).toBe(TEST_DATA.INVITE_CODE);
+    });
+
+    it('should throw GroupAdminRequiredException when user is not admin', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+
+      await expect(service.getInviteCode(groupId, userId)).rejects.toThrow(
+        GroupAdminRequiredException,
+      );
+    });
+
+    it('should throw GroupNotFoundException when group not found', async () => {
+      mockUserGroupRepository.findById.mockResolvedValue(null);
+
+      await expect(service.getInviteCode(groupId, userId)).rejects.toThrow(
+        GroupNotFoundException,
+      );
+    });
+  });
+
+  describe('getMembers', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+
+    it('should return all members when user is a member', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+      const mockMembers = [
+        {
+          id: 'member-1',
+          userId: 'user-1',
+          groupId,
+          role: GroupRole.ADMIN,
+          joinedAt: new Date(),
+          user: {
+            id: 'user-1',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@test.com',
+          },
+        },
+        {
+          id: 'member-2',
+          userId: null,
+          groupId,
+          role: GroupRole.MEMBER,
+          nickname: 'Child',
+          joinedAt: new Date(),
+        },
+      ];
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        mockMembership,
+      );
+      mockMembershipRepository.findAllByGroupId.mockResolvedValue(mockMembers);
+
+      const result = await service.getMembers(groupId, userId);
+
+      expect(result).toHaveLength(2);
+      expect(mockMembershipRepository.findAllByGroupId).toHaveBeenCalledWith(
+        groupId,
+      );
+    });
+
+    it('should throw NotGroupMemberException when user is not a member', async () => {
+      const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
+
+      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
+
+      await expect(service.getMembers(groupId, userId)).rejects.toThrow(
+        NotGroupMemberException,
+      );
     });
   });
 

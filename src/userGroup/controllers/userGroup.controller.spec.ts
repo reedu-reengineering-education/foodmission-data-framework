@@ -5,6 +5,7 @@ import { createControllerTestModule } from '../../common/test-utils/controller-t
 import { createMockUserGroupService } from '../test-utils/userGroup-service.mock';
 import { UserGroupTestBuilder } from '../test-utils/userGroup-test-builders';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
+import { GroupRole } from '@prisma/client';
 
 describe('UserGroupController', () => {
   let controller: UserGroupController;
@@ -210,6 +211,78 @@ describe('UserGroupController', () => {
       expect(service.addMember).toHaveBeenCalledWith(
         groupId,
         createDto,
+        userId,
+      );
+    });
+  });
+
+  describe('updateMember', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const memberId = TEST_IDS.VIRTUAL_MEMBER;
+    const updateDto = { nickname: 'Updated Nickname' };
+    const mockResponse = UserGroupTestBuilder.createVirtualMemberResponseDto({
+      nickname: 'Updated Nickname',
+    });
+
+    it('should call service with correct parameters and return result', async () => {
+      mockUserGroupService.updateMember.mockResolvedValue(mockResponse);
+
+      const result = await controller.updateMember(
+        groupId,
+        memberId,
+        updateDto,
+        userId,
+      );
+
+      expect(result).toEqual(mockResponse);
+      expect(service.updateMember).toHaveBeenCalledWith(
+        groupId,
+        memberId,
+        updateDto,
+        userId,
+      );
+    });
+  });
+
+  describe('removeMember', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const memberId = TEST_IDS.VIRTUAL_MEMBER;
+
+    it('should call service with correct parameters', async () => {
+      mockUserGroupService.removeMember.mockResolvedValue(undefined);
+
+      await controller.removeMember(groupId, memberId, userId);
+
+      expect(service.removeMember).toHaveBeenCalledWith(
+        groupId,
+        memberId,
+        userId,
+      );
+      expect(service.removeMember).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('transferAdmin', () => {
+    const userId = TEST_IDS.USER;
+    const groupId = TEST_IDS.USER_GROUP;
+    const memberId = TEST_IDS.GROUP_MEMBERSHIP;
+    const mockResponse = UserGroupTestBuilder.createRegisteredMemberResponseDto(
+      {
+        role: GroupRole.ADMIN,
+      },
+    );
+
+    it('should call service and return updated member', async () => {
+      mockUserGroupService.transferAdmin.mockResolvedValue(mockResponse);
+
+      const result = await controller.transferAdmin(groupId, memberId, userId);
+
+      expect(result).toEqual(mockResponse);
+      expect(service.transferAdmin).toHaveBeenCalledWith(
+        groupId,
+        memberId,
         userId,
       );
     });
