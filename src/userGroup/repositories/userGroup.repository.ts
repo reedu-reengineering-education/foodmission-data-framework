@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
 import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
-import { GroupRole } from '@prisma/client';
+import { GroupRole, Prisma } from '@prisma/client';
+import { GroupNotFoundException } from '../../common/exceptions/business.exception';
 
 export type UserGroupWithRelations = NonNullable<
   Awaited<ReturnType<PrismaService['userGroup']['findUnique']>>
@@ -30,7 +31,7 @@ export class UserGroupRepository {
   async create(
     data: CreateUserGroupDto & { createdBy: string },
   ): Promise<UserGroupWithRelations> {
-    return await this.prisma.userGroup.create({
+    return this.prisma.userGroup.create({
       data: {
         name: data.name,
         description: data.description,
@@ -47,7 +48,7 @@ export class UserGroupRepository {
   }
 
   async findById(id: string): Promise<UserGroupWithRelations | null> {
-    return await this.prisma.userGroup.findUnique({
+    return this.prisma.userGroup.findUnique({
       where: { id },
       include: this.includeRelations,
     });
@@ -56,14 +57,14 @@ export class UserGroupRepository {
   async findByInviteCode(
     inviteCode: string,
   ): Promise<UserGroupWithRelations | null> {
-    return await this.prisma.userGroup.findUnique({
+    return this.prisma.userGroup.findUnique({
       where: { inviteCode },
       include: this.includeRelations,
     });
   }
 
   async findAllByUserId(userId: string): Promise<UserGroupWithRelations[]> {
-    return await this.prisma.userGroup.findMany({
+    return this.prisma.userGroup.findMany({
       where: {
         memberships: {
           some: {
@@ -80,26 +81,56 @@ export class UserGroupRepository {
     id: string,
     data: UpdateUserGroupDto,
   ): Promise<UserGroupWithRelations> {
-    return await this.prisma.userGroup.update({
-      where: { id },
-      data,
-      include: this.includeRelations,
-    });
+    try {
+      return await this.prisma.userGroup.update({
+        where: { id },
+        data,
+        include: this.includeRelations,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new GroupNotFoundException(id);
+      }
+      throw error;
+    }
   }
 
   async regenerateInviteCode(id: string): Promise<UserGroupWithRelations> {
-    return await this.prisma.userGroup.update({
-      where: { id },
-      data: {
-        inviteCode: crypto.randomUUID(),
-      },
-      include: this.includeRelations,
-    });
+    try {
+      return await this.prisma.userGroup.update({
+        where: { id },
+        data: {
+          inviteCode: crypto.randomUUID(),
+        },
+        include: this.includeRelations,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new GroupNotFoundException(id);
+      }
+      throw error;
+    }
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.userGroup.delete({
-      where: { id },
-    });
+    try {
+      await this.prisma.userGroup.delete({
+        where: { id },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new GroupNotFoundException(id);
+      }
+      throw error;
+    }
   }
 }
