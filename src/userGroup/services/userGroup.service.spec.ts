@@ -406,6 +406,7 @@ describe('UserGroupService', () => {
         userId,
       );
 
+      expect(result.nickname).toBe(updateDto.nickname);
       expect(mockMembershipRepository.updateVirtualMember).toHaveBeenCalledWith(
         memberId,
         updateDto,
@@ -539,6 +540,7 @@ describe('UserGroupService', () => {
         userId,
       );
 
+      expect(result.role).toBe(GroupRole.ADMIN);
       expect(mockMembershipRepository.updateRoleById).toHaveBeenCalledWith(
         targetMembershipId,
         GroupRole.ADMIN,
