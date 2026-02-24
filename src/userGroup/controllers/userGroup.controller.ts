@@ -39,8 +39,6 @@ import {
 export class UserGroupController {
   constructor(private readonly userGroupService: UserGroupService) {}
 
-  // ========== Group CRUD ==========
-
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -96,8 +94,6 @@ export class UserGroupController {
     description: 'Group found',
     type: UserGroupResponseDto,
   })
-  @ApiResponse({ status: 403, description: 'Not a member of this group' })
-  @ApiResponse({ status: 404, description: 'Group not found' })
   @ApiCrudErrorResponses()
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -120,7 +116,6 @@ export class UserGroupController {
     description: 'Group updated successfully',
     type: UserGroupResponseDto,
   })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
   @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -140,7 +135,6 @@ export class UserGroupController {
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Group deleted successfully' })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
   @ApiCrudErrorResponses()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
@@ -148,8 +142,6 @@ export class UserGroupController {
   ): Promise<void> {
     return this.userGroupService.remove(id, userId);
   }
-
-  // ========== Invite & Join ==========
 
   @Post('join')
   @Roles('user', 'admin')
@@ -164,11 +156,6 @@ export class UserGroupController {
     status: 201,
     description: 'Successfully joined the group',
     type: UserGroupResponseDto,
-  })
-  @ApiResponse({ status: 404, description: 'Invalid invite code' })
-  @ApiResponse({
-    status: 409,
-    description: 'Already a member of this group',
   })
   @ApiCrudErrorResponses()
   async join(
@@ -188,10 +175,6 @@ export class UserGroupController {
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({ status: 200, description: 'Left the group successfully' })
-  @ApiResponse({
-    status: 400,
-    description: 'Cannot leave: you are the last admin',
-  })
   @ApiCrudErrorResponses()
   async leave(
     @Param('id', ParseUUIDPipe) id: string,
@@ -213,7 +196,6 @@ export class UserGroupController {
     description: 'Invite code returned',
     schema: { properties: { inviteCode: { type: 'string' } } },
   })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
   @ApiCrudErrorResponses()
   async getInviteCode(
     @Param('id', ParseUUIDPipe) id: string,
@@ -237,7 +219,6 @@ export class UserGroupController {
     description: 'New invite code generated',
     schema: { properties: { inviteCode: { type: 'string' } } },
   })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
   @ApiCrudErrorResponses()
   async regenerateInviteCode(
     @Param('id', ParseUUIDPipe) id: string,
@@ -245,8 +226,6 @@ export class UserGroupController {
   ): Promise<{ inviteCode: string }> {
     return this.userGroupService.regenerateInviteCode(id, userId);
   }
-
-  // ========== Member Management ==========
 
   @Get(':id/members')
   @Roles('user', 'admin')
@@ -321,7 +300,6 @@ export class UserGroupController {
     description: 'Member updated',
     type: MemberResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Cannot update registered users' })
   @ApiCrudErrorResponses()
   async updateMember(
     @Param('id', ParseUUIDPipe) id: string,
@@ -353,10 +331,6 @@ export class UserGroupController {
     description: 'Membership ID',
   })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
-  @ApiResponse({
-    status: 403,
-    description: 'Admin privileges required for registered users',
-  })
   @ApiCrudErrorResponses()
   async removeMember(
     @Param('id', ParseUUIDPipe) id: string,
@@ -391,12 +365,6 @@ export class UserGroupController {
     description: 'Member promoted to admin',
     type: MemberResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Target is already an admin or is a virtual member',
-  })
-  @ApiResponse({ status: 403, description: 'Admin privileges required' })
-  @ApiResponse({ status: 404, description: 'Member not found' })
   @ApiCrudErrorResponses()
   async transferAdmin(
     @Param('id', ParseUUIDPipe) id: string,
