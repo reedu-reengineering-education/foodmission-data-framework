@@ -235,9 +235,6 @@ export class KeycloakServiceException extends ExternalServiceException {
   }
 }
 
-/**
- * UserGroup-specific exceptions
- */
 export class GroupNotFoundException extends ResourceNotFoundException {
   constructor(identifier: string) {
     super('Group', identifier);

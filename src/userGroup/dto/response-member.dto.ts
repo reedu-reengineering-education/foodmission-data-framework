@@ -37,8 +37,6 @@ export class MemberResponseDto {
   @Expose()
   isVirtual: boolean;
 
-  // ========== Registered User Fields ==========
-
   @ApiProperty({
     description: 'The user ID (only for registered users)',
     example: 'uuid-user-id',

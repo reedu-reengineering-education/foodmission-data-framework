@@ -3,7 +3,7 @@ import { PrismaClient, GroupRole, UserGroup } from '@prisma/client';
 export interface UserGroupSeedData {
   name: string;
   description?: string;
-  createdByEmail: string; // We'll use email to find the user
+  createdByEmail: string;
   memberEmails: { email: string; role: GroupRole }[];
 }
 
@@ -28,13 +28,14 @@ export const userGroupData: UserGroupSeedData[] = [
   },
 ];
 
-export async function seedUserGroups(prisma: PrismaClient): Promise<UserGroup[]> {
+export async function seedUserGroups(
+  prisma: PrismaClient,
+): Promise<UserGroup[]> {
   console.log('🏠 Seeding user groups...');
 
   const createdGroups: UserGroup[] = [];
 
   for (const groupData of userGroupData) {
-    // Find the creator by email
     const creator = await prisma.user.findUnique({
       where: { email: groupData.createdByEmail },
     });
@@ -46,7 +47,6 @@ export async function seedUserGroups(prisma: PrismaClient): Promise<UserGroup[]>
       continue;
     }
 
-    // Check if group already exists
     const existingGroup = await prisma.userGroup.findFirst({
       where: {
         name: groupData.name,
@@ -60,7 +60,6 @@ export async function seedUserGroups(prisma: PrismaClient): Promise<UserGroup[]>
       continue;
     }
 
-    // Create the group
     const group = await prisma.userGroup.create({
       data: {
         name: groupData.name,
@@ -69,7 +68,6 @@ export async function seedUserGroups(prisma: PrismaClient): Promise<UserGroup[]>
       },
     });
 
-    // Add memberships
     for (const memberData of groupData.memberEmails) {
       const member = await prisma.user.findUnique({
         where: { email: memberData.email },
@@ -86,7 +84,9 @@ export async function seedUserGroups(prisma: PrismaClient): Promise<UserGroup[]>
       }
     }
 
-    console.log(`   ✓ Created group "${group.name}" with ${groupData.memberEmails.length} members`);
+    console.log(
+      `   ✓ Created group "${group.name}" with ${groupData.memberEmails.length} members`,
+    );
     createdGroups.push(group);
   }
 
