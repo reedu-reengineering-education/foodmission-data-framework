@@ -8,6 +8,7 @@ import {
   Prisma,
   GroupMembership,
 } from '@prisma/client';
+import { GroupMemberNotFoundException } from '../../common/exceptions/business.exception';
 
 export type GroupMembershipWithUser = GroupMembership & {
   user?: {
@@ -53,6 +54,10 @@ export class GroupMembershipRepository {
     },
   };
 
+  private toJsonInput(value?: object): Prisma.InputJsonValue | undefined {
+    return value !== undefined ? (value as Prisma.InputJsonValue) : undefined;
+  }
+
   isVirtual(membership: GroupMembershipWithUser): boolean {
     return membership.userId === null;
   }
@@ -62,7 +67,7 @@ export class GroupMembershipRepository {
     groupId: string;
     role?: GroupRole;
   }): Promise<GroupMembershipWithUser> {
-    return await this.prisma.groupMembership.create({
+    return this.prisma.groupMembership.create({
       data: {
         userId: data.userId,
         groupId: data.groupId,
@@ -75,7 +80,7 @@ export class GroupMembershipRepository {
   async createVirtualMember(
     data: CreateVirtualMemberData,
   ): Promise<GroupMembershipWithUser> {
-    return await this.prisma.groupMembership.create({
+    return this.prisma.groupMembership.create({
       data: {
         groupId: data.groupId,
         userId: null,
@@ -84,7 +89,7 @@ export class GroupMembershipRepository {
         gender: data.gender,
         activityLevel: data.activityLevel,
         annualIncome: data.annualIncome,
-        preferences: (data.preferences as Prisma.InputJsonValue) || {},
+        preferences: this.toJsonInput(data.preferences) ?? {},
         createdBy: data.createdBy,
         role: GroupRole.MEMBER,
       },
@@ -96,7 +101,7 @@ export class GroupMembershipRepository {
     userId: string,
     groupId: string,
   ): Promise<GroupMembershipWithUser | null> {
-    return await this.prisma.groupMembership.findFirst({
+    return this.prisma.groupMembership.findFirst({
       where: {
         userId,
         groupId,
@@ -106,14 +111,14 @@ export class GroupMembershipRepository {
   }
 
   async findById(id: string): Promise<GroupMembershipWithUser | null> {
-    return await this.prisma.groupMembership.findUnique({
+    return this.prisma.groupMembership.findUnique({
       where: { id },
       include: this.includeUser,
     });
   }
 
   async findAllByGroupId(groupId: string): Promise<GroupMembershipWithUser[]> {
-    return await this.prisma.groupMembership.findMany({
+    return this.prisma.groupMembership.findMany({
       where: { groupId },
       include: this.includeUser,
       orderBy: { joinedAt: 'asc' },
@@ -123,7 +128,7 @@ export class GroupMembershipRepository {
   async findRegisteredByGroupId(
     groupId: string,
   ): Promise<GroupMembershipWithUser[]> {
-    return await this.prisma.groupMembership.findMany({
+    return this.prisma.groupMembership.findMany({
       where: {
         groupId,
         userId: { not: null },
@@ -136,7 +141,7 @@ export class GroupMembershipRepository {
   async findVirtualByGroupId(
     groupId: string,
   ): Promise<GroupMembershipWithUser[]> {
-    return await this.prisma.groupMembership.findMany({
+    return this.prisma.groupMembership.findMany({
       where: {
         groupId,
         userId: null,
@@ -153,28 +158,27 @@ export class GroupMembershipRepository {
   ): Promise<GroupMembershipWithUser> {
     const membership = await this.findByUserAndGroup(userId, groupId);
     if (!membership) {
-      throw new Error('Membership not found');
+      throw new GroupMemberNotFoundException(`${userId}/${groupId}`);
     }
-    return await this.prisma.groupMembership.update({
-      where: { id: membership.id },
-      data: { role },
-      include: this.includeUser,
-    });
+    return this.updateRoleById(membership.id, role);
   }
 
   async updateVirtualMember(
     id: string,
     data: UpdateVirtualMemberData,
   ): Promise<GroupMembershipWithUser> {
-    return await this.prisma.groupMembership.update({
-      where: { id },
+    return this.prisma.groupMembership.update({
+      where: {
+        id,
+        userId: null,
+      },
       data: {
         nickname: data.nickname,
         age: data.age,
         gender: data.gender,
         activityLevel: data.activityLevel,
         annualIncome: data.annualIncome,
-        preferences: data.preferences as Prisma.InputJsonValue,
+        preferences: this.toJsonInput(data.preferences),
       },
       include: this.includeUser,
     });
@@ -182,37 +186,48 @@ export class GroupMembershipRepository {
 
   async delete(userId: string, groupId: string): Promise<void> {
     const membership = await this.findByUserAndGroup(userId, groupId);
-    if (membership) {
-      await this.prisma.groupMembership.delete({
-        where: { id: membership.id },
-      });
+    if (!membership) {
+      throw new GroupMemberNotFoundException(`${userId}/${groupId}`);
     }
-  }
-
-  async deleteById(id: string): Promise<void> {
     await this.prisma.groupMembership.delete({
-      where: { id },
+      where: { id: membership.id },
     });
   }
 
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.prisma.groupMembership.delete({
+        where: { id },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new GroupMemberNotFoundException(id);
+      }
+      throw error;
+    }
+  }
+
   async countAdmins(groupId: string): Promise<number> {
-    return await this.prisma.groupMembership.count({
+    return this.prisma.groupMembership.count({
       where: {
         groupId,
         role: GroupRole.ADMIN,
-        userId: { not: null }, // Only registered users can be admins
+        userId: { not: null },
       },
     });
   }
 
   async countMembers(groupId: string): Promise<number> {
-    return await this.prisma.groupMembership.count({
+    return this.prisma.groupMembership.count({
       where: { groupId },
     });
   }
 
   async countRegisteredMembers(groupId: string): Promise<number> {
-    return await this.prisma.groupMembership.count({
+    return this.prisma.groupMembership.count({
       where: {
         groupId,
         userId: { not: null },
@@ -221,7 +236,7 @@ export class GroupMembershipRepository {
   }
 
   async countVirtualMembers(groupId: string): Promise<number> {
-    return await this.prisma.groupMembership.count({
+    return this.prisma.groupMembership.count({
       where: {
         groupId,
         userId: null,
@@ -233,7 +248,7 @@ export class GroupMembershipRepository {
     membershipId: string,
     role: GroupRole,
   ): Promise<GroupMembershipWithUser> {
-    return await this.prisma.groupMembership.update({
+    return this.prisma.groupMembership.update({
       where: { id: membershipId },
       data: { role },
       include: this.includeUser,
