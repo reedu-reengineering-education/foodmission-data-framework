@@ -25,6 +25,7 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
+import { UserGroupWithRelations } from '../repositories/userGroup.repository';
 
 @Injectable()
 export class UserGroupService {
@@ -202,12 +203,7 @@ export class UserGroupService {
     const membership = await this.membershipRepository.createVirtualMember({
       groupId,
       createdBy: userId,
-      nickname: createDto.nickname,
-      age: createDto.age,
-      gender: createDto.gender,
-      activityLevel: createDto.activityLevel,
-      annualIncome: createDto.annualIncome,
-      preferences: createDto.preferences,
+      ...createDto,
     });
 
     return this.transformToMemberDto(membership);
@@ -307,21 +303,33 @@ export class UserGroupService {
     return membership;
   }
 
-  private async requireMember(userId: string, groupId: string): Promise<void> {
-    await this.getGroupOrThrow(groupId);
-
+  private async getMembershipOrThrow(
+    userId: string,
+    groupId: string,
+  ): Promise<GroupMembershipWithUser> {
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
     );
     if (!membership) {
+      const group = await this.userGroupRepository.findById(groupId);
+      if (!group) {
+        throw new GroupNotFoundException(groupId);
+      }
       throw new NotGroupMemberException(groupId);
     }
+    return membership;
+  }
+
+  private async requireMember(userId: string, groupId: string): Promise<void> {
+    await this.getMembershipOrThrow(userId, groupId);
   }
 
   private async requireAdmin(userId: string, groupId: string): Promise<void> {
-    await this.getGroupOrThrow(groupId);
-
+    const group = await this.userGroupRepository.findById(groupId);
+    if (!group) {
+      throw new GroupNotFoundException(groupId);
+    }
     const membership = await this.membershipRepository.findByUserAndGroup(
       userId,
       groupId,
@@ -329,21 +337,25 @@ export class UserGroupService {
     if (!membership) {
       throw new NotGroupMemberException(groupId);
     }
-
     if (membership.role !== GroupRole.ADMIN) {
       throw new GroupAdminRequiredException(groupId);
     }
   }
 
-  private transformToGroupDto(group: any): UserGroupResponseDto {
+  private transformToGroupDto(
+    group: UserGroupWithRelations | null,
+  ): UserGroupResponseDto {
+    if (!group) {
+      return new UserGroupResponseDto();
+    }
     const dto = plainToClass(UserGroupResponseDto, group, {
       excludeExtraneousValues: true,
     });
-
-    dto.members = (group.memberships || []).map((m: any) =>
-      this.transformToMemberDto(m),
-    );
-
+    const memberships =
+      'memberships' in group && Array.isArray(group.memberships)
+        ? group.memberships
+        : [];
+    dto.members = memberships.map((m) => this.transformToMemberDto(m));
     return dto;
   }
 
