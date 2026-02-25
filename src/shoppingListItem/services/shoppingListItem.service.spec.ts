@@ -853,7 +853,6 @@ describe('ShoppingListItemService', () => {
   describe('toggleChecked', () => {
     const itemId = 'item-1';
     const userId = 'user-1';
-    const pantryId = 'pantry-1';
 
     it('should toggle checked state for item and validate user', async () => {
       repository.findById.mockResolvedValue(mockShoppingListItem);
