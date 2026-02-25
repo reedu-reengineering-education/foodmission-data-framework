@@ -54,11 +54,19 @@ export class PantryItemController {
         {
           type: 'object',
           properties: {
-            pantryId: { type: 'string', format: 'uuid', example: 'uuid-pantry-id' },
+            pantryId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-pantry-id',
+            },
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
-            expiryDate: { type: 'string', format: 'date', example: '2027-02-02' },
+            expiryDate: {
+              type: 'string',
+              format: 'date',
+              example: '2027-02-02',
+            },
             foodId: {
               type: 'string',
               format: 'uuid',
@@ -71,11 +79,19 @@ export class PantryItemController {
         {
           type: 'object',
           properties: {
-            pantryId: { type: 'string', format: 'uuid', example: 'uuid-pantry-id' },
+            pantryId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-pantry-id',
+            },
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
-            expiryDate: { type: 'string', format: 'date', example: '2027-02-02' },
+            expiryDate: {
+              type: 'string',
+              format: 'date',
+              example: '2027-02-02',
+            },
             foodCategoryId: {
               type: 'string',
               format: 'uuid',
@@ -99,7 +115,6 @@ export class PantryItemController {
     @CurrentUser('id') userId: string,
   ) {
     return this.pantryItemService.create(createPantryItemDto, userId);
-  }
   }
 
   @Get()

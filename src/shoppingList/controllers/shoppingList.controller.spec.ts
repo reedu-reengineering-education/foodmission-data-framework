@@ -4,8 +4,6 @@ import { ShoppingListService } from '../services/shoppingList.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
-import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
 
 describe('ShoppingListController', () => {
   let controller: ShoppingListController;
@@ -106,6 +104,8 @@ describe('ShoppingListController', () => {
 
   describe('findItems', () => {
     it('should call service with id, userId, and filters', async () => {
+      // TODO: Implement or remove this test if not needed
+    });
   });
 
   describe('update', () => {
