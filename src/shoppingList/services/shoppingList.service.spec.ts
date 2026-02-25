@@ -23,6 +23,7 @@ describe('ShoppingListService', () => {
     userId: 'user-1',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
+    items: [],
   };
 
   const mockShoppingListArray = [
@@ -33,6 +34,7 @@ describe('ShoppingListService', () => {
       userId: 'user-2',
       createdAt: new Date('2024-01-02'),
       updatedAt: new Date('2024-01-02'),
+      items: [],
     },
   ];
 
@@ -44,9 +46,7 @@ describe('ShoppingListService', () => {
       update: jest.fn(),
       delete: jest.fn(),
     };
-    const mockItemRepository = {
-      findByShoppingListId: jest.fn(),
-    };
+    const mockItemRepository = {};
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -121,10 +121,11 @@ describe('ShoppingListService', () => {
   describe('findAll', () => {
     it('should return all shopping lists', async () => {
       shoppingListRepository.findAll.mockResolvedValue(mockShoppingListArray);
-
-      const result = await service.findAll();
-
-      expect(shoppingListRepository.findAll).toHaveBeenCalled();
+      const userId = 'user-1';
+      const result = await service.findAll(userId);
+      expect(shoppingListRepository.findAll).toHaveBeenCalledWith({
+        where: { userId },
+      });
       expect(result.data).toHaveLength(2);
       expect(result.data[0].title).toBe('Test Shopping List');
     });

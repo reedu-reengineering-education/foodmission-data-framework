@@ -26,7 +26,6 @@ describe('ShoppingListController', () => {
       create: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
-      findItems: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
     };
@@ -53,12 +52,10 @@ describe('ShoppingListController', () => {
         const createDto = { title: 'New List' };
         const updateDto = { title: 'Updated List' };
         const id = 'list-1';
-        const query = {};
 
         await expect(controller.create(createDto, userId)).rejects.toThrow();
         await expect(controller.findAll(userId)).rejects.toThrow();
         await expect(controller.findById(id, userId)).rejects.toThrow();
-        await expect(controller.findItems(id, userId, query)).rejects.toThrow();
         await expect(
           controller.update(id, updateDto, userId),
         ).rejects.toThrow();
@@ -124,28 +121,6 @@ describe('ShoppingListController', () => {
 
   describe('findItems', () => {
     it('should call service with id, userId, and filters', async () => {
-      const id = 'list-1';
-      const userId = 'user-1';
-      const query: QueryShoppingListItemDto = {
-        foodId: 'food-1',
-        checked: false,
-        unit: 'KG',
-      };
-      const mockItems: MultipleShoppingListItemResponseDto = {
-        data: [],
-      };
-
-      shoppingListService.findItems.mockResolvedValueOnce(mockItems);
-
-      const result = await controller.findItems(id, userId, query);
-
-      expect(result).toEqual(mockItems);
-      expect(shoppingListService.findItems).toHaveBeenCalledWith(
-        id,
-        userId,
-        query,
-      );
-    });
   });
 
   describe('update', () => {

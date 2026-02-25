@@ -75,7 +75,9 @@ export class ShoppingListService {
   async findAll(userId: string): Promise<MultipleShoppingListResponseDto> {
     this.logger.log(`Finding all shopping lists for user ${userId}`);
 
-    const shoppingList = await this.shoppingListRepository.findAll({ where: { userId } });
+    const shoppingList = await this.shoppingListRepository.findAll({
+      where: { userId },
+    });
 
     const transformedData = plainToInstance(
       ShoppingListResponseDto,
@@ -96,6 +98,9 @@ export class ShoppingListService {
 
     const shoppingList = await this.shoppingListRepository.findById(id);
 
+    // If items property is missing, fallback to empty array
+    const items = Array.isArray((shoppingList as any).items) ? (shoppingList as any).items : [];
+
     if (!shoppingList) {
       throw new NotFoundException('Shopping list dosent exist');
     }
@@ -103,39 +108,15 @@ export class ShoppingListService {
     if (shoppingList.userId !== userId) {
       throw new ForbiddenException('No permission');
     }
-    return this.transformToResponseDto(shoppingList);
-  }
 
-  async findItems(
-    id: string,
-    userId: string,
-    query?: QueryShoppingListItemDto,
-  ): Promise<MultipleShoppingListItemResponseDto> {
-    const shoppingList = await this.shoppingListRepository.findById(id);
-
-    if (!shoppingList) {
-      throw new NotFoundException('Shopping list not found');
-    }
-
-    if (shoppingList.userId !== userId) {
-      throw new ForbiddenException('No permission');
-    }
-
-    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
-
-    const items = await this.shoppingListItemRepository.findByShoppingListId(
-      id,
-      userId,
-      { foodId, checked, unit },
-    );
-
-    const transformedData = plainToInstance(
-      ShoppingListItemResponseDto,
+    // Use items from shoppingList if present, otherwise fallback to empty array
+    return plainToClass(ShoppingListResponseDto, {
+      id: shoppingList.id,
+      title: shoppingList.title,
+      createdAt: shoppingList.createdAt,
+      updatedAt: shoppingList.updatedAt,
       items,
-      { excludeExtraneousValues: true },
-    );
-
-    return { data: transformedData };
+    });
   }
 
   async update(
@@ -195,6 +176,7 @@ export class ShoppingListService {
       title: shoppingList.title,
       createdAt: shoppingList.createdAt,
       updatedAt: shoppingList.updatedAt,
+      items: shoppingList.items || [],
     });
   }
 }
