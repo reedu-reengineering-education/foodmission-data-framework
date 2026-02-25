@@ -76,7 +76,7 @@ export class ShoppingListItemService {
         await this.validateFoodExists(foodId!);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
-          foodId!,
+          foodId,
           undefined,
         );
       } else {
@@ -84,7 +84,7 @@ export class ShoppingListItemService {
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           undefined,
-          foodCategoryId!,
+          foodCategoryId,
         );
       }
 
@@ -225,15 +225,9 @@ export class ShoppingListItemService {
     id: string,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const item = await this.findById(id, userId);
-    const willBeChecked = !item.checked;
-
-    const user = await this.validateUserExists(userId);
-
+    // Validate user before toggling
+    await this.validateUserExists(userId);
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
-
-    await this.createPantryItemIfEnabled(item, user, userId, willBeChecked);
-
     return this.transformToResponseDto(updatedItem);
   }
 
