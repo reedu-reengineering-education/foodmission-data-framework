@@ -18,10 +18,6 @@ import {
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { ShoppingListItemRepository } from '../../shoppingListItem/repositories/shoppingListItem.repository';
-import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
-import { ShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
-import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 
 @Injectable()
 export class ShoppingListService {
