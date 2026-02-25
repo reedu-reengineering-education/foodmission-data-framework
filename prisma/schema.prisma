@@ -555,3 +555,464 @@ enum MealType {
   VEGAN
 }
 
+// ============================================================
+// Analytics — Aggregated & Anonymized Data
+// ============================================================
+
+model AnalyticsBatch {
+  id              String               @id @default(uuid())
+  periodStart     DateTime
+  periodEnd       DateTime
+  status          AnalyticsBatchStatus @default(STAGING)
+  generatedAt     DateTime             @default(now())
+  publishedAt     DateTime?
+  publishedBy     String?
+  rejectedAt      DateTime?
+  rejectedBy      String?
+  rejectionReason String?
+  recordCount     Int                  @default(0)
+  metadata        Json?
+
+  dailyNutrition           AnalyticsDailyNutrition[]
+  foodPopularity           AnalyticsFoodPopularity[]
+  mealPatterns             AnalyticsMealPatterns[]
+  sustainability           AnalyticsSustainability[]
+  mealClassification       AnalyticsMealClassification[]
+  mealRecords              AnalyticsMealRecord[]
+  demographicNutrition      AnalyticsDemographicNutrition[]
+  demographicClassification AnalyticsDemographicClassification[]
+  demographicPatterns       AnalyticsDemographicPatterns[]
+  crossDimNutrition         AnalyticsCrossDimNutrition[]
+  crossDimClassification    AnalyticsCrossDimClassification[]
+  crossDimPatterns          AnalyticsCrossDimPatterns[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([periodStart, periodEnd])
+  @@map("analytics_batches")
+}
+
+enum AnalyticsBatchStatus {
+  STAGING
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+model AnalyticsDailyNutrition {
+  id              String         @id @default(uuid())
+  batchId         String
+  batch           AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime       @db.Date
+  typeOfMeal      TypeOfMeal
+  userCount       Int
+  mealCount       Int
+  avgCalories     Float?
+  avgProteins     Float?
+  avgFat          Float?
+  avgCarbs        Float?
+  avgFiber        Float?
+  avgSodium       Float?
+  avgSugar        Float?
+  avgSaturatedFat Float?
+  p25Calories     Float?
+  p50Calories     Float?
+  p75Calories     Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal])
+  @@index([date])
+  @@map("analytics_daily_nutrition")
+}
+
+model AnalyticsFoodPopularity {
+  id               String         @id @default(uuid())
+  batchId          String
+  batch            AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date             DateTime       @db.Date
+  foodName         String
+  foodGroup        String?
+  itemType         String
+  frequency        Int
+  uniqueUsers      Int
+  avgQuantity      Float
+  predominantUnit  String
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, foodName, itemType])
+  @@index([date])
+  @@index([frequency])
+  @@map("analytics_food_popularity")
+}
+
+model AnalyticsMealPatterns {
+  id                   String         @id @default(uuid())
+  batchId              String
+  batch                AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                 DateTime       @db.Date
+  typeOfMeal           TypeOfMeal
+  userCount            Int
+  totalMeals           Int
+  mealsFromPantryCount Int
+  mealsFromPantryPct   Float
+  mealsEatenOutCount   Int
+  mealsEatenOutPct     Float
+  avgItemsPerMeal      Float
+  avgMealHour          Float?
+  mealHourStdDev       Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal])
+  @@index([date])
+  @@map("analytics_meal_patterns")
+}
+
+model AnalyticsSustainability {
+  id                     String         @id @default(uuid())
+  batchId                String
+  batch                  AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                   DateTime       @db.Date
+  typeOfMeal             TypeOfMeal
+  userCount              Int
+  avgSustainabilityScore Float?
+  avgCarbonFootprint     Float?
+  nutriScoreDistribution Json?
+  ecoScoreDistribution   Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal])
+  @@index([date])
+  @@map("analytics_sustainability")
+}
+
+model AnalyticsMealClassification {
+  id                   String         @id @default(uuid())
+  batchId              String
+  batch                AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                 DateTime       @db.Date
+  typeOfMeal           TypeOfMeal
+  userCount            Int
+  totalMeals           Int
+  vegetarianCount      Int
+  vegetarianPct        Float
+  veganCount           Int
+  veganPct             Float
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal])
+  @@index([date])
+  @@map("analytics_meal_classification")
+}
+
+// One row per individual meal log — no userId, no mealId, date-only timestamp.
+// Enables microdata analysis while preserving anonymity (k-anonymity enforced at batch level).
+model AnalyticsMealRecord {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  // Temporal — weeks elapsed since the user registered when this meal was logged.
+  // Never stores absolute dates, preserving anonymity.
+  weeksSinceRegistration Int
+  typeOfMeal TypeOfMeal
+
+  // Aggregated nutrition (sum of all items in the meal, scaled to actual quantity)
+  totalCalories    Float?
+  totalProteins    Float?
+  totalFat         Float?
+  totalCarbs       Float?
+  totalFiber       Float?
+  totalSodium      Float?
+  totalSugar       Float?
+  totalSaturatedFat Float?
+
+  // Scores — mode of items in the meal (only from OpenFoodFacts items)
+  nutriScoreGrade  String? // A–E, dominant grade across items
+  ecoScoreGrade    String? // a–e, dominant grade across items
+
+  // Processing — item-count based
+  novaGroupMode    Int?    // Most common NOVA group among items (1–4)
+  ultraProcessedPct Float? // % of items that are NOVA group 4
+
+  // Sustainability
+  sustainabilityScore Float? // From Meal.sustainabilityScore
+  totalCarbonFootprint Float? // Sum of item carbon footprints
+
+  // Classification flags
+  isVegetarian Boolean
+  isVegan      Boolean
+
+  // Meal composition
+  itemCount    Int
+
+  createdAt DateTime @default(now())
+
+  @@index([batchId, weeksSinceRegistration])
+  @@index([weeksSinceRegistration, typeOfMeal])
+  @@map("analytics_meal_records")
+}
+
+// ============================================================
+// Analytics — Demographic Breakdown Tables
+//
+// Each row represents one (date, typeOfMeal, demographicValue) combination
+// for EXACTLY ONE demographic dimension (ageGroup | gender | educationLevel | region | country).
+// The other three dimension columns are NULL in that row. This prevents
+// cross-dimensional re-identification.
+//
+// Users who have not set a demographic field appear under the '__null__'
+// sentinel value for that dimension.
+//
+// k-anonymity (K=5) is enforced before insertion: rows with userCount < 5
+// are suppressed.
+// ============================================================
+
+// Demographic breakdown of daily nutrition averages
+model AnalyticsDemographicNutrition {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Exactly one of these is non-null per row
+  ageGroup       String?
+  gender         String?
+  educationLevel String?
+  region         String?
+  country        String?
+
+  userCount       Int
+  mealCount       Int
+  avgCalories     Float?
+  avgProteins     Float?
+  avgFat          Float?
+  avgCarbs        Float?
+  avgFiber        Float?
+  avgSodium       Float?
+  avgSugar        Float?
+  avgSaturatedFat Float?
+  p25Calories     Float?
+  p50Calories     Float?
+  p75Calories     Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@index([date])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([region])
+  @@index([country])
+  @@map("analytics_demographic_nutrition")
+}
+
+// Demographic breakdown of meal classification (vegetarian/vegan/NOVA/ultra-processed)
+model AnalyticsDemographicClassification {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Exactly one of these is non-null per row
+  ageGroup       String?
+  gender         String?
+  educationLevel String?
+  region         String?
+  country        String?
+
+  userCount            Int
+  totalMeals           Int
+  vegetarianCount      Int
+  vegetarianPct        Float
+  veganCount           Int
+  veganPct             Float
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@index([date])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([region])
+  @@index([country])
+  @@map("analytics_demographic_classification")
+}
+
+// Demographic breakdown of meal patterns (pantry usage, eaten out, timing)
+model AnalyticsDemographicPatterns {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Exactly one of these is non-null per row
+  ageGroup       String?
+  gender         String?
+  educationLevel String?
+  region         String?
+  country        String?
+
+  userCount            Int
+  totalMeals           Int
+  mealsFromPantryCount Int
+  mealsFromPantryPct   Float
+  mealsEatenOutCount   Int
+  mealsEatenOutPct     Float
+  avgItemsPerMeal      Float
+  avgMealHour          Float?
+  mealHourStdDev       Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@index([date])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([region])
+  @@index([country])
+  @@map("analytics_demographic_patterns")
+}
+
+// ============================================================
+// Analytics — Cross-Dimensional Breakdown Tables
+//
+// Each row represents one (date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value)
+// combination where EXACTLY TWO demographic dimensions are active simultaneously.
+// This enables queries like "ageGroup=65_plus AND gender=MALE".
+//
+// Storage design:
+//   - dim1Name / dim2Name  hold the dimension name (e.g. "ageGroup", "gender")
+//   - dim1Value / dim2Value hold the value      (e.g. "65_plus", "MALE")
+//   - dim1Name < dim2Name  alphabetically (enforced in aggregator) to prevent
+//     duplicate pairs (ageGroup+gender == gender+ageGroup).
+//
+// k-anonymity: K=20 enforced (stricter than single-dim K=5) because combining
+// two dimensions increases re-identification risk.
+//
+// 10 possible pairs from 5 dimensions:
+//   ageGroup+country, ageGroup+educationLevel, ageGroup+gender,
+//   ageGroup+region, country+educationLevel, country+gender,
+//   country+region, educationLevel+gender, educationLevel+region, gender+region
+// ============================================================
+
+model AnalyticsCrossDimNutrition {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Two active dimensions; dim1Name < dim2Name alphabetically
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount       Int
+  mealCount       Int
+  avgCalories     Float?
+  avgProteins     Float?
+  avgFat          Float?
+  avgCarbs        Float?
+  avgFiber        Float?
+  avgSodium       Float?
+  avgSugar        Float?
+  avgSaturatedFat Float?
+  p25Calories     Float?
+  p50Calories     Float?
+  p75Calories     Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("analytics_cross_dim_nutrition")
+}
+
+model AnalyticsCrossDimClassification {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Two active dimensions; dim1Name < dim2Name alphabetically
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount            Int
+  totalMeals           Int
+  vegetarianCount      Int
+  vegetarianPct        Float
+  veganCount           Int
+  veganPct             Float
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("analytics_cross_dim_classification")
+}
+
+model AnalyticsCrossDimPatterns {
+  id         String         @id @default(uuid())
+  batchId    String
+  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date       DateTime       @db.Date
+  typeOfMeal TypeOfMeal
+
+  // Two active dimensions; dim1Name < dim2Name alphabetically
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount            Int
+  totalMeals           Int
+  mealsFromPantryCount Int
+  mealsFromPantryPct   Float
+  mealsEatenOutCount   Int
+  mealsEatenOutPct     Float
+  avgItemsPerMeal      Float
+  avgMealHour          Float?
+  mealHourStdDev       Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("analytics_cross_dim_patterns")
+}

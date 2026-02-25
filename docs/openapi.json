@@ -5915,6 +5915,990 @@
         ]
       }
     },
+    "/api/v1/analytics/public/nutrition": {
+      "get": {
+        "description": "Aggregated daily nutrition data with percentiles. Anonymized with k-anonymity (k≥5).",
+        "operationId": "getPublicNutrition",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-02-25",
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daily nutrition aggregates"
+          }
+        },
+        "summary": "Daily nutrition averages (calories, protein, fat, etc.)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/food-popularity": {
+      "get": {
+        "description": "Ranked by frequency. Only foods consumed by ≥5 unique users.",
+        "operationId": "getPublicFoodPopularity",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food popularity rankings"
+          }
+        },
+        "summary": "Most consumed foods and food categories",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/meal-patterns": {
+      "get": {
+        "operationId": "getPublicMealPatterns",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal pattern aggregates"
+          }
+        },
+        "summary": "Meal behavior patterns (timing, pantry usage, items per meal)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/sustainability": {
+      "get": {
+        "operationId": "getPublicSustainability",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sustainability aggregates"
+          }
+        },
+        "summary": "Sustainability, carbon footprint & nutri/eco-score distributions",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/meal-classification": {
+      "get": {
+        "operationId": "getPublicMealClassification",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal classification aggregates"
+          }
+        },
+        "summary": "Vegetarian/vegan rates, ultra-processed %, NOVA distribution",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/meal-records": {
+      "get": {
+        "operationId": "getPublicMealRecords",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Anonymized meal-level records"
+          }
+        },
+        "summary": "Individual meal records — anonymized microdata (one row per meal log)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/demographic/nutrition": {
+      "get": {
+        "description": "Nutrition averages segmented by one demographic dimension (ageGroup, gender, educationLevel, or region). Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.",
+        "operationId": "getPublicDemographicNutrition",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-02-25",
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dimension",
+            "required": false,
+            "in": "query",
+            "description": "Filter to a single demographic axis",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "gender",
+                "educationLevel",
+                "region",
+                "country"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demographic nutrition aggregates"
+          }
+        },
+        "summary": "Demographic breakdown of daily nutrition averages",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/demographic/classification": {
+      "get": {
+        "description": "Classification metrics segmented by one demographic dimension. k-anonymity (k≥5) enforced.",
+        "operationId": "getPublicDemographicClassification",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dimension",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "gender",
+                "educationLevel",
+                "region",
+                "country"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demographic classification aggregates"
+          }
+        },
+        "summary": "Demographic breakdown of meal classification (vegetarian/vegan/NOVA/ultra-processed)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/demographic/patterns": {
+      "get": {
+        "description": "Meal behavior patterns segmented by one demographic dimension. k-anonymity (k≥5) enforced.",
+        "operationId": "getPublicDemographicPatterns",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dimension",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "gender",
+                "educationLevel",
+                "region",
+                "country"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demographic meal pattern aggregates"
+          }
+        },
+        "summary": "Demographic breakdown of meal patterns (pantry usage, timing, items per meal)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/cross-dim/nutrition": {
+      "get": {
+        "description": "Nutrition averages where two demographic dimensions are active simultaneously (e.g. ageGroup=65_plus AND gender=MALE). Each row has dim1Name/dim1Value/dim2Name/dim2Value; dim1Name < dim2Name alphabetically. Stricter k-anonymity (k≥20) is enforced. Use ?dim1= and ?dim2= to filter to a specific dimension pair.",
+        "operationId": "getPublicCrossDimNutrition",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-02-25",
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim1",
+            "required": false,
+            "in": "query",
+            "description": "First dimension name (alphabetically earlier)",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim2",
+            "required": false,
+            "in": "query",
+            "description": "Second dimension name (alphabetically later)",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cross-dimensional nutrition aggregates (k≥20)"
+          }
+        },
+        "summary": "Cross-dimensional nutrition averages (two demographic dimensions combined)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/cross-dim/classification": {
+      "get": {
+        "description": "Vegetarian/vegan rates, ultra-processed % and NOVA distribution for two demographic dimensions combined. Stricter k-anonymity (k≥20) is enforced.",
+        "operationId": "getPublicCrossDimClassification",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim1",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim2",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cross-dimensional classification aggregates (k≥20)"
+          }
+        },
+        "summary": "Cross-dimensional meal classification (two demographic dimensions combined)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/cross-dim/patterns": {
+      "get": {
+        "description": "Meal behavior patterns (pantry usage, eaten out, timing, items per meal) for two demographic dimensions combined. Stricter k-anonymity (k≥20) is enforced.",
+        "operationId": "getPublicCrossDimPatterns",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "typeOfMeal",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK",
+                "SPECIAL_DRINKS"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim1",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dim2",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ageGroup",
+                "country",
+                "educationLevel",
+                "gender",
+                "region"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cross-dimensional meal pattern aggregates (k≥20)"
+          }
+        },
+        "summary": "Cross-dimensional meal patterns (two demographic dimensions combined)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/public/summary": {
+      "get": {
+        "operationId": "getPublicSummary",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary across all dimensions"
+          }
+        },
+        "summary": "High-level summary across all dimensions",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/generate": {
+      "post": {
+        "operationId": "generateBatch",
+        "parameters": [
+          {
+            "name": "periodStart",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-02-18",
+              "type": "string"
+            }
+          },
+          {
+            "name": "periodEnd",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-02-25",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Batch ID"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Manually trigger analytics aggregation",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/run-daily": {
+      "post": {
+        "operationId": "runDaily",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Batch ID for yesterday"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Manually trigger the daily aggregation job",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches": {
+      "get": {
+        "operationId": "listBatches",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "STAGING",
+                "APPROVED",
+                "PUBLISHED",
+                "REJECTED"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of batches"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "List all analytics batches",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/{id}": {
+      "get": {
+        "operationId": "getBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch with aggregated data"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get batch details with all aggregated data for review",
+        "tags": [
+          "Analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Batch deleted"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete a staging or rejected batch",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/{id}/approve": {
+      "patch": {
+        "operationId": "approveBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch approved"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Approve a staging batch for publication",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/{id}/publish": {
+      "patch": {
+        "operationId": "publishBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch published"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Publish an approved batch (makes data public)",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/api/v1/analytics/batches/{id}/reject": {
+      "patch": {
+        "operationId": "rejectBatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch rejected"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Reject a staging batch",
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
     "/api/v1": {
       "get": {
         "description": "Returns a simple health check message to verify the application is running.",
@@ -8775,11 +9759,6 @@
       "CreateMealItemDto": {
         "type": "object",
         "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "UUID of the meal this item belongs to",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
           "foodId": {
             "type": "string",
             "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
@@ -8817,7 +9796,6 @@
           }
         },
         "required": [
-          "mealId",
           "quantity",
           "unit"
         ]
@@ -8924,11 +9902,6 @@
       "UpdateMealItemDto": {
         "type": "object",
         "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "UUID of the meal this item belongs to",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
           "foodId": {
             "type": "string",
             "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
