@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ShoppingList } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { BaseRepository } from '../../common/interfaces/base-repository.interface';
+import { BaseRepository, FindAllOptions } from '../../common/interfaces/base-repository.interface';
 
 export interface CreateShoppingListDto {
   userId: string;
@@ -19,8 +19,11 @@ export class ShoppingListRepository
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(): Promise<ShoppingList[]> {
-    return await this.prisma.shoppingList.findMany();
+  async findAll(options?: FindAllOptions<{ userId?: string }>): Promise<ShoppingList[]> {
+    const userId = options?.where?.userId;
+    return await this.prisma.shoppingList.findMany({
+      where: userId ? { userId } : {},
+    });
   }
 
   async findById(id: string): Promise<ShoppingList | null> {

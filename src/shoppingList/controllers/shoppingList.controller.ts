@@ -18,9 +18,10 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
+  ApiOAuth2,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shoppingList.service';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
@@ -37,6 +38,8 @@ import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 export class ShoppingListController {
   constructor(private readonly shoppingListService: ShoppingListService) {}
 
@@ -64,9 +67,8 @@ export class ShoppingListController {
   }
 
   @Get()
-  @Public()
   @ApiOperation({
-    summary: 'Get All Shoppinglists',
+    summary: 'Get all shopping lists for authenticated user',
   })
   @ApiQuery({ name: 'search', required: false })
   @ApiResponse({
@@ -75,8 +77,10 @@ export class ShoppingListController {
     type: MultipleShoppingListResponseDto,
   })
   @ApiCrudErrorResponses()
-  async findAll(): Promise<MultipleShoppingListResponseDto> {
-    return this.shoppingListService.findAll();
+  async findAll(
+    @CurrentUser('id') userId: string,
+  ): Promise<MultipleShoppingListResponseDto> {
+    return this.shoppingListService.findAll(userId);
   }
 
   @Get(':id/items')

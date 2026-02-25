@@ -19,6 +19,8 @@ describe('ShoppingListController', () => {
     updatedAt: new Date(),
   };
 
+  let dataBaseAuthGuard: { canActivate: jest.Mock };
+
   beforeEach(async () => {
     const mockShoppingListService = {
       create: jest.fn(),
@@ -29,6 +31,7 @@ describe('ShoppingListController', () => {
       remove: jest.fn(),
     };
 
+    dataBaseAuthGuard = { canActivate: jest.fn(() => true) };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ShoppingListController],
       providers: [
@@ -41,8 +44,27 @@ describe('ShoppingListController', () => {
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
       .overrideGuard(DataBaseAuthGuard)
-      .useValue({ canActivate: () => true })
+      .useValue(dataBaseAuthGuard)
       .compile();
+    describe('authentication', () => {
+      it('should throw Unauthorized if not authenticated for all endpoints', async () => {
+        dataBaseAuthGuard.canActivate.mockReturnValueOnce(false);
+        const userId = 'user-1';
+        const createDto = { title: 'New List' };
+        const updateDto = { title: 'Updated List' };
+        const id = 'list-1';
+        const query = {};
+
+        await expect(controller.create(createDto, userId)).rejects.toThrow();
+        await expect(controller.findAll(userId)).rejects.toThrow();
+        await expect(controller.findById(id, userId)).rejects.toThrow();
+        await expect(controller.findItems(id, userId, query)).rejects.toThrow();
+        await expect(
+          controller.update(id, updateDto, userId),
+        ).rejects.toThrow();
+        await expect(controller.remove(id, userId)).rejects.toThrow();
+      });
+    });
 
     controller = module.get<ShoppingListController>(ShoppingListController);
     shoppingListService = module.get(ShoppingListService);
@@ -71,17 +93,17 @@ describe('ShoppingListController', () => {
   });
 
   describe('findAll', () => {
-    it('should call service and return result', async () => {
+    it('should call service with userId and return result', async () => {
       const mockResponse = {
         data: [mockShoppingListResponse],
-        total: 1,
       };
+      const userId = 'user-1';
       shoppingListService.findAll.mockResolvedValueOnce(mockResponse);
 
-      const result = await controller.findAll();
+      const result = await controller.findAll(userId);
 
       expect(result).toEqual(mockResponse);
-      expect(shoppingListService.findAll).toHaveBeenCalled();
+      expect(shoppingListService.findAll).toHaveBeenCalledWith(userId);
     });
   });
 

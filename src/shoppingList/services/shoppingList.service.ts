@@ -72,10 +72,10 @@ export class ShoppingListService {
     }
   }
 
-  async findAll(): Promise<MultipleShoppingListResponseDto> {
-    this.logger.log(`Finding all shopping list `);
+  async findAll(userId: string): Promise<MultipleShoppingListResponseDto> {
+    this.logger.log(`Finding all shopping lists for user ${userId}`);
 
-    const shoppingList = await this.shoppingListRepository.findAll();
+    const shoppingList = await this.shoppingListRepository.findAll({ where: { userId } });
 
     const transformedData = plainToInstance(
       ShoppingListResponseDto,
