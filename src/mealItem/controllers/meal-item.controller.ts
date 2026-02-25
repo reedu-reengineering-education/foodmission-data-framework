@@ -13,6 +13,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiBody,
 } from '@nestjs/swagger';
 import { MealItemService } from '../services/meal-item.service';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
@@ -36,6 +37,42 @@ export class MealItemController {
     summary: 'Add a food item to a meal',
     description:
       'Adds a specific food product or food category to a meal. Either foodId or foodCategoryId must be provided, but not both.',
+  })
+  @ApiBody({
+    schema: {
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            quantity: { type: 'number', example: 2, default: 1 },
+            unit: { type: 'string', example: 'PIECES', default: 'PIECES' },
+            notes: { type: 'string', example: 'Extra spicy' },
+            foodId: {
+              type: 'string',
+              format: 'uuid',
+              example: '550e8400-e29b-41d4-a716-446655440001',
+              description: 'UUID of the specific food product (OpenFoodFacts).',
+            },
+          },
+          required: ['foodId', 'quantity', 'unit'],
+        },
+        {
+          type: 'object',
+          properties: {
+            quantity: { type: 'number', example: 2, default: 1 },
+            unit: { type: 'string', example: 'PIECES', default: 'PIECES' },
+            notes: { type: 'string', example: 'Extra spicy' },
+            foodCategoryId: {
+              type: 'string',
+              format: 'uuid',
+              example: '550e8400-e29b-41d4-a716-446655440002',
+              description: 'UUID of the food category (NEVO generic).',
+            },
+          },
+          required: ['foodCategoryId', 'quantity', 'unit'],
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: 201,
