@@ -311,75 +311,8 @@ export class FoodService {
   }
 
   private transformToResponseDto(food: any): FoodResponseDto {
-    return plainToClass(FoodResponseDto, {
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      barcode: food.barcode,
-      createdAt: food.createdAt,
-      updatedAt: food.updatedAt,
-      createdBy: food.createdBy,
-
-      // Product metadata
-      brands: food.brands,
-      categories: food.categories,
-      labels: food.labels,
-      quantity: food.quantity,
-      servingSize: food.servingSize,
-      ingredientsText: food.ingredientsText,
-      allergens: food.allergens,
-      traces: food.traces,
-      countries: food.countries,
-      origins: food.origins,
-      manufacturingPlaces: food.manufacturingPlaces,
-      imageUrl: food.imageUrl,
-      imageFrontUrl: food.imageFrontUrl,
-
-      // Nutriments
-      nutritionDataPer: food.nutritionDataPer,
-      energyKcal: food.energyKcal,
-      energyKj: food.energyKj,
-      fat: food.fat,
-      saturatedFat: food.saturatedFat,
-      transFat: food.transFat,
-      cholesterol: food.cholesterol,
-      carbohydrates: food.carbohydrates,
-      sugars: food.sugars,
-      addedSugars: food.addedSugars,
-      fiber: food.fiber,
-      proteins: food.proteins,
-      salt: food.salt,
-      sodium: food.sodium,
-      vitaminA: food.vitaminA,
-      vitaminC: food.vitaminC,
-      calcium: food.calcium,
-      iron: food.iron,
-      potassium: food.potassium,
-      magnesium: food.magnesium,
-      zinc: food.zinc,
-
-      // Scores
-      nutriscoreGrade: food.nutriscoreGrade,
-      nutriscoreScore: food.nutriscoreScore,
-      novaGroup: food.novaGroup,
-      ecoscoreGrade: food.ecoscoreGrade,
-      carbonFootprint: food.carbonFootprint,
-      nutrientLevels: food.nutrientLevels,
-
-      // Diet analysis
-      isVegan: food.isVegan,
-      isVegetarian: food.isVegetarian,
-      isPalmOilFree: food.isPalmOilFree,
-      ingredientsAnalysisTags: food.ingredientsAnalysisTags,
-
-      // Packaging
-      packagingTags: food.packagingTags,
-      packagingMaterials: food.packagingMaterials,
-      packagingRecycling: food.packagingRecycling,
-      packagingText: food.packagingText,
-
-      // Quality
-      completeness: food.completeness,
+    return plainToClass(FoodResponseDto, food, {
+      excludeExtraneousValues: true,
     });
   }
 }
