@@ -98,14 +98,14 @@ export class ShoppingListService {
 
     const shoppingList = await this.shoppingListRepository.findById(id);
 
+    if (!shoppingList) {
+      throw new NotFoundException('Shopping list dosent exist');
+    }
+
     // If items property is missing, fallback to empty array
     const items = Array.isArray((shoppingList as any).items)
       ? (shoppingList as any).items
       : [];
-
-    if (!shoppingList) {
-      throw new NotFoundException('Shopping list dosent exist');
-    }
 
     if (shoppingList.userId !== userId) {
       throw new ForbiddenException('No permission');
@@ -117,6 +117,7 @@ export class ShoppingListService {
       title: shoppingList.title,
       createdAt: shoppingList.createdAt,
       updatedAt: shoppingList.updatedAt,
+      userId: shoppingList.userId,
       items,
     });
   }
@@ -178,6 +179,7 @@ export class ShoppingListService {
       title: shoppingList.title,
       createdAt: shoppingList.createdAt,
       updatedAt: shoppingList.updatedAt,
+      userId: shoppingList.userId,
       items: shoppingList.items || [],
     });
   }

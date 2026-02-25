@@ -90,6 +90,8 @@ describe('ShoppingListService', () => {
         title: mockShoppingList.title,
         createdAt: mockShoppingList.createdAt,
         updatedAt: mockShoppingList.updatedAt,
+        userId: mockShoppingList.userId,
+        items: [],
       });
     });
 
@@ -263,6 +265,8 @@ describe('ShoppingListService', () => {
         title: mockShoppingList.title,
         createdAt: mockShoppingList.createdAt,
         updatedAt: mockShoppingList.updatedAt,
+        userId: mockShoppingList.userId,
+        items: [],
       });
     });
   });
