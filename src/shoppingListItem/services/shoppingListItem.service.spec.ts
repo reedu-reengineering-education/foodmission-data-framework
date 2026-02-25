@@ -746,6 +746,10 @@ describe('ShoppingListItemService', () => {
 
       expect(mockShoppingListRepository.findById).toHaveBeenCalled();
       expect(repository.clearCheckedItems).toHaveBeenCalled();
+
+      const callArgs = repository.clearCheckedItems.mock.calls[0];
+      expect(callArgs[0]).toBe('list-1');
+      expect(callArgs[1]).toBe('user-1');
     });
 
     it('should throw NotFoundException when shopping list not found', async () => {
