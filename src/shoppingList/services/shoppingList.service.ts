@@ -99,7 +99,9 @@ export class ShoppingListService {
     const shoppingList = await this.shoppingListRepository.findById(id);
 
     // If items property is missing, fallback to empty array
-    const items = Array.isArray((shoppingList as any).items) ? (shoppingList as any).items : [];
+    const items = Array.isArray((shoppingList as any).items)
+      ? (shoppingList as any).items
+      : [];
 
     if (!shoppingList) {
       throw new NotFoundException('Shopping list dosent exist');
