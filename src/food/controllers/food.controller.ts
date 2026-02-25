@@ -47,6 +47,8 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 @Controller('foods')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 @UseInterceptors(CacheInterceptor, CacheEvictInterceptor)
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 export class FoodController {
   constructor(
     private readonly foodService: FoodService,
@@ -56,8 +58,6 @@ export class FoodController {
   @Post()
   @CacheEvict(['foods:list', 'foods:count'])
   @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute for creating foods
   @ApiOperation({
     summary: 'Create a new food item',
@@ -148,8 +148,6 @@ export class FoodController {
 
   @Post('import/openfoodfacts/:barcode')
   @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 imports per minute
   @ApiOperation({
     summary: 'Import food from OpenFoodFacts',
@@ -260,8 +258,6 @@ export class FoodController {
   @Patch(':id')
   @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Update food item',
     description: 'Updates a food item by its ID. Requires user or admin role.',
@@ -295,8 +291,6 @@ export class FoodController {
   @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Delete food item',
     description: 'Deletes a food item by its ID. Requires admin role.',
