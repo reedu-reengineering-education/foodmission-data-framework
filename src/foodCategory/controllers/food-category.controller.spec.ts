@@ -4,6 +4,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { FoodCategoryController } from './food-category.controller';
 import { FoodCategoryService } from '../services/food-category.service';
+import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
@@ -12,21 +13,7 @@ describe('FoodCategoryController', () => {
   let controller: FoodCategoryController;
   let service: jest.Mocked<FoodCategoryService>;
 
-  const mockCategory: any = {
-    id: 'cat-123',
-    nevoVersion: '2025',
-    foodGroup: 'Vegetables',
-    nevoCode: 1234,
-    foodName: 'Tomato, raw',
-    synonym: 'Fresh tomatoes',
-    quantity: '100g',
-    energyKcal: 18,
-    proteins: 0.9,
-    fat: 0.2,
-    carbohydrates: 3.9,
-    createdAt: new Date('2025-01-01'),
-    updatedAt: new Date('2025-01-01'),
-  };
+  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
 
   const mockServiceMethods = {
     create: jest.fn(),

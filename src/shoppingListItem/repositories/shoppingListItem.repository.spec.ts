@@ -2,6 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
+import {
+  TEST_FOOD,
+  TEST_FOOD_CATEGORY,
+} from '../../../test/fixtures/food.fixtures';
 import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemRepository', () => {
@@ -42,13 +46,8 @@ describe('ShoppingListItemRepository', () => {
       title: 'Test List',
       userId: 'user-1',
     },
-    food: {
-      id: 'food-1',
-      name: 'Test Food',
-      category: 'Test Category',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
+    food: { ...TEST_FOOD },
+    foodCategory: { ...TEST_FOOD_CATEGORY },
   };
 
   beforeEach(async () => {

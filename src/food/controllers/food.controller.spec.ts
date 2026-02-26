@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FoodController } from './food.controller';
 import { FoodService } from '../services/food.service';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 import { NotFoundException } from '@nestjs/common';
 import { UserContextService } from '../../auth/user-context.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
@@ -13,13 +14,8 @@ describe('FoodController', () => {
   let foodService: jest.Mocked<FoodService>;
 
   const mockFoodResponse = {
-    id: 'food-1',
-    name: 'Test Food',
-    description: 'Test Description',
-    barcode: '1234567890',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    createdBy: 'user-1',
+    ...TEST_FOOD,
+    // All fields now match TEST_FOOD DTO: brands is string, others as arrays
   };
 
   const mockFoodResponseWithOff = {

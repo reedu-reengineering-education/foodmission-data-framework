@@ -4,26 +4,13 @@ import { PrismaService } from '../../database/prisma.service';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
+import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
 describe('FoodCategoryRepository', () => {
   let repository: FoodCategoryRepository;
   let prisma: any;
 
-  const mockCategory: any = {
-    id: 'cat-123',
-    nevoVersion: '2025',
-    foodGroup: 'Vegetables',
-    nevoCode: 1234,
-    foodName: 'Tomato, raw',
-    synonym: 'Fresh tomatoes',
-    quantity: '100g',
-    energyKcal: 18,
-    proteins: 0.9,
-    fat: 0.2,
-    carbohydrates: 3.9,
-    createdAt: new Date('2025-01-01'),
-    updatedAt: new Date('2025-01-01'),
-  };
+  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
 
   const mockPrismaService: any = {
     foodCategory: {

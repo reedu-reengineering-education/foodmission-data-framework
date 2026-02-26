@@ -6,77 +6,14 @@ import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
 import { FoodQueryDto } from '../dto/food-query.dto';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('FoodService', () => {
   let service: FoodService;
   let foodRepository: jest.Mocked<FoodRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
-  const mockFood = {
-    id: 'food-1',
-    name: 'Test Food',
-    description: 'Test Description',
-    barcode: '1234567890',
-    createdBy: 'user-1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    // Product metadata
-    brands: null,
-    categories: [],
-    labels: [],
-    quantity: null,
-    servingSize: null,
-    ingredientsText: null,
-    allergens: [],
-    traces: [],
-    countries: [],
-    origins: null,
-    manufacturingPlaces: null,
-    imageUrl: null,
-    imageFrontUrl: null,
-    // Nutriments
-    nutritionDataPer: null,
-    energyKcal: null,
-    energyKj: null,
-    fat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    carbohydrates: null,
-    sugars: null,
-    addedSugars: null,
-    fiber: null,
-    proteins: null,
-    salt: null,
-    sodium: null,
-    vitaminA: null,
-    vitaminC: null,
-    calcium: null,
-    iron: null,
-    potassium: null,
-    magnesium: null,
-    zinc: null,
-    nutrimentsRaw: null,
-    // Scores
-    nutriscoreGrade: null,
-    nutriscoreScore: null,
-    novaGroup: null,
-    ecoscoreGrade: null,
-    carbonFootprint: null,
-    nutrientLevels: null,
-    // Diet analysis
-    isVegan: null,
-    isVegetarian: null,
-    isPalmOilFree: null,
-    ingredientsAnalysisTags: [],
-    // Packaging
-    packagingTags: [],
-    packagingMaterials: [],
-    packagingRecycling: [],
-    packagingText: null,
-    // Data quality
-    completeness: null,
-  };
+  const mockFood = { ...TEST_FOOD };
 
   const mockOpenFoodFactsProduct = {
     id: 'off-product-1',

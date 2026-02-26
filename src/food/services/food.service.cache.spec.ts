@@ -8,6 +8,7 @@ import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { LoggingService } from '../../common/logging/logging.service';
 import { Reflector } from '@nestjs/core';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 import { createMockLoggingService } from '../../common/testing';
 
 describe('FoodService - Caching Integration', () => {
@@ -15,71 +16,7 @@ describe('FoodService - Caching Integration', () => {
   let foodRepository: jest.Mocked<FoodRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
-  const mockFood = {
-    id: '123',
-    name: 'Test Food',
-    description: 'Test Description',
-    barcode: '1234567890',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    createdBy: 'user123',
-    // Product metadata
-    brands: null,
-    categories: [],
-    labels: [],
-    quantity: null,
-    servingSize: null,
-    ingredientsText: null,
-    allergens: [],
-    traces: [],
-    countries: [],
-    origins: null,
-    manufacturingPlaces: null,
-    imageUrl: null,
-    imageFrontUrl: null,
-    // Nutriments
-    nutritionDataPer: null,
-    energyKcal: null,
-    energyKj: null,
-    fat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    carbohydrates: null,
-    sugars: null,
-    addedSugars: null,
-    fiber: null,
-    proteins: null,
-    salt: null,
-    sodium: null,
-    vitaminA: null,
-    vitaminC: null,
-    calcium: null,
-    iron: null,
-    potassium: null,
-    magnesium: null,
-    zinc: null,
-    nutrimentsRaw: null,
-    // Scores
-    nutriscoreGrade: null,
-    nutriscoreScore: null,
-    novaGroup: null,
-    ecoscoreGrade: null,
-    carbonFootprint: null,
-    nutrientLevels: null,
-    // Diet analysis
-    isVegan: null,
-    isVegetarian: null,
-    isPalmOilFree: null,
-    ingredientsAnalysisTags: [],
-    // Packaging
-    packagingTags: [],
-    packagingMaterials: [],
-    packagingRecycling: [],
-    packagingText: null,
-    // Data quality
-    completeness: null,
-  };
+  const mockFood = { ...TEST_FOOD };
 
   beforeEach(async () => {
     const mockFoodRepository = {

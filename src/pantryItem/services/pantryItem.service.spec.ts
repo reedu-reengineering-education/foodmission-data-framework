@@ -202,8 +202,7 @@ describe('PantryItemService', () => {
 
       expect(mockPantryItemRepository.create).toHaveBeenCalled();
 
-      const createCall = (mockPantryItemRepository.create as jest.Mock).mock
-        .calls[0][0];
+      const createCall = mockPantryItemRepository.create.mock.calls[0][0];
       expect(createCall.expiryDate).toBeInstanceOf(Date);
       expect(createCall.expiryDate.toISOString()).toContain('2027-02-02');
     });

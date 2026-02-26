@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from '../repositories/shoppingListItem.repository';
 import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
@@ -130,10 +131,7 @@ describe('ShoppingListItemService', () => {
     updatedAt: new Date('2024-01-01'),
   };
 
-  const mockFood = {
-    id: 'food-1',
-    name: 'Test Food',
-  };
+  const mockFood = { ...TEST_FOOD };
 
   const mockUser = {
     id: 'user-1',

@@ -5,32 +5,14 @@ import { FoodCategoryRepository } from '../repositories/food-category.repository
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
+import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
 describe('FoodCategoryService', () => {
   let service: FoodCategoryService;
   let repository: jest.Mocked<FoodCategoryRepository>;
 
   // Simplified mock - cast as any to avoid listing all 100+ Prisma fields
-  const mockCategory: any = {
-    id: 'cat-123',
-    nevoVersion: '2025',
-    foodGroup: 'Vegetables',
-    nevoCode: 1234,
-    foodName: 'Tomato, raw',
-    synonym: 'Fresh tomatoes',
-    quantity: '100g',
-    containsTracesOf: null,
-    isFortifiedWith: null,
-    energyKj: 75,
-    energyKcal: 18,
-    water: 94.5,
-    proteins: 0.9,
-    fat: 0.2,
-    carbohydrates: 3.9,
-    fiber: 1.2,
-    createdAt: new Date('2025-01-01'),
-    updatedAt: new Date('2025-01-01'),
-  };
+  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
 
   const mockRepositoryMethods = {
     create: jest.fn(),
