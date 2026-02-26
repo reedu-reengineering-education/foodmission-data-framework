@@ -29,6 +29,133 @@
                     "redirectUri": {
                       "type": "string",
                       "example": "http://localhost:3000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get Keycloak authentication info",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/profile": {
+      "get": {
+        "description": "Returns the profile information of the currently authenticated user. Automatically creates user record if not exists.",
+        "operationId": "getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "yearOfBirth": {
+                      "type": "integer"
+                    },
+                    "keycloakId": {
+                      "type": "string"
+                    },
+                    "preferences": {
+                      "type": "object"
+                    },
+                    "settings": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "email"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get and create authenticated user profile (deprecated possibly depending on registration flow)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/health": {
+      "get": {
+        "description": "Returns the health status of the authentication service. This endpoint is public.",
+        "operationId": "healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "service": {
+                      "type": "string",
+                      "example": "auth"
+                    }
                   }
                 }
               }
@@ -831,6 +958,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get all food items",
         "tags": [
           "foods"
@@ -949,6 +1088,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Search OpenFoodFacts database",
         "tags": [
           "foods"
@@ -1117,6 +1268,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Find food by barcode",
         "tags": [
           "foods"
@@ -1180,6 +1343,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Find food by ID",
         "tags": [
           "foods"
@@ -1422,6 +1597,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get OpenFoodFacts information for food item",
         "tags": [
           "foods"
@@ -2068,6 +2255,16 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -2078,156 +2275,8 @@
       },
       "get": {
         "operationId": "findAll",
-        "parameters": [
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "schema": {}
-          }
-        ],
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "Shopping lists retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get All Shoppinglists",
-        "tags": [
-          "shoppinglist"
-        ]
-      }
-    },
-    "/api/v1/shoppinglist/{id}/items": {
-      "get": {
-        "description": "Retrieve all items belonging to a shopping list with optional filters",
-        "operationId": "findItems",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          },
-          {
-            "name": "shoppingListId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by shopping list ID",
-            "schema": {
-              "example": "uuid-shopping-list-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "foodId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by food ID",
-            "schema": {
-              "example": "uuid-food-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "checked",
-            "required": false,
-            "in": "query",
-            "description": "Filter by checked status",
-            "schema": {
-              "example": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "unit",
-            "required": false,
-            "in": "query",
-            "description": "Filter by unit",
-            "schema": {
-              "example": "KG",
-              "type": "string",
-              "enum": [
-                "PIECES",
-                "G",
-                "KG",
-                "ML",
-                "L",
-                "CUPS"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Shopping list items retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
             "content": {
@@ -2281,10 +2330,17 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
-        "summary": "Get items for a specific shopping list",
+        "summary": "Get all shopping lists for authenticated user",
         "tags": [
           "shoppinglist"
         ]
@@ -2367,6 +2423,16 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
           {
             "JWT-auth": []
           }
@@ -2463,6 +2529,16 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -2540,6 +2616,16 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
           {
             "JWT-auth": []
           }
@@ -3469,7 +3555,88 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePantryItemDto"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "pantryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-pantry-id"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "minimum": 0.01
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "KG",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Store in cool place"
+                      },
+                      "expiryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2027-02-02"
+                      },
+                      "foodId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-food-id",
+                        "description": "UUID of the food item (OpenFoodFacts)."
+                      }
+                    },
+                    "required": [
+                      "pantryId",
+                      "foodId",
+                      "quantity"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "pantryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-pantry-id"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "minimum": 0.01
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "KG",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Store in cool place"
+                      },
+                      "expiryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2027-02-02"
+                      },
+                      "foodCategoryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-food-category-id",
+                        "description": "UUID of the food category (NEVO generic)."
+                      }
+                    },
+                    "required": [
+                      "pantryId",
+                      "foodCategoryId",
+                      "quantity"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -4430,7 +4597,68 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateMealItemDto"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "default": 1
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "PIECES",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Extra spicy"
+                      },
+                      "foodId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440001",
+                        "description": "UUID of the specific food product (OpenFoodFacts)."
+                      }
+                    },
+                    "required": [
+                      "foodId",
+                      "quantity",
+                      "unit"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "default": 1
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "PIECES",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Extra spicy"
+                      },
+                      "foodCategoryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440002",
+                        "description": "UUID of the food category (NEVO generic)."
+                      }
+                    },
+                    "required": [
+                      "foodCategoryId",
+                      "quantity",
+                      "unit"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -7899,48 +8127,6 @@
           "title"
         ]
       },
-      "ShoppingListResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the shopping list",
-            "example": "550e8400-e29b-41d4-a716-446655440000",
-            "format": "uuid"
-          },
-          "userId": {
-            "type": "string",
-            "description": "UUID of the user who created this shopping list",
-            "example": "550e8400-e29b-41d4-a716-446655440001",
-            "format": "uuid"
-          },
-          "title": {
-            "type": "string",
-            "description": "title of the shopping list",
-            "example": "Family shopping list"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "title"
-        ]
-      },
-      "MultipleShoppingListResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Array of shopping lists",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ShoppingListResponseDto"
-            }
-          }
-        },
-        "required": [
-          "data"
-        ]
-      },
       "ShoppingListItemResponseDto": {
         "type": "object",
         "properties": {
@@ -8005,14 +8191,6 @@
             "description": "The last update timestamp",
             "example": "2024-01-15T11:30:00.000Z"
           },
-          "shoppingList": {
-            "description": "Associated shopping list",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ShoppingListResponseDto"
-              }
-            ]
-          },
           "food": {
             "description": "Associated food item (if itemType is food)",
             "allOf": [
@@ -8038,15 +8216,32 @@
           "shoppingListId",
           "itemType",
           "createdAt",
-          "updatedAt",
-          "shoppingList"
+          "updatedAt"
         ]
       },
-      "MultipleShoppingListItemResponseDto": {
+      "ShoppingListResponseDto": {
         "type": "object",
         "properties": {
-          "data": {
-            "description": "Array of shopping list items",
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID of the user who created this shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of the shopping list",
+            "example": "Family shopping list"
+          },
+          "items": {
+            "description": "Items in the shopping list",
+            "example": [],
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ShoppingListItemResponseDto"
@@ -8054,7 +8249,10 @@
           }
         },
         "required": [
-          "data"
+          "id",
+          "userId",
+          "title",
+          "items"
         ]
       },
       "UpdateShoppingListDto": {
@@ -8308,62 +8506,6 @@
         },
         "required": [
           "title"
-        ]
-      },
-      "CreatePantryItemDto": {
-        "type": "object",
-        "properties": {
-          "pantryId": {
-            "type": "string",
-            "description": "The ID of the pantry to add the item to",
-            "example": "uuid-pantry-id"
-          },
-          "foodId": {
-            "type": "string",
-            "description": "The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
-            "example": "uuid-food-id"
-          },
-          "foodCategoryId": {
-            "type": "string",
-            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
-            "example": "uuid-food-category-id"
-          },
-          "quantity": {
-            "type": "number",
-            "description": "The quantity of the item",
-            "example": 2,
-            "minimum": 0.01
-          },
-          "unit": {
-            "type": "string",
-            "description": "The unit of measurement (defaults to PIECES if not provided)",
-            "example": "KG",
-            "enum": [
-              "PIECES",
-              "G",
-              "KG",
-              "ML",
-              "L",
-              "CUPS"
-            ],
-            "default": "PIECES"
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes for the item",
-            "example": "Store in cool place",
-            "maxLength": 500
-          },
-          "expiryDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "When the food will expire (ISO date string)",
-            "example": "2027-02-02"
-          }
-        },
-        "required": [
-          "pantryId",
-          "quantity"
         ]
       },
       "MultiplePantryItemResponseDto": {
@@ -8645,56 +8787,6 @@
           }
         }
       },
-      "CreateMealItemDto": {
-        "type": "object",
-        "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "UUID of the meal this item belongs to",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
-          "foodId": {
-            "type": "string",
-            "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
-            "example": "550e8400-e29b-41d4-a716-446655440001"
-          },
-          "foodCategoryId": {
-            "type": "string",
-            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
-            "example": "550e8400-e29b-41d4-a716-446655440002"
-          },
-          "quantity": {
-            "type": "number",
-            "description": "Quantity of the item",
-            "example": 2,
-            "default": 1
-          },
-          "unit": {
-            "type": "string",
-            "description": "Unit of measurement",
-            "enum": [
-              "PIECES",
-              "G",
-              "KG",
-              "ML",
-              "L",
-              "CUPS"
-            ],
-            "example": "PIECES",
-            "default": "PIECES"
-          },
-          "notes": {
-            "type": "string",
-            "description": "Optional notes about this meal item",
-            "example": "Extra spicy"
-          }
-        },
-        "required": [
-          "mealId",
-          "quantity",
-          "unit"
-        ]
-      },
       "MealItemResponseDto": {
         "type": "object",
         "properties": {
@@ -8797,11 +8889,6 @@
       "UpdateMealItemDto": {
         "type": "object",
         "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "UUID of the meal this item belongs to",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
           "foodId": {
             "type": "string",
             "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",

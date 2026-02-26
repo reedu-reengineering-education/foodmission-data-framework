@@ -567,14 +567,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
+      security: &ref_3
         - keycloak-oauth2:
             - openid
             - profile
             - roles
         - JWT-auth: []
       summary: Create a new food item
-      tags: &ref_3
+      tags: &ref_4
         - foods
     get:
       description: >-
@@ -595,8 +595,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Get all food items
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/search/openfoodfacts:
     get:
       description: >-
@@ -676,8 +677,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Search OpenFoodFacts database
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/import/openfoodfacts/{barcode}:
     post:
       description: Imports a food item from OpenFoodFacts database using barcode.
@@ -733,14 +735,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Import food from OpenFoodFacts
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/barcode/{barcode}:
     get:
       description: >-
@@ -779,8 +776,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Find food by barcode
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/{id}:
     get:
       description: >-
@@ -820,8 +818,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Find food by ID
-      tags: *ref_3
+      tags: *ref_4
     patch:
       description: Updates a food item by its ID. Requires user or admin role.
       operationId: update
@@ -870,14 +869,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Update food item
-      tags: *ref_3
+      tags: *ref_4
     delete:
       description: Deletes a food item by its ID. Requires admin role.
       operationId: remove
@@ -916,14 +910,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Delete food item
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/{id}/openfoodfacts:
     get:
       description: >-
@@ -965,8 +954,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Get OpenFoodFacts information for food item
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/food-categories:
     post:
       description: 'Admin only: Create a new food category with nutritional data'
@@ -991,10 +981,10 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin role required
-      security: &ref_4
+      security: &ref_5
         - JWT-auth: []
       summary: Create a new food category
-      tags: &ref_5
+      tags: &ref_6
         - food-categories
     get:
       description: Get a paginated list of food categories with optional filtering
@@ -1033,9 +1023,9 @@ paths:
       responses:
         '200':
           description: Food categories retrieved successfully
-      security: *ref_4
+      security: *ref_5
       summary: Get all food categories
-      tags: *ref_5
+      tags: *ref_6
   /api/v1/food-categories/food-groups:
     get:
       description: >-
@@ -1058,9 +1048,9 @@ paths:
                 type: array
                 items:
                   type: string
-      security: *ref_4
+      security: *ref_5
       summary: Get all unique food groups
-      tags: *ref_5
+      tags: *ref_6
   /api/v1/food-categories/{id}:
     get:
       description: Get detailed information about a specific food category
@@ -1080,9 +1070,9 @@ paths:
                 $ref: '#/components/schemas/FoodCategoryResponseDto'
         '404':
           description: Food category not found
-      security: *ref_4
+      security: *ref_5
       summary: Get food category by ID
-      tags: *ref_5
+      tags: *ref_6
     patch:
       description: 'Admin only: Update a food category by ID'
       operationId: update
@@ -1113,9 +1103,9 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_4
+      security: *ref_5
       summary: Update food category
-      tags: *ref_5
+      tags: *ref_6
     delete:
       description: 'Admin only: Delete a food category by ID'
       operationId: delete
@@ -1134,9 +1124,9 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_4
+      security: *ref_5
       summary: Delete food category
-      tags: *ref_5
+      tags: *ref_6
   /api/v1/health:
     get:
       operationId: check
@@ -1187,7 +1177,7 @@ paths:
         '503':
           description: Health check failed
       summary: Get application health status
-      tags: &ref_6
+      tags: &ref_7
         - Health
   /api/v1/health/ready:
     get:
@@ -1199,7 +1189,7 @@ paths:
         '503':
           description: Application is not ready
       summary: Get readiness probe status
-      tags: *ref_6
+      tags: *ref_7
   /api/v1/health/live:
     get:
       operationId: liveness
@@ -1220,7 +1210,7 @@ paths:
                   info:
                     type: object
                     example:
-                      database: &ref_7
+                      database: &ref_8
                         status: up
                     additionalProperties:
                       type: object
@@ -1234,7 +1224,7 @@ paths:
                   error:
                     type: object
                     example:
-                      redis: &ref_8
+                      redis: &ref_9
                         status: down
                         message: Could not connect
                     additionalProperties:
@@ -1249,8 +1239,8 @@ paths:
                   details:
                     type: object
                     example:
-                      database: *ref_7
-                      redis: *ref_8
+                      database: *ref_8
+                      redis: *ref_9
                     additionalProperties:
                       type: object
                       required:
@@ -1260,7 +1250,7 @@ paths:
                           type: string
                       additionalProperties: true
       summary: Get liveness probe status
-      tags: *ref_6
+      tags: *ref_7
   /api/v1/metrics:
     get:
       description: Returns application metrics in Prometheus format for scraping
@@ -1313,7 +1303,7 @@ paths:
         '200':
           description: Performance summary retrieved successfully
       summary: Get performance summary
-      tags: &ref_9
+      tags: &ref_10
         - Performance
   /api/v1/performance/cache/stats:
     get:
@@ -1323,7 +1313,7 @@ paths:
         '200':
           description: Cache statistics retrieved successfully
       summary: Get cache statistics
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/performance/cache/hit-rate:
     get:
       operationId: getCacheHitRates
@@ -1332,7 +1322,7 @@ paths:
         '200':
           description: Cache hit rates retrieved successfully
       summary: Get cache hit rates by prefix
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/performance/database/stats:
     get:
       operationId: getDatabaseStats
@@ -1341,7 +1331,7 @@ paths:
         '200':
           description: Database statistics retrieved successfully
       summary: Get database performance statistics
-      tags: *ref_9
+      tags: *ref_10
   /api/v1/shoppinglist:
     post:
       description: Creates a new ShoppingList in the database. Requires user or admin role.
@@ -1391,109 +1381,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - &ref_11
+          keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - &ref_12
+          JWT-auth: []
         - JWT-auth: []
       summary: Create a new Shopping List
-      tags: &ref_10
+      tags: &ref_13
         - shoppinglist
     get:
       operationId: findAll
-      parameters:
-        - name: search
-          required: false
-          in: query
-          schema: {}
+      parameters: []
       responses:
-        '200':
-          description: Shopping lists retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MultipleShoppingListResponseDto'
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '404':
-          description: Not Found - Resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '409':
-          description: Conflict - Resource already exists or state conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      summary: Get All Shoppinglists
-      tags: *ref_10
-  /api/v1/shoppinglist/{id}/items:
-    get:
-      description: Retrieve all items belonging to a shopping list with optional filters
-      operationId: findItems
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            format: uuid
-            type: string
-        - name: shoppingListId
-          required: false
-          in: query
-          description: Filter by shopping list ID
-          schema:
-            example: uuid-shopping-list-id
-            type: string
-        - name: foodId
-          required: false
-          in: query
-          description: Filter by food ID
-          schema:
-            example: uuid-food-id
-            type: string
-        - name: checked
-          required: false
-          in: query
-          description: Filter by checked status
-          schema:
-            example: false
-            type: boolean
-        - name: unit
-          required: false
-          in: query
-          description: Filter by unit
-          schema:
-            example: KG
-            type: string
-            enum:
-              - PIECES
-              - G
-              - KG
-              - ML
-              - L
-              - CUPS
-      responses:
-        '200':
-          description: Shopping list items retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -1525,9 +1427,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - JWT-auth: []
-      summary: Get items for a specific shopping list
-      tags: *ref_10
+        - *ref_11
+        - *ref_12
+      summary: Get all shopping lists for authenticated user
+      tags: *ref_13
   /api/v1/shoppinglist/{id}:
     get:
       operationId: findById
@@ -1576,9 +1479,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Get specific shopping list by ID
-      tags: *ref_10
+      tags: *ref_13
     patch:
       operationId: update
       parameters:
@@ -1632,9 +1537,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Update shopping list
-      tags: *ref_10
+      tags: *ref_13
     delete:
       operationId: remove
       parameters:
@@ -1678,9 +1585,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Delete specific shopping list by ID
-      tags: *ref_10
+      tags: *ref_13
   /api/v1/shopping-list-items:
     post:
       description: >-
@@ -1734,7 +1643,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
-      tags: &ref_11
+      tags: &ref_14
         - shopping-list-items
   /api/v1/shopping-list-items/item/{id}:
     get:
@@ -1786,7 +1695,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
-      tags: *ref_11
+      tags: *ref_14
   /api/v1/shopping-list-items/{id}:
     patch:
       description: Update quantity, unit, notes, or checked status of a shopping list item
@@ -1844,7 +1753,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list item
-      tags: *ref_11
+      tags: *ref_14
     delete:
       description: Delete a specific shopping list item by ID
       operationId: remove
@@ -1891,7 +1800,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
-      tags: *ref_11
+      tags: *ref_14
   /api/v1/shopping-list-items/{id}/toggle-checked:
     patch:
       description: Quick endpoint to toggle the checked status of an item
@@ -1943,7 +1852,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
-      tags: *ref_11
+      tags: *ref_14
   /api/v1/shopping-list-items/{shoppingListId}/clear-checked:
     delete:
       description: Remove all checked items from a specific shopping list
@@ -1991,7 +1900,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
-      tags: *ref_11
+      tags: *ref_14
   /api/v1/pantry:
     post:
       description: >-
@@ -2042,7 +1951,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Pantry
-      tags: &ref_12
+      tags: &ref_15
         - pantry
     get:
       description: >-
@@ -2092,7 +2001,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all user pantries
-      tags: *ref_12
+      tags: *ref_15
   /api/v1/pantry/{id}:
     get:
       description: >-
@@ -2138,7 +2047,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry by ID
-      tags: *ref_12
+      tags: *ref_15
     patch:
       description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
@@ -2191,7 +2100,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry
-      tags: *ref_12
+      tags: *ref_15
     delete:
       description: >-
         Deletes a specific pantry by ID. Only the pantry owner can delete their
@@ -2232,7 +2141,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete pantry
-      tags: *ref_12
+      tags: *ref_15
   /api/v1/pantry-item:
     post:
       description: >-
@@ -2248,7 +2157,67 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePantryItemDto'
+              oneOf:
+                - type: object
+                  properties:
+                    pantryId:
+                      type: string
+                      format: uuid
+                      example: uuid-pantry-id
+                    quantity:
+                      type: number
+                      example: 2
+                      minimum: 0.01
+                    unit:
+                      type: string
+                      example: KG
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Store in cool place
+                    expiryDate:
+                      type: string
+                      format: date
+                      example: '2027-02-02'
+                    foodId:
+                      type: string
+                      format: uuid
+                      example: uuid-food-id
+                      description: UUID of the food item (OpenFoodFacts).
+                  required:
+                    - pantryId
+                    - foodId
+                    - quantity
+                - type: object
+                  properties:
+                    pantryId:
+                      type: string
+                      format: uuid
+                      example: uuid-pantry-id
+                    quantity:
+                      type: number
+                      example: 2
+                      minimum: 0.01
+                    unit:
+                      type: string
+                      example: KG
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Store in cool place
+                    expiryDate:
+                      type: string
+                      format: date
+                      example: '2027-02-02'
+                    foodCategoryId:
+                      type: string
+                      format: uuid
+                      example: uuid-food-category-id
+                      description: UUID of the food category (NEVO generic).
+                  required:
+                    - pantryId
+                    - foodCategoryId
+                    - quantity
       responses:
         '201':
           description: Pantry item created successfully
@@ -2289,7 +2258,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
-      tags: &ref_13
+      tags: &ref_16
         - pantry-item
     get:
       description: >-
@@ -2379,7 +2348,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry items
-      tags: *ref_13
+      tags: *ref_16
   /api/v1/pantry-item/{id}:
     get:
       operationId: findById
@@ -2430,7 +2399,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
-      tags: *ref_13
+      tags: *ref_16
     patch:
       description: >-
         Update quantity, unit, notes, or expiry date of a pantry item. All
@@ -2489,7 +2458,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry item
-      tags: *ref_13
+      tags: *ref_16
     delete:
       description: Delete a specific pantry item by ID
       operationId: remove
@@ -2536,7 +2505,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from pantry
-      tags: *ref_13
+      tags: *ref_16
   /api/v1/meals:
     post:
       operationId: create
@@ -2587,7 +2556,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal
-      tags: &ref_14
+      tags: &ref_17
         - meals
     get:
       operationId: findAll
@@ -2664,7 +2633,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meals for the user
-      tags: *ref_14
+      tags: *ref_17
   /api/v1/meals/{id}:
     get:
       operationId: findOne
@@ -2715,7 +2684,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get a meal by id
-      tags: *ref_14
+      tags: *ref_17
     patch:
       operationId: update
       parameters:
@@ -2771,7 +2740,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a meal
-      tags: *ref_14
+      tags: *ref_17
     delete:
       operationId: remove
       parameters:
@@ -2817,7 +2786,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete a meal
-      tags: *ref_14
+      tags: *ref_17
   /api/v1/meals/{mealId}/items:
     post:
       description: >-
@@ -2835,7 +2804,51 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateMealItemDto'
+              oneOf:
+                - type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 2
+                      default: 1
+                    unit:
+                      type: string
+                      example: PIECES
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Extra spicy
+                    foodId:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440001
+                      description: UUID of the specific food product (OpenFoodFacts).
+                  required:
+                    - foodId
+                    - quantity
+                    - unit
+                - type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 2
+                      default: 1
+                    unit:
+                      type: string
+                      example: PIECES
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Extra spicy
+                    foodCategoryId:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440002
+                      description: UUID of the food category (NEVO generic).
+                  required:
+                    - foodCategoryId
+                    - quantity
+                    - unit
       responses:
         '201':
           description: Meal item created successfully
@@ -2867,10 +2880,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: &ref_15
+      security: &ref_18
         - JWT-auth: []
       summary: Add a food item to a meal
-      tags: &ref_16
+      tags: &ref_19
         - meal-items
     get:
       description: Retrieves all food items (products and categories) for a specific meal
@@ -2908,9 +2921,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_15
+      security: *ref_18
       summary: Get all items in a meal
-      tags: *ref_16
+      tags: *ref_19
   /api/v1/meals/{mealId}/items/{id}:
     get:
       description: Retrieves a specific item from a meal by its ID
@@ -2946,9 +2959,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_15
+      security: *ref_18
       summary: Get a specific meal item
-      tags: *ref_16
+      tags: *ref_19
     patch:
       description: >-
         Updates an existing meal item. Can change the food/category reference,
@@ -2997,9 +3010,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_15
+      security: *ref_18
       summary: Update a meal item
-      tags: *ref_16
+      tags: *ref_19
     delete:
       description: Removes a specific item from a meal
       operationId: delete
@@ -3030,9 +3043,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_15
+      security: *ref_18
       summary: Remove a meal item
-      tags: *ref_16
+      tags: *ref_19
   /api/v1/recipes:
     post:
       operationId: create
@@ -3083,7 +3096,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a recipe
-      tags: &ref_17
+      tags: &ref_20
         - recipes
     get:
       operationId: findAll
@@ -3182,7 +3195,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List recipes
-      tags: *ref_17
+      tags: *ref_20
   /api/v1/recipes/{id}:
     get:
       operationId: findOne
@@ -3233,7 +3246,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get recipe by id
-      tags: *ref_17
+      tags: *ref_20
     patch:
       operationId: update
       parameters:
@@ -3289,7 +3302,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update recipe
-      tags: *ref_17
+      tags: *ref_20
     delete:
       operationId: remove
       parameters:
@@ -3335,7 +3348,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete recipe
-      tags: *ref_17
+      tags: *ref_20
   /api/v1/meal-logs:
     post:
       operationId: create
@@ -3386,7 +3399,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal log
-      tags: &ref_18
+      tags: &ref_21
         - meal-logs
     get:
       operationId: findAll
@@ -3493,7 +3506,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meal logs
-      tags: *ref_18
+      tags: *ref_21
   /api/v1/meal-logs/{id}:
     get:
       operationId: findOne
@@ -3544,7 +3557,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get meal log by id
-      tags: *ref_18
+      tags: *ref_21
     patch:
       operationId: update
       parameters:
@@ -3600,7 +3613,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update meal log
-      tags: *ref_18
+      tags: *ref_21
     delete:
       operationId: remove
       parameters:
@@ -3646,7 +3659,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete meal log
-      tags: *ref_18
+      tags: *ref_21
   /api/v1:
     get:
       description: >-
@@ -3925,7 +3938,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_19
+          enum: &ref_22
             - MALE
             - FEMALE
             - OTHER
@@ -3999,7 +4012,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_19
+          enum: *ref_22
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -4227,7 +4240,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_20
+          enum: &ref_23
             - A
             - B
             - C
@@ -4836,7 +4849,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_20
+          enum: *ref_23
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -5305,37 +5318,6 @@ components:
           maxLength: 255
       required:
         - title
-    ShoppingListResponseDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the shopping list
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-        userId:
-          type: string
-          description: UUID of the user who created this shopping list
-          example: 550e8400-e29b-41d4-a716-446655440001
-          format: uuid
-        title:
-          type: string
-          description: title of the shopping list
-          example: Family shopping list
-      required:
-        - id
-        - userId
-        - title
-    MultipleShoppingListResponseDto:
-      type: object
-      properties:
-        data:
-          description: Array of shopping lists
-          type: array
-          items:
-            $ref: '#/components/schemas/ShoppingListResponseDto'
-      required:
-        - data
     ShoppingListItemResponseDto:
       type: object
       properties:
@@ -5388,10 +5370,6 @@ components:
           type: string
           description: The last update timestamp
           example: '2024-01-15T11:30:00.000Z'
-        shoppingList:
-          description: Associated shopping list
-          allOf:
-            - $ref: '#/components/schemas/ShoppingListResponseDto'
         food:
           description: Associated food item (if itemType is food)
           allOf:
@@ -5409,17 +5387,34 @@ components:
         - itemType
         - createdAt
         - updatedAt
-        - shoppingList
-    MultipleShoppingListItemResponseDto:
+    ShoppingListResponseDto:
       type: object
       properties:
-        data:
-          description: Array of shopping list items
+        id:
+          type: string
+          description: Unique identifier for the shopping list
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+        userId:
+          type: string
+          description: UUID of the user who created this shopping list
+          example: 550e8400-e29b-41d4-a716-446655440001
+          format: uuid
+        title:
+          type: string
+          description: title of the shopping list
+          example: Family shopping list
+        items:
+          description: Items in the shopping list
+          example: []
           type: array
           items:
             $ref: '#/components/schemas/ShoppingListItemResponseDto'
       required:
-        - data
+        - id
+        - userId
+        - title
+        - items
     UpdateShoppingListDto:
       type: object
       properties:
@@ -5615,55 +5610,6 @@ components:
           maxLength: 255
       required:
         - title
-    CreatePantryItemDto:
-      type: object
-      properties:
-        pantryId:
-          type: string
-          description: The ID of the pantry to add the item to
-          example: uuid-pantry-id
-        foodId:
-          type: string
-          description: >-
-            The ID of the food item to add (OpenFoodFacts). Either foodId or
-            foodCategoryId must be provided.
-          example: uuid-food-id
-        foodCategoryId:
-          type: string
-          description: >-
-            UUID of the food category (NEVO generic). Either foodId or
-            foodCategoryId must be provided.
-          example: uuid-food-category-id
-        quantity:
-          type: number
-          description: The quantity of the item
-          example: 2
-          minimum: 0.01
-        unit:
-          type: string
-          description: The unit of measurement (defaults to PIECES if not provided)
-          example: KG
-          enum:
-            - PIECES
-            - G
-            - KG
-            - ML
-            - L
-            - CUPS
-          default: PIECES
-        notes:
-          type: string
-          description: Additional notes for the item
-          example: Store in cool place
-          maxLength: 500
-        expiryDate:
-          format: date-time
-          type: string
-          description: When the food will expire (ISO date string)
-          example: '2027-02-02'
-      required:
-        - pantryId
-        - quantity
     MultiplePantryItemResponseDto:
       type: object
       properties:
@@ -5720,7 +5666,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_21
+          enum: &ref_24
             - SALAD
             - MEAT
             - PASTA
@@ -5738,7 +5684,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_22
+          example: &ref_25
             carbs: 40
             fats: 20
             sugar: 5
@@ -5846,7 +5792,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_21
+          enum: *ref_24
           description: Meal type
         calories:
           type: number
@@ -5859,7 +5805,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_22
+          example: *ref_25
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -5871,50 +5817,6 @@ components:
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
-    CreateMealItemDto:
-      type: object
-      properties:
-        mealId:
-          type: string
-          description: UUID of the meal this item belongs to
-          example: 550e8400-e29b-41d4-a716-446655440000
-        foodId:
-          type: string
-          description: >-
-            UUID of the specific food product (OpenFoodFacts). Either foodId or
-            foodCategoryId must be provided.
-          example: 550e8400-e29b-41d4-a716-446655440001
-        foodCategoryId:
-          type: string
-          description: >-
-            UUID of the food category (NEVO generic). Either foodId or
-            foodCategoryId must be provided.
-          example: 550e8400-e29b-41d4-a716-446655440002
-        quantity:
-          type: number
-          description: Quantity of the item
-          example: 2
-          default: 1
-        unit:
-          type: string
-          description: Unit of measurement
-          enum: &ref_23
-            - PIECES
-            - G
-            - KG
-            - ML
-            - L
-            - CUPS
-          example: PIECES
-          default: PIECES
-        notes:
-          type: string
-          description: Optional notes about this meal item
-          example: Extra spicy
-      required:
-        - mealId
-        - quantity
-        - unit
     MealItemResponseDto:
       type: object
       properties:
@@ -5996,10 +5898,6 @@ components:
     UpdateMealItemDto:
       type: object
       properties:
-        mealId:
-          type: string
-          description: UUID of the meal this item belongs to
-          example: 550e8400-e29b-41d4-a716-446655440000
         foodId:
           type: string
           description: >-
@@ -6020,7 +5918,13 @@ components:
         unit:
           type: string
           description: Unit of measurement
-          enum: *ref_23
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
           example: PIECES
           default: PIECES
         notes:
@@ -6062,7 +5966,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_24
+          example: &ref_26
             - vegan
             - quick
           type: array
@@ -6071,7 +5975,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_25
+          example: &ref_27
             carbs: 50
             fats: 10
             fiber: 8
@@ -6085,7 +5989,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_26
+          example: &ref_28
             - nuts
             - gluten
           type: array
@@ -6236,14 +6140,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_24
+          example: *ref_26
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_25
+          example: *ref_27
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -6254,7 +6158,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_26
+          example: *ref_28
           type: array
           items:
             type: string
@@ -6268,7 +6172,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_27
+          enum: &ref_29
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -6376,7 +6280,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_27
+          enum: *ref_29
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)

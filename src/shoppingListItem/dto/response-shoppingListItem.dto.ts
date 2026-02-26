@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
 import { FoodCategoryResponseDto } from '../../foodCategory/dto/food-category-response.dto';
-import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
 import { Unit } from '@prisma/client';
 
 @Exclude()
@@ -84,14 +83,6 @@ export class ShoppingListItemResponseDto {
   })
   @Expose()
   updatedAt: Date;
-
-  @ApiProperty({
-    description: 'Associated shopping list',
-    type: () => ShoppingListResponseDto,
-  })
-  @Expose()
-  @Type(() => ShoppingListResponseDto)
-  shoppingList: ShoppingListResponseDto;
 
   @ApiPropertyOptional({
     description: 'Associated food item (if itemType is food)',
