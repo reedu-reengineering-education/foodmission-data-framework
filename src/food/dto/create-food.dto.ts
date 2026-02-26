@@ -272,6 +272,7 @@ export class CreateFoodDto {
 
   @ApiProperty({
     description: 'NOVA group (1=unprocessed, 4=ultra-processed)',
+    example: 1,
     minimum: 1,
     maximum: 4,
     required: false,
