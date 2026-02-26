@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Challenge, ChallengeProgress } from '@prisma/client';
+import { ChallengeProgress } from '@prisma/client';
 import {
   IsNotEmpty,
   IsUUID,

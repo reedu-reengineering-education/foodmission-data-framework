@@ -16,9 +16,6 @@ import { MissionRepository } from '../repositories/mission.repository';
 import { CreateMissionDto } from '../dto/create-mission.dto';
 import { UpdateMissionDto } from '../dto/update-mission.dto';
 import { PrismaService } from '../../database/prisma.service';
-import { Mission } from '@prisma/client';
-
-
 
 @Injectable()
 export class MissionService {

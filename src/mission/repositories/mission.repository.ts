@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Mission, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateMissionData {
