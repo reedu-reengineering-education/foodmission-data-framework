@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KnowledgeService } from './knowledge.service';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('KnowledgeService', () => {
   let service: KnowledgeService;
@@ -175,12 +175,12 @@ describe('KnowledgeService', () => {
       );
     });
 
-    it('should throw NotFoundException if not owned by user', async () => {
+    it('should throw ForbiddenException if not owned by user', async () => {
       const otherUserKnowledge = { ...mockKnowledge, userId: 'other-user' };
       repository.findById.mockResolvedValueOnce(otherUserKnowledge as any);
 
       await expect(service.findOne('knowledge-1', 'user-1')).rejects.toThrow(
-        NotFoundException,
+        ForbiddenException,
       );
     });
   });

@@ -55,7 +55,6 @@ describe('MealLogService', () => {
       id: 'm1',
       userId: 'other',
     });
-
     await expect(
       service.create({ mealId: 'm1', typeOfMeal: TypeOfMeal.LUNCH }, userId),
     ).rejects.toThrow(ForbiddenException);
