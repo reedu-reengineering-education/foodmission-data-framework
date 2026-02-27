@@ -22,6 +22,8 @@ import { PantryItemModule } from './pantryItem/pantry.module';
 import { MealModule } from './meal/meal.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
+import { ChallengeModule } from './challenge/challenge.module';
+import { MissionModule } from './mission/mission.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { MealLogModule } from './mealLog/meal-log.module';
     MealModule,
     RecipeModule,
     MealLogModule,
+    ChallengeModule,
+    MissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
