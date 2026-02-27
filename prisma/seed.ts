@@ -8,6 +8,7 @@ import { seedPantryItems } from './seeds/pantryItem';
 import { seedFoodCategories } from './seeds/foodCategories';
 import { seedUserGroups } from './seeds/userGroups';
 import { seedVirtualMembers } from './seeds/groupMembers';
+import { seedKnowledge, seedUserKnowledgeProgress } from './seeds/knowledge';
 
 const prisma = new PrismaClient();
 
@@ -17,20 +18,16 @@ async function main() {
 
   try {
     const foods = await seedFoods(prisma);
-
     const users = await seedUsers(prisma);
-
     const shoppingList = await seedShoppingLists(prisma);
-
     const shoppingListItem = await seedShoppingListItems(prisma);
-
     const pantry = await seedPantries(prisma);
-
     const pantryItem = await seedPantryItems(prisma);
     const foodCategories = await seedFoodCategories(prisma);
     const userGroups = await seedUserGroups(prisma);
-
     const virtualMembers = await seedVirtualMembers(prisma);
+    const knowledge = await seedKnowledge(prisma);
+    const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
 
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
@@ -44,6 +41,8 @@ async function main() {
     console.log(`   - foodCategories: ${foodCategories.length}`);
     console.log(`   - userGroups: ${userGroups.length}`);
     console.log(`   - virtualMembers: ${virtualMembers.length}`);
+    console.log(`   - knowledge: ${knowledge.length}`);
+    console.log(`   - knowledgeProgress: ${knowledgeProgress.length}`);
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;
