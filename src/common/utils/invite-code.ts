@@ -15,13 +15,15 @@ const INVITE_CODE_LENGTH = 7;
  * @returns A 7-character alphanumeric invite code
  */
 export function generateInviteCode(): string {
-  const bytes = crypto.randomBytes(INVITE_CODE_LENGTH);
   let code = '';
-
-  for (let i = 0; i < INVITE_CODE_LENGTH; i++) {
-    code += INVITE_CODE_CHARS[bytes[i] % INVITE_CODE_CHARS.length];
+  while (code.length < INVITE_CODE_LENGTH) {
+    const byte = crypto.randomBytes(1)[0];
+    // 224 is the largest multiple of 32 (INVITE_CODE_CHARS.length) less than 256
+    if (byte >= 224) {
+      continue;
+    }
+    code += INVITE_CODE_CHARS[byte % INVITE_CODE_CHARS.length];
   }
-
   return code;
 }
 
