@@ -167,11 +167,20 @@ export class GroupMembershipRepository {
     id: string,
     data: UpdateVirtualMemberData,
   ): Promise<GroupMembershipWithUser> {
+    // Validate that the membership is virtual (userId is null)
+    const membership = await this.prisma.groupMembership.findUnique({
+      where: { id },
+    });
+    if (!membership) {
+      throw new GroupMemberNotFoundException(id);
+    }
+    if (membership.userId !== null) {
+      throw new Error(
+        'Cannot update non-virtual member with updateVirtualMember',
+      );
+    }
     return this.prisma.groupMembership.update({
-      where: {
-        id,
-        userId: null,
-      },
+      where: { id },
       data: {
         nickname: data.nickname,
         age: data.age,
