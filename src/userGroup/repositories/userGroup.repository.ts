@@ -4,6 +4,7 @@ import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
 import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
 import { GroupRole, Prisma } from '@prisma/client';
 import { GroupNotFoundException } from '../../common/exceptions/business.exception';
+import { generateInviteCode } from '../../common/utils/invite-code';
 
 export type UserGroupWithRelations = NonNullable<
   Awaited<ReturnType<PrismaService['userGroup']['findUnique']>>
@@ -28,7 +29,7 @@ export class UserGroupRepository {
     },
   };
 
-  async create(
+  create(
     data: CreateUserGroupDto & { createdBy: string },
   ): Promise<UserGroupWithRelations> {
     return this.prisma.userGroup.create({
@@ -36,6 +37,7 @@ export class UserGroupRepository {
         name: data.name,
         description: data.description,
         createdBy: data.createdBy,
+        inviteCode: generateInviteCode(),
         memberships: {
           create: {
             userId: data.createdBy,
@@ -47,23 +49,21 @@ export class UserGroupRepository {
     });
   }
 
-  async findById(id: string): Promise<UserGroupWithRelations | null> {
+  findById(id: string): Promise<UserGroupWithRelations | null> {
     return this.prisma.userGroup.findUnique({
       where: { id },
       include: this.includeRelations,
     });
   }
 
-  async findByInviteCode(
-    inviteCode: string,
-  ): Promise<UserGroupWithRelations | null> {
+  findByInviteCode(inviteCode: string): Promise<UserGroupWithRelations | null> {
     return this.prisma.userGroup.findUnique({
       where: { inviteCode },
       include: this.includeRelations,
     });
   }
 
-  async findAllByUserId(userId: string): Promise<UserGroupWithRelations[]> {
+  findAllByUserId(userId: string): Promise<UserGroupWithRelations[]> {
     return this.prisma.userGroup.findMany({
       where: {
         memberships: {
@@ -103,7 +103,7 @@ export class UserGroupRepository {
       return await this.prisma.userGroup.update({
         where: { id },
         data: {
-          inviteCode: crypto.randomUUID(),
+          inviteCode: generateInviteCode(),
         },
         include: this.includeRelations,
       });

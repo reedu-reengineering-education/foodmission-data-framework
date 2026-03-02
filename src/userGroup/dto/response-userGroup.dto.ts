@@ -26,8 +26,12 @@ export class UserGroupResponseDto {
   description?: string;
 
   @ApiProperty({
-    description: 'The invite code for joining the group',
-    example: 'abc123-def456',
+    description:
+      'The invite code for joining the group (7-character alphanumeric)',
+    example: 'AXY1278',
+    minLength: 7,
+    maxLength: 7,
+    pattern: '^[A-Z0-9]{7}$',
   })
   @Expose()
   inviteCode: string;
