@@ -13,7 +13,7 @@ export type UserGroupWithRelations = NonNullable<
 export class UserGroupRepository {
   constructor(private prisma: PrismaService) {}
 
-  private readonly includeRelations = {
+  private readonly includeRelations: Prisma.UserGroupInclude = {
     memberships: {
       include: {
         user: {
