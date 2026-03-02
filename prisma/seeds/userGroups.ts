@@ -1,4 +1,5 @@
 import { PrismaClient, GroupRole, UserGroup } from '@prisma/client';
+import { generateInviteCode } from '../../src/common/utils/invite-code';
 
 export interface UserGroupSeedData {
   name: string;
@@ -65,6 +66,7 @@ export async function seedUserGroups(
         name: groupData.name,
         description: groupData.description,
         createdBy: creator.id,
+        inviteCode: generateInviteCode(),
       },
     });
 

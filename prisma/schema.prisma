@@ -563,7 +563,7 @@ model UserGroup {
   id          String   @id @default(uuid())
   name        String
   description String?
-  inviteCode  String   @unique @default(uuid())
+  inviteCode  String   @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   createdBy   String
