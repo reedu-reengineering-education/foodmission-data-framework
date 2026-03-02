@@ -87,6 +87,33 @@ export class MissionController {
     return this.missionService.getMissionById(id);
   }
 
+  @Get()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all missions',
+    description:
+      'Retrieves all missions for the authenticated user. Only the mission owner can access them.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Missions retrieved successfully',
+    type: [MissionResponseDto],
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No permission',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No missions found',
+  })
+  @ApiCrudErrorResponses()
+  async getAllMissions(
+  ): Promise<MissionResponseDto[]> {
+    return this.missionService.getAllMissions();
+  }
+
   @Patch(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -136,7 +163,6 @@ export class MissionController {
   @ApiCrudErrorResponses()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') userId: string,
   ): Promise<void> {
     return this.missionService.remove(id);
   }

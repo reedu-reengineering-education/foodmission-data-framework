@@ -65,6 +65,17 @@ export class MissionService {
     return this.transformToResponseDto(mission);
   }
 
+    async getAllMissions(): Promise<MissionResponseDto[]> {
+    this.logger.log(`Getting All missions`);
+
+    const missions = await this.missionRepository.findAll();
+
+    if (!missions || missions.length === 0) {
+      throw new NotFoundException('No missions found');
+    }
+    return missions.map((mission) => this.transformToResponseDto(mission));
+  }
+
   async update(
     missionId: string,
     updateMissionDto: UpdateMissionDto,

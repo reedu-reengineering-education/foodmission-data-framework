@@ -20,7 +20,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shoppingList.service';
 import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';

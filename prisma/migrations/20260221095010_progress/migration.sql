@@ -1,14 +1,4 @@
-/*
-  Warnings:
 
-  - You are about to drop the column `completed` on the `Challenge` table. All the data in the column will be lost.
-  - You are about to drop the column `progress` on the `Challenge` table. All the data in the column will be lost.
-  - You are about to drop the column `userId` on the `Challenge` table. All the data in the column will be lost.
-  - You are about to drop the column `completed` on the `Mission` table. All the data in the column will be lost.
-  - You are about to drop the column `progress` on the `Mission` table. All the data in the column will be lost.
-  - You are about to drop the column `userId` on the `Mission` table. All the data in the column will be lost.
-
-*/
 -- DropForeignKey
 ALTER TABLE "Challenge" DROP CONSTRAINT "Challenge_userId_fkey";
 

@@ -26,17 +26,20 @@ export class CreateMissionDto {
     description: 'Whether the mission is currently available',
     example: true,
   })
+  @IsNotEmpty()
   available: boolean;
 
   @ApiProperty({
     description: 'The start date of the mission',
     example: '2024-04-01T00:00:00.000Z',
   })
+  @IsNotEmpty()
   startDate: Date;
 
   @ApiProperty({
     description: 'The end date of the mission',
     example: '2024-04-30T23:59:59.000Z',
   })
+  @IsNotEmpty()
   endDate: Date;  
 }

@@ -212,6 +212,7 @@ model Mission {
   available         Boolean           @default(false)
   startDate         DateTime
   endDate           DateTime
+  content     Json                      @default("{}") // Flexible JSON for mission-specific content
   missionProgresses MissionProgress[]
 }
 
@@ -222,7 +223,7 @@ model MissionProgress {
   progress  Float
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
-  mission Mission @relation(fields: [missionId], references: [id], onDelete: Restrict)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
 
   @@id([userId, missionId])
 }
@@ -234,6 +235,7 @@ model Challenge {
   available           Boolean             @default(false)
   startDate           DateTime
   endDate             DateTime
+  content     Json                        @default("{}") // Flexible JSON for challenge-specific content
   challengeProgresses ChallengeProgress[]
 }
 
@@ -244,7 +246,7 @@ model ChallengeProgress {
   progress    Float
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Restrict)
-  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@id([userId, challengeId])
 }

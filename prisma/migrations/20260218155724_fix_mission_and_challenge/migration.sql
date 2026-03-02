@@ -1,10 +1,4 @@
-/*
-  Warnings:
 
-  - You are about to drop the `Challenges` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Missions` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- DropForeignKey
 ALTER TABLE "Challenges" DROP CONSTRAINT "Challenges_userId_fkey";
 

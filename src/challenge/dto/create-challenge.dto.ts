@@ -22,11 +22,19 @@ export class CreateChallengeDto {
   @MaxLength(255)
   description: string;
 
+    @ApiProperty({
+    description: 'Whether the challenge is currently available',
+    example: true,
+  })
+  @IsNotEmpty()
+  available: boolean;
+
   @ApiProperty({
     description: 'The start date of the challenge',
     example: '2024-01-01T00:00:00.000Z',
   })
   @IsDateString()
+  @IsNotEmpty()
   startDate: Date;
 
   @ApiProperty({
@@ -34,5 +42,6 @@ export class CreateChallengeDto {
     example: '2024-12-31T00:00:00.000Z',
   })
   @IsDateString()
+  @IsNotEmpty()
   endDate: Date;
 }
