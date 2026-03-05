@@ -401,7 +401,6 @@ model PantryItem {
 model Meal {
   id                  String     @id @default(uuid())
   name                String
-  mealType            MealType
   calories            Int?
   proteins            Int?
   nutritionalInfo     Json?
@@ -410,16 +409,19 @@ model Meal {
   barcode             String?    @unique
   userId              String
 
+  // Optional link to a recipe this meal is based on
+  recipeId            String?
+
   user      User       @relation(fields: [userId], references: [id])
+  recipe    Recipe?    @relation(fields: [recipeId], references: [id])
   items     MealItem[]
-  recipes   Recipe[]
   mealLogs  MealLog[]
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   @@index([userId])
-  @@index([mealType])
+  @@index([recipeId])
 }
 
 model MealItem {
@@ -449,8 +451,7 @@ model MealItem {
 
 model Recipe {
   id                  String   @id @default(uuid())
-  userId              String
-  mealId              String
+  userId              String?  // Nullable for system recipes (TheMealDB, etc.)
   title               String
   description         String?
   instructions        String?
@@ -468,11 +469,25 @@ model Recipe {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
-  user User @relation(fields: [userId], references: [id])
+  // New fields for external recipes (TheMealDB integration)
+  externalId          String?  @unique  // TheMealDB idMeal
+  source              String?  // "themealdb", "user", etc.
+  imageUrl            String?
+  videoUrl            String?
+  cuisineType         String?  // Japanese, Italian, Mexican, etc.
+  category            String?  // Chicken, Seafood, Dessert, etc.
+  isPublic            Boolean  @default(false)
+  dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
+  ingredients         Json?    // [{foodId?, name, measure, order}, ...]
+
+  // Relations
+  user  User?  @relation(fields: [userId], references: [id])
+  meals Meal[] // Meals can reference this recipe
 
   @@index([userId])
-  @@index([mealId])
+  @@index([isPublic])
+  @@index([category])
+  @@index([cuisineType])
   @@map("recipes")
 }
 
@@ -548,13 +563,7 @@ enum TypeOfMeal {
   SPECIAL_DRINKS
 }
 
-enum MealType {
-  SALAD
-  MEAT
-  PASTA
-  RICE
-  VEGAN
-}
+
 
 enum GroupRole {
   ADMIN

@@ -9,8 +9,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
 
 export interface CreateRecipeData {
-  userId: string;
-  mealId: string;
+  userId?: string;
   title: string;
   description?: string;
   instructions?: string;
@@ -23,6 +22,16 @@ export interface CreateRecipeData {
   sustainabilityScore?: number;
   price?: number;
   allergens?: string[];
+  // New fields for external recipes
+  externalId?: string;
+  source?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  cuisineType?: string;
+  category?: string;
+  isPublic?: boolean;
+  dietaryLabels?: string[];
+  ingredients?: Prisma.InputJsonValue;
 }
 
 export interface UpdateRecipeData

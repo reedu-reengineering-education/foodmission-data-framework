@@ -4,7 +4,7 @@ import { MealItemRepository } from '../repositories/meal-item.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
-import { Unit, MealType } from '@prisma/client';
+import { Unit } from '@prisma/client';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { DatabaseOperationException } from '../../common/exceptions/business.exception';
@@ -31,7 +31,6 @@ describe('MealItemService', () => {
   const mockMeal = {
     id: TEST_IDS.MEAL,
     name: 'Breakfast',
-    mealType: MealType.SALAD,
     userId: TEST_IDS.USER,
     calories: 500,
     proteins: 20,
@@ -39,6 +38,7 @@ describe('MealItemService', () => {
     sustainabilityScore: null,
     price: null,
     barcode: null,
+    recipeId: null,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
   };

@@ -75,7 +75,6 @@ export class MealLogService {
       dateFrom,
       dateTo,
       typeOfMeal,
-      mealType,
       mealFromPantry,
       eatenOut,
     } = query;
@@ -91,13 +90,6 @@ export class MealLogService {
             timestamp: {
               ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
               ...(dateTo ? { lte: new Date(dateTo) } : {}),
-            },
-          }
-        : {}),
-      ...(mealType
-        ? {
-            meal: {
-              mealType,
             },
           }
         : {}),

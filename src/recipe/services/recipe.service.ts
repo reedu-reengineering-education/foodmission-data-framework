@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RecipeRepository } from '../repositories/recipe.repository';
-import { MealRepository } from '../../meal/repositories/meal.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
 import {
@@ -17,20 +16,7 @@ import { plainToInstance } from 'class-transformer';
 export class RecipeService {
   private readonly logger = new Logger(RecipeService.name);
 
-  constructor(
-    private readonly recipeRepository: RecipeRepository,
-    private readonly mealRepository: MealRepository,
-  ) {}
-
-  private getOwnedMealOrThrow(mealId: string, userId: string) {
-    return getOwnedEntityOrThrow(
-      mealId,
-      userId,
-      (id) => this.mealRepository.findById(id),
-      (d) => d.userId,
-      'Meal not found',
-    );
-  }
+  constructor(private readonly recipeRepository: RecipeRepository) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
     return getOwnedEntityOrThrow(
@@ -47,8 +33,6 @@ export class RecipeService {
     userId: string,
   ): Promise<RecipeResponseDto> {
     this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
-
-    await this.getOwnedMealOrThrow(createRecipeDto.mealId, userId);
 
     try {
       const recipe = await this.recipeRepository.create({
@@ -68,7 +52,11 @@ export class RecipeService {
     const {
       page = 1,
       limit = 10,
-      mealType,
+      category,
+      cuisineType,
+      source,
+      isPublic,
+      dietaryLabels,
       tags,
       allergens,
       difficulty,
@@ -76,8 +64,13 @@ export class RecipeService {
     } = query;
     const skip = (page - 1) * limit;
 
+    // Show user's own recipes OR public recipes
     const where: Prisma.RecipeWhereInput = {
-      userId,
+      OR: [{ userId }, { isPublic: true }],
+      ...(category ? { category } : {}),
+      ...(cuisineType ? { cuisineType } : {}),
+      ...(source ? { source } : {}),
+      ...(isPublic !== undefined ? { isPublic } : {}),
       ...(difficulty ? { difficulty } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
@@ -85,14 +78,10 @@ export class RecipeService {
       ...(allergens && allergens.length
         ? { allergens: { hasSome: allergens.map((a) => a.trim()) } }
         : {}),
-      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
-      ...(mealType
-        ? {
-            meal: {
-              mealType,
-            },
-          }
+      ...(dietaryLabels && dietaryLabels.length
+        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
         : {}),
+      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
     };
 
     try {
@@ -101,7 +90,6 @@ export class RecipeService {
         take: limit,
         where,
         orderBy: { createdAt: 'desc' },
-        include: { meal: true },
       });
 
       return plainToInstance(
@@ -130,11 +118,7 @@ export class RecipeService {
     updateRecipeDto: UpdateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    const recipe = await this.getOwnedRecipeOrThrow(id, userId);
-
-    if (updateRecipeDto.mealId && updateRecipeDto.mealId !== recipe.mealId) {
-      await this.getOwnedMealOrThrow(updateRecipeDto.mealId, userId);
-    }
+    await this.getOwnedRecipeOrThrow(id, userId);
 
     try {
       const updated = await this.recipeRepository.update(id, updateRecipeDto);
