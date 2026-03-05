@@ -202,6 +202,154 @@ Sample users include:
 - Allergies (nuts, dairy, gluten, etc.)
 - Preferred food categories
 
+## TheMealDB Recipe Integration
+
+The framework includes a comprehensive recipe dataset imported from TheMealDB and enriched
+with nutritional data from the NEVO Dutch Food Composition Database.
+
+### Data Sources
+
+| Source | Description | Records | URL |
+|--------|-------------|---------|-----|
+| TheMealDB | Free recipe API with images and videos | 598 recipes | https://www.themealdb.com/api.php |
+| NEVO | Dutch Food Composition Database | 2,152 foods | https://nevo-online.rivm.nl/ |
+
+### Data Pipeline
+
+The integration follows a multi-phase pipeline:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  TheMealDB API  │───▶│  CSV Extraction │───▶│  Ingredient     │
+│  (598 recipes)  │    │  (recipes.csv)  │    │  Mapping        │
+└─────────────────┘    └─────────────────┘    └────────┬────────┘
+                                                       │
+┌─────────────────┐    ┌─────────────────┐    ┌────────▼────────┐
+│   Recipe DB     │◀───│  Prisma Seed    │◀───│  NEVO Lookup    │
+│   (recipes)     │    │  (themealdb.ts) │    │  (food links)   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+**Phase 1: Data Extraction** (`scripts/extract-themealdb.ts`)
+- Iterates through all TheMealDB categories
+- Fetches full recipe details including ingredients
+- Outputs: `themealdb-recipes.csv`, `themealdb-ingredients.csv`
+
+**Phase 2: Ingredient Mapping** (`scripts/map-ingredients-to-foods.ts`)
+- Maps 836 unique TheMealDB ingredients to NEVO foods
+- Uses fuzzy string matching with confidence scoring
+- Outputs: `ingredient-food-mapping.csv`
+- Coverage: ~74% of ingredients mapped (622 of 836)
+
+**Phase 3: Database Seeding** (`prisma/seeds/themealdb.ts`)
+- Loads CSV data and creates Recipe records
+- Links ingredients to Food records where mappings exist
+- Sets `source: 'themealdb'`, `isPublic: true`, `userId: null`
+
+### Seeding Commands
+
+```bash
+# Seed all TheMealDB recipes
+npm run db:seed:themealdb
+
+# Seed with limit (for testing)
+npx ts-node prisma/seeds/themealdb.ts --limit=50
+
+# Dry run (preview only)
+npx ts-node prisma/seeds/themealdb.ts --dry-run
+
+# Force re-seed existing recipes
+npx ts-node prisma/seeds/themealdb.ts --force
+```
+
+### Data Files
+
+Located in `prisma/seeds/data/`:
+
+| File | Description | Records |
+|------|-------------|---------|
+| `themealdb-recipes.csv` | Recipe metadata (title, category, cuisine) | 598 |
+| `themealdb-ingredients.csv` | Ingredients with measures per recipe | 6,331 |
+| `themealdb-categories.csv` | Recipe categories (Beef, Chicken, etc.) | 27 |
+| `ingredient-food-mapping.csv` | Ingredient-to-NEVO food mappings | 836 |
+
+### Ingredient Matching Algorithm
+
+The mapping process uses a multi-step algorithm:
+
+1. **Exact Match**: Direct lookup in NEVO by name
+2. **Normalized Match**: Lowercase, trim, remove plurals
+3. **Fuzzy Match**: Levenshtein distance with 80% threshold
+4. **Manual Review**: Low-confidence matches flagged for review
+
+Confidence levels:
+- `high`: Exact or near-exact match (distance < 0.1)
+- `medium`: Good fuzzy match (distance 0.1-0.3)
+- `low`: Weak match requiring verification
+
+### Recipe Schema
+
+Imported recipes use the following structure:
+
+```typescript
+{
+  externalId: "53281",           // TheMealDB idMeal
+  title: "Algerian Kefta",
+  source: "themealdb",
+  isPublic: true,
+  userId: null,                  // System recipe
+  category: "Beef",
+  cuisineType: "Algerian",
+  instructions: "...",
+  imageUrl: "https://...",
+  videoUrl: "https://...",
+  tags: ["Meatballs"],
+  dietaryLabels: [],
+  servings: 4,
+  ingredients: [
+    {
+      name: "Ground Beef",
+      measure: "1 lb",
+      order: 1,
+      foodId: "uuid-of-nevo-food",  // Optional
+      foodName: "Beef minced",
+      source: "nevo",
+      matchConfidence: "high"
+    },
+    // ...
+  ]
+}
+```
+
+### Ingredient Enrichment Data
+
+Each mapped ingredient can include:
+
+| Field | Description | Source |
+|-------|-------------|--------|
+| `foodId` | Link to Food record | Prisma lookup |
+| `foodName` | NEVO food name | NEVO |
+| `source` | Data source (`nevo`) | Mapping |
+| `matchConfidence` | `high`, `medium`, `low` | Algorithm |
+| `energyKcal` | Energy per 100g | NEVO |
+| `protein` | Protein per 100g | NEVO |
+| `fat` | Fat per 100g | NEVO |
+| `carbs` | Carbohydrates per 100g | NEVO |
+
+### Extending the Dataset
+
+To add more recipes from TheMealDB:
+
+1. Run extraction script: `npx ts-node scripts/extract-themealdb.ts`
+2. Run ingredient mapping: `npx ts-node scripts/map-ingredients-to-foods.ts`
+3. Review low-confidence mappings in `ingredient-mapping-review.csv`
+4. Run seeding: `npm run db:seed:themealdb`
+
+To add recipes from other sources:
+1. Create a new extraction script following the TheMealDB pattern
+2. Ensure CSV output matches the expected schema
+3. Use the ingredient mapping infrastructure for food links
+
 ## Best Practices
 
 ### Development Workflow
