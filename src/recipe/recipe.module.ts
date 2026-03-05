@@ -4,11 +4,10 @@ import { RecipeService } from './services/recipe.service';
 import { RecipeRepository } from './repositories/recipe.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
-import { MealModule } from '../meal/meal.module';
 import { UserRepository } from '../user/repositories/user.repository';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, MealModule],
+  imports: [DatabaseModule, CommonModule],
   controllers: [RecipeController],
   providers: [RecipeService, RecipeRepository, UserRepository],
   exports: [RecipeService, RecipeRepository],

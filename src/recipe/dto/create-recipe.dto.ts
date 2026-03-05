@@ -1,23 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsObject,
   IsOptional,
   IsString,
-  IsUUID,
   Min,
   IsNumber,
 } from 'class-validator';
 
 export class CreateRecipeDto {
-  @ApiProperty({
-    description: 'Meal identifier this recipe is based on',
-    format: 'uuid',
-  })
-  @IsUUID()
-  mealId: string;
-
   @ApiProperty({ description: 'Recipe title', example: 'Hearty veggie pasta' })
   @IsString()
   title: string;
@@ -100,4 +93,79 @@ export class CreateRecipeDto {
   @IsArray()
   @IsString({ each: true })
   allergens?: string[];
+
+  // New fields for external recipes (TheMealDB integration)
+  @ApiPropertyOptional({
+    description: 'External identifier (e.g., TheMealDB idMeal)',
+    example: '52772',
+  })
+  @IsOptional()
+  @IsString()
+  externalId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Source of the recipe',
+    example: 'themealdb',
+  })
+  @IsOptional()
+  @IsString()
+  source?: string;
+
+  @ApiPropertyOptional({
+    description: 'Image URL',
+    example: 'https://www.themealdb.com/images/media/meals/xxx.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'Video URL',
+    example: 'https://www.youtube.com/watch?v=xxx',
+  })
+  @IsOptional()
+  @IsString()
+  videoUrl?: string;
+
+  @ApiPropertyOptional({
+    description: 'Cuisine type',
+    example: 'Italian',
+  })
+  @IsOptional()
+  @IsString()
+  cuisineType?: string;
+
+  @ApiPropertyOptional({
+    description: 'Recipe category',
+    example: 'Pasta',
+  })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @ApiPropertyOptional({
+    description: 'Whether recipe is publicly visible',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isPublic?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Dietary labels',
+    type: [String],
+    example: ['vegan', 'gluten-free'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  dietaryLabels?: string[];
+
+  @ApiPropertyOptional({
+    description: 'Structured ingredients list',
+    example: [{ name: 'Chicken', measure: '500g', order: 1 }],
+  })
+  @IsOptional()
+  @IsObject()
+  ingredients?: Record<string, any>;
 }

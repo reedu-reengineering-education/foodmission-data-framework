@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { MealType } from '@prisma/client';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 import {
   TransformCSVToStringArray,
   TransformTrimToUndefined,
@@ -9,12 +9,50 @@ import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 export class QueryRecipeDto extends PaginationQueryDto {
   @ApiPropertyOptional({
-    description: 'Filter by meal type',
-    enum: MealType,
+    description: 'Filter by category',
+    example: 'Chicken',
   })
   @IsOptional()
-  @IsEnum(MealType)
-  mealType?: MealType;
+  @IsString()
+  @TransformTrimToUndefined()
+  category?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter by cuisine type',
+    example: 'Italian',
+  })
+  @IsOptional()
+  @IsString()
+  @TransformTrimToUndefined()
+  cuisineType?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter by source',
+    example: 'themealdb',
+  })
+  @IsOptional()
+  @IsString()
+  @TransformTrimToUndefined()
+  source?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter public recipes only',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isPublic?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Filter by dietary labels',
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @TransformCSVToStringArray()
+  dietaryLabels?: string[];
 
   @ApiPropertyOptional({ description: 'Filter by tags', type: [String] })
   @IsOptional()

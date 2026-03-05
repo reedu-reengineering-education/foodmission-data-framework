@@ -9,8 +9,12 @@ describe('RecipeRepository', () => {
   const mockRecipe = {
     id: 'recipe-1',
     userId: 'user-1',
-    mealId: 'meal-1',
     title: 'Test Recipe',
+    isPublic: false,
+    externalId: null,
+    source: 'user',
+    category: null,
+    cuisineType: null,
     createdAt: new Date('2025-01-01T00:00:00Z'),
     updatedAt: new Date('2025-01-01T00:00:00Z'),
   };
