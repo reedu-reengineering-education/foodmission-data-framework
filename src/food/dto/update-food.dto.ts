@@ -36,15 +36,4 @@ export class UpdateFoodDto extends PartialType(CreateFoodDto) {
   @IsString()
   @MaxLength(50)
   barcode?: string;
-
-  @ApiProperty({
-    description: 'OpenFoodFacts product identifier',
-    example: '3017620422003',
-    maxLength: 100,
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  openFoodFactsId?: string;
 }

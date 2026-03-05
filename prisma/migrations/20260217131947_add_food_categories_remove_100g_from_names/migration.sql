@@ -1,0 +1,232 @@
+/*
+  Warnings:
+
+  - You are about to drop the column `addedSugars100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `calcium100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `carbohydrates100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `cholesterol100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `energyKcal100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `energyKj100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `fat100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `fiber100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `iron100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `magnesium100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `potassium100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `proteins100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `salt100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `saturatedFat100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `sodium100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `sugars100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `transFat100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `vitaminA100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `vitaminC100g` on the `foods` table. All the data in the column will be lost.
+  - You are about to drop the column `zinc100g` on the `foods` table. All the data in the column will be lost.
+
+*/
+-- AlterTable
+ALTER TABLE "public"."foods" DROP COLUMN "addedSugars100g",
+DROP COLUMN "calcium100g",
+DROP COLUMN "carbohydrates100g",
+DROP COLUMN "cholesterol100g",
+DROP COLUMN "energyKcal100g",
+DROP COLUMN "energyKj100g",
+DROP COLUMN "fat100g",
+DROP COLUMN "fiber100g",
+DROP COLUMN "iron100g",
+DROP COLUMN "magnesium100g",
+DROP COLUMN "potassium100g",
+DROP COLUMN "proteins100g",
+DROP COLUMN "salt100g",
+DROP COLUMN "saturatedFat100g",
+DROP COLUMN "sodium100g",
+DROP COLUMN "sugars100g",
+DROP COLUMN "transFat100g",
+DROP COLUMN "vitaminA100g",
+DROP COLUMN "vitaminC100g",
+DROP COLUMN "zinc100g",
+ADD COLUMN     "addedSugars" DOUBLE PRECISION,
+ADD COLUMN     "calcium" DOUBLE PRECISION,
+ADD COLUMN     "carbohydrates" DOUBLE PRECISION,
+ADD COLUMN     "cholesterol" DOUBLE PRECISION,
+ADD COLUMN     "energyKcal" DOUBLE PRECISION,
+ADD COLUMN     "energyKj" DOUBLE PRECISION,
+ADD COLUMN     "fat" DOUBLE PRECISION,
+ADD COLUMN     "fiber" DOUBLE PRECISION,
+ADD COLUMN     "iron" DOUBLE PRECISION,
+ADD COLUMN     "magnesium" DOUBLE PRECISION,
+ADD COLUMN     "potassium" DOUBLE PRECISION,
+ADD COLUMN     "proteins" DOUBLE PRECISION,
+ADD COLUMN     "salt" DOUBLE PRECISION,
+ADD COLUMN     "saturatedFat" DOUBLE PRECISION,
+ADD COLUMN     "sodium" DOUBLE PRECISION,
+ADD COLUMN     "sugars" DOUBLE PRECISION,
+ADD COLUMN     "transFat" DOUBLE PRECISION,
+ADD COLUMN     "vitaminA" DOUBLE PRECISION,
+ADD COLUMN     "vitaminC" DOUBLE PRECISION,
+ADD COLUMN     "zinc" DOUBLE PRECISION;
+
+-- CreateTable
+CREATE TABLE "public"."food_categories" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "nevoVersion" TEXT NOT NULL,
+    "foodGroup" TEXT NOT NULL,
+    "nevoCode" INTEGER NOT NULL,
+    "foodName" TEXT NOT NULL,
+    "synonym" TEXT,
+    "quantity" TEXT,
+    "containsTracesOf" TEXT,
+    "isFortifiedWith" TEXT,
+    "energyKj" DOUBLE PRECISION,
+    "energyKcal" DOUBLE PRECISION,
+    "water" DOUBLE PRECISION,
+    "proteins" DOUBLE PRECISION,
+    "proteinsPlant" DOUBLE PRECISION,
+    "proteinsAnimal" DOUBLE PRECISION,
+    "nitrogenTotal" DOUBLE PRECISION,
+    "tryptophan" DOUBLE PRECISION,
+    "fat" DOUBLE PRECISION,
+    "carbohydrates" DOUBLE PRECISION,
+    "sugars" DOUBLE PRECISION,
+    "addedSugars" DOUBLE PRECISION,
+    "starch" DOUBLE PRECISION,
+    "polyols" DOUBLE PRECISION,
+    "fiber" DOUBLE PRECISION,
+    "alcohol" DOUBLE PRECISION,
+    "organicAcids" DOUBLE PRECISION,
+    "ash" DOUBLE PRECISION,
+    "fattyAcidsTotal" DOUBLE PRECISION,
+    "saturatedFat" DOUBLE PRECISION,
+    "monoUnsaturatedFat" DOUBLE PRECISION,
+    "polyUnsaturatedFat" DOUBLE PRECISION,
+    "omega3Fat" DOUBLE PRECISION,
+    "omega6Fat" DOUBLE PRECISION,
+    "transFat" DOUBLE PRECISION,
+    "chloride" DOUBLE PRECISION,
+    "sodium" DOUBLE PRECISION,
+    "potassium" DOUBLE PRECISION,
+    "calcium" DOUBLE PRECISION,
+    "phosphorus" DOUBLE PRECISION,
+    "magnesium" DOUBLE PRECISION,
+    "iron" DOUBLE PRECISION,
+    "ironHaem" DOUBLE PRECISION,
+    "ironNonHaem" DOUBLE PRECISION,
+    "copper" DOUBLE PRECISION,
+    "selenium" DOUBLE PRECISION,
+    "zinc" DOUBLE PRECISION,
+    "iodine" DOUBLE PRECISION,
+    "vitaminARae" DOUBLE PRECISION,
+    "vitaminARe" DOUBLE PRECISION,
+    "retinol" DOUBLE PRECISION,
+    "betaCarotene" DOUBLE PRECISION,
+    "alphaCarotene" DOUBLE PRECISION,
+    "lutein" DOUBLE PRECISION,
+    "zeaxanthin" DOUBLE PRECISION,
+    "betaCryptoxanthin" DOUBLE PRECISION,
+    "lycopene" DOUBLE PRECISION,
+    "vitaminD" DOUBLE PRECISION,
+    "hydroxyCholecalciferol" DOUBLE PRECISION,
+    "cholecalciferol" DOUBLE PRECISION,
+    "ergocalciferol" DOUBLE PRECISION,
+    "vitaminE" DOUBLE PRECISION,
+    "alphaTocopherol" DOUBLE PRECISION,
+    "betaTocopherol" DOUBLE PRECISION,
+    "deltaTocopherol" DOUBLE PRECISION,
+    "gammaTocopherol" DOUBLE PRECISION,
+    "vitaminK" DOUBLE PRECISION,
+    "vitaminK1" DOUBLE PRECISION,
+    "vitaminK2" DOUBLE PRECISION,
+    "thiamin" DOUBLE PRECISION,
+    "riboflavin" DOUBLE PRECISION,
+    "vitaminB6" DOUBLE PRECISION,
+    "vitaminB12" DOUBLE PRECISION,
+    "niacinEquivalents" DOUBLE PRECISION,
+    "niacin" DOUBLE PRECISION,
+    "folateTotal" DOUBLE PRECISION,
+    "folateFood" DOUBLE PRECISION,
+    "folicAcid" DOUBLE PRECISION,
+    "vitaminC" DOUBLE PRECISION,
+    "fa4_0" DOUBLE PRECISION,
+    "fa6_0" DOUBLE PRECISION,
+    "fa8_0" DOUBLE PRECISION,
+    "fa10_0" DOUBLE PRECISION,
+    "fa11_0" DOUBLE PRECISION,
+    "fa12_0" DOUBLE PRECISION,
+    "fa13_0" DOUBLE PRECISION,
+    "fa14_0" DOUBLE PRECISION,
+    "fa15_0" DOUBLE PRECISION,
+    "fa16_0" DOUBLE PRECISION,
+    "fa17_0" DOUBLE PRECISION,
+    "fa18_0" DOUBLE PRECISION,
+    "fa19_0" DOUBLE PRECISION,
+    "fa20_0" DOUBLE PRECISION,
+    "fa21_0" DOUBLE PRECISION,
+    "fa22_0" DOUBLE PRECISION,
+    "fa23_0" DOUBLE PRECISION,
+    "fa24_0" DOUBLE PRECISION,
+    "fa25_0" DOUBLE PRECISION,
+    "fa26_0" DOUBLE PRECISION,
+    "saturatedFatRemainder" DOUBLE PRECISION,
+    "fa10_1cis" DOUBLE PRECISION,
+    "fa12_1cis" DOUBLE PRECISION,
+    "fa14_1cis" DOUBLE PRECISION,
+    "fa16_1cis" DOUBLE PRECISION,
+    "fa18_1cis" DOUBLE PRECISION,
+    "fa20_1cis" DOUBLE PRECISION,
+    "fa22_1cis" DOUBLE PRECISION,
+    "fa24_1cis" DOUBLE PRECISION,
+    "monoUnsaturatedFatRemainder" DOUBLE PRECISION,
+    "fa18_2cn6" DOUBLE PRECISION,
+    "fa18_2cn9" DOUBLE PRECISION,
+    "fa18_2ct" DOUBLE PRECISION,
+    "fa18_2tc" DOUBLE PRECISION,
+    "fa18_2r" DOUBLE PRECISION,
+    "fa18_3cn3" DOUBLE PRECISION,
+    "fa18_3cn6" DOUBLE PRECISION,
+    "fa18_4cn3" DOUBLE PRECISION,
+    "fa20_2cn6" DOUBLE PRECISION,
+    "fa20_3cn9" DOUBLE PRECISION,
+    "fa20_3cn6" DOUBLE PRECISION,
+    "fa20_3cn3" DOUBLE PRECISION,
+    "fa20_4cn6" DOUBLE PRECISION,
+    "fa20_4cn3" DOUBLE PRECISION,
+    "fa20_5cn3" DOUBLE PRECISION,
+    "fa21_5cn3" DOUBLE PRECISION,
+    "fa22_2cn6" DOUBLE PRECISION,
+    "fa22_2cn3" DOUBLE PRECISION,
+    "fa22_3cn3" DOUBLE PRECISION,
+    "fa22_4cn6" DOUBLE PRECISION,
+    "fa22_5cn6" DOUBLE PRECISION,
+    "fa22_5cn3" DOUBLE PRECISION,
+    "fa22_6cn3" DOUBLE PRECISION,
+    "fa24_2cn6" DOUBLE PRECISION,
+    "polyUnsaturatedFatRemainder" DOUBLE PRECISION,
+    "fa10_1trans" DOUBLE PRECISION,
+    "fa12_1trans" DOUBLE PRECISION,
+    "fa14_1trans" DOUBLE PRECISION,
+    "fa16_1trans" DOUBLE PRECISION,
+    "fa18_1trans" DOUBLE PRECISION,
+    "fa18_2ttN6" DOUBLE PRECISION,
+    "fa18_3tttN3" DOUBLE PRECISION,
+    "fa20_1trans" DOUBLE PRECISION,
+    "fa20_2tt" DOUBLE PRECISION,
+    "fa22_1trans" DOUBLE PRECISION,
+    "fa24_1trans" DOUBLE PRECISION,
+    "transFatRemainder" DOUBLE PRECISION,
+    "fattyAcidsUnidentified" DOUBLE PRECISION,
+
+    CONSTRAINT "food_categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "food_categories_nevoCode_key" ON "public"."food_categories"("nevoCode");
+
+-- CreateIndex
+CREATE INDEX "food_categories_foodGroup_idx" ON "public"."food_categories"("foodGroup");
+
+-- CreateIndex
+CREATE INDEX "food_categories_foodName_idx" ON "public"."food_categories"("foodName");
+
+-- CreateIndex
+CREATE INDEX "food_categories_nevoCode_idx" ON "public"."food_categories"("nevoCode");

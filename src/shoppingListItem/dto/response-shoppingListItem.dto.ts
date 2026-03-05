@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
-import { ShoppingListResponseDto } from '../../shoppingList/dto/shoppingList-response.dto';
+import { FoodCategoryResponseDto } from '../../foodCategory/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
 
 @Exclude()
@@ -49,11 +49,26 @@ export class ShoppingListItemResponseDto {
   shoppingListId: string;
 
   @ApiProperty({
-    description: 'The ID of the food item',
+    description: 'The type of item (food or food_category)',
+    example: 'food',
+    enum: ['food', 'food_category'],
+  })
+  @Expose()
+  itemType: 'food' | 'food_category';
+
+  @ApiPropertyOptional({
+    description: 'The ID of the food item (if itemType is food)',
     example: 'uuid-food-id',
   })
   @Expose()
-  foodId: string;
+  foodId: string | null;
+
+  @ApiPropertyOptional({
+    description: 'The ID of the food category (if itemType is food_category)',
+    example: 'uuid-food-category-id',
+  })
+  @Expose()
+  foodCategoryId: string | null;
 
   @ApiProperty({
     description: 'The creation timestamp',
@@ -69,21 +84,21 @@ export class ShoppingListItemResponseDto {
   @Expose()
   updatedAt: Date;
 
-  @ApiProperty({
-    description: 'Associated shopping list',
-    type: () => ShoppingListResponseDto,
-  })
-  @Expose()
-  @Type(() => ShoppingListResponseDto)
-  shoppingList: ShoppingListResponseDto;
-
-  @ApiProperty({
-    description: 'Associated food item',
+  @ApiPropertyOptional({
+    description: 'Associated food item (if itemType is food)',
     type: () => FoodResponseDto,
   })
   @Expose()
   @Type(() => FoodResponseDto)
-  food: FoodResponseDto;
+  food: FoodResponseDto | null;
+
+  @ApiPropertyOptional({
+    description: 'Associated food category (if itemType is food_category)',
+    type: () => FoodCategoryResponseDto,
+  })
+  @Expose()
+  @Type(() => FoodCategoryResponseDto)
+  foodCategory: FoodCategoryResponseDto | null;
 }
 
 export class MultipleShoppingListItemResponseDto {

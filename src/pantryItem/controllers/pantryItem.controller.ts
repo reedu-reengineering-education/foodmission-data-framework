@@ -39,7 +39,6 @@ import { Unit } from '@prisma/client';
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class PantryItemController {
   constructor(private readonly pantryItemService: PantryItemService) {}
-
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -49,7 +48,62 @@ export class PantryItemController {
     description:
       'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
   })
-  @ApiBody({ type: CreatePantryItemDto })
+  @ApiBody({
+    schema: {
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            pantryId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-pantry-id',
+            },
+            quantity: { type: 'number', example: 2, minimum: 0.01 },
+            unit: { type: 'string', example: 'KG', default: 'PIECES' },
+            notes: { type: 'string', example: 'Store in cool place' },
+            expiryDate: {
+              type: 'string',
+              format: 'date',
+              example: '2027-02-02',
+            },
+            foodId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-food-id',
+              description: 'UUID of the food item (OpenFoodFacts).',
+            },
+          },
+          required: ['pantryId', 'foodId', 'quantity'],
+        },
+        {
+          type: 'object',
+          properties: {
+            pantryId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-pantry-id',
+            },
+            quantity: { type: 'number', example: 2, minimum: 0.01 },
+            unit: { type: 'string', example: 'KG', default: 'PIECES' },
+            notes: { type: 'string', example: 'Store in cool place' },
+            expiryDate: {
+              type: 'string',
+              format: 'date',
+              example: '2027-02-02',
+            },
+            foodCategoryId: {
+              type: 'string',
+              format: 'uuid',
+              example: 'uuid-food-category-id',
+              description: 'UUID of the food category (NEVO generic).',
+            },
+          },
+          required: ['pantryId', 'foodCategoryId', 'quantity'],
+        },
+      ],
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'Pantry item created successfully',
@@ -59,7 +113,7 @@ export class PantryItemController {
   async create(
     @Body() createPantryItemDto: CreatePantryItemDto,
     @CurrentUser('id') userId: string,
-  ): Promise<PantryItemResponseDto> {
+  ) {
     return this.pantryItemService.create(createPantryItemDto, userId);
   }
 
@@ -81,6 +135,12 @@ export class PantryItemController {
     name: 'foodId',
     required: false,
     description: 'Filter by food ID (UUID)',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'foodCategoryId',
+    required: false,
+    description: 'Filter by food category ID (UUID)',
     type: String,
   })
   @ApiQuery({

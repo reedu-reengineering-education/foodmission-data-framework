@@ -629,3 +629,4 @@ This project is licensed under the AGPL-3.0 License - see the [LICENSE](LICENSE)
 - [Prisma](https://www.prisma.io/) - Next-generation ORM
 - [OpenFoodFacts](https://world.openfoodfacts.org/) - Open food database
 - [Keycloak](https://www.keycloak.org/) - Identity and access management
+- [RIVM](https://www.rivm.nl/) - Food Category nutritional data

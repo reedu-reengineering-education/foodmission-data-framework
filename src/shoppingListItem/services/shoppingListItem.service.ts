@@ -11,6 +11,7 @@ import {
   handleServiceError,
   formatErrorForLogging,
 } from '../../common/utils/error.utils';
+import { validatePolymorphicItem } from '../../common/utils/polymorphic-item.util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
@@ -30,6 +31,7 @@ import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
 import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
+import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
 import { sanitizeShoppingListItemFilters } from '../../shoppingList/utils/filter-sanitizer';
 
@@ -54,6 +56,7 @@ export class ShoppingListItemService {
     private readonly pantryItemService: PantryItemService,
     private readonly pantryService: PantryService,
     private readonly foodRepository: FoodRepository,
+    private readonly foodCategoryRepository: FoodCategoryRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
   ) {}
 
@@ -63,13 +66,34 @@ export class ShoppingListItemService {
   ): Promise<ShoppingListItemResponseDto> {
     try {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
-      await this.validateFoodExists(createDto.foodId);
-      await this.checkForDuplicateItem(
-        createDto.shoppingListId,
-        createDto.foodId,
-      );
 
-      const item = await this.shoppingListItemRepository.create(createDto);
+      // Validate polymorphic reference
+      const { itemType, foodId, foodCategoryId } =
+        validatePolymorphicItem(createDto);
+
+      // Validate the referenced item exists
+      if (itemType === 'food') {
+        await this.validateFoodExists(foodId!);
+        await this.checkForDuplicateItem(
+          createDto.shoppingListId,
+          foodId,
+          undefined,
+        );
+      } else {
+        await this.validateFoodCategoryExists(foodCategoryId!);
+        await this.checkForDuplicateItem(
+          createDto.shoppingListId,
+          undefined,
+          foodCategoryId,
+        );
+      }
+
+      const item = await this.shoppingListItemRepository.create({
+        ...createDto,
+        itemType,
+        foodId,
+        foodCategoryId,
+      });
 
       return this.transformToResponseDto(item);
     } catch (error) {
@@ -201,15 +225,9 @@ export class ShoppingListItemService {
     id: string,
     userId: string,
   ): Promise<ShoppingListItemResponseDto> {
-    const item = await this.findById(id, userId);
-    const willBeChecked = !item.checked;
-
-    const user = await this.validateUserExists(userId);
-
+    // Validate user before toggling
+    await this.validateUserExists(userId);
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
-
-    await this.createPantryItemIfEnabled(item, user, userId, willBeChecked);
-
     return this.transformToResponseDto(updatedItem);
   }
 
@@ -305,6 +323,18 @@ export class ShoppingListItemService {
     }
   }
 
+  private async validateFoodCategoryExists(
+    foodCategoryId: string,
+  ): Promise<void> {
+    const foodCategory =
+      await this.foodCategoryRepository.findById(foodCategoryId);
+    if (!foodCategory) {
+      throw new NotFoundException(
+        `Food category with ID '${foodCategoryId}' not found`,
+      );
+    }
+  }
+
   private async validateUserExists(
     userId: string,
   ): Promise<
@@ -321,13 +351,24 @@ export class ShoppingListItemService {
 
   private async checkForDuplicateItem(
     shoppingListId: string,
-    foodId: string,
+    foodId?: string,
+    foodCategoryId?: string,
   ): Promise<void> {
-    const existingItem =
-      await this.shoppingListItemRepository.findByShoppingListAndFood(
-        shoppingListId,
-        foodId,
-      );
+    let existingItem;
+
+    if (foodId) {
+      existingItem =
+        await this.shoppingListItemRepository.findByShoppingListAndFood(
+          shoppingListId,
+          foodId,
+        );
+    } else if (foodCategoryId) {
+      existingItem =
+        await this.shoppingListItemRepository.findByShoppingListAndFoodCategory(
+          shoppingListId,
+          foodCategoryId,
+        );
+    }
 
     if (existingItem) {
       throw new ConflictException(
@@ -376,8 +417,20 @@ export class ShoppingListItemService {
     try {
       const pantryId = await this.pantryService.validatePantryExists(userId);
 
+      const dto = item.foodId
+        ? Object.assign(new CreateShoppingListItemDto(), {
+            foodId: item.foodId,
+            quantity: item.quantity,
+            unit: item.unit,
+          })
+        : Object.assign(new CreateShoppingListItemDto(), {
+            foodCategoryId: item.foodCategoryId!,
+            quantity: item.quantity,
+            unit: item.unit,
+          });
+
       await this.pantryItemService.createFromShoppingList(
-        new CreateShoppingListItemDto(item.foodId, item.quantity, item.unit),
+        dto,
         userId,
         pantryId,
       );

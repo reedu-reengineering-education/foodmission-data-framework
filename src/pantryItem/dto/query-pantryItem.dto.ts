@@ -26,6 +26,14 @@ export class QueryPantryItemDto {
   foodId?: string;
 
   @ApiPropertyOptional({
+    description: 'Filter by food category ID',
+    example: 'uuid-food-category-id',
+  })
+  @IsUUID()
+  @IsOptional()
+  foodCategoryId?: string;
+
+  @ApiPropertyOptional({
     description: 'The unit of measurement',
     example: 'KG',
     enum: Unit,

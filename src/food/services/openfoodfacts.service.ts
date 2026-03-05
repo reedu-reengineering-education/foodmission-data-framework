@@ -166,6 +166,16 @@ export class OpenFoodFactsService {
       nutritionGrade: product.nutrition_grades,
       novaGroup: product.nova_group,
       ecoscoreGrade: product.ecoscore_grade,
+      carbonFootprint: product.nutriments?.[
+        'carbon-footprint-from-known-ingredients_product'
+      ]
+        ? Number(
+            product.nutriments[
+              'carbon-footprint-from-known-ingredients_product'
+            ],
+          )
+        : undefined,
+      nutritionDataPer: product.nutrition_data_per,
       imageUrl: product.image_url,
       imageFrontUrl: product.image_front_url,
       imageNutritionUrl: product.image_nutrition_url,

@@ -4,7 +4,6 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUUID,
   Min,
   IsObject,
   IsNumber,
@@ -57,14 +56,6 @@ export class CreateMealDto {
   @IsNumber()
   @Min(0)
   price?: number;
-
-  @ApiPropertyOptional({
-    description: 'Link to pantry item if sourced from pantry',
-    format: 'uuid',
-  })
-  @IsOptional()
-  @IsUUID()
-  pantryItemId?: string;
 
   @ApiPropertyOptional({
     description: 'Barcode of the meal (if packaged)',

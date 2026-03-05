@@ -11,6 +11,7 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { PantryItemModule } from '../pantryItem/pantry.module';
 import { PantryModule } from '../pantry/pantry.module';
 import { FoodModule } from '../food/food.module';
+import { FoodCategoryModule } from '../foodCategory/food-category.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FoodModule } from '../food/food.module';
     PantryItemModule,
     PantryModule,
     FoodModule,
+    FoodCategoryModule,
   ],
   controllers: [ShoppingListItemController],
   providers: [

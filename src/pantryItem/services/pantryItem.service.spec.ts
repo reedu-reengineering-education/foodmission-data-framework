@@ -16,6 +16,7 @@ import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-sho
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
+import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import {
   TEST_IDS,
   TEST_DATA,
@@ -38,7 +39,9 @@ describe('PantryItemService', () => {
   };
 
   const mockPantryItemRepository = {
+    create: jest.fn(),
     findFoodInPantry: jest.fn(),
+    findFoodCategoryInPantry: jest.fn(),
     findMany: jest.fn(),
     findById: jest.fn(),
     update: jest.fn(),
@@ -47,6 +50,10 @@ describe('PantryItemService', () => {
 
   const mockPantryService = {
     validatePantryExists: jest.fn(),
+  };
+
+  const mockFoodCategoryRepository = {
+    findById: jest.fn(),
   };
 
   function createMockPantryItemWithRelations() {
@@ -102,6 +109,10 @@ describe('PantryItemService', () => {
           provide: PantryService,
           useValue: mockPantryService,
         },
+        {
+          provide: FoodCategoryRepository,
+          useValue: mockFoodCategoryRepository,
+        },
       ],
     }).compile();
 
@@ -122,7 +133,7 @@ describe('PantryItemService', () => {
       const createDto = PantryItemTestBuilder.createCreatePantryItemDto();
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
 
       const result = await service.create(createDto, userId);
 
@@ -132,7 +143,7 @@ describe('PantryItemService', () => {
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
       expect(prisma.food.findUnique).toHaveBeenCalled();
       expect(repository.findFoodInPantry).toHaveBeenCalled();
-      expect(prisma.pantryItem.create).toHaveBeenCalled();
+      expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when food does not exist', async () => {
@@ -165,9 +176,7 @@ describe('PantryItemService', () => {
     it('should throw BadRequestException when creation fails unexpectedly', async () => {
       const createDto = PantryItemTestBuilder.createCreatePantryItemDto();
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockRejectedValue(
-        new Error('DB Error'),
-      );
+      mockPantryItemRepository.create.mockRejectedValue(new Error('DB Error'));
 
       await expect(service.create(createDto, userId)).rejects.toThrow(
         BadRequestException,
@@ -184,19 +193,18 @@ describe('PantryItemService', () => {
 
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
 
       await service.create(
         createDtoWithStringDate as unknown as CreatePantryItemDto,
         userId,
       );
 
-      expect(prisma.pantryItem.create).toHaveBeenCalled();
+      expect(mockPantryItemRepository.create).toHaveBeenCalled();
 
-      const createCall = (prisma.pantryItem.create as jest.Mock).mock
-        .calls[0][0];
-      expect(createCall.data.expiryDate).toBeInstanceOf(Date);
-      expect(createCall.data.expiryDate.toISOString()).toContain('2027-02-02');
+      const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+      expect(createCall.expiryDate).toBeInstanceOf(Date);
+      expect(createCall.expiryDate.toISOString()).toContain('2027-02-02');
     });
 
     it('should handle undefined expiryDate when creating', async () => {
@@ -206,14 +214,14 @@ describe('PantryItemService', () => {
         });
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockResolvedValue({
+      mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,
         expiryDate: null,
       });
 
       await service.create(createDtoWithoutDate, userId);
 
-      expect(prisma.pantryItem.create).toHaveBeenCalled();
+      expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
 
     it('should default unit to PIECES when unit is not provided', async () => {
@@ -222,14 +230,14 @@ describe('PantryItemService', () => {
       delete (createDtoWithoutUnit as any).unit;
       const mockPantryItem = createMockPantryItemWithRelations();
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockResolvedValue({
+      mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,
         unit: Unit.PIECES,
       });
 
       await service.create(createDtoWithoutUnit, userId);
 
-      expect(prisma.pantryItem.create).toHaveBeenCalled();
+      expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
   });
 
@@ -656,15 +664,15 @@ describe('PantryItemService', () => {
     const pantryId = TEST_IDS.PANTRY;
 
     it('should create pantry item from shopping list when valid data is provided', async () => {
-      const dto = new CreateShoppingListItemDto(
-        TEST_IDS.FOOD,
-        TEST_DATA.QUANTITY,
-        Unit.KG,
-      );
+      const dto = Object.assign(new CreateShoppingListItemDto(), {
+        foodId: TEST_IDS.FOOD,
+        quantity: TEST_DATA.QUANTITY,
+        unit: Unit.KG,
+      });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
       setupSuccessfulCreateMocks();
-      mockPrismaService.pantryItem.create.mockResolvedValue({
+      mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,
         id: 'new-item',
       });
@@ -676,7 +684,7 @@ describe('PantryItemService', () => {
       );
 
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(prisma.pantryItem.create).toHaveBeenCalled();
+      expect(mockPantryItemRepository.create).toHaveBeenCalled();
       expect(result.id).toBe('new-item');
     });
 
@@ -691,11 +699,11 @@ describe('PantryItemService', () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _description,
       ) => {
-        const dto = new CreateShoppingListItemDto(
-          TEST_IDS.FOOD,
-          TEST_DATA.QUANTITY,
-          Unit.KG,
-        );
+        const dto = Object.assign(new CreateShoppingListItemDto(), {
+          foodId: TEST_IDS.FOOD,
+          quantity: TEST_DATA.QUANTITY,
+          unit: Unit.KG,
+        });
 
         await expect(
           service.createFromShoppingList(

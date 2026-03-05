@@ -10,8 +10,27 @@ import {
   Min,
   MaxLength,
   IsEnum,
+  ValidateIf,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+
+@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
+class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+  validate(_: unknown, args: ValidationArguments): boolean {
+    const obj = args.object as CreatePantryItemDto;
+    const hasFood = !!obj.foodId;
+    const hasCategory = !!obj.foodCategoryId;
+    return hasFood !== hasCategory; // exactly one must be true (XOR)
+  }
+
+  defaultMessage(): string {
+    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+  }
+}
 
 export class CreatePantryItemDto {
   @ApiProperty({
@@ -22,13 +41,26 @@ export class CreatePantryItemDto {
   @IsUUID()
   pantryId: string;
 
-  @ApiProperty({
-    description: 'The ID of the food item to add',
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.',
     example: 'uuid-food-id',
   })
-  @IsNotEmpty()
   @IsUUID()
-  foodId: string;
+  @ValidateIf((o) => !o.foodCategoryId)
+  @IsNotEmpty()
+  @Validate(ExclusiveFoodReferenceConstraint)
+  foodId?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.',
+    example: 'uuid-food-category-id',
+  })
+  @IsUUID()
+  @ValidateIf((o) => !o.foodId)
+  @IsNotEmpty()
+  foodCategoryId?: string;
 
   @ApiProperty({
     description: 'The quantity of the item',
@@ -68,20 +100,4 @@ export class CreatePantryItemDto {
   @IsOptional()
   @IsDateString()
   expiryDate?: Date;
-
-  constructor(
-    pantryId: string,
-    foodId: string,
-    quantity: number,
-    unit: Unit = Unit.PIECES,
-    notes?: string,
-    expiryDate?: Date,
-  ) {
-    this.pantryId = pantryId;
-    this.foodId = foodId;
-    this.quantity = quantity;
-    this.unit = unit;
-    this.notes = notes;
-    this.expiryDate = expiryDate;
-  }
 }
