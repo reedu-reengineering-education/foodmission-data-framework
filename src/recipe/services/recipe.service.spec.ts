@@ -58,6 +58,14 @@ describe('RecipeService', () => {
     });
   });
 
+  it('should throw NotFound on findOne when recipe missing', async () => {
+    mockRecipeRepository.findById.mockResolvedValue(null);
+
+    await expect(service.findOne('missing', userId)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
   it('should throw NotFound on update when recipe missing', async () => {
     mockRecipeRepository.findById.mockResolvedValue(null);
 
@@ -269,9 +277,8 @@ describe('RecipeService', () => {
       );
     });
 
-    it('should block direct findOne for public system recipes (current limitation)', async () => {
-      // TODO: Consider updating findOne to allow viewing public recipes
-      // Currently, findOne enforces ownership which blocks public system recipes
+    it('should allow findOne for public system recipes', async () => {
+      // Public recipes (even with userId=null) can be viewed by any user
       const systemRecipe = {
         id: 'sys-1',
         userId: null,
@@ -279,12 +286,29 @@ describe('RecipeService', () => {
         isPublic: true,
         source: 'themealdb',
         externalId: '52772',
+        ingredients: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       mockRecipeRepository.findById.mockResolvedValue(systemRecipe);
 
-      // Public recipes with null userId cannot be accessed via findOne
-      // Users should use findAll with isPublic filter to see these recipes
-      await expect(service.findOne('sys-1', userId)).rejects.toThrow(
+      const result = await service.findOne('sys-1', userId);
+
+      expect(result.id).toBe('sys-1');
+      expect(result.title).toBe('TheMealDB Recipe');
+      expect(result.isPublic).toBe(true);
+    });
+
+    it('should block findOne for private recipes owned by other users', async () => {
+      const privateRecipe = {
+        id: 'r-private',
+        userId: 'other-user',
+        title: 'Private Recipe',
+        isPublic: false,
+      };
+      mockRecipeRepository.findById.mockResolvedValue(privateRecipe);
+
+      await expect(service.findOne('r-private', userId)).rejects.toThrow(
         ForbiddenException,
       );
     });
