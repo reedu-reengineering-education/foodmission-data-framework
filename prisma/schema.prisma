@@ -311,6 +311,8 @@ model User {
   meals                          Meal[]
   mealLogs                       MealLog[]
 
+  groupMemberships              GroupMembership[]
+
   @@index([email])
   @@index([createdAt])
   @@map("users")
