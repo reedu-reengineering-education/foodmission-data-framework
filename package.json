@@ -124,8 +124,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
-    "@nestjs/cli": "^11.0.10",
-    "@nestjs/schematics": "^11.0.7",
+    "@nestjs/cli": "^11.0.16",
+    "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.6",
     "@types/cache-manager": "^5.0.0",
     "@types/express": "^5.0.3",
