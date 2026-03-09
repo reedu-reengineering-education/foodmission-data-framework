@@ -226,7 +226,10 @@ describe('RecipeService', () => {
       mockRecipeRepository.create.mockResolvedValue(recipe);
 
       // Note: no mealId required - recipes are standalone content
-      const result = await service.create({ title: 'Simple Salad' } as any, userId);
+      const result = await service.create(
+        { title: 'Simple Salad' } as any,
+        userId,
+      );
 
       expect(result.id).toBe('r1');
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
@@ -241,14 +244,22 @@ describe('RecipeService', () => {
       const paginationResult = {
         data: [
           { id: 'r1', userId, title: 'My Recipe', isPublic: false },
-          { id: 'r2', userId: null, title: 'System Recipe', isPublic: true, source: 'themealdb' },
+          {
+            id: 'r2',
+            userId: null,
+            title: 'System Recipe',
+            isPublic: true,
+            source: 'themealdb',
+          },
         ],
         total: 2,
         page: 1,
         limit: 10,
         totalPages: 1,
       };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
       await service.findAll(userId, { page: 1, limit: 10 });
 
@@ -263,10 +274,22 @@ describe('RecipeService', () => {
     });
 
     it('should filter by isPublic when explicitly requested', async () => {
-      const paginationResult = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
-      await service.findAll(userId, { isPublic: true, page: 1, limit: 10 } as any);
+      await service.findAll(userId, {
+        isPublic: true,
+        page: 1,
+        limit: 10,
+      } as any);
 
       expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -316,8 +339,16 @@ describe('RecipeService', () => {
 
   describe('New query filters for recipes', () => {
     it('should filter recipes by category', async () => {
-      const paginationResult = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
       await service.findAll(userId, { category: 'Chicken', page: 1 } as any);
 
@@ -329,10 +360,21 @@ describe('RecipeService', () => {
     });
 
     it('should filter recipes by cuisineType', async () => {
-      const paginationResult = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
-      await service.findAll(userId, { cuisineType: 'Japanese', page: 1 } as any);
+      await service.findAll(userId, {
+        cuisineType: 'Japanese',
+        page: 1,
+      } as any);
 
       expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -342,10 +384,21 @@ describe('RecipeService', () => {
     });
 
     it('should filter recipes by dietaryLabels array', async () => {
-      const paginationResult = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
-      await service.findAll(userId, { dietaryLabels: ['vegan', 'gluten-free'], page: 1 } as any);
+      await service.findAll(userId, {
+        dietaryLabels: ['vegan', 'gluten-free'],
+        page: 1,
+      } as any);
 
       expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -357,8 +410,16 @@ describe('RecipeService', () => {
     });
 
     it('should filter recipes by source (themealdb, user)', async () => {
-      const paginationResult = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      const paginationResult = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
       await service.findAll(userId, { source: 'themealdb', page: 1 } as any);
 
@@ -493,7 +554,9 @@ describe('RecipeService', () => {
         limit: 10,
         totalPages: 1,
       };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        paginationResult,
+      );
 
       const result = await service.findAll(userId, { page: 1, limit: 10 });
 
@@ -515,7 +578,11 @@ describe('RecipeService', () => {
             order: 0,
             itemType: 'food',
             foodId: 'food-1',
-            food: { id: 'food-1', name: 'Branded Product', imageUrl: 'http://...' },
+            food: {
+              id: 'food-1',
+              name: 'Branded Product',
+              imageUrl: 'http://...',
+            },
           },
         ],
         createdAt: new Date(),

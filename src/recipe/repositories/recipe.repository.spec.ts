@@ -324,11 +324,11 @@ describe('RecipeRepository', () => {
       expect(mockPrismaService.$transaction).toHaveBeenCalled();
 
       // Should delete existing ingredients
-      expect(mockPrismaService.recipeIngredient.deleteMany).toHaveBeenCalledWith(
-        {
-          where: { recipeId: 'recipe-1' },
-        },
-      );
+      expect(
+        mockPrismaService.recipeIngredient.deleteMany,
+      ).toHaveBeenCalledWith({
+        where: { recipeId: 'recipe-1' },
+      });
 
       // Should create new ingredients
       expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
@@ -363,11 +363,11 @@ describe('RecipeRepository', () => {
 
       await repository.update('recipe-1', { ingredients: [] });
 
-      expect(mockPrismaService.recipeIngredient.deleteMany).toHaveBeenCalledWith(
-        {
-          where: { recipeId: 'recipe-1' },
-        },
-      );
+      expect(
+        mockPrismaService.recipeIngredient.deleteMany,
+      ).toHaveBeenCalledWith({
+        where: { recipeId: 'recipe-1' },
+      });
       expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
         data: { ingredients: undefined },

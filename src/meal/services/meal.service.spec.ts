@@ -178,7 +178,11 @@ describe('MealService', () => {
       };
       mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
 
-      await service.findAll(userId, { recipeId: 'recipe-xyz', page: 1, limit: 10 });
+      await service.findAll(userId, {
+        recipeId: 'recipe-xyz',
+        page: 1,
+        limit: 10,
+      });
 
       expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
