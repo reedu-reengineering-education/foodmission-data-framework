@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { RecipeRepository } from '../repositories/recipe.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
@@ -109,8 +114,19 @@ export class RecipeService {
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
-    const ownedRecipe = await this.getOwnedRecipeOrThrow(id, userId);
-    return this.toResponse(ownedRecipe);
+    const recipe = await this.recipeRepository.findById(id);
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    // Allow access if user owns it OR if it's public
+    const canAccess = recipe.userId === userId || recipe.isPublic === true;
+    if (!canAccess) {
+      throw new ForbiddenException('Access denied to this recipe');
+    }
+
+    return this.toResponse(recipe);
   }
 
   async update(
