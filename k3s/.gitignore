@@ -1,0 +1,5 @@
+# Ignore real values files with secrets
+values.yaml
+values.test.yaml
+values.staging.yaml
+values.prod.yaml
