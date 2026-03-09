@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MealType, Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
@@ -20,7 +20,7 @@ type MealInclude = Prisma.MealInclude;
 
 export interface CreateMealData {
   name: string;
-  mealType: MealType;
+  mealType: string; // Should match enum values in schema
   calories?: number;
   proteins?: number;
   nutritionalInfo?: Prisma.InputJsonValue;
@@ -65,9 +65,8 @@ export class MealRepository
     const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
-    const prismaClient = this.prisma as unknown as PrismaClient;
     const [data, total] = await Promise.all([
-      prismaClient.meal.findMany({
+      (this.prisma as unknown as PrismaClient).meal.findMany({
         skip: safeSkip,
         take: safeTake,
         where,
