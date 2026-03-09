@@ -6,7 +6,7 @@ Add these scripts to your `package.json` for easy OpenAPI generation:
 {
   "scripts": {
     "openapi:generate": "node scripts/generate-openapi.js",
-    "openapi:serve": "npm run build && npm run openapi:generate && echo 'OpenAPI spec generated! Import docs/openapi.json into Postman'",
+    "openapi:serve": "npm run build && npm run openapi:generate && echo 'OpenAPI spec generated! See docs/openapi.json'",
     "docs:generate": "npm run openapi:generate"
   }
 }
@@ -26,4 +26,4 @@ npm run openapi:generate
 npm run openapi:serve
 ```
 
-The generated file will be saved to `docs/openapi.json` and can be imported directly into Postman.
+The generated file will be saved to `docs/openapi.json` and can be imported into any OpenAPI-compatible tool.
