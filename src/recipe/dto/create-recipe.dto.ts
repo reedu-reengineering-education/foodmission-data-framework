@@ -1,14 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsInt,
-  IsObject,
   IsOptional,
   IsString,
   Min,
   IsNumber,
+  ValidateNested,
 } from 'class-validator';
+import { CreateRecipeIngredientDto } from './recipe-ingredient.dto';
 
 export class CreateRecipeDto {
   @ApiProperty({ description: 'Recipe title', example: 'Hearty veggie pasta' })
@@ -162,10 +164,16 @@ export class CreateRecipeDto {
   dietaryLabels?: string[];
 
   @ApiPropertyOptional({
-    description: 'Structured ingredients list',
-    example: [{ name: 'Chicken', measure: '500g', order: 1 }],
+    description: 'Recipe ingredients',
+    type: [CreateRecipeIngredientDto],
+    example: [
+      { name: 'Chicken Breast', measure: '500g', order: 1 },
+      { name: 'Olive Oil', measure: '2 tbsp', order: 2, foodCategoryId: 'uuid' },
+    ],
   })
   @IsOptional()
-  @IsObject()
-  ingredients?: Record<string, any>;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateRecipeIngredientDto)
+  ingredients?: CreateRecipeIngredientDto[];
 }

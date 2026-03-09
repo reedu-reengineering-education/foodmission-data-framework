@@ -8,6 +8,14 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
 
+export interface CreateRecipeIngredientData {
+  name: string;
+  measure?: string;
+  order?: number;
+  foodId?: string;
+  foodCategoryId?: string;
+}
+
 export interface CreateRecipeData {
   userId?: string;
   title: string;
@@ -31,13 +39,14 @@ export interface CreateRecipeData {
   category?: string;
   isPublic?: boolean;
   dietaryLabels?: string[];
-  ingredients?: Prisma.InputJsonValue;
+  ingredients?: CreateRecipeIngredientData[];
 }
 
 export interface UpdateRecipeData
   extends Partial<Omit<CreateRecipeData, 'userId'>> {
   rating?: number;
   ratingCount?: number;
+  ingredients?: CreateRecipeIngredientData[];
 }
 
 @Injectable()
@@ -52,6 +61,18 @@ export class RecipeRepository
 {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly includeIngredients: Prisma.RecipeInclude = {
+    ingredients: {
+      orderBy: { order: 'asc' },
+      include: {
+        food: { select: { id: true, name: true, imageUrl: true } },
+        foodCategory: {
+          select: { id: true, foodName: true, nevoCode: true, energyKcal: true },
+        },
+      },
+    },
+  };
+
   async findAll(
     options: FindAllOptions<
       Prisma.RecipeWhereInput,
@@ -64,7 +85,7 @@ export class RecipeRepository
       take: options.take,
       where: options.where,
       orderBy: options.orderBy || { createdAt: 'desc' },
-      include: options.include,
+      include: { ...this.includeIngredients, ...options.include },
     });
   }
 
@@ -84,7 +105,7 @@ export class RecipeRepository
         take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
-        include,
+        include: { ...this.includeIngredients, ...include },
       }),
       this.count(where),
     ]);
@@ -104,22 +125,77 @@ export class RecipeRepository
   async findById(id: string): Promise<Recipe | null> {
     return this.prisma.recipe.findUnique({
       where: { id },
-      include: { meal: true } as Prisma.RecipeInclude,
+      include: { ...this.includeIngredients, meals: true },
     });
   }
 
   async create(data: CreateRecipeData): Promise<Recipe> {
+    const { ingredients, ...recipeData } = data;
+
     return this.prisma.recipe.create({
-      data: data as Prisma.RecipeUncheckedCreateInput,
-      include: { meal: true } as Prisma.RecipeInclude,
+      data: {
+        ...recipeData,
+        ingredients: ingredients?.length
+          ? {
+              create: ingredients.map((ing, index) => ({
+                name: ing.name,
+                measure: ing.measure ?? null,
+                order: ing.order ?? index,
+                itemType: ing.foodId
+                  ? 'food'
+                  : ing.foodCategoryId
+                    ? 'food_category'
+                    : 'food_category',
+                foodId: ing.foodId ?? null,
+                foodCategoryId: ing.foodCategoryId ?? null,
+              })),
+            }
+          : undefined,
+      } as Prisma.RecipeUncheckedCreateInput,
+      include: { ...this.includeIngredients, meals: true },
     });
   }
 
   async update(id: string, data: UpdateRecipeData): Promise<Recipe> {
+    const { ingredients, ...recipeData } = data;
+
+    // If ingredients are provided, replace them all
+    if (ingredients !== undefined) {
+      return this.prisma.$transaction(async (tx) => {
+        // Delete existing ingredients
+        await tx.recipeIngredient.deleteMany({ where: { recipeId: id } });
+
+        // Update recipe and create new ingredients
+        return tx.recipe.update({
+          where: { id },
+          data: {
+            ...recipeData,
+            ingredients: ingredients?.length
+              ? {
+                  create: ingredients.map((ing, index) => ({
+                    name: ing.name,
+                    measure: ing.measure ?? null,
+                    order: ing.order ?? index,
+                    itemType: ing.foodId
+                      ? 'food'
+                      : ing.foodCategoryId
+                        ? 'food_category'
+                        : 'food_category',
+                    foodId: ing.foodId ?? null,
+                    foodCategoryId: ing.foodCategoryId ?? null,
+                  })),
+                }
+              : undefined,
+          } as Prisma.RecipeUncheckedUpdateInput,
+          include: { ...this.includeIngredients, meals: true },
+        });
+      });
+    }
+
     return this.prisma.recipe.update({
       where: { id },
-      data: data as Prisma.RecipeUncheckedUpdateInput,
-      include: { meal: true } as Prisma.RecipeInclude,
+      data: recipeData as Prisma.RecipeUncheckedUpdateInput,
+      include: { ...this.includeIngredients, meals: true },
     });
   }
 

@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { RecipeIngredientResponseDto } from './recipe-ingredient.dto';
 
 export class RecipeResponseDto {
   @ApiProperty({ description: 'Recipe id', format: 'uuid' })
@@ -110,9 +111,13 @@ export class RecipeResponseDto {
   @Expose()
   dietaryLabels?: string[];
 
-  @ApiPropertyOptional({ description: 'Structured ingredients list' })
+  @ApiPropertyOptional({
+    type: [RecipeIngredientResponseDto],
+    description: 'Recipe ingredients',
+  })
   @Expose()
-  ingredients?: Record<string, any>;
+  @Type(() => RecipeIngredientResponseDto)
+  ingredients?: RecipeIngredientResponseDto[];
 }
 
 export class MultipleRecipeResponseDto {

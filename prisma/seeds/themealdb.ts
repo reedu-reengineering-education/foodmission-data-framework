@@ -23,7 +23,7 @@
  * @see docs/DATABASE_SEEDING_MIGRATION.md for full documentation
  */
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -73,14 +73,16 @@ interface MappingRow {
   nutriscoreGrade: string;
 }
 
-interface RecipeIngredient {
+interface RecipeIngredientData {
   name: string;
   measure: string;
   order: number;
+  // Link to Food table (OpenFoodFacts products)
   foodId?: string;
-  foodName?: string;
-  source?: string;
-  matchConfidence?: string;
+  // Link to FoodCategory table (NEVO generic foods)
+  foodCategoryId?: string;
+  // Derived itemType for Prisma
+  itemType: 'food' | 'food_category';
 }
 
 interface SeedOptions {
@@ -185,18 +187,32 @@ export async function seedTheMealDbRecipes(
     `   ✅ ${mappedCount} ingredients mapped to foods (${Math.round((mappedCount / 836) * 100)}%)`,
   );
 
-  // Look up food IDs for mapped ingredients
-  const foodIdMap = new Map<string, string>();
+  // Build lookup maps for linking ingredients
+  const foodIdMap = new Map<string, string>(); // Food.name -> Food.id
+  const foodCategoryMap = new Map<number, string>(); // nevoCode -> FoodCategory.id
+  const nevoCodeByName = new Map<string, number>(); // FoodCategory.foodName -> nevoCode
+
   if (!dryRun) {
-    // Get all foods from NEVO source to map names to IDs
-    const nevoFoods = await prisma.food.findMany({
-      where: { createdBy: { contains: 'nevo' } },
+    // Get Food records (OpenFoodFacts products) - for future OFF ingredient links
+    const foods = await prisma.food.findMany({
       select: { id: true, name: true },
     });
-    for (const food of nevoFoods) {
+    for (const food of foods) {
       foodIdMap.set(food.name.toLowerCase(), food.id);
     }
-    console.log(`   🗃️  ${nevoFoods.length} NEVO foods available for linking`);
+    console.log(`   🍎 ${foods.length} Food records available for linking`);
+
+    // Get FoodCategory records (NEVO generic foods)
+    const foodCategories = await prisma.foodCategory.findMany({
+      select: { id: true, nevoCode: true, foodName: true },
+    });
+    for (const fc of foodCategories) {
+      foodCategoryMap.set(fc.nevoCode, fc.id);
+      nevoCodeByName.set(fc.foodName.toLowerCase(), fc.nevoCode);
+    }
+    console.log(
+      `   🥗 ${foodCategories.length} FoodCategory (NEVO) records available for linking`,
+    );
   }
 
   let created = 0;
@@ -222,29 +238,40 @@ export async function seedTheMealDbRecipes(
         }
       }
 
-      // Build ingredients array with food mappings
+      // Build ingredients data for RecipeIngredient records
       const recipeIngredients =
         ingredientsByRecipe.get(recipe.externalId) || [];
-      const ingredientsJson: RecipeIngredient[] = recipeIngredients.map(
+      const ingredientsData: RecipeIngredientData[] = recipeIngredients.map(
         (ing) => {
           const key = ing.ingredientName.toLowerCase().trim();
           const mapping = ingredientMapping.get(key);
 
-          const ingredient: RecipeIngredient = {
+          const ingredient: RecipeIngredientData = {
             name: ing.ingredientName,
             measure: ing.measure,
             order: parseInt(ing.order, 10) || 0,
+            itemType: 'food_category', // Default to food_category
           };
 
           if (mapping) {
-            ingredient.foodName = mapping.foodName;
-            ingredient.source = mapping.source;
-            ingredient.matchConfidence = mapping.matchConfidence;
-
-            // Link to actual Food record if available
-            const foodId = foodIdMap.get(mapping.foodName.toLowerCase());
-            if (foodId) {
-              ingredient.foodId = foodId;
+            // Link based on source type
+            if (mapping.source === 'nevo' && mapping.sourceId) {
+              // Link to FoodCategory (NEVO) via nevoCode lookup
+              const nevoCode = parseInt(mapping.sourceId, 10);
+              if (!isNaN(nevoCode)) {
+                const fcId = foodCategoryMap.get(nevoCode);
+                if (fcId) {
+                  ingredient.foodCategoryId = fcId;
+                  ingredient.itemType = 'food_category';
+                }
+              }
+            } else if (mapping.source === 'off') {
+              // Link to Food (OpenFoodFacts) - by name match
+              const foodId = foodIdMap.get(mapping.foodName.toLowerCase());
+              if (foodId) {
+                ingredient.foodId = foodId;
+                ingredient.itemType = 'food';
+              }
             }
           }
 
@@ -254,30 +281,47 @@ export async function seedTheMealDbRecipes(
 
       if (dryRun) {
         console.log(
-          `  Would create: ${recipe.title} (${ingredientsJson.length} ingredients)`,
+          `  Would create: ${recipe.title} (${ingredientsData.length} ingredients)`,
         );
         created++;
         continue;
       }
 
-      // Create recipe record
-      await prisma.recipe.create({
-        data: {
-          externalId: recipe.externalId,
-          title: recipe.title,
-          category: recipe.category || null,
-          cuisineType: recipe.cuisineType || null,
-          instructions: recipe.instructions || null,
-          imageUrl: recipe.imageUrl || null,
-          videoUrl: recipe.videoUrl || null,
-          tags: parseTags(recipe.tags),
-          dietaryLabels: parseTags(recipe.dietaryLabels),
-          servings: parseServings(recipe.servings),
-          source: 'themealdb',
-          isPublic: true,
-          userId: null, // System recipe
-          ingredients: ingredientsJson as unknown as Prisma.InputJsonValue,
-        },
+      // Create recipe with ingredients in a transaction
+      await prisma.$transaction(async (tx) => {
+        // Create recipe record
+        const createdRecipe = await tx.recipe.create({
+          data: {
+            externalId: recipe.externalId,
+            title: recipe.title,
+            category: recipe.category || null,
+            cuisineType: recipe.cuisineType || null,
+            instructions: recipe.instructions || null,
+            imageUrl: recipe.imageUrl || null,
+            videoUrl: recipe.videoUrl || null,
+            tags: parseTags(recipe.tags),
+            dietaryLabels: parseTags(recipe.dietaryLabels),
+            servings: parseServings(recipe.servings),
+            source: 'themealdb',
+            isPublic: true,
+            userId: null, // System recipe
+          },
+        });
+
+        // Create RecipeIngredient records
+        if (ingredientsData.length > 0) {
+          await tx.recipeIngredient.createMany({
+            data: ingredientsData.map((ing) => ({
+              recipeId: createdRecipe.id,
+              name: ing.name,
+              measure: ing.measure,
+              order: ing.order,
+              itemType: ing.itemType,
+              foodId: ing.foodId || null,
+              foodCategoryId: ing.foodCategoryId || null,
+            })),
+          });
+        }
       });
 
       created++;

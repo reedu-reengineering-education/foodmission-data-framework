@@ -89,6 +89,7 @@ model Food {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([name])
   @@index([createdAt])
@@ -273,6 +274,7 @@ model FoodCategory {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([foodGroup])
   @@index([foodName])
@@ -478,17 +480,42 @@ model Recipe {
   category            String?  // Chicken, Seafood, Dessert, etc.
   isPublic            Boolean  @default(false)
   dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
-  ingredients         Json?    // [{foodId?, name, measure, order}, ...]
 
   // Relations
-  user  User?  @relation(fields: [userId], references: [id])
-  meals Meal[] // Meals can reference this recipe
+  user        User?              @relation(fields: [userId], references: [id])
+  meals       Meal[]             // Meals can reference this recipe
+  ingredients RecipeIngredient[] // Structured ingredients with food links
 
   @@index([userId])
   @@index([isPublic])
   @@index([category])
   @@index([cuisineType])
   @@map("recipes")
+}
+
+model RecipeIngredient {
+  id       String  @id @default(uuid())
+  recipeId String
+  name     String  // Original ingredient name from recipe
+  measure  String? // Amount/measurement string
+  order    Int     @default(0)
+
+  // Polymorphic reference (same pattern as MealItem, PantryItem, etc.)
+  itemType       String @default("food_category") // "food" | "food_category"
+  foodId         String?
+  foodCategoryId String?
+
+  recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  food         Food?         @relation(fields: [foodId], references: [id])
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([recipeId])
+  @@index([foodId])
+  @@index([foodCategoryId])
+  @@map("recipe_ingredients")
 }
 
 model MealLog {
