@@ -168,7 +168,12 @@ export class CreateRecipeDto {
     type: [CreateRecipeIngredientDto],
     example: [
       { name: 'Chicken Breast', measure: '500g', order: 1 },
-      { name: 'Olive Oil', measure: '2 tbsp', order: 2, foodCategoryId: 'uuid' },
+      {
+        name: 'Olive Oil',
+        measure: '2 tbsp',
+        order: 2,
+        foodCategoryId: 'uuid',
+      },
     ],
   })
   @IsOptional()

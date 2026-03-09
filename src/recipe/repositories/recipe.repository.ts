@@ -67,7 +67,12 @@ export class RecipeRepository
       include: {
         food: { select: { id: true, name: true, imageUrl: true } },
         foodCategory: {
-          select: { id: true, foodName: true, nevoCode: true, energyKcal: true },
+          select: {
+            id: true,
+            foodName: true,
+            nevoCode: true,
+            energyKcal: true,
+          },
         },
       },
     },
