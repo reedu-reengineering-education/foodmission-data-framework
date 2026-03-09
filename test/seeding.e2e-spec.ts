@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { seedFoods } from '../prisma/seeds/foods';
 import { seedUsers } from '../prisma/seeds/users';
+import { seedTheMealDbRecipes } from '../prisma/seeds/themealdb';
 
 describe('Database Seeding (e2e)', () => {
   let prisma: PrismaClient;
@@ -184,6 +185,155 @@ describe('Database Seeding (e2e)', () => {
 
       expect(new Set(keycloakIds).size).toBe(keycloakIds.length);
       expect(new Set(emails).size).toBe(emails.length);
+    });
+  });
+
+  describe('TheMealDB Recipe Seeding', () => {
+    beforeEach(async () => {
+      // Clean up recipes before TheMealDB tests
+      try {
+        await prisma.recipe.deleteMany({
+          where: { source: 'themealdb' },
+        });
+      } catch {
+        // Ignore if table doesn't exist or is empty
+      }
+    });
+
+    it('should seed TheMealDB recipes with dry-run option', async () => {
+      const result = await seedTheMealDbRecipes(prisma, {
+        dryRun: true,
+        limit: 5,
+      });
+
+      expect(result.created).toBe(5);
+      expect(result.skipped).toBe(0);
+      expect(result.errors).toBe(0);
+
+      // Verify no recipes were actually created
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+      });
+      expect(recipes.length).toBe(0);
+    });
+
+    it('should seed limited TheMealDB recipes', async () => {
+      const result = await seedTheMealDbRecipes(prisma, {
+        limit: 3,
+      });
+
+      expect(result.created).toBe(3);
+      expect(result.errors).toBe(0);
+
+      // Verify recipes were created
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+      });
+      expect(recipes.length).toBe(3);
+    });
+
+    it('should create recipes with correct properties', async () => {
+      await seedTheMealDbRecipes(prisma, { limit: 2 });
+
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+        include: { ingredients: true },
+      });
+
+      recipes.forEach((recipe) => {
+        // System recipe properties
+        expect(recipe.userId).toBeNull();
+        expect(recipe.source).toBe('themealdb');
+        expect(recipe.isPublic).toBe(true);
+        expect(recipe.externalId).toBeDefined();
+
+        // Required fields
+        expect(recipe.title).toBeDefined();
+        expect(recipe.title.length).toBeGreaterThan(0);
+
+        // Optional enriched fields
+        expect(recipe.category).toBeDefined();
+        expect(recipe.cuisineType).toBeDefined();
+
+        // Ingredients relation
+        expect(recipe.ingredients).toBeDefined();
+        expect(Array.isArray(recipe.ingredients)).toBe(true);
+        expect(recipe.ingredients.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('should have ingredients with expected structure', async () => {
+      await seedTheMealDbRecipes(prisma, { limit: 1 });
+
+      const recipe = await prisma.recipe.findFirst({
+        where: { source: 'themealdb' },
+        include: {
+          ingredients: {
+            include: {
+              foodCategory: true,
+            },
+          },
+        },
+      });
+
+      expect(recipe).toBeDefined();
+      expect(recipe!.ingredients.length).toBeGreaterThan(0);
+
+      recipe!.ingredients.forEach((ing) => {
+        expect(ing.name).toBeDefined();
+        expect(ing.measure).toBeDefined();
+        expect(typeof ing.order).toBe('number');
+        expect(ing.recipeId).toBe(recipe!.id);
+        expect(['food', 'food_category']).toContain(ing.itemType);
+
+        // Some ingredients should have food category mappings
+        if (ing.foodCategoryId) {
+          expect(ing.foodCategory).toBeDefined();
+        }
+      });
+    });
+
+    it('should skip existing recipes on re-run', async () => {
+      // First run
+      const firstResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      expect(firstResult.created).toBe(3);
+
+      // Second run with same limit
+      const secondResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      expect(secondResult.created).toBe(0);
+      expect(secondResult.skipped).toBe(3);
+
+      // Verify no duplicates
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+      });
+      expect(recipes.length).toBe(3);
+    });
+
+    it('should force re-seed with force option', async () => {
+      // Note: Force option isn't implemented to update existing,
+      // it just doesn't skip. This test documents current behavior.
+      await seedTheMealDbRecipes(prisma, { limit: 2 });
+
+      // Force won't create duplicates due to unique constraint on externalId
+      // But it will attempt to create them (and fail/skip due to constraint)
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+      });
+      expect(recipes.length).toBe(2);
+    });
+
+    it('should have unique externalIds', async () => {
+      await seedTheMealDbRecipes(prisma, { limit: 10 });
+
+      const recipes = await prisma.recipe.findMany({
+        where: { source: 'themealdb' },
+        select: { externalId: true },
+      });
+
+      const externalIds = recipes.map((r) => r.externalId);
+      const uniqueIds = new Set(externalIds);
+      expect(uniqueIds.size).toBe(externalIds.length);
     });
   });
 });

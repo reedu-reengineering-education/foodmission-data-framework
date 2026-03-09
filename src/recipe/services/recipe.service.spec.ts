@@ -345,4 +345,172 @@ describe('RecipeService', () => {
       );
     });
   });
+
+  describe('Recipe ingredients handling', () => {
+    const mockIngredients = [
+      {
+        id: 'ing-1',
+        recipeId: 'r1',
+        name: 'Chicken Breast',
+        measure: '500g',
+        order: 0,
+        itemType: 'food_category',
+        foodCategoryId: 'fc-1',
+        foodCategory: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
+      },
+      {
+        id: 'ing-2',
+        recipeId: 'r1',
+        name: 'Olive Oil',
+        measure: '2 tbsp',
+        order: 1,
+        itemType: 'food_category',
+        foodCategoryId: null,
+      },
+    ];
+
+    it('should create recipe with ingredients', async () => {
+      const recipeWithIngredients = {
+        id: 'r1',
+        userId,
+        title: 'Chicken Dinner',
+        isPublic: false,
+        ingredients: mockIngredients,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockRecipeRepository.create.mockResolvedValue(recipeWithIngredients);
+
+      const createDto = {
+        title: 'Chicken Dinner',
+        ingredients: [
+          { name: 'Chicken Breast', measure: '500g', foodCategoryId: 'fc-1' },
+          { name: 'Olive Oil', measure: '2 tbsp' },
+        ],
+      };
+
+      const result = await service.create(createDto as any, userId);
+
+      expect(result.ingredients).toBeDefined();
+      expect(result.ingredients).toHaveLength(2);
+      expect(mockRecipeRepository.create).toHaveBeenCalledWith({
+        ...createDto,
+        userId,
+      });
+    });
+
+    it('should return recipe with ingredients in findOne', async () => {
+      const recipeWithIngredients = {
+        id: 'r1',
+        userId,
+        title: 'My Recipe',
+        isPublic: false,
+        ingredients: mockIngredients,
+      };
+      mockRecipeRepository.findById.mockResolvedValue(recipeWithIngredients);
+
+      const result = await service.findOne('r1', userId);
+
+      expect(result.ingredients).toBeDefined();
+      expect(result.ingredients).toHaveLength(2);
+      expect(result.ingredients[0].name).toBe('Chicken Breast');
+    });
+
+    it('should update recipe with new ingredients', async () => {
+      mockRecipeRepository.findById.mockResolvedValue({
+        id: 'r1',
+        userId,
+        ingredients: mockIngredients,
+      });
+
+      const updatedRecipe = {
+        id: 'r1',
+        userId,
+        title: 'Updated Recipe',
+        ingredients: [
+          {
+            id: 'ing-new',
+            recipeId: 'r1',
+            name: 'New Ingredient',
+            measure: '100g',
+            order: 0,
+            itemType: 'food_category',
+          },
+        ],
+      };
+      mockRecipeRepository.update.mockResolvedValue(updatedRecipe);
+
+      const result = await service.update(
+        'r1',
+        {
+          title: 'Updated Recipe',
+          ingredients: [{ name: 'New Ingredient', measure: '100g' }],
+        } as any,
+        userId,
+      );
+
+      expect(result.ingredients).toHaveLength(1);
+      expect(result.ingredients[0].name).toBe('New Ingredient');
+    });
+
+    it('should include ingredients with food category details in findAll', async () => {
+      const paginationResult = {
+        data: [
+          {
+            id: 'r1',
+            userId,
+            title: 'Recipe 1',
+            isPublic: false,
+            ingredients: mockIngredients,
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+      mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
+
+      const result = await service.findAll(userId, { page: 1, limit: 10 });
+
+      expect(result.data[0].ingredients).toBeDefined();
+      expect(result.data[0].ingredients[0].foodCategory).toBeDefined();
+    });
+
+    it('should create recipe with ingredients linked to Food', async () => {
+      const recipeWithFoodIngredient = {
+        id: 'r1',
+        userId,
+        title: 'Product Recipe',
+        ingredients: [
+          {
+            id: 'ing-1',
+            recipeId: 'r1',
+            name: 'Branded Product',
+            measure: '1 pack',
+            order: 0,
+            itemType: 'food',
+            foodId: 'food-1',
+            food: { id: 'food-1', name: 'Branded Product', imageUrl: 'http://...' },
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockRecipeRepository.create.mockResolvedValue(recipeWithFoodIngredient);
+
+      const result = await service.create(
+        {
+          title: 'Product Recipe',
+          ingredients: [
+            { name: 'Branded Product', measure: '1 pack', foodId: 'food-1' },
+          ],
+        } as any,
+        userId,
+      );
+
+      expect(result.ingredients[0].foodId).toBe('food-1');
+      expect(result.ingredients[0].food).toBeDefined();
+    });
+  });
 });
