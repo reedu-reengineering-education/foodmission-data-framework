@@ -106,7 +106,6 @@ foodmission-data-framework/
 ├── backups/               # Backup files
 ├── docs/                  # Documentation
 ├── keycloak/              # Keycloak configuration
-├── postman/               # Postman collections
 ├── prisma/                # Database schema and migrations
 │   ├── migrations/        # Database migrations
 │   ├── seeds/            # Database seed files
