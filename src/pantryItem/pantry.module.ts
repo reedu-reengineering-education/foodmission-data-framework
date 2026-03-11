@@ -8,8 +8,15 @@ import { PantryItemController } from './controllers/pantryItem.controller';
 import { PantryItemRepository } from './repositories/pantryItem.repository';
 import { PantryItemService } from './services/pantryItem.service';
 import { PantryModule } from '../pantry/pantry.module';
+import { FoodCategoryModule } from '../foodCategory/food-category.module';
 @Module({
-  imports: [DatabaseModule, HttpModule, CommonModule, PantryModule],
+  imports: [
+    DatabaseModule,
+    HttpModule,
+    CommonModule,
+    PantryModule,
+    FoodCategoryModule,
+  ],
   controllers: [PantryItemController],
   providers: [PantryItemService, PantryItemRepository, UserRepository],
   exports: [PantryItemService, PantryItemRepository],

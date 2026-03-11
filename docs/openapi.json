@@ -69,6 +69,9 @@
                     "lastName": {
                       "type": "string"
                     },
+                    "yearOfBirth": {
+                      "type": "integer"
+                    },
                     "keycloakId": {
                       "type": "string"
                     },
@@ -126,221 +129,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Get authenticated user profile",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/v1/auth/profile/preferences": {
-      "put": {
-        "description": "Update app-specific user preferences. Returns the updated user profile.",
-        "operationId": "updatePreferences",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User preferences object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "dietaryRestrictions": [
-                    "vegetarian"
-                  ],
-                  "allergies": [
-                    "nuts"
-                  ],
-                  "theme": "dark"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User preferences updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user preferences",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/v1/auth/profile/settings": {
-      "put": {
-        "description": "Update app-specific user settings. Returns the updated user profile.",
-        "operationId": "updateSettings",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "User settings object (JSON)",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "language": "en",
-                  "notifications": true,
-                  "timezone": "UTC"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User settings updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "firstName": {
-                      "type": "string"
-                    },
-                    "lastName": {
-                      "type": "string"
-                    },
-                    "keycloakId": {
-                      "type": "string"
-                    },
-                    "preferences": {
-                      "type": "object"
-                    },
-                    "settings": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "keycloak-oauth2": [
-              "openid",
-              "profile"
-            ]
-          },
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update user settings",
+        "summary": "Get and create authenticated user profile (deprecated possibly depending on registration flow)",
         "tags": [
           "auth"
         ]
@@ -374,6 +163,106 @@
           }
         },
         "summary": "Authentication service health check",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Register a new user in Keycloak and create local user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Login user via Keycloak and return tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Logout by revoking token at Keycloak",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Exchange refresh token for new tokens",
         "tags": [
           "auth"
         ]
@@ -862,14 +751,32 @@
         ]
       }
     },
-    "/api/v1/users/{id}/preferences": {
+    "/api/v1/profile/me": {
       "get": {
-        "operationId": "getPreferences",
+        "operationId": "getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "profile"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteMe",
         "parameters": [
           {
-            "name": "id",
+            "name": "deleteAll",
             "required": true,
-            "in": "path",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -877,68 +784,67 @@
         ],
         "responses": {
           "200": {
-            "description": "User preferences"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
-          {
             "JWT-auth": []
           }
         ],
-        "summary": "Get user preferences",
+        "summary": "Delete current user (optionally cascade all data)",
         "tags": [
-          "users"
+          "profile"
         ]
-      },
+      }
+    },
+    "/api/v1/profile": {
       "patch": {
-        "operationId": "updatePreferences",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "updateProfile",
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserPreferencesDto"
+                "$ref": "#/components/schemas/ProfileUpdateDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Preferences updated successfully"
+            "description": ""
           }
         },
         "security": [
           {
-            "keycloak-oauth2": [
-              "openid",
-              "profile",
-              "roles"
-            ]
-          },
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update profile",
+        "tags": [
+          "profile"
+        ]
+      }
+    },
+    "/api/v1/profile/complete": {
+      "get": {
+        "operationId": "isComplete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
           {
             "JWT-auth": []
           }
         ],
-        "summary": "Update user preferences",
+        "summary": "Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)",
         "tags": [
-          "users"
+          "profile"
         ]
       }
     },
@@ -1052,6 +958,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get all food items",
         "tags": [
           "foods"
@@ -1170,6 +1088,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Search OpenFoodFacts database",
         "tags": [
           "foods"
@@ -1338,6 +1268,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Find food by barcode",
         "tags": [
           "foods"
@@ -1401,6 +1343,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Find food by ID",
         "tags": [
           "foods"
@@ -1643,9 +1597,305 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "Get OpenFoodFacts information for food item",
         "tags": [
           "foods"
+        ]
+      }
+    },
+    "/api/v1/food-categories": {
+      "post": {
+        "description": "Admin only: Create a new food category with nutritional data",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFoodCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Food category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodCategoryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin role required"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a new food category",
+        "tags": [
+          "food-categories"
+        ]
+      },
+      "get": {
+        "description": "Get a paginated list of food categories with optional filtering",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search term",
+            "schema": {
+              "example": "potato",
+              "type": "string"
+            }
+          },
+          {
+            "name": "foodGroup",
+            "required": false,
+            "in": "query",
+            "description": "Food group filter",
+            "schema": {
+              "example": "Potatoes and tubers",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food categories retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all food categories",
+        "tags": [
+          "food-categories"
+        ]
+      }
+    },
+    "/api/v1/food-categories/food-groups": {
+      "get": {
+        "description": "Get a list of all distinct food groups available, optionally filtered by search term",
+        "operationId": "getAllFoodGroups",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Filter food groups by search term",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food groups retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all unique food groups",
+        "tags": [
+          "food-categories"
+        ]
+      }
+    },
+    "/api/v1/food-categories/{id}": {
+      "get": {
+        "description": "Get detailed information about a specific food category",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Food category found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodCategoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Food category not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get food category by ID",
+        "tags": [
+          "food-categories"
+        ]
+      },
+      "patch": {
+        "description": "Admin only: Update a food category by ID",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFoodCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Food category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodCategoryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin role required"
+          },
+          "404": {
+            "description": "Food category not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update food category",
+        "tags": [
+          "food-categories"
+        ]
+      },
+      "delete": {
+        "description": "Admin only: Delete a food category by ID",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Food category deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Admin role required"
+          },
+          "404": {
+            "description": "Food category not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete food category",
+        "tags": [
+          "food-categories"
         ]
       }
     },
@@ -2005,6 +2255,16 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -2015,156 +2275,8 @@
       },
       "get": {
         "operationId": "findAll",
-        "parameters": [
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "schema": {}
-          }
-        ],
+        "parameters": [],
         "responses": {
-          "200": {
-            "description": "Shopping lists retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get All Shoppinglists",
-        "tags": [
-          "shoppinglist"
-        ]
-      }
-    },
-    "/api/v1/shoppinglist/{id}/items": {
-      "get": {
-        "description": "Retrieve all items belonging to a shopping list with optional filters",
-        "operationId": "findItems",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          },
-          {
-            "name": "shoppingListId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by shopping list ID",
-            "schema": {
-              "example": "uuid-shopping-list-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "foodId",
-            "required": false,
-            "in": "query",
-            "description": "Filter by food ID",
-            "schema": {
-              "example": "uuid-food-id",
-              "type": "string"
-            }
-          },
-          {
-            "name": "checked",
-            "required": false,
-            "in": "query",
-            "description": "Filter by checked status",
-            "schema": {
-              "example": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "unit",
-            "required": false,
-            "in": "query",
-            "description": "Filter by unit",
-            "schema": {
-              "example": "KG",
-              "type": "string",
-              "enum": [
-                "PIECES",
-                "G",
-                "KG",
-                "ML",
-                "L",
-                "CUPS"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Shopping list items retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MultipleShoppingListItemResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request - Invalid input data or validation failed",
             "content": {
@@ -2218,10 +2330,17 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
             "JWT-auth": []
           }
         ],
-        "summary": "Get items for a specific shopping list",
+        "summary": "Get all shopping lists for authenticated user",
         "tags": [
           "shoppinglist"
         ]
@@ -2304,6 +2423,16 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
           {
             "JWT-auth": []
           }
@@ -2400,6 +2529,16 @@
         },
         "security": [
           {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
+          {
             "JWT-auth": []
           }
         ],
@@ -2477,6 +2616,16 @@
           }
         },
         "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          },
           {
             "JWT-auth": []
           }
@@ -3406,7 +3555,88 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePantryItemDto"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "pantryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-pantry-id"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "minimum": 0.01
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "KG",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Store in cool place"
+                      },
+                      "expiryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2027-02-02"
+                      },
+                      "foodId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-food-id",
+                        "description": "UUID of the food item (OpenFoodFacts)."
+                      }
+                    },
+                    "required": [
+                      "pantryId",
+                      "foodId",
+                      "quantity"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "pantryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-pantry-id"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "minimum": 0.01
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "KG",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Store in cool place"
+                      },
+                      "expiryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2027-02-02"
+                      },
+                      "foodCategoryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-food-category-id",
+                        "description": "UUID of the food category (NEVO generic)."
+                      }
+                    },
+                    "required": [
+                      "pantryId",
+                      "foodCategoryId",
+                      "quantity"
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -3504,6 +3734,16 @@
             "description": "Filter by food ID (UUID)",
             "schema": {
               "example": "uuid-food-id",
+              "type": "string"
+            }
+          },
+          {
+            "name": "foodCategoryId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by food category ID (UUID)",
+            "schema": {
+              "example": "uuid-food-category-id",
               "type": "string"
             }
           },
@@ -4335,6 +4575,432 @@
         "summary": "Delete a meal",
         "tags": [
           "meals"
+        ]
+      }
+    },
+    "/api/v1/meals/{mealId}/items": {
+      "post": {
+        "description": "Adds a specific food product or food category to a meal. Either foodId or foodCategoryId must be provided, but not both.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "mealId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "default": 1
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "PIECES",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Extra spicy"
+                      },
+                      "foodId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440001",
+                        "description": "UUID of the specific food product (OpenFoodFacts)."
+                      }
+                    },
+                    "required": [
+                      "foodId",
+                      "quantity",
+                      "unit"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "number",
+                        "example": 2,
+                        "default": 1
+                      },
+                      "unit": {
+                        "type": "string",
+                        "example": "PIECES",
+                        "default": "PIECES"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "Extra spicy"
+                      },
+                      "foodCategoryId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440002",
+                        "description": "UUID of the food category (NEVO generic)."
+                      }
+                    },
+                    "required": [
+                      "foodCategoryId",
+                      "quantity",
+                      "unit"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Meal item created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Add a food item to a meal",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all food items (products and categories) for a specific meal",
+        "operationId": "findByMealId",
+        "parameters": [
+          {
+            "name": "mealId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MealItemResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all items in a meal",
+        "tags": [
+          "meal-items"
+        ]
+      }
+    },
+    "/api/v1/meals/{mealId}/items/{id}": {
+      "get": {
+        "description": "Retrieves a specific item from a meal by its ID",
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal item retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get a specific meal item",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "patch": {
+        "description": "Updates an existing meal item. Can change the food/category reference, quantity, unit, or notes.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMealItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Meal item updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MealItemResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update a meal item",
+        "tags": [
+          "meal-items"
+        ]
+      },
+      "delete": {
+        "description": "Removes a specific item from a meal",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Meal item deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Remove a meal item",
+        "tags": [
+          "meal-items"
         ]
       }
     },
@@ -5490,6 +6156,103 @@
           "path"
         ]
       },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Desired username"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region/state"
+          },
+          "zip": {
+            "type": "string",
+            "description": "Postal code"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "email",
+          "firstName",
+          "lastName"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username or email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token to revoke (refresh or access token)"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Refresh token to exchange for new tokens"
+          },
+          "tokenTypeHint": {
+            "type": "string",
+            "description": "Optional token type hint"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -5516,6 +6279,69 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         },
         "required": [
@@ -5551,32 +6377,158 @@
           "settings": {
             "type": "object",
             "description": "User settings"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income (optional)"
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level"
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level (e.g., low, medium, high)"
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
-      "UserPreferencesDto": {
+      "ProfileUpdateDto": {
         "type": "object",
         "properties": {
-          "dietaryRestrictions": {
-            "description": "Dietary restrictions",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
           },
-          "allergies": {
-            "description": "Food allergies",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "country": {
+            "type": "string",
+            "description": "Country"
           },
-          "preferredCategories": {
-            "description": "Preferred food categories",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level",
+            "enum": [
+              "NO_FORMAL_EDUCATION",
+              "PRIMARY",
+              "SECONDARY",
+              "VOCATIONAL",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
           }
         }
       },
@@ -5601,11 +6553,200 @@
             "example": "3017620422003",
             "maxLength": 50
           },
-          "openFoodFactsId": {
+          "brands": {
             "type": "string",
-            "description": "OpenFoodFacts product identifier",
-            "example": "3017620422003",
-            "maxLength": 100
+            "description": "Brands"
+          },
+          "categories": {
+            "description": "Category tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "labels": {
+            "description": "Label tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Product quantity"
+          },
+          "servingSize": {
+            "type": "string",
+            "description": "Serving size"
+          },
+          "ingredientsText": {
+            "type": "string",
+            "description": "Ingredients text"
+          },
+          "allergens": {
+            "description": "Allergen tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "traces": {
+            "description": "Trace allergen tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "description": "Countries where sold",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "origins": {
+            "type": "string",
+            "description": "Where ingredients originate from",
+            "example": "European Union"
+          },
+          "manufacturingPlaces": {
+            "type": "string",
+            "description": "Where the product is manufactured",
+            "example": "France"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Product image URL"
+          },
+          "imageFrontUrl": {
+            "type": "string",
+            "description": "Front product image URL"
+          },
+          "nutritionDataPer": {
+            "type": "string",
+            "description": "Whether nutrition data is per 100g or per serving",
+            "example": "100g"
+          },
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy in kcal per 100g"
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy in kJ per 100g"
+          },
+          "fat": {
+            "type": "number",
+            "description": "Fat in g per 100g"
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat in g per 100g"
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat in g per 100g"
+          },
+          "cholesterol": {
+            "type": "number",
+            "description": "Cholesterol in mg per 100g"
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Carbohydrates in g per 100g"
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars in g per 100g"
+          },
+          "addedSugars": {
+            "type": "number",
+            "description": "Added sugars in g per 100g"
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Fiber in g per 100g"
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Proteins in g per 100g"
+          },
+          "salt": {
+            "type": "number",
+            "description": "Salt in g per 100g"
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium in g per 100g"
+          },
+          "vitaminA": {
+            "type": "number",
+            "description": "Vitamin A in µg per 100g"
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C in mg per 100g"
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium in mg per 100g"
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron in mg per 100g"
+          },
+          "potassium": {
+            "type": "number",
+            "description": "Potassium in mg per 100g"
+          },
+          "magnesium": {
+            "type": "number",
+            "description": "Magnesium in mg per 100g"
+          },
+          "zinc": {
+            "type": "number",
+            "description": "Zinc in mg per 100g"
+          },
+          "nutriscoreGrade": {
+            "type": "string",
+            "description": "Nutri-Score grade",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "nutriscoreScore": {
+            "type": "number",
+            "description": "Nutri-Score numeric score"
+          },
+          "novaGroup": {
+            "type": "number",
+            "description": "NOVA group (1=unprocessed, 4=ultra-processed)",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "ecoscoreGrade": {
+            "type": "string",
+            "description": "Eco-Score grade"
+          },
+          "carbonFootprint": {
+            "type": "number",
+            "description": "Carbon footprint from known ingredients (kg CO₂e / kg)"
+          },
+          "isVegan": {
+            "type": "boolean",
+            "description": "Is the product vegan?"
+          },
+          "isVegetarian": {
+            "type": "boolean",
+            "description": "Is the product vegetarian?"
+          },
+          "isPalmOilFree": {
+            "type": "boolean",
+            "description": "Is the product palm-oil free?"
           }
         },
         "required": [
@@ -5801,22 +6942,309 @@
           "name": {
             "type": "string",
             "description": "Name of the food item",
-            "example": "Organic Whole Milk"
+            "example": "Nutella"
           },
           "description": {
             "type": "string",
             "description": "Description of the food item",
-            "example": "Fresh organic whole milk from grass-fed cows"
+            "example": "Hazelnut And Cocoa Spread"
           },
           "barcode": {
             "type": "string",
             "description": "Product barcode",
             "example": "3017620422003"
           },
-          "openFoodFactsId": {
+          "brands": {
             "type": "string",
-            "description": "OpenFoodFacts product identifier",
-            "example": "3017620422003"
+            "description": "Brands",
+            "example": "Ferrero, Nutella"
+          },
+          "categories": {
+            "description": "Category tags",
+            "example": [
+              "en:spreads",
+              "en:sweet-spreads"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "labels": {
+            "description": "Label tags (vegetarian, no-gluten, etc.)",
+            "example": [
+              "en:vegetarian",
+              "en:no-gluten"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Product quantity",
+            "example": "400 g"
+          },
+          "servingSize": {
+            "type": "string",
+            "description": "Serving size",
+            "example": "15 g"
+          },
+          "ingredientsText": {
+            "type": "string",
+            "description": "Ingredients text",
+            "example": "Sugar, palm oil, hazelnuts 13%, low-fat cocoa 7.4%, skimmed milk powder 6.6%"
+          },
+          "allergens": {
+            "description": "Allergens",
+            "example": [
+              "en:milk",
+              "en:nuts",
+              "en:soybeans"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "traces": {
+            "description": "Trace allergens (possible cross-contamination)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "description": "Countries where sold",
+            "example": [
+              "en:france",
+              "en:germany"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "origins": {
+            "type": "string",
+            "description": "Where ingredients originate from",
+            "example": "European Union"
+          },
+          "manufacturingPlaces": {
+            "type": "string",
+            "description": "Where the product is manufactured",
+            "example": "France"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Product image URL"
+          },
+          "imageFrontUrl": {
+            "type": "string",
+            "description": "Front product image URL"
+          },
+          "nutritionDataPer": {
+            "type": "string",
+            "description": "Whether nutrition data is per 100g or per serving",
+            "example": "100g"
+          },
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy in kcal per 100g",
+            "example": 539
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy in kJ per 100g",
+            "example": 2252
+          },
+          "fat": {
+            "type": "number",
+            "description": "Fat in g per 100g",
+            "example": 30.9
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat in g per 100g",
+            "example": 10.6
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat in g per 100g"
+          },
+          "cholesterol": {
+            "type": "number",
+            "description": "Cholesterol in mg per 100g"
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Carbohydrates in g per 100g",
+            "example": 57.5
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars in g per 100g",
+            "example": 56.3
+          },
+          "addedSugars": {
+            "type": "number",
+            "description": "Added sugars in g per 100g"
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Fiber in g per 100g",
+            "example": 0
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Proteins in g per 100g",
+            "example": 6.3
+          },
+          "salt": {
+            "type": "number",
+            "description": "Salt in g per 100g",
+            "example": 0.107
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium in g per 100g"
+          },
+          "vitaminA": {
+            "type": "number",
+            "description": "Vitamin A in µg per 100g"
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C in mg per 100g"
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium in mg per 100g"
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron in mg per 100g"
+          },
+          "potassium": {
+            "type": "number",
+            "description": "Potassium in mg per 100g"
+          },
+          "magnesium": {
+            "type": "number",
+            "description": "Magnesium in mg per 100g"
+          },
+          "zinc": {
+            "type": "number",
+            "description": "Zinc in mg per 100g"
+          },
+          "nutriscoreGrade": {
+            "type": "string",
+            "description": "Nutri-Score grade (A-E)",
+            "example": "E",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "nutriscoreScore": {
+            "type": "number",
+            "description": "Nutri-Score numeric score"
+          },
+          "novaGroup": {
+            "type": "number",
+            "description": "NOVA group (1=unprocessed, 4=ultra-processed)",
+            "example": 4,
+            "minimum": 1,
+            "maximum": 4
+          },
+          "ecoscoreGrade": {
+            "type": "string",
+            "description": "Eco-Score grade",
+            "example": "unknown"
+          },
+          "carbonFootprint": {
+            "type": "number",
+            "description": "Carbon footprint from known ingredients (kg CO₂e / kg)"
+          },
+          "nutrientLevels": {
+            "type": "object",
+            "description": "Nutrient levels traffic light (fat, sugars, salt, saturated-fat)",
+            "example": {
+              "fat": "high",
+              "sugars": "high",
+              "salt": "low",
+              "saturated-fat": "high"
+            }
+          },
+          "isVegan": {
+            "type": "boolean",
+            "description": "Is the product vegan?"
+          },
+          "isVegetarian": {
+            "type": "boolean",
+            "description": "Is the product vegetarian?"
+          },
+          "isPalmOilFree": {
+            "type": "boolean",
+            "description": "Is the product palm-oil free?"
+          },
+          "ingredientsAnalysisTags": {
+            "description": "Raw ingredient analysis tags",
+            "example": [
+              "en:palm-oil",
+              "en:non-vegan",
+              "en:vegetarian"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "packagingTags": {
+            "description": "Packaging tags",
+            "example": [
+              "en:plastic",
+              "fr:pot-en-verre"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "packagingMaterials": {
+            "description": "Packaging material tags",
+            "example": [
+              "en:clear-glass",
+              "en:pp-5-polypropylene"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "packagingRecycling": {
+            "description": "Packaging recycling tags",
+            "example": [
+              "en:recycle-in-glass-bin",
+              "en:recycle-in-sorting-bin"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "packagingText": {
+            "type": "string",
+            "description": "Free-text packaging description"
+          },
+          "completeness": {
+            "type": "number",
+            "description": "Data completeness (0.0 - 1.0)",
+            "example": 0.875
           },
           "openFoodFactsInfo": {
             "description": "Additional information from OpenFoodFacts database",
@@ -5913,11 +7341,775 @@
             "example": "3017620422003",
             "maxLength": 50
           },
-          "openFoodFactsId": {
+          "brands": {
             "type": "string",
-            "description": "OpenFoodFacts product identifier",
-            "example": "3017620422003",
-            "maxLength": 100
+            "description": "Brands"
+          },
+          "categories": {
+            "description": "Category tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "labels": {
+            "description": "Label tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Product quantity"
+          },
+          "servingSize": {
+            "type": "string",
+            "description": "Serving size"
+          },
+          "ingredientsText": {
+            "type": "string",
+            "description": "Ingredients text"
+          },
+          "allergens": {
+            "description": "Allergen tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "traces": {
+            "description": "Trace allergen tags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "description": "Countries where sold",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "origins": {
+            "type": "string",
+            "description": "Where ingredients originate from",
+            "example": "European Union"
+          },
+          "manufacturingPlaces": {
+            "type": "string",
+            "description": "Where the product is manufactured",
+            "example": "France"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Product image URL"
+          },
+          "imageFrontUrl": {
+            "type": "string",
+            "description": "Front product image URL"
+          },
+          "nutritionDataPer": {
+            "type": "string",
+            "description": "Whether nutrition data is per 100g or per serving",
+            "example": "100g"
+          },
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy in kcal per 100g"
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy in kJ per 100g"
+          },
+          "fat": {
+            "type": "number",
+            "description": "Fat in g per 100g"
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat in g per 100g"
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat in g per 100g"
+          },
+          "cholesterol": {
+            "type": "number",
+            "description": "Cholesterol in mg per 100g"
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Carbohydrates in g per 100g"
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars in g per 100g"
+          },
+          "addedSugars": {
+            "type": "number",
+            "description": "Added sugars in g per 100g"
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Fiber in g per 100g"
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Proteins in g per 100g"
+          },
+          "salt": {
+            "type": "number",
+            "description": "Salt in g per 100g"
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium in g per 100g"
+          },
+          "vitaminA": {
+            "type": "number",
+            "description": "Vitamin A in µg per 100g"
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C in mg per 100g"
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium in mg per 100g"
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron in mg per 100g"
+          },
+          "potassium": {
+            "type": "number",
+            "description": "Potassium in mg per 100g"
+          },
+          "magnesium": {
+            "type": "number",
+            "description": "Magnesium in mg per 100g"
+          },
+          "zinc": {
+            "type": "number",
+            "description": "Zinc in mg per 100g"
+          },
+          "nutriscoreGrade": {
+            "type": "string",
+            "description": "Nutri-Score grade",
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E"
+            ]
+          },
+          "nutriscoreScore": {
+            "type": "number",
+            "description": "Nutri-Score numeric score"
+          },
+          "novaGroup": {
+            "type": "number",
+            "description": "NOVA group (1=unprocessed, 4=ultra-processed)",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "ecoscoreGrade": {
+            "type": "string",
+            "description": "Eco-Score grade"
+          },
+          "carbonFootprint": {
+            "type": "number",
+            "description": "Carbon footprint from known ingredients (kg CO₂e / kg)"
+          },
+          "isVegan": {
+            "type": "boolean",
+            "description": "Is the product vegan?"
+          },
+          "isVegetarian": {
+            "type": "boolean",
+            "description": "Is the product vegetarian?"
+          },
+          "isPalmOilFree": {
+            "type": "boolean",
+            "description": "Is the product palm-oil free?"
+          }
+        }
+      },
+      "CreateFoodCategoryDto": {
+        "type": "object",
+        "properties": {
+          "nevoVersion": {
+            "type": "string",
+            "description": "NEVO version",
+            "example": "NEVO-Online 2025 9.0"
+          },
+          "foodGroup": {
+            "type": "string",
+            "description": "Food group",
+            "example": "Potatoes and tubers"
+          },
+          "nevoCode": {
+            "type": "number",
+            "description": "NEVO food code",
+            "example": 100
+          },
+          "foodName": {
+            "type": "string",
+            "description": "Food name",
+            "example": "Potato, raw"
+          },
+          "synonym": {
+            "type": "string",
+            "description": "Synonym"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity",
+            "example": "per 100g"
+          },
+          "containsTracesOf": {
+            "type": "string",
+            "description": "Contains traces of allergens"
+          },
+          "isFortifiedWith": {
+            "type": "string",
+            "description": "Fortification info"
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy in kJ"
+          },
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy in kcal"
+          },
+          "water": {
+            "type": "number",
+            "description": "Water content (g)"
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Total protein (g)"
+          },
+          "proteinsPlant": {
+            "type": "number",
+            "description": "Plant protein (g)"
+          },
+          "proteinsAnimal": {
+            "type": "number",
+            "description": "Animal protein (g)"
+          },
+          "fat": {
+            "type": "number",
+            "description": "Total fat (g)"
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Total carbohydrates (g)"
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars (g)"
+          },
+          "addedSugars": {
+            "type": "number",
+            "description": "Added sugars (g)"
+          },
+          "starch": {
+            "type": "number",
+            "description": "Starch (g)"
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Dietary fiber (g)"
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat (g)"
+          },
+          "monoUnsaturatedFat": {
+            "type": "number",
+            "description": "Mono-unsaturated fat (g)"
+          },
+          "polyUnsaturatedFat": {
+            "type": "number",
+            "description": "Poly-unsaturated fat (g)"
+          },
+          "omega3Fat": {
+            "type": "number",
+            "description": "Omega-3 fatty acids (g)"
+          },
+          "omega6Fat": {
+            "type": "number",
+            "description": "Omega-6 fatty acids (g)"
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat (g)"
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium (mg)"
+          },
+          "potassium": {
+            "type": "number",
+            "description": "Potassium (mg)"
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium (mg)"
+          },
+          "phosphorus": {
+            "type": "number",
+            "description": "Phosphorus (mg)"
+          },
+          "magnesium": {
+            "type": "number",
+            "description": "Magnesium (mg)"
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron (mg)"
+          },
+          "zinc": {
+            "type": "number",
+            "description": "Zinc (mg)"
+          },
+          "vitaminARae": {
+            "type": "number",
+            "description": "Vitamin A (µg)"
+          },
+          "vitaminD": {
+            "type": "number",
+            "description": "Vitamin D (µg)"
+          },
+          "vitaminE": {
+            "type": "number",
+            "description": "Vitamin E (mg)"
+          },
+          "vitaminK": {
+            "type": "number",
+            "description": "Vitamin K (µg)"
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C (mg)"
+          },
+          "thiamin": {
+            "type": "number",
+            "description": "Thiamin / B1 (mg)"
+          },
+          "riboflavin": {
+            "type": "number",
+            "description": "Riboflavin / B2 (mg)"
+          },
+          "vitaminB6": {
+            "type": "number",
+            "description": "Vitamin B6 (mg)"
+          },
+          "vitaminB12": {
+            "type": "number",
+            "description": "Vitamin B12 (µg)"
+          },
+          "folateTotal": {
+            "type": "number",
+            "description": "Folate total (µg)"
+          }
+        },
+        "required": [
+          "nevoVersion",
+          "foodGroup",
+          "nevoCode",
+          "foodName"
+        ]
+      },
+      "FoodCategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          },
+          "nevoVersion": {
+            "type": "string",
+            "description": "NEVO version",
+            "example": "NEVO-Online 2025 9.0"
+          },
+          "foodGroup": {
+            "type": "string",
+            "description": "Food group",
+            "example": "Potatoes and tubers"
+          },
+          "nevoCode": {
+            "type": "number",
+            "description": "NEVO food code",
+            "example": 100
+          },
+          "foodName": {
+            "type": "string",
+            "description": "Food name",
+            "example": "Potato, raw"
+          },
+          "synonym": {
+            "type": "object",
+            "description": "Synonym"
+          },
+          "quantity": {
+            "type": "object",
+            "description": "Quantity",
+            "example": "per 100g"
+          },
+          "containsTracesOf": {
+            "type": "object",
+            "description": "Contains traces of allergens"
+          },
+          "isFortifiedWith": {
+            "type": "object",
+            "description": "Fortification info"
+          },
+          "energyKj": {
+            "type": "object",
+            "description": "Energy in kJ"
+          },
+          "energyKcal": {
+            "type": "object",
+            "description": "Energy in kcal"
+          },
+          "water": {
+            "type": "object",
+            "description": "Water content (g)"
+          },
+          "proteins": {
+            "type": "object",
+            "description": "Total protein (g)"
+          },
+          "proteinsPlant": {
+            "type": "object",
+            "description": "Plant protein (g)"
+          },
+          "proteinsAnimal": {
+            "type": "object",
+            "description": "Animal protein (g)"
+          },
+          "fat": {
+            "type": "object",
+            "description": "Total fat (g)"
+          },
+          "carbohydrates": {
+            "type": "object",
+            "description": "Total carbohydrates (g)"
+          },
+          "sugars": {
+            "type": "object",
+            "description": "Sugars (g)"
+          },
+          "addedSugars": {
+            "type": "object",
+            "description": "Added sugars (g)"
+          },
+          "starch": {
+            "type": "object",
+            "description": "Starch (g)"
+          },
+          "fiber": {
+            "type": "object",
+            "description": "Dietary fiber (g)"
+          },
+          "saturatedFat": {
+            "type": "object",
+            "description": "Saturated fat (g)"
+          },
+          "monoUnsaturatedFat": {
+            "type": "object",
+            "description": "Mono-unsaturated fat (g)"
+          },
+          "polyUnsaturatedFat": {
+            "type": "object",
+            "description": "Poly-unsaturated fat (g)"
+          },
+          "omega3Fat": {
+            "type": "object",
+            "description": "Omega-3 fatty acids (g)"
+          },
+          "omega6Fat": {
+            "type": "object",
+            "description": "Omega-6 fatty acids (g)"
+          },
+          "transFat": {
+            "type": "object",
+            "description": "Trans fat (g)"
+          },
+          "sodium": {
+            "type": "object",
+            "description": "Sodium (mg)"
+          },
+          "potassium": {
+            "type": "object",
+            "description": "Potassium (mg)"
+          },
+          "calcium": {
+            "type": "object",
+            "description": "Calcium (mg)"
+          },
+          "phosphorus": {
+            "type": "object",
+            "description": "Phosphorus (mg)"
+          },
+          "magnesium": {
+            "type": "object",
+            "description": "Magnesium (mg)"
+          },
+          "iron": {
+            "type": "object",
+            "description": "Iron (mg)"
+          },
+          "zinc": {
+            "type": "object",
+            "description": "Zinc (mg)"
+          },
+          "vitaminARae": {
+            "type": "object",
+            "description": "Vitamin A (µg)"
+          },
+          "vitaminD": {
+            "type": "object",
+            "description": "Vitamin D (µg)"
+          },
+          "vitaminE": {
+            "type": "object",
+            "description": "Vitamin E (mg)"
+          },
+          "vitaminK": {
+            "type": "object",
+            "description": "Vitamin K (µg)"
+          },
+          "vitaminC": {
+            "type": "object",
+            "description": "Vitamin C (mg)"
+          },
+          "thiamin": {
+            "type": "object",
+            "description": "Thiamin / B1 (mg)"
+          },
+          "riboflavin": {
+            "type": "object",
+            "description": "Riboflavin / B2 (mg)"
+          },
+          "vitaminB6": {
+            "type": "object",
+            "description": "Vitamin B6 (mg)"
+          },
+          "vitaminB12": {
+            "type": "object",
+            "description": "Vitamin B12 (µg)"
+          },
+          "folateTotal": {
+            "type": "object",
+            "description": "Folate total (µg)"
+          }
+        },
+        "required": [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "nevoVersion",
+          "foodGroup",
+          "nevoCode",
+          "foodName"
+        ]
+      },
+      "UpdateFoodCategoryDto": {
+        "type": "object",
+        "properties": {
+          "nevoVersion": {
+            "type": "string",
+            "description": "NEVO version",
+            "example": "NEVO-Online 2025 9.0"
+          },
+          "foodGroup": {
+            "type": "string",
+            "description": "Food group",
+            "example": "Potatoes and tubers"
+          },
+          "nevoCode": {
+            "type": "number",
+            "description": "NEVO food code",
+            "example": 100
+          },
+          "foodName": {
+            "type": "string",
+            "description": "Food name",
+            "example": "Potato, raw"
+          },
+          "synonym": {
+            "type": "string",
+            "description": "Synonym"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity",
+            "example": "per 100g"
+          },
+          "containsTracesOf": {
+            "type": "string",
+            "description": "Contains traces of allergens"
+          },
+          "isFortifiedWith": {
+            "type": "string",
+            "description": "Fortification info"
+          },
+          "energyKj": {
+            "type": "number",
+            "description": "Energy in kJ"
+          },
+          "energyKcal": {
+            "type": "number",
+            "description": "Energy in kcal"
+          },
+          "water": {
+            "type": "number",
+            "description": "Water content (g)"
+          },
+          "proteins": {
+            "type": "number",
+            "description": "Total protein (g)"
+          },
+          "proteinsPlant": {
+            "type": "number",
+            "description": "Plant protein (g)"
+          },
+          "proteinsAnimal": {
+            "type": "number",
+            "description": "Animal protein (g)"
+          },
+          "fat": {
+            "type": "number",
+            "description": "Total fat (g)"
+          },
+          "carbohydrates": {
+            "type": "number",
+            "description": "Total carbohydrates (g)"
+          },
+          "sugars": {
+            "type": "number",
+            "description": "Sugars (g)"
+          },
+          "addedSugars": {
+            "type": "number",
+            "description": "Added sugars (g)"
+          },
+          "starch": {
+            "type": "number",
+            "description": "Starch (g)"
+          },
+          "fiber": {
+            "type": "number",
+            "description": "Dietary fiber (g)"
+          },
+          "saturatedFat": {
+            "type": "number",
+            "description": "Saturated fat (g)"
+          },
+          "monoUnsaturatedFat": {
+            "type": "number",
+            "description": "Mono-unsaturated fat (g)"
+          },
+          "polyUnsaturatedFat": {
+            "type": "number",
+            "description": "Poly-unsaturated fat (g)"
+          },
+          "omega3Fat": {
+            "type": "number",
+            "description": "Omega-3 fatty acids (g)"
+          },
+          "omega6Fat": {
+            "type": "number",
+            "description": "Omega-6 fatty acids (g)"
+          },
+          "transFat": {
+            "type": "number",
+            "description": "Trans fat (g)"
+          },
+          "sodium": {
+            "type": "number",
+            "description": "Sodium (mg)"
+          },
+          "potassium": {
+            "type": "number",
+            "description": "Potassium (mg)"
+          },
+          "calcium": {
+            "type": "number",
+            "description": "Calcium (mg)"
+          },
+          "phosphorus": {
+            "type": "number",
+            "description": "Phosphorus (mg)"
+          },
+          "magnesium": {
+            "type": "number",
+            "description": "Magnesium (mg)"
+          },
+          "iron": {
+            "type": "number",
+            "description": "Iron (mg)"
+          },
+          "zinc": {
+            "type": "number",
+            "description": "Zinc (mg)"
+          },
+          "vitaminARae": {
+            "type": "number",
+            "description": "Vitamin A (µg)"
+          },
+          "vitaminD": {
+            "type": "number",
+            "description": "Vitamin D (µg)"
+          },
+          "vitaminE": {
+            "type": "number",
+            "description": "Vitamin E (mg)"
+          },
+          "vitaminK": {
+            "type": "number",
+            "description": "Vitamin K (µg)"
+          },
+          "vitaminC": {
+            "type": "number",
+            "description": "Vitamin C (mg)"
+          },
+          "thiamin": {
+            "type": "number",
+            "description": "Thiamin / B1 (mg)"
+          },
+          "riboflavin": {
+            "type": "number",
+            "description": "Riboflavin / B2 (mg)"
+          },
+          "vitaminB6": {
+            "type": "number",
+            "description": "Vitamin B6 (mg)"
+          },
+          "vitaminB12": {
+            "type": "number",
+            "description": "Vitamin B12 (µg)"
+          },
+          "folateTotal": {
+            "type": "number",
+            "description": "Folate total (µg)"
           }
         }
       },
@@ -5933,48 +8125,6 @@
         },
         "required": [
           "title"
-        ]
-      },
-      "ShoppingListResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the shopping list",
-            "example": "550e8400-e29b-41d4-a716-446655440000",
-            "format": "uuid"
-          },
-          "userId": {
-            "type": "string",
-            "description": "UUID of the user who created this shopping list",
-            "example": "550e8400-e29b-41d4-a716-446655440001",
-            "format": "uuid"
-          },
-          "title": {
-            "type": "string",
-            "description": "title of the shopping list",
-            "example": "Family shopping list"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "title"
-        ]
-      },
-      "MultipleShoppingListResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Array of shopping lists",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ShoppingListResponseDto"
-            }
-          }
-        },
-        "required": [
-          "data"
         ]
       },
       "ShoppingListItemResponseDto": {
@@ -6010,10 +8160,24 @@
             "description": "The ID of the shopping list",
             "example": "uuid-shopping-list-id"
           },
-          "foodId": {
+          "itemType": {
             "type": "string",
-            "description": "The ID of the food item",
+            "description": "The type of item (food or food_category)",
+            "example": "food",
+            "enum": [
+              "food",
+              "food_category"
+            ]
+          },
+          "foodId": {
+            "type": "object",
+            "description": "The ID of the food item (if itemType is food)",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "object",
+            "description": "The ID of the food category (if itemType is food_category)",
+            "example": "uuid-food-category-id"
           },
           "createdAt": {
             "format": "date-time",
@@ -6027,19 +8191,19 @@
             "description": "The last update timestamp",
             "example": "2024-01-15T11:30:00.000Z"
           },
-          "shoppingList": {
-            "description": "Associated shopping list",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ShoppingListResponseDto"
-              }
-            ]
-          },
           "food": {
-            "description": "Associated food item",
+            "description": "Associated food item (if itemType is food)",
             "allOf": [
               {
                 "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "Associated food category (if itemType is food_category)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
               }
             ]
           }
@@ -6050,18 +8214,34 @@
           "unit",
           "checked",
           "shoppingListId",
-          "foodId",
+          "itemType",
           "createdAt",
-          "updatedAt",
-          "shoppingList",
-          "food"
+          "updatedAt"
         ]
       },
-      "MultipleShoppingListItemResponseDto": {
+      "ShoppingListResponseDto": {
         "type": "object",
         "properties": {
-          "data": {
-            "description": "Array of shopping list items",
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440000",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID of the user who created this shopping list",
+            "example": "550e8400-e29b-41d4-a716-446655440001",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "title of the shopping list",
+            "example": "Family shopping list"
+          },
+          "items": {
+            "description": "Items in the shopping list",
+            "example": [],
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ShoppingListItemResponseDto"
@@ -6069,7 +8249,10 @@
           }
         },
         "required": [
-          "data"
+          "id",
+          "userId",
+          "title",
+          "items"
         ]
       },
       "UpdateShoppingListDto": {
@@ -6126,15 +8309,19 @@
           },
           "foodId": {
             "type": "string",
-            "description": "The ID of the food item",
+            "description": "The ID of the food item (provide either foodId or foodCategoryId)",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category (provide either foodId or foodCategoryId)",
+            "example": "uuid-food-category-id"
           }
         },
         "required": [
           "quantity",
           "checked",
-          "shoppingListId",
-          "foodId"
+          "shoppingListId"
         ]
       },
       "UpdateShoppingListItemDto": {
@@ -6245,11 +8432,24 @@
             "description": "The ID of the food item",
             "example": "uuid-food-id"
           },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category",
+            "example": "uuid-food-category-id"
+          },
           "food": {
             "description": "The food item details",
             "allOf": [
               {
                 "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "The food category details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
               }
             ]
           }
@@ -6258,8 +8458,7 @@
           "id",
           "quantity",
           "unit",
-          "pantryId",
-          "foodId"
+          "pantryId"
         ]
       },
       "PantryResponseDto": {
@@ -6307,58 +8506,6 @@
         },
         "required": [
           "title"
-        ]
-      },
-      "CreatePantryItemDto": {
-        "type": "object",
-        "properties": {
-          "pantryId": {
-            "type": "string",
-            "description": "The ID of the pantry to add the item to",
-            "example": "uuid-pantry-id"
-          },
-          "foodId": {
-            "type": "string",
-            "description": "The ID of the food item to add",
-            "example": "uuid-food-id"
-          },
-          "quantity": {
-            "type": "number",
-            "description": "The quantity of the item",
-            "example": 2,
-            "minimum": 0.01
-          },
-          "unit": {
-            "type": "string",
-            "description": "The unit of measurement (defaults to PIECES if not provided)",
-            "example": "KG",
-            "enum": [
-              "PIECES",
-              "G",
-              "KG",
-              "ML",
-              "L",
-              "CUPS"
-            ],
-            "default": "PIECES"
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes for the item",
-            "example": "Store in cool place",
-            "maxLength": 500
-          },
-          "expiryDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "When the food will expire (ISO date string)",
-            "example": "2027-02-02"
-          }
-        },
-        "required": [
-          "pantryId",
-          "foodId",
-          "quantity"
         ]
       },
       "MultiplePantryItemResponseDto": {
@@ -6414,6 +8561,11 @@
             "type": "string",
             "description": "The ID of the food item",
             "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "The ID of the food category (NEVO generic)",
+            "example": "uuid-food-category-id"
           }
         }
       },
@@ -6464,11 +8616,6 @@
             "type": "number",
             "description": "Estimated meal price or cost",
             "example": 8.5
-          },
-          "pantryItemId": {
-            "type": "string",
-            "description": "Link to pantry item if sourced from pantry",
-            "format": "uuid"
           },
           "barcode": {
             "type": "string",
@@ -6522,11 +8669,6 @@
           "price": {
             "type": "number",
             "description": "Estimated price or cost"
-          },
-          "pantryItemId": {
-            "type": "object",
-            "description": "Linked pantry item id",
-            "format": "uuid"
           },
           "barcode": {
             "type": "object",
@@ -6639,14 +8781,148 @@
             "description": "Estimated meal price or cost",
             "example": 8.5
           },
-          "pantryItemId": {
-            "type": "string",
-            "description": "Link to pantry item if sourced from pantry",
-            "format": "uuid"
-          },
           "barcode": {
             "type": "string",
             "description": "Barcode of the meal (if packaged)"
+          }
+        }
+      },
+      "MealItemResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the meal item",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "mealId": {
+            "type": "string",
+            "description": "UUID of the meal this item belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "itemType": {
+            "type": "string",
+            "description": "Type of item - either a specific food product or a generic food category",
+            "enum": [
+              "food",
+              "food_category"
+            ],
+            "example": "food"
+          },
+          "foodId": {
+            "type": "object",
+            "description": "UUID of the specific food product (if itemType is \"food\")",
+            "example": "550e8400-e29b-41d4-a716-446655440002",
+            "nullable": true
+          },
+          "foodCategoryId": {
+            "type": "object",
+            "description": "UUID of the food category (if itemType is \"food_category\")",
+            "example": "550e8400-e29b-41d4-a716-446655440003",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of the item",
+            "example": 2
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ],
+            "example": "PIECES"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about this meal item",
+            "example": "Extra spicy",
+            "nullable": true
+          },
+          "food": {
+            "description": "Food product details (if itemType is \"food\")",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodResponseDto"
+              }
+            ]
+          },
+          "foodCategory": {
+            "description": "Food category details (if itemType is \"food_category\")",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FoodCategoryResponseDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when the meal item was created",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp when the meal item was last updated",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "mealId",
+          "itemType",
+          "quantity",
+          "unit",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateMealItemDto": {
+        "type": "object",
+        "properties": {
+          "foodId": {
+            "type": "string",
+            "description": "UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.",
+            "example": "550e8400-e29b-41d4-a716-446655440002"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity of the item",
+            "example": 2,
+            "default": 1
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "enum": [
+              "PIECES",
+              "G",
+              "KG",
+              "ML",
+              "L",
+              "CUPS"
+            ],
+            "example": "PIECES",
+            "default": "PIECES"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes about this meal item",
+            "example": "Extra spicy"
           }
         }
       },

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MealService } from './meal.service';
 import { MealRepository } from '../repositories/meal.repository';
-import { PantryItemRepository } from '../../pantryItem/repositories/pantryItem.repository';
 import {
   ConflictException,
   ForbiddenException,
@@ -22,16 +21,11 @@ describe('MealService', () => {
     delete: jest.fn(),
   };
 
-  const mockPantryItemRepository = {
-    findById: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MealService,
         { provide: MealRepository, useValue: mockMealRepository },
-        { provide: PantryItemRepository, useValue: mockPantryItemRepository },
       ],
     }).compile();
 
@@ -57,25 +51,6 @@ describe('MealService', () => {
     ).rejects.toThrow(ConflictException);
   });
 
-  it('should validate pantry ownership on create', async () => {
-    mockMealRepository.findByBarcode.mockResolvedValue(null);
-    mockPantryItemRepository.findById.mockResolvedValue({
-      id: 'p1',
-      pantry: { userId: 'other' },
-    });
-
-    await expect(
-      service.create(
-        {
-          name: 'Meal',
-          mealType: MealType.MEAT,
-          pantryItemId: 'p1',
-        },
-        userId,
-      ),
-    ).rejects.toThrow(ForbiddenException);
-  });
-
   it('should create meal when data valid', async () => {
     const meal = {
       id: 'm1',
@@ -86,7 +61,6 @@ describe('MealService', () => {
       updatedAt: new Date(),
     };
     mockMealRepository.findByBarcode.mockResolvedValue(null);
-    mockPantryItemRepository.findById.mockResolvedValue(null);
     mockMealRepository.create.mockResolvedValue(meal);
 
     const result = await service.create(

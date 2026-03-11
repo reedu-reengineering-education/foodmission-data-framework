@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../food/dto/food-response.dto';
+import { FoodCategoryResponseDto } from '../../foodCategory/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
 
 export class PantryItemResponseDto {
@@ -49,12 +50,19 @@ export class PantryItemResponseDto {
   @Expose()
   pantryId: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The ID of the food item',
     example: 'uuid-food-id',
   })
   @Expose()
-  foodId: string;
+  foodId?: string;
+
+  @ApiPropertyOptional({
+    description: 'The ID of the food category',
+    example: 'uuid-food-category-id',
+  })
+  @Expose()
+  foodCategoryId?: string;
 
   @ApiPropertyOptional({
     description: 'The food item details',
@@ -63,6 +71,14 @@ export class PantryItemResponseDto {
   @Expose()
   @Type(() => FoodResponseDto)
   food?: FoodResponseDto;
+
+  @ApiPropertyOptional({
+    description: 'The food category details',
+    type: () => FoodCategoryResponseDto,
+  })
+  @Expose()
+  @Type(() => FoodCategoryResponseDto)
+  foodCategory?: FoodCategoryResponseDto;
 }
 
 export class MultiplePantryItemResponseDto {

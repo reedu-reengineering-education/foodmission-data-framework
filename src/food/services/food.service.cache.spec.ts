@@ -8,6 +8,7 @@ import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { LoggingService } from '../../common/logging/logging.service';
 import { Reflector } from '@nestjs/core';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 import { createMockLoggingService } from '../../common/testing';
 
 describe('FoodService - Caching Integration', () => {
@@ -15,22 +16,12 @@ describe('FoodService - Caching Integration', () => {
   let foodRepository: jest.Mocked<FoodRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
-  const mockFood = {
-    id: '123',
-    name: 'Test Food',
-    description: 'Test Description',
-    barcode: '1234567890',
-    openFoodFactsId: 'off123',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    createdBy: 'user123',
-  };
+  const mockFood = { ...TEST_FOOD };
 
   beforeEach(async () => {
     const mockFoodRepository = {
       findById: jest.fn(),
       findByBarcode: jest.fn(),
-      findByOpenFoodFactsId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -90,12 +81,11 @@ describe('FoodService - Caching Integration', () => {
       const result = await service.findOne('123');
 
       expect(foodRepository.findById).toHaveBeenCalledWith('123');
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         id: mockFood.id,
         name: mockFood.name,
         description: mockFood.description,
         barcode: mockFood.barcode,
-        openFoodFactsId: mockFood.openFoodFactsId,
         createdAt: mockFood.createdAt,
         updatedAt: mockFood.updatedAt,
         createdBy: mockFood.createdBy,
@@ -169,7 +159,6 @@ describe('FoodService - Caching Integration', () => {
 
     it('should create food successfully', async () => {
       foodRepository.findByBarcode.mockResolvedValue(null);
-      foodRepository.findByOpenFoodFactsId.mockResolvedValue(null);
       foodRepository.create.mockResolvedValue({
         ...mockFood,
         ...createFoodDto,
@@ -188,21 +177,6 @@ describe('FoodService - Caching Integration', () => {
       foodRepository.findByBarcode.mockResolvedValue(mockFood);
 
       await expect(service.create(createFoodDto, userId)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(foodRepository.create).not.toHaveBeenCalled();
-    });
-
-    it('should throw BadRequestException when OpenFoodFacts ID already exists', async () => {
-      const createDtoWithOffId = {
-        ...createFoodDto,
-        openFoodFactsId: 'existing-off-id',
-      };
-
-      foodRepository.findByBarcode.mockResolvedValue(null);
-      foodRepository.findByOpenFoodFactsId.mockResolvedValue(mockFood);
-
-      await expect(service.create(createDtoWithOffId, userId)).rejects.toThrow(
         BadRequestException,
       );
       expect(foodRepository.create).not.toHaveBeenCalled();

@@ -6,10 +6,30 @@ import {
   IsInt,
   IsBoolean,
   IsOptional,
+  IsUUID,
   Min,
   MaxLength,
   IsEnum,
+  ValidateIf,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  ValidationArguments,
 } from 'class-validator';
+
+@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
+class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+  validate(_: unknown, args: ValidationArguments): boolean {
+    const obj = args.object as CreateShoppingListItemDto;
+    const hasFood = !!obj.foodId;
+    const hasCategory = !!obj.foodCategoryId;
+    return hasFood !== hasCategory; // exactly one must be true (XOR)
+  }
+
+  defaultMessage(): string {
+    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+  }
+}
 
 export class CreateShoppingListItemDto {
   @ApiProperty({
@@ -56,17 +76,24 @@ export class CreateShoppingListItemDto {
   @IsNotEmpty()
   shoppingListId: string;
 
-  @ApiProperty({
-    description: 'The ID of the food item',
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food item (provide either foodId or foodCategoryId)',
     example: 'uuid-food-id',
   })
-  @IsString()
+  @IsUUID()
+  @ValidateIf((o) => !o.foodCategoryId)
   @IsNotEmpty()
-  foodId: string;
+  @Validate(ExclusiveFoodReferenceConstraint)
+  foodId?: string;
 
-  constructor(foodId: string, quantity: number, unit: Unit = Unit.PIECES) {
-    this.foodId = foodId;
-    this.quantity = quantity;
-    this.unit = unit;
-  }
+  @ApiPropertyOptional({
+    description:
+      'The ID of the food category (provide either foodId or foodCategoryId)',
+    example: 'uuid-food-category-id',
+  })
+  @IsUUID()
+  @ValidateIf((o) => !o.foodId)
+  @IsNotEmpty()
+  foodCategoryId?: string;
 }

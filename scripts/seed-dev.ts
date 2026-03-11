@@ -61,7 +61,6 @@ async function seedDevelopmentData() {
           name: foodInfo.name,
           description: foodInfo.description,
           barcode: foodInfo.barcode,
-          openFoodFactsId: (foodInfo as any).openFoodFactsId,
           createdBy: 'dev-seed',
         },
       });
