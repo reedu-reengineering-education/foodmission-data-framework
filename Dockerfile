@@ -14,6 +14,7 @@ WORKDIR /workspace
 
 # Copy package files
 COPY package*.json ./
+COPY .npmrc ./
 COPY prisma ./prisma/
 
 # Install all dependencies (including dev dependencies for development)
@@ -43,6 +44,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY .npmrc ./
 
 # Install only production dependencies
 RUN npm ci --only=production && npm cache clean --force
