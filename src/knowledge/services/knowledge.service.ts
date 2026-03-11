@@ -59,18 +59,36 @@ export class KnowledgeService {
     const { page = 1, limit = 10, available, search } = query;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.KnowledgeWhereInput = {
-      userId,
-      ...(typeof available === 'boolean' ? { available } : {}),
-      ...(search
-        ? {
-            OR: [
-              { title: { contains: search, mode: 'insensitive' } },
-              { description: { contains: search, mode: 'insensitive' } },
-            ],
-          }
-        : {}),
+    const globalOrOwned: Prisma.KnowledgeWhereInput = {
+      OR: [{ userId }, { available: true }],
     };
+
+    const searchFilter = search
+      ? {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
+          ],
+        }
+      : undefined;
+
+    let where: Prisma.KnowledgeWhereInput;
+    if (typeof available === 'boolean') {
+      if (available === true) {
+        where = {
+          AND: [globalOrOwned, ...(searchFilter ? [searchFilter] : [])],
+        };
+      } else {
+        // available === false: only return private items owned by the user
+        where = {
+          AND: [{ userId }, { available: false }, ...(searchFilter ? [searchFilter] : [])],
+        };
+      }
+    } else {
+      where = {
+        AND: [globalOrOwned, ...(searchFilter ? [searchFilter] : [])],
+      };
+    }
 
     try {
       const result = await this.knowledgeRepository.findWithPagination({
