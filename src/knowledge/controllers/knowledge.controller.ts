@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiOAuth2,
   ApiBody,
   ApiOperation,
   ApiParam,
@@ -39,6 +40,8 @@ import {
 } from '../dto/update-progress.dto';
 
 @ApiTags('knowledge')
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 @Controller('knowledge')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class KnowledgeController {
