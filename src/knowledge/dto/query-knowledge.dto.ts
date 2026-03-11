@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { TransformBooleanString } from 'src/common/decorators/transformers';
 
 export class QueryKnowledgeDto {
   @ApiPropertyOptional({ description: 'Page number', example: 1, default: 1 })
@@ -26,7 +27,7 @@ export class QueryKnowledgeDto {
     example: true,
   })
   @IsOptional()
-  @Type(() => Boolean)
+  @Type(() => TransformBooleanString)
   @IsBoolean()
   available?: boolean;
 
