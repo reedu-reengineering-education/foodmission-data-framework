@@ -1,13 +1,6 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealRepository } from '../repositories/meal.repository';
-import { PantryItemRepository } from '../../pantryItem/repositories/pantryItem.repository';
 import { CreateMealDto } from '../dto/create-meal.dto';
 import { UpdateMealDto } from '../dto/update-meal.dto';
 import {
@@ -22,10 +15,7 @@ import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 export class MealService {
   private readonly logger = new Logger(MealService.name);
 
-  constructor(
-    private readonly mealRepository: MealRepository,
-    private readonly pantryItemRepository: PantryItemRepository,
-  ) {}
+  constructor(private readonly mealRepository: MealRepository) {}
 
   private getOwnedMealOrThrow(mealId: string, userId: string) {
     return getOwnedEntityOrThrow(
@@ -49,18 +39,6 @@ export class MealService {
       );
       if (existing) {
         throw new ConflictException('Meal with this barcode already exists');
-      }
-    }
-
-    if (createMealDto.pantryItemId) {
-      const pantryItem = await this.pantryItemRepository.findById(
-        createMealDto.pantryItemId,
-      );
-      if (!pantryItem) {
-        throw new NotFoundException('Linked pantry item not found');
-      }
-      if (pantryItem.pantry.userId !== userId) {
-        throw new ForbiddenException('No permission to use this pantry item');
       }
     }
 
@@ -123,18 +101,6 @@ export class MealService {
       (await this.mealRepository.findByBarcode(updateMealDto.barcode))
     ) {
       throw new ConflictException('Meal with this barcode already exists');
-    }
-
-    if (updateMealDto.pantryItemId) {
-      const pantryItem = await this.pantryItemRepository.findById(
-        updateMealDto.pantryItemId,
-      );
-      if (!pantryItem) {
-        throw new NotFoundException('Linked pantry item not found');
-      }
-      if (pantryItem.pantry.userId !== userId) {
-        throw new ForbiddenException('No permission to use this pantry item');
-      }
     }
 
     const updated = await this.mealRepository.update(id, updateMealDto);

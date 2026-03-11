@@ -24,6 +24,7 @@ import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryService } from '../../pantry/services/pantry.service';
 import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-shoppingListItem.dto';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
+import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import { Unit } from '@prisma/client';
 
 @Injectable()
@@ -34,6 +35,7 @@ export class PantryItemService {
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
+    private readonly foodCategoryRepository: FoodCategoryRepository,
   ) {}
 
   async createFromShoppingList(
@@ -47,12 +49,18 @@ export class PantryItemService {
       );
     }
 
-    const createPantryItemDto = new CreatePantryItemDto(
+    if (!createShoppingListItemDto.foodId) {
+      throw new BadRequestException(
+        'Only food items (not food categories) can be added to pantry from shopping list',
+      );
+    }
+
+    const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
       pantryId,
-      createShoppingListItemDto.foodId,
-      createShoppingListItemDto.quantity,
-      createShoppingListItemDto.unit,
-    );
+      foodId: createShoppingListItemDto.foodId,
+      quantity: createShoppingListItemDto.quantity,
+      unit: createShoppingListItemDto.unit,
+    });
 
     return this.create(createPantryItemDto, userId);
   }
@@ -64,14 +72,34 @@ export class PantryItemService {
     try {
       await this.pantryService.validatePantryExists(userId, createDto.pantryId);
 
-      await this.validateFoodExists(createDto.foodId);
-      const existingItem = await this.pantryItemRepository.findFoodInPantry(
-        createDto.pantryId,
-        createDto.foodId,
-      );
+      const { foodId, foodCategoryId } = createDto;
 
-      if (existingItem) {
-        throw new ConflictException('This food item is already in your pantry');
+      // Validate either food or foodCategory exists
+      if (foodId) {
+        await this.validateFoodExists(foodId);
+        const existingItem = await this.pantryItemRepository.findFoodInPantry(
+          createDto.pantryId,
+          foodId,
+        );
+
+        if (existingItem) {
+          throw new ConflictException(
+            'This food item is already in your pantry',
+          );
+        }
+      } else if (foodCategoryId) {
+        await this.validateFoodCategoryExists(foodCategoryId);
+        const existingItem =
+          await this.pantryItemRepository.findFoodCategoryInPantry(
+            createDto.pantryId,
+            foodCategoryId,
+          );
+
+        if (existingItem) {
+          throw new ConflictException(
+            'This food category is already in your pantry',
+          );
+        }
       }
 
       let expiryDate: Date | undefined;
@@ -83,20 +111,17 @@ export class PantryItemService {
       }
 
       const unit = createDto.unit ?? Unit.PIECES;
+      const itemType = foodId ? 'food' : 'food_category';
 
-      const item = await this.prisma.pantryItem.create({
-        data: {
-          quantity: createDto.quantity,
-          unit: unit,
-          notes: createDto.notes,
-          expiryDate: expiryDate,
-          pantryId: createDto.pantryId,
-          foodId: createDto.foodId,
-        },
-        include: {
-          pantry: true,
-          food: true,
-        },
+      const item = await this.pantryItemRepository.create({
+        quantity: createDto.quantity,
+        unit: unit,
+        notes: createDto.notes,
+        expiryDate: expiryDate,
+        pantryId: createDto.pantryId,
+        foodId: foodId || null,
+        foodCategoryId: foodCategoryId || null,
+        itemType,
       });
 
       return this.transformToResponseDto(item);
@@ -135,12 +160,16 @@ export class PantryItemService {
     query: QueryPantryItemDto,
     userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const { pantryId, foodId, unit, expiryDate } = query;
+    const { pantryId, foodId, foodCategoryId, unit, expiryDate } = query;
 
     await this.pantryService.validatePantryExists(userId, pantryId);
 
     if (foodId) {
       await this.validateFoodExists(foodId);
+    }
+
+    if (foodCategoryId) {
+      await this.validateFoodCategoryExists(foodCategoryId);
     }
 
     const filter: any = {
@@ -149,6 +178,10 @@ export class PantryItemService {
 
     if (foodId) {
       filter.foodId = foodId;
+    }
+
+    if (foodCategoryId) {
+      filter.foodCategoryId = foodCategoryId;
     }
 
     if (unit) {
@@ -179,6 +212,19 @@ export class PantryItemService {
     }
   }
 
+  private async validateFoodCategoryExists(
+    foodCategoryId: string,
+  ): Promise<void> {
+    const foodCategory =
+      await this.foodCategoryRepository.findById(foodCategoryId);
+
+    if (!foodCategory) {
+      throw new NotFoundException(
+        `Food category with ID '${foodCategoryId}' not found`,
+      );
+    }
+  }
+
   async findById(id: string, userId: string): Promise<PantryItemResponseDto> {
     const item = await this.pantryItemRepository.findById(id);
 
@@ -206,6 +252,17 @@ export class PantryItemService {
       await this.validateFoodExists(updateDto.foodId);
     }
 
+    if (updateDto.foodCategoryId) {
+      await this.validateFoodCategoryExists(updateDto.foodCategoryId);
+    }
+
+    // Prevent setting both foodId and foodCategoryId
+    if (updateDto.foodId && updateDto.foodCategoryId) {
+      throw new BadRequestException(
+        'Only one of foodId or foodCategoryId can be provided, not both',
+      );
+    }
+
     try {
       let expiryDate: Date | undefined;
       if (updateDto.expiryDate !== undefined) {
@@ -217,7 +274,8 @@ export class PantryItemService {
               : undefined;
       }
 
-      const updatedItem = await this.pantryItemRepository.update(id, {
+      // When switching reference type, clear the other one
+      const updateData: any = {
         ...(updateDto.quantity !== undefined && {
           quantity: updateDto.quantity,
         }),
@@ -226,8 +284,22 @@ export class PantryItemService {
         ...(expiryDate !== undefined && {
           expiryDate: expiryDate,
         }),
-        ...(updateDto.foodId !== undefined && { foodId: updateDto.foodId }),
-      });
+      };
+
+      if (updateDto.foodId !== undefined) {
+        updateData.foodId = updateDto.foodId;
+        updateData.foodCategoryId = null;
+        updateData.itemType = 'food';
+      } else if (updateDto.foodCategoryId !== undefined) {
+        updateData.foodCategoryId = updateDto.foodCategoryId;
+        updateData.foodId = null;
+        updateData.itemType = 'food_category';
+      }
+
+      const updatedItem = await this.pantryItemRepository.update(
+        id,
+        updateData,
+      );
 
       return this.transformToResponseDto(updatedItem);
     } catch (error: any) {
@@ -273,9 +345,11 @@ export class PantryItemService {
         expiryDate: item.expiryDate,
         pantryId: item.pantryId,
         foodId: item.foodId,
+        foodCategoryId: item.foodCategoryId,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
         food: item.food,
+        foodCategory: item.foodCategory,
       },
       { excludeExtraneousValues: true },
     );

@@ -59,4 +59,13 @@ export class UpdatePantryItemDto {
   @IsNotEmpty()
   @IsOptional()
   foodId?: string;
+
+  @ApiPropertyOptional({
+    description: 'The ID of the food category (NEVO generic)',
+    example: 'uuid-food-category-id',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  foodCategoryId?: string;
 }

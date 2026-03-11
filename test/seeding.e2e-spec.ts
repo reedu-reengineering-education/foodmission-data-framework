@@ -54,7 +54,6 @@ describe('Database Seeding (e2e)', () => {
       expect(nutella).toBeDefined();
       expect(nutella?.description).toBeDefined();
       expect(nutella?.barcode).toBeDefined();
-      expect(nutella?.openFoodFactsId).toBeDefined();
       expect(nutella?.createdBy).toBe('system-seed-openfoodfacts');
     });
 

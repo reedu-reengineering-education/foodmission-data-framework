@@ -73,6 +73,8 @@ describe('PantryItemRepository', () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
         foodId: TEST_IDS.FOOD,
+        foodCategoryId: null,
+        itemType: 'food',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
         notes: TEST_DATA.NOTES,
@@ -88,6 +90,8 @@ describe('PantryItemRepository', () => {
         data: {
           pantryId: createData.pantryId,
           foodId: createData.foodId,
+          foodCategoryId: createData.foodCategoryId,
+          itemType: createData.itemType,
           quantity: createData.quantity,
           unit: createData.unit,
           notes: createData.notes,
@@ -96,6 +100,7 @@ describe('PantryItemRepository', () => {
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -104,6 +109,8 @@ describe('PantryItemRepository', () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
         foodId: TEST_IDS.FOOD,
+        foodCategoryId: null,
+        itemType: 'food',
         quantity: 3,
         unit: Unit.PIECES,
       };
@@ -128,6 +135,8 @@ describe('PantryItemRepository', () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
         foodId: TEST_IDS.FOOD,
+        foodCategoryId: null,
+        itemType: 'food',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
       };
@@ -149,6 +158,8 @@ describe('PantryItemRepository', () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
         foodId: TEST_IDS.FOOD,
+        foodCategoryId: null,
+        itemType: 'food',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
       };
@@ -176,6 +187,7 @@ describe('PantryItemRepository', () => {
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -202,6 +214,7 @@ describe('PantryItemRepository', () => {
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -224,10 +237,17 @@ describe('PantryItemRepository', () => {
 
       expect(result).toEqual(mockItems);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
-        where: {},
+        where: {
+          pantryId: undefined,
+          foodId: undefined,
+          foodCategoryId: undefined,
+          expiryDate: undefined,
+          unit: undefined,
+        },
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -240,13 +260,16 @@ describe('PantryItemRepository', () => {
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
+          pantryId: undefined,
           foodId: TEST_IDS.FOOD,
+          foodCategoryId: undefined,
           expiryDate: undefined,
           unit: undefined,
         },
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -259,13 +282,16 @@ describe('PantryItemRepository', () => {
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
+          pantryId: undefined,
           foodId: undefined,
+          foodCategoryId: undefined,
           expiryDate: undefined,
           unit: Unit.KG,
         },
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -283,13 +309,16 @@ describe('PantryItemRepository', () => {
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
+          pantryId: undefined,
           foodId: TEST_IDS.FOOD,
+          foodCategoryId: undefined,
           expiryDate: undefined,
           unit: Unit.KG,
         },
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -319,6 +348,7 @@ describe('PantryItemRepository', () => {
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });
@@ -424,6 +454,7 @@ describe('PantryItemRepository', () => {
         include: {
           pantry: true,
           food: true,
+          foodCategory: true,
         },
       });
     });

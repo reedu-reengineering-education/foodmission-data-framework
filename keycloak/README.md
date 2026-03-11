@@ -124,7 +124,7 @@ curl -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
 - **Brute Force Protection**: Disabled for development
 - **Email Verification**: Disabled for development
 - **Remember Me**: Disabled
-- **User Registration**: Disabled (admin creates users)
+- **User Registration**: Limited through service account
 
 ## 🔄 Updating the Configuration
 
@@ -135,7 +135,7 @@ If you need to modify the realm configuration:
    - Go to **Realm Settings** → **Action** → **Partial export**
    - Select what to export (users, clients, roles, etc.)
    - Download the JSON file
-3. Replace `foodmission-realm.json` with the new configuration
+3. Replace `foodmission-realm.dev.json` with the new configuration
 
 ## 🐳 Docker Compose Alternative
 

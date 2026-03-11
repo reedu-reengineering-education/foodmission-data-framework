@@ -4,20 +4,12 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { FoodRepository, UpdateFoodDto } from './food.repository';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { PrismaService } from '../../database/prisma.service';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('FoodRepository', () => {
   let repository: FoodRepository;
 
-  const mockFood = {
-    id: 'food-1',
-    name: 'Test Food',
-    description: 'Test Description',
-    barcode: '1234567890',
-    openFoodFactsId: 'off-123',
-    createdBy: 'user-1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  const mockFood = { ...TEST_FOOD };
 
   let mockPrismaService: any;
 

@@ -1,0 +1,52 @@
+# Install PostgreSQL
+apt install postgresql
+
+# Enter the PostgreSQL terminal as the admin user
+sudo -u postgres psql
+
+/* --- Keycloak Setup --- */
+-- Create a dedicated user for Keycloak
+CREATE USER keycloak_user WITH ENCRYPTED PASSWORD 'your_secure_password';
+
+-- Create the database owned by that user
+CREATE DATABASE keycloak OWNER keycloak_user;
+
+-- Grant permissions (Required for Postgres 15+)
+\c keycloak
+GRANT ALL ON SCHEMA public TO keycloak_user;
+
+/* --- App Setup --- */
+-- Create a dedicated user for your application
+CREATE USER foodmission_user WITH ENCRYPTED PASSWORD 'another_password';
+
+-- Create the database owned by that user
+CREATE DATABASE foodmission OWNER foodmission_user;
+
+-- Grant permissions (Required for Postgres 15+)
+\c foodmission
+GRANT ALL ON SCHEMA public TO foodmission_user;
+
+-- Exit the terminal
+\q
+
+
+# 1. Allow Postgres to listen to external network interfaces
+# Note: Replace '16' with your actual Postgres version number
+sudo nano /etc/postgresql/16/main/postgresql.conf
+
+# Find this line and change it to:
+listen_addresses = '*'
+
+# 2. Configure the "Firewall" (Host-Based Authentication)
+sudo nano /etc/postgresql/16/main/pg_hba.conf
+
+# Add these lines at the very bottom:
+# TYPE  DATABASE        USER                ADDRESS                 METHOD
+host    keycloak        keycloak_user       0.0.0.0/0               scram-sha-256
+host    foodmission     foodmission_user    0.0.0.0/0               scram-sha-256
+
+# 3. Apply changes and open the Ubuntu firewall
+sudo systemctl restart postgresql
+sudo ufw allow 5432/tcp
+
+

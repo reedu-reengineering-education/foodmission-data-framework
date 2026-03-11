@@ -41,18 +41,6 @@ export class FoodService {
       }
     }
 
-    // Check if OpenFoodFacts ID already exists
-    if (createFoodDto.openFoodFactsId) {
-      const existingFood = await this.foodRepository.findByOpenFoodFactsId(
-        createFoodDto.openFoodFactsId,
-      );
-      if (existingFood) {
-        throw new BadRequestException(
-          'Food with this OpenFoodFacts ID already exists',
-        );
-      }
-    }
-
     const food = await this.foodRepository.create({
       ...createFoodDto,
       createdBy: userId,
@@ -196,22 +184,6 @@ export class FoodService {
       }
     }
 
-    // Check if OpenFoodFacts ID already exists (excluding current food)
-    if (
-      updateFoodDto.openFoodFactsId &&
-      updateFoodDto.openFoodFactsId !== existingFood.openFoodFactsId
-    ) {
-      const existingFoodWithOffId =
-        await this.foodRepository.findByOpenFoodFactsId(
-          updateFoodDto.openFoodFactsId,
-        );
-      if (existingFoodWithOffId && existingFoodWithOffId.id !== id) {
-        throw new BadRequestException(
-          'Food with this OpenFoodFacts ID already exists',
-        );
-      }
-    }
-
     const updatedFood = await this.foodRepository.update(id, updateFoodDto);
     return this.transformToResponseDto(updatedFood);
   }
@@ -260,25 +232,50 @@ export class FoodService {
       throw new NotFoundException('Product not found in OpenFoodFacts');
     }
 
-    // Create food from OpenFoodFacts data
-    const createFoodDto: CreateFoodDto = {
+    // Create food from OpenFoodFacts data with all enriched fields
+    const food = await this.foodRepository.create({
       name: productInfo.name,
       description: productInfo.genericName,
       barcode: productInfo.barcode,
-      openFoodFactsId: productInfo.barcode, // Use barcode as OpenFoodFacts ID
-    };
-
-    const food = await this.foodRepository.create({
-      ...createFoodDto,
       createdBy,
+      brands: productInfo.brands?.join(', '),
+      categories: productInfo.categories || [],
+      labels: productInfo.labels || [],
+      quantity: productInfo.quantity,
+      servingSize: productInfo.servingSize,
+      ingredientsText: productInfo.ingredients,
+      allergens: productInfo.allergens || [],
+      traces: productInfo.traces || [],
+      countries: productInfo.countries || [],
+      origins: productInfo.origins,
+      manufacturingPlaces: productInfo.manufacturingPlaces,
+      imageUrl: productInfo.imageUrl,
+      imageFrontUrl: productInfo.imageFrontUrl,
+      nutritionDataPer: productInfo.nutritionDataPer,
+      energyKcal: productInfo.nutritionalInfo?.energyKcal,
+      energyKj: productInfo.nutritionalInfo?.energyKj,
+      fat: productInfo.nutritionalInfo?.fat,
+      saturatedFat: productInfo.nutritionalInfo?.saturatedFat,
+      transFat: productInfo.nutritionalInfo?.transFat,
+      cholesterol: productInfo.nutritionalInfo?.cholesterol,
+      carbohydrates: productInfo.nutritionalInfo?.carbohydrates,
+      sugars: productInfo.nutritionalInfo?.sugars,
+      fiber: productInfo.nutritionalInfo?.fiber,
+      proteins: productInfo.nutritionalInfo?.proteins,
+      salt: productInfo.nutritionalInfo?.salt,
+      sodium: productInfo.nutritionalInfo?.sodium,
+      vitaminA: productInfo.nutritionalInfo?.vitaminA,
+      vitaminC: productInfo.nutritionalInfo?.vitaminC,
+      calcium: productInfo.nutritionalInfo?.calcium,
+      iron: productInfo.nutritionalInfo?.iron,
+      nutriscoreGrade: productInfo.nutritionGrade,
+      novaGroup: productInfo.novaGroup,
+      ecoscoreGrade: productInfo.ecoscoreGrade,
+      carbonFootprint: productInfo.carbonFootprint,
+      completeness: productInfo.completeness,
     });
-    const responseDto = this.transformToResponseDto(food);
 
-    // Include OpenFoodFacts data in response
-    const offInfo = await this.getOpenFoodFactsInfo(barcode);
-    responseDto.openFoodFactsInfo = offInfo || undefined;
-
-    return responseDto;
+    return this.transformToResponseDto(food);
   }
 
   async getOpenFoodFactsInfo(
@@ -314,15 +311,8 @@ export class FoodService {
   }
 
   private transformToResponseDto(food: any): FoodResponseDto {
-    return plainToClass(FoodResponseDto, {
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      barcode: food.barcode,
-      openFoodFactsId: food.openFoodFactsId,
-      createdAt: food.createdAt,
-      updatedAt: food.updatedAt,
-      createdBy: food.createdBy,
+    return plainToClass(FoodResponseDto, food, {
+      excludeExtraneousValues: true,
     });
   }
 }

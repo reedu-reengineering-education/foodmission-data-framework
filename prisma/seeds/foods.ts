@@ -44,6 +44,49 @@ export const testOpenFoodFactsBarcodes: string[] = [
   '8000500037560', // Kinder Bueno (verified working)
 ];
 
+/**
+ * Derives boolean diet flags from ingredients_analysis_tags.
+ *
+ * Tags follow patterns like:
+ *   "en:vegan" / "en:non-vegan" / "en:vegan-status-unknown"
+ *   "en:vegetarian" / "en:non-vegetarian" / "en:vegetarian-status-unknown"
+ *   "en:palm-oil-free" / "en:palm-oil" / "en:may-contain-palm-oil"
+ */
+function parseDietFlags(tags?: string[]): {
+  isVegan: boolean | null;
+  isVegetarian: boolean | null;
+  isPalmOilFree: boolean | null;
+} {
+  const result = {
+    isVegan: null as boolean | null,
+    isVegetarian: null as boolean | null,
+    isPalmOilFree: null as boolean | null,
+  };
+  if (!tags || !Array.isArray(tags)) return result;
+
+  for (const tag of tags) {
+    if (tag === 'en:vegan') result.isVegan = true;
+    else if (tag === 'en:non-vegan') result.isVegan = false;
+
+    if (tag === 'en:vegetarian') result.isVegetarian = true;
+    else if (tag === 'en:non-vegetarian') result.isVegetarian = false;
+
+    if (tag === 'en:palm-oil-free') result.isPalmOilFree = true;
+    else if (tag === 'en:palm-oil') result.isPalmOilFree = false;
+  }
+
+  return result;
+}
+
+/**
+ * Safely read a numeric nutriment value, returning undefined if absent/NaN.
+ */
+function num(val: unknown): number | undefined {
+  if (val === undefined || val === null || val === '') return undefined;
+  const n = Number(val);
+  return Number.isNaN(n) ? undefined : n;
+}
+
 export async function seedFoods(
   prisma: PrismaClient,
   useTestData: boolean = false,
@@ -88,30 +131,104 @@ export async function seedFoods(
         continue;
       }
 
-      const product = data.product;
+      const p = data.product;
+      const nutriments = p.nutriments || {};
+      const dietFlags = parseDietFlags(p.ingredients_analysis_tags);
 
-      // Create food from OpenFoodFacts data
       const food = await prisma.food.create({
         data: {
           name:
-            product.product_name ||
-            product.generic_name ||
+            p.product_name ||
+            p.product_name_en ||
+            p.generic_name ||
             `Product ${barcode}`,
           description:
-            product.generic_name ||
-            product.product_name ||
+            p.generic_name ||
+            p.generic_name_en ||
+            p.product_name ||
             'Imported from OpenFoodFacts',
           barcode: barcode,
-          openFoodFactsId: barcode,
           createdBy: 'system-seed-openfoodfacts',
+
+          // Product metadata
+          brands: p.brands || undefined,
+          categories: p.categories_tags || [],
+          labels: p.labels_tags || [],
+          quantity: p.quantity || undefined,
+          servingSize: p.serving_size || undefined,
+          ingredientsText:
+            p.ingredients_text_en || p.ingredients_text || undefined,
+          allergens: p.allergens_tags || [],
+          traces: p.traces_tags || [],
+          countries: p.countries_tags || [],
+          origins: p.origins || undefined,
+          manufacturingPlaces: p.manufacturing_places || undefined,
+          imageUrl: p.image_url || undefined,
+          imageFrontUrl: p.image_front_url || undefined,
+
+          // Nutriments per 100g
+          nutritionDataPer: p.nutrition_data_per || undefined,
+          energyKcal: num(nutriments['energy-kcal_100g']),
+          energyKj: num(nutriments['energy-kj_100g']),
+          fat: num(nutriments.fat_100g),
+          saturatedFat: num(nutriments['saturated-fat_100g']),
+          transFat: num(nutriments['trans-fat_100g']),
+          cholesterol: num(nutriments.cholesterol_100g),
+          carbohydrates: num(nutriments.carbohydrates_100g),
+          sugars: num(nutriments.sugars_100g),
+          addedSugars: num(nutriments['added-sugars_100g']),
+          fiber: num(nutriments.fiber_100g),
+          proteins: num(nutriments.proteins_100g),
+          salt: num(nutriments.salt_100g),
+          sodium: num(nutriments.sodium_100g),
+          vitaminA: num(nutriments['vitamin-a_100g']),
+          vitaminC: num(nutriments['vitamin-c_100g']),
+          calcium: num(nutriments.calcium_100g),
+          iron: num(nutriments.iron_100g),
+          potassium: num(nutriments.potassium_100g),
+          magnesium: num(nutriments.magnesium_100g),
+          zinc: num(nutriments.zinc_100g),
+
+          // Store full nutriments JSON for anything not covered above
+          nutrimentsRaw: nutriments,
+
+          // Scores & grades
+          nutriscoreGrade:
+            p.nutriscore_grade || p.nutrition_grades || undefined,
+          nutriscoreScore: num(p.nutriscore_score ?? p.nutriscore_data?.score),
+          novaGroup: num(p.nova_group),
+          ecoscoreGrade: p.ecoscore_grade || undefined,
+          carbonFootprint: num(
+            nutriments['carbon-footprint-from-known-ingredients_product'],
+          ),
+
+          // Nutrient levels (traffic lights)
+          nutrientLevels: p.nutrient_levels || undefined,
+
+          // Diet flags
+          isVegan: dietFlags.isVegan,
+          isVegetarian: dietFlags.isVegetarian,
+          isPalmOilFree: dietFlags.isPalmOilFree,
+          ingredientsAnalysisTags: p.ingredients_analysis_tags || [],
+
+          // Packaging
+          packagingTags: p.packaging_tags || [],
+          packagingMaterials: p.packaging_materials_tags || [],
+          packagingRecycling: p.packaging_recycling_tags || [],
+          packagingText: p.packaging_text_en || p.packaging_text || undefined,
+
+          // Data quality
+          completeness: num(p.completeness),
         },
       });
 
       foods.push(food);
       successCount++;
-      console.log(`✅ Successfully imported: ${food.name}`);
+      console.log(
+        `✅ ${food.name} | Nutri-Score: ${food.nutriscoreGrade ?? '?'} | NOVA: ${food.novaGroup ?? '?'} | Eco: ${food.ecoscoreGrade ?? '?'}`,
+      );
 
-      // Add a small delay to be respectful to the API
+      // Be respectful to the API
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (error) {
       console.error(`❌ Error importing ${barcode}:`, error.message);
