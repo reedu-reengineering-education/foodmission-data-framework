@@ -140,9 +140,13 @@ describe('KnowledgeService', () => {
       expect(repository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            OR: expect.arrayContaining([
-              expect.objectContaining({ title: expect.any(Object) }),
-              expect.objectContaining({ description: expect.any(Object) }),
+            AND: expect.arrayContaining([
+              expect.objectContaining({
+                OR: expect.arrayContaining([
+                  expect.objectContaining({ title: expect.any(Object) }),
+                  expect.objectContaining({ description: expect.any(Object) }),
+                ]),
+              }),
             ]),
           }),
         }),

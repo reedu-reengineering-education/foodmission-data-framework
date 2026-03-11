@@ -4,7 +4,7 @@ import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import {
   TransformBooleanString,
   TransformTrimToUndefined,
-} from 'src/common/decorators/transformers';
+} from '../../common/decorators/transformers';
 
 export class QueryKnowledgeDto {
   @ApiPropertyOptional({ description: 'Page number', example: 1, default: 1 })

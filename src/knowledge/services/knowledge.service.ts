@@ -66,8 +66,8 @@ export class KnowledgeService {
     const searchFilter = search
       ? {
           OR: [
-            { title: { contains: search, mode: 'insensitive' } },
-            { description: { contains: search, mode: 'insensitive' } },
+            { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
           ],
         }
       : undefined;
