@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { CreateKnowledgeDto } from '../dto/create-knowledge.dto';
@@ -128,12 +128,21 @@ export class KnowledgeService {
   }
 
   async findOne(id: string, userId: string): Promise<KnowledgeResponseDto> {
-    const ownedKnowledge = await this.getOwnedKnowledgeOrThrow(id, userId);
+    const knowledge = await this.knowledgeRepository.findById(id);
+    if (!knowledge) {
+      throw new NotFoundException('Knowledge not found');
+    }
+
+    // Allow reads for either the owner or when the item is public/available.
+    if (knowledge.userId !== userId && !knowledge.available) {
+      throw new ForbiddenException('Knowledge not accessible');
+    }
+
     const progress = await this.progressRepository.findByUserAndKnowledge(
       userId,
       id,
     );
-    return this.toResponse(ownedKnowledge, progress);
+    return this.toResponse(knowledge, progress);
   }
 
   async update(
