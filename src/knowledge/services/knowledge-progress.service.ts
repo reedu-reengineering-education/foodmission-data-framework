@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import {
@@ -30,6 +30,11 @@ export class KnowledgeProgressService {
     const knowledge = await this.knowledgeRepository.findById(knowledgeId);
     if (!knowledge) {
       throw new NotFoundException('Knowledge not found');
+    }
+
+    // Authorization: only the owner or public items may be interacted with.
+    if (knowledge.userId !== userId && !knowledge.available) {
+      throw new ForbiddenException('Knowledge not accessible');
     }
 
     try {
