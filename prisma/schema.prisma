@@ -310,6 +310,7 @@ model User {
   recipes                        Recipe[]
   meals                          Meal[]
   mealLogs                       MealLog[]
+  foodWaste                      FoodWaste[]
 
   @@index([email])
   @@index([createdAt])
@@ -383,9 +384,10 @@ model PantryItem {
   foodId         String?
   foodCategoryId String?
 
-  pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
-  food         Food?         @relation(fields: [foodId], references: [id])
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
+  pantry    Pantry      @relation(fields: [pantryId], references: [id], onDelete: Cascade)
+  food      Food        @relation(fields: [foodId], references: [id])
+  meals     Meal[]
+  foodWaste FoodWaste[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -393,8 +395,27 @@ model PantryItem {
   @@unique([pantryId, foodId])
   @@unique([pantryId, foodCategoryId])
   @@index([pantryId])
+  @@index([expiryDate])
   @@map("pantry_items")
 }
+
+
+
+enum WasteReason {
+  EXPIRED
+  SPOILED
+  OVERCOOKED
+  UNWANTED
+  PORTION_TOO_LARGE
+  OTHER
+}
+
+enum DetectionMethod {
+  AUTOMATIC
+  MANUAL
+}
+
+
 
 model Meal {
   id                  String     @id @default(uuid())
@@ -493,6 +514,32 @@ model MealLog {
   @@map("meal_logs")
 }
 
+model FoodWaste {
+  id              String          @id @default(uuid())
+  userId          String
+  pantryItemId    String?
+  foodId          String
+  quantity        Float
+  unit            Unit
+  wasteReason     WasteReason
+  detectionMethod DetectionMethod
+  notes           String?
+  costEstimate    Float?
+  carbonFootprint Float?
+  wastedAt        DateTime
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  food       Food        @relation(fields: [foodId], references: [id], onDelete: Restrict)
+  pantryItem PantryItem? @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+
+  @@index([userId, wastedAt])
+  @@index([foodId])
+  @@index([detectionMethod])
+  @@index([wasteReason])
+  @@map("food_waste")
+}
 enum Gender {
   MALE
   FEMALE

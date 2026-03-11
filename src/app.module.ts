@@ -24,6 +24,7 @@ import { MealModule } from './meal/meal.module';
 import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
+import { FoodWasteModule } from './foodWaste/food-waste.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MealLogModule } from './mealLog/meal-log.module';
     MealItemModule,
     RecipeModule,
     MealLogModule,
+    FoodWasteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
