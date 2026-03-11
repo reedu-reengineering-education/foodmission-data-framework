@@ -19,12 +19,12 @@ export const knowledgeData: KnowledgeSeedData[] = [
         {
           question: 'Which macronutrient is the primary source of energy?',
           options: ['Vitamins', 'Carbohydrates', 'Water', 'Minerals'],
-          correctAnswer: 1,
+          correctAnswer: 'Carbohydrates',
         },
         {
           question: 'Which vitamin is fat-soluble?',
           options: ['Vitamin C', 'Vitamin B12', 'Vitamin A', 'Vitamin B6'],
-          correctAnswer: 2,
+          correctAnswer: 'Vitamin A',
         },
       ],
     },
@@ -40,7 +40,7 @@ export const knowledgeData: KnowledgeSeedData[] = [
           question:
             'What temperature range is considered the "danger zone" for bacterial growth?',
           options: ['0-4°C', '5-60°C', '61-90°C', 'below 0°C'],
-          correctAnswer: 1,
+          correctAnswer: '5-60°C',
         },
       ],
     },
