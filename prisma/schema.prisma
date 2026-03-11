@@ -399,14 +399,7 @@ model PantryItem {
   @@map("pantry_items")
 }
 
-enum Unit {
-  PIECES
-  G
-  KG
-  ML
-  L
-  CUPS
-}
+
 
 enum WasteReason {
   EXPIRED
@@ -422,21 +415,7 @@ enum DetectionMethod {
   MANUAL
 }
 
-enum TypeOfMeal {
-  BREAKFAST
-  LUNCH
-  DINNER
-  SNACK
-  SPECIAL_DRINKS
-}
 
-enum MealType {
-  SALAD
-  MEAT
-  PASTA
-  RICE
-  VEGAN
-}
 
 model Meal {
   id                  String     @id @default(uuid())
