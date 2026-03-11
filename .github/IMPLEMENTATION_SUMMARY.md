@@ -134,7 +134,7 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 
 ### Supported Environments
 
-- **Node.js**: 22+
+- **Node.js**: 24+
 - **Database**: PostgreSQL 15+ with Prisma ORM
 - **Cache**: Redis 7+
 - **Container**: Docker with multi-stage builds
