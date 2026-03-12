@@ -44,6 +44,7 @@ export class CreateRecipeIngredientDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Validate(OptionalExclusiveFoodReferenceConstraint) // runs on whole object (args.object)
   name: string;
 
   @ApiPropertyOptional({
@@ -178,14 +179,12 @@ export class RecipeIngredientResponseDto {
   @Expose()
   updatedAt: Date;
 
-  // Optional expanded relations
+  // Optional expanded relations (plain objects passed through)
   @ApiPropertyOptional({ description: 'Linked Food details' })
   @Expose()
-  @Type(() => Object)
   food?: Record<string, any>;
 
   @ApiPropertyOptional({ description: 'Linked FoodCategory details' })
   @Expose()
-  @Type(() => Object)
   foodCategory?: Record<string, any>;
 }

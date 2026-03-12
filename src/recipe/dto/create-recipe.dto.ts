@@ -4,10 +4,11 @@ import {
   IsArray,
   IsBoolean,
   IsInt,
+  IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Min,
-  IsNumber,
   ValidateNested,
 } from 'class-validator';
 import { CreateRecipeIngredientDto } from './recipe-ingredient.dto';

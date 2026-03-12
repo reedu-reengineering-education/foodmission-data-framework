@@ -497,8 +497,8 @@ describe('RecipeService', () => {
       const result = await service.findOne('r1', userId);
 
       expect(result.ingredients).toBeDefined();
-      expect(result.ingredients).toHaveLength(2);
-      expect(result.ingredients[0].name).toBe('Chicken Breast');
+      expect(result.ingredients!).toHaveLength(2);
+      expect(result.ingredients![0].name).toBe('Chicken Breast');
     });
 
     it('should update recipe with new ingredients', async () => {
@@ -535,7 +535,7 @@ describe('RecipeService', () => {
       );
 
       expect(result.ingredients).toHaveLength(1);
-      expect(result.ingredients[0].name).toBe('New Ingredient');
+      expect(result.ingredients![0].name).toBe('New Ingredient');
     });
 
     it('should include ingredients with food category details in findAll', async () => {
@@ -561,7 +561,7 @@ describe('RecipeService', () => {
       const result = await service.findAll(userId, { page: 1, limit: 10 });
 
       expect(result.data[0].ingredients).toBeDefined();
-      expect(result.data[0].ingredients[0].foodCategory).toBeDefined();
+      expect(result.data[0].ingredients![0].foodCategory).toBeDefined();
     });
 
     it('should create recipe with ingredients linked to Food', async () => {
@@ -600,8 +600,8 @@ describe('RecipeService', () => {
         userId,
       );
 
-      expect(result.ingredients[0].foodId).toBe('food-1');
-      expect(result.ingredients[0].food).toBeDefined();
+      expect(result.ingredients![0].foodId).toBe('food-1');
+      expect(result.ingredients![0].food).toBeDefined();
     });
   });
 });
