@@ -2562,18 +2562,13 @@ paths:
     get:
       operationId: findAll
       parameters:
-        - name: mealType
+        - name: recipeId
           required: false
           in: query
-          description: Filter by meal type
+          description: Filter by linked recipe (UUID)
           schema:
             type: string
-            enum:
-              - SALAD
-              - MEAT
-              - PASTA
-              - RICE
-              - VEGAN
+            format: uuid
         - name: search
           required: false
           in: query
@@ -3116,18 +3111,6 @@ paths:
           schema:
             default: 10
             type: number
-        - name: mealType
-          required: false
-          in: query
-          description: Filter by meal type
-          schema:
-            type: string
-            enum:
-              - SALAD
-              - MEAT
-              - PASTA
-              - RICE
-              - VEGAN
         - name: tags
           required: false
           in: query
@@ -3443,18 +3426,6 @@ paths:
               - DINNER
               - SNACK
               - SPECIAL_DRINKS
-        - name: mealType
-          required: false
-          in: query
-          description: Filter by underlying meal type
-          schema:
-            type: string
-            enum:
-              - SALAD
-              - MEAT
-              - PASTA
-              - RICE
-              - VEGAN
         - name: mealFromPantry
           required: false
           in: query
@@ -8426,7 +8397,7 @@ components:
           type: string
           description: Meal name
           example: Grilled chicken salad
-        mealType:
+        recipeId:
           type: string
           enum: &ref_33
             - SALAD
@@ -8435,6 +8406,8 @@ components:
             - RICE
             - VEGAN
           description: Meal type
+          format: uuid
+          description: Optional recipe this meal is based on
         calories:
           type: number
           description: Calories for the meal
@@ -8463,7 +8436,6 @@ components:
           description: Barcode of the meal (if packaged)
       required:
         - name
-        - mealType
     MealResponseDto:
       type: object
       properties:
@@ -8474,15 +8446,10 @@ components:
         name:
           type: string
           description: Meal name
-        mealType:
+        recipeId:
           type: string
-          enum:
-            - SALAD
-            - MEAT
-            - PASTA
-            - RICE
-            - VEGAN
-          description: Meal type
+          format: uuid
+          description: Optional recipe this meal is based on
         calories:
           type: number
           description: Calories
@@ -8516,7 +8483,6 @@ components:
       required:
         - id
         - name
-        - mealType
         - userId
         - createdAt
         - updatedAt
@@ -8552,10 +8518,12 @@ components:
           type: string
           description: Meal name
           example: Grilled chicken salad
-        mealType:
+        recipeId:
           type: string
           enum: *ref_33
           description: Meal type
+          format: uuid
+          description: Optional recipe this meal is based on
         calories:
           type: number
           description: Calories for the meal
