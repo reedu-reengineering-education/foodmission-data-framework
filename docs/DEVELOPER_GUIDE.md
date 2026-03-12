@@ -411,8 +411,8 @@ npm run db:seed:test
 # Seed production database (be careful!)
 npm run db:seed
 
-# Seed TheMealDB recipes
-npm run db:seed:themealdb
+# Seed TheMealDB recipes (run after OFF + NEVO are seeded)
+npx ts-node prisma/seeds/themealdb.ts
 ```
 
 ### External Data Sources
@@ -439,7 +439,7 @@ TheMealDB recipes are imported as system-level public recipes with:
 **Seeding commands:**
 ```bash
 # Import all TheMealDB recipes
-npm run db:seed:themealdb
+npx ts-node prisma/seeds/themealdb.ts
 
 # Preview without database changes
 npx ts-node prisma/seeds/themealdb.ts --dry-run
@@ -448,10 +448,7 @@ npx ts-node prisma/seeds/themealdb.ts --dry-run
 npx ts-node prisma/seeds/themealdb.ts --limit=50
 ```
 
-**Data files in `prisma/seeds/data/`:**
-- `themealdb-recipes.csv` - Recipe metadata (598 rows)
-- `themealdb-ingredients.csv` - Ingredients per recipe (6,331 rows)
-- `ingredient-food-mapping.csv` - TheMealDB-to-NEVO mappings (836 unique ingredients)
+**Data:** The seed reads a single file `prisma/seeds/data/themealdb-data.json` (recipes + ingredients + mappings + enriched data). Generate it from the CSVs with `npx ts-node scripts/build-themealdb-data.ts`. Source CSVs: `themealdb-recipes.csv`, `themealdb-ingredients.csv`, `ingredient-food-mapping.csv`, `enriched-recipes.csv`.
 
 #### Ingredient Enrichment Algorithm
 

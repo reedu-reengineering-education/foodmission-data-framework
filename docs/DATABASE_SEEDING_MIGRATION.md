@@ -205,52 +205,94 @@ Sample users include:
 ## TheMealDB Recipe Integration
 
 The framework includes a comprehensive recipe dataset imported from TheMealDB and enriched
-with nutritional data from the NEVO Dutch Food Composition Database.
+with nutritional data from the NEVO Dutch Food Composition Database and OpenFoodFacts (packaged products).
 
 ### Data Sources
 
 | Source | Description | Records | URL |
 |--------|-------------|---------|-----|
-| TheMealDB | Free recipe API with images and videos | 598 recipes | https://www.themealdb.com/api.php |
-| NEVO | Dutch Food Composition Database | 2,152 foods | https://nevo-online.rivm.nl/ |
+| [OpenFoodFacts](https://openfoodfacts.org/) (OFF) | Open food database (barcode-linked packaged products) | On-demand via `npx ts-node scripts/pull-openfoodfacts-foods.ts` | https://openfoodfacts.org/ |
+| [TheMealDB](https://www.themealdb.com/api.php) | Free recipe API with images and videos | 598 recipes | https://www.themealdb.com/api.php |
+| [NEVO](https://nevo-online.rivm.nl/) | Dutch Food Composition Database (generic foods) | 2,152 foods | https://nevo-online.rivm.nl/ |
 
 ### Data Pipeline
 
-The integration follows a multi-phase pipeline:
+The integration uses three external data sources. OFF and NEVO populate the **Food** and **FoodCategory** tables first; TheMealDB recipes then link ingredients to those records.
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  TheMealDB API  │───▶│  CSV Extraction │───▶│  Ingredient     │
-│  (598 recipes)  │    │  (recipes.csv)  │    │  Mapping        │
-└─────────────────┘    └─────────────────┘    └────────┬────────┘
-                                                       │
-┌─────────────────┐    ┌─────────────────┐    ┌────────▼────────┐
-│   Recipe DB     │◀───│  Prisma Seed    │◀───│  NEVO Lookup    │
-│   (recipes)     │    │  (themealdb.ts) │    │  (food links)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────┐     ┌─────────────────────────┐     ┌──────────────────┐
+│  OpenFoodFacts API  │────▶│  openfoodfacts-foods.csv │────▶│  Seed (OFF CSV)   │
+│  (pull script)      │     │  (optional)              │     │  → Food table     │
+└─────────────────────┘     └─────────────────────────┘     └────────┬─────────┘
+                                                                      │
+┌─────────────────────┐     ┌─────────────────────────┐     ┌────────▼─────────┐
+│  NEVO CSV           │────▶│  Seed (foodCategories)   │────▶│  FoodCategory     │
+│  (NEVO2025_v9.0.csv)│     │  → FoodCategory table   │     │  table            │
+└─────────────────────┘     └─────────────────────────┘     └────────┬─────────┘
+                                                                      │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────▼──────────┐
+│  TheMealDB API  │───▶│  CSV Extraction │───▶│  Ingredient Mapping             │
+│  (598 recipes)  │    │  (recipes.csv,   │    │  → NEVO (FoodCategory) + OFF    │
+└─────────────────┘    │   ingredients)   │    │    (Food by barcode/name)        │
+                       └─────────────────┘    └─────────────────────┬──────────┘
+                                                                      │
+                       ┌─────────────────┐    ┌───────────────────────▼──────────┐
+                       │  themealdb-data │◀───│  build-themealdb-data             │
+                       │  .json          │    │  (recipes + mappings + enriched)  │
+                       └────────┬────────┘    └───────────────────────────────────┘
+                                │
+                       ┌────────▼────────┐
+                       │  Prisma Seed    │────▶  Recipe + RecipeIngredient
+                       │  (themealdb.ts) │      (links to Food / FoodCategory)
+                       └─────────────────┘
 ```
 
-**Phase 1: Data Extraction** (`scripts/extract-themealdb.ts`)
-- Iterates through all TheMealDB categories
-- Fetches full recipe details including ingredients
-- Outputs: `themealdb-recipes.csv`, `themealdb-ingredients.csv`
+**OpenFoodFacts (OFF)**  
+- Script `scripts/pull-openfoodfacts-foods.ts` (run with `npx ts-node scripts/pull-openfoodfacts-foods.ts`) fetches products by barcode from the OFF API and writes `openfoodfacts-foods.csv`.  
+- Seed reads only the CSV (`openfoodfacts-from-csv.ts`); no API calls during seed. If the CSV is missing, no OFF products are loaded.
 
-**Phase 2: Ingredient Mapping** (`scripts/map-ingredients-to-foods.ts`)
-- Maps 836 unique TheMealDB ingredients to NEVO foods
-- Uses fuzzy string matching with confidence scoring
-- Outputs: `ingredient-food-mapping.csv`
-- Coverage: ~74% of ingredients mapped (622 of 836)
+**NEVO**  
+- Food categories are seeded from `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` into the **FoodCategory** table.
 
-**Phase 3: Database Seeding** (`prisma/seeds/themealdb.ts`)
-- Loads CSV data and creates Recipe records
-- Links ingredients to Food records where mappings exist
-- Sets `source: 'themealdb'`, `isPublic: true`, `userId: null`
+**TheMealDB + ingredient mapping**  
+- **Phase 1 – Data Extraction** (`scripts/extract-themealdb.ts`): Fetches all TheMealDB categories and recipe details; outputs `themealdb-recipes.csv`, `themealdb-ingredients.csv`.  
+- **Phase 2 – Ingredient Mapping** (`scripts/map-ingredients-to-foods.ts`): Maps 836 unique TheMealDB ingredients to **NEVO** (FoodCategory) and/or **OpenFoodFacts** (Food by barcode or name). Outputs `ingredient-food-mapping.csv`. Coverage: ~74% mapped to NEVO; additional rows can map to OFF.  
+- **Phase 3 – Build** (`npx ts-node scripts/build-themealdb-data.ts`): Produces single `themealdb-data.json` (recipes + ingredients + mappings + enriched nutrition/allergens/sustainability).  
+- **Phase 4 – Database Seeding** (`prisma/seeds/themealdb.ts`): Creates Recipe and RecipeIngredient records; resolves each ingredient’s mapping to `FoodCategory.id` (NEVO) or `Food.id` (OFF). Sets `source: 'themealdb'`, `isPublic: true`, `userId: null`.
+
+### Seed order (OpenFoodFacts and NEVO first)
+
+Recipe seeding depends on **Food** (OpenFoodFacts) and **FoodCategory** (NEVO) being present so ingredient links can be resolved. The main seed (`npm run db:seed`) runs in this order:
+
+1. **OpenFoodFacts** – from CSV only: if `prisma/seeds/data/openfoodfacts-foods.csv` exists, it is loaded into the Food table; if not, no OFF products are seeded (run `npx ts-node scripts/pull-openfoodfacts-foods.ts` to generate the CSV; the seed does not call the OFF API).
+2. **Food categories (NEVO)** – from `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` into FoodCategory.
+3. **TheMealDB recipes** – from `themealdb-data.json` (recipes + ingredients + mappings + enriched nutritionalInfo/allergens/sustainability). Generate it with `npx ts-node scripts/build-themealdb-data.ts`.
+
+To pre-generate the OpenFoodFacts CSV (so seeding does not call the API):
+
+```bash
+npx ts-node scripts/pull-openfoodfacts-foods.ts        # foods.ts + review CSV; only fetches barcodes not already in openfoodfacts-foods.csv
+npx ts-node scripts/pull-openfoodfacts-foods.ts -- --test   # test barcode set only (no review CSV)
+npx ts-node scripts/pull-openfoodfacts-foods.ts -- --force  # re-fetch all barcodes (ignore existing CSV)
+```
+
+Fetched data is stored in **`prisma/seeds/data/openfoodfacts-foods.csv`**. If that file already exists, the script fetches only barcodes that are not yet in the CSV and appends the new products, so you can pull only missing items on subsequent runs.
+
+Barcode sources for the pull script (merged and deduped):
+
+- **foods.ts** – `openFoodFactsBarcodes` (or test set with `--test`)
+- **ingredient-mapping-review.csv** – manually confirmed OpenFoodFacts ingredients: rows with `correctedNevoCode = OFF`; `correctedMatch` is the barcode. This file is the place to add or correct OFF barcodes for recipe ingredients.
+
+On fetch failure (e.g. network error), the script retries after 60 seconds (up to 2 retries). It does not retry when the product is not found in OpenFoodFacts (invalid barcode).
 
 ### Seeding Commands
 
 ```bash
-# Seed all TheMealDB recipes
-npm run db:seed:themealdb
+# Full seed (OFF/NEVO/recipes in correct order)
+npm run db:seed
+
+# Seed only TheMealDB recipes (run after OFF + NEVO are seeded)
+npx ts-node prisma/seeds/themealdb.ts
 
 # Seed with limit (for testing)
 npx ts-node prisma/seeds/themealdb.ts --limit=50
@@ -268,19 +310,28 @@ Located in `prisma/seeds/data/`:
 
 | File | Description | Records |
 |------|-------------|---------|
-| `themealdb-recipes.csv` | Recipe metadata (title, category, cuisine) | 598 |
-| `themealdb-ingredients.csv` | Ingredients with measures per recipe | 6,331 |
+| `openfoodfacts-foods.csv` | OpenFoodFacts products (optional; generated by `scripts/pull-openfoodfacts-foods.ts`) | — |
+| `themealdb-data.json` | **Single file**: all recipes, ingredients, mappings, and enriched data (used by seed) | 598 recipes |
+| `themealdb-recipes.csv` | Recipe metadata (source for building themealdb-data.json) | 598 |
+| `themealdb-ingredients.csv` | Ingredients per recipe (source for build) | 6,331 |
 | `themealdb-categories.csv` | Recipe categories (Beef, Chicken, etc.) | 27 |
-| `ingredient-food-mapping.csv` | Ingredient-to-NEVO food mappings | 836 |
+| `ingredient-food-mapping.csv` | Ingredient-to-NEVO/OFF mappings (source for build) | 836 |
+| `enriched-recipes.csv` | Pre-calculated nutritionalInfo, allergens, sustainability (source for build) | 598 |
+
+To (re)build the single `themealdb-data.json` from the CSVs (e.g. after re-extracting or updating mappings):
+
+```bash
+npx ts-node scripts/build-themealdb-data.ts
+```
 
 ### Ingredient Matching Algorithm
 
-The mapping process uses a multi-step algorithm:
+The mapping process matches TheMealDB ingredient names to **NEVO** (FoodCategory) and/or **OpenFoodFacts** (Food, by barcode or product name). For NEVO it uses:
 
 1. **Exact Match**: Direct lookup in NEVO by name
 2. **Normalized Match**: Lowercase, trim, remove plurals
 3. **Fuzzy Match**: Levenshtein distance with 80% threshold
-4. **Manual Review**: Low-confidence matches flagged for review
+4. **Manual Review**: Low-confidence matches flagged for review; OFF barcodes can be set in `ingredient-mapping-review.csv` (`correctedNevoCode = OFF`, `correctedMatch` = barcode).
 
 Confidence levels:
 - `high`: Exact or near-exact match (distance < 0.1)
@@ -311,7 +362,8 @@ Imported recipes use the following structure:
       name: "Ground Beef",
       measure: "1 lb",
       order: 1,
-      foodId: "uuid-of-nevo-food",  // Optional
+      foodCategoryId: "uuid-of-nevo-foodcategory",  // Optional: NEVO generic food
+      // OR foodId: "uuid-of-off-food" for OpenFoodFacts packaged product
       foodName: "Beef minced",
       source: "nevo",
       matchConfidence: "high"
@@ -327,14 +379,15 @@ Each mapped ingredient can include:
 
 | Field | Description | Source |
 |-------|-------------|--------|
-| `foodId` | Link to Food record | Prisma lookup |
-| `foodName` | NEVO food name | NEVO |
-| `source` | Data source (`nevo`) | Mapping |
+| `foodId` | Link to Food record (packaged product) | OpenFoodFacts (Prisma lookup by barcode/name) |
+| `foodCategoryId` | Link to FoodCategory (generic food) | NEVO (Prisma lookup by nevoCode) |
+| `foodName` | NEVO/OFF food name | Mapping |
+| `source` | Data source (`nevo` or `openfoodfacts`/`off`) | Mapping |
 | `matchConfidence` | `high`, `medium`, `low` | Algorithm |
-| `energyKcal` | Energy per 100g | NEVO |
-| `protein` | Protein per 100g | NEVO |
-| `fat` | Fat per 100g | NEVO |
-| `carbs` | Carbohydrates per 100g | NEVO |
+| `energyKcal` | Energy per 100g | NEVO (or OFF when linked to Food) |
+| `protein` | Protein per 100g | NEVO / OFF |
+| `fat` | Fat per 100g | NEVO / OFF |
+| `carbs` | Carbohydrates per 100g | NEVO / OFF |
 
 ### Extending the Dataset
 
@@ -343,7 +396,7 @@ To add more recipes from TheMealDB:
 1. Run extraction script: `npx ts-node scripts/extract-themealdb.ts`
 2. Run ingredient mapping: `npx ts-node scripts/map-ingredients-to-foods.ts`
 3. Review low-confidence mappings in `ingredient-mapping-review.csv`
-4. Run seeding: `npm run db:seed:themealdb`
+4. Run seeding: `npx ts-node prisma/seeds/themealdb.ts`
 
 To add recipes from other sources:
 1. Create a new extraction script following the TheMealDB pattern
