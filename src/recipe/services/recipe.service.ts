@@ -69,13 +69,19 @@ export class RecipeService {
     } = query;
     const skip = (page - 1) * limit;
 
-    // Show user's own recipes OR public recipes
+    // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
+    const visibilityWhere: Prisma.RecipeWhereInput =
+      isPublic === true
+        ? { isPublic: true }
+        : isPublic === false
+          ? { userId, isPublic: false }
+          : { OR: [{ userId }, { isPublic: true }] };
+
     const where: Prisma.RecipeWhereInput = {
-      OR: [{ userId }, { isPublic: true }],
+      ...visibilityWhere,
       ...(category ? { category } : {}),
       ...(cuisineType ? { cuisineType } : {}),
       ...(source ? { source } : {}),
-      ...(isPublic !== undefined ? { isPublic } : {}),
       ...(difficulty ? { difficulty } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }

@@ -146,11 +146,7 @@ export class RecipeRepository
                 name: ing.name,
                 measure: ing.measure ?? null,
                 order: ing.order ?? index,
-                itemType: ing.foodId
-                  ? 'food'
-                  : ing.foodCategoryId
-                    ? 'food_category'
-                    : 'food_category',
+                itemType: ing.foodId ? 'food' : 'food_category',
                 foodId: ing.foodId ?? null,
                 foodCategoryId: ing.foodCategoryId ?? null,
               })),
@@ -181,11 +177,7 @@ export class RecipeRepository
                     name: ing.name,
                     measure: ing.measure ?? null,
                     order: ing.order ?? index,
-                    itemType: ing.foodId
-                      ? 'food'
-                      : ing.foodCategoryId
-                        ? 'food_category'
-                        : 'food_category',
+                    itemType: ing.foodId ? 'food' : 'food_category',
                     foodId: ing.foodId ?? null,
                     foodCategoryId: ing.foodCategoryId ?? null,
                   })),
