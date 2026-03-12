@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
 
 async function bootstrap() {
@@ -21,7 +22,10 @@ async function bootstrap() {
 
   // Apply global exception filters for better error formatting
   const loggingService = app.get(LoggingService);
-  app.useGlobalFilters(new ValidationExceptionFilter(loggingService));
+  app.useGlobalFilters(
+    new GlobalExceptionFilter(loggingService),
+    new ValidationExceptionFilter(loggingService),
+  );
 
   // Enable validation pipes globally with input sanitization
   app.useGlobalPipes(

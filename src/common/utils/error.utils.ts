@@ -260,6 +260,7 @@ export function handleServiceError(
   defaultMessage: string,
 ): never {
   if (
+    error instanceof BadRequestException ||
     error instanceof NotFoundException ||
     error instanceof ConflictException ||
     error instanceof ForbiddenException ||

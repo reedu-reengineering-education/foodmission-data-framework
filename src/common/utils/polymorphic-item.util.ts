@@ -37,8 +37,8 @@ export function validatePolymorphicItem(
 
   return {
     itemType: hasFoodId ? 'food' : 'food_category',
-    foodId: dto.foodId,
-    foodCategoryId: dto.foodCategoryId,
+    foodId: hasFoodId ? dto.foodId : undefined,
+    foodCategoryId: hasCategoryId ? dto.foodCategoryId : undefined,
   };
 }
 

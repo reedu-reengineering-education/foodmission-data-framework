@@ -21,9 +21,23 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse();
 
     // Only handle validation pipe exceptions (those with array of validation messages)
-    // Let other BadRequestExceptions fall through to global exception handler
+    // For other BadRequestExceptions, return a plain JSON error response
     if (!this.isValidationPipeException(exceptionResponse)) {
-      throw exception;
+      const status = exception.getStatus();
+      const correlationId = this.getCorrelationId(request);
+      const message =
+        typeof exceptionResponse === 'string'
+          ? exceptionResponse
+          : (exceptionResponse as any)?.message ?? exception.message;
+      response.status(status).json({
+        statusCode: status,
+        message,
+        error: 'BAD_REQUEST',
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        correlationId,
+      });
+      return;
     }
 
     const status = exception.getStatus();
