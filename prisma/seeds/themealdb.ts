@@ -31,6 +31,10 @@ import * as path from 'path';
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
+const SOURCE_NEVO = 'nevo';
+const SOURCE_OFF = 'openfoodfacts'; // alias: 'off'
+const SOURCE_THEMEALDB = 'themealdb';
+
 // Types (match themealdb-data.json)
 interface ThemealdbData {
   ingredientMappings: {
@@ -89,6 +93,13 @@ function loadThemealdbData(): ThemealdbData {
   return JSON.parse(content) as ThemealdbData;
 }
 
+/** Lookup maps for resolving ingredient names to Food/FoodCategory IDs */
+interface IngredientLookupMaps {
+  foodIdByBarcode: Map<string, string>;
+  foodIdByName: Map<string, string>;
+  foodCategoryByNevoCode: Map<number, string>;
+}
+
 /**
  * Build ingredient name -> mapping lookup from data.ingredientMappings
  */
@@ -100,6 +111,79 @@ function buildIngredientMapping(
     map.set(row.ingredientName.toLowerCase().trim(), row);
   }
   return map;
+}
+
+/**
+ * Resolve one recipe ingredient to RecipeIngredientData (with optional foodId/foodCategoryId).
+ */
+function resolveIngredient(
+  ing: { name: string; measure: string; order: number },
+  mapping: ThemealdbData['ingredientMappings'][0] | undefined,
+  maps: IngredientLookupMaps,
+): RecipeIngredientData {
+  const ingredient: RecipeIngredientData = {
+    name: ing.name,
+    measure: ing.measure,
+    order: ing.order,
+    itemType: 'food_category',
+  };
+
+  if (!mapping) return ingredient;
+
+  if (mapping.source === SOURCE_NEVO) {
+    const nevoCode = mapping.sourceId ? parseInt(mapping.sourceId, 10) : NaN;
+    if (!isNaN(nevoCode)) {
+      const fcId = maps.foodCategoryByNevoCode.get(nevoCode);
+      if (fcId) {
+        ingredient.foodCategoryId = fcId;
+        ingredient.itemType = 'food_category';
+      }
+    }
+  } else if (
+    (mapping.source === SOURCE_OFF || mapping.source === 'off') &&
+    mapping.sourceId
+  ) {
+    const foodId =
+      maps.foodIdByBarcode.get(mapping.sourceId.trim()) ??
+      (mapping.foodName
+        ? maps.foodIdByName.get(mapping.foodName.toLowerCase())
+        : undefined);
+    if (foodId) {
+      ingredient.foodId = foodId;
+      ingredient.itemType = 'food';
+    }
+  }
+
+  return ingredient;
+}
+
+/**
+ * Build Prisma create input for one recipe (no ingredients; those are created separately).
+ */
+function toRecipeCreateData(
+  recipe: ThemealdbData['recipes'][0],
+): Prisma.RecipeUncheckedCreateInput {
+  return {
+    externalId: recipe.externalId,
+    title: recipe.title,
+    category: recipe.category || null,
+    cuisineType: recipe.cuisineType || null,
+    instructions: recipe.instructions || null,
+    imageUrl: recipe.imageUrl || null,
+    videoUrl: recipe.videoUrl || null,
+    tags: recipe.tags ?? [],
+    dietaryLabels: recipe.dietaryLabels ?? [],
+    servings: recipe.servings ?? 4,
+    allergens: recipe.allergens ?? [],
+    nutritionalInfo:
+      recipe.nutritionalInfo != null
+        ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
+        : undefined,
+    sustainabilityScore: recipe.sustainabilityScore ?? undefined,
+    source: SOURCE_THEMEALDB,
+    isPublic: true,
+    userId: null,
+  };
 }
 
 /**
@@ -126,14 +210,17 @@ export async function seedTheMealDbRecipes(
     console.log(`   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`);
   }
 
-  // Build lookup maps for linking ingredients
-  const foodIdByBarcode = new Map<string, string>(); // barcode -> Food.id (for OFF mappings)
-  const foodIdByName = new Map<string, string>(); // Food.name -> Food.id (fallback)
-  const foodCategoryMap = new Map<number, string>(); // nevoCode -> FoodCategory.id
-  const nevoCodeByName = new Map<string, number>(); // FoodCategory.foodName -> nevoCode
+  // Build lookup maps for linking ingredients (empty when dry run)
+  const foodIdByBarcode = new Map<string, string>();
+  const foodIdByName = new Map<string, string>();
+  const foodCategoryByNevoCode = new Map<number, string>();
+  const lookupMaps: IngredientLookupMaps = {
+    foodIdByBarcode,
+    foodIdByName,
+    foodCategoryByNevoCode,
+  };
 
   if (!dryRun) {
-    // Get Food records (OpenFoodFacts products) for OFF ingredient links (by barcode and name)
     const foods = await prisma.food.findMany({
       select: { id: true, name: true, barcode: true },
     });
@@ -143,13 +230,11 @@ export async function seedTheMealDbRecipes(
     }
     console.log(`   🍎 ${foods.length} Food records available for linking`);
 
-    // Get FoodCategory records (NEVO generic foods)
     const foodCategories = await prisma.foodCategory.findMany({
-      select: { id: true, nevoCode: true, foodName: true },
+      select: { id: true, nevoCode: true },
     });
     for (const fc of foodCategories) {
-      foodCategoryMap.set(fc.nevoCode, fc.id);
-      nevoCodeByName.set(fc.foodName.toLowerCase(), fc.nevoCode);
+      foodCategoryByNevoCode.set(fc.nevoCode, fc.id);
     }
     console.log(
       `   🥗 ${foodCategories.length} FoodCategory (NEVO) records available for linking`,
@@ -179,53 +264,10 @@ export async function seedTheMealDbRecipes(
         }
       }
 
-      // Build ingredients data for RecipeIngredient records
       const ingredientsData: RecipeIngredientData[] = recipe.ingredients.map(
         (ing) => {
-          const key = ing.name.toLowerCase().trim();
-          const mapping = ingredientMapping.get(key);
-
-          const ingredient: RecipeIngredientData = {
-            name: ing.name,
-            measure: ing.measure,
-            order: ing.order,
-            itemType: 'food_category',
-          };
-
-          if (mapping) {
-            if (mapping.source === 'nevo') {
-              let fcId: string | undefined;
-              const nevoCode = mapping.sourceId
-                ? parseInt(mapping.sourceId, 10)
-                : NaN;
-              if (!isNaN(nevoCode)) fcId = foodCategoryMap.get(nevoCode);
-              // Fallback: resolve by foodName when sourceId missing (e.g. corrected NEVO row without code)
-              if (!fcId && mapping.foodName) {
-                const codeByName = nevoCodeByName.get(mapping.foodName.toLowerCase());
-                if (codeByName != null) fcId = foodCategoryMap.get(codeByName);
-              }
-              if (fcId) {
-                ingredient.foodCategoryId = fcId;
-                ingredient.itemType = 'food_category';
-              }
-            } else if (
-              (mapping.source === 'openfoodfacts' || mapping.source === 'off') &&
-              mapping.sourceId
-            ) {
-              // OFF: sourceId is barcode; resolve Food by barcode first, then by name
-              const foodId =
-                foodIdByBarcode.get(mapping.sourceId.trim()) ??
-                (mapping.foodName
-                  ? foodIdByName.get(mapping.foodName.toLowerCase())
-                  : undefined);
-              if (foodId) {
-                ingredient.foodId = foodId;
-                ingredient.itemType = 'food';
-              }
-            }
-          }
-
-          return ingredient;
+          const mapping = ingredientMapping.get(ing.name.toLowerCase().trim());
+          return resolveIngredient(ing, mapping, lookupMaps);
         },
       );
 
@@ -237,43 +279,20 @@ export async function seedTheMealDbRecipes(
         continue;
       }
 
-      // Create recipe with ingredients in a transaction
       await prisma.$transaction(async (tx) => {
         const createdRecipe = await tx.recipe.create({
-          data: {
-            externalId: recipe.externalId,
-            title: recipe.title,
-            category: recipe.category || null,
-            cuisineType: recipe.cuisineType || null,
-            instructions: recipe.instructions || null,
-            imageUrl: recipe.imageUrl || null,
-            videoUrl: recipe.videoUrl || null,
-            tags: recipe.tags ?? [],
-            dietaryLabels: recipe.dietaryLabels ?? [],
-            servings: recipe.servings ?? 4,
-            allergens: recipe.allergens ?? [],
-            nutritionalInfo:
-              recipe.nutritionalInfo != null
-                ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
-                : undefined,
-            sustainabilityScore: recipe.sustainabilityScore ?? undefined,
-            source: 'themealdb',
-            isPublic: true,
-            userId: null,
-          },
+          data: toRecipeCreateData(recipe),
         });
-
-        // Create RecipeIngredient records
         if (ingredientsData.length > 0) {
           await tx.recipeIngredient.createMany({
             data: ingredientsData.map((ing) => ({
               recipeId: createdRecipe.id,
               name: ing.name,
-              measure: ing.measure?.trim() ? ing.measure.trim() : null,
+              measure: ing.measure?.trim() ?? null,
               order: ing.order,
               itemType: ing.itemType,
-              foodId: ing.foodId || null,
-              foodCategoryId: ing.foodCategoryId || null,
+              foodId: ing.foodId ?? null,
+              foodCategoryId: ing.foodCategoryId ?? null,
             })),
           });
         }
@@ -301,22 +320,21 @@ export async function seedTheMealDbRecipes(
   return { created, skipped, errors };
 }
 
-/**
- * Standalone execution
- */
-async function main() {
-  const args = process.argv.slice(2);
+function parseSeedArgs(args: string[]): SeedOptions {
   const options: SeedOptions = {
     dryRun: args.includes('--dry-run'),
     skipExisting: !args.includes('--force'),
   };
-
-  // Parse --limit=N
   const limitArg = args.find((a) => a.startsWith('--limit='));
   if (limitArg) {
-    options.limit = parseInt(limitArg.split('=')[1], 10);
+    const n = parseInt(limitArg.split('=')[1], 10);
+    if (!isNaN(n)) options.limit = n;
   }
+  return options;
+}
 
+async function main() {
+  const options = parseSeedArgs(process.argv.slice(2));
   const prisma = new PrismaClient();
 
   try {
