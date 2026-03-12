@@ -392,6 +392,11 @@ describe('getAverageWeight', () => {
     expect(getAverageWeight('Chicken Breast')).toBe(200);
   });
 
+  it('matches longer keys before shorter (e.g. eggplant not egg)', () => {
+    expect(getAverageWeight('Large Eggplant')).toBe(300);
+    expect(getAverageWeight('egg')).toBe(50);
+  });
+
   it('returns default for unknown ingredients', () => {
     expect(getAverageWeight('Mysterious Ingredient')).toBe(100);
   });
