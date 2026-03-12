@@ -51,6 +51,7 @@ model Food {
   sodium         Float?
   vitaminA       Float?
   vitaminC       Float?
+  vitaminD       Float? // Vitamin D (µg) — used in recipe nutrition aggregation
   calcium        Float?
   iron           Float?
   potassium      Float?
@@ -147,6 +148,7 @@ model FoodCategory {
   // --- Minerals ---
   chloride     Float? // Chloride (mg)
   sodium       Float? // Sodium (mg)
+  salt         Float? // Salt (g) — for recipe aggregation consistency with Food
   potassium    Float? // Potassium (mg)
   calcium      Float? // Calcium (mg)
   phosphorus   Float? // Phosphorus (mg)
@@ -160,6 +162,7 @@ model FoodCategory {
   iodine       Float? // Iodine (µg)
 
   // --- Vitamins ---
+  vitaminA             Float? // Vitamin A (µg) — for recipe aggregation; backfill from vitaminARae
   vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
   vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
   retinol              Float? // Retinol (µg)
