@@ -244,6 +244,7 @@ export function getAverageWeight(foodName: string): number {
     'garlic clove': 3,
     shallot: 30,
     shallots: 30,
+    // TheMealDB data sometimes spells "shallot(s)" as "challot(s)"
     challot: 30,
     challots: 30,
     leek: 150,
@@ -281,8 +282,12 @@ export function getAverageWeight(foodName: string): number {
     return weights[name];
   }
 
-  // Fuzzy match: check if any key is contained in foodName
-  for (const [key, weight] of Object.entries(weights)) {
+  // Fuzzy match: check if any key is contained in foodName. Try longer keys first
+  // so e.g. "eggplant" matches before "egg" for "Large Eggplant".
+  const entriesByKeyLength = Object.entries(weights).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  for (const [key, weight] of entriesByKeyLength) {
     if (name.includes(key)) {
       return weight;
     }
