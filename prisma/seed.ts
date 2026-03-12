@@ -6,6 +6,8 @@ import { seedShoppingListItems } from './seeds/shoppingListItem';
 import { seedPantries } from './seeds/pantry';
 import { seedPantryItems } from './seeds/pantryItem';
 import { seedFoodCategories } from './seeds/foodCategories';
+import { seedUserGroups } from './seeds/userGroups';
+import { seedVirtualMembers } from './seeds/groupMembers';
 
 const prisma = new PrismaClient();
 
@@ -25,8 +27,10 @@ async function main() {
     const pantry = await seedPantries(prisma);
 
     const pantryItem = await seedPantryItems(prisma);
-
     const foodCategories = await seedFoodCategories(prisma);
+    const userGroups = await seedUserGroups(prisma);
+
+    const virtualMembers = await seedVirtualMembers(prisma);
 
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
@@ -38,6 +42,8 @@ async function main() {
     console.log(`   - pantry: ${pantry.length}`);
     console.log(`   - pantryItem: ${pantryItem.length}`);
     console.log(`   - foodCategories: ${foodCategories.length}`);
+    console.log(`   - userGroups: ${userGroups.length}`);
+    console.log(`   - virtualMembers: ${virtualMembers.length}`);
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;

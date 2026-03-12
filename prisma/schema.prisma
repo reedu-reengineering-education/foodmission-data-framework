@@ -311,6 +311,8 @@ model User {
   meals                          Meal[]
   mealLogs                       MealLog[]
 
+  groupMemberships              GroupMembership[]
+
   @@index([email])
   @@index([createdAt])
   @@map("users")
@@ -501,7 +503,6 @@ enum Gender {
   PREFER_NOT_TO_SAY
 }
 
-// New enums for profile fields
 enum ActivityLevel {
   SEDENTARY
   LIGHT
@@ -555,3 +556,49 @@ enum MealType {
   VEGAN
 }
 
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+model UserGroup {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  inviteCode  String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  memberships GroupMembership[]
+
+  @@index([inviteCode])
+  @@index([createdBy])
+  @@map("user_groups")
+}
+
+model GroupMembership {
+  id       String    @id @default(uuid())
+  groupId  String
+  role     GroupRole @default(MEMBER)
+  joinedAt DateTime  @default(now())
+
+  userId String?
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nickname      String?
+  age           Int?
+  gender        Gender?
+  preferences   Json               @default("{}")
+  activityLevel ActivityLevel?
+  annualIncome  AnnualIncomeLevel?
+  createdBy     String?
+  updatedAt     DateTime?          @updatedAt
+
+  group UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+  @@index([groupId])
+  @@index([createdBy])
+  @@map("group_memberships")
+}

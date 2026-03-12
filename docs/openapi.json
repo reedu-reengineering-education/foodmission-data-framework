@@ -6016,6 +6016,1274 @@
         ]
       }
     },
+    "/api/v1/groups": {
+      "post": {
+        "description": "Creates a new group and adds the creator as an admin. Returns the group with its unique invite code.",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Group created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a new group",
+        "tags": [
+          "groups"
+        ]
+      },
+      "get": {
+        "description": "Returns all groups where the authenticated user is a member.",
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of groups",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroupResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all groups for current user",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}": {
+      "get": {
+        "description": "Returns a specific group if the user is a member.",
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Group found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get group by ID",
+        "tags": [
+          "groups"
+        ]
+      },
+      "patch": {
+        "description": "Updates group name/description. Admin only.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Group updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update group",
+        "tags": [
+          "groups"
+        ]
+      },
+      "delete": {
+        "description": "Deletes a group and all its memberships/virtual members. Admin only.",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Group deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete group",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/join": {
+      "post": {
+        "description": "Joins an existing group using the invite code.",
+        "operationId": "join",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully joined the group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Join a group by invite code",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/leave": {
+      "post": {
+        "description": "Leaves a group. Last admin cannot leave without transferring rights.",
+        "operationId": "leave",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Left the group successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Leave a group",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/invite-code": {
+      "get": {
+        "description": "Returns the current invite code for the group. Admin only.",
+        "operationId": "getInviteCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invite code returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "inviteCode": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get invite code",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/regenerate-code": {
+      "post": {
+        "description": "Generates a new invite code, invalidating the old one. Admin only.",
+        "operationId": "regenerateInviteCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New invite code generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "inviteCode": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Regenerate invite code",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/members": {
+      "get": {
+        "description": "Returns all members of the group (both registered users and virtual members). Use the `isVirtual` field to distinguish between them.",
+        "operationId": "getMembers",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Members list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all members",
+        "tags": [
+          "groups"
+        ]
+      },
+      "post": {
+        "description": "Adds a member without an account (e.g., child or dependent). Any group member can add virtual members.",
+        "operationId": "addMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Virtual member added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Add a virtual member",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/members/{memberId}": {
+      "patch": {
+        "description": "Updates virtual member information. Any group member can update. Cannot update registered users.",
+        "operationId": "updateMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Group ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "description": "Membership ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update a virtual member",
+        "tags": [
+          "groups"
+        ]
+      },
+      "delete": {
+        "description": "Removes a member from the group. Admin required for registered users; any member can remove virtual members.",
+        "operationId": "removeMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Group ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "description": "Membership ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member removed successfully"
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Remove a member",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/v1/groups/{id}/members/{memberId}/make-admin": {
+      "post": {
+        "description": "Promotes a regular member to admin role. Existing admin only. Only registered users can be promoted. Use this before leaving if you are the last admin.",
+        "operationId": "transferAdmin",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Group ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "memberId",
+            "required": true,
+            "in": "path",
+            "description": "Membership ID to promote",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member promoted to admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input data or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication required or invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Promote member to admin",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
     "/api/v1": {
       "get": {
         "description": "Returns a simple health check message to verify the application is running.",
@@ -6529,6 +7797,16 @@
           "nutritionTargets": {
             "type": "object",
             "description": "Nutrition targets (JSON)"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences (JSON) - dietary preferences, allergies, etc.",
+            "example": {
+              "dietaryPreference": "VEGETARIAN",
+              "allergies": [
+                "peanuts"
+              ]
+            }
           }
         }
       },
@@ -6725,6 +8003,7 @@
           "novaGroup": {
             "type": "number",
             "description": "NOVA group (1=unprocessed, 4=ultra-processed)",
+            "example": 1,
             "minimum": 1,
             "maximum": 4
           },
@@ -7513,6 +8792,7 @@
           "novaGroup": {
             "type": "number",
             "description": "NOVA group (1=unprocessed, 4=ultra-processed)",
+            "example": 1,
             "minimum": 1,
             "maximum": 4
           },
@@ -9415,6 +10695,343 @@
           "eatenOut": {
             "type": "boolean",
             "description": "Whether meal was eaten out"
+          }
+        }
+      },
+      "CreateUserGroupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the group",
+            "example": "Smith Family",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the group",
+            "example": "Our family shopping and meal planning group",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MemberResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the membership",
+            "example": "uuid-membership-id"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the member in the group",
+            "enum": [
+              "ADMIN",
+              "MEMBER"
+            ],
+            "example": "MEMBER"
+          },
+          "joinedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the member joined the group"
+          },
+          "isVirtual": {
+            "type": "boolean",
+            "description": "Whether this is a virtual member (true) or registered user (false)",
+            "example": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "The user ID (only for registered users)",
+            "example": "uuid-user-id"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name (only for registered users)",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last name (only for registered users)",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email (only for registered users)",
+            "example": "john@example.com"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "Nickname (primarily for virtual members, optional display name for registered)",
+            "example": "Little Timmy"
+          },
+          "age": {
+            "type": "number",
+            "description": "Age (only for virtual members)",
+            "example": 8
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender (only for virtual members)",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Physical activity level (only for virtual members)",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income level (only for virtual members)",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "preferences": {
+            "type": "object",
+            "description": "Free-form preferences (only for virtual members)"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the user who created this virtual member"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "joinedAt",
+          "isVirtual"
+        ]
+      },
+      "UserGroupResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the group",
+            "example": "uuid-group-id"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the group",
+            "example": "Smith Family"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the group",
+            "example": "Our family shopping and meal planning group"
+          },
+          "inviteCode": {
+            "type": "string",
+            "description": "The invite code for joining the group (7-character alphanumeric)",
+            "example": "AXY1278",
+            "minLength": 7,
+            "maxLength": 7,
+            "pattern": "^[A-Z0-9]{7}$"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "The user ID who created the group",
+            "example": "uuid-user-id"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the group was created"
+          },
+          "members": {
+            "description": "List of all members (both registered users and virtual members). Use `isVirtual` to distinguish.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inviteCode",
+          "createdBy",
+          "createdAt",
+          "members"
+        ]
+      },
+      "UpdateUserGroupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the group",
+            "example": "Smith Family",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the group",
+            "example": "Our family shopping and meal planning group",
+            "maxLength": 1000
+          }
+        }
+      },
+      "JoinGroupDto": {
+        "type": "object",
+        "properties": {
+          "inviteCode": {
+            "type": "string",
+            "description": "The invite code to join the group (7-character alphanumeric)",
+            "example": "AXY1278",
+            "minLength": 7,
+            "maxLength": 7,
+            "pattern": "^[A-Z0-9]{7}$"
+          }
+        },
+        "required": [
+          "inviteCode"
+        ]
+      },
+      "CreateMemberDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "description": "Nickname of the virtual member",
+            "example": "Little Timmy",
+            "maxLength": 255
+          },
+          "age": {
+            "type": "number",
+            "description": "Age of the virtual member",
+            "example": 8,
+            "minimum": 0,
+            "maximum": 150
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender of the virtual member",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Physical activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income level",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "preferences": {
+            "type": "object",
+            "description": "Free-form preferences (JSON object)",
+            "example": {
+              "dietaryPreference": "VEGETARIAN"
+            }
+          }
+        },
+        "required": [
+          "nickname"
+        ]
+      },
+      "UpdateMemberDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "description": "Nickname of the virtual member",
+            "example": "Little Timmy",
+            "maxLength": 255
+          },
+          "age": {
+            "type": "number",
+            "description": "Age of the virtual member",
+            "example": 8,
+            "minimum": 0,
+            "maximum": 150
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender of the virtual member",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Physical activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income level",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "preferences": {
+            "type": "object",
+            "description": "Free-form preferences (JSON object)",
+            "example": {
+              "dietaryPreference": "VEGETARIAN"
+            }
           }
         }
       }
