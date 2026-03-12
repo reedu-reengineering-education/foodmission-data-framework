@@ -2,14 +2,12 @@
  * TheMealDB Recipe Seeding Script
  *
  * Seeds the database with recipes from TheMealDB, enriched with food mappings
- * from the NEVO Dutch Food Composition Database.
+ * from the NEVO Dutch Food Composition Database and OpenFoodFacts.
  *
- * This is a production-ready script that:
- * - Loads recipes from CSV (extracted from TheMealDB API)
- * - Loads ingredients with measures for each recipe
- * - Maps ingredients to Food records where matches exist (via NEVO)
- * - Creates Recipe records with userId=null (system recipes)
- * - Sets isPublic=true for all imported recipes
+ * This script:
+ * - Loads recipes from themealdb-data.json (recipes + ingredients + mappings)
+ * - Maps ingredients to Food (OFF) or FoodCategory (NEVO) where matches exist
+ * - Creates Recipe records with userId=null (system recipes), isPublic=true
  *
  * Data Sources:
  * - TheMealDB API: https://www.themealdb.com/api.php
@@ -86,7 +84,7 @@ interface SeedOptions {
 function loadThemealdbData(): ThemealdbData {
   if (!fs.existsSync(DATA_PATH)) {
     throw new Error(
-      `TheMealDB data file not found: ${DATA_PATH}. Run: npx ts-node scripts/build-themealdb-data.ts`,
+      `TheMealDB data file not found: ${DATA_PATH}. See docs/DATABASE_SEEDING_MIGRATION.md for how to obtain themealdb-data.json.`,
     );
   }
   const content = fs.readFileSync(DATA_PATH, 'utf-8');
