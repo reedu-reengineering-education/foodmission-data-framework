@@ -37,6 +37,7 @@ export const TEST_FOOD = {
   sodium: 200,
   vitaminA: 10,
   vitaminC: 5,
+  vitaminD: null,
   calcium: 30,
   iron: 1,
   potassium: 50,

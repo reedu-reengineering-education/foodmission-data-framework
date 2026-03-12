@@ -149,7 +149,7 @@ describe('RecipeRepository', () => {
         include: { ...expectedInclude, meals: true },
       });
       expect(result).toEqual(recipeWithIngredients);
-      expect(result?.ingredients).toHaveLength(2);
+      expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(2);
     });
 
     it('should return null when recipe not found', async () => {
@@ -226,7 +226,7 @@ describe('RecipeRepository', () => {
         },
         include: { ...expectedInclude, meals: true },
       });
-      expect(result.ingredients).toHaveLength(2);
+      expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(2);
     });
 
     it('should set itemType to food when foodId is provided', async () => {
@@ -349,7 +349,7 @@ describe('RecipeRepository', () => {
         },
         include: { ...expectedInclude, meals: true },
       });
-      expect(result.ingredients).toHaveLength(1);
+      expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(1);
     });
 
     it('should clear all ingredients when empty array is provided', async () => {
