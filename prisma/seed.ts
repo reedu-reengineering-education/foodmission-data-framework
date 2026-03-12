@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { seedOpenFoodFactsFromCsv } from './seeds/openfoodfacts-from-csv';
+import { seedOpenFoodFactsFromJson } from './seeds/openfoodfacts-from-json';
 import { seedUsers } from './seeds/users';
 import { seedShoppingLists } from './seeds/shoppingList';
 import { seedShoppingListItems } from './seeds/shoppingListItem';
@@ -23,8 +23,12 @@ async function main() {
     const foods = await seedFoods(prisma);
     // 1. OpenFoodFacts from local CSV only (no API). Recipe ingredients with source=off link to Food by name.
     const offResult = await seedOpenFoodFactsFromCsv(prisma);
+    // 1. OpenFoodFacts from local JSON only (no API). Recipe ingredients with source=off link to Food by name.
+    const offResult = await seedOpenFoodFactsFromJson(prisma);
     if (offResult.skipped) {
-      console.log('   ⏭️  OFF CSV not found; Food table will have no OFF products. Run npx ts-node scripts/pull-openfoodfacts-foods.ts to generate it.');
+      console.log(
+        '   ⏭️  OFF JSON not found; Food table will have no OFF products. Run npx ts-node scripts/pull-openfoodfacts-foods.ts to generate it.',
+      );
     }
 
     const users = await seedUsers(prisma);
