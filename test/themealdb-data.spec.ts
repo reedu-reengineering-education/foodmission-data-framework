@@ -9,8 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { parse: csvParse } = require('csv-parse/sync');
+import { csvToObjects } from '../scripts/parse-csv';
 
 // Use process.cwd() instead of __dirname to get the workspace root
 const DATA_DIR = path.join(process.cwd(), 'prisma/seeds/data');
@@ -71,7 +70,7 @@ const ENRICHED_SCHEMA = [
 ];
 
 /**
- * Helper to load and parse CSV with relaxed options
+ * Helper to load and parse CSV
  */
 function loadCsv(filename: string): Record<string, string>[] {
   const filePath = path.join(DATA_DIR, filename);
@@ -79,12 +78,7 @@ function loadCsv(filename: string): Record<string, string>[] {
     throw new Error(`CSV file not found: ${filePath}`);
   }
   const content = fs.readFileSync(filePath, 'utf-8');
-  return csvParse(content, {
-    columns: true,
-    skip_empty_lines: true,
-    relax_column_count: true,
-    relax_quotes: true,
-  });
+  return csvToObjects(content);
 }
 
 describe('TheMealDB CSV Schema Validation', () => {
