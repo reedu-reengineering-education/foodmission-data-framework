@@ -20,7 +20,7 @@ async function main() {
     // 1. OpenFoodFacts from local CSV only (no API). Recipe ingredients with source=off link to Food by name.
     const offResult = await seedOpenFoodFactsFromCsv(prisma);
     if (offResult.skipped) {
-      console.log('   ⏭️  OFF CSV not found; Food table will have no OFF products. Run npm run db:pull-openfoodfacts to generate it.');
+      console.log('   ⏭️  OFF CSV not found; Food table will have no OFF products. Run npx ts-node scripts/pull-openfoodfacts-foods.ts to generate it.');
     }
 
     const users = await seedUsers(prisma);
