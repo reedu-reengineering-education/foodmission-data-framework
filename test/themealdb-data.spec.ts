@@ -9,7 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { csvToObjects } from '../scripts/parse-csv';
+import { csvToObjects } from 'scripts/parse-csv';
 
 // Use process.cwd() instead of __dirname to get the workspace root
 const DATA_DIR = path.join(process.cwd(), 'prisma/seeds/data');

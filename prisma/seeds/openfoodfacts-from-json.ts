@@ -56,11 +56,15 @@ export async function seedOpenFoodFactsFromJson(
     const barcode = row.barcode != null ? String(row.barcode).trim() : '';
     if (!barcode) continue;
 
+    const createdBy: string =
+      (row.createdBy != null && String(row.createdBy).trim())
+        ? String(row.createdBy).trim()
+        : 'system-seed-openfoodfacts';
+
     const data = {
       name: (row.name != null ? String(row.name).trim() : '') || `Product ${barcode}`,
       description: row.description != null ? String(row.description).trim() || undefined : undefined,
-      createdBy:
-        row.createdBy != null ? String(row.createdBy).trim() || undefined : 'system-seed-openfoodfacts',
+      createdBy,
       brands: row.brands != null ? String(row.brands).trim() || undefined : undefined,
       categories: toStrArray(row.categories),
       labels: toStrArray(row.labels),
