@@ -5,8 +5,10 @@ import { parseMeasure } from '../../common/utils/measure-parser';
 import { NutritionalInfo } from '../interfaces/nutrition.interface';
 
 /**
- * Nutrient fields to aggregate from Food and FoodCategory models.
- * These fields are present on both models (per 100g basis).
+ * Nutrient field names we aggregate from recipe ingredients (per 100g basis).
+ * FOOD_NUTRITION_SELECT and FOOD_CATEGORY_NUTRITION_SELECT must each include
+ * every field from this list that exists on the corresponding model, or those
+ * nutrients will be zero in aggregated recipe nutrition.
  */
 const NUTRIENT_FIELDS = [
   'energyKcal',
@@ -30,6 +32,7 @@ const NUTRIENT_FIELDS = [
 
 /**
  * Select fields for Food model nutrition data.
+ * Must include all NUTRIENT_FIELDS that exist on Food (e.g. salt, vitaminD).
  */
 const FOOD_NUTRITION_SELECT = {
   id: true,
@@ -55,6 +58,7 @@ const FOOD_NUTRITION_SELECT = {
 
 /**
  * Select fields for FoodCategory model nutrition data.
+ * Must include all NUTRIENT_FIELDS that exist on FoodCategory (e.g. salt, vitaminA, vitaminD).
  */
 const FOOD_CATEGORY_NUTRITION_SELECT = {
   id: true,
