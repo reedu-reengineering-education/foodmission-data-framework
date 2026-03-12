@@ -448,7 +448,7 @@ npx ts-node prisma/seeds/themealdb.ts --dry-run
 npx ts-node prisma/seeds/themealdb.ts --limit=50
 ```
 
-**Data:** The seed reads a single file `prisma/seeds/data/themealdb-data.json` (recipes + ingredients + mappings + enriched data). Generate it from the CSVs with `npx ts-node scripts/build-themealdb-data.ts`. Source CSVs: `themealdb-recipes.csv`, `themealdb-ingredients.csv`, `ingredient-food-mapping.csv`, `enriched-recipes.csv`.
+**Data:** The seed reads `prisma/seeds/data/themealdb-data.json` (recipes + ingredients + mappings + enriched data) via `prisma/seeds/themealdb.ts`.
 
 #### Ingredient Enrichment Algorithm
 
@@ -457,7 +457,7 @@ TheMealDB ingredients are mapped to NEVO foods using a multi-step algorithm:
 1. **Exact Match**: Case-insensitive direct lookup
 2. **Normalized Match**: Remove plurals, trim whitespace, common word substitutions
 3. **Fuzzy Match**: Levenshtein distance with configurable threshold (default: 80%)
-4. **Manual Curation**: Low-confidence matches flagged in `ingredient-mapping-review.csv`
+4. **Manual Curation**: Low-confidence matches can be corrected in the mapping data used to build the recipe dataset.
 
 **Confidence levels:**
 - **high** (distance < 0.1): Direct or near-exact match
