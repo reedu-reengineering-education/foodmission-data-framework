@@ -36,26 +36,27 @@ model Food {
 
   // --- Nutriments (per 100 g) ---
   nutritionDataPer String? // "100g" or "serving" — basis of nutrition values
-  energyKcal       Float?
-  energyKj         Float?
-  fat              Float?
-  saturatedFat     Float?
-  transFat         Float?
-  cholesterol      Float?
-  carbohydrates    Float?
-  sugars           Float?
-  addedSugars      Float?
-  fiber            Float?
-  proteins         Float?
-  salt             Float?
-  sodium           Float?
-  vitaminA         Float?
-  vitaminC         Float?
-  calcium          Float?
-  iron             Float?
-  potassium        Float?
-  magnesium        Float?
-  zinc             Float?
+  energyKcal     Float?
+  energyKj       Float?
+  fat            Float?
+  saturatedFat   Float?
+  transFat       Float?
+  cholesterol    Float?
+  carbohydrates  Float?
+  sugars         Float?
+  addedSugars    Float?
+  fiber          Float?
+  proteins       Float?
+  salt           Float?
+  sodium         Float?
+  vitaminA       Float?
+  vitaminC       Float?
+  vitaminD       Float? // Vitamin D (µg) — used in recipe nutrition aggregation
+  calcium        Float?
+  iron           Float?
+  potassium      Float?
+  magnesium      Float?
+  zinc           Float?
 
   // --- Full nutriments JSON (everything from OpenFoodFacts as-is) ---
   nutrimentsRaw Json? // Complete nutriments object for fields not covered above
@@ -145,31 +146,33 @@ model FoodCategory {
   transFat           Float? // Trans fatty acids (g)
 
   // --- Minerals ---
-  chloride    Float? // Chloride (mg)
-  sodium      Float? // Sodium (mg)
-  potassium   Float? // Potassium (mg)
-  calcium     Float? // Calcium (mg)
-  phosphorus  Float? // Phosphorus (mg)
-  magnesium   Float? // Magnesium (mg)
-  iron        Float? // Iron (mg)
-  ironHaem    Float? // Haem iron (mg)
-  ironNonHaem Float? // Non-haem iron (mg)
-  copper      Float? // Copper (mg)
-  selenium    Float? // Selenium (µg)
-  zinc        Float? // Zinc (mg)
-  iodine      Float? // Iodine (µg)
+  chloride     Float? // Chloride (mg)
+  sodium       Float? // Sodium (mg)
+  salt         Float? // Salt (g) — for recipe aggregation consistency with Food
+  potassium    Float? // Potassium (mg)
+  calcium      Float? // Calcium (mg)
+  phosphorus   Float? // Phosphorus (mg)
+  magnesium    Float? // Magnesium (mg)
+  iron         Float? // Iron (mg)
+  ironHaem     Float? // Haem iron (mg)
+  ironNonHaem  Float? // Non-haem iron (mg)
+  copper       Float? // Copper (mg)
+  selenium     Float? // Selenium (µg)
+  zinc         Float? // Zinc (mg)
+  iodine       Float? // Iodine (µg)
 
   // --- Vitamins ---
-  vitaminARae            Float? // Vitamin A - retinol activity equivalents (µg)
-  vitaminARe             Float? // Vitamin A - retinol equivalents (µg)
-  retinol                Float? // Retinol (µg)
-  betaCarotene           Float? // Beta-carotene total (µg)
-  alphaCarotene          Float? // Alpha-carotene (µg)
-  lutein                 Float? // Lutein (µg)
-  zeaxanthin             Float? // Zeaxanthin (µg)
-  betaCryptoxanthin      Float? // Beta-cryptoxanthin (µg)
-  lycopene               Float? // Lycopene (µg)
-  vitaminD               Float? // Vitamin D (µg)
+  vitaminA             Float? // Vitamin A (µg) — for recipe aggregation; backfill from vitaminARae
+  vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
+  vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
+  retinol              Float? // Retinol (µg)
+  betaCarotene         Float? // Beta-carotene total (µg)
+  alphaCarotene        Float? // Alpha-carotene (µg)
+  lutein               Float? // Lutein (µg)
+  zeaxanthin           Float? // Zeaxanthin (µg)
+  betaCryptoxanthin    Float? // Beta-cryptoxanthin (µg)
+  lycopene             Float? // Lycopene (µg)
+  vitaminD             Float? // Vitamin D (µg)
   hydroxyCholecalciferol Float? // 25-hydroxycholecalciferol (µg)
   cholecalciferol        Float? // Cholecalciferol / D3 (µg)
   ergocalciferol         Float? // Ergocalciferol / D2 (µg)
