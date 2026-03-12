@@ -12,7 +12,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 /**
  * Validator: ensures 0 or 1 of foodId/foodCategoryId is provided (not both)
