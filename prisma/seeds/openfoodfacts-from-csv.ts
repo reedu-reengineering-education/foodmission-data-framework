@@ -7,11 +7,10 @@
  * If the CSV does not exist, this is a no-op (main seed can fall back to seedFoods from API).
  */
 
+import { parse as csvParse } from 'csv-parse/sync';
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { parse: csvParse } = require('csv-parse/sync');
 
 const DATA_DIR = path.join(__dirname, 'data');
 const CSV_PATH = path.join(DATA_DIR, 'openfoodfacts-foods.csv');
