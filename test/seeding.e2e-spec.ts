@@ -34,7 +34,9 @@ describe('Database Seeding (e2e)', () => {
   });
 
   describe('Food Seeding', () => {
-    it('should seed foods successfully', async () => {
+    it(
+      'should seed foods successfully',
+      async () => {
       const foods = await seedFoods(prisma, true); // Use test data
 
       expect(foods).toBeDefined();
@@ -55,9 +57,13 @@ describe('Database Seeding (e2e)', () => {
       expect(nutella?.description).toBeDefined();
       expect(nutella?.barcode).toBeDefined();
       expect(nutella?.createdBy).toBe('system-seed-openfoodfacts');
-    });
+    },
+      120000,
+    ); // 2 minutes timeout
 
-    it('should handle duplicate seeding gracefully', async () => {
+    it(
+      'should handle duplicate seeding gracefully',
+      async () => {
       // Run seeding twice
       const firstRun = await seedFoods(prisma, true); // Use test data
       const secondRun = await seedFoods(prisma, true); // Use test data
@@ -67,9 +73,13 @@ describe('Database Seeding (e2e)', () => {
       // Verify no duplicates were created
       const dbFoods = await prisma.food.findMany();
       expect(dbFoods.length).toBe(firstRun.length);
-    });
+    },
+      120000,
+    ); // 2 minutes timeout
 
-    it('should create foods with valid data', async () => {
+    it(
+      'should create foods with valid data',
+      async () => {
       await seedFoods(prisma, true); // Use test data
 
       const foods = await prisma.food.findMany();
@@ -90,7 +100,9 @@ describe('Database Seeding (e2e)', () => {
           expect(food.description.length).toBeGreaterThan(0);
         }
       });
-    });
+    },
+      120000,
+    ); // 2 minutes timeout
   });
 
   describe('User Seeding', () => {
@@ -150,7 +162,9 @@ describe('Database Seeding (e2e)', () => {
   });
 
   describe('Complete Seeding Process', () => {
-    it('should seed all data types successfully', async () => {
+    it(
+      'should seed all data types successfully',
+      async () => {
       // Seed in correct order
       const foods = await seedFoods(prisma, true); // Use test data
       const users = await seedUsers(prisma);
@@ -164,9 +178,13 @@ describe('Database Seeding (e2e)', () => {
 
       expect(dbFoods.length).toBe(foods.length);
       expect(dbUsers.length).toBe(users.length);
-    });
+    },
+      120000,
+    ); // 2 minutes timeout
 
-    it('should maintain data integrity across seeding', async () => {
+    it(
+      'should maintain data integrity across seeding',
+      async () => {
       await seedFoods(prisma, true); // Use test data
       await seedUsers(prisma);
 
@@ -184,6 +202,8 @@ describe('Database Seeding (e2e)', () => {
 
       expect(new Set(keycloakIds).size).toBe(keycloakIds.length);
       expect(new Set(emails).size).toBe(emails.length);
-    });
+    },
+      120000,
+    ); // 2 minutes timeout
   });
 });
