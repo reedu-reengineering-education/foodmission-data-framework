@@ -13,11 +13,12 @@ export interface UserSeedData {
 }
 
 export const userData: UserSeedData[] = [
+  // Developer user – matches Keycloak user (developer / dev123)
   {
     keycloakId: 'dev-user-1',
-    email: 'john.doe@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
+    email: 'dev@foodmission.dev',
+    firstName: 'Developer',
+    lastName: 'User',
     preferences: {
       dietaryRestrictions: ['vegetarian'],
       allergies: ['nuts'],
@@ -57,9 +58,10 @@ export const userData: UserSeedData[] = [
       preferredCategories: ['Proteins', 'Dairy', 'Vegetables'],
     },
   },
+  // Admin user – matches Keycloak user (admin / admin123)
   {
     keycloakId: 'admin-user-1',
-    email: 'admin@foodmission.com',
+    email: 'admin@foodmission.dev',
     firstName: 'Admin',
     lastName: 'User',
     preferences: {

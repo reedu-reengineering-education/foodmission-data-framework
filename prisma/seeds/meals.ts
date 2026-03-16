@@ -1,0 +1,122 @@
+import { PrismaClient, Meal } from '@prisma/client';
+
+/**
+ * Seed Meal records that are linked to existing recipes.
+ *
+ * Requirements:
+ * - Always create 2 meals for the developer user (developer / dev123 in Keycloak).
+ * - Always create 3 meals for the admin user (admin / admin123 in Keycloak).
+ *
+ * We look up users by email to avoid coupling to a specific DB id:
+ * - Developer: dev@foodmission.dev (Keycloak realm user)
+ * - Admin: admin@foodmission.dev (Keycloak realm user)
+ */
+export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
+  console.log('🍽️ Seeding meals for developer and admin users...');
+
+  // Look up developer and admin users by email (must match Keycloak realm users)
+  const developer = await prisma.user.findFirst({
+    where: { email: 'dev@foodmission.dev' },
+  });
+
+  const admin = await prisma.user.findFirst({
+    where: { email: 'admin@foodmission.dev' },
+  });
+
+  if (!developer && !admin) {
+    console.log(
+      '   ⏭️  Skipping Meal seed: no developer or admin users found (dev@foodmission.dev / admin@foodmission.dev).',
+    );
+    return [];
+  }
+
+  // Prefer public/system recipes (TheMealDB), fall back to any recipe if needed
+  let recipes = await prisma.recipe.findMany({
+    where: {
+      OR: [{ isPublic: true }, { source: 'themealdb' }],
+    },
+    orderBy: { createdAt: 'asc' },
+    take: 10,
+  });
+
+  if (recipes.length < 5) {
+    const extra = await prisma.recipe.findMany({
+      where: {},
+      orderBy: { createdAt: 'asc' },
+      take: 10,
+    });
+    // Merge and de-duplicate by id
+    const byId = new Map(extra.concat(recipes).map((r) => [r.id, r]));
+    recipes = Array.from(byId.values());
+  }
+
+  if (recipes.length === 0) {
+    console.log(
+      '   ⏭️  Skipping Meal seed: no recipes available to link.',
+    );
+    return [];
+  }
+
+  const meals: Meal[] = [];
+  let recipeIndex = 0;
+
+  const nextRecipe = () => {
+    const recipe = recipes[recipeIndex % recipes.length]!;
+    recipeIndex++;
+    return recipe;
+  };
+
+  // 2 meals for developer
+  if (developer) {
+    for (let i = 0; i < 2; i++) {
+      const recipe = nextRecipe();
+      const meal = await prisma.meal.create({
+        data: {
+          name: recipe.title,
+          userId: developer.id,
+          recipeId: recipe.id,
+          calories: null,
+          proteins: null,
+          nutritionalInfo: recipe.nutritionalInfo ?? undefined,
+          sustainabilityScore: recipe.sustainabilityScore ?? undefined,
+          price: recipe.price ?? undefined,
+          barcode: null,
+        },
+      });
+      meals.push(meal);
+    }
+  } else {
+    console.log(
+      '   ⏭️  Developer user dev@foodmission.dev not found; skipping developer meals.',
+    );
+  }
+
+  // 3 meals for admin
+  if (admin) {
+    for (let i = 0; i < 3; i++) {
+      const recipe = nextRecipe();
+      const meal = await prisma.meal.create({
+        data: {
+          name: recipe.title,
+          userId: admin.id,
+          recipeId: recipe.id,
+          calories: null,
+          proteins: null,
+          nutritionalInfo: recipe.nutritionalInfo ?? undefined,
+          sustainabilityScore: recipe.sustainabilityScore ?? undefined,
+          price: recipe.price ?? undefined,
+          barcode: null,
+        },
+      });
+      meals.push(meal);
+    }
+  } else {
+    console.log(
+      '   ⏭️  Admin user admin@foodmission.com not found; skipping admin meals.',
+    );
+  }
+
+  console.log(`   ✅ Seeded ${meals.length} meals linked to recipes`);
+  return meals;
+}
+
