@@ -25,7 +25,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Single data file (build from CSVs with: npx ts-node scripts/build-themealdb-data.ts)
+// Single data file containing recipes + ingredients + mappings (+ enriched fields).
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
@@ -79,7 +79,7 @@ interface SeedOptions {
 }
 
 /**
- * Load single themealdb-data.json (build with: npx ts-node scripts/build-themealdb-data.ts)
+ * Load single themealdb-data.json (see DATABASE_SEEDING_MIGRATION docs for how it is produced).
  */
 function loadThemealdbData(): ThemealdbData {
   if (!fs.existsSync(DATA_PATH)) {
