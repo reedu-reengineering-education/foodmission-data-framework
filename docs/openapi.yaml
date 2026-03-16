@@ -87,7 +87,9 @@ paths:
             - profile
             - email
         - JWT-auth: []
-      summary: Get authenticated user profile
+      summary: >-
+        Get and create authenticated user profile (deprecated possibly depending
+        on registration flow)
       tags: *ref_0
   /api/v1/auth/health:
     get:
@@ -519,7 +521,9 @@ paths:
           description: ''
       security:
         - JWT-auth: []
-      summary: Check whether basic profile is complete
+      summary: >-
+        Check whether basic profile is complete (needs: username, yearOfBirth,
+        country, region, zip, language)
       tags: *ref_2
   /api/v1/foods:
     post:
@@ -563,14 +567,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
+      security: &ref_3
         - keycloak-oauth2:
             - openid
             - profile
             - roles
         - JWT-auth: []
       summary: Create a new food item
-      tags: &ref_3
+      tags: &ref_4
         - foods
     get:
       description: >-
@@ -591,8 +595,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Get all food items
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/search/openfoodfacts:
     get:
       description: >-
@@ -672,8 +677,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Search OpenFoodFacts database
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/import/openfoodfacts/{barcode}:
     post:
       description: Imports a food item from OpenFoodFacts database using barcode.
@@ -729,14 +735,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Import food from OpenFoodFacts
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/barcode/{barcode}:
     get:
       description: >-
@@ -775,8 +776,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Find food by barcode
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/{id}:
     get:
       description: >-
@@ -816,8 +818,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Find food by ID
-      tags: *ref_3
+      tags: *ref_4
     patch:
       description: Updates a food item by its ID. Requires user or admin role.
       operationId: update
@@ -866,14 +869,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Update food item
-      tags: *ref_3
+      tags: *ref_4
     delete:
       description: Deletes a food item by its ID. Requires admin role.
       operationId: remove
@@ -912,14 +910,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
-        - JWT-auth: []
+      security: *ref_3
       summary: Delete food item
-      tags: *ref_3
+      tags: *ref_4
   /api/v1/foods/{id}/openfoodfacts:
     get:
       description: >-
@@ -961,8 +954,179 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_3
       summary: Get OpenFoodFacts information for food item
-      tags: *ref_3
+      tags: *ref_4
+  /api/v1/food-categories:
+    post:
+      description: 'Admin only: Create a new food category with nutritional data'
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodCategoryDto'
+      responses:
+        '201':
+          description: Food category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodCategoryResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+      security: &ref_5
+        - JWT-auth: []
+      summary: Create a new food category
+      tags: &ref_6
+        - food-categories
+    get:
+      description: Get a paginated list of food categories with optional filtering
+      operationId: findAll
+      parameters:
+        - name: search
+          required: false
+          in: query
+          description: Search term
+          schema:
+            example: potato
+            type: string
+        - name: foodGroup
+          required: false
+          in: query
+          description: Food group filter
+          schema:
+            example: Potatoes and tubers
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            default: 1
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            default: 20
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Food categories retrieved successfully
+      security: *ref_5
+      summary: Get all food categories
+      tags: *ref_6
+  /api/v1/food-categories/food-groups:
+    get:
+      description: >-
+        Get a list of all distinct food groups available, optionally filtered by
+        search term
+      operationId: getAllFoodGroups
+      parameters:
+        - name: search
+          required: false
+          in: query
+          description: Filter food groups by search term
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Food groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      security: *ref_5
+      summary: Get all unique food groups
+      tags: *ref_6
+  /api/v1/food-categories/{id}:
+    get:
+      description: Get detailed information about a specific food category
+      operationId: findById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Food category found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodCategoryResponseDto'
+        '404':
+          description: Food category not found
+      security: *ref_5
+      summary: Get food category by ID
+      tags: *ref_6
+    patch:
+      description: 'Admin only: Update a food category by ID'
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFoodCategoryDto'
+      responses:
+        '200':
+          description: Food category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodCategoryResponseDto'
+        '400':
+          description: Invalid input data
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+        '404':
+          description: Food category not found
+      security: *ref_5
+      summary: Update food category
+      tags: *ref_6
+    delete:
+      description: 'Admin only: Delete a food category by ID'
+      operationId: delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Food category deleted successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+        '404':
+          description: Food category not found
+      security: *ref_5
+      summary: Delete food category
+      tags: *ref_6
   /api/v1/health:
     get:
       operationId: check
@@ -1013,7 +1177,7 @@ paths:
         '503':
           description: Health check failed
       summary: Get application health status
-      tags: &ref_4
+      tags: &ref_7
         - Health
   /api/v1/health/ready:
     get:
@@ -1025,7 +1189,7 @@ paths:
         '503':
           description: Application is not ready
       summary: Get readiness probe status
-      tags: *ref_4
+      tags: *ref_7
   /api/v1/health/live:
     get:
       operationId: liveness
@@ -1046,7 +1210,7 @@ paths:
                   info:
                     type: object
                     example:
-                      database: &ref_5
+                      database: &ref_8
                         status: up
                     additionalProperties:
                       type: object
@@ -1060,7 +1224,7 @@ paths:
                   error:
                     type: object
                     example:
-                      redis: &ref_6
+                      redis: &ref_9
                         status: down
                         message: Could not connect
                     additionalProperties:
@@ -1075,8 +1239,8 @@ paths:
                   details:
                     type: object
                     example:
-                      database: *ref_5
-                      redis: *ref_6
+                      database: *ref_8
+                      redis: *ref_9
                     additionalProperties:
                       type: object
                       required:
@@ -1086,7 +1250,7 @@ paths:
                           type: string
                       additionalProperties: true
       summary: Get liveness probe status
-      tags: *ref_4
+      tags: *ref_7
   /api/v1/metrics:
     get:
       description: Returns application metrics in Prometheus format for scraping
@@ -1139,7 +1303,7 @@ paths:
         '200':
           description: Performance summary retrieved successfully
       summary: Get performance summary
-      tags: &ref_7
+      tags: &ref_10
         - Performance
   /api/v1/performance/cache/stats:
     get:
@@ -1149,7 +1313,7 @@ paths:
         '200':
           description: Cache statistics retrieved successfully
       summary: Get cache statistics
-      tags: *ref_7
+      tags: *ref_10
   /api/v1/performance/cache/hit-rate:
     get:
       operationId: getCacheHitRates
@@ -1158,7 +1322,7 @@ paths:
         '200':
           description: Cache hit rates retrieved successfully
       summary: Get cache hit rates by prefix
-      tags: *ref_7
+      tags: *ref_10
   /api/v1/performance/database/stats:
     get:
       operationId: getDatabaseStats
@@ -1167,7 +1331,7 @@ paths:
         '200':
           description: Database statistics retrieved successfully
       summary: Get database performance statistics
-      tags: *ref_7
+      tags: *ref_10
   /api/v1/shoppinglist:
     post:
       description: Creates a new ShoppingList in the database. Requires user or admin role.
@@ -1217,9 +1381,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - &ref_11
+          keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - &ref_12
+          JWT-auth: []
         - JWT-auth: []
       summary: Create a new Shopping List
-      tags: &ref_8
+      tags: &ref_13
         - shoppinglist
     get:
       operationId: findAll
@@ -1315,13 +1486,8 @@ paths:
               - ML
               - L
               - CUPS
+      parameters: []
       responses:
-        '200':
-          description: Shopping list items retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MultipleShoppingListItemResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -1353,9 +1519,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - JWT-auth: []
-      summary: Get items for a specific shopping list
-      tags: *ref_8
+        - *ref_11
+        - *ref_12
+      summary: Get all shopping lists for authenticated user
+      tags: *ref_13
   /api/v1/shoppinglist/{id}:
     get:
       operationId: findById
@@ -1404,9 +1571,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Get specific shopping list by ID
-      tags: *ref_8
+      tags: *ref_13
     patch:
       operationId: update
       parameters:
@@ -1460,9 +1629,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Update shopping list
-      tags: *ref_8
+      tags: *ref_13
     delete:
       operationId: remove
       parameters:
@@ -1506,9 +1677,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_11
+        - *ref_12
         - JWT-auth: []
       summary: Delete specific shopping list by ID
-      tags: *ref_8
+      tags: *ref_13
   /api/v1/shopping-list-items:
     post:
       description: >-
@@ -1562,7 +1735,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
-      tags: &ref_9
+      tags: &ref_14
         - shopping-list-items
   /api/v1/shopping-list-items/item/{id}:
     get:
@@ -1614,7 +1787,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
-      tags: *ref_9
+      tags: *ref_14
   /api/v1/shopping-list-items/{id}:
     patch:
       description: Update quantity, unit, notes, or checked status of a shopping list item
@@ -1672,7 +1845,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list item
-      tags: *ref_9
+      tags: *ref_14
     delete:
       description: Delete a specific shopping list item by ID
       operationId: remove
@@ -1719,7 +1892,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
-      tags: *ref_9
+      tags: *ref_14
   /api/v1/shopping-list-items/{id}/toggle-checked:
     patch:
       description: Quick endpoint to toggle the checked status of an item
@@ -1771,7 +1944,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Toggle checked status of shopping list item
-      tags: *ref_9
+      tags: *ref_14
   /api/v1/shopping-list-items/{shoppingListId}/clear-checked:
     delete:
       description: Remove all checked items from a specific shopping list
@@ -1819,7 +1992,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
-      tags: *ref_9
+      tags: *ref_14
   /api/v1/pantry:
     post:
       description: >-
@@ -1870,7 +2043,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Pantry
-      tags: &ref_10
+      tags: &ref_15
         - pantry
     get:
       description: >-
@@ -1920,7 +2093,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all user pantries
-      tags: *ref_10
+      tags: *ref_15
   /api/v1/pantry/{id}:
     get:
       description: >-
@@ -1966,7 +2139,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry by ID
-      tags: *ref_10
+      tags: *ref_15
     patch:
       description: Updates the pantry title. Only the pantry owner can update their pantry.
       operationId: update
@@ -2019,7 +2192,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry
-      tags: *ref_10
+      tags: *ref_15
     delete:
       description: >-
         Deletes a specific pantry by ID. Only the pantry owner can delete their
@@ -2060,7 +2233,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete pantry
-      tags: *ref_10
+      tags: *ref_15
   /api/v1/pantry-item:
     post:
       description: >-
@@ -2076,7 +2249,67 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePantryItemDto'
+              oneOf:
+                - type: object
+                  properties:
+                    pantryId:
+                      type: string
+                      format: uuid
+                      example: uuid-pantry-id
+                    quantity:
+                      type: number
+                      example: 2
+                      minimum: 0.01
+                    unit:
+                      type: string
+                      example: KG
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Store in cool place
+                    expiryDate:
+                      type: string
+                      format: date
+                      example: '2027-02-02'
+                    foodId:
+                      type: string
+                      format: uuid
+                      example: uuid-food-id
+                      description: UUID of the food item (OpenFoodFacts).
+                  required:
+                    - pantryId
+                    - foodId
+                    - quantity
+                - type: object
+                  properties:
+                    pantryId:
+                      type: string
+                      format: uuid
+                      example: uuid-pantry-id
+                    quantity:
+                      type: number
+                      example: 2
+                      minimum: 0.01
+                    unit:
+                      type: string
+                      example: KG
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Store in cool place
+                    expiryDate:
+                      type: string
+                      format: date
+                      example: '2027-02-02'
+                    foodCategoryId:
+                      type: string
+                      format: uuid
+                      example: uuid-food-category-id
+                      description: UUID of the food category (NEVO generic).
+                  required:
+                    - pantryId
+                    - foodCategoryId
+                    - quantity
       responses:
         '201':
           description: Pantry item created successfully
@@ -2117,7 +2350,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
-      tags: &ref_11
+      tags: &ref_16
         - pantry-item
     get:
       description: >-
@@ -2139,6 +2372,13 @@ paths:
           description: Filter by food ID (UUID)
           schema:
             example: uuid-food-id
+            type: string
+        - name: foodCategoryId
+          required: false
+          in: query
+          description: Filter by food category ID (UUID)
+          schema:
+            example: uuid-food-category-id
             type: string
         - name: unit
           required: false
@@ -2200,7 +2440,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry items
-      tags: *ref_11
+      tags: *ref_16
   /api/v1/pantry-item/{id}:
     get:
       operationId: findById
@@ -2251,7 +2491,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
-      tags: *ref_11
+      tags: *ref_16
     patch:
       description: >-
         Update quantity, unit, notes, or expiry date of a pantry item. All
@@ -2310,7 +2550,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry item
-      tags: *ref_11
+      tags: *ref_16
     delete:
       description: Delete a specific pantry item by ID
       operationId: remove
@@ -2357,7 +2597,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from pantry
-      tags: *ref_11
+      tags: *ref_16
   /api/v1/meals:
     post:
       operationId: create
@@ -2408,7 +2648,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal
-      tags: &ref_12
+      tags: &ref_17
         - meals
     get:
       operationId: findAll
@@ -2485,7 +2725,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meals for the user
-      tags: *ref_12
+      tags: *ref_17
   /api/v1/meals/{id}:
     get:
       operationId: findOne
@@ -2536,7 +2776,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get a meal by id
-      tags: *ref_12
+      tags: *ref_17
     patch:
       operationId: update
       parameters:
@@ -2592,7 +2832,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a meal
-      tags: *ref_12
+      tags: *ref_17
     delete:
       operationId: remove
       parameters:
@@ -2638,7 +2878,266 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete a meal
-      tags: *ref_12
+      tags: *ref_17
+  /api/v1/meals/{mealId}/items:
+    post:
+      description: >-
+        Adds a specific food product or food category to a meal. Either foodId
+        or foodCategoryId must be provided, but not both.
+      operationId: create
+      parameters:
+        - name: mealId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 2
+                      default: 1
+                    unit:
+                      type: string
+                      example: PIECES
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Extra spicy
+                    foodId:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440001
+                      description: UUID of the specific food product (OpenFoodFacts).
+                  required:
+                    - foodId
+                    - quantity
+                    - unit
+                - type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 2
+                      default: 1
+                    unit:
+                      type: string
+                      example: PIECES
+                      default: PIECES
+                    notes:
+                      type: string
+                      example: Extra spicy
+                    foodCategoryId:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440002
+                      description: UUID of the food category (NEVO generic).
+                  required:
+                    - foodCategoryId
+                    - quantity
+                    - unit
+      responses:
+        '201':
+          description: Meal item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: &ref_18
+        - JWT-auth: []
+      summary: Add a food item to a meal
+      tags: &ref_19
+        - meal-items
+    get:
+      description: Retrieves all food items (products and categories) for a specific meal
+      operationId: findByMealId
+      parameters:
+        - name: mealId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meal items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_18
+      summary: Get all items in a meal
+      tags: *ref_19
+  /api/v1/meals/{mealId}/items/{id}:
+    get:
+      description: Retrieves a specific item from a meal by its ID
+      operationId: findById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meal item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_18
+      summary: Get a specific meal item
+      tags: *ref_19
+    patch:
+      description: >-
+        Updates an existing meal item. Can change the food/category reference,
+        quantity, unit, or notes.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMealItemDto'
+      responses:
+        '200':
+          description: Meal item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealItemResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_18
+      summary: Update a meal item
+      tags: *ref_19
+    delete:
+      description: Removes a specific item from a meal
+      operationId: delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Meal item deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security: *ref_18
+      summary: Remove a meal item
+      tags: *ref_19
   /api/v1/recipes:
     post:
       operationId: create
@@ -2689,7 +3188,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a recipe
-      tags: &ref_13
+      tags: &ref_20
         - recipes
     get:
       operationId: findAll
@@ -2788,7 +3287,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List recipes
-      tags: *ref_13
+      tags: *ref_20
   /api/v1/recipes/{id}:
     get:
       operationId: findOne
@@ -2839,7 +3338,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get recipe by id
-      tags: *ref_13
+      tags: *ref_20
     patch:
       operationId: update
       parameters:
@@ -2895,7 +3394,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update recipe
-      tags: *ref_13
+      tags: *ref_20
     delete:
       operationId: remove
       parameters:
@@ -2941,7 +3440,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete recipe
-      tags: *ref_13
+      tags: *ref_20
   /api/v1/meal-logs:
     post:
       operationId: create
@@ -2992,7 +3491,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal log
-      tags: &ref_14
+      tags: &ref_21
         - meal-logs
     get:
       operationId: findAll
@@ -3099,7 +3598,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meal logs
-      tags: *ref_14
+      tags: *ref_21
   /api/v1/meal-logs/{id}:
     get:
       operationId: findOne
@@ -3150,7 +3649,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get meal log by id
-      tags: *ref_14
+      tags: *ref_21
     patch:
       operationId: update
       parameters:
@@ -3206,7 +3705,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update meal log
-      tags: *ref_14
+      tags: *ref_21
     delete:
       operationId: remove
       parameters:
@@ -3252,7 +3751,776 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete meal log
-      tags: *ref_14
+      tags: *ref_21
+  /api/v1/groups:
+    post:
+      description: >-
+        Creates a new group and adds the creator as an admin. Returns the group
+        with its unique invite code.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserGroupDto'
+      responses:
+        '201':
+          description: Group created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Create a new group
+      tags: &ref_22
+        - groups
+    get:
+      description: Returns all groups where the authenticated user is a member.
+      operationId: findAll
+      parameters: []
+      responses:
+        '200':
+          description: List of groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all groups for current user
+      tags: *ref_22
+  /api/v1/groups/{id}:
+    get:
+      description: Returns a specific group if the user is a member.
+      operationId: findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Group found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get group by ID
+      tags: *ref_22
+    patch:
+      description: Updates group name/description. Admin only.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserGroupDto'
+      responses:
+        '200':
+          description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update group
+      tags: *ref_22
+    delete:
+      description: Deletes a group and all its memberships/virtual members. Admin only.
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Group deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Delete group
+      tags: *ref_22
+  /api/v1/groups/join:
+    post:
+      description: Joins an existing group using the invite code.
+      operationId: join
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinGroupDto'
+      responses:
+        '201':
+          description: Successfully joined the group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Join a group by invite code
+      tags: *ref_22
+  /api/v1/groups/{id}/leave:
+    post:
+      description: Leaves a group. Last admin cannot leave without transferring rights.
+      operationId: leave
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Left the group successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Leave a group
+      tags: *ref_22
+  /api/v1/groups/{id}/invite-code:
+    get:
+      description: Returns the current invite code for the group. Admin only.
+      operationId: getInviteCode
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Invite code returned
+          content:
+            application/json:
+              schema:
+                properties:
+                  inviteCode:
+                    type: string
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get invite code
+      tags: *ref_22
+  /api/v1/groups/{id}/regenerate-code:
+    post:
+      description: Generates a new invite code, invalidating the old one. Admin only.
+      operationId: regenerateInviteCode
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: New invite code generated
+          content:
+            application/json:
+              schema:
+                properties:
+                  inviteCode:
+                    type: string
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Regenerate invite code
+      tags: *ref_22
+  /api/v1/groups/{id}/members:
+    get:
+      description: >-
+        Returns all members of the group (both registered users and virtual
+        members). Use the `isVirtual` field to distinguish between them.
+      operationId: getMembers
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Members list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all members
+      tags: *ref_22
+    post:
+      description: >-
+        Adds a member without an account (e.g., child or dependent). Any group
+        member can add virtual members.
+      operationId: addMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMemberDto'
+      responses:
+        '201':
+          description: Virtual member added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Add a virtual member
+      tags: *ref_22
+  /api/v1/groups/{id}/members/{memberId}:
+    patch:
+      description: >-
+        Updates virtual member information. Any group member can update. Cannot
+        update registered users.
+      operationId: updateMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemberDto'
+      responses:
+        '200':
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update a virtual member
+      tags: *ref_22
+    delete:
+      description: >-
+        Removes a member from the group. Admin required for registered users;
+        any member can remove virtual members.
+      operationId: removeMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Member removed successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Remove a member
+      tags: *ref_22
+  /api/v1/groups/{id}/members/{memberId}/make-admin:
+    post:
+      description: >-
+        Promotes a regular member to admin role. Existing admin only. Only
+        registered users can be promoted. Use this before leaving if you are the
+        last admin.
+      operationId: transferAdmin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID to promote
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Member promoted to admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Promote member to admin
+      tags: *ref_22
   /api/v1:
     get:
       description: >-
@@ -3531,7 +4799,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_15
+          enum: &ref_23
             - MALE
             - FEMALE
             - OTHER
@@ -3605,7 +4873,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_15
+          enum: *ref_23
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -3697,6 +4965,13 @@ components:
         nutritionTargets:
           type: object
           description: Nutrition targets (JSON)
+        preferences:
+          type: object
+          description: User preferences (JSON) - dietary preferences, allergies, etc.
+          example:
+            dietaryPreference: VEGETARIAN
+            allergies:
+              - peanuts
     CreateFoodDto:
       type: object
       properties:
@@ -3715,11 +4990,154 @@ components:
           description: Product barcode (EAN, UPC, etc.)
           example: '3017620422003'
           maxLength: 50
-        openFoodFactsId:
+        brands:
           type: string
-          description: OpenFoodFacts product identifier
-          example: '3017620422003'
-          maxLength: 100
+          description: Brands
+        categories:
+          description: Category tags
+          type: array
+          items:
+            type: string
+        labels:
+          description: Label tags
+          type: array
+          items:
+            type: string
+        quantity:
+          type: string
+          description: Product quantity
+        servingSize:
+          type: string
+          description: Serving size
+        ingredientsText:
+          type: string
+          description: Ingredients text
+        allergens:
+          description: Allergen tags
+          type: array
+          items:
+            type: string
+        traces:
+          description: Trace allergen tags
+          type: array
+          items:
+            type: string
+        countries:
+          description: Countries where sold
+          type: array
+          items:
+            type: string
+        origins:
+          type: string
+          description: Where ingredients originate from
+          example: European Union
+        manufacturingPlaces:
+          type: string
+          description: Where the product is manufactured
+          example: France
+        imageUrl:
+          type: string
+          description: Product image URL
+        imageFrontUrl:
+          type: string
+          description: Front product image URL
+        nutritionDataPer:
+          type: string
+          description: Whether nutrition data is per 100g or per serving
+          example: 100g
+        energyKcal:
+          type: number
+          description: Energy in kcal per 100g
+        energyKj:
+          type: number
+          description: Energy in kJ per 100g
+        fat:
+          type: number
+          description: Fat in g per 100g
+        saturatedFat:
+          type: number
+          description: Saturated fat in g per 100g
+        transFat:
+          type: number
+          description: Trans fat in g per 100g
+        cholesterol:
+          type: number
+          description: Cholesterol in mg per 100g
+        carbohydrates:
+          type: number
+          description: Carbohydrates in g per 100g
+        sugars:
+          type: number
+          description: Sugars in g per 100g
+        addedSugars:
+          type: number
+          description: Added sugars in g per 100g
+        fiber:
+          type: number
+          description: Fiber in g per 100g
+        proteins:
+          type: number
+          description: Proteins in g per 100g
+        salt:
+          type: number
+          description: Salt in g per 100g
+        sodium:
+          type: number
+          description: Sodium in g per 100g
+        vitaminA:
+          type: number
+          description: Vitamin A in µg per 100g
+        vitaminC:
+          type: number
+          description: Vitamin C in mg per 100g
+        calcium:
+          type: number
+          description: Calcium in mg per 100g
+        iron:
+          type: number
+          description: Iron in mg per 100g
+        potassium:
+          type: number
+          description: Potassium in mg per 100g
+        magnesium:
+          type: number
+          description: Magnesium in mg per 100g
+        zinc:
+          type: number
+          description: Zinc in mg per 100g
+        nutriscoreGrade:
+          type: string
+          description: Nutri-Score grade
+          enum: &ref_24
+            - A
+            - B
+            - C
+            - D
+            - E
+        nutriscoreScore:
+          type: number
+          description: Nutri-Score numeric score
+        novaGroup:
+          type: number
+          description: NOVA group (1=unprocessed, 4=ultra-processed)
+          example: 1
+          minimum: 1
+          maximum: 4
+        ecoscoreGrade:
+          type: string
+          description: Eco-Score grade
+        carbonFootprint:
+          type: number
+          description: Carbon footprint from known ingredients (kg CO₂e / kg)
+        isVegan:
+          type: boolean
+          description: Is the product vegan?
+        isVegetarian:
+          type: boolean
+          description: Is the product vegetarian?
+        isPalmOilFree:
+          type: boolean
+          description: Is the product palm-oil free?
       required:
         - name
     NutritionalInfoDto:
@@ -3874,19 +5292,241 @@ components:
         name:
           type: string
           description: Name of the food item
-          example: Organic Whole Milk
+          example: Nutella
         description:
           type: string
           description: Description of the food item
-          example: Fresh organic whole milk from grass-fed cows
+          example: Hazelnut And Cocoa Spread
         barcode:
           type: string
           description: Product barcode
           example: '3017620422003'
-        openFoodFactsId:
+        brands:
           type: string
-          description: OpenFoodFacts product identifier
-          example: '3017620422003'
+          description: Brands
+          example: Ferrero, Nutella
+        categories:
+          description: Category tags
+          example:
+            - en:spreads
+            - en:sweet-spreads
+          type: array
+          items:
+            type: string
+        labels:
+          description: Label tags (vegetarian, no-gluten, etc.)
+          example:
+            - en:vegetarian
+            - en:no-gluten
+          type: array
+          items:
+            type: string
+        quantity:
+          type: string
+          description: Product quantity
+          example: 400 g
+        servingSize:
+          type: string
+          description: Serving size
+          example: 15 g
+        ingredientsText:
+          type: string
+          description: Ingredients text
+          example: >-
+            Sugar, palm oil, hazelnuts 13%, low-fat cocoa 7.4%, skimmed milk
+            powder 6.6%
+        allergens:
+          description: Allergens
+          example:
+            - en:milk
+            - en:nuts
+            - en:soybeans
+          type: array
+          items:
+            type: string
+        traces:
+          description: Trace allergens (possible cross-contamination)
+          type: array
+          items:
+            type: string
+        countries:
+          description: Countries where sold
+          example:
+            - en:france
+            - en:germany
+          type: array
+          items:
+            type: string
+        origins:
+          type: string
+          description: Where ingredients originate from
+          example: European Union
+        manufacturingPlaces:
+          type: string
+          description: Where the product is manufactured
+          example: France
+        imageUrl:
+          type: string
+          description: Product image URL
+        imageFrontUrl:
+          type: string
+          description: Front product image URL
+        nutritionDataPer:
+          type: string
+          description: Whether nutrition data is per 100g or per serving
+          example: 100g
+        energyKcal:
+          type: number
+          description: Energy in kcal per 100g
+          example: 539
+        energyKj:
+          type: number
+          description: Energy in kJ per 100g
+          example: 2252
+        fat:
+          type: number
+          description: Fat in g per 100g
+          example: 30.9
+        saturatedFat:
+          type: number
+          description: Saturated fat in g per 100g
+          example: 10.6
+        transFat:
+          type: number
+          description: Trans fat in g per 100g
+        cholesterol:
+          type: number
+          description: Cholesterol in mg per 100g
+        carbohydrates:
+          type: number
+          description: Carbohydrates in g per 100g
+          example: 57.5
+        sugars:
+          type: number
+          description: Sugars in g per 100g
+          example: 56.3
+        addedSugars:
+          type: number
+          description: Added sugars in g per 100g
+        fiber:
+          type: number
+          description: Fiber in g per 100g
+          example: 0
+        proteins:
+          type: number
+          description: Proteins in g per 100g
+          example: 6.3
+        salt:
+          type: number
+          description: Salt in g per 100g
+          example: 0.107
+        sodium:
+          type: number
+          description: Sodium in g per 100g
+        vitaminA:
+          type: number
+          description: Vitamin A in µg per 100g
+        vitaminC:
+          type: number
+          description: Vitamin C in mg per 100g
+        calcium:
+          type: number
+          description: Calcium in mg per 100g
+        iron:
+          type: number
+          description: Iron in mg per 100g
+        potassium:
+          type: number
+          description: Potassium in mg per 100g
+        magnesium:
+          type: number
+          description: Magnesium in mg per 100g
+        zinc:
+          type: number
+          description: Zinc in mg per 100g
+        nutriscoreGrade:
+          type: string
+          description: Nutri-Score grade (A-E)
+          example: E
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+        nutriscoreScore:
+          type: number
+          description: Nutri-Score numeric score
+        novaGroup:
+          type: number
+          description: NOVA group (1=unprocessed, 4=ultra-processed)
+          example: 4
+          minimum: 1
+          maximum: 4
+        ecoscoreGrade:
+          type: string
+          description: Eco-Score grade
+          example: unknown
+        carbonFootprint:
+          type: number
+          description: Carbon footprint from known ingredients (kg CO₂e / kg)
+        nutrientLevels:
+          type: object
+          description: Nutrient levels traffic light (fat, sugars, salt, saturated-fat)
+          example:
+            fat: high
+            sugars: high
+            salt: low
+            saturated-fat: high
+        isVegan:
+          type: boolean
+          description: Is the product vegan?
+        isVegetarian:
+          type: boolean
+          description: Is the product vegetarian?
+        isPalmOilFree:
+          type: boolean
+          description: Is the product palm-oil free?
+        ingredientsAnalysisTags:
+          description: Raw ingredient analysis tags
+          example:
+            - en:palm-oil
+            - en:non-vegan
+            - en:vegetarian
+          type: array
+          items:
+            type: string
+        packagingTags:
+          description: Packaging tags
+          example:
+            - en:plastic
+            - fr:pot-en-verre
+          type: array
+          items:
+            type: string
+        packagingMaterials:
+          description: Packaging material tags
+          example:
+            - en:clear-glass
+            - en:pp-5-polypropylene
+          type: array
+          items:
+            type: string
+        packagingRecycling:
+          description: Packaging recycling tags
+          example:
+            - en:recycle-in-glass-bin
+            - en:recycle-in-sorting-bin
+          type: array
+          items:
+            type: string
+        packagingText:
+          type: string
+          description: Free-text packaging description
+        completeness:
+          type: number
+          description: Data completeness (0.0 - 1.0)
+          example: 0.875
         openFoodFactsInfo:
           description: Additional information from OpenFoodFacts database
           allOf:
@@ -3960,11 +5600,584 @@ components:
           description: Product barcode (EAN, UPC, etc.)
           example: '3017620422003'
           maxLength: 50
-        openFoodFactsId:
+        brands:
           type: string
-          description: OpenFoodFacts product identifier
-          example: '3017620422003'
-          maxLength: 100
+          description: Brands
+        categories:
+          description: Category tags
+          type: array
+          items:
+            type: string
+        labels:
+          description: Label tags
+          type: array
+          items:
+            type: string
+        quantity:
+          type: string
+          description: Product quantity
+        servingSize:
+          type: string
+          description: Serving size
+        ingredientsText:
+          type: string
+          description: Ingredients text
+        allergens:
+          description: Allergen tags
+          type: array
+          items:
+            type: string
+        traces:
+          description: Trace allergen tags
+          type: array
+          items:
+            type: string
+        countries:
+          description: Countries where sold
+          type: array
+          items:
+            type: string
+        origins:
+          type: string
+          description: Where ingredients originate from
+          example: European Union
+        manufacturingPlaces:
+          type: string
+          description: Where the product is manufactured
+          example: France
+        imageUrl:
+          type: string
+          description: Product image URL
+        imageFrontUrl:
+          type: string
+          description: Front product image URL
+        nutritionDataPer:
+          type: string
+          description: Whether nutrition data is per 100g or per serving
+          example: 100g
+        energyKcal:
+          type: number
+          description: Energy in kcal per 100g
+        energyKj:
+          type: number
+          description: Energy in kJ per 100g
+        fat:
+          type: number
+          description: Fat in g per 100g
+        saturatedFat:
+          type: number
+          description: Saturated fat in g per 100g
+        transFat:
+          type: number
+          description: Trans fat in g per 100g
+        cholesterol:
+          type: number
+          description: Cholesterol in mg per 100g
+        carbohydrates:
+          type: number
+          description: Carbohydrates in g per 100g
+        sugars:
+          type: number
+          description: Sugars in g per 100g
+        addedSugars:
+          type: number
+          description: Added sugars in g per 100g
+        fiber:
+          type: number
+          description: Fiber in g per 100g
+        proteins:
+          type: number
+          description: Proteins in g per 100g
+        salt:
+          type: number
+          description: Salt in g per 100g
+        sodium:
+          type: number
+          description: Sodium in g per 100g
+        vitaminA:
+          type: number
+          description: Vitamin A in µg per 100g
+        vitaminC:
+          type: number
+          description: Vitamin C in mg per 100g
+        calcium:
+          type: number
+          description: Calcium in mg per 100g
+        iron:
+          type: number
+          description: Iron in mg per 100g
+        potassium:
+          type: number
+          description: Potassium in mg per 100g
+        magnesium:
+          type: number
+          description: Magnesium in mg per 100g
+        zinc:
+          type: number
+          description: Zinc in mg per 100g
+        nutriscoreGrade:
+          type: string
+          description: Nutri-Score grade
+          enum: *ref_24
+        nutriscoreScore:
+          type: number
+          description: Nutri-Score numeric score
+        novaGroup:
+          type: number
+          description: NOVA group (1=unprocessed, 4=ultra-processed)
+          example: 1
+          minimum: 1
+          maximum: 4
+        ecoscoreGrade:
+          type: string
+          description: Eco-Score grade
+        carbonFootprint:
+          type: number
+          description: Carbon footprint from known ingredients (kg CO₂e / kg)
+        isVegan:
+          type: boolean
+          description: Is the product vegan?
+        isVegetarian:
+          type: boolean
+          description: Is the product vegetarian?
+        isPalmOilFree:
+          type: boolean
+          description: Is the product palm-oil free?
+    CreateFoodCategoryDto:
+      type: object
+      properties:
+        nevoVersion:
+          type: string
+          description: NEVO version
+          example: NEVO-Online 2025 9.0
+        foodGroup:
+          type: string
+          description: Food group
+          example: Potatoes and tubers
+        nevoCode:
+          type: number
+          description: NEVO food code
+          example: 100
+        foodName:
+          type: string
+          description: Food name
+          example: Potato, raw
+        synonym:
+          type: string
+          description: Synonym
+        quantity:
+          type: string
+          description: Quantity
+          example: per 100g
+        containsTracesOf:
+          type: string
+          description: Contains traces of allergens
+        isFortifiedWith:
+          type: string
+          description: Fortification info
+        energyKj:
+          type: number
+          description: Energy in kJ
+        energyKcal:
+          type: number
+          description: Energy in kcal
+        water:
+          type: number
+          description: Water content (g)
+        proteins:
+          type: number
+          description: Total protein (g)
+        proteinsPlant:
+          type: number
+          description: Plant protein (g)
+        proteinsAnimal:
+          type: number
+          description: Animal protein (g)
+        fat:
+          type: number
+          description: Total fat (g)
+        carbohydrates:
+          type: number
+          description: Total carbohydrates (g)
+        sugars:
+          type: number
+          description: Sugars (g)
+        addedSugars:
+          type: number
+          description: Added sugars (g)
+        starch:
+          type: number
+          description: Starch (g)
+        fiber:
+          type: number
+          description: Dietary fiber (g)
+        saturatedFat:
+          type: number
+          description: Saturated fat (g)
+        monoUnsaturatedFat:
+          type: number
+          description: Mono-unsaturated fat (g)
+        polyUnsaturatedFat:
+          type: number
+          description: Poly-unsaturated fat (g)
+        omega3Fat:
+          type: number
+          description: Omega-3 fatty acids (g)
+        omega6Fat:
+          type: number
+          description: Omega-6 fatty acids (g)
+        transFat:
+          type: number
+          description: Trans fat (g)
+        sodium:
+          type: number
+          description: Sodium (mg)
+        potassium:
+          type: number
+          description: Potassium (mg)
+        calcium:
+          type: number
+          description: Calcium (mg)
+        phosphorus:
+          type: number
+          description: Phosphorus (mg)
+        magnesium:
+          type: number
+          description: Magnesium (mg)
+        iron:
+          type: number
+          description: Iron (mg)
+        zinc:
+          type: number
+          description: Zinc (mg)
+        vitaminARae:
+          type: number
+          description: Vitamin A (µg)
+        vitaminD:
+          type: number
+          description: Vitamin D (µg)
+        vitaminE:
+          type: number
+          description: Vitamin E (mg)
+        vitaminK:
+          type: number
+          description: Vitamin K (µg)
+        vitaminC:
+          type: number
+          description: Vitamin C (mg)
+        thiamin:
+          type: number
+          description: Thiamin / B1 (mg)
+        riboflavin:
+          type: number
+          description: Riboflavin / B2 (mg)
+        vitaminB6:
+          type: number
+          description: Vitamin B6 (mg)
+        vitaminB12:
+          type: number
+          description: Vitamin B12 (µg)
+        folateTotal:
+          type: number
+          description: Folate total (µg)
+      required:
+        - nevoVersion
+        - foodGroup
+        - nevoCode
+        - foodName
+    FoodCategoryResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        createdAt:
+          format: date-time
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          description: Last update timestamp
+        nevoVersion:
+          type: string
+          description: NEVO version
+          example: NEVO-Online 2025 9.0
+        foodGroup:
+          type: string
+          description: Food group
+          example: Potatoes and tubers
+        nevoCode:
+          type: number
+          description: NEVO food code
+          example: 100
+        foodName:
+          type: string
+          description: Food name
+          example: Potato, raw
+        synonym:
+          type: object
+          description: Synonym
+        quantity:
+          type: object
+          description: Quantity
+          example: per 100g
+        containsTracesOf:
+          type: object
+          description: Contains traces of allergens
+        isFortifiedWith:
+          type: object
+          description: Fortification info
+        energyKj:
+          type: object
+          description: Energy in kJ
+        energyKcal:
+          type: object
+          description: Energy in kcal
+        water:
+          type: object
+          description: Water content (g)
+        proteins:
+          type: object
+          description: Total protein (g)
+        proteinsPlant:
+          type: object
+          description: Plant protein (g)
+        proteinsAnimal:
+          type: object
+          description: Animal protein (g)
+        fat:
+          type: object
+          description: Total fat (g)
+        carbohydrates:
+          type: object
+          description: Total carbohydrates (g)
+        sugars:
+          type: object
+          description: Sugars (g)
+        addedSugars:
+          type: object
+          description: Added sugars (g)
+        starch:
+          type: object
+          description: Starch (g)
+        fiber:
+          type: object
+          description: Dietary fiber (g)
+        saturatedFat:
+          type: object
+          description: Saturated fat (g)
+        monoUnsaturatedFat:
+          type: object
+          description: Mono-unsaturated fat (g)
+        polyUnsaturatedFat:
+          type: object
+          description: Poly-unsaturated fat (g)
+        omega3Fat:
+          type: object
+          description: Omega-3 fatty acids (g)
+        omega6Fat:
+          type: object
+          description: Omega-6 fatty acids (g)
+        transFat:
+          type: object
+          description: Trans fat (g)
+        sodium:
+          type: object
+          description: Sodium (mg)
+        potassium:
+          type: object
+          description: Potassium (mg)
+        calcium:
+          type: object
+          description: Calcium (mg)
+        phosphorus:
+          type: object
+          description: Phosphorus (mg)
+        magnesium:
+          type: object
+          description: Magnesium (mg)
+        iron:
+          type: object
+          description: Iron (mg)
+        zinc:
+          type: object
+          description: Zinc (mg)
+        vitaminARae:
+          type: object
+          description: Vitamin A (µg)
+        vitaminD:
+          type: object
+          description: Vitamin D (µg)
+        vitaminE:
+          type: object
+          description: Vitamin E (mg)
+        vitaminK:
+          type: object
+          description: Vitamin K (µg)
+        vitaminC:
+          type: object
+          description: Vitamin C (mg)
+        thiamin:
+          type: object
+          description: Thiamin / B1 (mg)
+        riboflavin:
+          type: object
+          description: Riboflavin / B2 (mg)
+        vitaminB6:
+          type: object
+          description: Vitamin B6 (mg)
+        vitaminB12:
+          type: object
+          description: Vitamin B12 (µg)
+        folateTotal:
+          type: object
+          description: Folate total (µg)
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - nevoVersion
+        - foodGroup
+        - nevoCode
+        - foodName
+    UpdateFoodCategoryDto:
+      type: object
+      properties:
+        nevoVersion:
+          type: string
+          description: NEVO version
+          example: NEVO-Online 2025 9.0
+        foodGroup:
+          type: string
+          description: Food group
+          example: Potatoes and tubers
+        nevoCode:
+          type: number
+          description: NEVO food code
+          example: 100
+        foodName:
+          type: string
+          description: Food name
+          example: Potato, raw
+        synonym:
+          type: string
+          description: Synonym
+        quantity:
+          type: string
+          description: Quantity
+          example: per 100g
+        containsTracesOf:
+          type: string
+          description: Contains traces of allergens
+        isFortifiedWith:
+          type: string
+          description: Fortification info
+        energyKj:
+          type: number
+          description: Energy in kJ
+        energyKcal:
+          type: number
+          description: Energy in kcal
+        water:
+          type: number
+          description: Water content (g)
+        proteins:
+          type: number
+          description: Total protein (g)
+        proteinsPlant:
+          type: number
+          description: Plant protein (g)
+        proteinsAnimal:
+          type: number
+          description: Animal protein (g)
+        fat:
+          type: number
+          description: Total fat (g)
+        carbohydrates:
+          type: number
+          description: Total carbohydrates (g)
+        sugars:
+          type: number
+          description: Sugars (g)
+        addedSugars:
+          type: number
+          description: Added sugars (g)
+        starch:
+          type: number
+          description: Starch (g)
+        fiber:
+          type: number
+          description: Dietary fiber (g)
+        saturatedFat:
+          type: number
+          description: Saturated fat (g)
+        monoUnsaturatedFat:
+          type: number
+          description: Mono-unsaturated fat (g)
+        polyUnsaturatedFat:
+          type: number
+          description: Poly-unsaturated fat (g)
+        omega3Fat:
+          type: number
+          description: Omega-3 fatty acids (g)
+        omega6Fat:
+          type: number
+          description: Omega-6 fatty acids (g)
+        transFat:
+          type: number
+          description: Trans fat (g)
+        sodium:
+          type: number
+          description: Sodium (mg)
+        potassium:
+          type: number
+          description: Potassium (mg)
+        calcium:
+          type: number
+          description: Calcium (mg)
+        phosphorus:
+          type: number
+          description: Phosphorus (mg)
+        magnesium:
+          type: number
+          description: Magnesium (mg)
+        iron:
+          type: number
+          description: Iron (mg)
+        zinc:
+          type: number
+          description: Zinc (mg)
+        vitaminARae:
+          type: number
+          description: Vitamin A (µg)
+        vitaminD:
+          type: number
+          description: Vitamin D (µg)
+        vitaminE:
+          type: number
+          description: Vitamin E (mg)
+        vitaminK:
+          type: number
+          description: Vitamin K (µg)
+        vitaminC:
+          type: number
+          description: Vitamin C (mg)
+        thiamin:
+          type: number
+          description: Thiamin / B1 (mg)
+        riboflavin:
+          type: number
+          description: Riboflavin / B2 (mg)
+        vitaminB6:
+          type: number
+          description: Vitamin B6 (mg)
+        vitaminB12:
+          type: number
+          description: Vitamin B12 (µg)
+        folateTotal:
+          type: number
+          description: Folate total (µg)
     CreateShoppingListDto:
       type: object
       properties:
@@ -3975,37 +6188,6 @@ components:
           maxLength: 255
       required:
         - title
-    ShoppingListResponseDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the shopping list
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-        userId:
-          type: string
-          description: UUID of the user who created this shopping list
-          example: 550e8400-e29b-41d4-a716-446655440001
-          format: uuid
-        title:
-          type: string
-          description: title of the shopping list
-          example: Family shopping list
-      required:
-        - id
-        - userId
-        - title
-    MultipleShoppingListResponseDto:
-      type: object
-      properties:
-        data:
-          description: Array of shopping lists
-          type: array
-          items:
-            $ref: '#/components/schemas/ShoppingListResponseDto'
-      required:
-        - data
     ShoppingListItemResponseDto:
       type: object
       properties:
@@ -4033,10 +6215,21 @@ components:
           type: string
           description: The ID of the shopping list
           example: uuid-shopping-list-id
-        foodId:
+        itemType:
           type: string
-          description: The ID of the food item
+          description: The type of item (food or food_category)
+          example: food
+          enum:
+            - food
+            - food_category
+        foodId:
+          type: object
+          description: The ID of the food item (if itemType is food)
           example: uuid-food-id
+        foodCategoryId:
+          type: object
+          description: The ID of the food category (if itemType is food_category)
+          example: uuid-food-category-id
         createdAt:
           format: date-time
           type: string
@@ -4047,35 +6240,51 @@ components:
           type: string
           description: The last update timestamp
           example: '2024-01-15T11:30:00.000Z'
-        shoppingList:
-          description: Associated shopping list
-          allOf:
-            - $ref: '#/components/schemas/ShoppingListResponseDto'
         food:
-          description: Associated food item
+          description: Associated food item (if itemType is food)
           allOf:
             - $ref: '#/components/schemas/FoodResponseDto'
+        foodCategory:
+          description: Associated food category (if itemType is food_category)
+          allOf:
+            - $ref: '#/components/schemas/FoodCategoryResponseDto'
       required:
         - id
         - quantity
         - unit
         - checked
         - shoppingListId
-        - foodId
+        - itemType
         - createdAt
         - updatedAt
-        - shoppingList
-        - food
-    MultipleShoppingListItemResponseDto:
+    ShoppingListResponseDto:
       type: object
       properties:
-        data:
-          description: Array of shopping list items
+        id:
+          type: string
+          description: Unique identifier for the shopping list
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+        userId:
+          type: string
+          description: UUID of the user who created this shopping list
+          example: 550e8400-e29b-41d4-a716-446655440001
+          format: uuid
+        title:
+          type: string
+          description: title of the shopping list
+          example: Family shopping list
+        items:
+          description: Items in the shopping list
+          example: []
           type: array
           items:
             $ref: '#/components/schemas/ShoppingListItemResponseDto'
       required:
-        - data
+        - id
+        - userId
+        - title
+        - items
     UpdateShoppingListDto:
       type: object
       properties:
@@ -4120,13 +6329,18 @@ components:
           example: uuid-shopping-list-id
         foodId:
           type: string
-          description: The ID of the food item
+          description: The ID of the food item (provide either foodId or foodCategoryId)
           example: uuid-food-id
+        foodCategoryId:
+          type: string
+          description: >-
+            The ID of the food category (provide either foodId or
+            foodCategoryId)
+          example: uuid-food-category-id
       required:
         - quantity
         - checked
         - shoppingListId
-        - foodId
     UpdateShoppingListItemDto:
       type: object
       properties:
@@ -4214,16 +6428,23 @@ components:
           type: string
           description: The ID of the food item
           example: uuid-food-id
+        foodCategoryId:
+          type: string
+          description: The ID of the food category
+          example: uuid-food-category-id
         food:
           description: The food item details
           allOf:
             - $ref: '#/components/schemas/FoodResponseDto'
+        foodCategory:
+          description: The food category details
+          allOf:
+            - $ref: '#/components/schemas/FoodCategoryResponseDto'
       required:
         - id
         - quantity
         - unit
         - pantryId
-        - foodId
     PantryResponseDto:
       type: object
       properties:
@@ -4259,48 +6480,6 @@ components:
           maxLength: 255
       required:
         - title
-    CreatePantryItemDto:
-      type: object
-      properties:
-        pantryId:
-          type: string
-          description: The ID of the pantry to add the item to
-          example: uuid-pantry-id
-        foodId:
-          type: string
-          description: The ID of the food item to add
-          example: uuid-food-id
-        quantity:
-          type: number
-          description: The quantity of the item
-          example: 2
-          minimum: 0.01
-        unit:
-          type: string
-          description: The unit of measurement (defaults to PIECES if not provided)
-          example: KG
-          enum:
-            - PIECES
-            - G
-            - KG
-            - ML
-            - L
-            - CUPS
-          default: PIECES
-        notes:
-          type: string
-          description: Additional notes for the item
-          example: Store in cool place
-          maxLength: 500
-        expiryDate:
-          format: date-time
-          type: string
-          description: When the food will expire (ISO date string)
-          example: '2027-02-02'
-      required:
-        - pantryId
-        - foodId
-        - quantity
     MultiplePantryItemResponseDto:
       type: object
       properties:
@@ -4344,6 +6523,10 @@ components:
           type: string
           description: The ID of the food item
           example: uuid-food-id
+        foodCategoryId:
+          type: string
+          description: The ID of the food category (NEVO generic)
+          example: uuid-food-category-id
     CreateMealDto:
       type: object
       properties:
@@ -4353,7 +6536,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_16
+          enum: &ref_25
             - SALAD
             - MEAT
             - PASTA
@@ -4371,7 +6554,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_17
+          example: &ref_26
             carbs: 40
             fats: 20
             sugar: 5
@@ -4383,10 +6566,6 @@ components:
           type: number
           description: Estimated meal price or cost
           example: 8.5
-        pantryItemId:
-          type: string
-          description: Link to pantry item if sourced from pantry
-          format: uuid
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
@@ -4427,10 +6606,6 @@ components:
         price:
           type: number
           description: Estimated price or cost
-        pantryItemId:
-          type: object
-          description: Linked pantry item id
-          format: uuid
         barcode:
           type: object
           description: Barcode
@@ -4487,7 +6662,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_16
+          enum: *ref_25
           description: Meal type
         calories:
           type: number
@@ -4500,7 +6675,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_17
+          example: *ref_26
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -4509,13 +6684,123 @@ components:
           type: number
           description: Estimated meal price or cost
           example: 8.5
-        pantryItemId:
-          type: string
-          description: Link to pantry item if sourced from pantry
-          format: uuid
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
+    MealItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the meal item
+          example: 550e8400-e29b-41d4-a716-446655440000
+        mealId:
+          type: string
+          description: UUID of the meal this item belongs to
+          example: 550e8400-e29b-41d4-a716-446655440001
+        itemType:
+          type: string
+          description: >-
+            Type of item - either a specific food product or a generic food
+            category
+          enum:
+            - food
+            - food_category
+          example: food
+        foodId:
+          type: object
+          description: UUID of the specific food product (if itemType is "food")
+          example: 550e8400-e29b-41d4-a716-446655440002
+          nullable: true
+        foodCategoryId:
+          type: object
+          description: UUID of the food category (if itemType is "food_category")
+          example: 550e8400-e29b-41d4-a716-446655440003
+          nullable: true
+        quantity:
+          type: number
+          description: Quantity of the item
+          example: 2
+        unit:
+          type: string
+          description: Unit of measurement
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
+          example: PIECES
+        notes:
+          type: string
+          description: Optional notes about this meal item
+          example: Extra spicy
+          nullable: true
+        food:
+          description: Food product details (if itemType is "food")
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/FoodResponseDto'
+        foodCategory:
+          description: Food category details (if itemType is "food_category")
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/FoodCategoryResponseDto'
+        createdAt:
+          format: date-time
+          type: string
+          description: Timestamp when the meal item was created
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          format: date-time
+          type: string
+          description: Timestamp when the meal item was last updated
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+        - id
+        - mealId
+        - itemType
+        - quantity
+        - unit
+        - createdAt
+        - updatedAt
+    UpdateMealItemDto:
+      type: object
+      properties:
+        foodId:
+          type: string
+          description: >-
+            UUID of the specific food product (OpenFoodFacts). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440001
+        foodCategoryId:
+          type: string
+          description: >-
+            UUID of the food category (NEVO generic). Either foodId or
+            foodCategoryId must be provided.
+          example: 550e8400-e29b-41d4-a716-446655440002
+        quantity:
+          type: number
+          description: Quantity of the item
+          example: 2
+          default: 1
+        unit:
+          type: string
+          description: Unit of measurement
+          enum:
+            - PIECES
+            - G
+            - KG
+            - ML
+            - L
+            - CUPS
+          example: PIECES
+          default: PIECES
+        notes:
+          type: string
+          description: Optional notes about this meal item
+          example: Extra spicy
     CreateRecipeDto:
       type: object
       properties:
@@ -4551,7 +6836,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_18
+          example: &ref_27
             - vegan
             - quick
           type: array
@@ -4560,7 +6845,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_19
+          example: &ref_28
             carbs: 50
             fats: 10
             fiber: 8
@@ -4574,7 +6859,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_20
+          example: &ref_29
             - nuts
             - gluten
           type: array
@@ -4725,14 +7010,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_18
+          example: *ref_27
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_19
+          example: *ref_28
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -4743,7 +7028,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_20
+          example: *ref_29
           type: array
           items:
             type: string
@@ -4757,7 +7042,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_21
+          enum: &ref_30
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -4865,7 +7150,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_21
+          enum: *ref_30
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)
@@ -4875,3 +7160,273 @@ components:
         eatenOut:
           type: boolean
           description: Whether meal was eaten out
+    CreateUserGroupDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+          maxLength: 255
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+          maxLength: 1000
+      required:
+        - name
+    MemberResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the membership
+          example: uuid-membership-id
+        role:
+          type: string
+          description: The role of the member in the group
+          enum:
+            - ADMIN
+            - MEMBER
+          example: MEMBER
+        joinedAt:
+          format: date-time
+          type: string
+          description: When the member joined the group
+        isVirtual:
+          type: boolean
+          description: Whether this is a virtual member (true) or registered user (false)
+          example: false
+        userId:
+          type: string
+          description: The user ID (only for registered users)
+          example: uuid-user-id
+        firstName:
+          type: string
+          description: First name (only for registered users)
+          example: John
+        lastName:
+          type: string
+          description: Last name (only for registered users)
+          example: Doe
+        email:
+          type: string
+          description: Email (only for registered users)
+          example: john@example.com
+        nickname:
+          type: string
+          description: >-
+            Nickname (primarily for virtual members, optional display name for
+            registered)
+          example: Little Timmy
+        age:
+          type: number
+          description: Age (only for virtual members)
+          example: 8
+        gender:
+          type: string
+          description: Gender (only for virtual members)
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level (only for virtual members)
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level (only for virtual members)
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (only for virtual members)
+        createdBy:
+          type: string
+          description: ID of the user who created this virtual member
+      required:
+        - id
+        - role
+        - joinedAt
+        - isVirtual
+    UserGroupResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the group
+          example: uuid-group-id
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+        inviteCode:
+          type: string
+          description: The invite code for joining the group (7-character alphanumeric)
+          example: AXY1278
+          minLength: 7
+          maxLength: 7
+          pattern: ^[A-Z0-9]{7}$
+        createdBy:
+          type: string
+          description: The user ID who created the group
+          example: uuid-user-id
+        createdAt:
+          format: date-time
+          type: string
+          description: When the group was created
+        members:
+          description: >-
+            List of all members (both registered users and virtual members). Use
+            `isVirtual` to distinguish.
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberResponseDto'
+      required:
+        - id
+        - name
+        - inviteCode
+        - createdBy
+        - createdAt
+        - members
+    UpdateUserGroupDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+          maxLength: 255
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+          maxLength: 1000
+    JoinGroupDto:
+      type: object
+      properties:
+        inviteCode:
+          type: string
+          description: The invite code to join the group (7-character alphanumeric)
+          example: AXY1278
+          minLength: 7
+          maxLength: 7
+          pattern: ^[A-Z0-9]{7}$
+      required:
+        - inviteCode
+    CreateMemberDto:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Nickname of the virtual member
+          example: Little Timmy
+          maxLength: 255
+        age:
+          type: number
+          description: Age of the virtual member
+          example: 8
+          minimum: 0
+          maximum: 150
+        gender:
+          type: string
+          description: Gender of the virtual member
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (JSON object)
+          example:
+            dietaryPreference: VEGETARIAN
+      required:
+        - nickname
+    UpdateMemberDto:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Nickname of the virtual member
+          example: Little Timmy
+          maxLength: 255
+        age:
+          type: number
+          description: Age of the virtual member
+          example: 8
+          minimum: 0
+          maximum: 150
+        gender:
+          type: string
+          description: Gender of the virtual member
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (JSON object)
+          example:
+            dietaryPreference: VEGETARIAN

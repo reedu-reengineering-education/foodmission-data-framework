@@ -9,6 +9,7 @@ export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
   include: {
     shoppingList: true;
     food: true;
+    foodCategory: true;
   };
 }>;
 
@@ -32,13 +33,14 @@ export class ShoppingListItemRepository
   constructor(private readonly prisma: PrismaService) {}
 
   async create(
-    data: CreateShoppingListItemDto,
+    data: Prisma.ShoppingListItemUncheckedCreateInput,
   ): Promise<ShoppingListItemWithRelations> {
     return this.prisma.shoppingListItem.create({
       data,
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -48,6 +50,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
       orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
     });
@@ -71,6 +74,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
       orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
     });
@@ -99,6 +103,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
       orderBy: [
         { checked: 'asc' }, // Unchecked items first
@@ -113,6 +118,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -131,6 +137,26 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
+      },
+    });
+  }
+
+  async findByShoppingListAndFoodCategory(
+    shoppingListId: string,
+    foodCategoryId: string,
+  ): Promise<ShoppingListItemWithRelations | null> {
+    return this.prisma.shoppingListItem.findUnique({
+      where: {
+        shoppingListId_foodCategoryId: {
+          shoppingListId,
+          foodCategoryId,
+        },
+      },
+      include: {
+        shoppingList: true,
+        food: true,
+        foodCategory: true,
       },
     });
   }
@@ -145,6 +171,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -222,6 +249,7 @@ export class ShoppingListItemRepository
       include: {
         shoppingList: true,
         food: true,
+        foodCategory: true,
       },
     });
   }

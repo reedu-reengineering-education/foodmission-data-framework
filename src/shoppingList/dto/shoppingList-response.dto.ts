@@ -1,6 +1,8 @@
 import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
+import { ShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
+
 export class ShoppingListResponseDto {
   @ApiProperty({
     description: 'Unique identifier for the shopping list',
@@ -24,6 +26,15 @@ export class ShoppingListResponseDto {
   })
   @Expose()
   title: string;
+
+  @ApiProperty({
+    description: 'Items in the shopping list',
+    type: [ShoppingListItemResponseDto],
+    example: [],
+  })
+  @Expose()
+  @Type(() => ShoppingListItemResponseDto)
+  items: ShoppingListItemResponseDto[];
 }
 
 export class MultipleShoppingListResponseDto {

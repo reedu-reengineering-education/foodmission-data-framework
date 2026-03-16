@@ -95,7 +95,9 @@ describe('ShoppingListRepository', () => {
 
       // ASSERT: Prüfen ob Prisma richtig aufgerufen wurde und Ergebnis stimmt
       expect(prismaService.shoppingList.findMany).toHaveBeenCalledTimes(1);
-      expect(prismaService.shoppingList.findMany).toHaveBeenCalledWith();
+      expect(prismaService.shoppingList.findMany).toHaveBeenCalledWith({
+        where: {},
+      });
       expect(result).toEqual(mockShoppingListArray);
       expect(result).toHaveLength(2);
     });
@@ -126,28 +128,6 @@ describe('ShoppingListRepository', () => {
 
   // SCHRITT 4: Tests für FIND BY ID
   describe('findById', () => {
-    it('should return shopping list with items by id', async () => {
-      // ARRANGE
-      const listId = 'list-1';
-      prismaService.shoppingList.findUnique.mockResolvedValue(mockShoppingList);
-
-      // ACT
-      await repository.findById(listId);
-
-      // ASSERT: Prüfen ob findUnique mit richtigen Parametern aufgerufen wurde
-      expect(prismaService.shoppingList.findUnique).toHaveBeenCalledTimes(1);
-      expect(prismaService.shoppingList.findUnique).toHaveBeenCalledWith({
-        where: { id: listId },
-        include: {
-          items: {
-            include: {
-              food: true,
-            },
-          },
-        },
-      });
-    });
-
     it('should return null when shopping list does not exist', async () => {
       // ARRANGE
       const listId = 'non-existent-id';

@@ -5,6 +5,7 @@ import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { FoodModule } from './food/food.module';
+import { FoodCategoryModule } from './foodCategory/food-category.module';
 import { UserModule } from './user/user.module';
 
 import { HealthModule } from './health/health.module';
@@ -20,10 +21,12 @@ import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.modu
 import { PantryModule } from './pantry/pantry.module';
 import { PantryItemModule } from './pantryItem/pantry.module';
 import { MealModule } from './meal/meal.module';
+import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
 import { ChallengeModule } from './challenge/challenge.module';
 import { MissionModule } from './mission/mission.module';
+import { UserGroupModule } from './userGroup/userGroup.module';
 
 @Module({
   imports: [
@@ -34,6 +37,7 @@ import { MissionModule } from './mission/mission.module';
     AuthModule,
     UserModule,
     FoodModule,
+    FoodCategoryModule,
     HealthModule,
     MonitoringModule,
     ShoppingListModule,
@@ -41,10 +45,12 @@ import { MissionModule } from './mission/mission.module';
     PantryModule,
     PantryItemModule,
     MealModule,
+    MealItemModule,
     RecipeModule,
     MealLogModule,
     ChallengeModule,
     MissionModule,
+    UserGroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

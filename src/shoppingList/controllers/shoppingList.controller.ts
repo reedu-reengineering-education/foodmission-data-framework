@@ -8,7 +8,6 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,8 +15,8 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
-  ApiQuery,
   ApiBody,
+  ApiOAuth2,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Roles } from 'nest-keycloak-connect';
@@ -31,12 +30,11 @@ import {
 import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { QueryShoppingListItemDto } from '../../shoppingListItem/dto/query-shoppingListItem.dto';
-import { MultipleShoppingListItemResponseDto } from '../../shoppingListItem/dto/response-shoppingListItem.dto';
-
 @ApiTags('shoppinglist')
 @Controller('shoppinglist')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 export class ShoppingListController {
   constructor(private readonly shoppingListService: ShoppingListService) {}
 
@@ -67,51 +65,13 @@ export class ShoppingListController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get All Shoppinglists',
-  })
-  @ApiQuery({ name: 'search', required: false })
-  @ApiResponse({
-    status: 200,
-    description: 'Shopping lists retrieved successfully',
-    type: MultipleShoppingListResponseDto,
+    summary: 'Get all shopping lists for authenticated user',
   })
   @ApiCrudErrorResponses()
-  async findAll(): Promise<MultipleShoppingListResponseDto> {
-    return this.shoppingListService.findAll();
-  }
-
-  @Get(':id/items')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get items for a specific shopping list',
-    description:
-      'Retrieve all items belonging to a shopping list with optional filters',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiQuery({
-    name: 'foodId',
-    required: false,
-    description: 'Filter by food ID',
-  })
-  @ApiQuery({
-    name: 'checked',
-    required: false,
-    description: 'Filter by checked status',
-  })
-  @ApiQuery({ name: 'unit', required: false, description: 'Filter by unit' })
-  @ApiResponse({
-    status: 200,
-    description: 'Shopping list items retrieved successfully',
-    type: MultipleShoppingListItemResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async findItems(
-    @Param('id', ParseUUIDPipe) id: string,
+  async findAll(
     @CurrentUser('id') userId: string,
-    @Query() query: QueryShoppingListItemDto,
-  ): Promise<MultipleShoppingListItemResponseDto> {
-    return this.shoppingListService.findItems(id, userId, query);
+  ): Promise<MultipleShoppingListResponseDto> {
+    return this.shoppingListService.findAll(userId);
   }
 
   @Get(':id')

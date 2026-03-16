@@ -242,16 +242,13 @@ export class FoodResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({
-    description: 'Name of the food item',
-    example: 'Organic Whole Milk',
-  })
+  @ApiProperty({ description: 'Name of the food item', example: 'Nutella' })
   @Expose()
   name: string;
 
   @ApiProperty({
     description: 'Description of the food item',
-    example: 'Fresh organic whole milk from grass-fed cows',
+    example: 'Hazelnut And Cocoa Spread',
     required: false,
   })
   @Expose()
@@ -265,13 +262,377 @@ export class FoodResponseDto {
   @Expose()
   barcode?: string;
 
+  // --- Product metadata ---
+
   @ApiProperty({
-    description: 'OpenFoodFacts product identifier',
-    example: '3017620422003',
+    description: 'Brands',
+    example: 'Ferrero, Nutella',
     required: false,
   })
   @Expose()
-  openFoodFactsId?: string;
+  brands?: string;
+
+  @ApiProperty({
+    description: 'Category tags',
+    example: ['en:spreads', 'en:sweet-spreads'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  categories?: string[];
+
+  @ApiProperty({
+    description: 'Label tags (vegetarian, no-gluten, etc.)',
+    example: ['en:vegetarian', 'en:no-gluten'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  labels?: string[];
+
+  @ApiProperty({
+    description: 'Product quantity',
+    example: '400 g',
+    required: false,
+  })
+  @Expose()
+  quantity?: string;
+
+  @ApiProperty({
+    description: 'Serving size',
+    example: '15 g',
+    required: false,
+  })
+  @Expose()
+  servingSize?: string;
+
+  @ApiProperty({
+    description: 'Ingredients text',
+    example:
+      'Sugar, palm oil, hazelnuts 13%, low-fat cocoa 7.4%, skimmed milk powder 6.6%',
+    required: false,
+  })
+  @Expose()
+  ingredientsText?: string;
+
+  @ApiProperty({
+    description: 'Allergens',
+    example: ['en:milk', 'en:nuts', 'en:soybeans'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  allergens?: string[];
+
+  @ApiProperty({
+    description: 'Trace allergens (possible cross-contamination)',
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  traces?: string[];
+
+  @ApiProperty({
+    description: 'Countries where sold',
+    example: ['en:france', 'en:germany'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  countries?: string[];
+
+  @ApiProperty({
+    description: 'Where ingredients originate from',
+    example: 'European Union',
+    required: false,
+  })
+  @Expose()
+  origins?: string;
+
+  @ApiProperty({
+    description: 'Where the product is manufactured',
+    example: 'France',
+    required: false,
+  })
+  @Expose()
+  manufacturingPlaces?: string;
+
+  @ApiProperty({ description: 'Product image URL', required: false })
+  @Expose()
+  imageUrl?: string;
+
+  @ApiProperty({ description: 'Front product image URL', required: false })
+  @Expose()
+  imageFrontUrl?: string;
+
+  // --- Nutriments per 100g ---
+
+  @ApiProperty({
+    description: 'Whether nutrition data is per 100g or per serving',
+    example: '100g',
+    required: false,
+  })
+  @Expose()
+  nutritionDataPer?: string;
+
+  @ApiProperty({
+    description: 'Energy in kcal per 100g',
+    example: 539,
+    required: false,
+  })
+  @Expose()
+  energyKcal?: number;
+
+  @ApiProperty({
+    description: 'Energy in kJ per 100g',
+    example: 2252,
+    required: false,
+  })
+  @Expose()
+  energyKj?: number;
+
+  @ApiProperty({
+    description: 'Fat in g per 100g',
+    example: 30.9,
+    required: false,
+  })
+  @Expose()
+  fat?: number;
+
+  @ApiProperty({
+    description: 'Saturated fat in g per 100g',
+    example: 10.6,
+    required: false,
+  })
+  @Expose()
+  saturatedFat?: number;
+
+  @ApiProperty({
+    description: 'Trans fat in g per 100g',
+    required: false,
+  })
+  @Expose()
+  transFat?: number;
+
+  @ApiProperty({
+    description: 'Cholesterol in mg per 100g',
+    required: false,
+  })
+  @Expose()
+  cholesterol?: number;
+
+  @ApiProperty({
+    description: 'Carbohydrates in g per 100g',
+    example: 57.5,
+    required: false,
+  })
+  @Expose()
+  carbohydrates?: number;
+
+  @ApiProperty({
+    description: 'Sugars in g per 100g',
+    example: 56.3,
+    required: false,
+  })
+  @Expose()
+  sugars?: number;
+
+  @ApiProperty({
+    description: 'Added sugars in g per 100g',
+    required: false,
+  })
+  @Expose()
+  addedSugars?: number;
+
+  @ApiProperty({
+    description: 'Fiber in g per 100g',
+    example: 0,
+    required: false,
+  })
+  @Expose()
+  fiber?: number;
+
+  @ApiProperty({
+    description: 'Proteins in g per 100g',
+    example: 6.3,
+    required: false,
+  })
+  @Expose()
+  proteins?: number;
+
+  @ApiProperty({
+    description: 'Salt in g per 100g',
+    example: 0.107,
+    required: false,
+  })
+  @Expose()
+  salt?: number;
+
+  @ApiProperty({
+    description: 'Sodium in g per 100g',
+    required: false,
+  })
+  @Expose()
+  sodium?: number;
+
+  @ApiProperty({ description: 'Vitamin A in µg per 100g', required: false })
+  @Expose()
+  vitaminA?: number;
+
+  @ApiProperty({ description: 'Vitamin C in mg per 100g', required: false })
+  @Expose()
+  vitaminC?: number;
+
+  @ApiProperty({ description: 'Calcium in mg per 100g', required: false })
+  @Expose()
+  calcium?: number;
+
+  @ApiProperty({ description: 'Iron in mg per 100g', required: false })
+  @Expose()
+  iron?: number;
+
+  @ApiProperty({ description: 'Potassium in mg per 100g', required: false })
+  @Expose()
+  potassium?: number;
+
+  @ApiProperty({ description: 'Magnesium in mg per 100g', required: false })
+  @Expose()
+  magnesium?: number;
+
+  @ApiProperty({ description: 'Zinc in mg per 100g', required: false })
+  @Expose()
+  zinc?: number;
+
+  // --- Scores & grades ---
+
+  @ApiProperty({
+    description: 'Nutri-Score grade (A-E)',
+    example: 'E',
+    enum: ['A', 'B', 'C', 'D', 'E'],
+    required: false,
+  })
+  @Expose()
+  nutriscoreGrade?: string;
+
+  @ApiProperty({
+    description: 'Nutri-Score numeric score',
+    required: false,
+  })
+  @Expose()
+  nutriscoreScore?: number;
+
+  @ApiProperty({
+    description: 'NOVA group (1=unprocessed, 4=ultra-processed)',
+    example: 4,
+    minimum: 1,
+    maximum: 4,
+    required: false,
+  })
+  @Expose()
+  novaGroup?: number;
+
+  @ApiProperty({
+    description: 'Eco-Score grade',
+    example: 'unknown',
+    required: false,
+  })
+  @Expose()
+  ecoscoreGrade?: string;
+
+  @ApiProperty({
+    description: 'Carbon footprint from known ingredients (kg CO₂e / kg)',
+    required: false,
+  })
+  @Expose()
+  carbonFootprint?: number;
+
+  @ApiProperty({
+    description:
+      'Nutrient levels traffic light (fat, sugars, salt, saturated-fat)',
+    example: {
+      fat: 'high',
+      sugars: 'high',
+      salt: 'low',
+      'saturated-fat': 'high',
+    },
+    required: false,
+  })
+  @Expose()
+  nutrientLevels?: Record<string, string>;
+
+  // --- Diet analysis ---
+
+  @ApiProperty({ description: 'Is the product vegan?', required: false })
+  @Expose()
+  isVegan?: boolean;
+
+  @ApiProperty({ description: 'Is the product vegetarian?', required: false })
+  @Expose()
+  isVegetarian?: boolean;
+
+  @ApiProperty({
+    description: 'Is the product palm-oil free?',
+    required: false,
+  })
+  @Expose()
+  isPalmOilFree?: boolean;
+
+  @ApiProperty({
+    description: 'Raw ingredient analysis tags',
+    example: ['en:palm-oil', 'en:non-vegan', 'en:vegetarian'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  ingredientsAnalysisTags?: string[];
+
+  // --- Packaging ---
+
+  @ApiProperty({
+    description: 'Packaging tags',
+    example: ['en:plastic', 'fr:pot-en-verre'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  packagingTags?: string[];
+
+  @ApiProperty({
+    description: 'Packaging material tags',
+    example: ['en:clear-glass', 'en:pp-5-polypropylene'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  packagingMaterials?: string[];
+
+  @ApiProperty({
+    description: 'Packaging recycling tags',
+    example: ['en:recycle-in-glass-bin', 'en:recycle-in-sorting-bin'],
+    type: [String],
+    required: false,
+  })
+  @Expose()
+  packagingRecycling?: string[];
+
+  @ApiProperty({
+    description: 'Free-text packaging description',
+    required: false,
+  })
+  @Expose()
+  packagingText?: string;
+
+  // --- Data quality ---
+
+  @ApiProperty({
+    description: 'Data completeness (0.0 - 1.0)',
+    example: 0.875,
+    required: false,
+  })
+  @Expose()
+  completeness?: number;
+
+  // --- OpenFoodFacts live data (fetched on demand) ---
 
   @ApiProperty({
     description: 'Additional information from OpenFoodFacts database',
@@ -281,6 +642,8 @@ export class FoodResponseDto {
   @Expose()
   @Type(() => OpenFoodFactsInfoDto)
   openFoodFactsInfo?: OpenFoodFactsInfoDto;
+
+  // --- Timestamps ---
 
   @ApiProperty({
     description: 'Timestamp when the food item was created',

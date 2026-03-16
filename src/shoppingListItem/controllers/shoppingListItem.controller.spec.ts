@@ -3,6 +3,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ShoppingListItemController } from './shoppingListItem.controller';
 import { ShoppingListItemService } from '../services/shoppingListItem.service';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemController', () => {
@@ -12,7 +13,7 @@ describe('ShoppingListItemController', () => {
   const mockItemResponse = {
     id: 'item-1',
     shoppingListId: 'list-1',
-    foodId: 'food-1',
+    foodId: TEST_FOOD.id,
     quantity: 2,
     unit: 'KG',
     checked: false,

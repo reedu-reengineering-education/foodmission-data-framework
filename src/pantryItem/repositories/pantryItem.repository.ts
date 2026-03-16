@@ -6,19 +6,23 @@ export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
   include: {
     pantry: true;
     food: true;
+    foodCategory: true;
   };
 }>;
 
 export interface PantryItemFilter {
   pantryId?: string;
   foodId?: string;
+  foodCategoryId?: string;
   unit?: Unit;
   expiryDate?: Date;
 }
 
 export interface CreatePantryItemData {
   pantryId: string;
-  foodId: string;
+  foodId?: string | null;
+  foodCategoryId?: string | null;
+  itemType: string;
   quantity: number;
   unit: Unit;
   notes?: string;
@@ -34,6 +38,8 @@ export class PantryItemRepository {
       data: {
         pantryId: data.pantryId,
         foodId: data.foodId,
+        foodCategoryId: data.foodCategoryId,
+        itemType: data.itemType,
         quantity: data.quantity,
         unit: data.unit,
         notes: data.notes,
@@ -42,6 +48,7 @@ export class PantryItemRepository {
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -51,6 +58,7 @@ export class PantryItemRepository {
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -61,6 +69,7 @@ export class PantryItemRepository {
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -72,12 +81,14 @@ export class PantryItemRepository {
       where: {
         pantryId: filter.pantryId,
         foodId: filter.foodId,
+        foodCategoryId: filter.foodCategoryId,
         expiryDate: filter.expiryDate,
         unit: filter.unit,
       },
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -92,6 +103,7 @@ export class PantryItemRepository {
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
       },
     });
   }
@@ -114,6 +126,24 @@ export class PantryItemRepository {
       include: {
         pantry: true,
         food: true,
+        foodCategory: true,
+      },
+    });
+  }
+
+  async findFoodCategoryInPantry(
+    pantryId: string,
+    foodCategoryId: string,
+  ): Promise<PantryItemWithRelations | null> {
+    return this.prisma.pantryItem.findFirst({
+      where: {
+        pantryId: pantryId,
+        foodCategoryId: foodCategoryId,
+      },
+      include: {
+        pantry: true,
+        food: true,
+        foodCategory: true,
       },
     });
   }

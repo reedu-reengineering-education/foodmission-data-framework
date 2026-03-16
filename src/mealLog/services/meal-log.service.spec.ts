@@ -67,7 +67,6 @@ describe('MealLogService', () => {
       mealId: 'm1',
       userId,
       typeOfMeal: TypeOfMeal.LUNCH,
-      mealFromPantry: false,
       eatenOut: false,
       timestamp: new Date(),
       createdAt: new Date(),
@@ -106,12 +105,11 @@ describe('MealLogService', () => {
     );
   });
 
-  it('should infer mealFromPantry from meal link when not provided', async () => {
+  it('should default mealFromPantry to false when not provided', async () => {
     const mealLog = { id: 'm1', userId, mealId: 'm1' };
     mockMealRepository.findById.mockResolvedValue({
       id: 'm1',
       userId,
-      pantryItemId: 'pi-1',
     });
     mockMealLogRepository.create.mockResolvedValue(mealLog as any);
 
@@ -121,7 +119,7 @@ describe('MealLogService', () => {
     );
 
     expect(mockMealLogRepository.create).toHaveBeenCalledWith(
-      expect.objectContaining({ mealFromPantry: true }),
+      expect.objectContaining({ mealFromPantry: false }),
     );
   });
 
