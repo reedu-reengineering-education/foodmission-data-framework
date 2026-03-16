@@ -48,16 +48,26 @@ export class DataBaseAuthGuard implements CanActivate {
     }
 
     try {
-      const dbUser = await this.userRepository.findByKeycloakId(keycloakId);
+      // Primary lookup by keycloakId (sub claim)
+      let dbUser = await this.userRepository.findByKeycloakId(keycloakId);
+
+      // Fallback: if not found, try by email and update keycloakId to align seeded users with Keycloak
+      if (!dbUser && request.user?.email) {
+        const byEmail = await this.userRepository.findByEmail(
+          request.user.email,
+        );
+        if (byEmail) {
+          dbUser = await this.userRepository.update(byEmail.id, {
+            keycloakId,
+          });
+        }
+      }
 
       if (!dbUser) {
         throw new UnauthorizedException('User not found in database');
       }
 
-      this.userCache.set(keycloakId, {
-        id: dbUser.id,
-        keycloakId: keycloakId,
-      });
+      this.userCache.set(keycloakId, { id: dbUser.id, keycloakId });
 
       request.user = {
         ...request.user, // Behalte JWT-Infos (roles, etc.)

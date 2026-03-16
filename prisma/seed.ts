@@ -9,6 +9,7 @@ import { seedFoodCategories } from './seeds/foodCategories';
 import { seedUserGroups } from './seeds/userGroups';
 import { seedVirtualMembers } from './seeds/groupMembers';
 import { seedTheMealDbRecipes } from './seeds/themealdb';
+import { seedMeals } from './seeds/meals';
 
 const prisma = new PrismaClient();
 
@@ -43,6 +44,9 @@ async function main() {
     // 3. TheMealDB recipes (depends on Food + FoodCategory being seeded)
     const themealdbResult = await seedTheMealDbRecipes(prisma);
 
+    // 4. Meals linked to recipes (depends on Recipes + Users)
+    const meals = await seedMeals(prisma);
+
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
@@ -56,7 +60,10 @@ async function main() {
     const foodCount = await prisma.food.count();
     console.log(`   - foodCategories: ${foodCategories.length}`);
     console.log(`   - foods (total): ${foodCount}`);
-    console.log(`   - TheMealDB recipes: ${themealdbResult.created} created, ${themealdbResult.skipped} skipped`);
+    console.log(
+      `   - TheMealDB recipes: ${themealdbResult.created} created, ${themealdbResult.skipped} skipped`,
+    );
+    console.log(`   - meals (linked to recipes): ${meals.length}`);
   } catch (error) {
     console.error('❌ Error during seeding:', error);
     throw error;
