@@ -149,7 +149,7 @@ describe('GlobalExceptionFilter', () => {
       });
     });
 
-    it('should generate correlation ID if not present', () => {
+    it('should generate trace ID if not present', () => {
       mockRequest.headers = {};
       loggingService.getCorrelationId.mockReturnValue(undefined);
 
@@ -157,7 +157,8 @@ describe('GlobalExceptionFilter', () => {
       filter.catch(exception, mockHost);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
-      expect(responseCall.correlationId).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format
+      expect(responseCall.correlationId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
 
     it('should use correlation ID from logging service', () => {

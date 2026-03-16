@@ -17,6 +17,11 @@ module.exports = {
     '^keycloak-connect$': '<rootDir>/test/__mocks__/keycloak-connect.js',
   },
 
+  // Transform ESM modules
+  transformIgnorePatterns: [
+    'node_modules/(?!(uuid)/)',
+  ],
+
   // Coverage configuration
   collectCoverageFrom: [
     'src/**/*.(t|j)s',

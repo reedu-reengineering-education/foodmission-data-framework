@@ -162,7 +162,8 @@ describe('ValidationExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       const callArgs = mockResponse.json.mock.calls[0][0];
-      expect(callArgs.correlationId).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format
+      expect(callArgs.correlationId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
   });
 });

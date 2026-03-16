@@ -291,12 +291,13 @@ describe('ErrorUtils', () => {
   });
 
   describe('generateCorrelationId', () => {
-    it('should generate a correlation ID', () => {
+    it('should generate a trace ID (UUID format)', () => {
       const id = generateCorrelationId();
 
       expect(typeof id).toBe('string');
       expect(id.length).toBeGreaterThan(0);
-      expect(id).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+      expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
 
     it('should generate unique IDs', () => {
