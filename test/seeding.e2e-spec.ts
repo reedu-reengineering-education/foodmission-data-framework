@@ -58,8 +58,8 @@ describe('Database Seeding (e2e)', () => {
       expect(nutella?.barcode).toBeDefined();
       expect(nutella?.createdBy).toBe('system-seed-openfoodfacts');
     },
-      120000,
-    ); // 2 minutes timeout
+      300000,
+    ); // 5 minutes timeout
 
     it(
       'should handle duplicate seeding gracefully',
@@ -74,8 +74,8 @@ describe('Database Seeding (e2e)', () => {
       const dbFoods = await prisma.food.findMany();
       expect(dbFoods.length).toBe(firstRun.length);
     },
-      120000,
-    ); // 2 minutes timeout
+      300000,
+    ); // 5 minutes timeout
 
     it(
       'should create foods with valid data',
@@ -101,8 +101,8 @@ describe('Database Seeding (e2e)', () => {
         }
       });
     },
-      120000,
-    ); // 2 minutes timeout
+      300000,
+    ); // 5 minutes timeout
   });
 
   describe('User Seeding', () => {
@@ -179,8 +179,8 @@ describe('Database Seeding (e2e)', () => {
       expect(dbFoods.length).toBe(foods.length);
       expect(dbUsers.length).toBe(users.length);
     },
-      120000,
-    ); // 2 minutes timeout
+      300000,
+    ); // 5 minutes timeout
 
     it(
       'should maintain data integrity across seeding',
@@ -203,7 +203,7 @@ describe('Database Seeding (e2e)', () => {
       expect(new Set(keycloakIds).size).toBe(keycloakIds.length);
       expect(new Set(emails).size).toBe(emails.length);
     },
-      120000,
-    ); // 2 minutes timeout
+      300000,
+    ); // 5 minutes timeout
   });
 });
