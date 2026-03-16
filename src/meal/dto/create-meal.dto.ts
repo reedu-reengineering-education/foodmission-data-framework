@@ -1,23 +1,26 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
   IsObject,
   IsNumber,
 } from 'class-validator';
-import { MealType } from '@prisma/client';
 
 export class CreateMealDto {
   @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
   @IsString()
   name: string;
 
-  @ApiProperty({ enum: MealType, description: 'Meal type' })
-  @IsEnum(MealType)
-  mealType: MealType;
+  @ApiPropertyOptional({
+    description: 'Optional recipe this meal is based on',
+    format: 'uuid',
+  })
+  @IsOptional()
+  @IsUUID()
+  recipeId?: string;
 
   @ApiPropertyOptional({ description: 'Calories for the meal', example: 520 })
   @IsOptional()

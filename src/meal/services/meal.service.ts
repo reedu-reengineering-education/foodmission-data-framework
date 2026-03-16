@@ -54,12 +54,12 @@ export class MealService {
     userId: string,
     query: QueryMealDto,
   ): Promise<MultipleMealResponseDto> {
-    const { page = 1, limit = 10, mealType, search } = query;
+    const { page = 1, limit = 10, recipeId, search } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.MealWhereInput = {
       userId,
-      ...(mealType ? { mealType } : {}),
+      ...(recipeId ? { recipeId } : {}),
       ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
     };
 

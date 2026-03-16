@@ -51,6 +51,7 @@ model Food {
   sodium         Float?
   vitaminA       Float?
   vitaminC       Float?
+  vitaminD       Float? // Vitamin D (µg) — used in recipe nutrition aggregation
   calcium        Float?
   iron           Float?
   potassium      Float?
@@ -89,6 +90,7 @@ model Food {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([name])
   @@index([createdAt])
@@ -146,6 +148,7 @@ model FoodCategory {
   // --- Minerals ---
   chloride     Float? // Chloride (mg)
   sodium       Float? // Sodium (mg)
+  salt         Float? // Salt (g) — for recipe aggregation consistency with Food
   potassium    Float? // Potassium (mg)
   calcium      Float? // Calcium (mg)
   phosphorus   Float? // Phosphorus (mg)
@@ -159,6 +162,7 @@ model FoodCategory {
   iodine       Float? // Iodine (µg)
 
   // --- Vitamins ---
+  vitaminA             Float? // Vitamin A (µg) — for recipe aggregation; backfill from vitaminARae
   vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
   vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
   retinol              Float? // Retinol (µg)
@@ -273,6 +277,7 @@ model FoodCategory {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([foodGroup])
   @@index([foodName])
@@ -401,7 +406,6 @@ model PantryItem {
 model Meal {
   id                  String     @id @default(uuid())
   name                String
-  mealType            MealType
   calories            Int?
   proteins            Int?
   nutritionalInfo     Json?
@@ -410,16 +414,19 @@ model Meal {
   barcode             String?    @unique
   userId              String
 
+  // Optional link to a recipe this meal is based on
+  recipeId            String?
+
   user      User       @relation(fields: [userId], references: [id])
+  recipe    Recipe?    @relation(fields: [recipeId], references: [id])
   items     MealItem[]
-  recipes   Recipe[]
   mealLogs  MealLog[]
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   @@index([userId])
-  @@index([mealType])
+  @@index([recipeId])
 }
 
 model MealItem {
@@ -449,8 +456,7 @@ model MealItem {
 
 model Recipe {
   id                  String   @id @default(uuid())
-  userId              String
-  mealId              String
+  userId              String?  // Nullable for system recipes (TheMealDB, etc.)
   title               String
   description         String?
   instructions        String?
@@ -468,12 +474,51 @@ model Recipe {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
-  user User @relation(fields: [userId], references: [id])
+  // New fields for external recipes (TheMealDB integration)
+  externalId          String?  @unique  // TheMealDB idMeal
+  source              String?  // "themealdb", "user", etc.
+  imageUrl            String?
+  videoUrl            String?
+  cuisineType         String?  // Japanese, Italian, Mexican, etc.
+  category            String?  // Chicken, Seafood, Dessert, etc.
+  isPublic            Boolean  @default(false)
+  dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
+
+  // Relations
+  user        User?              @relation(fields: [userId], references: [id])
+  meals       Meal[]             // Meals can reference this recipe
+  ingredients RecipeIngredient[] // Structured ingredients with food links
 
   @@index([userId])
-  @@index([mealId])
+  @@index([isPublic])
+  @@index([category])
+  @@index([cuisineType])
   @@map("recipes")
+}
+
+model RecipeIngredient {
+  id       String  @id @default(uuid())
+  recipeId String
+  name     String  // Original ingredient name from recipe
+  measure  String? // Amount/measurement string
+  order    Int     @default(0)
+
+  // Polymorphic reference (same pattern as MealItem, PantryItem, etc.)
+  itemType       String @default("food_category") // "food" | "food_category"
+  foodId         String?
+  foodCategoryId String?
+
+  recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  food         Food?         @relation(fields: [foodId], references: [id])
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([recipeId])
+  @@index([foodId])
+  @@index([foodCategoryId])
+  @@map("recipe_ingredients")
 }
 
 model MealLog {
@@ -548,13 +593,7 @@ enum TypeOfMeal {
   SPECIAL_DRINKS
 }
 
-enum MealType {
-  SALAD
-  MEAT
-  PASTA
-  RICE
-  VEGAN
-}
+
 
 enum GroupRole {
   ADMIN

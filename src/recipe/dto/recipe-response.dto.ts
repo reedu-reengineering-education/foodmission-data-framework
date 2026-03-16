@@ -1,19 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { MealResponseDto } from '../../meal/dto/meal-response.dto';
+import { RecipeIngredientResponseDto } from './recipe-ingredient.dto';
 
 export class RecipeResponseDto {
   @ApiProperty({ description: 'Recipe id', format: 'uuid' })
   @Expose()
   id: string;
 
-  @ApiProperty({ description: 'Owner user id', format: 'uuid' })
+  @ApiPropertyOptional({
+    description: 'Owner user id (null for system recipes)',
+    format: 'uuid',
+  })
   @Expose()
-  userId: string;
-
-  @ApiProperty({ description: 'Meal reference id', format: 'uuid' })
-  @Expose()
-  mealId: string;
+  userId?: string;
 
   @ApiProperty({ description: 'Recipe title' })
   @Expose()
@@ -79,13 +78,46 @@ export class RecipeResponseDto {
   @Expose()
   updatedAt: Date;
 
+  // New fields for external recipes
+  @ApiPropertyOptional({ description: 'External ID (e.g., TheMealDB idMeal)' })
+  @Expose()
+  externalId?: string;
+
+  @ApiPropertyOptional({ description: 'Recipe source (themealdb, user, etc.)' })
+  @Expose()
+  source?: string;
+
+  @ApiPropertyOptional({ description: 'Image URL' })
+  @Expose()
+  imageUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Video URL' })
+  @Expose()
+  videoUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Cuisine type' })
+  @Expose()
+  cuisineType?: string;
+
+  @ApiPropertyOptional({ description: 'Category' })
+  @Expose()
+  category?: string;
+
+  @ApiProperty({ description: 'Whether recipe is publicly visible' })
+  @Expose()
+  isPublic: boolean;
+
+  @ApiPropertyOptional({ type: [String], description: 'Dietary labels' })
+  @Expose()
+  dietaryLabels?: string[];
+
   @ApiPropertyOptional({
-    description: 'Attached meal',
-    type: () => MealResponseDto,
+    type: [RecipeIngredientResponseDto],
+    description: 'Recipe ingredients',
   })
   @Expose()
-  @Type(() => MealResponseDto)
-  meal?: MealResponseDto;
+  @Type(() => RecipeIngredientResponseDto)
+  ingredients?: RecipeIngredientResponseDto[];
 }
 
 export class MultipleRecipeResponseDto {

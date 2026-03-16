@@ -1,14 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { MealType } from '@prisma/client';
-import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TransformTrimToUndefined } from '../../common/decorators/transformers';
 
 export class QueryMealDto {
-  @ApiPropertyOptional({ description: 'Filter by meal type', enum: MealType })
+  @ApiPropertyOptional({ description: 'Filter by recipe id', format: 'uuid' })
   @IsOptional()
-  @IsEnum(MealType)
-  mealType?: MealType;
+  @IsUUID()
+  recipeId?: string;
 
   @ApiPropertyOptional({ description: 'Search by name substring' })
   @IsOptional()

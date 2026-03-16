@@ -4,7 +4,7 @@ import { MealItemService } from '../services/meal-item.service';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
-import { Unit, MealType } from '@prisma/client';
+import { Unit } from '@prisma/client';
 
 describe('MealItemController', () => {
   let controller: MealItemController;
@@ -32,7 +32,6 @@ describe('MealItemController', () => {
     meal: {
       id: TEST_IDS.MEAL,
       name: 'Breakfast',
-      mealType: MealType.SALAD,
       userId: TEST_IDS.USER,
       calories: 500,
       proteins: 20,
@@ -40,6 +39,7 @@ describe('MealItemController', () => {
       sustainabilityScore: null,
       price: null,
       barcode: null,
+      recipeId: null,
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },

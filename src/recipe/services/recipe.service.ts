@@ -1,6 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { RecipeRepository } from '../repositories/recipe.repository';
-import { MealRepository } from '../../meal/repositories/meal.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
 import {
@@ -17,20 +21,7 @@ import { plainToInstance } from 'class-transformer';
 export class RecipeService {
   private readonly logger = new Logger(RecipeService.name);
 
-  constructor(
-    private readonly recipeRepository: RecipeRepository,
-    private readonly mealRepository: MealRepository,
-  ) {}
-
-  private getOwnedMealOrThrow(mealId: string, userId: string) {
-    return getOwnedEntityOrThrow(
-      mealId,
-      userId,
-      (id) => this.mealRepository.findById(id),
-      (d) => d.userId,
-      'Meal not found',
-    );
-  }
+  constructor(private readonly recipeRepository: RecipeRepository) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
     return getOwnedEntityOrThrow(
@@ -47,8 +38,6 @@ export class RecipeService {
     userId: string,
   ): Promise<RecipeResponseDto> {
     this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
-
-    await this.getOwnedMealOrThrow(createRecipeDto.mealId, userId);
 
     try {
       const recipe = await this.recipeRepository.create({
@@ -68,7 +57,11 @@ export class RecipeService {
     const {
       page = 1,
       limit = 10,
-      mealType,
+      category,
+      cuisineType,
+      source,
+      isPublic,
+      dietaryLabels,
       tags,
       allergens,
       difficulty,
@@ -76,8 +69,19 @@ export class RecipeService {
     } = query;
     const skip = (page - 1) * limit;
 
+    // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
+    const visibilityWhere: Prisma.RecipeWhereInput =
+      isPublic === true
+        ? { isPublic: true }
+        : isPublic === false
+          ? { userId, isPublic: false }
+          : { OR: [{ userId }, { isPublic: true }] };
+
     const where: Prisma.RecipeWhereInput = {
-      userId,
+      ...visibilityWhere,
+      ...(category ? { category } : {}),
+      ...(cuisineType ? { cuisineType } : {}),
+      ...(source ? { source } : {}),
       ...(difficulty ? { difficulty } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
@@ -85,14 +89,10 @@ export class RecipeService {
       ...(allergens && allergens.length
         ? { allergens: { hasSome: allergens.map((a) => a.trim()) } }
         : {}),
-      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
-      ...(mealType
-        ? {
-            meal: {
-              mealType,
-            },
-          }
+      ...(dietaryLabels && dietaryLabels.length
+        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
         : {}),
+      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
     };
 
     try {
@@ -101,7 +101,6 @@ export class RecipeService {
         take: limit,
         where,
         orderBy: { createdAt: 'desc' },
-        include: { meal: true },
       });
 
       return plainToInstance(
@@ -121,8 +120,19 @@ export class RecipeService {
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
-    const ownedRecipe = await this.getOwnedRecipeOrThrow(id, userId);
-    return this.toResponse(ownedRecipe);
+    const recipe = await this.recipeRepository.findById(id);
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    // Allow access if user owns it OR if it's public
+    const canAccess = recipe.userId === userId || recipe.isPublic === true;
+    if (!canAccess) {
+      throw new ForbiddenException('Access denied to this recipe');
+    }
+
+    return this.toResponse(recipe);
   }
 
   async update(
@@ -130,11 +140,7 @@ export class RecipeService {
     updateRecipeDto: UpdateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    const recipe = await this.getOwnedRecipeOrThrow(id, userId);
-
-    if (updateRecipeDto.mealId && updateRecipeDto.mealId !== recipe.mealId) {
-      await this.getOwnedMealOrThrow(updateRecipeDto.mealId, userId);
-    }
+    await this.getOwnedRecipeOrThrow(id, userId);
 
     try {
       const updated = await this.recipeRepository.update(id, updateRecipeDto);
