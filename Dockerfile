@@ -49,9 +49,6 @@ COPY .npmrc ./
 # Install only production dependencies
 RUN npm ci --only=production && npm cache clean --force
 
-# Remove npm (not needed at runtime) to reduce attack surface
-RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
-
 # Copy built application from builder stage
 COPY --from=builder --chown=nestjs:nodejs /workspace/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /workspace/node_modules ./node_modules

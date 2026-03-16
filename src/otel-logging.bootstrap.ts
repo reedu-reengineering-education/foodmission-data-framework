@@ -34,14 +34,12 @@ if (config.enabled) {
 
   try {
     const logExporter = new OTLPLogExporter({
-      url: config.endpoint,
+      url: `${config.endpoint}/v1/logs`,
       headers: config.headers,
     });
 
-    // Optional: Enable trace export (uses same endpoint but /v1/traces)
-    const traceEndpoint = config.endpoint.replace('/v1/logs', '/v1/traces');
     const traceExporter = new OTLPTraceExporter({
-      url: traceEndpoint,
+      url: `${config.endpoint}/v1/traces`,
       headers: config.headers,
     });
 
@@ -75,8 +73,7 @@ if (config.enabled) {
       `✓ OpenTelemetry SDK initialized successfully\n` +
         `  Service: ${config.serviceName} (v${config.serviceVersion})\n` +
         `  Environment: ${config.environment}\n` +
-        `  Logs: ${config.endpoint}\n` +
-        `  Traces: ${traceEndpoint}`,
+        `  Endpoint: ${config.endpoint}`,
     );
 
     // Graceful shutdown on SIGTERM
