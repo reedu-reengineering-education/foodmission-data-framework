@@ -92,11 +92,12 @@ export class ValidationExceptionFilter implements ExceptionFilter {
   }
 
   private getCorrelationId(request: Request): string {
-    // Try to get correlation ID from various sources, matching GlobalExceptionFilter logic
+    // Try to get trace ID from various sources
     return (
-      (request.headers['x-correlation-id'] as string) ||
+      (request.headers['x-trace-id'] as string) ||
+      (request.headers['x-correlation-id'] as string) || // Backward compatibility
       (request.headers['x-request-id'] as string) ||
-      (request as any).correlationId ||
+      (request as any).traceId ||
       this.loggingService.getCorrelationId() ||
       generateCorrelationId()
     );

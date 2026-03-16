@@ -4,7 +4,7 @@ import { createLoggerConfig, createWinstonLogger } from './logger.config';
 import cls from 'cls-hooked';
 
 export interface LogContext {
-  correlationId?: string;
+  correlationId?: string; // Actually stores trace_id from OpenTelemetry
   userId?: string;
   userEmail?: string;
   requestId?: string;

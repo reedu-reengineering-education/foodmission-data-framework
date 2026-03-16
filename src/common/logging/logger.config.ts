@@ -1,3 +1,18 @@
+/**
+ * Winston Logger Configuration
+ *
+ * This module provides Winston logger configuration for the application.
+ * It supports multiple transports (console, file) and integrates with OpenTelemetry
+ * for distributed tracing and log correlation.
+ *
+ * Features:
+ * - Environment-based log levels
+ * - Console and file transports with rotation
+ * - Structured JSON logging for production
+ * - Pretty-printed logs for development
+ * - Automatic OpenTelemetry integration
+ */
+
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
@@ -10,8 +25,14 @@ export interface LoggerConfig {
   maxFiles: string;
   maxSize: string;
   format: winston.Logform.Format;
+  enableOtel: boolean;
+  otelEndpoint?: string;
+  otelHeaders?: string;
 }
 
+/**
+ * Create logger configuration from environment variables
+ */
 export const createLoggerConfig = (): LoggerConfig => ({
   level: process.env.LOG_LEVEL || 'info',
   enableConsole: process.env.LOG_CONSOLE !== 'false',
@@ -30,7 +51,7 @@ export const createLoggerConfig = (): LoggerConfig => ({
         message,
         context,
         trace,
-        correlationId,
+        correlationId, // Actually contains trace_id from OpenTelemetry
         userId,
         ...meta
       }) => {
@@ -42,7 +63,7 @@ export const createLoggerConfig = (): LoggerConfig => ({
         };
 
         if (context) logEntry.context = context;
-        if (correlationId) logEntry.correlationId = correlationId;
+        if (correlationId) logEntry.trace_id = correlationId; // Rename to trace_id in output
         if (userId) logEntry.userId = userId;
         if (trace) logEntry.trace = trace;
 
@@ -50,12 +71,19 @@ export const createLoggerConfig = (): LoggerConfig => ({
       },
     ),
   ),
+  // OpenTelemetry config
+  enableOtel: process.env.OTEL_LOGS_ENABLED === 'true',
+  otelEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+  otelHeaders: process.env.OTEL_EXPORTER_OTLP_HEADERS,
 });
 
+/**
+ * Create Winston logger instance with configured transports
+ */
 export const createWinstonLogger = (config: LoggerConfig): winston.Logger => {
   const transports: winston.transport[] = [];
 
-  // Console transport
+  // Console transport with pretty formatting for development
   if (config.enableConsole) {
     transports.push(
       new winston.transports.Console({
@@ -66,13 +94,15 @@ export const createWinstonLogger = (config: LoggerConfig): winston.Logger => {
           nestWinstonModuleUtilities.format.nestLike('FOODMISSION', {
             colors: true,
             prettyPrint: true,
+            processId: true,
+            appName: true,
           }),
         ),
       }),
     );
   }
 
-  // File transports
+  // File transports with daily rotation
   if (config.enableFile) {
     // General application logs
     transports.push(
@@ -83,10 +113,11 @@ export const createWinstonLogger = (config: LoggerConfig): winston.Logger => {
         maxSize: config.maxSize,
         level: config.level,
         format: config.format,
+        auditFile: `${config.logDir}/.application-audit.json`,
       }),
     );
 
-    // Error logs
+    // Error logs (separate file for easier debugging)
     transports.push(
       new DailyRotateFile({
         filename: `${config.logDir}/error-%DATE%.log`,
@@ -95,10 +126,11 @@ export const createWinstonLogger = (config: LoggerConfig): winston.Logger => {
         maxSize: config.maxSize,
         level: 'error',
         format: config.format,
+        auditFile: `${config.logDir}/.error-audit.json`,
       }),
     );
 
-    // HTTP request logs
+    // HTTP request logs (for API monitoring)
     transports.push(
       new DailyRotateFile({
         filename: `${config.logDir}/http-%DATE%.log`,
@@ -107,19 +139,30 @@ export const createWinstonLogger = (config: LoggerConfig): winston.Logger => {
         maxSize: config.maxSize,
         level: 'http',
         format: config.format,
+        auditFile: `${config.logDir}/.http-audit.json`,
       }),
     );
   }
+
+  // Note: OpenTelemetry Winston instrumentation is automatically applied
+  // by the NodeSDK in otel-logging.bootstrap.ts when OTEL_LOGS_ENABLED=true
 
   return winston.createLogger({
     level: config.level,
     format: config.format,
     transports,
     exitOnError: false,
+    defaultMeta: {
+      service: process.env.OTEL_SERVICE_NAME || 'foodmission-api',
+      environment: process.env.NODE_ENV || 'development',
+    },
   });
 };
 
-// Custom log levels
+/**
+ * Custom log levels for Winston
+ * Follows RFC 5424 syslog severity levels
+ */
 export const customLevels = {
   levels: {
     error: 0,

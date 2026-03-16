@@ -15,6 +15,7 @@ import {
   formatErrorForLogging,
   handlePrismaError,
   isServerError,
+  generateCorrelationId,
 } from '../utils/error.utils';
 
 @Injectable()
@@ -106,17 +107,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   private getCorrelationId(request: Request): string {
-    // Try to get correlation ID from various sources
+    // Try to get trace ID from various sources
     return (
-      (request.headers['x-correlation-id'] as string) ||
+      (request.headers['x-trace-id'] as string) ||
+      (request.headers['x-correlation-id'] as string) || // Backward compatibility
       (request.headers['x-request-id'] as string) ||
+      (request as any).traceId ||
       this.loggingService.getCorrelationId() ||
       this.generateCorrelationId()
     );
   }
 
   private generateCorrelationId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    return generateCorrelationId();
   }
 
   private logError(
