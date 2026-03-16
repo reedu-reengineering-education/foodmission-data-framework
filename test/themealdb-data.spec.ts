@@ -125,7 +125,7 @@ describe('TheMealDB JSON Data Validation', () => {
     it('should have recipes with ingredients array', () => {
       data.recipes.forEach((r) => {
         expect(Array.isArray(r.ingredients)).toBe(true);
-        r.ingredients.forEach((ing, idx) => {
+        r.ingredients.forEach((ing) => {
           expect(ing).toHaveProperty('name');
           expect(ing).toHaveProperty('measure');
           expect(ing).toHaveProperty('order');
