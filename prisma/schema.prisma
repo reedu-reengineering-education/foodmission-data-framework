@@ -603,6 +603,7 @@ model GroupMembership {
   @@index([groupId])
   @@index([createdBy])
   @@map("group_memberships")
+}
 
 model Knowledge {
   id          String   @id @default(uuid())
@@ -642,65 +643,3 @@ model UserKnowledgeProgress {
 }
 
 
-
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-  UNSPECIFIED
-  PREFER_NOT_TO_SAY
-}
-
-// New enums for profile fields
-enum ActivityLevel {
-  SEDENTARY
-  LIGHT
-  MODERATE
-  ACTIVE
-  VERY_ACTIVE
-}
-
-enum AnnualIncomeLevel {
-  BELOW_10000
-  FROM_10000_TO_19999
-  FROM_20000_TO_34999
-  FROM_35000_TO_49999
-  FROM_50000_TO_74999
-  FROM_75000_TO_99999
-  ABOVE_100000
-}
-
-enum EducationLevel {
-  NO_FORMAL_EDUCATION
-  PRIMARY
-  SECONDARY
-  VOCATIONAL
-  BACHELORS
-  MASTERS
-  DOCTORATE
-}
-
-enum Unit {
-  PIECES
-  G
-  KG
-  ML
-  L
-  CUPS
-}
-
-enum TypeOfMeal {
-  BREAKFAST
-  LUNCH
-  DINNER
-  SNACK
-  SPECIAL_DRINKS
-}
-
-enum MealType {
-  SALAD
-  MEAT
-  PASTA
-  RICE
-  VEGAN
-}
