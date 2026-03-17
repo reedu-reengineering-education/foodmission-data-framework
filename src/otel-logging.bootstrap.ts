@@ -6,7 +6,7 @@
  *
  * Features:
  * - Automatic instrumentation of Node.js libraries
- * - Winston log correlation and export
+ * - Winston log trace ID export
  * - OTLP log export to observability backends
  * - Distributed tracing (if trace exporter configured)
  * - Graceful shutdown handling

@@ -20,7 +20,7 @@ export class SecurityMiddleware implements NestMiddleware {
       res.setHeader('X-API-Version', '1.0.0');
       res.setHeader(
         'X-Request-ID',
-        req.headers['x-correlation-id'] || 'unknown',
+        req.headers['x-trace-id'] || 'unknown',
       );
 
       // Remove sensitive headers that might leak information

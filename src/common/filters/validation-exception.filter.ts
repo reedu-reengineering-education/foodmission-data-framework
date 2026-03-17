@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggingService } from '../logging/logging.service';
-import { generateCorrelationId } from '../utils/error.utils';
+import { generateTraceId } from '../utils/error.utils';
 
 @Injectable()
 @Catch(BadRequestException)
@@ -31,8 +31,8 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     // Extract validation errors
     const validationErrors = this.formatValidationErrors(exceptionResponse);
 
-    // Get correlation ID from various sources, consistent with GlobalExceptionFilter
-    const correlationId = this.getCorrelationId(request);
+    // Get trace ID from various sources, consistent with GlobalExceptionFilter
+    const traceId = this.getTraceId(request);
 
     response.status(status).json({
       statusCode: status,
@@ -40,7 +40,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       error: 'VALIDATION_ERROR',
       timestamp: new Date().toISOString(),
       path: request.url,
-      correlationId,
+      traceId,
       details: {
         errors: validationErrors,
       },
@@ -91,15 +91,13 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     return ['Validation failed'];
   }
 
-  private getCorrelationId(request: Request): string {
+  private getTraceId(request: Request): string {
     // Try to get trace ID from various sources
     return (
       (request.headers['x-trace-id'] as string) ||
-      (request.headers['x-correlation-id'] as string) || // Backward compatibility
-      (request.headers['x-request-id'] as string) ||
       (request as any).traceId ||
-      this.loggingService.getCorrelationId() ||
-      generateCorrelationId()
+      this.loggingService.getTraceId() ||
+      generateTraceId()
     );
   }
 }

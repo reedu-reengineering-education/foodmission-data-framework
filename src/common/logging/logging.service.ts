@@ -4,7 +4,7 @@ import { createLoggerConfig, createWinstonLogger } from './logger.config';
 import cls from 'cls-hooked';
 
 export interface LogContext {
-  correlationId?: string; // Actually stores trace_id from OpenTelemetry
+  traceId?: string;
   userId?: string;
   userEmail?: string;
   requestId?: string;
@@ -26,21 +26,21 @@ export class LoggingService implements LoggerService {
   }
 
   /**
-   * Set correlation ID for the current request context
+   * Set trace ID for the current request context
    */
-  setCorrelationId(correlationId: string): void {
+  setTraceId(traceId: string): void {
     try {
-      this.namespace.set('correlationId', correlationId);
+      this.namespace.set('traceId', traceId);
     } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
   }
 
   /**
-   * Get correlation ID from the current request context
+   * Get trace ID from the current request context
    */
-  getCorrelationId(): string | undefined {
-    return this.namespace.get('correlationId');
+  getTraceId(): string | undefined {
+    return this.namespace.get('traceId');
   }
 
   /**
@@ -86,8 +86,8 @@ export class LoggingService implements LoggerService {
   private getContext(): LogContext {
     const context: LogContext = {};
 
-    const correlationId = this.getCorrelationId();
-    if (correlationId) context.correlationId = correlationId;
+    const traceId = this.getTraceId();
+    if (traceId) context.traceId = traceId;
 
     const userContext = this.getUserContext();
     if (userContext.userId) context.userId = userContext.userId;
@@ -273,11 +273,11 @@ export class LoggingService implements LoggerService {
   }
 
   /**
-   * Run a function within a correlation context
+   * Run a function within a trace context
    */
-  runWithCorrelationId<T>(correlationId: string, fn: () => T): T {
+  runWithTraceId<T>(traceId: string, fn: () => T): T {
     return this.namespace.runAndReturn(() => {
-      this.setCorrelationId(correlationId);
+      this.setTraceId(traceId);
       return fn();
     });
   }

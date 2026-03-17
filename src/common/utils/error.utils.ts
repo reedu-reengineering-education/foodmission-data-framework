@@ -208,7 +208,7 @@ export function sanitizeErrorForClient(
   return sanitized;
 }
 
-export function generateCorrelationId(): string {
+export function generateTraceId(): string {
   // Try to get trace ID from OpenTelemetry active span
   const span = trace.getActiveSpan();
   if (span) {

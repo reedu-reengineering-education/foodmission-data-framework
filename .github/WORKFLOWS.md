@@ -205,7 +205,7 @@ gh workflow run performance.yml
 
 - **Health checks**: Kubernetes liveness/readiness probes
 - **Metrics**: Prometheus metrics collection
-- **Logging**: Structured logging with correlation IDs
+- **Logging**: Structured logging with trace IDs
 - **Alerting**: Set up alerts for critical failures
 
 ## Best Practices

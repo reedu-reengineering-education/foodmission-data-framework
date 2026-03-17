@@ -17,7 +17,7 @@ import {
   isClientError,
   isServerError,
   sanitizeErrorForClient,
-  generateCorrelationId,
+  generateTraceId,
   formatErrorForLogging,
   isRetryableError,
   getUserFriendlyMessage,
@@ -290,9 +290,9 @@ describe('ErrorUtils', () => {
     });
   });
 
-  describe('generateCorrelationId', () => {
+  describe('generateTraceId', () => {
     it('should generate a trace ID (UUID format)', () => {
-      const id = generateCorrelationId();
+      const id = generateTraceId();
 
       expect(typeof id).toBe('string');
       expect(id.length).toBeGreaterThan(0);
@@ -301,8 +301,8 @@ describe('ErrorUtils', () => {
     });
 
     it('should generate unique IDs', () => {
-      const id1 = generateCorrelationId();
-      const id2 = generateCorrelationId();
+      const id1 = generateTraceId();
+      const id2 = generateTraceId();
 
       expect(id1).not.toBe(id2);
     });

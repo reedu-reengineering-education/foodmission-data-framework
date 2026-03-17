@@ -78,7 +78,7 @@ async function bootstrap() {
       - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')
       - **timestamp**: ISO 8601 timestamp when the error occurred
       - **path**: API path where the error occurred
-      - **correlationId**: Unique identifier for request tracing
+      - **traceId**: Unique identifier for request tracing
       - **details**: Optional object containing additional error information (e.g., validation errors array)
       
       ### Common Error Responses
@@ -90,7 +90,7 @@ async function bootstrap() {
       - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
       - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
       - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
-      - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.
+      - **500 Internal Server Error**: An unexpected server error occurred. The trace ID can be used for support.
       
       ### Example Error Response
       
@@ -101,7 +101,7 @@ async function bootstrap() {
         "error": "VALIDATION_ERROR",
         "timestamp": "2024-01-15T10:30:00.000Z",
         "path": "/api/v1/foods",
-        "correlationId": "abc123def456",
+        "traceId": "abc123def456",
         "details": {
           "errors": [
             "name should not be empty",

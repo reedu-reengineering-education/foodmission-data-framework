@@ -152,7 +152,7 @@ export class SecurityService {
         'Content-Type',
         'Accept',
         'Authorization',
-        'X-Correlation-ID',
+        'X-Trace-ID',
       ],
       credentials: true,
       maxAge: 86400, // 24 hours

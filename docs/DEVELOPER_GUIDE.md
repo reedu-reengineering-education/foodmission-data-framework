@@ -322,7 +322,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error: errorInfo.error,
       timestamp: new Date().toISOString(),
       path: request.url,
-      correlationId: this.getCorrelationId(request),
+      traceId: this.getTraceId(request),
     });
   }
 }
@@ -808,7 +808,7 @@ kubectl logs -f deployment/foodmission-api -n foodmission
 # Search for specific errors
 kubectl logs deployment/foodmission-api -n foodmission | grep "ERROR"
 
-# View logs with correlation ID
+# View logs with trace ID
 kubectl logs deployment/foodmission-api -n foodmission | grep "req-12345"
 ```
 

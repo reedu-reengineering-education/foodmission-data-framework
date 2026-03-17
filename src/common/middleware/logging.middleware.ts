@@ -27,8 +27,8 @@ export class LoggingMiddleware implements NestMiddleware {
     // Add trace ID to response headers for client debugging
     res.setHeader('X-Trace-ID', traceId);
 
-    // Set trace ID in logging service (for backward compatibility, stored as correlationId)
-    this.loggingService.setCorrelationId(traceId);
+    // Set trace ID in logging service
+    this.loggingService.setTraceId(traceId);
 
     // Set request context
     this.loggingService.setRequestContext({

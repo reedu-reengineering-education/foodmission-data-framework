@@ -3,7 +3,7 @@
  *
  * This module provides Winston logger configuration for the application.
  * It supports multiple transports (console, file) and integrates with OpenTelemetry
- * for distributed tracing and log correlation.
+ * for distributed tracing and log trace ID tracking.
  *
  * Features:
  * - Environment-based log levels
@@ -51,7 +51,7 @@ export const createLoggerConfig = (): LoggerConfig => ({
         message,
         context,
         trace,
-        correlationId, // Actually contains trace_id from OpenTelemetry
+        traceId,
         userId,
         ...meta
       }) => {
@@ -63,7 +63,7 @@ export const createLoggerConfig = (): LoggerConfig => ({
         };
 
         if (context) logEntry.context = context;
-        if (correlationId) logEntry.trace_id = correlationId; // Rename to trace_id in output
+        if (traceId) logEntry.trace_id = traceId;
         if (userId) logEntry.userId = userId;
         if (trace) logEntry.trace = trace;
 

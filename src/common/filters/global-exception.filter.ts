@@ -15,7 +15,7 @@ import {
   formatErrorForLogging,
   handlePrismaError,
   isServerError,
-  generateCorrelationId,
+  generateTraceId,
 } from '../utils/error.utils';
 
 @Injectable()
@@ -31,17 +31,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Extract error information
     const errorInfo = this.processException(exception);
 
-    // Get correlation ID from request or generate one
-    const correlationId = this.getCorrelationId(request);
+    // Get trace ID from request or generate one
+    const traceId = this.getTraceId(request);
 
     // Log the error
-    this.logError(exception, errorInfo, request, correlationId);
+    this.logError(exception, errorInfo, request, traceId);
 
     // Prepare response
     const errorResponse = this.buildErrorResponse(
       errorInfo,
       request.url,
-      correlationId,
+      traceId,
     );
 
     // Send response
@@ -106,36 +106,30 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     };
   }
 
-  private getCorrelationId(request: Request): string {
+  private getTraceId(request: Request): string {
     // Try to get trace ID from various sources
     return (
       (request.headers['x-trace-id'] as string) ||
-      (request.headers['x-correlation-id'] as string) || // Backward compatibility
-      (request.headers['x-request-id'] as string) ||
       (request as any).traceId ||
-      this.loggingService.getCorrelationId() ||
-      this.generateCorrelationId()
+      this.loggingService.getTraceId() ||
+      generateTraceId()
     );
-  }
-
-  private generateCorrelationId(): string {
-    return generateCorrelationId();
   }
 
   private logError(
     exception: unknown,
     errorInfo: any,
     request: Request,
-    correlationId: string,
+    traceId: string,
   ): void {
     const logMessage = formatErrorForLogging(
       exception,
       'GlobalExceptionFilter',
     );
 
-    // Set correlation ID for logging context (safely)
+    // Set trace ID for logging context (safely)
     try {
-      this.loggingService.setCorrelationId(correlationId);
+      this.loggingService.setTraceId(traceId);
     } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
@@ -167,14 +161,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       requestMethod: request.method,
       requestUrl: request.url,
       userAgent: request.headers['user-agent'],
-      correlationId,
+      traceId,
     });
   }
 
   private buildErrorResponse(
     errorInfo: any,
     path: string,
-    correlationId: string,
+    traceId: string,
   ): any {
     const sanitizedError = sanitizeErrorForClient(
       errorInfo,
@@ -184,7 +178,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     return {
       ...sanitizedError,
       path,
-      correlationId,
+      traceId,
     };
   }
 }
