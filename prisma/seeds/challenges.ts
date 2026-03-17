@@ -1,5 +1,5 @@
 // challenges.seed.ts
-import { PrismaClient, Challenge, ChallengeProgress } from '@prisma/client';
+import { PrismaClient, Challenges, ChallengeProgress } from '@prisma/client';
 
 export interface ChallengeSeedData {
   title: string;
@@ -91,12 +91,12 @@ export async function seedChallenges(prisma: PrismaClient) {
     console.warn('⚠️ No users found, skipping challenge progress seeding');
   }
   
-  const challenges: Challenge[] = [];
+  const challenges: Challenges[] = [];
   const challengeProgresses: ChallengeProgress[] = [];
   
   // First, create all challenges
   for (const challengeInfo of challengeData) {
-    const challenge = await prisma.challenge.upsert({
+    const challenge = await prisma.challenges.upsert({
       where: {
         id: challengeInfo.title.replace(/\s+/g, '-').toLowerCase(),
       },

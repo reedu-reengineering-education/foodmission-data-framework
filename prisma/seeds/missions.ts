@@ -1,5 +1,5 @@
 // missions.seed.ts
-import { Mission, MissionProgress, PrismaClient } from '@prisma/client';
+import { Missions, MissionProgress, PrismaClient } from '@prisma/client';
 
 export interface MissionSeedData {
   title: string;
@@ -91,12 +91,12 @@ export async function seedMissions(prisma: PrismaClient) {
     console.warn('⚠️ No users found, skipping mission progress seeding');
   }
   
-  const missions: Mission[] = [];
+  const missions: Missions[] = [];
   const missionProgresses: MissionProgress[] = [];
   
   // First, create all missions
   for (const missionInfo of missionData) {
-    const mission = await prisma.mission.upsert({
+    const mission = await prisma.missions.upsert({
       where: {
         id: missionInfo.title.replace(/\s+/g, '-').toLowerCase(),
       },

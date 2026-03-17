@@ -10,7 +10,7 @@ export class ChallengesRepository {
   async create(createChallengeDto: CreateChallengesDto) {
     const allUsers = await this.prisma.user.findMany({ select: { id: true } });
 
-    return this.prisma.challenge.create({
+    return this.prisma.challenges.create({
       data: {
         ...createChallengeDto,
         challengeProgresses: {
@@ -26,24 +26,24 @@ export class ChallengesRepository {
   }
 
   async findAll() {
-    return this.prisma.challenge.findMany({ include: { challengeProgresses: true } });
+    return this.prisma.challenges.findMany({ include: { challengeProgresses: true } });
   }
 
   async findById(id: string) {
-    return this.prisma.challenge.findUnique({
+    return this.prisma.challenges.findUnique({
       where: { id },
       include: { challengeProgresses: true },
     });
   }
 
   async update(id: string, updateChallengeDto: UpdateChallengesDto) {
-    return this.prisma.challenge.update({
+    return this.prisma.challenges.update({
       where: { id },
       data: { ...updateChallengeDto },
     });
   }
 
   async delete(id: string) {
-    return this.prisma.challenge.delete({ where: { id } });
+    return this.prisma.challenges.delete({ where: { id } });
   }
 }

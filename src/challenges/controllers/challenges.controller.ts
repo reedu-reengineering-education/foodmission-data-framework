@@ -26,8 +26,8 @@ import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { UpdateChallengesDto } from '../dto/update-challenges.dto';
 import { CreateChallengesDto } from '../dto/create-challenges.dto';
 
-@ApiTags('challenge')
-@Controller('challenge')
+@ApiTags('challenges/:challenges/progress')
+@Controller('challenges')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class ChallengesController {
   constructor(private readonly challengeService: ChallengesService) {}

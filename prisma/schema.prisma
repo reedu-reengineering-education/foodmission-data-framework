@@ -497,7 +497,7 @@ model MealLog {
   @@map("meal_logs")
 }
 
-model Mission {
+model Missions {
   id                String            @id @default(uuid())
   title             String
   description       String
@@ -515,12 +515,12 @@ model MissionProgress {
   progress  Float
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
-  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  mission Missions @relation(fields: [missionId], references: [id], onDelete: Cascade)
 
   @@id([userId, missionId])
 }
 
-model Challenge {
+model Challenges {
   id                  String              @id @default(uuid())
   title               String
   description         String
@@ -538,7 +538,7 @@ model ChallengeProgress {
   progress    Float
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Restrict)
-  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  challenge Challenges @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@id([userId, challengeId])
 }
