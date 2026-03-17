@@ -109,25 +109,6 @@ export class KnowledgeController {
     return this.progressService.getUserProgressPaginated(userId, query);
   }
 
-  @Get('progress/all')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary:
-      '[DEPRECATED] Get all progress for the current user (use /progress/me)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'All progress retrieved successfully',
-    type: [ProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  getAllProgressLegacy(
-    @CurrentUser('id') userId: string,
-  ): Promise<ProgressResponseDto[]> {
-    return this.progressService.getAllUserProgress(userId);
-  }
-
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

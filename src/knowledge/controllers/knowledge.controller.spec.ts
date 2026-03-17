@@ -133,17 +133,6 @@ describe('KnowledgeController', () => {
     });
   });
 
-  describe('getAllProgressLegacy', () => {
-    it('should retrieve all progress (legacy /progress/all route)', async () => {
-      progressService.getAllUserProgress.mockResolvedValueOnce([
-        mockProgress,
-      ] as any);
-      const result = await controller.getAllProgressLegacy('user-1');
-      expect(result).toEqual([mockProgress]);
-      expect(progressService.getAllUserProgress).toHaveBeenCalledWith('user-1');
-    });
-  });
-
   describe('findOne', () => {
     it('should retrieve knowledge by id', async () => {
       service.findOne.mockResolvedValueOnce(mockKnowledge as any);
