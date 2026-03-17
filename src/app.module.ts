@@ -24,6 +24,8 @@ import { MealModule } from './meal/meal.module';
 import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
+import { ChallengesModule } from './challenges/challenges.module';
+import { MissionsModule } from './missions/missions.module';
 import { UserGroupModule } from './userGroup/userGroup.module';
 
 @Module({
@@ -46,6 +48,8 @@ import { UserGroupModule } from './userGroup/userGroup.module';
     MealItemModule,
     RecipeModule,
     MealLogModule,
+    ChallengesModule,
+    MissionsModule,
     UserGroupModule,
   ],
   controllers: [AppController],
