@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import {

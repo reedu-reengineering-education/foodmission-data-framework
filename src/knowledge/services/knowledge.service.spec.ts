@@ -180,16 +180,26 @@ describe('KnowledgeService', () => {
     });
 
     it('should allow access to public knowledge owned by another user', async () => {
-      const otherUserKnowledge = { ...mockKnowledge, userId: 'other-user', available: true };
+      const otherUserKnowledge = {
+        ...mockKnowledge,
+        userId: 'other-user',
+        available: true,
+      };
       repository.findById.mockResolvedValueOnce(otherUserKnowledge as any);
-      progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(null as any);
+      progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(
+        null as any,
+      );
 
       const result = await service.findOne('knowledge-1', 'user-1');
       expect(result.id).toBe('knowledge-1');
     });
 
     it('should throw ForbiddenException for private knowledge owned by another user', async () => {
-      const otherUserPrivate = { ...mockKnowledge, userId: 'other-user', available: false };
+      const otherUserPrivate = {
+        ...mockKnowledge,
+        userId: 'other-user',
+        available: false,
+      };
       repository.findById.mockResolvedValueOnce(otherUserPrivate as any);
 
       await expect(service.findOne('knowledge-1', 'user-1')).rejects.toThrow(

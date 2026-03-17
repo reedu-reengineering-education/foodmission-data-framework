@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { CreateKnowledgeDto } from '../dto/create-knowledge.dto';
@@ -67,7 +72,12 @@ export class KnowledgeService {
       ? {
           OR: [
             { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
-            { description: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            {
+              description: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
           ],
         }
       : undefined;
@@ -81,7 +91,11 @@ export class KnowledgeService {
       } else {
         // available === false: only return private items owned by the user
         where = {
-          AND: [{ userId }, { available: false }, ...(searchFilter ? [searchFilter] : [])],
+          AND: [
+            { userId },
+            { available: false },
+            ...(searchFilter ? [searchFilter] : []),
+          ],
         };
       }
     } else {
