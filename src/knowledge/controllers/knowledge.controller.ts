@@ -90,7 +90,7 @@ export class KnowledgeController {
     return this.knowledgeService.findAll(userId, query);
   }
 
-  @Get('progress/all')
+  @Get('progress/me')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get all progress for the current user' })
@@ -101,6 +101,25 @@ export class KnowledgeController {
   })
   @ApiCrudErrorResponses()
   getAllProgress(
+    @CurrentUser('id') userId: string,
+  ): Promise<ProgressResponseDto[]> {
+    return this.progressService.getAllUserProgress(userId);
+  }
+
+  @Get('progress/all')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary:
+      '[DEPRECATED] Get all progress for the current user (use /progress/me)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All progress retrieved successfully',
+    type: [ProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  getAllProgressLegacy(
     @CurrentUser('id') userId: string,
   ): Promise<ProgressResponseDto[]> {
     return this.progressService.getAllUserProgress(userId);
