@@ -1,0 +1,51 @@
+mode: deployment
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+presets:
+  clusterMetrics:
+    enabled: true
+  logsCollection:
+    enabled: true
+config:
+  # deltatocumulative processor is needed to convert metrics with delta temporality to cumulative temporality.
+  # VictoriaMetrics doesn't support delta temporality. Skip this processor if you don't use delta temporality.
+  processors:
+    deltatocumulative:
+      max_stale: 5m
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+  exporters:
+    otlphttp/victoriametrics:
+      metrics_endpoint: http://vmsingle-victoria-metrics-single-server.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+      compression: gzip
+      tls:
+        insecure: true
+    otlphttp/victorialogs:
+      logs_endpoint: http://victoria-logs-victoria-logs-single-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+      compression: gzip
+      tls:
+        insecure: true
+    otlphttp/victoriatraces:
+      traces_endpoint: http://victoria-traces-vt-single-server.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+      compression: gzip
+      tls:
+        insecure: true
+  service:
+    pipelines:
+      logs:
+        receivers: [otlp]
+        processors: []
+        exporters: [otlphttp/victorialogs]
+      metrics:
+        receivers: [otlp]
+        processors: [deltatocumulative]
+        exporters: [otlphttp/victoriametrics]
+      traces:
+        receivers: [otlp]
+        processors: []
+        exporters: [otlphttp/victoriatraces]
