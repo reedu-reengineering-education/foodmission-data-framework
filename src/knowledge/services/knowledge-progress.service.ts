@@ -10,8 +10,9 @@ import {
   UpdateProgressDto,
   ProgressResponseDto,
 } from '../dto/update-progress.dto';
+import { QueryProgressDto } from '../dto/query-progress.dto';
+import { MultipleProgressResponseDto } from '../dto/progress-list-response.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class KnowledgeProgressService {
@@ -48,7 +49,7 @@ export class KnowledgeProgressService {
         knowledgeId,
         {
           completed: updateProgressDto.completed,
-          progress: updateProgressDto.progress as Prisma.InputJsonValue,
+          progress: updateProgressDto.progress,
           lastAccessedAt: new Date(),
         },
       );
@@ -77,6 +78,29 @@ export class KnowledgeProgressService {
   async getAllUserProgress(userId: string): Promise<ProgressResponseDto[]> {
     const progress = await this.progressRepository.findByUserId(userId);
     return progress as ProgressResponseDto[];
+  }
+
+  async getUserProgressPaginated(
+    userId: string,
+    query: QueryProgressDto,
+  ): Promise<MultipleProgressResponseDto> {
+    const { page = 1, limit = 10 } = query;
+    const skip = (page - 1) * limit;
+
+    const result = await this.progressRepository.findWithPagination({
+      skip,
+      take: limit,
+      where: { userId },
+      orderBy: { lastAccessedAt: 'desc' },
+    });
+
+    return {
+      data: result.data as unknown as ProgressResponseDto[],
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages,
+    };
   }
 
   async deleteProgress(userId: string, knowledgeId: string): Promise<void> {

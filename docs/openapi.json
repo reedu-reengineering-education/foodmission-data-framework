@@ -7512,17 +7512,35 @@
     "/api/v1/knowledge/progress/me": {
       "get": {
         "operationId": "getAllProgress",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "All progress retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProgressResponseDto"
-                  }
+                  "$ref": "#/components/schemas/MultipleProgressResponseDto"
                 }
               }
             }
@@ -12313,6 +12331,40 @@
           "lastAccessedAt",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "MultipleProgressResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Total items"
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Items per page"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
         ]
       },
       "UpdateKnowledgeDto": {

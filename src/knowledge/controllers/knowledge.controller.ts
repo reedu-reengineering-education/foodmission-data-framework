@@ -38,6 +38,8 @@ import {
   UpdateProgressDto,
   ProgressResponseDto,
 } from '../dto/update-progress.dto';
+import { QueryProgressDto } from '../dto/query-progress.dto';
+import { MultipleProgressResponseDto } from '../dto/progress-list-response.dto';
 
 @ApiTags('knowledge')
 @ApiBearerAuth('JWT-auth')
@@ -97,13 +99,14 @@ export class KnowledgeController {
   @ApiResponse({
     status: 200,
     description: 'All progress retrieved successfully',
-    type: [ProgressResponseDto],
+    type: MultipleProgressResponseDto,
   })
   @ApiCrudErrorResponses()
   getAllProgress(
     @CurrentUser('id') userId: string,
-  ): Promise<ProgressResponseDto[]> {
-    return this.progressService.getAllUserProgress(userId);
+    @Query() query: QueryProgressDto,
+  ): Promise<MultipleProgressResponseDto> {
+    return this.progressService.getUserProgressPaginated(userId, query);
   }
 
   @Get('progress/all')

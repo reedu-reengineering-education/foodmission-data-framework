@@ -53,6 +53,7 @@ describe('KnowledgeController', () => {
       updateProgress: jest.fn(),
       getProgress: jest.fn(),
       getAllUserProgress: jest.fn(),
+      getUserProgressPaginated: jest.fn(),
       deleteProgress: jest.fn(),
     };
 
@@ -112,12 +113,23 @@ describe('KnowledgeController', () => {
 
   describe('getAllProgress', () => {
     it('should retrieve all progress before findOne route', async () => {
-      progressService.getAllUserProgress.mockResolvedValueOnce([
-        mockProgress,
-      ] as any);
-      const result = await controller.getAllProgress('user-1');
-      expect(result).toEqual([mockProgress]);
-      expect(progressService.getAllUserProgress).toHaveBeenCalledWith('user-1');
+      progressService.getUserProgressPaginated.mockResolvedValueOnce({
+        data: [mockProgress],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      } as any);
+
+      const result = await controller.getAllProgress('user-1', {
+        page: 1,
+        limit: 10,
+      } as any);
+      expect(result.data).toEqual([mockProgress]);
+      expect(progressService.getUserProgressPaginated).toHaveBeenCalledWith(
+        'user-1',
+        expect.objectContaining({ page: 1, limit: 10 }),
+      );
     });
   });
 

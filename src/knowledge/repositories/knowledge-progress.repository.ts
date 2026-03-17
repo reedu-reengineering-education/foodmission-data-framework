@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, UserKnowledgeProgress } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { normalizePagination } from '../../common/utils/pagination';
+import {
+  FindAllOptions,
+  PaginatedResult,
+} from '../../common/interfaces/base-repository.interface';
 
 export interface CreateProgressData {
   userId: string;
   knowledgeId: string;
   completed?: boolean;
-  progress?: Prisma.InputJsonValue;
+  progress?: unknown;
 }
 
 export interface UpdateProgressData {
   completed?: boolean;
-  progress?: Prisma.InputJsonValue;
+  progress?: unknown;
   lastAccessedAt?: Date;
 }
 
@@ -38,6 +43,41 @@ export class KnowledgeProgressRepository {
       where: { userId },
       orderBy: { lastAccessedAt: 'desc' },
     });
+  }
+
+  async findWithPagination(
+    options: FindAllOptions<
+      Prisma.UserKnowledgeProgressWhereInput,
+      Prisma.UserKnowledgeProgressOrderByWithRelationInput
+    > = {},
+  ): Promise<PaginatedResult<UserKnowledgeProgress>> {
+    const { skip = 0, take = 10, where, orderBy } = options;
+    const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
+
+    const [data, total] = await Promise.all([
+      this.prisma.userKnowledgeProgress.findMany({
+        skip: safeSkip,
+        take: safeTake,
+        where,
+        orderBy: orderBy || { lastAccessedAt: 'desc' },
+      }),
+      this.count(where),
+    ]);
+
+    const page = Math.floor(safeSkip / safeTake) + 1;
+    const totalPages = Math.ceil(total / safeTake);
+
+    return {
+      data,
+      total,
+      page,
+      limit: safeTake,
+      totalPages,
+    };
+  }
+
+  async count(where?: Prisma.UserKnowledgeProgressWhereInput): Promise<number> {
+    return this.prisma.userKnowledgeProgress.count({ where });
   }
 
   async findManyByKnowledgeIds(

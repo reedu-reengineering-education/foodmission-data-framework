@@ -35,6 +35,7 @@ describe('KnowledgeProgressService', () => {
       upsert: jest.fn(),
       findByUserAndKnowledge: jest.fn(),
       findByUserId: jest.fn(),
+      findWithPagination: jest.fn(),
       deleteByUserAndKnowledge: jest.fn(),
     };
 
@@ -128,6 +129,35 @@ describe('KnowledgeProgressService', () => {
 
       expect(result).toEqual(progressList);
       expect(progressRepository.findByUserId).toHaveBeenCalledWith('user-1');
+    });
+  });
+
+  describe('getUserProgressPaginated', () => {
+    it('should return paginated progress for user', async () => {
+      progressRepository.findWithPagination.mockResolvedValueOnce({
+        data: [mockProgress],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      } as any);
+
+      const result = await service.getUserProgressPaginated('user-1', {
+        page: 1,
+        limit: 10,
+      } as any);
+
+      expect(result.data).toEqual([mockProgress]);
+      expect(result.total).toBe(1);
+      expect(result.page).toBe(1);
+      expect(progressRepository.findWithPagination).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 0,
+          take: 10,
+          where: { userId: 'user-1' },
+          orderBy: { lastAccessedAt: 'desc' },
+        }),
+      );
     });
   });
 
