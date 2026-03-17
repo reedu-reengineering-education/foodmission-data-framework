@@ -68,6 +68,17 @@ export class KnowledgeProgressService {
     userId: string,
     knowledgeId: string,
   ): Promise<ProgressResponseDto | null> {
+    // Verify knowledge exists so we can distinguish "no progress yet" from "invalid id".
+    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
+    if (!knowledge) {
+      throw new NotFoundException('Knowledge not found');
+    }
+
+    // Authorization: only the owner or public items may be interacted with.
+    if (knowledge.userId !== userId && !knowledge.available) {
+      throw new ForbiddenException('Knowledge not accessible');
+    }
+
     const progress = await this.progressRepository.findByUserAndKnowledge(
       userId,
       knowledgeId,

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KnowledgeProgressService } from './knowledge-progress.service';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('KnowledgeProgressService', () => {
   let service: KnowledgeProgressService;
@@ -93,6 +93,7 @@ describe('KnowledgeProgressService', () => {
 
   describe('getProgress', () => {
     it('should return progress if exists', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce(mockKnowledge as any);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(
         mockProgress as any,
       );
@@ -100,6 +101,7 @@ describe('KnowledgeProgressService', () => {
       const result = await service.getProgress('user-1', 'knowledge-1');
 
       expect(result).toEqual(mockProgress);
+      expect(knowledgeRepository.findById).toHaveBeenCalledWith('knowledge-1');
       expect(progressRepository.findByUserAndKnowledge).toHaveBeenCalledWith(
         'user-1',
         'knowledge-1',
@@ -107,11 +109,32 @@ describe('KnowledgeProgressService', () => {
     });
 
     it('should return null if no progress exists', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce(mockKnowledge as any);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(null);
 
       const result = await service.getProgress('user-1', 'knowledge-1');
 
       expect(result).toBeNull();
+    });
+
+    it('should throw NotFoundException if knowledge does not exist', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce(null);
+
+      await expect(
+        service.getProgress('user-1', 'missing-knowledge'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if knowledge is private and not owned', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce({
+        ...mockKnowledge,
+        userId: 'other-user',
+        available: false,
+      } as any);
+
+      await expect(
+        service.getProgress('user-1', 'knowledge-1'),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
