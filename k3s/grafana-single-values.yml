@@ -1,16 +1,38 @@
+  plugins:
+    - victoriametrics-metrics-datasource
+    - victoriametrics-logs-datasource
+
   datasources:
     datasources.yaml:
       apiVersion: 1
       datasources:
         - name: victoriametrics
-          type: prometheus
+          type: victoriametrics-metrics-datasource
           orgId: 1
-          # use the URL obtained from the VictoriaMetrics helm install output
-          url: http://vmsingle-victoria-metrics-single-server.observability.svc.cluster.local.:8428
           access: proxy
+          url: http://vmsingle-victoria-metrics-single-server.observability.svc.cluster.local.:8428
           isDefault: true
-          updateIntervalSeconds: 10
-          editable: true
+          
+        - name: victoriametrics - cluster
+          type: victoriametrics-metrics-datasource
+          orgId: 1
+          access: proxy
+          url: http://vmsingle-victoria-metrics-single-server.observability.svc.cluster.local.:8428
+          isDefault: false
+        
+        - name: victoriatraces
+          type: jaeger
+          orgId: 1
+          access: proxy
+          url: http://victoria-traces-vt-single-server.observability.svc.cluster.local:10428/select/jaeger
+          isDefault: false
+
+        - name: victorialogs
+          type: victoriametrics-logs-datasource
+          orgId: 1
+          access: proxy
+          url: http://victoria-logs-victoria-logs-single-server.observability.svc.cluster.local:9428
+          isDefault: false
 
   dashboardProviders:
    dashboardproviders.yaml:
