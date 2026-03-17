@@ -115,6 +115,17 @@ export class KnowledgeProgressService {
   }
 
   async deleteProgress(userId: string, knowledgeId: string): Promise<void> {
+    // Verify knowledge exists so we can distinguish "no progress" from "invalid id".
+    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
+    if (!knowledge) {
+      throw new NotFoundException('Knowledge not found');
+    }
+
+    // Authorization: only the owner or public items may be interacted with.
+    if (knowledge.userId !== userId && !knowledge.available) {
+      throw new ForbiddenException('Knowledge not accessible');
+    }
+
     try {
       await this.progressRepository.deleteByUserAndKnowledge(
         userId,
