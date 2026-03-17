@@ -7986,7 +7986,7 @@
           "knowledge"
         ]
       },
-      "post": {
+      "patch": {
         "operationId": "updateProgress",
         "parameters": [
           {
@@ -8087,7 +8087,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Update user progress for a knowledge item",
+        "summary": "Patch user progress for a knowledge item",
         "tags": [
           "knowledge"
         ]

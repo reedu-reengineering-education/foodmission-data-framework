@@ -176,11 +176,11 @@ export class KnowledgeController {
     return this.progressService.getProgress(userId, knowledgeId);
   }
 
-  @Post(':id/progress')
+  @Patch(':id/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @Throttle({ default: { limit: 20, ttl: 60000 } })
-  @ApiOperation({ summary: 'Update user progress for a knowledge item' })
+  @ApiOperation({ summary: 'Patch user progress for a knowledge item' })
   @ApiParam({ name: 'id', format: 'uuid', description: 'Knowledge ID' })
   @ApiBody({ type: UpdateProgressDto })
   @ApiResponse({
