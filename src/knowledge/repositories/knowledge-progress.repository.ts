@@ -1,11 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, UserKnowledgeProgress } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   FindAllOptions,
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
+
+type FindManyArgs = NonNullable<
+  Parameters<PrismaClient['userKnowledgeProgress']['findMany']>[0]
+>;
+type CreateArgs = NonNullable<
+  Parameters<PrismaClient['userKnowledgeProgress']['create']>[0]
+>;
+type UpsertArgs = NonNullable<
+  Parameters<PrismaClient['userKnowledgeProgress']['upsert']>[0]
+>;
+type UpdateArgs = NonNullable<
+  Parameters<PrismaClient['userKnowledgeProgress']['update']>[0]
+>;
+
+type OptionalProp<T, K extends PropertyKey> = T extends { [P in K]?: infer V }
+  ? V
+  : never;
+type WhereInput = OptionalProp<FindManyArgs, 'where'>;
+type OrderByInput = OptionalProp<FindManyArgs, 'orderBy'>;
+
+type FindUniqueResult = Awaited<
+  ReturnType<PrismaClient['userKnowledgeProgress']['findUnique']>
+>;
+type FindManyResult = Awaited<
+  ReturnType<PrismaClient['userKnowledgeProgress']['findMany']>
+>;
+type Entity = FindManyResult extends Array<infer T> ? T : never;
+type CreateData = OptionalProp<CreateArgs, 'data'>;
+type UpsertCreateData = OptionalProp<UpsertArgs, 'create'>;
+type UpsertUpdateData = OptionalProp<UpsertArgs, 'update'>;
+type UpdateData = OptionalProp<UpdateArgs, 'data'>;
 
 export interface CreateProgressData {
   userId: string;
@@ -17,7 +48,6 @@ export interface CreateProgressData {
 export interface UpdateProgressData {
   completed?: boolean;
   progress?: unknown;
-  lastAccessedAt?: Date;
 }
 
 @Injectable()
@@ -27,7 +57,7 @@ export class KnowledgeProgressRepository {
   async findByUserAndKnowledge(
     userId: string,
     knowledgeId: string,
-  ): Promise<UserKnowledgeProgress | null> {
+  ): Promise<FindUniqueResult> {
     return await this.prisma.userKnowledgeProgress.findUnique({
       where: {
         userId_knowledgeId: {
@@ -38,7 +68,7 @@ export class KnowledgeProgressRepository {
     });
   }
 
-  async findByUserId(userId: string): Promise<UserKnowledgeProgress[]> {
+  async findByUserId(userId: string): Promise<FindManyResult> {
     return await this.prisma.userKnowledgeProgress.findMany({
       where: { userId },
       orderBy: { lastAccessedAt: 'desc' },
@@ -46,11 +76,8 @@ export class KnowledgeProgressRepository {
   }
 
   async findWithPagination(
-    options: FindAllOptions<
-      Prisma.UserKnowledgeProgressWhereInput,
-      Prisma.UserKnowledgeProgressOrderByWithRelationInput
-    > = {},
-  ): Promise<PaginatedResult<UserKnowledgeProgress>> {
+    options: FindAllOptions<WhereInput, OrderByInput> = {},
+  ): Promise<PaginatedResult<Entity>> {
     const { skip = 0, take = 10, where, orderBy } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
@@ -76,14 +103,14 @@ export class KnowledgeProgressRepository {
     };
   }
 
-  async count(where?: Prisma.UserKnowledgeProgressWhereInput): Promise<number> {
+  async count(where?: WhereInput): Promise<number> {
     return this.prisma.userKnowledgeProgress.count({ where });
   }
 
   async findManyByKnowledgeIds(
     userId: string,
     knowledgeIds: string[],
-  ): Promise<UserKnowledgeProgress[]> {
+  ): Promise<FindManyResult> {
     return await this.prisma.userKnowledgeProgress.findMany({
       where: {
         userId,
@@ -92,17 +119,15 @@ export class KnowledgeProgressRepository {
     });
   }
 
-  async findByKnowledgeId(
-    knowledgeId: string,
-  ): Promise<UserKnowledgeProgress[]> {
+  async findByKnowledgeId(knowledgeId: string): Promise<FindManyResult> {
     return await this.prisma.userKnowledgeProgress.findMany({
       where: { knowledgeId },
     });
   }
 
-  async create(data: CreateProgressData): Promise<UserKnowledgeProgress> {
+  async create(data: CreateProgressData): Promise<Entity> {
     return await this.prisma.userKnowledgeProgress.create({
-      data: data as Prisma.UserKnowledgeProgressUncheckedCreateInput,
+      data: data as unknown as CreateData,
     });
   }
 
@@ -110,7 +135,8 @@ export class KnowledgeProgressRepository {
     userId: string,
     knowledgeId: string,
     data: UpdateProgressData,
-  ): Promise<UserKnowledgeProgress> {
+  ): Promise<Entity> {
+    const now = new Date();
     return await this.prisma.userKnowledgeProgress.upsert({
       where: {
         userId_knowledgeId: {
@@ -122,24 +148,23 @@ export class KnowledgeProgressRepository {
         userId,
         knowledgeId,
         ...data,
-      } as Prisma.UserKnowledgeProgressUncheckedCreateInput,
+        lastAccessedAt: now,
+      } as unknown as UpsertCreateData,
       update: {
         ...data,
-        lastAccessedAt: new Date(),
-      } as Prisma.UserKnowledgeProgressUncheckedUpdateInput,
+        lastAccessedAt: now,
+      } as unknown as UpsertUpdateData,
     });
   }
 
-  async update(
-    id: string,
-    data: UpdateProgressData,
-  ): Promise<UserKnowledgeProgress> {
+  async update(id: string, data: UpdateProgressData): Promise<Entity> {
+    const now = new Date();
     return await this.prisma.userKnowledgeProgress.update({
       where: { id },
       data: {
         ...data,
-        lastAccessedAt: new Date(),
-      } as Prisma.UserKnowledgeProgressUncheckedUpdateInput,
+        lastAccessedAt: now,
+      } as unknown as UpdateData,
     });
   }
 

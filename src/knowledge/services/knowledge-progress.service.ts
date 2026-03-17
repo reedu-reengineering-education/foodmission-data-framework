@@ -13,6 +13,7 @@ import {
 import { QueryProgressDto } from '../dto/query-progress.dto';
 import { MultipleProgressResponseDto } from '../dto/progress-list-response.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
 @Injectable()
 export class KnowledgeProgressService {
@@ -23,6 +24,20 @@ export class KnowledgeProgressService {
     private readonly knowledgeRepository: KnowledgeRepository,
   ) {}
 
+  private async getAccessibleKnowledgeOrThrow(
+    userId: string,
+    knowledgeId: string,
+  ) {
+    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
+    if (!knowledge) {
+      throw new NotFoundException('Knowledge not found');
+    }
+    if (knowledge.userId !== userId && !knowledge.available) {
+      throw new ForbiddenException('Knowledge not accessible');
+    }
+    return knowledge;
+  }
+
   async updateProgress(
     userId: string,
     knowledgeId: string,
@@ -32,16 +47,7 @@ export class KnowledgeProgressService {
       `Updating progress for user ${userId} on knowledge ${knowledgeId}`,
     );
 
-    // Verify knowledge exists
-    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
-    if (!knowledge) {
-      throw new NotFoundException('Knowledge not found');
-    }
-
-    // Authorization: only the owner or public items may be interacted with.
-    if (knowledge.userId !== userId && !knowledge.available) {
-      throw new ForbiddenException('Knowledge not accessible');
-    }
+    await this.getAccessibleKnowledgeOrThrow(userId, knowledgeId);
 
     try {
       const progress = await this.progressRepository.upsert(
@@ -50,7 +56,6 @@ export class KnowledgeProgressService {
         {
           completed: updateProgressDto.completed,
           progress: updateProgressDto.progress,
-          lastAccessedAt: new Date(),
         },
       );
 
@@ -68,16 +73,7 @@ export class KnowledgeProgressService {
     userId: string,
     knowledgeId: string,
   ): Promise<ProgressResponseDto | null> {
-    // Verify knowledge exists so we can distinguish "no progress yet" from "invalid id".
-    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
-    if (!knowledge) {
-      throw new NotFoundException('Knowledge not found');
-    }
-
-    // Authorization: only the owner or public items may be interacted with.
-    if (knowledge.userId !== userId && !knowledge.available) {
-      throw new ForbiddenException('Knowledge not accessible');
-    }
+    await this.getAccessibleKnowledgeOrThrow(userId, knowledgeId);
 
     const progress = await this.progressRepository.findByUserAndKnowledge(
       userId,
@@ -95,12 +91,11 @@ export class KnowledgeProgressService {
     userId: string,
     query: QueryProgressDto,
   ): Promise<MultipleProgressResponseDto> {
-    const { page = 1, limit = 10 } = query;
-    const skip = (page - 1) * limit;
+    const { skip, take } = pageLimitToSkipTake(query);
 
     const result = await this.progressRepository.findWithPagination({
       skip,
-      take: limit,
+      take,
       where: { userId },
       orderBy: { lastAccessedAt: 'desc' },
     });
@@ -115,16 +110,7 @@ export class KnowledgeProgressService {
   }
 
   async deleteProgress(userId: string, knowledgeId: string): Promise<void> {
-    // Verify knowledge exists so we can distinguish "no progress" from "invalid id".
-    const knowledge = await this.knowledgeRepository.findById(knowledgeId);
-    if (!knowledge) {
-      throw new NotFoundException('Knowledge not found');
-    }
-
-    // Authorization: only the owner or public items may be interacted with.
-    if (knowledge.userId !== userId && !knowledge.available) {
-      throw new ForbiddenException('Knowledge not accessible');
-    }
+    await this.getAccessibleKnowledgeOrThrow(userId, knowledgeId);
 
     try {
       await this.progressRepository.deleteByUserAndKnowledge(

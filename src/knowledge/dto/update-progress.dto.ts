@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBoolean, IsOptional, IsObject } from 'class-validator';
 
+export type KnowledgeProgressPayload = Record<string, unknown>;
+
 export class UpdateProgressDto {
   @ApiPropertyOptional({
     description: 'Mark as completed',
@@ -20,7 +22,7 @@ export class UpdateProgressDto {
   })
   @IsOptional()
   @IsObject()
-  progress?: Record<string, any>;
+  progress?: KnowledgeProgressPayload;
 }
 
 export class ProgressResponseDto {
