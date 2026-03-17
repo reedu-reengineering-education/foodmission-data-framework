@@ -186,16 +186,38 @@ describe('KnowledgeProgressService', () => {
 
   describe('deleteProgress', () => {
     it('should delete progress', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce(mockKnowledge as any);
       progressRepository.deleteByUserAndKnowledge.mockResolvedValueOnce(
         undefined,
       );
 
       await service.deleteProgress('user-1', 'knowledge-1');
 
+      expect(knowledgeRepository.findById).toHaveBeenCalledWith('knowledge-1');
       expect(progressRepository.deleteByUserAndKnowledge).toHaveBeenCalledWith(
         'user-1',
         'knowledge-1',
       );
+    });
+
+    it('should throw NotFoundException if knowledge does not exist', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce(null);
+
+      await expect(
+        service.deleteProgress('user-1', 'missing-knowledge'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if knowledge is private and not owned', async () => {
+      knowledgeRepository.findById.mockResolvedValueOnce({
+        ...mockKnowledge,
+        userId: 'other-user',
+        available: false,
+      } as any);
+
+      await expect(
+        service.deleteProgress('user-1', 'knowledge-1'),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 });
