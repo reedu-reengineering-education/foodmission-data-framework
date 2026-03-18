@@ -3237,7 +3237,7 @@
     },
     "/api/v1/pantry-item": {
       "post": {
-        "description": "Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.",
+        "description": "Creates a new Pantry Item and adds it to your dedicated pantry. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.",
         "operationId": "create",
         "parameters": [],
         "requestBody": {
@@ -3249,11 +3249,6 @@
                   {
                     "type": "object",
                     "properties": {
-                      "pantryId": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "uuid-pantry-id"
-                      },
                       "quantity": {
                         "type": "number",
                         "example": 2,
@@ -3281,7 +3276,6 @@
                       }
                     },
                     "required": [
-                      "pantryId",
                       "foodId",
                       "quantity"
                     ]
@@ -3289,11 +3283,6 @@
                   {
                     "type": "object",
                     "properties": {
-                      "pantryId": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "uuid-pantry-id"
-                      },
                       "quantity": {
                         "type": "number",
                         "example": 2,
@@ -3321,7 +3310,6 @@
                       }
                     },
                     "required": [
-                      "pantryId",
                       "foodCategoryId",
                       "quantity"
                     ]
@@ -3404,19 +3392,9 @@
         ]
       },
       "get": {
-        "description": "Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate.",
+        "description": "Retrieve pantry items from your dedicated pantry. Optional filtering by foodId, foodCategoryId, unit, or expiryDate.",
         "operationId": "findAll",
         "parameters": [
-          {
-            "name": "pantryId",
-            "required": true,
-            "in": "query",
-            "description": "The ID of the pantry to get items from (UUID)",
-            "schema": {
-              "example": "uuid-pantry-id",
-              "type": "string"
-            }
-          },
           {
             "name": "foodId",
             "required": false,
@@ -10288,6 +10266,12 @@
             "example": "Store in cool place",
             "maxLength": 500
           },
+          "location": {
+            "type": "string",
+            "description": "Location where the item is stored",
+            "example": "Top shelf, pantry",
+            "maxLength": 200
+          },
           "expiryDate": {
             "format": "date-time",
             "type": "string",
@@ -10402,6 +10386,12 @@
             "description": "Additional notes for the item",
             "example": "Buy organic if available",
             "maxLength": 500
+          },
+          "location": {
+            "type": "string",
+            "description": "Location where the item is stored",
+            "example": "Top shelf, pantry",
+            "maxLength": 200
           },
           "expiryDate": {
             "format": "date-time",
