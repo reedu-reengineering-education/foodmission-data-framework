@@ -160,7 +160,8 @@ export class StaticValuesController {
     name: 'countryCode',
     required: false,
     type: String,
-    description: 'ISO 3166-1 alpha-2 country code (recommended)',
+    description:
+      'ISO 3166-1 alpha-2 country code. Required unless search is provided (world-wide list is large).',
   })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiResponse({ status: 200, type: PaginatedStaticValuesListResponseDto })

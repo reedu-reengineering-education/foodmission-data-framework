@@ -9236,7 +9236,7 @@
             "name": "countryCode",
             "required": false,
             "in": "query",
-            "description": "ISO 3166-1 alpha-2 country code (recommended)",
+            "description": "ISO 3166-1 alpha-2 country code. Required unless search is provided (world-wide list is large).",
             "schema": {
               "example": "NL",
               "type": "string"

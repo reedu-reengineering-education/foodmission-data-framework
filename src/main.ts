@@ -163,6 +163,10 @@ async function bootstrap() {
       'health',
       'Application health checks, readiness probes, and monitoring metrics',
     )
+    .addTag(
+      'static-values',
+      'Reference datasets and dropdown options (regions, countries, profile enums)',
+    )
     .addServer('http://localhost:3000/', 'Development server')
     .addServer('https://api.foodmission.dev/', 'Production server')
     .addServer('https://staging-api.foodmission.dev/', 'Staging server')

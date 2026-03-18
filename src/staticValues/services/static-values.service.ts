@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import ISO6391 from 'iso-639-1';
 import { Country, State } from 'country-state-city';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
@@ -232,6 +232,12 @@ export class StaticValuesService {
   }): PaginatedStaticValuesListResponseDto {
     const q = normalizeSearch(input.search);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
+
+    if (!countryCode && !q) {
+      throw new BadRequestException(
+        'Either countryCode or search must be provided for regions',
+      );
+    }
 
     const states = countryCode
       ? State.getStatesOfCountry(countryCode)

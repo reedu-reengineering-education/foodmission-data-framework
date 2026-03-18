@@ -34,6 +34,12 @@ describe('StaticValuesService', () => {
     }
   });
 
+  it('requires countryCode or search for regions', () => {
+    expect(() => service.listRegions({ page: 1, limit: 10 })).toThrow(
+      /countryCode or search/i,
+    );
+  });
+
   it('paginates languages and supports search', () => {
     const page1 = service.listLanguages({ page: 1, limit: 10 });
     expect(page1.data.length).toBeLessThanOrEqual(10);
