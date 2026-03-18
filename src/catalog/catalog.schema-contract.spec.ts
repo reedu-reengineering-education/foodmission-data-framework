@@ -44,12 +44,6 @@ describe('Catalog contract (schema.prisma)', () => {
     );
   });
 
-  it('matches MealType enum', () => {
-    expect(service.listMealTypes().data.map((x) => x.code)).toEqual(
-      parsePrismaEnum(schema, 'MealType'),
-    );
-  });
-
   it('matches GroupRole enum', () => {
     expect(service.listGroupRoles().data.map((x) => x.code)).toEqual(
       parsePrismaEnum(schema, 'GroupRole'),

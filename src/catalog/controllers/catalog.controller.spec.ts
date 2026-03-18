@@ -22,7 +22,6 @@ describe('CatalogController', () => {
       listRegions: jest.fn(),
       listUnits: jest.fn(),
       listTypeOfMeals: jest.fn(),
-      listMealTypes: jest.fn(),
       listGroupRoles: jest.fn(),
     };
 

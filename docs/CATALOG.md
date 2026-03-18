@@ -17,7 +17,6 @@ For onboarding and account creation, all required dropdown data is **public** (n
 For in-app usage, a few endpoints are **JWT-protected** (requires `Roles('user','admin')`):
 - `units`
 - `type-of-meals`
-- `meal-types`
 - `group-roles`
 
 ### Startup bundle
@@ -63,7 +62,6 @@ These lists are derived from Prisma enums (`@prisma/client`) to stay canonical t
 - `GET /api/v1/catalog/annual-income-levels`
 - `GET /api/v1/catalog/units`
 - `GET /api/v1/catalog/type-of-meals`
-- `GET /api/v1/catalog/meal-types`
 - `GET /api/v1/catalog/group-roles`
 
 ## Dietary preferences (two phases)

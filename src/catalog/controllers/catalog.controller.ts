@@ -124,17 +124,6 @@ export class CatalogController {
     return this.catalogService.listTypeOfMeals();
   }
 
-  @Get('meal-types')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List meal types' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
-  mealTypes(): CatalogListResponseDto {
-    return this.catalogService.listMealTypes();
-  }
-
   @Get('group-roles')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

@@ -14,7 +14,6 @@ import {
   EDUCATION_LEVELS,
   GENDERS,
   GROUP_ROLES,
-  MEAL_TYPES,
   TYPE_OF_MEALS,
   UNITS,
 } from '../catalog.constants';
@@ -136,15 +135,6 @@ export class CatalogService {
   listTypeOfMeals(): CatalogListResponseDto {
     return {
       data: TYPE_OF_MEALS.map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
-  }
-
-  listMealTypes(): CatalogListResponseDto {
-    return {
-      data: MEAL_TYPES.map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
