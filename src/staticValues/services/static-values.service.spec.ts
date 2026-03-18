@@ -24,6 +24,19 @@ describe('StaticValuesService', () => {
     expect(nl.data.some((c) => c.code === 'NL')).toBe(true);
   });
 
+  it('paginates countries consistently across pages', () => {
+    const page1 = service.listCountries({ page: 1, limit: 10 });
+    const page2 = service.listCountries({ page: 2, limit: 10 });
+    expect(page1.data.map((c) => c.code)).not.toEqual(
+      page2.data.map((c) => c.code),
+    );
+  });
+
+  it('supports case-insensitive country search by code', () => {
+    const nl = service.listCountries({ page: 1, limit: 10, search: 'nl' });
+    expect(nl.data.some((c) => c.code === 'NL')).toBe(true);
+  });
+
   it('filters regions by countryCode and paginates', () => {
     const nl = service.listRegions({ page: 1, limit: 10, countryCode: 'NL' });
     expect(nl.data.length).toBeGreaterThan(0);
@@ -32,6 +45,12 @@ describe('StaticValuesService', () => {
       expect(r.meta?.countryCode).toBe('NL');
       expect(r.code.startsWith('NL-')).toBe(true);
     }
+  });
+
+  it('allows regions search without countryCode (paginated)', () => {
+    const res = service.listRegions({ page: 1, limit: 10, search: 'york' });
+    expect(res.data.length).toBeGreaterThan(0);
+    expect(res.data.length).toBeLessThanOrEqual(10);
   });
 
   it('requires countryCode or search for regions', () => {
@@ -48,6 +67,14 @@ describe('StaticValuesService', () => {
     const eng = service.listLanguages({ page: 1, limit: 10, search: 'eng' });
     expect(eng.data.some((l) => l.label.toLowerCase().includes('eng'))).toBe(
       true,
+    );
+  });
+
+  it('paginates languages consistently across pages', () => {
+    const page1 = service.listLanguages({ page: 1, limit: 10 });
+    const page2 = service.listLanguages({ page: 2, limit: 10 });
+    expect(page1.data.map((l) => l.code)).not.toEqual(
+      page2.data.map((l) => l.code),
     );
   });
 

@@ -49,4 +49,3 @@ export const TYPE_OF_MEALS = [
 export const MEAL_TYPES = ['SALAD', 'MEAT', 'PASTA', 'RICE', 'VEGAN'] as const;
 
 export const GROUP_ROLES = ['ADMIN', 'MEMBER'] as const;
-
