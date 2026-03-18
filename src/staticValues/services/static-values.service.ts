@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import ISO6391 from 'iso-639-1';
-import countries from 'i18n-iso-countries';
 import iso3166 from 'iso-3166-2';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { StaticValueDto } from '../dto/static-value.dto';
@@ -42,13 +41,14 @@ export class StaticValuesService {
   private getAllCountries(): StaticValueDto[] {
     if (this.cached.countries) return this.cached.countries;
 
-    // i18n-iso-countries ships its own data; default to English labels.
-    const names = countries.getNames('en', { select: 'official' }) as Record<
+    // Use iso-3166-2 dataset (alpha-2 -> country name). This covers countries present in ISO 3166-2.
+    const byCountry = (iso3166 as any).data as Record<
       string,
-      string
+      { name?: string }
     >;
-    const list = Object.entries(names)
-      .map(([code, label]) => ({ code, label }))
+    const list = Object.entries(byCountry)
+      .map(([code, v]) => ({ code, label: v?.name ?? '' }))
+      .filter((x) => x.label)
       .sort((a, b) => a.label.localeCompare(b.label));
     this.cached.countries = list;
     return list;
