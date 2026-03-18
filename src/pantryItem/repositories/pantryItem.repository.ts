@@ -26,6 +26,7 @@ export interface CreatePantryItemData {
   quantity: number;
   unit: Unit;
   notes?: string;
+  location?: string;
   expiryDate?: Date;
 }
 
@@ -43,6 +44,7 @@ export class PantryItemRepository {
         quantity: data.quantity,
         unit: data.unit,
         notes: data.notes,
+        location: data.location,
         expiryDate: data.expiryDate,
       },
       include: {

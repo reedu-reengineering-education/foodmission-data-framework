@@ -377,6 +377,7 @@ model PantryItem {
   quantity   Int       @default(1)
   unit       Unit      @default(PIECES)
   notes      String?
+  location   String?
   expiryDate DateTime?
   pantryId   String
   

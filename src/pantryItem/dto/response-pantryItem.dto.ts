@@ -37,6 +37,14 @@ export class PantryItemResponseDto {
   notes?: string;
 
   @ApiPropertyOptional({
+    description: 'Location where the item is stored',
+    example: 'Top shelf, pantry',
+    maxLength: 200,
+  })
+  @Expose()
+  location?: string;
+
+  @ApiPropertyOptional({
     description: 'When the food will expire',
     example: '2027-02-02T00:00:00.000Z',
   })

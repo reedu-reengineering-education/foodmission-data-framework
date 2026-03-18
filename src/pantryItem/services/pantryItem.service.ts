@@ -110,6 +110,7 @@ export class PantryItemService {
         quantity: createDto.quantity,
         unit: unit,
         notes: createDto.notes,
+        location: createDto.location,
         expiryDate: expiryDate,
         pantryId: pantryId,
         foodId: foodId || null,
@@ -275,6 +276,7 @@ export class PantryItemService {
         }),
         ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
         ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
+        ...(updateDto.location !== undefined && { location: updateDto.location }),
         ...(expiryDate !== undefined && {
           expiryDate: expiryDate,
         }),
@@ -336,6 +338,7 @@ export class PantryItemService {
         quantity: item.quantity,
         unit: item.unit,
         notes: item.notes,
+        location: item.location,
         expiryDate: item.expiryDate,
         pantryId: item.pantryId,
         foodId: item.foodId,
