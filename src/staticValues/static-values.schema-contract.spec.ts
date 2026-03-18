@@ -1,32 +1,11 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { StaticValuesService } from './services/static-values.service';
-
-function parsePrismaEnum(schema: string, enumName: string): string[] {
-  const re = new RegExp(`enum\\s+${enumName}\\s*\\{([\\s\\S]*?)\\}`, 'm');
-  const match = schema.match(re);
-  if (!match) {
-    throw new Error(`Enum not found in schema.prisma: ${enumName}`);
-  }
-
-  return match[1]
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0)
-    .filter((l) => !l.startsWith('//'))
-    .map((l) => l.replace(/,.*/, '')) // tolerate commas if ever added
-    .filter((l) => /^[A-Z0-9_]+$/.test(l));
-}
+import {
+  parsePrismaEnum,
+  readPrismaSchema,
+} from '../../test/utils/prisma-schema';
 
 describe('Static values contract (schema.prisma)', () => {
-  const schemaPath = path.join(
-    __dirname,
-    '..',
-    '..',
-    'prisma',
-    'schema.prisma',
-  );
-  const schema = fs.readFileSync(schemaPath, 'utf-8');
+  const schema = readPrismaSchema();
   const service = new StaticValuesService();
 
   it('matches Gender enum', () => {
