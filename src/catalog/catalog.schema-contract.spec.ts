@@ -1,12 +1,12 @@
-import { StaticValuesService } from './services/static-values.service';
+import { CatalogService } from './services/catalog.service';
 import {
   parsePrismaEnum,
   readPrismaSchema,
 } from '../../test/utils/prisma-schema';
 
-describe('Static values contract (schema.prisma)', () => {
+describe('Catalog contract (schema.prisma)', () => {
   const schema = readPrismaSchema();
-  const service = new StaticValuesService();
+  const service = new CatalogService();
 
   it('matches Gender enum', () => {
     expect(service.listGenders().data.map((x) => x.code)).toEqual(

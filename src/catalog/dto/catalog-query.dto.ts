@@ -4,7 +4,7 @@ import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { TransformTrimToUndefined } from '../../common/decorators/transformers';
 
-export class StaticValuesPaginatedQueryDto extends PaginationQueryDto {
+export class CatalogPaginatedQueryDto extends PaginationQueryDto {
   @ApiPropertyOptional({
     description: 'Case-insensitive search over label/name',
     example: 'nether',
@@ -16,7 +16,7 @@ export class StaticValuesPaginatedQueryDto extends PaginationQueryDto {
   search?: string;
 }
 
-export class RegionsQueryDto extends StaticValuesPaginatedQueryDto {
+export class RegionsQueryDto extends CatalogPaginatedQueryDto {
   @ApiPropertyOptional({
     description:
       'ISO 3166-1 alpha-2 country code (recommended for world-wide regions)',

@@ -164,7 +164,7 @@ async function bootstrap() {
       'Application health checks, readiness probes, and monitoring metrics',
     )
     .addTag(
-      'static-values',
+      'catalog',
       'Reference datasets and dropdown options (regions, countries, profile enums)',
     )
     .addServer('http://localhost:3000/', 'Development server')

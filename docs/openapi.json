@@ -8200,17 +8200,17 @@
         ]
       }
     },
-    "/api/v1/static-values/startup": {
+    "/api/v1/catalog/startup": {
       "get": {
         "operationId": "startup",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Startup static values retrieved successfully",
+            "description": "Startup catalog values retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesStartupResponseDto"
+                  "$ref": "#/components/schemas/CatalogStartupResponseDto"
                 }
               }
             }
@@ -8268,11 +8268,11 @@
         },
         "summary": "Static values needed at regular app startup (excluding world geography)",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/genders": {
+    "/api/v1/catalog/genders": {
       "get": {
         "operationId": "genders",
         "parameters": [],
@@ -8282,7 +8282,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8340,11 +8340,11 @@
         },
         "summary": "List genders",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/activity-levels": {
+    "/api/v1/catalog/activity-levels": {
       "get": {
         "operationId": "activityLevels",
         "parameters": [],
@@ -8354,7 +8354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8412,11 +8412,11 @@
         },
         "summary": "List activity levels",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/education-levels": {
+    "/api/v1/catalog/education-levels": {
       "get": {
         "operationId": "educationLevels",
         "parameters": [],
@@ -8426,7 +8426,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8484,11 +8484,11 @@
         },
         "summary": "List education levels",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/annual-income-levels": {
+    "/api/v1/catalog/annual-income-levels": {
       "get": {
         "operationId": "annualIncomeLevels",
         "parameters": [],
@@ -8498,7 +8498,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8556,11 +8556,11 @@
         },
         "summary": "List annual income levels",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/dietary-preferences": {
+    "/api/v1/catalog/dietary-preferences": {
       "get": {
         "operationId": "dietaryPreferences",
         "parameters": [],
@@ -8570,7 +8570,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8628,11 +8628,11 @@
         },
         "summary": "List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to recipe tags)",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/shopping-responsibilities": {
+    "/api/v1/catalog/shopping-responsibilities": {
       "get": {
         "operationId": "shoppingResponsibilities",
         "parameters": [],
@@ -8642,7 +8642,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8700,11 +8700,11 @@
         },
         "summary": "List shopping responsibility options",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/units": {
+    "/api/v1/catalog/units": {
       "get": {
         "operationId": "units",
         "parameters": [],
@@ -8714,7 +8714,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8784,11 +8784,11 @@
         ],
         "summary": "List units",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/type-of-meals": {
+    "/api/v1/catalog/type-of-meals": {
       "get": {
         "operationId": "typeOfMeals",
         "parameters": [],
@@ -8798,7 +8798,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8868,11 +8868,11 @@
         ],
         "summary": "List type of meal values",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/meal-types": {
+    "/api/v1/catalog/meal-types": {
       "get": {
         "operationId": "mealTypes",
         "parameters": [],
@@ -8882,7 +8882,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -8952,11 +8952,11 @@
         ],
         "summary": "List meal types",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/group-roles": {
+    "/api/v1/catalog/group-roles": {
       "get": {
         "operationId": "groupRoles",
         "parameters": [],
@@ -8966,7 +8966,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/CatalogListResponseDto"
                 }
               }
             }
@@ -9036,11 +9036,11 @@
         ],
         "summary": "List group roles",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/languages": {
+    "/api/v1/catalog/languages": {
       "get": {
         "operationId": "languages",
         "parameters": [
@@ -9081,7 +9081,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedStaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/PaginatedCatalogListResponseDto"
                 }
               }
             }
@@ -9139,11 +9139,11 @@
         },
         "summary": "List languages (paginated)",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/countries": {
+    "/api/v1/catalog/countries": {
       "get": {
         "operationId": "countries",
         "parameters": [
@@ -9184,7 +9184,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedStaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/PaginatedCatalogListResponseDto"
                 }
               }
             }
@@ -9242,11 +9242,11 @@
         },
         "summary": "List countries (paginated)",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
-    "/api/v1/static-values/regions": {
+    "/api/v1/catalog/regions": {
       "get": {
         "operationId": "regions",
         "parameters": [
@@ -9297,7 +9297,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedStaticValuesListResponseDto"
+                  "$ref": "#/components/schemas/PaginatedCatalogListResponseDto"
                 }
               }
             }
@@ -9355,7 +9355,7 @@
         },
         "summary": "List regions/subdivisions (paginated)",
         "tags": [
-          "static-values"
+          "catalog"
         ]
       }
     },
@@ -13487,7 +13487,7 @@
           }
         }
       },
-      "StaticValueDto": {
+      "CatalogValueDto": {
         "type": "object",
         "properties": {
           "code": {
@@ -13509,43 +13509,43 @@
           "label"
         ]
       },
-      "StaticValuesStartupDataDto": {
+      "CatalogStartupDataDto": {
         "type": "object",
         "properties": {
           "genders": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "activityLevels": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "educationLevels": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "annualIncomeLevels": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "dietaryPreferences": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "shoppingResponsibilities": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           }
         },
@@ -13558,14 +13558,14 @@
           "shoppingResponsibilities"
         ]
       },
-      "StaticValuesStartupResponseDto": {
+      "CatalogStartupResponseDto": {
         "type": "object",
         "properties": {
           "data": {
             "description": "Profile completion dropdown values (small, non-paginated)",
             "allOf": [
               {
-                "$ref": "#/components/schemas/StaticValuesStartupDataDto"
+                "$ref": "#/components/schemas/CatalogStartupDataDto"
               }
             ]
           }
@@ -13574,13 +13574,13 @@
           "data"
         ]
       },
-      "StaticValuesListResponseDto": {
+      "CatalogListResponseDto": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           }
         },
@@ -13588,13 +13588,13 @@
           "data"
         ]
       },
-      "PaginatedStaticValuesListResponseDto": {
+      "PaginatedCatalogListResponseDto": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/StaticValueDto"
+              "$ref": "#/components/schemas/CatalogValueDto"
             }
           },
           "total": {

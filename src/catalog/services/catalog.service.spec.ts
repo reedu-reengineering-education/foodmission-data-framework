@@ -1,10 +1,10 @@
-import { StaticValuesService } from './static-values.service';
+import { CatalogService } from './catalog.service';
 
-describe('StaticValuesService', () => {
-  let service: StaticValuesService;
+describe('CatalogService', () => {
+  let service: CatalogService;
 
   beforeEach(() => {
-    service = new StaticValuesService();
+    service = new CatalogService();
   });
 
   it('lists genders from Prisma enum', () => {
@@ -12,6 +12,12 @@ describe('StaticValuesService', () => {
     const codes = res.data.map((x) => x.code);
     expect(codes).toContain('MALE');
     expect(codes).toContain('FEMALE');
+  });
+
+  it('startup bundles small lists', () => {
+    const res = service.startup();
+    expect(res.data.genders).toBeDefined();
+    expect(res.data.activityLevels).toBeDefined();
   });
 
   it('paginates countries and supports search', () => {

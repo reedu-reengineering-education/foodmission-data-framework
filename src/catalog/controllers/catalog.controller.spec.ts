@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { StaticValuesController } from './static-values.controller';
-import { StaticValuesService } from '../services/static-values.service';
+import { CatalogController } from './catalog.controller';
+import { CatalogService } from '../services/catalog.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
-describe('StaticValuesController', () => {
-  let controller: StaticValuesController;
-  let service: jest.Mocked<StaticValuesService>;
+describe('CatalogController', () => {
+  let controller: CatalogController;
+  let service: jest.Mocked<CatalogService>;
 
   beforeEach(async () => {
-    const mockService: Partial<jest.Mocked<StaticValuesService>> = {
+    const mockService: Partial<jest.Mocked<CatalogService>> = {
+      startup: jest.fn(),
       listGenders: jest.fn(),
       listActivityLevels: jest.fn(),
       listEducationLevels: jest.fn(),
@@ -25,9 +26,20 @@ describe('StaticValuesController', () => {
       listGroupRoles: jest.fn(),
     };
 
+    mockService.startup?.mockReturnValue({
+      data: {
+        genders: [],
+        activityLevels: [],
+        educationLevels: [],
+        annualIncomeLevels: [],
+        dietaryPreferences: [],
+        shoppingResponsibilities: [],
+      },
+    } as any);
+
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [StaticValuesController],
-      providers: [{ provide: StaticValuesService, useValue: mockService }],
+      controllers: [CatalogController],
+      providers: [{ provide: CatalogService, useValue: mockService }],
     })
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
@@ -35,26 +47,17 @@ describe('StaticValuesController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get(StaticValuesController);
-    service = module.get(StaticValuesService);
+    controller = module.get(CatalogController);
+    service = module.get(CatalogService);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('startup should bundle small static lists', () => {
-    service.listGenders.mockReturnValue({
-      data: [{ code: 'MALE', label: 'Male' }],
-    } as any);
-    service.listActivityLevels.mockReturnValue({ data: [] } as any);
-    service.listEducationLevels.mockReturnValue({ data: [] } as any);
-    service.listAnnualIncomeLevels.mockReturnValue({ data: [] } as any);
-    service.listDietaryPreferencesPhase1.mockReturnValue({ data: [] } as any);
-    service.listShoppingResponsibilities.mockReturnValue({ data: [] } as any);
-
-    const res = controller.startup();
-    expect(res.data.genders[0].code).toBe('MALE');
+  it('startup should delegate to service', () => {
+    controller.startup();
+    expect(service.startup).toHaveBeenCalled();
   });
 
   it('countries should delegate to service with query', () => {

@@ -1,10 +1,10 @@
-# Static Values API
+# Catalog API
 
-This document describes the **Static Values** endpoints used by the FOODMISSION App for dropdowns and pickers (e.g. **regions**, **countries**, profile fields).
+This document describes the **Catalog** endpoints used by the FOODMISSION App for dropdowns and pickers (e.g. **regions**, **countries**, profile fields).
 
 ## Endpoints
 
-Base path: `/api/v1/static-values`
+Base path: `/api/v1/catalog`
 
 ## Authentication
 
@@ -22,7 +22,7 @@ For in-app usage, a few endpoints are **JWT-protected** (requires `Roles('user',
 
 ### Startup bundle
 
-`GET /api/v1/static-values/startup`
+`GET /api/v1/catalog/startup`
 
 Returns small, frequently-needed lists for regular app startup and onboarding, **excluding** world-wide geography lists (countries/regions) because those are large and paginated.
 
@@ -38,8 +38,8 @@ Includes:
 
 These endpoints support `page` and `limit` (default limit: 10), and optional `search`.
 
-- `GET /api/v1/static-values/countries?page=1&limit=10&search=nether`
-- `GET /api/v1/static-values/regions?page=1&limit=10&countryCode=NL&search=hol`
+- `GET /api/v1/catalog/countries?page=1&limit=10&search=nether`
+- `GET /api/v1/catalog/regions?page=1&limit=10&countryCode=NL&search=hol`
 
 Notes:
 - `regions.countryCode` is **recommended** for performance with world-wide data.
@@ -48,7 +48,7 @@ Notes:
 
 ### Languages (paginated)
 
-`GET /api/v1/static-values/languages?page=1&limit=10&search=eng`
+`GET /api/v1/catalog/languages?page=1&limit=10&search=eng`
 
 Language codes follow ISO 639-1.
 **Data source**: served at runtime from `iso-639-1` (no DB seeding required).
@@ -57,20 +57,20 @@ Language codes follow ISO 639-1.
 
 These lists are derived from Prisma enums (`@prisma/client`) to stay canonical to the database schema:
 
-- `GET /api/v1/static-values/genders`
-- `GET /api/v1/static-values/activity-levels`
-- `GET /api/v1/static-values/education-levels`
-- `GET /api/v1/static-values/annual-income-levels`
-- `GET /api/v1/static-values/units`
-- `GET /api/v1/static-values/type-of-meals`
-- `GET /api/v1/static-values/meal-types`
-- `GET /api/v1/static-values/group-roles`
+- `GET /api/v1/catalog/genders`
+- `GET /api/v1/catalog/activity-levels`
+- `GET /api/v1/catalog/education-levels`
+- `GET /api/v1/catalog/annual-income-levels`
+- `GET /api/v1/catalog/units`
+- `GET /api/v1/catalog/type-of-meals`
+- `GET /api/v1/catalog/meal-types`
+- `GET /api/v1/catalog/group-roles`
 
 ## Dietary preferences (two phases)
 
 ### Phase 1 (implemented)
 
-`GET /api/v1/static-values/dietary-preferences`
+`GET /api/v1/catalog/dietary-preferences`
 
 Provides a minimal set aligned with the current recipe seed/tagging pipeline:
 - `NONE`
@@ -85,7 +85,7 @@ Add "free-from" options (e.g. `GLUTEN_FREE`, `DAIRY_FREE`) once the recipes API 
 
 ## Shopping responsibility
 
-`GET /api/v1/static-values/shopping-responsibilities`
+`GET /api/v1/catalog/shopping-responsibilities`
 
 This value is not modeled as a dedicated DB enum because it is a household behavior and can be user- or group-specific. Recommended storage is in existing JSON preference fields:
 - `User.preferences.shoppingResponsibility` (user-level)

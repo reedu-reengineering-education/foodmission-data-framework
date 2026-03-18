@@ -4946,17 +4946,17 @@ paths:
         - JWT-auth: []
       summary: Delete user progress for a knowledge item
       tags: *ref_25
-  /api/v1/static-values/startup:
+  /api/v1/catalog/startup:
     get:
       operationId: startup
       parameters: []
       responses:
         '200':
-          description: Startup static values retrieved successfully
+          description: Startup catalog values retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesStartupResponseDto'
+                $ref: '#/components/schemas/CatalogStartupResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -4989,8 +4989,8 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Static values needed at regular app startup (excluding world geography)
       tags: &ref_26
-        - static-values
-  /api/v1/static-values/genders:
+        - catalog
+  /api/v1/catalog/genders:
     get:
       operationId: genders
       parameters: []
@@ -5000,7 +5000,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5033,7 +5033,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List genders
       tags: *ref_26
-  /api/v1/static-values/activity-levels:
+  /api/v1/catalog/activity-levels:
     get:
       operationId: activityLevels
       parameters: []
@@ -5043,7 +5043,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5076,7 +5076,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List activity levels
       tags: *ref_26
-  /api/v1/static-values/education-levels:
+  /api/v1/catalog/education-levels:
     get:
       operationId: educationLevels
       parameters: []
@@ -5086,7 +5086,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5119,7 +5119,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List education levels
       tags: *ref_26
-  /api/v1/static-values/annual-income-levels:
+  /api/v1/catalog/annual-income-levels:
     get:
       operationId: annualIncomeLevels
       parameters: []
@@ -5129,7 +5129,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5162,7 +5162,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List annual income levels
       tags: *ref_26
-  /api/v1/static-values/dietary-preferences:
+  /api/v1/catalog/dietary-preferences:
     get:
       operationId: dietaryPreferences
       parameters: []
@@ -5172,7 +5172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5207,7 +5207,7 @@ paths:
         List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to
         recipe tags)
       tags: *ref_26
-  /api/v1/static-values/shopping-responsibilities:
+  /api/v1/catalog/shopping-responsibilities:
     get:
       operationId: shoppingResponsibilities
       parameters: []
@@ -5217,7 +5217,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5250,7 +5250,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List shopping responsibility options
       tags: *ref_26
-  /api/v1/static-values/units:
+  /api/v1/catalog/units:
     get:
       operationId: units
       parameters: []
@@ -5260,7 +5260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5299,7 +5299,7 @@ paths:
         - JWT-auth: []
       summary: List units
       tags: *ref_26
-  /api/v1/static-values/type-of-meals:
+  /api/v1/catalog/type-of-meals:
     get:
       operationId: typeOfMeals
       parameters: []
@@ -5309,7 +5309,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5348,7 +5348,7 @@ paths:
         - JWT-auth: []
       summary: List type of meal values
       tags: *ref_26
-  /api/v1/static-values/meal-types:
+  /api/v1/catalog/meal-types:
     get:
       operationId: mealTypes
       parameters: []
@@ -5358,7 +5358,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5397,7 +5397,7 @@ paths:
         - JWT-auth: []
       summary: List meal types
       tags: *ref_26
-  /api/v1/static-values/group-roles:
+  /api/v1/catalog/group-roles:
     get:
       operationId: groupRoles
       parameters: []
@@ -5407,7 +5407,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaticValuesListResponseDto'
+                $ref: '#/components/schemas/CatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5446,7 +5446,7 @@ paths:
         - JWT-auth: []
       summary: List group roles
       tags: *ref_26
-  /api/v1/static-values/languages:
+  /api/v1/catalog/languages:
     get:
       operationId: languages
       parameters:
@@ -5477,7 +5477,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5510,7 +5510,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List languages (paginated)
       tags: *ref_26
-  /api/v1/static-values/countries:
+  /api/v1/catalog/countries:
     get:
       operationId: countries
       parameters:
@@ -5541,7 +5541,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -5574,7 +5574,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List countries (paginated)
       tags: *ref_26
-  /api/v1/static-values/regions:
+  /api/v1/catalog/regions:
     get:
       operationId: regions
       parameters:
@@ -5614,7 +5614,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
         '400':
           description: Bad Request - Invalid input data or validation failed
           content:
@@ -8830,7 +8830,7 @@ components:
               - Paris
               - Berlin
             score: 1
-    StaticValueDto:
+    CatalogValueDto:
       type: object
       properties:
         code:
@@ -8846,33 +8846,33 @@ components:
       required:
         - code
         - label
-    StaticValuesStartupDataDto:
+    CatalogStartupDataDto:
       type: object
       properties:
         genders:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         activityLevels:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         educationLevels:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         annualIncomeLevels:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         dietaryPreferences:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         shoppingResponsibilities:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
       required:
         - genders
         - activityLevels
@@ -8880,31 +8880,31 @@ components:
         - annualIncomeLevels
         - dietaryPreferences
         - shoppingResponsibilities
-    StaticValuesStartupResponseDto:
+    CatalogStartupResponseDto:
       type: object
       properties:
         data:
           description: Profile completion dropdown values (small, non-paginated)
           allOf:
-            - $ref: '#/components/schemas/StaticValuesStartupDataDto'
+            - $ref: '#/components/schemas/CatalogStartupDataDto'
       required:
         - data
-    StaticValuesListResponseDto:
+    CatalogListResponseDto:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
       required:
         - data
-    PaginatedStaticValuesListResponseDto:
+    PaginatedCatalogListResponseDto:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/StaticValueDto'
+            $ref: '#/components/schemas/CatalogValueDto'
         total:
           type: number
           description: Total items

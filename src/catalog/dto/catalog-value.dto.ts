@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 
-export class StaticValueDto {
+export class CatalogValueDto {
   @ApiProperty({ description: 'Stable identifier/code for the value' })
   @Expose()
   @IsString()

@@ -2,11 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
-import { StaticValueDto } from '../dto/static-value.dto';
+import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
-  PaginatedStaticValuesListResponseDto,
-  StaticValuesListResponseDto,
-} from '../dto/static-values-response.dto';
+  CatalogListResponseDto,
+  CatalogStartupResponseDto,
+  PaginatedCatalogListResponseDto,
+} from '../dto/catalog-response.dto';
 import {
   ACTIVITY_LEVELS,
   ANNUAL_INCOME_LEVELS,
@@ -16,7 +17,7 @@ import {
   MEAL_TYPES,
   TYPE_OF_MEALS,
   UNITS,
-} from '../static-values.constants';
+} from '../catalog.constants';
 
 function titleCaseFromEnum(value: string): string {
   return value
@@ -32,13 +33,13 @@ function normalizeSearch(s?: string): string | undefined {
 }
 
 @Injectable()
-export class StaticValuesService {
+export class CatalogService {
   private cached: {
-    countries?: StaticValueDto[];
-    regionsAll?: StaticValueDto[];
+    countries?: CatalogValueDto[];
+    regionsAll?: CatalogValueDto[];
   } = {};
 
-  private getAllCountries(): StaticValueDto[] {
+  private getAllCountries(): CatalogValueDto[] {
     if (this.cached.countries) return this.cached.countries;
 
     // Use iso-3166-2 dataset (alpha-2 -> country name). This covers countries present in ISO 3166-2.
@@ -54,23 +55,16 @@ export class StaticValuesService {
     return list;
   }
 
-  private getAllRegions(): StaticValueDto[] {
+  private getAllRegions(): CatalogValueDto[] {
     if (this.cached.regionsAll) return this.cached.regionsAll;
 
     // iso-3166-2 provides subdivisions grouped by alpha-2 country code.
-    // Shape (observed):
-    // {
-    //   [countryCode]: {
-    //     name: string,
-    //     sub: { [subdivisionCode]: { type?: string, name: string } }
-    //   }
-    // }
     const byCountry = (iso3166 as any).data as Record<
       string,
       | { name?: string; sub?: Record<string, { type?: string; name: string }> }
       | Record<string, { type?: string; name: string }>
     >;
-    const list: StaticValueDto[] = [];
+    const list: CatalogValueDto[] = [];
     for (const [countryCode, subs] of Object.entries(byCountry)) {
       const subMap =
         (subs as any)?.sub && typeof (subs as any).sub === 'object'
@@ -94,7 +88,7 @@ export class StaticValuesService {
     return list;
   }
 
-  listGenders(): StaticValuesListResponseDto {
+  listGenders(): CatalogListResponseDto {
     return {
       data: GENDERS.map((code) => ({
         code,
@@ -103,7 +97,7 @@ export class StaticValuesService {
     };
   }
 
-  listActivityLevels(): StaticValuesListResponseDto {
+  listActivityLevels(): CatalogListResponseDto {
     return {
       data: ACTIVITY_LEVELS.map((code) => ({
         code,
@@ -112,7 +106,7 @@ export class StaticValuesService {
     };
   }
 
-  listEducationLevels(): StaticValuesListResponseDto {
+  listEducationLevels(): CatalogListResponseDto {
     return {
       data: EDUCATION_LEVELS.map((code) => ({
         code,
@@ -121,7 +115,7 @@ export class StaticValuesService {
     };
   }
 
-  listAnnualIncomeLevels(): StaticValuesListResponseDto {
+  listAnnualIncomeLevels(): CatalogListResponseDto {
     return {
       data: ANNUAL_INCOME_LEVELS.map((code) => ({
         code,
@@ -130,7 +124,7 @@ export class StaticValuesService {
     };
   }
 
-  listUnits(): StaticValuesListResponseDto {
+  listUnits(): CatalogListResponseDto {
     return {
       data: UNITS.map((code) => ({
         code,
@@ -139,7 +133,7 @@ export class StaticValuesService {
     };
   }
 
-  listTypeOfMeals(): StaticValuesListResponseDto {
+  listTypeOfMeals(): CatalogListResponseDto {
     return {
       data: TYPE_OF_MEALS.map((code) => ({
         code,
@@ -148,7 +142,7 @@ export class StaticValuesService {
     };
   }
 
-  listMealTypes(): StaticValuesListResponseDto {
+  listMealTypes(): CatalogListResponseDto {
     return {
       data: MEAL_TYPES.map((code) => ({
         code,
@@ -157,7 +151,7 @@ export class StaticValuesService {
     };
   }
 
-  listGroupRoles(): StaticValuesListResponseDto {
+  listGroupRoles(): CatalogListResponseDto {
     return {
       data: GROUP_ROLES.map((code) => ({
         code,
@@ -166,16 +160,8 @@ export class StaticValuesService {
     };
   }
 
-  /**
-   * Dietary preferences – Phase 1
-   * - NONE: no recipe filters
-   * - VEGAN / VEGETARIAN: map to recipe tag filtering (existing API supports ?tags=)
-   *
-   * Phase 2 (planned, not implemented here):
-   * - FREE_FROM_* options that require recipe API support for negative allergen filters.
-   */
-  listDietaryPreferencesPhase1(): StaticValuesListResponseDto {
-    const data: StaticValueDto[] = [
+  listDietaryPreferencesPhase1(): CatalogListResponseDto {
+    const data: CatalogValueDto[] = [
       { code: 'NONE', label: 'No specific dietary preference' },
       {
         code: 'VEGAN',
@@ -191,9 +177,8 @@ export class StaticValuesService {
     return { data };
   }
 
-  listShoppingResponsibilities(): StaticValuesListResponseDto {
-    // Stored in JSON preferences (User.preferences or GroupMembership.preferences), not as a DB enum.
-    const data: StaticValueDto[] = [
+  listShoppingResponsibilities(): CatalogListResponseDto {
+    const data: CatalogValueDto[] = [
       { code: 'NO_SPECIFIC', label: 'No specific answer' },
       { code: 'MOSTLY_ME', label: 'Mostly me' },
       { code: 'SHARED_EQUALLY', label: 'Shared equally' },
@@ -207,10 +192,10 @@ export class StaticValuesService {
     page: number;
     limit: number;
     search?: string;
-  }): PaginatedStaticValuesListResponseDto {
+  }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
     const allCodes = ISO6391.getAllCodes();
-    const all: StaticValueDto[] = allCodes
+    const all: CatalogValueDto[] = allCodes
       .map((code) => ({ code, label: ISO6391.getName(code) }))
       .filter((x) => x.label);
 
@@ -231,7 +216,7 @@ export class StaticValuesService {
     page: number;
     limit: number;
     search?: string;
-  }): PaginatedStaticValuesListResponseDto {
+  }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
     const all = this.getAllCountries();
     const filtered = q
@@ -253,7 +238,7 @@ export class StaticValuesService {
     limit: number;
     search?: string;
     countryCode?: string;
-  }): PaginatedStaticValuesListResponseDto {
+  }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
 
@@ -281,5 +266,18 @@ export class StaticValuesService {
     const total = filtered.length;
     const totalPages = Math.ceil(total / input.limit);
     return { data, total, page: input.page, limit: input.limit, totalPages };
+  }
+
+  startup(): CatalogStartupResponseDto {
+    return {
+      data: {
+        genders: this.listGenders().data,
+        activityLevels: this.listActivityLevels().data,
+        educationLevels: this.listEducationLevels().data,
+        annualIncomeLevels: this.listAnnualIncomeLevels().data,
+        dietaryPreferences: this.listDietaryPreferencesPhase1().data,
+        shoppingResponsibilities: this.listShoppingResponsibilities().data,
+      },
+    };
   }
 }

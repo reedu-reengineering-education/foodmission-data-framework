@@ -26,7 +26,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
 import { UserGroupModule } from './userGroup/userGroup.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
-import { StaticValuesModule } from './staticValues/static-values.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
   imports: [
@@ -50,7 +50,7 @@ import { StaticValuesModule } from './staticValues/static-values.module';
     MealLogModule,
     UserGroupModule,
     KnowledgeModule,
-    StaticValuesModule,
+    CatalogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
