@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import ISO6391 from 'iso-639-1';
-import { Country, State } from 'country-state-city';
+import countries from 'i18n-iso-countries';
+import iso3166 from 'iso-3166-2';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { StaticValueDto } from '../dto/static-value.dto';
 import {
@@ -67,6 +68,66 @@ function normalizeSearch(s?: string): string | undefined {
 
 @Injectable()
 export class StaticValuesService {
+  private cached: {
+    countries?: StaticValueDto[];
+    regionsAll?: StaticValueDto[];
+  } = {};
+
+  private getAllCountries(): StaticValueDto[] {
+    if (this.cached.countries) return this.cached.countries;
+
+    // i18n-iso-countries ships its own data; default to English labels.
+    const names = countries.getNames('en', { select: 'official' }) as Record<
+      string,
+      string
+    >;
+    const list = Object.entries(names)
+      .map(([code, label]) => ({ code, label }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    this.cached.countries = list;
+    return list;
+  }
+
+  private getAllRegions(): StaticValueDto[] {
+    if (this.cached.regionsAll) return this.cached.regionsAll;
+
+    // iso-3166-2 provides subdivisions grouped by alpha-2 country code.
+    // Shape (observed):
+    // {
+    //   [countryCode]: {
+    //     name: string,
+    //     sub: { [subdivisionCode]: { type?: string, name: string } }
+    //   }
+    // }
+    const byCountry = (iso3166 as any).data as Record<
+      string,
+      | { name?: string; sub?: Record<string, { type?: string; name: string }> }
+      | Record<string, { type?: string; name: string }>
+    >;
+    const list: StaticValueDto[] = [];
+    for (const [countryCode, subs] of Object.entries(byCountry)) {
+      const subMap =
+        (subs as any)?.sub && typeof (subs as any).sub === 'object'
+          ? ((subs as any).sub as Record<
+              string,
+              { type?: string; name: string }
+            >)
+          : (subs as Record<string, { type?: string; name: string }>);
+
+      for (const [code, s] of Object.entries(subMap)) {
+        if (!s?.name) continue;
+        list.push({
+          code,
+          label: s.name,
+          meta: { countryCode },
+        });
+      }
+    }
+    list.sort((a, b) => a.label.localeCompare(b.label));
+    this.cached.regionsAll = list;
+    return list;
+  }
+
   listGenders(): StaticValuesListResponseDto {
     return {
       data: GENDERS.map((code) => ({
@@ -206,10 +267,7 @@ export class StaticValuesService {
     search?: string;
   }): PaginatedStaticValuesListResponseDto {
     const q = normalizeSearch(input.search);
-    const all: StaticValueDto[] = Country.getAllCountries().map((c) => ({
-      code: c.isoCode,
-      label: c.name,
-    }));
+    const all = this.getAllCountries();
     const filtered = q
       ? all.filter(
           (x) =>
@@ -239,15 +297,10 @@ export class StaticValuesService {
       );
     }
 
-    const states = countryCode
-      ? State.getStatesOfCountry(countryCode)
-      : State.getAllStates();
-
-    const all: StaticValueDto[] = states.map((s) => ({
-      code: `${s.countryCode}-${s.isoCode}`,
-      label: s.name,
-      meta: { countryCode: s.countryCode },
-    }));
+    const allRegions = this.getAllRegions();
+    const all = countryCode
+      ? allRegions.filter((r) => r.meta?.countryCode === countryCode)
+      : allRegions;
 
     const filtered = q
       ? all.filter(
