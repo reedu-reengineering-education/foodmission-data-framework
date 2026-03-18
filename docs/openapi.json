@@ -3158,180 +3158,10 @@
       }
     },
     "/api/v1/pantry": {
-      "post": {
-        "description": "Creates a new pantry for the authenticated user. Users can have multiple pantries. If a pantry with the same title already exists for the user, returns a conflict error. Requires user or admin role.",
-        "operationId": "create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePantryDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Pantry created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PantryResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "A pantry with this title already exists for this user."
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Create a new Pantry",
-        "tags": [
-          "pantry"
-        ]
-      },
       "get": {
-        "description": "Retrieves all pantries for the authenticated user with all items. Returns an empty array if no pantries exist.",
-        "operationId": "getAllPantries",
+        "description": "Retrieves the authenticated user's dedicated pantry with all items. Every user has exactly one pantry that is automatically created when needed. Requires user or admin role.",
+        "operationId": "getPantry",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of pantries retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PantryResponseDto"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden - Insufficient permissions",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found - Resource does not exist",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Get all user pantries",
-        "tags": [
-          "pantry"
-        ]
-      }
-    },
-    "/api/v1/pantry/{id}": {
-      "get": {
-        "description": "Retrieves a specific pantry by ID for the authenticated user. Only the pantry owner can access it.",
-        "operationId": "getPantryById",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Pantry retrieved successfully",
@@ -3364,13 +3194,7 @@
             }
           },
           "403": {
-            "description": "No permission - user does not own this pantry"
-          },
-          "404": {
-            "description": "Pantry not found"
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
+            "description": "Forbidden - Insufficient permissions",
             "content": {
               "application/json": {
                 "schema": {
@@ -3378,75 +3202,6 @@
                 }
               }
             }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Get pantry by ID",
-        "tags": [
-          "pantry"
-        ]
-      },
-      "patch": {
-        "description": "Updates the pantry title. Only the pantry owner can update their pantry.",
-        "operationId": "update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdatePantryDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Pantry updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PantryResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "No permission - user does not own this pantry"
           },
           "404": {
             "description": "Not Found - Resource does not exist",
@@ -3474,72 +3229,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Update pantry",
-        "tags": [
-          "pantry"
-        ]
-      },
-      "delete": {
-        "description": "Deletes a specific pantry by ID. Only the pantry owner can delete their pantry. All pantry items will be deleted as well (cascade delete).",
-        "operationId": "remove",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Pantry deleted successfully"
-          },
-          "400": {
-            "description": "Bad Request - Invalid input data or validation failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Authentication required or invalid token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "No permission - user does not own this pantry"
-          },
-          "404": {
-            "description": "Pantry not found"
-          },
-          "409": {
-            "description": "Conflict - Resource already exists or state conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Delete pantry",
+        "summary": "Get user pantry",
         "tags": [
           "pantry"
         ]
@@ -10565,20 +10255,6 @@
           }
         }
       },
-      "CreatePantryDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "The name of the pantry",
-            "example": "Home Pantry",
-            "maxLength": 255
-          }
-        },
-        "required": [
-          "title"
-        ]
-      },
       "PantryItemResponseDto": {
         "type": "object",
         "properties": {
@@ -10670,11 +10346,6 @@
             "description": "The user ID who owns this pantry",
             "example": "uuid-user-id"
           },
-          "title": {
-            "type": "string",
-            "description": "The pantry title",
-            "example": "Home or Work"
-          },
           "items": {
             "description": "List of items in the pantry",
             "type": "array",
@@ -10686,22 +10357,7 @@
         "required": [
           "id",
           "userId",
-          "title",
           "items"
-        ]
-      },
-      "UpdatePantryDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "The name of the pantry",
-            "example": "Refrigerator",
-            "maxLength": 255
-          }
-        },
-        "required": [
-          "title"
         ]
       },
       "MultiplePantryItemResponseDto": {
