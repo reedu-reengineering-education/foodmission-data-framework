@@ -9,14 +9,6 @@ import {
 } from 'class-validator';
 
 export class QueryPantryItemDto {
-  @ApiProperty({
-    description: 'The ID of the pantry to get items from',
-    example: 'uuid-pantry-id',
-  })
-  @IsNotEmpty()
-  @IsUUID()
-  pantryId: string;
-
   @ApiPropertyOptional({
     description: 'Filter by food ID',
     example: 'uuid-food-id',

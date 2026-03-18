@@ -29,7 +29,6 @@ import {
 } from '../repositories/shoppingListItem.repository';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
-import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
@@ -54,7 +53,6 @@ export class ShoppingListItemService {
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
     private readonly pantryItemService: PantryItemService,
-    private readonly pantryService: PantryService,
     private readonly foodRepository: FoodRepository,
     private readonly foodCategoryRepository: FoodCategoryRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
@@ -415,8 +413,6 @@ export class ShoppingListItemService {
     }
 
     try {
-      const pantryId = await this.pantryService.validatePantryExists(userId);
-
       const dto = item.foodId
         ? Object.assign(new CreateShoppingListItemDto(), {
             foodId: item.foodId,
@@ -429,11 +425,7 @@ export class ShoppingListItemService {
             unit: item.unit,
           });
 
-      await this.pantryItemService.createFromShoppingList(
-        dto,
-        userId,
-        pantryId,
-      );
+      await this.pantryItemService.createFromShoppingList(dto, userId);
     } catch (error) {
       if (
         error instanceof NotFoundException ||

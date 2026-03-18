@@ -46,7 +46,7 @@ export class PantryItemController {
   @ApiOperation({
     summary: 'Add a new item to Pantry',
     description:
-      'Creates a new Pantry Item and adds it to the specified pantry. The pantryId must be provided in the request body and must belong to the authenticated user. Users can have multiple pantries. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
+      'Creates a new Pantry Item and adds it to your dedicated pantry. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
   })
   @ApiBody({
     schema: {
@@ -54,11 +54,6 @@ export class PantryItemController {
         {
           type: 'object',
           properties: {
-            pantryId: {
-              type: 'string',
-              format: 'uuid',
-              example: 'uuid-pantry-id',
-            },
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
@@ -74,16 +69,11 @@ export class PantryItemController {
               description: 'UUID of the food item (OpenFoodFacts).',
             },
           },
-          required: ['pantryId', 'foodId', 'quantity'],
+          required: ['foodId', 'quantity'],
         },
         {
           type: 'object',
           properties: {
-            pantryId: {
-              type: 'string',
-              format: 'uuid',
-              example: 'uuid-pantry-id',
-            },
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
@@ -99,7 +89,7 @@ export class PantryItemController {
               description: 'UUID of the food category (NEVO generic).',
             },
           },
-          required: ['pantryId', 'foodCategoryId', 'quantity'],
+          required: ['foodCategoryId', 'quantity'],
         },
       ],
     },
@@ -123,13 +113,7 @@ export class PantryItemController {
   @ApiOperation({
     summary: 'Get pantry items',
     description:
-      'Retrieve pantry items from a specific pantry. The pantryId must be provided as a query parameter and must belong to the authenticated user. Optional filtering by foodId, unit, or expiryDate.',
-  })
-  @ApiQuery({
-    name: 'pantryId',
-    required: true,
-    description: 'The ID of the pantry to get items from (UUID)',
-    type: String,
+      'Retrieve pantry items from your dedicated pantry. Optional filtering by foodId, foodCategoryId, unit, or expiryDate.',
   })
   @ApiQuery({
     name: 'foodId',

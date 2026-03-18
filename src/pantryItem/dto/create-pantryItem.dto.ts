@@ -33,14 +33,6 @@ class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
 }
 
 export class CreatePantryItemDto {
-  @ApiProperty({
-    description: 'The ID of the pantry to add the item to',
-    example: 'uuid-pantry-id',
-  })
-  @IsNotEmpty()
-  @IsUUID()
-  pantryId: string;
-
   @ApiPropertyOptional({
     description:
       'The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.',
