@@ -4946,6 +4946,681 @@ paths:
         - JWT-auth: []
       summary: Delete user progress for a knowledge item
       tags: *ref_25
+  /api/v1/static-values/startup:
+    get:
+      operationId: startup
+      parameters: []
+      responses:
+        '200':
+          description: Startup static values retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesStartupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: Static values needed at regular app startup (excluding world geography)
+      tags: &ref_26
+        - static-values
+  /api/v1/static-values/genders:
+    get:
+      operationId: genders
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List genders
+      tags: *ref_26
+  /api/v1/static-values/activity-levels:
+    get:
+      operationId: activityLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List activity levels
+      tags: *ref_26
+  /api/v1/static-values/education-levels:
+    get:
+      operationId: educationLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List education levels
+      tags: *ref_26
+  /api/v1/static-values/annual-income-levels:
+    get:
+      operationId: annualIncomeLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List annual income levels
+      tags: *ref_26
+  /api/v1/static-values/dietary-preferences:
+    get:
+      operationId: dietaryPreferences
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: >-
+        List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to
+        recipe tags)
+      tags: *ref_26
+  /api/v1/static-values/shopping-responsibilities:
+    get:
+      operationId: shoppingResponsibilities
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List shopping responsibility options
+      tags: *ref_26
+  /api/v1/static-values/units:
+    get:
+      operationId: units
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List units
+      tags: *ref_26
+  /api/v1/static-values/type-of-meals:
+    get:
+      operationId: typeOfMeals
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List type of meal values
+      tags: *ref_26
+  /api/v1/static-values/meal-types:
+    get:
+      operationId: mealTypes
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List meal types
+      tags: *ref_26
+  /api/v1/static-values/group-roles:
+    get:
+      operationId: groupRoles
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List group roles
+      tags: *ref_26
+  /api/v1/static-values/languages:
+    get:
+      operationId: languages
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List languages (paginated)
+      tags: *ref_26
+  /api/v1/static-values/countries:
+    get:
+      operationId: countries
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List countries (paginated)
+      tags: *ref_26
+  /api/v1/static-values/regions:
+    get:
+      operationId: regions
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+        - name: countryCode
+          required: false
+          in: query
+          description: ISO 3166-1 alpha-2 country code (recommended)
+          schema:
+            example: NL
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStaticValuesListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List regions/subdivisions (paginated)
+      tags: *ref_26
   /api/v1:
     get:
       description: >-
@@ -5224,7 +5899,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_26
+          enum: &ref_27
             - MALE
             - FEMALE
             - OTHER
@@ -5298,7 +5973,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_26
+          enum: *ref_27
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -5533,7 +6208,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_27
+          enum: &ref_28
             - A
             - B
             - C
@@ -6143,7 +6818,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_27
+          enum: *ref_28
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -6961,7 +7636,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_28
+          enum: &ref_29
             - SALAD
             - MEAT
             - PASTA
@@ -6979,7 +7654,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_29
+          example: &ref_30
             carbs: 40
             fats: 20
             sugar: 5
@@ -7087,7 +7762,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_28
+          enum: *ref_29
           description: Meal type
         calories:
           type: number
@@ -7100,7 +7775,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_29
+          example: *ref_30
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -7261,7 +7936,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_30
+          example: &ref_31
             - vegan
             - quick
           type: array
@@ -7270,7 +7945,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_31
+          example: &ref_32
             carbs: 50
             fats: 10
             fiber: 8
@@ -7284,7 +7959,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_32
+          example: &ref_33
             - nuts
             - gluten
           type: array
@@ -7435,14 +8110,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_30
+          example: *ref_31
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_31
+          example: *ref_32
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -7453,7 +8128,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_32
+          example: *ref_33
           type: array
           items:
             type: string
@@ -7467,7 +8142,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_33
+          enum: &ref_34
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -7575,7 +8250,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_33
+          enum: *ref_34
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)
@@ -8129,3 +8804,96 @@ components:
               - Paris
               - Berlin
             score: 1
+    StaticValueDto:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Stable identifier/code for the value
+        label:
+          type: string
+          description: Human-readable label
+        meta:
+          type: object
+          description: Optional metadata (e.g. countryCode for regions)
+          additionalProperties: true
+      required:
+        - code
+        - label
+    StaticValuesStartupDataDto:
+      type: object
+      properties:
+        genders:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        activityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        educationLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        annualIncomeLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        dietaryPreferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        shoppingResponsibilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+      required:
+        - genders
+        - activityLevels
+        - educationLevels
+        - annualIncomeLevels
+        - dietaryPreferences
+        - shoppingResponsibilities
+    StaticValuesStartupResponseDto:
+      type: object
+      properties:
+        data:
+          description: Profile completion dropdown values (small, non-paginated)
+          allOf:
+            - $ref: '#/components/schemas/StaticValuesStartupDataDto'
+      required:
+        - data
+    StaticValuesListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+      required:
+        - data
+    PaginatedStaticValuesListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticValueDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
