@@ -1,7 +1,16 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOAuth2,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { ApiPaginationQuery } from '../../common/decorators/api-query-params.decorator';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { Public, Roles } from 'nest-keycloak-connect';
 import {
   PaginatedStaticValuesListResponseDto,
   StaticValuesListResponseDto,
@@ -13,13 +22,16 @@ import {
   StaticValuesPaginatedQueryDto,
 } from '../dto/static-values-query.dto';
 import { StaticValuesService } from '../services/static-values.service';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 @ApiTags('static-values')
 @Controller('static-values')
+@UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class StaticValuesController {
   constructor(private readonly staticValuesService: StaticValuesService) {}
 
   @Get('startup')
+  @Public()
   @ApiOperation({
     summary:
       'Static values needed at regular app startup (excluding world geography)',
@@ -47,6 +59,7 @@ export class StaticValuesController {
   }
 
   @Get('genders')
+  @Public()
   @ApiOperation({ summary: 'List genders' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -55,6 +68,7 @@ export class StaticValuesController {
   }
 
   @Get('activity-levels')
+  @Public()
   @ApiOperation({ summary: 'List activity levels' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -63,6 +77,7 @@ export class StaticValuesController {
   }
 
   @Get('education-levels')
+  @Public()
   @ApiOperation({ summary: 'List education levels' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -71,6 +86,7 @@ export class StaticValuesController {
   }
 
   @Get('annual-income-levels')
+  @Public()
   @ApiOperation({ summary: 'List annual income levels' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -79,6 +95,7 @@ export class StaticValuesController {
   }
 
   @Get('dietary-preferences')
+  @Public()
   @ApiOperation({
     summary:
       'List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to recipe tags)',
@@ -90,6 +107,7 @@ export class StaticValuesController {
   }
 
   @Get('shopping-responsibilities')
+  @Public()
   @ApiOperation({ summary: 'List shopping responsibility options' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -98,6 +116,9 @@ export class StaticValuesController {
   }
 
   @Get('units')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'List units' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -106,6 +127,9 @@ export class StaticValuesController {
   }
 
   @Get('type-of-meals')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'List type of meal values' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -114,6 +138,9 @@ export class StaticValuesController {
   }
 
   @Get('meal-types')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'List meal types' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -122,6 +149,9 @@ export class StaticValuesController {
   }
 
   @Get('group-roles')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({ summary: 'List group roles' })
   @ApiResponse({ status: 200, type: StaticValuesListResponseDto })
   @ApiCrudErrorResponses()
@@ -130,6 +160,7 @@ export class StaticValuesController {
   }
 
   @Get('languages')
+  @Public()
   @ApiOperation({ summary: 'List languages (paginated)' })
   @ApiPaginationQuery()
   @ApiQuery({ name: 'search', required: false, type: String })
@@ -142,6 +173,7 @@ export class StaticValuesController {
   }
 
   @Get('countries')
+  @Public()
   @ApiOperation({ summary: 'List countries (paginated)' })
   @ApiPaginationQuery()
   @ApiQuery({ name: 'search', required: false, type: String })
@@ -154,6 +186,7 @@ export class StaticValuesController {
   }
 
   @Get('regions')
+  @Public()
   @ApiOperation({ summary: 'List regions/subdivisions (paginated)' })
   @ApiPaginationQuery()
   @ApiQuery({
