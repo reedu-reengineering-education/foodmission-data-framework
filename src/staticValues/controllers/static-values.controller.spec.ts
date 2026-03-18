@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StaticValuesController } from './static-values.controller';
 import { StaticValuesService } from '../services/static-values.service';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 describe('StaticValuesController', () => {
   let controller: StaticValuesController;
@@ -26,7 +28,12 @@ describe('StaticValuesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [StaticValuesController],
       providers: [{ provide: StaticValuesService, useValue: mockService }],
-    }).compile();
+    })
+      .overrideGuard(ThrottlerGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(DataBaseAuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get(StaticValuesController);
     service = module.get(StaticValuesService);

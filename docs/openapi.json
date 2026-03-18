@@ -8770,6 +8770,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "List units",
         "tags": [
           "static-values"
@@ -8842,6 +8854,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "List type of meal values",
         "tags": [
           "static-values"
@@ -8914,6 +8938,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "List meal types",
         "tags": [
           "static-values"
@@ -8986,6 +9022,18 @@
             }
           }
         },
+        "security": [
+          {
+            "keycloak-oauth2": [
+              "openid",
+              "profile",
+              "roles"
+            ]
+          },
+          {
+            "JWT-auth": []
+          }
+        ],
         "summary": "List group roles",
         "tags": [
           "static-values"

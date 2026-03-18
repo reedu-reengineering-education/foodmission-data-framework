@@ -5291,6 +5291,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: List units
       tags: *ref_26
   /api/v1/static-values/type-of-meals:
@@ -5334,6 +5340,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: List type of meal values
       tags: *ref_26
   /api/v1/static-values/meal-types:
@@ -5377,6 +5389,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: List meal types
       tags: *ref_26
   /api/v1/static-values/group-roles:
@@ -5420,6 +5438,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
       summary: List group roles
       tags: *ref_26
   /api/v1/static-values/languages:
