@@ -254,10 +254,8 @@ export class ShoppingListItemService {
     try {
       await this.validateShoppingListAccess(shoppingListId, userId);
 
-      // Fetch user to check preference
       const user = await this.validateUserExists(userId);
 
-      // If auto-add enabled, add checked food items to pantry first
       if (user.shouldAutoAddToPantry) {
         const checkedItems =
           await this.shoppingListItemRepository.findByShoppingListId(
@@ -267,7 +265,6 @@ export class ShoppingListItemService {
           );
 
         for (const item of checkedItems) {
-          // Only food items can be added to pantry (skip food categories)
           if (item.foodId) {
             try {
               const dto = Object.assign(new CreateShoppingListItemDto(), {
@@ -277,7 +274,6 @@ export class ShoppingListItemService {
               });
               await this.pantryItemService.createFromShoppingList(dto, userId);
             } catch (error) {
-              // Log but don't fail - item may already exist in pantry
               if (error instanceof ConflictException) {
                 this.logger.debug(
                   `Item ${item.foodId} already in pantry, skipping`,

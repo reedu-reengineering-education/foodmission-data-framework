@@ -1,7 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 import {
-  IsNotEmpty,
   IsOptional,
   IsUUID,
   IsEnum,
