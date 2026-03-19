@@ -12,24 +12,19 @@ export class PantryRepository {
   async findByUserId(userId: string): Promise<PantryWithRelations | null> {
     return this.prisma.pantry.findUnique({
       where: { userId },
-      include: { items: { include: { food: true } } },
+      include: { items: { include: { food: true, foodCategory: true } } }
     });
   }
 
   async getOrCreate(userId: string): Promise<PantryWithRelations> {
-    // Try to find existing pantry
-    const existing = await this.findByUserId(userId);
-    if (existing) {
-      return existing;
-    }
-
-    // Create new pantry if doesn't exist
-    return this.prisma.pantry.create({
-      data: { userId },
+    return this.prisma.pantry.upsert({
+      where: { userId },
+      create: { userId },
+      update: {},
       include: {
         items: {
           include: {
-            food: true,
+            food: true, foodCategory: true,
           },
         },
       },
@@ -42,7 +37,7 @@ export class PantryRepository {
       include: {
         items: {
           include: {
-            food: true,
+            food: true, foodCategory: true,
           },
         },
       },

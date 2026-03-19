@@ -61,7 +61,7 @@ export class PantryItemService {
     createDto: CreatePantryItemDto,
     userId: string,
   ): Promise<PantryItemResponseDto> {
-    try{
+    try {
       // Get or auto-create user's pantry
       const pantryId = await this.pantryService.validatePantryExists(userId);
 

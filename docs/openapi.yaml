@@ -1978,6 +1978,10 @@ paths:
                     notes:
                       type: string
                       example: Store in cool place
+                    location:
+                      type: string
+                      example: Pantry shelf A
+                      description: Optional location of the item within your pantry.
                     expiryDate:
                       type: string
                       format: date
@@ -2003,6 +2007,10 @@ paths:
                     notes:
                       type: string
                       example: Store in cool place
+                    location:
+                      type: string
+                      example: Pantry shelf A
+                      description: Optional location of the item within your pantry.
                     expiryDate:
                       type: string
                       format: date

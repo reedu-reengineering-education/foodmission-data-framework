@@ -57,6 +57,11 @@ export class PantryItemController {
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
+            location: {
+              type: 'string',
+              example: 'Pantry shelf A',
+              description: 'Optional location of the item within your pantry.',
+            },
             expiryDate: {
               type: 'string',
               format: 'date',
@@ -77,6 +82,11 @@ export class PantryItemController {
             quantity: { type: 'number', example: 2, minimum: 0.01 },
             unit: { type: 'string', example: 'KG', default: 'PIECES' },
             notes: { type: 'string', example: 'Store in cool place' },
+            location: {
+              type: 'string',
+              example: 'Pantry shelf A',
+              description: 'Optional location of the item within your pantry.',
+            },
             expiryDate: {
               type: 'string',
               format: 'date',
