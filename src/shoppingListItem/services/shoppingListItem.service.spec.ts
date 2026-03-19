@@ -736,13 +736,32 @@ describe('ShoppingListItemService', () => {
   });
 
   describe('clearCheckedItems', () => {
+    const checkedFoodItem = {
+      ...mockShoppingListItem,
+      id: 'checked-food-item',
+      checked: true,
+      foodId: 'food-1',
+      foodCategoryId: null,
+    };
+
+    const checkedCategoryItem = {
+      ...mockShoppingListItem,
+      id: 'checked-category-item',
+      checked: true,
+      foodId: null,
+      foodCategoryId: 'category-1',
+    };
+
     it('should clear checked items from a shopping list', async () => {
       mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue(mockUser);
+      repository.findByShoppingListId.mockResolvedValue([]);
       repository.clearCheckedItems.mockResolvedValue(undefined as any);
 
       await service.clearCheckedItems('list-1', 'user-1');
 
       expect(mockShoppingListRepository.findById).toHaveBeenCalled();
+      expect(mockUserRepository.findById).toHaveBeenCalledWith('user-1');
       expect(repository.clearCheckedItems).toHaveBeenCalled();
 
       const callArgs = repository.clearCheckedItems.mock.calls[0];
@@ -774,6 +793,152 @@ describe('ShoppingListItemService', () => {
       ).rejects.toThrow(ForbiddenException);
 
       expect(repository.clearCheckedItems).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when user not found', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.clearCheckedItems('list-1', 'user-1'),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(repository.clearCheckedItems).not.toHaveBeenCalled();
+    });
+
+    it('should add food items to pantry when shouldAutoAddToPantry is true', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([checkedFoodItem]);
+      mockPantryItemService.createFromShoppingList.mockResolvedValue({});
+      repository.clearCheckedItems.mockResolvedValue({ count: 1 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      expect(repository.findByShoppingListId).toHaveBeenCalledWith(
+        'list-1',
+        'user-1',
+        { checked: true },
+      );
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
+        expect.objectContaining({
+          foodId: 'food-1',
+          quantity: checkedFoodItem.quantity,
+          unit: checkedFoodItem.unit,
+        }),
+        'user-1',
+      );
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should NOT add items to pantry when shouldAutoAddToPantry is false', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: false,
+      });
+      repository.clearCheckedItems.mockResolvedValue({ count: 1 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      expect(repository.findByShoppingListId).not.toHaveBeenCalled();
+      expect(mockPantryItemService.createFromShoppingList).not.toHaveBeenCalled();
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should skip food category items (only add food items to pantry)', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([
+        checkedFoodItem,
+        checkedCategoryItem,
+      ]);
+      mockPantryItemService.createFromShoppingList.mockResolvedValue({});
+      repository.clearCheckedItems.mockResolvedValue({ count: 2 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      // Should only be called once for the food item, not for the category item
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledTimes(1);
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
+        expect.objectContaining({ foodId: 'food-1' }),
+        'user-1',
+      );
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should handle ConflictException (duplicate) gracefully and continue', async () => {
+      const secondFoodItem = {
+        ...checkedFoodItem,
+        id: 'checked-food-item-2',
+        foodId: 'food-2',
+      };
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([
+        checkedFoodItem,
+        secondFoodItem,
+      ]);
+      // First item throws ConflictException, second succeeds
+      mockPantryItemService.createFromShoppingList
+        .mockRejectedValueOnce(new ConflictException('Already in pantry'))
+        .mockResolvedValueOnce({});
+      repository.clearCheckedItems.mockResolvedValue({ count: 2 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      // Both items should be attempted
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledTimes(2);
+      // Items should still be cleared
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should continue clearing even if pantry item creation fails with other errors', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([checkedFoodItem]);
+      mockPantryItemService.createFromShoppingList.mockRejectedValue(
+        new Error('Unexpected error'),
+      );
+      repository.clearCheckedItems.mockResolvedValue({ count: 1 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      // Should still delete items even if pantry creation failed
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should still delete items after adding to pantry', async () => {
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        shouldAutoAddToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([checkedFoodItem]);
+      mockPantryItemService.createFromShoppingList.mockResolvedValue({});
+      repository.clearCheckedItems.mockResolvedValue({ count: 1 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      // First pantry item is created
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalled();
+      // Then checked items are cleared
+      expect(repository.clearCheckedItems).toHaveBeenCalledWith(
+        'list-1',
+        'user-1',
+      );
     });
   });
 

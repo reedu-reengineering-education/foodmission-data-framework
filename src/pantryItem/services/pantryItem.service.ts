@@ -41,14 +41,7 @@ export class PantryItemService {
   async createFromShoppingList(
     createShoppingListItemDto: CreateShoppingListItemDto,
     userId: string,
-    pantryId: string,
   ): Promise<PantryItemResponseDto> {
-    if (!pantryId) {
-      throw new BadRequestException(
-        'pantryId is required to create pantry item from shopping list',
-      );
-    }
-
     if (!createShoppingListItemDto.foodId) {
       throw new BadRequestException(
         'Only food items (not food categories) can be added to pantry from shopping list',
@@ -56,7 +49,6 @@ export class PantryItemService {
     }
 
     const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
-      pantryId,
       foodId: createShoppingListItemDto.foodId,
       quantity: createShoppingListItemDto.quantity,
       unit: createShoppingListItemDto.unit,
@@ -70,7 +62,8 @@ export class PantryItemService {
     userId: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      await this.pantryService.validatePantryExists(userId, createDto.pantryId);
+      // Get or auto-create user's pantry
+      const pantryId = await this.pantryService.validatePantryExists(userId);
 
       const { foodId, foodCategoryId } = createDto;
 
@@ -78,7 +71,7 @@ export class PantryItemService {
       if (foodId) {
         await this.validateFoodExists(foodId);
         const existingItem = await this.pantryItemRepository.findFoodInPantry(
-          createDto.pantryId,
+          pantryId,
           foodId,
         );
 
@@ -91,7 +84,7 @@ export class PantryItemService {
         await this.validateFoodCategoryExists(foodCategoryId);
         const existingItem =
           await this.pantryItemRepository.findFoodCategoryInPantry(
-            createDto.pantryId,
+            pantryId,
             foodCategoryId,
           );
 
@@ -117,8 +110,9 @@ export class PantryItemService {
         quantity: createDto.quantity,
         unit: unit,
         notes: createDto.notes,
+        location: createDto.location,
         expiryDate: expiryDate,
-        pantryId: createDto.pantryId,
+        pantryId: pantryId,
         foodId: foodId || null,
         foodCategoryId: foodCategoryId || null,
         itemType,
@@ -160,9 +154,10 @@ export class PantryItemService {
     query: QueryPantryItemDto,
     userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const { pantryId, foodId, foodCategoryId, unit, expiryDate } = query;
+    const { foodId, foodCategoryId, unit, expiryDate } = query;
 
-    await this.pantryService.validatePantryExists(userId, pantryId);
+    // Get or auto-create user's pantry
+    const pantryId = await this.pantryService.validatePantryExists(userId);
 
     if (foodId) {
       await this.validateFoodExists(foodId);
@@ -281,6 +276,7 @@ export class PantryItemService {
         }),
         ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
         ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
+        ...(updateDto.location !== undefined && { location: updateDto.location }),
         ...(expiryDate !== undefined && {
           expiryDate: expiryDate,
         }),
@@ -342,6 +338,7 @@ export class PantryItemService {
         quantity: item.quantity,
         unit: item.unit,
         notes: item.notes,
+        location: item.location,
         expiryDate: item.expiryDate,
         pantryId: item.pantryId,
         foodId: item.foodId,

@@ -29,7 +29,6 @@ export class PantryItemTestBuilder {
     overrides?: Partial<CreatePantryItemDto>,
   ): CreatePantryItemDto {
     return {
-      pantryId: TEST_IDS.PANTRY,
       foodId: TEST_IDS.FOOD,
       quantity: TEST_DATA.QUANTITY,
       unit: Unit.KG,
@@ -54,7 +53,6 @@ export class PantryItemTestBuilder {
     overrides?: Partial<QueryPantryItemDto>,
   ): QueryPantryItemDto {
     return {
-      pantryId: TEST_IDS.PANTRY,
       ...overrides,
     };
   }
