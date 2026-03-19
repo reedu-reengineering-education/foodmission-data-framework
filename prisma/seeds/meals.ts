@@ -1,4 +1,78 @@
-import { PrismaClient, Meal } from '@prisma/client';
+import {
+  DietaryLabel,
+  Meal,
+  MealCategory,
+  MealCourse,
+  PrismaClient,
+  Recipe,
+} from '@prisma/client';
+
+function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
+  mealCategories: MealCategory[];
+  mealCourse?: MealCourse;
+  dietaryLabels: DietaryLabel[];
+} {
+  const category = recipe.category?.trim().toLowerCase();
+  const mealCategories = new Set<MealCategory>();
+  const dietaryLabels = new Set<DietaryLabel>();
+  let mealCourse: MealCourse | undefined;
+
+  switch (category) {
+    case 'beef':
+    case 'goat':
+    case 'lamb':
+    case 'pork':
+      mealCategories.add(MealCategory.MEAT);
+      break;
+    case 'chicken':
+      mealCategories.add(MealCategory.POULTRY);
+      break;
+    case 'seafood':
+      mealCategories.add(MealCategory.SEAFOOD);
+      break;
+    case 'pasta':
+      mealCategories.add(MealCategory.PASTA_NOODLES);
+      break;
+    case 'vegetarian':
+      mealCategories.add(MealCategory.PLANT_PROTEIN);
+      dietaryLabels.add(DietaryLabel.VEGETARIAN);
+      break;
+    case 'vegan':
+      mealCategories.add(MealCategory.PLANT_PROTEIN);
+      dietaryLabels.add(DietaryLabel.VEGAN);
+      break;
+    case 'starter':
+      mealCourse = MealCourse.STARTER;
+      break;
+    case 'side':
+      mealCourse = MealCourse.SIDE;
+      break;
+    case 'dessert':
+      mealCourse = MealCourse.DESSERT;
+      break;
+    default:
+      mealCategories.add(MealCategory.OTHER);
+      break;
+  }
+
+  for (const raw of recipe.dietaryLabels) {
+    const normalized = raw.trim().toLowerCase();
+    if (normalized === 'vegan') dietaryLabels.add(DietaryLabel.VEGAN);
+    if (normalized === 'vegetarian') dietaryLabels.add(DietaryLabel.VEGETARIAN);
+    if (normalized === 'pescatarian') dietaryLabels.add(DietaryLabel.PESCATARIAN);
+    if (normalized === 'gluten-free') dietaryLabels.add(DietaryLabel.GLUTEN_FREE);
+    if (normalized === 'dairy-free') dietaryLabels.add(DietaryLabel.DAIRY_FREE);
+    if (normalized === 'nut-free') dietaryLabels.add(DietaryLabel.NUT_FREE);
+    if (normalized === 'halal') dietaryLabels.add(DietaryLabel.HALAL);
+    if (normalized === 'kosher') dietaryLabels.add(DietaryLabel.KOSHER);
+  }
+
+  return {
+    mealCategories: [...mealCategories],
+    mealCourse,
+    dietaryLabels: [...dietaryLabels],
+  };
+}
 
 /**
  * Seed Meal records that are linked to existing recipes.
@@ -70,6 +144,7 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
   if (developer) {
     for (let i = 0; i < 2; i++) {
       const recipe = nextRecipe();
+      const taxonomy = mapRecipeCategoryToMealTaxonomy(recipe);
       const meal = await prisma.meal.create({
         data: {
           name: recipe.title,
@@ -81,6 +156,9 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
           sustainabilityScore: recipe.sustainabilityScore ?? undefined,
           price: recipe.price ?? undefined,
           barcode: null,
+          mealCategories: taxonomy.mealCategories,
+          mealCourse: taxonomy.mealCourse,
+          dietaryLabels: taxonomy.dietaryLabels,
         },
       });
       meals.push(meal);
@@ -95,6 +173,7 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
   if (admin) {
     for (let i = 0; i < 3; i++) {
       const recipe = nextRecipe();
+      const taxonomy = mapRecipeCategoryToMealTaxonomy(recipe);
       const meal = await prisma.meal.create({
         data: {
           name: recipe.title,
@@ -106,6 +185,9 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
           sustainabilityScore: recipe.sustainabilityScore ?? undefined,
           price: recipe.price ?? undefined,
           barcode: null,
+          mealCategories: taxonomy.mealCategories,
+          mealCourse: taxonomy.mealCourse,
+          dietaryLabels: taxonomy.dietaryLabels,
         },
       });
       meals.push(meal);

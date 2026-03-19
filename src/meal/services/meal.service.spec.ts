@@ -119,6 +119,37 @@ describe('MealService', () => {
     });
   });
 
+  it('should build taxonomy filters for findAll', async () => {
+    const paginationResult = {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    };
+    mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
+
+    await service.findAll(userId, {
+      mealCategory: 'MEAT' as any,
+      mealCourse: 'MAIN' as any,
+      dietaryLabel: 'GLUTEN_FREE' as any,
+      page: 1,
+      limit: 10,
+    });
+
+    expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith({
+      skip: 0,
+      take: 10,
+      where: {
+        userId,
+        mealCategories: { has: 'MEAT' },
+        mealCourse: 'MAIN',
+        dietaryLabels: { has: 'GLUTEN_FREE' },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  });
+
   // === Tests for revised database relations ===
 
   describe('Meal-Recipe relation (Meal optionally references Recipe)', () => {

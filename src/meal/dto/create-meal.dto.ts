@@ -7,7 +7,11 @@ import {
   Min,
   IsObject,
   IsNumber,
+  IsArray,
+  IsEnum,
+  ArrayMaxSize,
 } from 'class-validator';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class CreateMealDto {
   @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
@@ -66,4 +70,37 @@ export class CreateMealDto {
   @IsOptional()
   @IsString()
   barcode?: string;
+
+  @ApiPropertyOptional({
+    description: 'Meal categories for filtering and analytics',
+    enum: MealCategory,
+    isArray: true,
+    example: [MealCategory.PASTA_NOODLES, MealCategory.MEAT],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(3)
+  @IsEnum(MealCategory, { each: true })
+  mealCategories?: MealCategory[];
+
+  @ApiPropertyOptional({
+    description: 'Meal course role',
+    enum: MealCourse,
+    example: MealCourse.MAIN,
+  })
+  @IsOptional()
+  @IsEnum(MealCourse)
+  mealCourse?: MealCourse;
+
+  @ApiPropertyOptional({
+    description: 'Dietary labels associated with this meal',
+    enum: DietaryLabel,
+    isArray: true,
+    example: [DietaryLabel.GLUTEN_FREE],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(8)
+  @IsEnum(DietaryLabel, { each: true })
+  dietaryLabels?: DietaryLabel[];
 }
