@@ -34,30 +34,14 @@ export interface LoggerConfig {
  * Custom format to restructure log fields (keeps logs as objects, not strings)
  */
 const customFormat = winston.format((info) => {
-  const {
-    timestamp,
-    level,
-    message,
-    context,
-    trace,
-    traceId,
-    userId,
-    ...meta
-  } = info;
-
-  const result: Record<string, any> = {
-    timestamp,
-    level,
-    message,
-    ...meta,
-  };
-
-  if (context) result.context = context;
-  if (traceId) result.trace_id = traceId;
-  if (userId) result.userId = userId;
-  if (trace) result.trace = trace;
-
-  return result;
+  // Rename traceId to trace_id for consistency
+  if (info.traceId) {
+    info.trace_id = info.traceId;
+    delete info.traceId;
+  }
+  
+  // Return the modified info object
+  return info;
 });
 
 /**
