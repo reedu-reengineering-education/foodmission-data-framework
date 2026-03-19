@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class MealResponseDto {
   @ApiProperty({ description: 'Meal id', format: 'uuid' })
@@ -40,6 +41,26 @@ export class MealResponseDto {
   @ApiPropertyOptional({ description: 'Barcode' })
   @Expose()
   barcode?: string | null;
+
+  @ApiPropertyOptional({
+    description: 'Meal categories',
+    enum: MealCategory,
+    isArray: true,
+  })
+  @Expose()
+  mealCategories?: MealCategory[];
+
+  @ApiPropertyOptional({ description: 'Meal course', enum: MealCourse })
+  @Expose()
+  mealCourse?: MealCourse | null;
+
+  @ApiPropertyOptional({
+    description: 'Dietary labels',
+    enum: DietaryLabel,
+    isArray: true,
+  })
+  @Expose()
+  dietaryLabels?: DietaryLabel[];
 
   @ApiProperty({ description: 'User owner', format: 'uuid' })
   @Expose()

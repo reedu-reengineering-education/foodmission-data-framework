@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import {
+  DietaryLabel,
+  MealCategory,
+  MealCourse,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
@@ -27,6 +33,9 @@ export interface CreateMealData {
   sustainabilityScore?: number;
   price?: number;
   barcode?: string;
+  mealCategories?: MealCategory[];
+  mealCourse?: MealCourse;
+  dietaryLabels?: DietaryLabel[];
   userId: string;
 }
 

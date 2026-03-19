@@ -44,6 +44,12 @@ export class MealService {
 
     const meal = await this.mealRepository.create({
       ...createMealDto,
+      ...(createMealDto.mealCategories
+        ? { mealCategories: this.uniqueEnumArray(createMealDto.mealCategories) }
+        : {}),
+      ...(createMealDto.dietaryLabels
+        ? { dietaryLabels: this.uniqueEnumArray(createMealDto.dietaryLabels) }
+        : {}),
       userId,
     });
 
@@ -54,12 +60,23 @@ export class MealService {
     userId: string,
     query: QueryMealDto,
   ): Promise<MultipleMealResponseDto> {
-    const { page = 1, limit = 10, recipeId, search } = query;
+    const {
+      page = 1,
+      limit = 10,
+      recipeId,
+      search,
+      mealCategory,
+      mealCourse,
+      dietaryLabel,
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.MealWhereInput = {
       userId,
       ...(recipeId ? { recipeId } : {}),
+      ...(mealCategory ? { mealCategories: { has: mealCategory } } : {}),
+      ...(mealCourse ? { mealCourse } : {}),
+      ...(dietaryLabel ? { dietaryLabels: { has: dietaryLabel } } : {}),
       ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
     };
 
@@ -103,7 +120,15 @@ export class MealService {
       throw new ConflictException('Meal with this barcode already exists');
     }
 
-    const updated = await this.mealRepository.update(id, updateMealDto);
+    const updated = await this.mealRepository.update(id, {
+      ...updateMealDto,
+      ...(updateMealDto.mealCategories
+        ? { mealCategories: this.uniqueEnumArray(updateMealDto.mealCategories) }
+        : {}),
+      ...(updateMealDto.dietaryLabels
+        ? { dietaryLabels: this.uniqueEnumArray(updateMealDto.dietaryLabels) }
+        : {}),
+    });
     return this.toResponseDto(updated);
   }
 
@@ -116,5 +141,10 @@ export class MealService {
     return plainToInstance(MealResponseDto, meal, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private uniqueEnumArray<T extends string>(values?: T[]): T[] | undefined {
+    if (!values) return undefined;
+    return Array.from(new Set(values));
   }
 }

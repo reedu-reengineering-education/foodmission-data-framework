@@ -2564,15 +2564,65 @@ paths:
         - name: recipeId
           required: false
           in: query
-          description: Filter by linked recipe (UUID)
+          description: Filter by recipe id
           schema:
-            type: string
             format: uuid
+            type: string
         - name: search
           required: false
           in: query
           description: Search by name substring
           schema:
+            type: string
+        - name: mealCategory
+          required: false
+          in: query
+          description: Filter by meal category
+          schema:
+            enum:
+              - MEAT
+              - POULTRY
+              - SEAFOOD
+              - PASTA_NOODLES
+              - GRAINS_STARCHES
+              - LEGUMES_BEANS
+              - VEGETABLE_BASED
+              - FRUIT_BASED
+              - EGG_BASED
+              - DAIRY_BASED
+              - PLANT_PROTEIN
+              - MIXED
+              - OTHER
+            type: string
+        - name: mealCourse
+          required: false
+          in: query
+          description: Filter by meal course
+          schema:
+            enum:
+              - STARTER
+              - MAIN
+              - SIDE
+              - DESSERT
+              - SNACK
+              - BEVERAGE
+              - SAUCE_CONDIMENT
+              - OTHER
+            type: string
+        - name: dietaryLabel
+          required: false
+          in: query
+          description: Filter by dietary label
+          schema:
+            enum:
+              - VEGAN
+              - VEGETARIAN
+              - PESCATARIAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - NUT_FREE
+              - HALAL
+              - KOSHER
             type: string
         - name: page
           required: false
@@ -3110,6 +3160,41 @@ paths:
           schema:
             default: 10
             type: number
+        - name: category
+          required: false
+          in: query
+          description: Filter by category
+          schema:
+            example: Chicken
+            type: string
+        - name: cuisineType
+          required: false
+          in: query
+          description: Filter by cuisine type
+          schema:
+            example: Italian
+            type: string
+        - name: source
+          required: false
+          in: query
+          description: Filter by source
+          schema:
+            example: themealdb
+            type: string
+        - name: isPublic
+          required: false
+          in: query
+          description: Filter public recipes only
+          schema:
+            type: boolean
+        - name: dietaryLabels
+          required: false
+          in: query
+          description: Filter by dietary labels
+          schema:
+            type: array
+            items:
+              type: string
         - name: tags
           required: false
           in: query
@@ -4400,6 +4485,40 @@ paths:
         - JWT-auth: []
       summary: Promote member to admin
       tags: *ref_22
+  /api/v1/catalog/meal-categories:
+    get:
+      operationId: getMealCategories
+      parameters: []
+      responses:
+        '200':
+          description: Meal categories
+      security:
+        - JWT-auth: []
+      summary: Get available meal categories
+      tags: &ref_23
+        - catalog
+  /api/v1/catalog/meal-courses:
+    get:
+      operationId: getMealCourses
+      parameters: []
+      responses:
+        '200':
+          description: Meal courses
+      security:
+        - JWT-auth: []
+      summary: Get available meal courses
+      tags: *ref_23
+  /api/v1/catalog/dietary-labels:
+    get:
+      operationId: getDietaryLabels
+      parameters: []
+      responses:
+        '200':
+          description: Dietary labels
+      security:
+        - JWT-auth: []
+      summary: Get available dietary labels
+      tags: *ref_23
   /api/v1:
     get:
       description: >-
@@ -4678,7 +4797,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_23
+          enum: &ref_24
             - MALE
             - FEMALE
             - OTHER
@@ -4752,7 +4871,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_23
+          enum: *ref_24
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -4987,7 +5106,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_24
+          enum: &ref_25
             - A
             - B
             - C
@@ -5597,7 +5716,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_24
+          enum: *ref_25
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -6415,8 +6534,8 @@ components:
           example: Grilled chicken salad
         recipeId:
           type: string
-          format: uuid
           description: Optional recipe this meal is based on
+          format: uuid
         calories:
           type: number
           description: Calories for the meal
@@ -6443,6 +6562,57 @@ components:
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
+        mealCategories:
+          type: array
+          description: Meal categories for filtering and analytics
+          example: &ref_27
+            - PASTA_NOODLES
+            - MEAT
+          items: &ref_28
+            type: string
+            enum:
+              - MEAT
+              - POULTRY
+              - SEAFOOD
+              - PASTA_NOODLES
+              - GRAINS_STARCHES
+              - LEGUMES_BEANS
+              - VEGETABLE_BASED
+              - FRUIT_BASED
+              - EGG_BASED
+              - DAIRY_BASED
+              - PLANT_PROTEIN
+              - MIXED
+              - OTHER
+        mealCourse:
+          type: string
+          description: Meal course role
+          enum: &ref_29
+            - STARTER
+            - MAIN
+            - SIDE
+            - DESSERT
+            - SNACK
+            - BEVERAGE
+            - SAUCE_CONDIMENT
+            - OTHER
+          example: MAIN
+        dietaryLabels:
+          type: array
+          description: Dietary labels associated with this meal
+          example: &ref_30
+            - GLUTEN_FREE
+          items: &ref_31
+            type: string
+            enum:
+              - VEGAN
+              - VEGETARIAN
+              - PESCATARIAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - NUT_FREE
+              - HALAL
+              - KOSHER
       required:
         - name
     MealResponseDto:
@@ -6457,8 +6627,8 @@ components:
           description: Meal name
         recipeId:
           type: string
-          format: uuid
           description: Optional recipe this meal is based on
+          format: uuid
         calories:
           type: number
           description: Calories
@@ -6477,6 +6647,51 @@ components:
         barcode:
           type: object
           description: Barcode
+        mealCategories:
+          type: array
+          description: Meal categories
+          items:
+            type: string
+            enum:
+              - MEAT
+              - POULTRY
+              - SEAFOOD
+              - PASTA_NOODLES
+              - GRAINS_STARCHES
+              - LEGUMES_BEANS
+              - VEGETABLE_BASED
+              - FRUIT_BASED
+              - EGG_BASED
+              - DAIRY_BASED
+              - PLANT_PROTEIN
+              - MIXED
+              - OTHER
+        mealCourse:
+          type: string
+          description: Meal course
+          enum:
+            - STARTER
+            - MAIN
+            - SIDE
+            - DESSERT
+            - SNACK
+            - BEVERAGE
+            - SAUCE_CONDIMENT
+            - OTHER
+        dietaryLabels:
+          type: array
+          description: Dietary labels
+          items:
+            type: string
+            enum:
+              - VEGAN
+              - VEGETARIAN
+              - PESCATARIAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - NUT_FREE
+              - HALAL
+              - KOSHER
         userId:
           type: string
           description: User owner
@@ -6529,8 +6744,8 @@ components:
           example: Grilled chicken salad
         recipeId:
           type: string
-          format: uuid
           description: Optional recipe this meal is based on
+          format: uuid
         calories:
           type: number
           description: Calories for the meal
@@ -6554,6 +6769,21 @@ components:
         barcode:
           type: string
           description: Barcode of the meal (if packaged)
+        mealCategories:
+          type: array
+          description: Meal categories for filtering and analytics
+          example: *ref_27
+          items: *ref_28
+        mealCourse:
+          type: string
+          description: Meal course role
+          enum: *ref_29
+          example: MAIN
+        dietaryLabels:
+          type: array
+          description: Dietary labels associated with this meal
+          example: *ref_30
+          items: *ref_31
     MealItemResponseDto:
       type: object
       properties:
@@ -6668,13 +6898,35 @@ components:
           type: string
           description: Optional notes about this meal item
           example: Extra spicy
+    CreateRecipeIngredientDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Ingredient name
+          example: Chicken Breast
+        measure:
+          type: string
+          description: Measurement/amount
+          example: 500g
+        order:
+          type: number
+          description: Order in the recipe
+          example: 1
+          minimum: 0
+        foodId:
+          type: string
+          description: ID of linked Food (OpenFoodFacts product)
+          example: uuid-food-id
+        foodCategoryId:
+          type: string
+          description: ID of linked FoodCategory (NEVO generic food)
+          example: uuid-food-category-id
+      required:
+        - name
     CreateRecipeDto:
       type: object
       properties:
-        mealId:
-          type: string
-          description: Meal identifier this recipe is based on
-          format: uuid
         title:
           type: string
           description: Recipe title
@@ -6703,7 +6955,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_27
+          example: &ref_32
             - vegan
             - quick
           type: array
@@ -6712,7 +6964,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_28
+          example: &ref_33
             carbs: 50
             fats: 10
             fiber: 8
@@ -6726,15 +6978,116 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_29
+          example: &ref_34
             - nuts
             - gluten
           type: array
           items:
             type: string
+        externalId:
+          type: string
+          description: External identifier (e.g., TheMealDB idMeal)
+          example: '52772'
+        source:
+          type: string
+          description: Source of the recipe
+          example: themealdb
+        imageUrl:
+          type: string
+          description: Image URL
+          example: https://www.themealdb.com/images/media/meals/xxx.jpg
+        videoUrl:
+          type: string
+          description: Video URL
+          example: https://www.youtube.com/watch?v=xxx
+        cuisineType:
+          type: string
+          description: Cuisine type
+          example: Italian
+        category:
+          type: string
+          description: Recipe category
+          example: Pasta
+        isPublic:
+          type: boolean
+          description: Whether recipe is publicly visible
+          default: false
+        dietaryLabels:
+          description: Dietary labels
+          example: &ref_35
+            - vegan
+            - gluten-free
+          type: array
+          items:
+            type: string
+        ingredients:
+          description: Recipe ingredients
+          example: &ref_36
+            - name: Chicken Breast
+              measure: 500g
+              order: 1
+            - name: Olive Oil
+              measure: 2 tbsp
+              order: 2
+              foodCategoryId: uuid
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateRecipeIngredientDto'
       required:
-        - mealId
         - title
+    RecipeIngredientResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Ingredient ID
+          format: uuid
+        recipeId:
+          type: string
+          description: Recipe ID
+          format: uuid
+        name:
+          type: string
+          description: Ingredient name
+        measure:
+          type: string
+          description: Measurement/amount
+        order:
+          type: number
+          description: Order in recipe
+        itemType:
+          type: string
+          description: Item type (food or food_category)
+        foodId:
+          type: string
+          description: Linked Food ID
+          format: uuid
+        foodCategoryId:
+          type: string
+          description: Linked FoodCategory ID
+          format: uuid
+        createdAt:
+          format: date-time
+          type: string
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          description: Updated at
+        food:
+          type: object
+          description: Linked Food details
+        foodCategory:
+          type: object
+          description: Linked FoodCategory details
+      required:
+        - id
+        - recipeId
+        - name
+        - order
+        - itemType
+        - createdAt
+        - updatedAt
     RecipeResponseDto:
       type: object
       properties:
@@ -6744,11 +7097,7 @@ components:
           format: uuid
         userId:
           type: string
-          description: Owner user id
-          format: uuid
-        mealId:
-          type: string
-          description: Meal reference id
+          description: Owner user id (null for system recipes)
           format: uuid
         title:
           type: string
@@ -6804,19 +7153,45 @@ components:
           format: date-time
           type: string
           description: Updated at
-        meal:
-          description: Attached meal
-          allOf:
-            - $ref: '#/components/schemas/MealResponseDto'
+        externalId:
+          type: string
+          description: External ID (e.g., TheMealDB idMeal)
+        source:
+          type: string
+          description: Recipe source (themealdb, user, etc.)
+        imageUrl:
+          type: string
+          description: Image URL
+        videoUrl:
+          type: string
+          description: Video URL
+        cuisineType:
+          type: string
+          description: Cuisine type
+        category:
+          type: string
+          description: Category
+        isPublic:
+          type: boolean
+          description: Whether recipe is publicly visible
+        dietaryLabels:
+          description: Dietary labels
+          type: array
+          items:
+            type: string
+        ingredients:
+          description: Recipe ingredients
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipeIngredientResponseDto'
       required:
         - id
-        - userId
-        - mealId
         - title
         - rating
         - ratingCount
         - createdAt
         - updatedAt
+        - isPublic
     MultipleRecipeResponseDto:
       type: object
       properties:
@@ -6845,10 +7220,6 @@ components:
     UpdateRecipeDto:
       type: object
       properties:
-        mealId:
-          type: string
-          description: Meal identifier this recipe is based on
-          format: uuid
         title:
           type: string
           description: Recipe title
@@ -6877,14 +7248,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_27
+          example: *ref_32
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_28
+          example: *ref_33
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -6895,10 +7266,50 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_29
+          example: *ref_34
           type: array
           items:
             type: string
+        externalId:
+          type: string
+          description: External identifier (e.g., TheMealDB idMeal)
+          example: '52772'
+        source:
+          type: string
+          description: Source of the recipe
+          example: themealdb
+        imageUrl:
+          type: string
+          description: Image URL
+          example: https://www.themealdb.com/images/media/meals/xxx.jpg
+        videoUrl:
+          type: string
+          description: Video URL
+          example: https://www.youtube.com/watch?v=xxx
+        cuisineType:
+          type: string
+          description: Cuisine type
+          example: Italian
+        category:
+          type: string
+          description: Recipe category
+          example: Pasta
+        isPublic:
+          type: boolean
+          description: Whether recipe is publicly visible
+          default: false
+        dietaryLabels:
+          description: Dietary labels
+          example: *ref_35
+          type: array
+          items:
+            type: string
+        ingredients:
+          description: Recipe ingredients
+          example: *ref_36
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateRecipeIngredientDto'
     CreateMealLogDto:
       type: object
       properties:
@@ -6909,7 +7320,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_30
+          enum: &ref_37
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -7017,7 +7428,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_30
+          enum: *ref_37
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)

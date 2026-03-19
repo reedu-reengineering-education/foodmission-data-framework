@@ -413,6 +413,9 @@ model Meal {
   price               Float?
   barcode             String?    @unique
   userId              String
+  mealCategories      MealCategory[] @default([])
+  mealCourse          MealCourse?
+  dietaryLabels       DietaryLabel[] @default([])
 
   // Optional link to a recipe this meal is based on
   recipeId            String?
@@ -591,6 +594,44 @@ enum TypeOfMeal {
   DINNER
   SNACK
   SPECIAL_DRINKS
+}
+
+enum MealCategory {
+  MEAT
+  POULTRY
+  SEAFOOD
+  PASTA_NOODLES
+  GRAINS_STARCHES
+  LEGUMES_BEANS
+  VEGETABLE_BASED
+  FRUIT_BASED
+  EGG_BASED
+  DAIRY_BASED
+  PLANT_PROTEIN
+  MIXED
+  OTHER
+}
+
+enum MealCourse {
+  STARTER
+  MAIN
+  SIDE
+  DESSERT
+  SNACK
+  BEVERAGE
+  SAUCE_CONDIMENT
+  OTHER
+}
+
+enum DietaryLabel {
+  VEGAN
+  VEGETARIAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  NUT_FREE
+  HALAL
+  KOSHER
 }
 
 
