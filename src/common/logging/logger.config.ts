@@ -31,6 +31,36 @@ export interface LoggerConfig {
 }
 
 /**
+ * Custom format to restructure log fields (keeps logs as objects, not strings)
+ */
+const customFormat = winston.format((info) => {
+  const {
+    timestamp,
+    level,
+    message,
+    context,
+    trace,
+    traceId,
+    userId,
+    ...meta
+  } = info;
+
+  const result: Record<string, any> = {
+    timestamp,
+    level,
+    message,
+    ...meta,
+  };
+
+  if (context) result.context = context;
+  if (traceId) result.trace_id = traceId;
+  if (userId) result.userId = userId;
+  if (trace) result.trace = trace;
+
+  return result;
+});
+
+/**
  * Create logger configuration from environment variables
  */
 export const createLoggerConfig = (): LoggerConfig => ({
@@ -43,33 +73,8 @@ export const createLoggerConfig = (): LoggerConfig => ({
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.errors({ stack: true }),
+    customFormat(),
     winston.format.json(),
-    winston.format.printf(
-      ({
-        timestamp,
-        level,
-        message,
-        context,
-        trace,
-        traceId,
-        userId,
-        ...meta
-      }) => {
-        const logEntry: any = {
-          timestamp,
-          level,
-          message,
-          ...meta,
-        };
-
-        if (context) logEntry.context = context;
-        if (traceId) logEntry.trace_id = traceId;
-        if (userId) logEntry.userId = userId;
-        if (trace) logEntry.trace = trace;
-
-        return JSON.stringify(logEntry);
-      },
-    ),
   ),
   // OpenTelemetry config
   enableOtel: process.env.OTEL_LOGS_ENABLED === 'true',
