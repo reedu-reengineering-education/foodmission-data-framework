@@ -44,6 +44,7 @@ describe('PantryRepository', () => {
     pantry: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      upsert: jest.fn(),
     },
   };
 
@@ -81,6 +82,7 @@ describe('PantryRepository', () => {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },
@@ -100,6 +102,7 @@ describe('PantryRepository', () => {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },
@@ -109,24 +112,26 @@ describe('PantryRepository', () => {
 
   describe('getOrCreate', () => {
     it('should return existing pantry if it exists', async () => {
-      mockPrismaService.pantry.findUnique.mockResolvedValue(
+      mockPrismaService.pantry.upsert.mockResolvedValue(
         mockPantryWithRelations,
       );
 
       const result = await repository.getOrCreate(TEST_IDS.USER);
 
       expect(result).toEqual(mockPantryWithRelations);
-      expect(prisma.pantry.findUnique).toHaveBeenCalledWith({
+      expect(prisma.pantry.upsert).toHaveBeenCalledWith({
         where: { userId: TEST_IDS.USER },
+        create: { userId: TEST_IDS.USER },
+        update: {},
         include: {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },
       });
-      expect(prisma.pantry.create).not.toHaveBeenCalled();
     });
 
     it('should create new pantry if it does not exist', async () => {
@@ -138,19 +143,20 @@ describe('PantryRepository', () => {
         items: [],
       };
 
-      mockPrismaService.pantry.findUnique.mockResolvedValue(null);
-      mockPrismaService.pantry.create.mockResolvedValue(newPantry);
+      mockPrismaService.pantry.upsert.mockResolvedValue(newPantry);
 
       const result = await repository.getOrCreate(TEST_IDS.USER);
 
       expect(result).toEqual(newPantry);
-      expect(prisma.pantry.findUnique).toHaveBeenCalled();
-      expect(prisma.pantry.create).toHaveBeenCalledWith({
-        data: { userId: TEST_IDS.USER },
+      expect(prisma.pantry.upsert).toHaveBeenCalledWith({
+        where: { userId: TEST_IDS.USER },
+        create: { userId: TEST_IDS.USER },
+        update: {},
         include: {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },
@@ -173,6 +179,7 @@ describe('PantryRepository', () => {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },
@@ -191,6 +198,7 @@ describe('PantryRepository', () => {
           items: {
             include: {
               food: true,
+              foodCategory: true,
             },
           },
         },

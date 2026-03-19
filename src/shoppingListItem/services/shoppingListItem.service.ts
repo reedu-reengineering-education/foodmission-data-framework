@@ -280,7 +280,11 @@ export class ShoppingListItemService {
                 );
               } else {
                 this.logger.warn(
-                  `Failed to add item ${item.id} to pantry: ${error}`,
+                  formatErrorForLogging(
+                    error,
+                    `Failed to add item ${item.id} to pantry`,
+                  ),
+                  error instanceof Error ? error.stack : undefined,
                 );
               }
             }
