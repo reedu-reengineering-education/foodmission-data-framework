@@ -5,24 +5,26 @@
  * It must be imported at the very top of main.ts to ensure proper instrumentation.
  *
  * Features:
- * - Automatic instrumentation of Node.js libraries
- * - Winston log trace ID export
+ * - Native OpenTelemetry Logs API
  * - OTLP log export to observability backends
- * - Distributed tracing (if trace exporter configured)
+ * - Distributed tracing with OTLP trace export
+ * - Automatic instrumentation of Node.js libraries
  * - Graceful shutdown handling
  */
+
+import 'dotenv/config'
 
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
-import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
+import { BatchLogRecordProcessor, LoggerProvider } from '@opentelemetry/sdk-logs';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { loadOtelConfig, validateOtelConfig } from './common/logging/otel.config';
-import "@opentelemetry/winston-transport"
+import { logs } from '@opentelemetry/api-logs';
 
 const config = loadOtelConfig();
 
@@ -48,16 +50,38 @@ if (config.enabled) {
     const resource = resourceFromAttributes({
       [ATTR_SERVICE_NAME]: config.serviceName,
       [ATTR_SERVICE_VERSION]: config.serviceVersion,
+      'service.namespace': config.serviceNamespace,
       'deployment.environment': config.environment,
     });
 
+    // Create and register LoggerProvider explicitly
+    const logRecordProcessor = new BatchLogRecordProcessor(logExporter);
+    const loggerProvider = new LoggerProvider({ 
+      resource,
+      processors: [logRecordProcessor]
+    });
+    logs.setGlobalLoggerProvider(loggerProvider);
+
     const sdk = new NodeSDK({
       resource,
-      logRecordProcessors: [new BatchLogRecordProcessor(logExporter)],
       spanProcessors: [new BatchSpanProcessor(traceExporter)],
       instrumentations: [
+        // Auto-instrument common Node.js libraries
         getNodeAutoInstrumentations({
-          // Disable instrumentations that might be too verbose or unnecessary
+          // HTTP instrumentation (covers Express and outgoing HTTP/HTTPS requests)
+          '@opentelemetry/instrumentation-http': {
+            enabled: true,
+            ignoreIncomingRequestHook: (req) => {
+              // Ignore health check endpoints to reduce noise
+              const url = req.url || '';
+              return url.includes('/health') || url.includes('/metrics');
+            },
+          },
+          // Express instrumentation
+          '@opentelemetry/instrumentation-express': {
+            enabled: true,
+          },
+          // Disable noisy instrumentations
           '@opentelemetry/instrumentation-fs': {
             enabled: false,
           },
@@ -65,7 +89,8 @@ if (config.enabled) {
             enabled: false,
           },
         }),
-        new WinstonInstrumentation(),
+        // Prisma instrumentation for database queries
+        new PrismaInstrumentation(),
       ],
     });
 

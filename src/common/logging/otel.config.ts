@@ -11,6 +11,7 @@ export interface OtelConfig {
   headers?: Record<string, string>;
   serviceName: string;
   serviceVersion: string;
+  serviceNamespace: string;
   environment: string;
 }
 
@@ -23,6 +24,7 @@ export const loadOtelConfig = (): OtelConfig => {
   const enabled = process.env.OTEL_LOGS_ENABLED === 'true';
   const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
   const serviceName = process.env.OTEL_SERVICE_NAME || 'foodmission-api';
+  const serviceNamespace = process.env.OTEL_SERVICE_NAMESPACE || 'foodmission';
   const serviceVersion =
     process.env.npm_package_version || process.env.OTEL_SERVICE_VERSION || '1.0.0';
   const environment = process.env.NODE_ENV || 'development';
@@ -44,6 +46,7 @@ export const loadOtelConfig = (): OtelConfig => {
     endpoint,
     headers,
     serviceName,
+    serviceNamespace,
     serviceVersion,
     environment,
   };

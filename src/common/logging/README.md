@@ -1,6 +1,6 @@
 # Logging & OpenTelemetry Setup
 
-Winston logger with OpenTelemetry integration for distributed tracing and observability.
+Native OpenTelemetry logging for distributed tracing and cloud-native observability.
 
 ## Quick Start
 
@@ -115,5 +115,6 @@ Supports any OTLP backend: Jaeger, Grafana, Datadog, New Relic, etc.
 
 ## Resources
 
-- [Winston Docs](https://github.com/winstonjs/winston)
-- [OpenTelemetry Docs](https://opentelemetry.io/docs/)
+- [OpenTelemetry Logs API](https://opentelemetry.io/docs/specs/otel/logs/)
+- [OpenTelemetry JavaScript SDK](https://opentelemetry.io/docs/languages/js/)
+- [Grafana Loki](https://grafana.com/docs/loki/latest/)
