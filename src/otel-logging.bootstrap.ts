@@ -22,6 +22,7 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { loadOtelConfig, validateOtelConfig } from './common/logging/otel.config';
+import "@opentelemetry/winston-transport"
 
 const config = loadOtelConfig();
 
