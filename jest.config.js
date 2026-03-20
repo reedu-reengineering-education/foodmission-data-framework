@@ -33,7 +33,6 @@ module.exports = {
     '!src/**/*.entity.ts',
     '!src/**/*.module.ts',
     '!src/**/*.config.ts',
-    '!src/**/winston.config.ts',
     '!src/**/logger.config.ts',
     '!src/**/environment.validation.ts',
     '!src/health-check.js',

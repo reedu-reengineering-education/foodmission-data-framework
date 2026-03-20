@@ -51,7 +51,7 @@ The FOODMISSION Data Framework is a production-ready, scalable backend system fo
 
 - ✅ **Health Checks**: Application, database, and external service health monitoring
 - ✅ **Metrics Collection**: Prometheus-compatible metrics endpoint
-- ✅ **Structured Logging**: Winston-based logging with trace IDs
+- ✅ **Structured Logging**: OpenTelemetry native logging with trace correlation
 - ✅ **Performance Monitoring**: Request tracking and performance metrics
 
 ### DevOps & Deployment
