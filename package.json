@@ -111,6 +111,7 @@
     "@opentelemetry/sdk-node": "^0.213.0",
     "@opentelemetry/sdk-trace-base": "^2.6.0",
     "@opentelemetry/semantic-conventions": "^1.40.0",
+    "@opentelemetry/winston-transport": "^0.23.0",
     "@prisma/client": "^6.16.2",
     "axios": "^1.12.2",
     "cache-manager": "^7.2.0",
