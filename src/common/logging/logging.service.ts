@@ -1,10 +1,17 @@
+/**
+ * OpenTelemetry Native Logging Service
+ * 
+ * Uses native OpenTelemetry Logs API for cloud-native observability.
+ * Provides structured logging with automatic trace correlation.
+ */
+
 import { Injectable, LoggerService } from '@nestjs/common';
-import * as winston from 'winston';
-import { createLoggerConfig, createWinstonLogger } from './logger.config';
+import { logs, SeverityNumber } from '@opentelemetry/api-logs';
+import { trace, context } from '@opentelemetry/api';
 import cls from 'cls-hooked';
 
 export interface LogContext {
-  correlationId?: string;
+  traceId?: string;
   userId?: string;
   userEmail?: string;
   requestId?: string;
@@ -17,30 +24,25 @@ export interface LogContext {
 
 @Injectable()
 export class LoggingService implements LoggerService {
-  private readonly logger: winston.Logger;
+  private readonly logger = logs.getLogger('foodmission-api', '1.0.0');
   private readonly namespace = cls.createNamespace('logging');
 
-  constructor() {
-    const config = createLoggerConfig();
-    this.logger = createWinstonLogger(config);
-  }
-
   /**
-   * Set correlation ID for the current request context
+   * Set trace ID for the current request context
    */
-  setCorrelationId(correlationId: string): void {
+  setTraceId(traceId: string): void {
     try {
-      this.namespace.set('correlationId', correlationId);
+      this.namespace.set('traceId', traceId);
     } catch {
       // Ignore CLS context errors - they don't affect functionality
     }
   }
 
   /**
-   * Get correlation ID from the current request context
+   * Get trace ID from the current request context
    */
-  getCorrelationId(): string | undefined {
-    return this.namespace.get('correlationId');
+  getTraceId(): string | undefined {
+    return this.namespace.get('traceId');
   }
 
   /**
@@ -48,7 +50,7 @@ export class LoggingService implements LoggerService {
    */
   setUserContext(keycloakId: string, userEmail?: string): void {
     try {
-      this.namespace.set('userId', keycloakId); // Store keycloakId as userId for logging
+      this.namespace.set('userId', keycloakId);
       if (userEmail) {
         this.namespace.set('userEmail', userEmail);
       }
@@ -86,14 +88,13 @@ export class LoggingService implements LoggerService {
   private getContext(): LogContext {
     const context: LogContext = {};
 
-    const correlationId = this.getCorrelationId();
-    if (correlationId) context.correlationId = correlationId;
+    const traceId = this.getTraceId();
+    if (traceId) context.traceId = traceId;
 
     const userContext = this.getUserContext();
     if (userContext.userId) context.userId = userContext.userId;
     if (userContext.userEmail) context.userEmail = userContext.userEmail;
 
-    // Get other context data
     const requestId = this.namespace.get('requestId');
     if (requestId) context.requestId = requestId;
 
@@ -113,12 +114,75 @@ export class LoggingService implements LoggerService {
   }
 
   /**
+   * Emit a log record with OpenTelemetry
+   */
+  private emit(severity: SeverityNumber, message: string, attributes: Record<string, any> = {}): void {
+    // Get current trace context from OpenTelemetry
+    const span = trace.getSpan(context.active());
+    const spanContext = span?.spanContext();
+
+    // Merge context with attributes
+    const logContext = this.getContext();
+    const allAttributes = {
+      ...logContext,
+      ...attributes,
+    };
+
+    // Add OpenTelemetry trace context if available
+    if (spanContext) {
+      allAttributes['trace_id'] = spanContext.traceId;
+      allAttributes['span_id'] = spanContext.spanId;
+      allAttributes['trace_flags'] = spanContext.traceFlags;
+    }
+
+    // Emit log record
+    this.logger.emit({
+      severityNumber: severity,
+      severityText: this.getSeverityText(severity),
+      body: message,
+      attributes: allAttributes,
+      timestamp: Date.now(),
+    });
+
+    // Also log to console in development
+    if (process.env.NODE_ENV !== 'production') {
+      const consoleMethod = this.getConsoleMethod(severity);
+      consoleMethod(`[${this.getSeverityText(severity)}] ${message}`, attributes);
+    }
+  }
+
+  private getSeverityText(severity: SeverityNumber): string {
+    switch (severity) {
+      case SeverityNumber.TRACE: return 'TRACE';
+      case SeverityNumber.DEBUG: return 'DEBUG';
+      case SeverityNumber.INFO: return 'INFO';
+      case SeverityNumber.WARN: return 'WARN';
+      case SeverityNumber.ERROR: return 'ERROR';
+      case SeverityNumber.FATAL: return 'FATAL';
+      default: return 'INFO';
+    }
+  }
+
+  private getConsoleMethod(severity: SeverityNumber): (...args: any[]) => void {
+    switch (severity) {
+      case SeverityNumber.ERROR:
+      case SeverityNumber.FATAL:
+        return console.error;
+      case SeverityNumber.WARN:
+        return console.warn;
+      case SeverityNumber.DEBUG:
+      case SeverityNumber.TRACE:
+        return console.debug;
+      default:
+        return console.log;
+    }
+  }
+
+  /**
    * Log an error message
    */
   error(message: string, trace?: string, context?: string): void {
-    const logContext = this.getContext();
-    this.logger.error(message, {
-      ...logContext,
+    this.emit(SeverityNumber.ERROR, message, {
       ...(context && { context }),
       ...(trace && { trace }),
     });
@@ -128,9 +192,7 @@ export class LoggingService implements LoggerService {
    * Log a warning message
    */
   warn(message: string, context?: string): void {
-    const logContext = this.getContext();
-    this.logger.warn(message, {
-      ...logContext,
+    this.emit(SeverityNumber.WARN, message, {
       ...(context && { context }),
     });
   }
@@ -139,9 +201,7 @@ export class LoggingService implements LoggerService {
    * Log an info message
    */
   log(message: string, context?: string): void {
-    const logContext = this.getContext();
-    this.logger.info(message, {
-      ...logContext,
+    this.emit(SeverityNumber.INFO, message, {
       ...(context && { context }),
     });
   }
@@ -150,9 +210,7 @@ export class LoggingService implements LoggerService {
    * Log a debug message
    */
   debug(message: string, context?: string): void {
-    const logContext = this.getContext();
-    this.logger.debug(message, {
-      ...logContext,
+    this.emit(SeverityNumber.DEBUG, message, {
       ...(context && { context }),
     });
   }
@@ -161,9 +219,8 @@ export class LoggingService implements LoggerService {
    * Log an HTTP request
    */
   http(message: string, meta?: any): void {
-    const logContext = this.getContext();
-    this.logger.log('http', message, {
-      ...logContext,
+    this.emit(SeverityNumber.INFO, message, {
+      log_type: 'http',
       ...meta,
     });
   }
@@ -172,11 +229,20 @@ export class LoggingService implements LoggerService {
    * Log with custom level and metadata
    */
   logWithMeta(level: string, message: string, meta: any): void {
-    const logContext = this.getContext();
-    this.logger.log(level, message, {
-      ...logContext,
-      ...meta,
-    });
+    const severity = this.levelToSeverity(level);
+    this.emit(severity, message, meta);
+  }
+
+  private levelToSeverity(level: string): SeverityNumber {
+    switch (level.toLowerCase()) {
+      case 'error': return SeverityNumber.ERROR;
+      case 'warn': return SeverityNumber.WARN;
+      case 'info': return SeverityNumber.INFO;
+      case 'http': return SeverityNumber.INFO;
+      case 'debug': return SeverityNumber.DEBUG;
+      case 'verbose': return SeverityNumber.TRACE;
+      default: return SeverityNumber.INFO;
+    }
   }
 
   /**
@@ -189,16 +255,15 @@ export class LoggingService implements LoggerService {
     success: boolean,
     error?: Error,
   ): void {
-    const logContext = this.getContext();
-    const level = success ? 'debug' : 'error';
+    const severity = success ? SeverityNumber.DEBUG : SeverityNumber.ERROR;
     const message = `Database ${operation} on ${table} ${success ? 'completed' : 'failed'} in ${duration}ms`;
 
-    this.logger.log(level, message, {
-      ...logContext,
+    this.emit(severity, message, {
       operation,
       table,
       duration,
       success,
+      log_type: 'database',
       ...(error && { error: error.message, stack: error.stack }),
     });
   }
@@ -212,14 +277,13 @@ export class LoggingService implements LoggerService {
     success: boolean = true,
     details?: any,
   ): void {
-    const logContext = this.getContext();
-    const level = success ? 'info' : 'warn';
+    const severity = success ? SeverityNumber.INFO : SeverityNumber.WARN;
     const message = `Authentication event: ${event} ${success ? 'succeeded' : 'failed'}`;
 
-    this.logger.log(level, message, {
-      ...logContext,
+    this.emit(severity, message, {
       event,
       authSuccess: success,
+      log_type: 'auth',
       ...(userId && { targetUserId: userId }),
       ...details,
     });
@@ -234,14 +298,13 @@ export class LoggingService implements LoggerService {
     entityId: string,
     details?: any,
   ): void {
-    const logContext = this.getContext();
     const message = `Business event: ${event} for ${entityType}:${entityId}`;
 
-    this.logger.info(message, {
-      ...logContext,
+    this.emit(SeverityNumber.INFO, message, {
       businessEvent: event,
       entityType,
       entityId,
+      log_type: 'business',
       ...details,
     });
   }
@@ -257,27 +320,26 @@ export class LoggingService implements LoggerService {
     statusCode: number,
     success: boolean,
   ): void {
-    const logContext = this.getContext();
-    const level = success ? 'info' : 'warn';
+    const severity = success ? SeverityNumber.INFO : SeverityNumber.WARN;
     const message = `External API call to ${service} ${method} ${endpoint} ${success ? 'succeeded' : 'failed'} (${statusCode}) in ${duration}ms`;
 
-    this.logger.log(level, message, {
-      ...logContext,
+    this.emit(severity, message, {
       externalService: service,
       endpoint,
       method,
       duration,
       statusCode,
       success,
+      log_type: 'external_api',
     });
   }
 
   /**
-   * Run a function within a correlation context
+   * Run a function within a trace context
    */
-  runWithCorrelationId<T>(correlationId: string, fn: () => T): T {
+  runWithTraceId<T>(traceId: string, fn: () => T): T {
     return this.namespace.runAndReturn(() => {
-      this.setCorrelationId(correlationId);
+      this.setTraceId(traceId);
       return fn();
     });
   }

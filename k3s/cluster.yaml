@@ -1,15 +1,15 @@
 cluster_name: foodmission-k3s
-protect_against_deletion: false
+protect_against_deletion: true
 kubeconfig_path: "~/.kube/config"  # Default location for kubeconfig
 protect_against_deletion: true
-k3s_version: v1.35.0+k3s1
+k3s_version: v1.35.1+k3s1
 
 networking:
   ssh:
     port: 22
     use_agent: false
-    public_key_path: "~/.ssh/id_ed25519.pub"
-    private_key_path: "~/.ssh/id_ed25519"
+    public_key_path: "~/.ssh/foodmission_reedu_id_ed25519.pub"
+    private_key_path: "~/.ssh/foodmission_reedu_id_ed25519"
   allowed_networks:
     ssh:
       - 0.0.0.0/0
