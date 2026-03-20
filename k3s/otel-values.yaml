@@ -4,14 +4,28 @@ image:
 presets:
   clusterMetrics:
     enabled: true
+  # Disable automatic log collection from k8s to avoid duplicate plain-text logs
   logsCollection:
-    enabled: true
+    enabled: false
 config:
-  # deltatocumulative processor is needed to convert metrics with delta temporality to cumulative temporality.
-  # VictoriaMetrics doesn't support delta temporality. Skip this processor if you don't use delta temporality.
   processors:
-    deltatocumulative:
-      max_stale: 5m
+    batch:
+      timeout: 10s
+      send_batch_size: 1024
+    memory_limiter:
+      check_interval: 1s
+      limit_mib: 512
+    resource:
+      attributes:
+        - key: service.namespace
+          value: foodmission
+          action: upsert
+    # Add attributes processor to help identify log source
+    attributes/logs:
+      actions:
+        - key: log.source
+          value: "otlp"
+          action: insert
   receivers:
     otlp:
       protocols:
@@ -20,32 +34,38 @@ config:
         http:
           endpoint: 0.0.0.0:4318
   exporters:
-    otlphttp/victoriametrics:
-      metrics_endpoint: http://vmsingle-victoria-metrics-single-server.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
-      compression: gzip
+    # Debug exporter to see what's being received
+    debug:
+      verbosity: detailed
+      sampling_initial: 5
+      sampling_thereafter: 200
+    # Loki for logs
+    otlphttp/loki:
+      endpoint: http://loki.observability.svc.cluster.local:3100/otlp
       tls:
         insecure: true
-    otlphttp/victorialogs:
-      logs_endpoint: http://victoria-logs-victoria-logs-single-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
-      compression: gzip
+    # Tempo for traces
+    otlp/tempo:
+      endpoint: tempo.observability.svc.cluster.local:4317
       tls:
         insecure: true
-    otlphttp/victoriatraces:
-      traces_endpoint: http://victoria-traces-vt-single-server.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
-      compression: gzip
+    # Prometheus for metrics
+    prometheusremotewrite:
+      endpoint: http://prometheus-server.observability.svc.cluster.local:80/api/v1/write
       tls:
         insecure: true
   service:
     pipelines:
       logs:
         receivers: [otlp]
-        processors: []
-        exporters: [otlphttp/victorialogs]
-      metrics:
-        receivers: [otlp]
-        processors: [deltatocumulative]
-        exporters: [otlphttp/victoriametrics]
+        processors: [memory_limiter, attributes/logs, batch, resource]
+        exporters: [debug, otlphttp/loki]
+      # Metrics pipeline disabled until Prometheus is installed
+      # metrics:
+      #   receivers: [otlp]
+      #   processors: [memory_limiter, batch, resource]
+      #   exporters: [prometheusremotewrite]
       traces:
         receivers: [otlp]
-        processors: []
-        exporters: [otlphttp/victoriatraces]
+        processors: [memory_limiter, batch, resource]
+        exporters: [otlp/tempo]
