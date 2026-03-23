@@ -410,66 +410,7 @@ npm run db:seed:test
 
 # Seed production database (be careful!)
 npm run db:seed
-
-# Seed TheMealDB recipes (run after OFF + NEVO are seeded)
-npx ts-node prisma/seeds/themealdb.ts
 ```
-
-### External Data Sources
-
-The framework integrates data from multiple external sources to provide a comprehensive
-food and recipe database.
-
-#### Data Sources Overview
-
-| Source | Type | Description | Records |
-|--------|------|-------------|---------|
-| [OpenFoodFacts](https://openfoodfacts.org/) | Food API | Open food database with barcodes | On-demand |
-| [TheMealDB](https://www.themealdb.com/) | Recipe API | Free recipe database with images | 598 recipes |
-| [NEVO](https://nevo-online.rivm.nl/) | Nutrition DB | Dutch Food Composition Database | 2,152 foods |
-
-#### TheMealDB Integration
-
-TheMealDB recipes are imported as system-level public recipes with:
-- `userId: null` (system recipes)
-- `source: 'themealdb'`
-- `isPublic: true`
-- Ingredients linked to NEVO foods where matches exist
-
-**Seeding commands:**
-```bash
-# Import all TheMealDB recipes
-npx ts-node prisma/seeds/themealdb.ts
-
-# Preview without database changes
-npx ts-node prisma/seeds/themealdb.ts --dry-run
-
-# Import limited set for testing
-npx ts-node prisma/seeds/themealdb.ts --limit=50
-```
-
-**Data:** The seed reads `prisma/seeds/data/themealdb-data.json` (recipes + ingredients + mappings + enriched data) via `prisma/seeds/themealdb.ts`.
-
-#### Ingredient Enrichment Algorithm
-
-TheMealDB ingredients are mapped to NEVO foods using a multi-step algorithm:
-
-1. **Exact Match**: Case-insensitive direct lookup
-2. **Normalized Match**: Remove plurals, trim whitespace, common word substitutions
-3. **Fuzzy Match**: Levenshtein distance with configurable threshold (default: 80%)
-4. **Manual Curation**: Low-confidence matches can be corrected in the mapping data used to build the recipe dataset.
-
-**Confidence levels:**
-- **high** (distance < 0.1): Direct or near-exact match
-- **medium** (0.1 ≤ distance < 0.3): Good fuzzy match
-- **low** (distance ≥ 0.3): Requires manual review
-
-**Coverage statistics:**
-- 836 unique TheMealDB ingredients
-- ~74% (622) mapped to NEVO foods
-- ~26% (214) unmatched (specialty/regional ingredients)
-
-For detailed documentation, see [DATABASE_SEEDING_MIGRATION.md](DATABASE_SEEDING_MIGRATION.md#themealdb-recipe-integration).
 
 ## Testing Strategy
 
