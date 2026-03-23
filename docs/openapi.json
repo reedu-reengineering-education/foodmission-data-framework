@@ -4228,19 +4228,13 @@
             "description": "Filter by meal category",
             "schema": {
               "enum": [
-                "MEAT",
-                "POULTRY",
+                "ANIMAL_PROTEIN",
                 "SEAFOOD",
-                "PASTA_NOODLES",
-                "GRAINS_STARCHES",
-                "LEGUMES_BEANS",
-                "VEGETABLE_BASED",
-                "FRUIT_BASED",
-                "EGG_BASED",
-                "DAIRY_BASED",
                 "PLANT_PROTEIN",
-                "MIXED",
-                "OTHER"
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
               ],
               "type": "string"
             }
@@ -4252,14 +4246,11 @@
             "description": "Filter by meal course",
             "schema": {
               "enum": [
-                "STARTER",
-                "MAIN",
-                "SIDE",
+                "MAIN_DISH",
+                "SIDE_SNACK",
                 "DESSERT",
-                "SNACK",
                 "BEVERAGE",
-                "SAUCE_CONDIMENT",
-                "OTHER"
+                "SAUCE_OTHER"
               ],
               "type": "string"
             }
@@ -4271,14 +4262,15 @@
             "description": "Filter by dietary label",
             "schema": {
               "enum": [
-                "VEGAN",
+                "STANDARD",
                 "VEGETARIAN",
+                "VEGAN",
                 "PESCATARIAN",
-                "GLUTEN_FREE",
-                "DAIRY_FREE",
-                "NUT_FREE",
-                "HALAL",
-                "KOSHER"
+                "KETO",
+                "PALEO",
+                "FLEXITARIAN",
+                "LOW_CARB",
+                "OTHER"
               ],
               "type": "string"
             }
@@ -5738,7 +5730,8 @@
                 "LUNCH",
                 "DINNER",
                 "SNACK",
-                "SPECIAL_DRINKS"
+                "DRINKS",
+                "OTHER"
               ]
             }
           },
@@ -13299,25 +13292,19 @@
             "type": "array",
             "description": "Meal categories for filtering and analytics",
             "example": [
-              "PASTA_NOODLES",
-              "MEAT"
+              "ANIMAL_PROTEIN",
+              "STARCH_GRAIN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "MEAT",
-                "POULTRY",
+                "ANIMAL_PROTEIN",
                 "SEAFOOD",
-                "PASTA_NOODLES",
-                "GRAINS_STARCHES",
-                "LEGUMES_BEANS",
-                "VEGETABLE_BASED",
-                "FRUIT_BASED",
-                "EGG_BASED",
-                "DAIRY_BASED",
                 "PLANT_PROTEIN",
-                "MIXED",
-                "OTHER"
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
               ]
             }
           },
@@ -13325,34 +13312,32 @@
             "type": "string",
             "description": "Meal course role",
             "enum": [
-              "STARTER",
-              "MAIN",
-              "SIDE",
+              "MAIN_DISH",
+              "SIDE_SNACK",
               "DESSERT",
-              "SNACK",
               "BEVERAGE",
-              "SAUCE_CONDIMENT",
-              "OTHER"
+              "SAUCE_OTHER"
             ],
-            "example": "MAIN"
+            "example": "MAIN_DISH"
           },
           "dietaryLabels": {
             "type": "array",
-            "description": "Dietary labels associated with this meal",
+            "description": "Dietary styles associated with this meal",
             "example": [
-              "GLUTEN_FREE"
+              "VEGAN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "VEGAN",
+                "STANDARD",
                 "VEGETARIAN",
+                "VEGAN",
                 "PESCATARIAN",
-                "GLUTEN_FREE",
-                "DAIRY_FREE",
-                "NUT_FREE",
-                "HALAL",
-                "KOSHER"
+                "KETO",
+                "PALEO",
+                "FLEXITARIAN",
+                "LOW_CARB",
+                "OTHER"
               ]
             }
           }
@@ -13408,19 +13393,13 @@
             "items": {
               "type": "string",
               "enum": [
-                "MEAT",
-                "POULTRY",
+                "ANIMAL_PROTEIN",
                 "SEAFOOD",
-                "PASTA_NOODLES",
-                "GRAINS_STARCHES",
-                "LEGUMES_BEANS",
-                "VEGETABLE_BASED",
-                "FRUIT_BASED",
-                "EGG_BASED",
-                "DAIRY_BASED",
                 "PLANT_PROTEIN",
-                "MIXED",
-                "OTHER"
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
               ]
             }
           },
@@ -13428,30 +13407,28 @@
             "type": "string",
             "description": "Meal course",
             "enum": [
-              "STARTER",
-              "MAIN",
-              "SIDE",
+              "MAIN_DISH",
+              "SIDE_SNACK",
               "DESSERT",
-              "SNACK",
               "BEVERAGE",
-              "SAUCE_CONDIMENT",
-              "OTHER"
+              "SAUCE_OTHER"
             ]
           },
           "dietaryLabels": {
             "type": "array",
-            "description": "Dietary labels",
+            "description": "Dietary styles",
             "items": {
               "type": "string",
               "enum": [
-                "VEGAN",
+                "STANDARD",
                 "VEGETARIAN",
+                "VEGAN",
                 "PESCATARIAN",
-                "GLUTEN_FREE",
-                "DAIRY_FREE",
-                "NUT_FREE",
-                "HALAL",
-                "KOSHER"
+                "KETO",
+                "PALEO",
+                "FLEXITARIAN",
+                "LOW_CARB",
+                "OTHER"
               ]
             }
           },
@@ -13563,25 +13540,19 @@
             "type": "array",
             "description": "Meal categories for filtering and analytics",
             "example": [
-              "PASTA_NOODLES",
-              "MEAT"
+              "ANIMAL_PROTEIN",
+              "STARCH_GRAIN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "MEAT",
-                "POULTRY",
+                "ANIMAL_PROTEIN",
                 "SEAFOOD",
-                "PASTA_NOODLES",
-                "GRAINS_STARCHES",
-                "LEGUMES_BEANS",
-                "VEGETABLE_BASED",
-                "FRUIT_BASED",
-                "EGG_BASED",
-                "DAIRY_BASED",
                 "PLANT_PROTEIN",
-                "MIXED",
-                "OTHER"
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
               ]
             }
           },
@@ -13589,34 +13560,32 @@
             "type": "string",
             "description": "Meal course role",
             "enum": [
-              "STARTER",
-              "MAIN",
-              "SIDE",
+              "MAIN_DISH",
+              "SIDE_SNACK",
               "DESSERT",
-              "SNACK",
               "BEVERAGE",
-              "SAUCE_CONDIMENT",
-              "OTHER"
+              "SAUCE_OTHER"
             ],
-            "example": "MAIN"
+            "example": "MAIN_DISH"
           },
           "dietaryLabels": {
             "type": "array",
-            "description": "Dietary labels associated with this meal",
+            "description": "Dietary styles associated with this meal",
             "example": [
-              "GLUTEN_FREE"
+              "VEGAN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "VEGAN",
+                "STANDARD",
                 "VEGETARIAN",
+                "VEGAN",
                 "PESCATARIAN",
-                "GLUTEN_FREE",
-                "DAIRY_FREE",
-                "NUT_FREE",
-                "HALAL",
-                "KOSHER"
+                "KETO",
+                "PALEO",
+                "FLEXITARIAN",
+                "LOW_CARB",
+                "OTHER"
               ]
             }
           }
@@ -14344,7 +14313,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {
@@ -14390,7 +14360,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {
@@ -14487,7 +14458,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {

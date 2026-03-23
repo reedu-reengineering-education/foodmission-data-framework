@@ -8,8 +8,8 @@ describe('CatalogService', () => {
   });
 
   it('should expose meal taxonomy enums', () => {
-    expect(service.getMealCategories()).toContain('MEAT');
-    expect(service.getMealCourses()).toContain('MAIN');
-    expect(service.getDietaryLabels()).toContain('GLUTEN_FREE');
+    expect(service.getMealCategories()).toContain('ANIMAL_PROTEIN');
+    expect(service.getMealCourses()).toContain('MAIN_DISH');
+    expect(service.getDietaryLabels()).toContain('VEGAN');
   });
 });

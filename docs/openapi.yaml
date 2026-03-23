@@ -2581,19 +2581,13 @@ paths:
           description: Filter by meal category
           schema:
             enum:
-              - MEAT
-              - POULTRY
+              - ANIMAL_PROTEIN
               - SEAFOOD
-              - PASTA_NOODLES
-              - GRAINS_STARCHES
-              - LEGUMES_BEANS
-              - VEGETABLE_BASED
-              - FRUIT_BASED
-              - EGG_BASED
-              - DAIRY_BASED
               - PLANT_PROTEIN
-              - MIXED
-              - OTHER
+              - STARCH_GRAIN
+              - VEGGIES_FRUIT
+              - DAIRY
+              - MIXED_OTHER
             type: string
         - name: mealCourse
           required: false
@@ -2601,14 +2595,11 @@ paths:
           description: Filter by meal course
           schema:
             enum:
-              - STARTER
-              - MAIN
-              - SIDE
+              - MAIN_DISH
+              - SIDE_SNACK
               - DESSERT
-              - SNACK
               - BEVERAGE
-              - SAUCE_CONDIMENT
-              - OTHER
+              - SAUCE_OTHER
             type: string
         - name: dietaryLabel
           required: false
@@ -2616,14 +2607,15 @@ paths:
           description: Filter by dietary label
           schema:
             enum:
-              - VEGAN
+              - STANDARD
               - VEGETARIAN
+              - VEGAN
               - PESCATARIAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - NUT_FREE
-              - HALAL
-              - KOSHER
+              - KETO
+              - PALEO
+              - FLEXITARIAN
+              - LOW_CARB
+              - OTHER
             type: string
         - name: page
           required: false
@@ -3510,7 +3502,8 @@ paths:
               - LUNCH
               - DINNER
               - SNACK
-              - SPECIAL_DRINKS
+              - DRINKS
+              - OTHER
         - name: mealFromPantry
           required: false
           in: query
@@ -8524,53 +8517,45 @@ components:
           type: array
           description: Meal categories for filtering and analytics
           example: &ref_27
-            - PASTA_NOODLES
-            - MEAT
+            - ANIMAL_PROTEIN
+            - STARCH_GRAIN
           items: &ref_28
             type: string
             enum:
-              - MEAT
-              - POULTRY
+              - ANIMAL_PROTEIN
               - SEAFOOD
-              - PASTA_NOODLES
-              - GRAINS_STARCHES
-              - LEGUMES_BEANS
-              - VEGETABLE_BASED
-              - FRUIT_BASED
-              - EGG_BASED
-              - DAIRY_BASED
               - PLANT_PROTEIN
-              - MIXED
-              - OTHER
+              - STARCH_GRAIN
+              - VEGGIES_FRUIT
+              - DAIRY
+              - MIXED_OTHER
         mealCourse:
           type: string
           description: Meal course role
           enum: &ref_29
-            - STARTER
-            - MAIN
-            - SIDE
+            - MAIN_DISH
+            - SIDE_SNACK
             - DESSERT
-            - SNACK
             - BEVERAGE
-            - SAUCE_CONDIMENT
-            - OTHER
-          example: MAIN
+            - SAUCE_OTHER
+          example: MAIN_DISH
         dietaryLabels:
           type: array
-          description: Dietary labels associated with this meal
+          description: Dietary styles associated with this meal
           example: &ref_30
-            - GLUTEN_FREE
+            - VEGAN
           items: &ref_31
             type: string
             enum:
-              - VEGAN
+              - STANDARD
               - VEGETARIAN
+              - VEGAN
               - PESCATARIAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - NUT_FREE
-              - HALAL
-              - KOSHER
+              - KETO
+              - PALEO
+              - FLEXITARIAN
+              - LOW_CARB
+              - OTHER
       required:
         - name
     MealResponseDto:
@@ -8611,45 +8596,37 @@ components:
           items:
             type: string
             enum:
-              - MEAT
-              - POULTRY
+              - ANIMAL_PROTEIN
               - SEAFOOD
-              - PASTA_NOODLES
-              - GRAINS_STARCHES
-              - LEGUMES_BEANS
-              - VEGETABLE_BASED
-              - FRUIT_BASED
-              - EGG_BASED
-              - DAIRY_BASED
               - PLANT_PROTEIN
-              - MIXED
-              - OTHER
+              - STARCH_GRAIN
+              - VEGGIES_FRUIT
+              - DAIRY
+              - MIXED_OTHER
         mealCourse:
           type: string
           description: Meal course
           enum:
-            - STARTER
-            - MAIN
-            - SIDE
+            - MAIN_DISH
+            - SIDE_SNACK
             - DESSERT
-            - SNACK
             - BEVERAGE
-            - SAUCE_CONDIMENT
-            - OTHER
+            - SAUCE_OTHER
         dietaryLabels:
           type: array
-          description: Dietary labels
+          description: Dietary styles
           items:
             type: string
             enum:
-              - VEGAN
+              - STANDARD
               - VEGETARIAN
+              - VEGAN
               - PESCATARIAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - NUT_FREE
-              - HALAL
-              - KOSHER
+              - KETO
+              - PALEO
+              - FLEXITARIAN
+              - LOW_CARB
+              - OTHER
         userId:
           type: string
           description: User owner
@@ -8739,10 +8716,10 @@ components:
           type: string
           description: Meal course role
           enum: *ref_29
-          example: MAIN
+          example: MAIN_DISH
         dietaryLabels:
           type: array
-          description: Dietary labels associated with this meal
+          description: Dietary styles associated with this meal
           example: *ref_30
           items: *ref_31
     MealItemResponseDto:
@@ -9286,7 +9263,8 @@ components:
             - LUNCH
             - DINNER
             - SNACK
-            - SPECIAL_DRINKS
+            - DRINKS
+            - OTHER
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)
@@ -9321,7 +9299,8 @@ components:
             - LUNCH
             - DINNER
             - SNACK
-            - SPECIAL_DRINKS
+            - DRINKS
+            - OTHER
         timestamp:
           format: date-time
           type: string

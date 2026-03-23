@@ -130,9 +130,9 @@ describe('MealService', () => {
     mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
 
     await service.findAll(userId, {
-      mealCategory: 'MEAT' as any,
-      mealCourse: 'MAIN' as any,
-      dietaryLabel: 'GLUTEN_FREE' as any,
+      mealCategory: 'ANIMAL_PROTEIN' as any,
+      mealCourse: 'MAIN_DISH' as any,
+      dietaryLabel: 'VEGAN' as any,
       page: 1,
       limit: 10,
     });
@@ -142,9 +142,9 @@ describe('MealService', () => {
       take: 10,
       where: {
         userId,
-        mealCategories: { has: 'MEAT' },
-        mealCourse: 'MAIN',
-        dietaryLabels: { has: 'GLUTEN_FREE' },
+        mealCategories: { has: 'ANIMAL_PROTEIN' },
+        mealCourse: 'MAIN_DISH',
+        dietaryLabels: { has: 'VEGAN' },
       },
       orderBy: { createdAt: 'desc' },
     });

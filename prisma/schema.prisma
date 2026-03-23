@@ -419,7 +419,7 @@ model Meal {
   userId              String
   mealCategories      MealCategory[] @default([])
   mealCourse          MealCourse?
-  dietaryLabels       DietaryLabel[] @default([])
+  dietaryLabels       DietStyle[] @default([])
 
   // Optional link to a recipe this meal is based on
   recipeId            String?
@@ -643,48 +643,55 @@ enum TypeOfMeal {
   LUNCH
   DINNER
   SNACK
-  SPECIAL_DRINKS
+  DRINKS
+  OTHER
 }
 
 enum MealCategory {
-  MEAT
-  POULTRY
+  ANIMAL_PROTEIN // Meat, Poultry, Eggs
   SEAFOOD
-  PASTA_NOODLES
-  GRAINS_STARCHES
-  LEGUMES_BEANS
-  VEGETABLE_BASED
-  FRUIT_BASED
-  EGG_BASED
-  DAIRY_BASED
-  PLANT_PROTEIN
-  MIXED
-  OTHER
+  PLANT_PROTEIN  // Beans, Legumes, Plant-based meats
+  STARCH_GRAIN   // Pasta, Rice, Potatoes
+  VEGGIES_FRUIT  // Fruits & Veggies
+  DAIRY
+  MIXED_OTHER
 }
 
 enum MealCourse {
-  STARTER
-  MAIN
-  SIDE
-  DESSERT
-  SNACK
-  BEVERAGE
-  SAUCE_CONDIMENT
+  MAIN_DISH   // The anchor of the meal
+  SIDE_SNACK  // Anything eaten with a main or between meals
+  DESSERT     // Sweets and treats
+  BEVERAGE    // All liquids
+  SAUCE_OTHER     // Sauces, dressings, or "Other"
+}
+
+enum Allergens {
+  GLUTEN        // Wheat, barley, rye
+  DAIRY         // Milk, cheese, butter, lactose
+  PEANUTS       // Specifically groundnuts
+  TREE_NUTS     // Almonds, walnuts, cashews, etc.
+  SHELLFISH     // Shrimp, crab, lobster
+  FISH          // Finfish (some are allergic to fish but not shellfish)
+  EGGS          // Very common in baking/sauces
+  SOY           // Found in many processed foods and plant proteins
+  SESAME        // Increasingly recognized as a major allergen
+  SULFITES      // Common in wine and dried fruits
+  MUSTARD       // Common in European labeling requirements
+  NIGHTSHADES  // (Optional) Peppers, potatoes, tomatoes (common sensitivity)
   OTHER
 }
 
-enum DietaryLabel {
-  VEGAN
-  VEGETARIAN
-  PESCATARIAN
-  GLUTEN_FREE
-  DAIRY_FREE
-  NUT_FREE
-  HALAL
-  KOSHER
+enum DietStyle {
+  STANDARD      // No specific restrictions
+  VEGETARIAN    // No meat/fish (usually includes eggs/dairy)
+  VEGAN         // No animal products at all
+  PESCATARIAN   // Vegetarian + Seafood
+  KETO          // High fat, ultra-low carb (important for tracking grains/starches)
+  PALEO         // Whole foods, no grains/legumes/dairy
+  FLEXITARIAN   // Primarily plant-based but occasionally eats meat/fish
+  LOW_CARB      // General carb reduction without strict Keto levels
+  OTHER
 }
-
-
 
 enum GroupRole {
   ADMIN

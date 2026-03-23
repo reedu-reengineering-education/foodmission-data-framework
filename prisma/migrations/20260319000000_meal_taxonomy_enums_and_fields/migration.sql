@@ -47,3 +47,18 @@ ADD COLUMN     "mealCategories" "MealCategory"[] NOT NULL DEFAULT ARRAY[]::"Meal
 ADD COLUMN     "mealCourse" "MealCourse",
 ADD COLUMN     "dietaryLabels" "DietaryLabel"[] NOT NULL DEFAULT ARRAY[]::"DietaryLabel"[];
 
+-- Rename MealCategory enum value PRODUCE -> VEGGIES_FRUIT (backward compatible)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM pg_enum e
+    JOIN pg_type t ON e.enumtypid = t.oid
+    WHERE t.typname = 'MealCategory'
+      AND e.enumlabel = 'PRODUCE'
+  ) THEN
+    ALTER TYPE "MealCategory" RENAME VALUE 'PRODUCE' TO 'VEGGIES_FRUIT';
+  END IF;
+END
+$$;
+

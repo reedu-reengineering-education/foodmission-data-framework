@@ -1,8 +1,8 @@
 import {
-  DietaryLabel,
   Meal,
   MealCategory,
   MealCourse,
+  DietStyle,
   PrismaClient,
   Recipe,
 } from '@prisma/client';
@@ -10,11 +10,11 @@ import {
 function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
   mealCategories: MealCategory[];
   mealCourse?: MealCourse;
-  dietaryLabels: DietaryLabel[];
+  dietaryLabels: DietStyle[];
 } {
   const category = recipe.category?.trim().toLowerCase();
   const mealCategories = new Set<MealCategory>();
-  const dietaryLabels = new Set<DietaryLabel>();
+  const dietaryLabels = new Set<DietStyle>();
   let mealCourse: MealCourse | undefined;
 
   switch (category) {
@@ -22,49 +22,61 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
     case 'goat':
     case 'lamb':
     case 'pork':
-      mealCategories.add(MealCategory.MEAT);
+      mealCategories.add(MealCategory.ANIMAL_PROTEIN);
       break;
     case 'chicken':
-      mealCategories.add(MealCategory.POULTRY);
+      mealCategories.add(MealCategory.ANIMAL_PROTEIN);
       break;
     case 'seafood':
       mealCategories.add(MealCategory.SEAFOOD);
       break;
     case 'pasta':
-      mealCategories.add(MealCategory.PASTA_NOODLES);
+      mealCategories.add(MealCategory.STARCH_GRAIN);
       break;
     case 'vegetarian':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietaryLabel.VEGETARIAN);
+      dietaryLabels.add(DietStyle.VEGETARIAN);
       break;
     case 'vegan':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietaryLabel.VEGAN);
+      dietaryLabels.add(DietStyle.VEGAN);
       break;
     case 'starter':
-      mealCourse = MealCourse.STARTER;
+      mealCourse = MealCourse.SIDE_SNACK;
       break;
     case 'side':
-      mealCourse = MealCourse.SIDE;
+      mealCourse = MealCourse.SIDE_SNACK;
       break;
     case 'dessert':
       mealCourse = MealCourse.DESSERT;
       break;
     default:
-      mealCategories.add(MealCategory.OTHER);
+      mealCategories.add(MealCategory.MIXED_OTHER);
       break;
   }
 
   for (const raw of recipe.dietaryLabels) {
     const normalized = raw.trim().toLowerCase();
-    if (normalized === 'vegan') dietaryLabels.add(DietaryLabel.VEGAN);
-    if (normalized === 'vegetarian') dietaryLabels.add(DietaryLabel.VEGETARIAN);
-    if (normalized === 'pescatarian') dietaryLabels.add(DietaryLabel.PESCATARIAN);
-    if (normalized === 'gluten-free') dietaryLabels.add(DietaryLabel.GLUTEN_FREE);
-    if (normalized === 'dairy-free') dietaryLabels.add(DietaryLabel.DAIRY_FREE);
-    if (normalized === 'nut-free') dietaryLabels.add(DietaryLabel.NUT_FREE);
-    if (normalized === 'halal') dietaryLabels.add(DietaryLabel.HALAL);
-    if (normalized === 'kosher') dietaryLabels.add(DietaryLabel.KOSHER);
+    if (normalized === 'vegan') dietaryLabels.add(DietStyle.VEGAN);
+    if (normalized === 'vegetarian') dietaryLabels.add(DietStyle.VEGETARIAN);
+    if (normalized === 'pescatarian') dietaryLabels.add(DietStyle.PESCATARIAN);
+
+    // TheMealDB "dietary labels" contain many specific restriction strings
+    // (gluten-free, dairy-free, etc.). Map what we can, and collapse the rest.
+    if (normalized === 'keto') dietaryLabels.add(DietStyle.KETO);
+    if (normalized === 'paleo') dietaryLabels.add(DietStyle.PALEO);
+    if (normalized === 'flexitarian') dietaryLabels.add(DietStyle.FLEXITARIAN);
+    if (normalized === 'low-carb') dietaryLabels.add(DietStyle.LOW_CARB);
+
+    if (
+      normalized === 'gluten-free' ||
+      normalized === 'dairy-free' ||
+      normalized === 'nut-free' ||
+      normalized === 'halal' ||
+      normalized === 'kosher'
+    ) {
+      dietaryLabels.add(DietStyle.OTHER);
+    }
   }
 
   return {
