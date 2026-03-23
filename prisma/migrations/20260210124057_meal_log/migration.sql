@@ -17,29 +17,6 @@ CREATE TABLE "Meal" (
     CONSTRAINT "Meal_pkey" PRIMARY KEY ("id")
 );
 
--- CreateEnum (Allergens)
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'Allergens') THEN
-    CREATE TYPE "Allergens" AS ENUM (
-      'GLUTEN',
-      'DAIRY',
-      'PEANUTS',
-      'TREE_NUTS',
-      'SHELLFISH',
-      'FISH',
-      'EGGS',
-      'SOY',
-      'SESAME',
-      'SULFITES',
-      'MUSTARD',
-      'NIGHTSHADES',
-      'OTHER'
-    );
-  END IF;
-END
-$$;
-
 -- CreateTable
 CREATE TABLE "recipes" (
     "id" TEXT NOT NULL,
@@ -56,7 +33,7 @@ CREATE TABLE "recipes" (
     "nutritionalInfo" JSONB,
     "sustainabilityScore" DOUBLE PRECISION,
     "price" DOUBLE PRECISION,
-    "allergens" "Allergens"[],
+    "allergens" TEXT[],
     "rating" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "ratingCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -118,44 +95,3 @@ ALTER TABLE "meal_logs" ADD CONSTRAINT "meal_logs_userId_fkey" FOREIGN KEY ("use
 
 -- AddForeignKey
 ALTER TABLE "meal_logs" ADD CONSTRAINT "meal_logs_mealId_fkey" FOREIGN KEY ("mealId") REFERENCES "Meal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- Backfill/cast allergens column to enum-backed storage (for drifted DBs)
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'recipes'
-      AND column_name = 'allergens'
-      AND udt_name = '_text'
-  ) THEN
-    ALTER TABLE "recipes" ADD COLUMN "allergens_enum" "Allergens"[];
-
-    UPDATE "recipes"
-    SET "allergens_enum" = ARRAY(
-      SELECT
-        CASE lower(x)
-          WHEN 'gluten' THEN 'GLUTEN'::"Allergens"
-          WHEN 'milk' THEN 'DAIRY'::"Allergens"
-          WHEN 'eggs' THEN 'EGGS'::"Allergens"
-          WHEN 'fish' THEN 'FISH'::"Allergens"
-          WHEN 'crustaceans' THEN 'SHELLFISH'::"Allergens"
-          WHEN 'molluscs' THEN 'SHELLFISH'::"Allergens"
-          WHEN 'nuts' THEN 'TREE_NUTS'::"Allergens"
-          WHEN 'peanuts' THEN 'PEANUTS'::"Allergens"
-          WHEN 'soy' THEN 'SOY'::"Allergens"
-          WHEN 'mustard' THEN 'MUSTARD'::"Allergens"
-          WHEN 'sesame' THEN 'SESAME'::"Allergens"
-          WHEN 'sulphites' THEN 'SULFITES'::"Allergens"
-          WHEN 'nightshades' THEN 'NIGHTSHADES'::"Allergens"
-          ELSE 'OTHER'::"Allergens"
-        END
-      FROM unnest(COALESCE("allergens", ARRAY[]::text[])) AS x
-    );
-
-    ALTER TABLE "recipes" DROP COLUMN "allergens";
-    ALTER TABLE "recipes" RENAME COLUMN "allergens_enum" TO "allergens";
-  END IF;
-END
-$$;
