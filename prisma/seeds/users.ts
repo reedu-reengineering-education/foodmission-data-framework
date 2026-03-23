@@ -6,6 +6,7 @@ import {
   PrismaClient,
   User,
 } from '@prisma/client';
+import { randomInt as cryptoRandomInt } from 'crypto';
 
 export interface UserSeedData {
   keycloakId: string;
@@ -201,11 +202,9 @@ export async function seedUsers(prisma: PrismaClient) {
     'Lisbon',
   ];
 
-  const randomInt = (min: number, max: number) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
   const pad = (n: number, width = 4) => String(n).padStart(width, '0');
   const pick = <T>(values: readonly T[]): T =>
-    values[Math.floor(Math.random() * values.length)];
+    values[cryptoRandomInt(0, values.length)];
 
   const genders = Object.values(Gender);
   const activityLevels = Object.values(ActivityLevel);
@@ -215,12 +214,12 @@ export async function seedUsers(prisma: PrismaClient) {
   for (let i = 1; i <= 400; i++) {
     const keycloakId = `seed-user-${i}`;
     const email = `user${pad(i)}@example.com`;
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-    const country = countries[Math.floor(Math.random() * countries.length)];
-    const region = regions[Math.floor(Math.random() * regions.length)];
-    const zip = String(randomInt(10000, 99999));
-    const yearOfBirth = randomInt(1950, 2008);
+    const firstName = pick(firstNames);
+    const lastName = pick(lastNames);
+    const country = pick(countries);
+    const region = pick(regions);
+    const zip = String(cryptoRandomInt(10000, 100000));
+    const yearOfBirth = cryptoRandomInt(1950, 2009);
     const profileEnums = {
       gender: pick(genders),
       activityLevel: pick(activityLevels),
