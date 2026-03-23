@@ -1429,6 +1429,7 @@ paths:
       security:
         - *ref_11
         - *ref_12
+        - JWT-auth: []
       summary: Get all shopping lists for authenticated user
       tags: *ref_13
   /api/v1/shoppinglist/{id}:
@@ -3660,6 +3661,820 @@ paths:
         - JWT-auth: []
       summary: Delete meal log
       tags: *ref_21
+  /api/v1/challenges:
+    post:
+      description: >-
+        Creates a new challenge as an Admin. Automatically creates a
+        ChallengeProgress entry for every existing user.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChallengesDto'
+      responses:
+        '201':
+          description: Challenge created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: A challenge with this title already exists.
+      security:
+        - JWT-auth: []
+      summary: Create a new Challenge
+      tags: &ref_22
+        - challenges/:challenges/progress
+    get:
+      description: Retrieves all challenges. Admin only.
+      operationId: getAll
+      parameters: []
+      responses:
+        '200':
+          description: List of all challenges retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChallengeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all challenges
+      tags: *ref_22
+  /api/v1/challenges/{id}:
+    get:
+      description: Retrieves a specific challenge by its ID.
+      operationId: getChallengeById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Challenge retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Challenge not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get challenge by ID
+      tags: *ref_22
+    patch:
+      description: >-
+        Updates challenge metadata like title, description, dates or
+        availability. Admin only.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChallengesDto'
+      responses:
+        '200':
+          description: Challenge updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Challenge not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update challenge
+      tags: *ref_22
+    delete:
+      description: >-
+        Deletes a specific challenge by ID including all its progress entries.
+        Admin only.
+      operationId: delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Challenge deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Challenge not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Delete challenge
+      tags: *ref_22
+  /api/v1/challenges/{challengeId}/progress/all:
+    get:
+      description: Retrieves all challenge progresses for the authenticated user.
+      operationId: getAll
+      parameters: []
+      responses:
+        '200':
+          description: List of challenge progresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChallengeProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all challenge progresses for the current user
+      tags: &ref_23
+        - challenges/:challengeId/progress
+  /api/v1/challenges/{challengeId}/progress:
+    get:
+      description: >-
+        Retrieves the progress of a specific challenge for the authenticated
+        user.
+      operationId: getChallengeById
+      parameters:
+        - name: challengeId
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Challenge progress retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission
+        '404':
+          description: Challenge progress not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get challenge progress by challenge ID
+      tags: *ref_23
+    patch:
+      description: >-
+        Updates the progress or completion status of a specific challenge for
+        the authenticated user.
+      operationId: update
+      parameters:
+        - name: challengeId
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChallengeProgressDto'
+      responses:
+        '200':
+          description: Challenge progress updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this challenge progress
+        '404':
+          description: Challenge progress not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update challenge progress
+      tags: *ref_23
+  /api/v1/missions:
+    post:
+      description: Creates a new mission as an Admin
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMissionsDto'
+      responses:
+        '201':
+          description: Mission created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionsResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: A mission with this title already exist.
+      security:
+        - JWT-auth: []
+      summary: Create a new Mission
+      tags: &ref_24
+        - missions
+    get:
+      description: >-
+        Retrieves all missions for the authenticated user. Only the mission
+        owner can access them.
+      operationId: getAllMissions
+      parameters: []
+      responses:
+        '200':
+          description: Missions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MissionsResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission
+        '404':
+          description: No missions found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all missions
+      tags: *ref_24
+  /api/v1/missions/{id}:
+    get:
+      description: >-
+        Retrieves a specific mission by ID for the authenticated user. Only the
+        mission owner can access it.
+      operationId: getMissionById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Mission retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionsResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission
+        '404':
+          description: Mission not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get mission by ID
+      tags: *ref_24
+    patch:
+      description: Updates the mission progress.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMissionsDto'
+      responses:
+        '200':
+          description: Mission updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionsResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this mission
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update mission
+      tags: *ref_24
+    delete:
+      description: >-
+        Deletes a specific mission by ID. Only the admin can delete missions.
+        All related data will be deleted as well (cascade delete).
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Mission deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this mission
+        '404':
+          description: Mission not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Delete mission
+      tags: *ref_24
+  /api/v1/missions/progress:
+    get:
+      description: Retrieves all mission progresses for the authenticated user.
+      operationId: getAll
+      parameters: []
+      responses:
+        '200':
+          description: List of mission progresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MissionProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all mission progresses for the current user
+      tags: *ref_24
+  /api/v1/missions/{missionId}/progress/all:
+    get:
+      description: Retrieves all mission progresses for the authenticated user.
+      operationId: getAll
+      parameters: []
+      responses:
+        '200':
+          description: List of mission progresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MissionProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all mission progresses for the current user
+      tags: &ref_25
+        - missions/:missionId/progress
+  /api/v1/missions/{missionId}/progress:
+    get:
+      description: Retrieves the progress of a specific mission for the authenticated user.
+      operationId: getMissionById
+      parameters:
+        - name: missionId
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Mission progress retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission
+        '404':
+          description: Mission progress not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get mission progress by mission ID
+      tags: *ref_25
+    patch:
+      description: >-
+        Updates the progress or completion status of a specific mission for the
+        authenticated user.
+      operationId: update
+      parameters:
+        - name: missionId
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMissionProgressDto'
+      responses:
+        '200':
+          description: Mission progress updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissionProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: No permission - user does not own this mission progress
+        '404':
+          description: Mission progress not found
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update mission progress
+      tags: *ref_25
   /api/v1/groups:
     post:
       description: >-
@@ -3713,7 +4528,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new group
-      tags: &ref_22
+      tags: &ref_26
         - groups
     get:
       description: Returns all groups where the authenticated user is a member.
@@ -3761,7 +4576,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all groups for current user
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}:
     get:
       description: Returns a specific group if the user is a member.
@@ -3813,7 +4628,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get group by ID
-      tags: *ref_22
+      tags: *ref_26
     patch:
       description: Updates group name/description. Admin only.
       operationId: update
@@ -3870,7 +4685,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update group
-      tags: *ref_22
+      tags: *ref_26
     delete:
       description: Deletes a group and all its memberships/virtual members. Admin only.
       operationId: remove
@@ -3917,7 +4732,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete group
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/join:
     post:
       description: Joins an existing group using the invite code.
@@ -3969,7 +4784,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Join a group by invite code
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/leave:
     post:
       description: Leaves a group. Last admin cannot leave without transferring rights.
@@ -4017,7 +4832,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Leave a group
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/invite-code:
     get:
       description: Returns the current invite code for the group. Admin only.
@@ -4071,7 +4886,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get invite code
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/regenerate-code:
     post:
       description: Generates a new invite code, invalidating the old one. Admin only.
@@ -4125,7 +4940,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Regenerate invite code
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/members:
     get:
       description: >-
@@ -4181,7 +4996,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all members
-      tags: *ref_22
+      tags: *ref_26
     post:
       description: >-
         Adds a member without an account (e.g., child or dependent). Any group
@@ -4240,7 +5055,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a virtual member
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/members/{memberId}:
     patch:
       description: >-
@@ -4308,7 +5123,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a virtual member
-      tags: *ref_22
+      tags: *ref_26
     delete:
       description: >-
         Removes a member from the group. Admin required for registered users;
@@ -4365,7 +5180,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove a member
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/groups/{id}/members/{memberId}/make-admin:
     post:
       description: >-
@@ -4428,7 +5243,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Promote member to admin
-      tags: *ref_22
+      tags: *ref_26
   /api/v1/knowledge:
     post:
       operationId: create
@@ -4477,16 +5292,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - &ref_23
+        - &ref_27
           keycloak-oauth2:
             - openid
             - profile
             - roles
-        - &ref_24
+        - &ref_28
           JWT-auth: []
         - JWT-auth: []
       summary: Create a knowledge/quiz item
-      tags: &ref_25
+      tags: &ref_29
         - knowledge
     get:
       operationId: findAll
@@ -4559,11 +5374,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: List knowledge items
-      tags: *ref_25
+      tags: *ref_29
   /api/v1/knowledge/progress/me:
     get:
       operationId: getAllProgress
@@ -4620,11 +5435,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Get all progress for the current user
-      tags: *ref_25
+      tags: *ref_29
   /api/v1/knowledge/{id}:
     get:
       operationId: findOne
@@ -4673,11 +5488,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Get knowledge item by id
-      tags: *ref_25
+      tags: *ref_29
     patch:
       operationId: update
       parameters:
@@ -4731,11 +5546,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Update knowledge item
-      tags: *ref_25
+      tags: *ref_29
     delete:
       operationId: remove
       parameters:
@@ -4779,11 +5594,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Delete knowledge item
-      tags: *ref_25
+      tags: *ref_29
   /api/v1/knowledge/{id}/progress:
     get:
       operationId: getProgress
@@ -4833,11 +5648,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Get user progress for a knowledge item
-      tags: *ref_25
+      tags: *ref_29
     patch:
       operationId: updateProgress
       parameters:
@@ -4892,11 +5707,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Patch user progress for a knowledge item
-      tags: *ref_25
+      tags: *ref_29
     delete:
       operationId: deleteProgress
       parameters:
@@ -4941,11 +5756,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_23
-        - *ref_24
+        - *ref_27
+        - *ref_28
         - JWT-auth: []
       summary: Delete user progress for a knowledge item
-      tags: *ref_25
+      tags: *ref_29
   /api/v1/catalog/startup:
     get:
       operationId: startup
@@ -4988,7 +5803,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Static values needed at regular app startup (excluding world geography)
-      tags: &ref_26
+      tags: &ref_30
         - catalog
   /api/v1/catalog/genders:
     get:
@@ -5032,7 +5847,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List genders
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/activity-levels:
     get:
       operationId: activityLevels
@@ -5075,7 +5890,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List activity levels
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/education-levels:
     get:
       operationId: educationLevels
@@ -5118,7 +5933,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List education levels
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/annual-income-levels:
     get:
       operationId: annualIncomeLevels
@@ -5161,7 +5976,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List annual income levels
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/dietary-preferences:
     get:
       operationId: dietaryPreferences
@@ -5206,7 +6021,7 @@ paths:
       summary: >-
         List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to
         recipe tags)
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/shopping-responsibilities:
     get:
       operationId: shoppingResponsibilities
@@ -5249,7 +6064,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List shopping responsibility options
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/units:
     get:
       operationId: units
@@ -5298,7 +6113,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: List units
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/type-of-meals:
     get:
       operationId: typeOfMeals
@@ -5347,7 +6162,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: List type of meal values
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/group-roles:
     get:
       operationId: groupRoles
@@ -5396,7 +6211,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: List group roles
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/languages:
     get:
       operationId: languages
@@ -5460,7 +6275,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List languages (paginated)
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/countries:
     get:
       operationId: countries
@@ -5524,7 +6339,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List countries (paginated)
-      tags: *ref_26
+      tags: *ref_30
   /api/v1/catalog/regions:
     get:
       operationId: regions
@@ -5597,7 +6412,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List regions/subdivisions (paginated)
-      tags: *ref_26
+      tags: *ref_30
   /api/v1:
     get:
       description: >-
@@ -5876,7 +6691,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_27
+          enum: &ref_31
             - MALE
             - FEMALE
             - OTHER
@@ -5950,7 +6765,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_27
+          enum: *ref_31
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -6185,7 +7000,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_28
+          enum: &ref_32
             - A
             - B
             - C
@@ -6795,7 +7610,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_28
+          enum: *ref_32
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -7613,7 +8428,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_29
+          enum: &ref_33
             - SALAD
             - MEAT
             - PASTA
@@ -7631,7 +8446,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_30
+          example: &ref_34
             carbs: 40
             fats: 20
             sugar: 5
@@ -7739,7 +8554,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_29
+          enum: *ref_33
           description: Meal type
         calories:
           type: number
@@ -7752,7 +8567,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_30
+          example: *ref_34
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -7913,7 +8728,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_31
+          example: &ref_35
             - vegan
             - quick
           type: array
@@ -7922,7 +8737,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_32
+          example: &ref_36
             carbs: 50
             fats: 10
             fiber: 8
@@ -7936,7 +8751,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_33
+          example: &ref_37
             - nuts
             - gluten
           type: array
@@ -8087,14 +8902,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_31
+          example: *ref_35
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_32
+          example: *ref_36
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -8105,7 +8920,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_33
+          example: *ref_37
           type: array
           items:
             type: string
@@ -8119,7 +8934,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_34
+          enum: &ref_38
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -8227,7 +9042,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_34
+          enum: *ref_38
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)
@@ -8237,6 +9052,237 @@ components:
         eatenOut:
           type: boolean
           description: Whether meal was eaten out
+    CreateChallengesDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the challenge
+          example: Bring Your Own Bag
+          maxLength: 255
+        description:
+          type: string
+          description: The description of the challenge
+          example: Use a reusable shopping bag for your groceries today
+          maxLength: 255
+        available:
+          type: boolean
+          description: Whether the challenge is currently available
+          example: true
+        startDate:
+          format: date-time
+          type: string
+          description: The start date of the challenge
+          example: '2024-01-01T00:00:00.000Z'
+        endDate:
+          format: date-time
+          type: string
+          description: The end date of the challenge
+          example: '2024-12-31T00:00:00.000Z'
+      required:
+        - title
+        - description
+        - available
+        - startDate
+        - endDate
+    ChallengeResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the challenge
+          example: uuid-challenge-id
+        title:
+          type: string
+          description: The challenge title
+          example: Bring Your Own Bag
+        description:
+          type: string
+          description: The challenge description
+          example: Use a reusable shopping bag for your groceries today
+        available:
+          type: boolean
+          description: Indicates if the challenge is currently available
+          example: true
+        progress:
+          type: object
+          description: The challenge progress
+          example: 50%
+        startDate:
+          format: date-time
+          type: string
+          description: The challenge start date
+          example: '2026-06-01'
+        endDate:
+          format: date-time
+          type: string
+          description: The challenge end date
+          example: '2026-12-31'
+      required:
+        - id
+        - title
+        - description
+        - available
+        - progress
+        - startDate
+        - endDate
+    UpdateChallengesDto:
+      type: object
+      properties:
+        available:
+          type: boolean
+          description: Updated if the challenge is available
+          example: true
+    ChallengeProgressResponseDto:
+      type: object
+      properties:
+        challengeId:
+          type: string
+          example: uuid-challenge-id
+        userId:
+          type: string
+          example: uuid-user-id
+        progress:
+          type: number
+          example: 50
+        completed:
+          type: boolean
+          example: false
+        challengeTitle:
+          type: string
+          example: Bring Your Own Bag
+      required:
+        - challengeId
+        - userId
+        - progress
+        - completed
+        - challengeTitle
+    UpdateChallengeProgressDto:
+      type: object
+      properties:
+        progress:
+          type: number
+          description: The current progress of the challenge (0-100)
+          example: 50
+        completed:
+          type: boolean
+          description: Whether the challenge is completed
+          example: true
+    CreateMissionsDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the mission
+          example: Plastic-Free Month
+          maxLength: 255
+        description:
+          type: string
+          description: The description of the mission
+          example: Avoid using single-use plastics for the entire month
+          maxLength: 255
+        available:
+          type: boolean
+          description: Whether the mission is currently available
+          example: true
+        startDate:
+          format: date-time
+          type: string
+          description: The start date of the mission
+          example: '2024-04-01T00:00:00.000Z'
+        endDate:
+          format: date-time
+          type: string
+          description: The end date of the mission
+          example: '2024-04-30T23:59:59.000Z'
+      required:
+        - title
+        - description
+        - available
+        - startDate
+        - endDate
+    MissionsResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the mission
+          example: uuid-mission-id
+        title:
+          type: string
+          description: The mission title
+          example: Plastic-Free Month
+        description:
+          type: string
+          description: The mission description
+          example: Avoid using plastic bags for a month
+        available:
+          type: boolean
+          description: Indicates if the mission is currently available
+          example: true
+        progress:
+          type: object
+          description: The mission progress
+          example: 50%
+        startDate:
+          format: date-time
+          type: string
+          description: The mission start date
+          example: '2026-06-01'
+        endDate:
+          format: date-time
+          type: string
+          description: The mission end date
+          example: '2026-12-31'
+      required:
+        - id
+        - title
+        - description
+        - available
+        - startDate
+        - endDate
+    UpdateMissionsDto:
+      type: object
+      properties:
+        available:
+          type: boolean
+          description: Updated if the mission is available
+          example: true
+    MissionProgressResponseDto:
+      type: object
+      properties:
+        missionId:
+          type: string
+          example: uuid-mission-id
+        userId:
+          type: string
+          example: uuid-user-id
+        progress:
+          type: number
+          example: 50
+        completed:
+          type: boolean
+          example: false
+        missionTitle:
+          type: string
+          example: Bring Your Own Bag
+      required:
+        - missionId
+        - userId
+        - progress
+        - completed
+        - missionTitle
+    UpdateMissionProgressDto:
+      type: object
+      properties:
+        progress:
+          type: number
+          description: The current progress of the mission (0-100)
+          example: 50
+        completed:
+          type: boolean
+          description: Whether the mission is completed
+          example: true
     CreateUserGroupDto:
       type: object
       properties:

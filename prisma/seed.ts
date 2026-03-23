@@ -5,6 +5,8 @@ import { seedShoppingLists } from './seeds/shoppingList';
 import { seedShoppingListItems } from './seeds/shoppingListItem';
 import { seedPantries } from './seeds/pantry';
 import { seedPantryItems } from './seeds/pantryItem';
+import { seedMissions } from './seeds/missions';
+import { seedChallenges } from './seeds/challenges';
 import { seedFoodCategories } from './seeds/foodCategories';
 import { seedUserGroups } from './seeds/userGroups';
 import { seedVirtualMembers } from './seeds/groupMembers';
@@ -29,6 +31,10 @@ async function main() {
     const knowledge = await seedKnowledge(prisma);
     const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
 
+    const challenges = await seedChallenges(prisma);
+
+    const missions = await seedMissions(prisma);
+
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log(`📊 Summary:`);
@@ -38,6 +44,8 @@ async function main() {
     console.log(`   - ShoppingListItem: ${shoppingListItem.length}`);
     console.log(`   - pantry: ${pantry.length}`);
     console.log(`   - pantryItem: ${pantryItem.length}`);
+    console.log(`   - Challenges: ${challenges.length}`);
+    console.log(`   - Missions: ${missions.length}`);
     console.log(`   - foodCategories: ${foodCategories.length}`);
     console.log(`   - userGroups: ${userGroups.length}`);
     console.log(`   - virtualMembers: ${virtualMembers.length}`);

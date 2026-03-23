@@ -11,51 +11,51 @@ datasource db {
 }
 
 model Food {
-  id              String @id @default(uuid())
-  name            String
-  description     String?
-  barcode         String? @unique
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  createdBy       String
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  barcode     String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
 
   // --- Product metadata ---
-  brands          String?
-  categories      String[] // OpenFoodFacts category tags e.g. ["en:spreads","en:sweet-spreads"]
-  labels          String[] // e.g. ["en:vegetarian","en:no-gluten"]
-  quantity        String? // e.g. "400 g"
-  servingSize     String? // e.g. "15 g"
-  ingredientsText String?
-  allergens       String[] // e.g. ["en:milk","en:nuts","en:soybeans"]
-  traces          String[] // possible cross-contamination allergens
-  countries       String[] // where sold, e.g. ["en:france","en:germany"]
-  origins         String? // where ingredients come from, e.g. "European Union"
+  brands              String?
+  categories          String[] // OpenFoodFacts category tags e.g. ["en:spreads","en:sweet-spreads"]
+  labels              String[] // e.g. ["en:vegetarian","en:no-gluten"]
+  quantity            String? // e.g. "400 g"
+  servingSize         String? // e.g. "15 g"
+  ingredientsText     String?
+  allergens           String[] // e.g. ["en:milk","en:nuts","en:soybeans"]
+  traces              String[] // possible cross-contamination allergens
+  countries           String[] // where sold, e.g. ["en:france","en:germany"]
+  origins             String? // where ingredients come from, e.g. "European Union"
   manufacturingPlaces String? // where product is manufactured
-  imageUrl        String?
-  imageFrontUrl   String?
+  imageUrl            String?
+  imageFrontUrl       String?
 
   // --- Nutriments (per 100 g) ---
   nutritionDataPer String? // "100g" or "serving" — basis of nutrition values
-  energyKcal     Float?
-  energyKj       Float?
-  fat            Float?
-  saturatedFat   Float?
-  transFat       Float?
-  cholesterol    Float?
-  carbohydrates  Float?
-  sugars         Float?
-  addedSugars    Float?
-  fiber          Float?
-  proteins       Float?
-  salt           Float?
-  sodium         Float?
-  vitaminA       Float?
-  vitaminC       Float?
-  calcium        Float?
-  iron           Float?
-  potassium      Float?
-  magnesium      Float?
-  zinc           Float?
+  energyKcal       Float?
+  energyKj         Float?
+  fat              Float?
+  saturatedFat     Float?
+  transFat         Float?
+  cholesterol      Float?
+  carbohydrates    Float?
+  sugars           Float?
+  addedSugars      Float?
+  fiber            Float?
+  proteins         Float?
+  salt             Float?
+  sodium           Float?
+  vitaminA         Float?
+  vitaminC         Float?
+  calcium          Float?
+  iron             Float?
+  potassium        Float?
+  magnesium        Float?
+  zinc             Float?
 
   // --- Full nutriments JSON (everything from OpenFoodFacts as-is) ---
   nutrimentsRaw Json? // Complete nutriments object for fields not covered above
@@ -71,16 +71,16 @@ model Food {
   nutrientLevels Json? // { fat: "high", sugars: "high", salt: "low", "saturated-fat": "high" }
 
   // --- Diet / ingredient analysis ---
-  isVegan      Boolean?
-  isVegetarian Boolean?
-  isPalmOilFree Boolean?
+  isVegan                 Boolean?
+  isVegetarian            Boolean?
+  isPalmOilFree           Boolean?
   ingredientsAnalysisTags String[] // raw tags e.g. ["en:palm-oil","en:non-vegan","en:vegetarian"]
 
   // --- Packaging ---
-  packagingTags     String[] // e.g. ["en:plastic","fr:pot-en-verre"]
+  packagingTags      String[] // e.g. ["en:plastic","fr:pot-en-verre"]
   packagingMaterials String[] // e.g. ["en:clear-glass","en:pp-5-polypropylene"]
   packagingRecycling String[] // e.g. ["en:recycle-in-glass-bin"]
-  packagingText     String?
+  packagingText      String?
 
   // --- Data quality ---
   completeness Float? // 0.0 - 1.0
@@ -98,41 +98,41 @@ model Food {
 }
 
 model FoodCategory {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // --- NEVO metadata ---
-  nevoVersion      String   // e.g. "NEVO-Online 2025 9.0"
-  foodGroup        String   // e.g. "Potatoes and tubers"
-  nevoCode         Int      @unique // NEVO food identifier
-  foodName         String   // English food name
-  synonym          String?  // Synonym if available
-  quantity         String?  // e.g. "per 100g"
-  containsTracesOf String?  // Traces of allergens
-  isFortifiedWith  String?  // Fortification info
+  nevoVersion      String // e.g. "NEVO-Online 2025 9.0"
+  foodGroup        String // e.g. "Potatoes and tubers"
+  nevoCode         Int     @unique // NEVO food identifier
+  foodName         String // English food name
+  synonym          String? // Synonym if available
+  quantity         String? // e.g. "per 100g"
+  containsTracesOf String? // Traces of allergens
+  isFortifiedWith  String? // Fortification info
 
   // --- Energy ---
-  energyKj     Float? // Energy (kJ)
-  energyKcal   Float? // Energy (kcal)
+  energyKj   Float? // Energy (kJ)
+  energyKcal Float? // Energy (kcal)
 
   // --- Macronutrients ---
-  water              Float? // Water (g)
-  proteins           Float? // Protein total (g)
-  proteinsPlant      Float? // Protein plant (g)
-  proteinsAnimal     Float? // Protein animal (g)
-  nitrogenTotal      Float? // Nitrogen total (g)
-  tryptophan         Float? // Tryptophan (mg)
-  fat                Float? // Fat total (g)
-  carbohydrates      Float? // Carbohydrates total (g)
-  sugars             Float? // Sugars (g)
-  addedSugars        Float? // Non-milk extrinsic sugars / added + free sugars (g)
-  starch             Float? // Starch (g)
-  polyols            Float? // Polyols (g)
-  fiber              Float? // Dietary fibre total (g)
-  alcohol            Float? // Alcohol (g)
-  organicAcids       Float? // Organic acids (g)
-  ash                Float? // Ash (g)
+  water          Float? // Water (g)
+  proteins       Float? // Protein total (g)
+  proteinsPlant  Float? // Protein plant (g)
+  proteinsAnimal Float? // Protein animal (g)
+  nitrogenTotal  Float? // Nitrogen total (g)
+  tryptophan     Float? // Tryptophan (mg)
+  fat            Float? // Fat total (g)
+  carbohydrates  Float? // Carbohydrates total (g)
+  sugars         Float? // Sugars (g)
+  addedSugars    Float? // Non-milk extrinsic sugars / added + free sugars (g)
+  starch         Float? // Starch (g)
+  polyols        Float? // Polyols (g)
+  fiber          Float? // Dietary fibre total (g)
+  alcohol        Float? // Alcohol (g)
+  organicAcids   Float? // Organic acids (g)
+  ash            Float? // Ash (g)
 
   // --- Fatty acids summary ---
   fattyAcidsTotal    Float? // Fatty acids total (g)
@@ -144,126 +144,126 @@ model FoodCategory {
   transFat           Float? // Trans fatty acids (g)
 
   // --- Minerals ---
-  chloride     Float? // Chloride (mg)
-  sodium       Float? // Sodium (mg)
-  potassium    Float? // Potassium (mg)
-  calcium      Float? // Calcium (mg)
-  phosphorus   Float? // Phosphorus (mg)
-  magnesium    Float? // Magnesium (mg)
-  iron         Float? // Iron (mg)
-  ironHaem     Float? // Haem iron (mg)
-  ironNonHaem  Float? // Non-haem iron (mg)
-  copper       Float? // Copper (mg)
-  selenium     Float? // Selenium (µg)
-  zinc         Float? // Zinc (mg)
-  iodine       Float? // Iodine (µg)
+  chloride    Float? // Chloride (mg)
+  sodium      Float? // Sodium (mg)
+  potassium   Float? // Potassium (mg)
+  calcium     Float? // Calcium (mg)
+  phosphorus  Float? // Phosphorus (mg)
+  magnesium   Float? // Magnesium (mg)
+  iron        Float? // Iron (mg)
+  ironHaem    Float? // Haem iron (mg)
+  ironNonHaem Float? // Non-haem iron (mg)
+  copper      Float? // Copper (mg)
+  selenium    Float? // Selenium (µg)
+  zinc        Float? // Zinc (mg)
+  iodine      Float? // Iodine (µg)
 
   // --- Vitamins ---
-  vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
-  vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
-  retinol              Float? // Retinol (µg)
-  betaCarotene         Float? // Beta-carotene total (µg)
-  alphaCarotene        Float? // Alpha-carotene (µg)
-  lutein               Float? // Lutein (µg)
-  zeaxanthin           Float? // Zeaxanthin (µg)
-  betaCryptoxanthin    Float? // Beta-cryptoxanthin (µg)
-  lycopene             Float? // Lycopene (µg)
-  vitaminD             Float? // Vitamin D (µg)
+  vitaminARae            Float? // Vitamin A - retinol activity equivalents (µg)
+  vitaminARe             Float? // Vitamin A - retinol equivalents (µg)
+  retinol                Float? // Retinol (µg)
+  betaCarotene           Float? // Beta-carotene total (µg)
+  alphaCarotene          Float? // Alpha-carotene (µg)
+  lutein                 Float? // Lutein (µg)
+  zeaxanthin             Float? // Zeaxanthin (µg)
+  betaCryptoxanthin      Float? // Beta-cryptoxanthin (µg)
+  lycopene               Float? // Lycopene (µg)
+  vitaminD               Float? // Vitamin D (µg)
   hydroxyCholecalciferol Float? // 25-hydroxycholecalciferol (µg)
-  cholecalciferol      Float? // Cholecalciferol / D3 (µg)
-  ergocalciferol       Float? // Ergocalciferol / D2 (µg)
-  vitaminE             Float? // Vitamin E (mg)
-  alphaTocopherol      Float? // Alpha-tocopherol (mg)
-  betaTocopherol       Float? // Beta-tocopherol (mg)
-  deltaTocopherol      Float? // Delta-tocopherol (mg)
-  gammaTocopherol      Float? // Gamma-tocopherol (mg)
-  vitaminK             Float? // Vitamin K (µg)
-  vitaminK1            Float? // Vitamin K1 (µg)
-  vitaminK2            Float? // Vitamin K2 (µg)
-  thiamin              Float? // Thiamin / B1 (mg)
-  riboflavin           Float? // Riboflavin / B2 (mg)
-  vitaminB6            Float? // Vitamin B6 (mg)
-  vitaminB12           Float? // Vitamin B12 (µg)
-  niacinEquivalents    Float? // Niacin equivalents (mg)
-  niacin               Float? // Niacin (mg)
-  folateTotal          Float? // Folate total (µg)
-  folateFood           Float? // Folate food (µg)
-  folicAcid            Float? // Folic acid (µg)
-  vitaminC             Float? // Vitamin C (mg)
+  cholecalciferol        Float? // Cholecalciferol / D3 (µg)
+  ergocalciferol         Float? // Ergocalciferol / D2 (µg)
+  vitaminE               Float? // Vitamin E (mg)
+  alphaTocopherol        Float? // Alpha-tocopherol (mg)
+  betaTocopherol         Float? // Beta-tocopherol (mg)
+  deltaTocopherol        Float? // Delta-tocopherol (mg)
+  gammaTocopherol        Float? // Gamma-tocopherol (mg)
+  vitaminK               Float? // Vitamin K (µg)
+  vitaminK1              Float? // Vitamin K1 (µg)
+  vitaminK2              Float? // Vitamin K2 (µg)
+  thiamin                Float? // Thiamin / B1 (mg)
+  riboflavin             Float? // Riboflavin / B2 (mg)
+  vitaminB6              Float? // Vitamin B6 (mg)
+  vitaminB12             Float? // Vitamin B12 (µg)
+  niacinEquivalents      Float? // Niacin equivalents (mg)
+  niacin                 Float? // Niacin (mg)
+  folateTotal            Float? // Folate total (µg)
+  folateFood             Float? // Folate food (µg)
+  folicAcid              Float? // Folic acid (µg)
+  vitaminC               Float? // Vitamin C (mg)
 
   // --- Individual saturated fatty acids (g) ---
-  fa4_0 Float?
-  fa6_0 Float?
-  fa8_0 Float?
-  fa10_0 Float?
-  fa11_0 Float?
-  fa12_0 Float?
-  fa13_0 Float?
-  fa14_0 Float?
-  fa15_0 Float?
-  fa16_0 Float?
-  fa17_0 Float?
-  fa18_0 Float?
-  fa19_0 Float?
-  fa20_0 Float?
-  fa21_0 Float?
-  fa22_0 Float?
-  fa23_0 Float?
-  fa24_0 Float?
-  fa25_0 Float?
-  fa26_0 Float?
+  fa4_0                 Float?
+  fa6_0                 Float?
+  fa8_0                 Float?
+  fa10_0                Float?
+  fa11_0                Float?
+  fa12_0                Float?
+  fa13_0                Float?
+  fa14_0                Float?
+  fa15_0                Float?
+  fa16_0                Float?
+  fa17_0                Float?
+  fa18_0                Float?
+  fa19_0                Float?
+  fa20_0                Float?
+  fa21_0                Float?
+  fa22_0                Float?
+  fa23_0                Float?
+  fa24_0                Float?
+  fa25_0                Float?
+  fa26_0                Float?
   saturatedFatRemainder Float? // Saturated fatty acids unknown/remainder (g)
 
   // --- Individual cis-monounsaturated fatty acids (g) ---
-  fa10_1cis Float?
-  fa12_1cis Float?
-  fa14_1cis Float?
-  fa16_1cis Float?
-  fa18_1cis Float?
-  fa20_1cis Float?
-  fa22_1cis Float?
-  fa24_1cis Float?
+  fa10_1cis                   Float?
+  fa12_1cis                   Float?
+  fa14_1cis                   Float?
+  fa16_1cis                   Float?
+  fa18_1cis                   Float?
+  fa20_1cis                   Float?
+  fa22_1cis                   Float?
+  fa24_1cis                   Float?
   monoUnsaturatedFatRemainder Float? // Cis-monounsaturated fatty acids unknown/remainder (g)
 
   // --- Individual polyunsaturated fatty acids (g) ---
-  fa18_2cn6 Float?
-  fa18_2cn9 Float?
-  fa18_2ct Float?
-  fa18_2tc Float?
-  fa18_2r Float?
-  fa18_3cn3 Float?
-  fa18_3cn6 Float?
-  fa18_4cn3 Float?
-  fa20_2cn6 Float?
-  fa20_3cn9 Float?
-  fa20_3cn6 Float?
-  fa20_3cn3 Float?
-  fa20_4cn6 Float?
-  fa20_4cn3 Float?
-  fa20_5cn3 Float?
-  fa21_5cn3 Float?
-  fa22_2cn6 Float?
-  fa22_2cn3 Float?
-  fa22_3cn3 Float?
-  fa22_4cn6 Float?
-  fa22_5cn6 Float?
-  fa22_5cn3 Float?
-  fa22_6cn3 Float?
-  fa24_2cn6 Float?
+  fa18_2cn6                   Float?
+  fa18_2cn9                   Float?
+  fa18_2ct                    Float?
+  fa18_2tc                    Float?
+  fa18_2r                     Float?
+  fa18_3cn3                   Float?
+  fa18_3cn6                   Float?
+  fa18_4cn3                   Float?
+  fa20_2cn6                   Float?
+  fa20_3cn9                   Float?
+  fa20_3cn6                   Float?
+  fa20_3cn3                   Float?
+  fa20_4cn6                   Float?
+  fa20_4cn3                   Float?
+  fa20_5cn3                   Float?
+  fa21_5cn3                   Float?
+  fa22_2cn6                   Float?
+  fa22_2cn3                   Float?
+  fa22_3cn3                   Float?
+  fa22_4cn6                   Float?
+  fa22_5cn6                   Float?
+  fa22_5cn3                   Float?
+  fa22_6cn3                   Float?
+  fa24_2cn6                   Float?
   polyUnsaturatedFatRemainder Float? // Polyunsaturated fatty acids unknown/remainder (g)
 
   // --- Individual trans fatty acids (g) ---
-  fa10_1trans Float?
-  fa12_1trans Float?
-  fa14_1trans Float?
-  fa16_1trans Float?
-  fa18_1trans Float?
-  fa18_2ttN6 Float?
-  fa18_3tttN3 Float?
-  fa20_1trans Float?
-  fa20_2tt Float?
-  fa22_1trans Float?
-  fa24_1trans Float?
+  fa10_1trans       Float?
+  fa12_1trans       Float?
+  fa14_1trans       Float?
+  fa16_1trans       Float?
+  fa18_1trans       Float?
+  fa18_2ttN6        Float?
+  fa18_3tttN3       Float?
+  fa20_1trans       Float?
+  fa20_2tt          Float?
+  fa22_1trans       Float?
+  fa24_1trans       Float?
   transFatRemainder Float? // Trans fatty acids unknown/remainder (g)
 
   // --- Other ---
@@ -281,39 +281,41 @@ model FoodCategory {
 }
 
 model User {
-  id                    String             @id @default(uuid())
-  keycloakId            String             @unique
-  email                 String             @unique
+  id                    String                  @id @default(uuid())
+  keycloakId            String                  @unique
+  email                 String                  @unique
   firstName             String?
   lastName              String?
-  username              String?            @unique
+  username              String?                 @unique
   yearOfBirth           Int?
   country               String?
   region                String?
   zip                   String?
   language              String?
-  preferences           Json               @default("{}") // Flexible JSON for app-specific preferences
-  settings              Json               @default("{}") // Flexible JSON for app-specific settings
+  preferences           Json                    @default("{}") // Flexible JSON for app-specific preferences
+  settings              Json                    @default("{}") // Flexible JSON for app-specific settings
   gender                Gender?
   annualIncome          AnnualIncomeLevel?
   educationLevel        EducationLevel?
   weightKg              Float?
   heightCm              Float?
   activityLevel         ActivityLevel?
-  healthGoals           Json?              @default("{}")
-  nutritionTargets      Json?              @default("{}")
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
-  shouldAutoAddToPantry Boolean            @default(true)
+  healthGoals           Json?                   @default("{}")
+  nutritionTargets      Json?                   @default("{}")
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  shouldAutoAddToPantry Boolean                 @default(true)
   shoppingList          ShoppingList[]
   pantry                Pantry[]
-  recipes                        Recipe[]
-  meals                          Meal[]
-  mealLogs                       MealLog[]
-  knowledge                      Knowledge[]
-  knowledgeProgress              UserKnowledgeProgress[]
+  recipes               Recipe[]
+  meals                 Meal[]
+  mealLogs              MealLog[]
+  challengeProgress     ChallengeProgress[]
+  missionProgress       MissionProgress[]
+  knowledge             Knowledge[]
+  knowledgeProgress     UserKnowledgeProgress[]
 
-  groupMemberships              GroupMembership[]
+  groupMemberships GroupMembership[]
 
   @@index([email])
   @@index([createdAt])
@@ -341,7 +343,7 @@ model ShoppingListItem {
   notes          String?
   checked        Boolean @default(false)
   shoppingListId String
-  
+
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
@@ -381,7 +383,7 @@ model PantryItem {
   notes      String?
   expiryDate DateTime?
   pantryId   String
-  
+
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
@@ -401,7 +403,7 @@ model PantryItem {
 }
 
 model Meal {
-  id                  String     @id @default(uuid())
+  id                  String   @id @default(uuid())
   name                String
   mealType            MealType
   calories            Int?
@@ -409,28 +411,28 @@ model Meal {
   nutritionalInfo     Json?
   sustainabilityScore Float?
   price               Float?
-  barcode             String?    @unique
+  barcode             String?  @unique
   userId              String
 
-  user      User       @relation(fields: [userId], references: [id])
-  items     MealItem[]
-  recipes   Recipe[]
-  mealLogs  MealLog[]
+  user     User       @relation(fields: [userId], references: [id])
+  items    MealItem[]
+  recipes  Recipe[]
+  mealLogs MealLog[]
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([mealType])
 }
 
 model MealItem {
-  id         String  @id @default(uuid())
-  quantity   Int     @default(1)
-  unit       Unit    @default(PIECES)
-  notes      String?
-  mealId     String
-  
+  id       String  @id @default(uuid())
+  quantity Int     @default(1)
+  unit     Unit    @default(PIECES)
+  notes    String?
+  mealId   String
+
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
@@ -495,6 +497,52 @@ model MealLog {
   @@index([userId, timestamp])
   @@index([typeOfMeal])
   @@map("meal_logs")
+}
+
+model Missions {
+  id                String            @id @default(uuid())
+  title             String
+  description       String
+  available         Boolean           @default(false)
+  startDate         DateTime
+  endDate           DateTime
+  content           Json              @default("{}") // Flexible JSON for mission-specific content
+  missionProgresses MissionProgress[]
+}
+
+model MissionProgress {
+  userId    String
+  missionId String
+  completed Boolean @default(false)
+  progress  Float
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  mission Missions @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, missionId])
+}
+
+model Challenges {
+  id                  String              @id @default(uuid())
+  title               String
+  description         String
+  available           Boolean             @default(false)
+  startDate           DateTime
+  endDate             DateTime
+  content             Json                @default("{}") // Flexible JSON for challenge-specific content
+  challengeProgresses ChallengeProgress[]
+}
+
+model ChallengeProgress {
+  userId      String
+  challengeId String
+  completed   Boolean @default(false)
+  progress    Float
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  challenge Challenges @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, challengeId])
 }
 
 enum Gender {
@@ -586,7 +634,7 @@ model GroupMembership {
   joinedAt DateTime  @default(now())
 
   userId String?
-  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   nickname      String?
   age           Int?
@@ -607,16 +655,16 @@ model GroupMembership {
 
 model Knowledge {
   id          String   @id @default(uuid())
-  userId      String   // Creator/owner of the knowledge item. For admin-created global quizzes, use a system user or extend with isGlobal field
+  userId      String // Creator/owner of the knowledge item. For admin-created global quizzes, use a system user or extend with isGlobal field
   title       String
   description String?
   available   Boolean  @default(true)
-  content     Json     // Stores quiz data: { questions: [{ question, options, correctAnswer }] }
+  content     Json // Stores quiz data: { questions: [{ question, options, correctAnswer }] }
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userProgress      UserKnowledgeProgress[]
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userProgress UserKnowledgeProgress[]
 
   @@index([userId])
   @@index([available])
@@ -624,22 +672,20 @@ model Knowledge {
 }
 
 model UserKnowledgeProgress {
-  id            String   @id @default(uuid())
-  userId        String
-  knowledgeId   String
-  completed     Boolean  @default(false)
-  progress      Json     @default("{}") // Stores: { currentQuestionIndex, answers, score }
+  id             String   @id @default(uuid())
+  userId         String
+  knowledgeId    String
+  completed      Boolean  @default(false)
+  progress       Json     @default("{}") // Stores: { currentQuestionIndex, answers, score }
   lastAccessedAt DateTime @default(now())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  knowledge  Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  knowledge Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, knowledgeId])
   @@index([userId])
   @@index([knowledgeId])
   @@map("user_knowledge_progress")
 }
-
-
