@@ -25,6 +25,7 @@ describe('Database Seeding (e2e)', () => {
     } catch (error) {
       console.warn(
         'Database not migrated. Run "npm run db:migrate" first. Skipping e2e tests.',
+        error,
       );
       isDatabaseReady = false;
     }
@@ -44,6 +45,7 @@ describe('Database Seeding (e2e)', () => {
       await prisma.food.deleteMany();
       await prisma.user.deleteMany();
     } catch (error) {
+      console.warn(error);
       // If there are constraint issues, try to clean up more thoroughly
       // Only truncate tables that exist
       try {
