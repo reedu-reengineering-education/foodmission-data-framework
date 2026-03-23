@@ -40,10 +40,8 @@ describe('AuthService.login', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    httpService = module.get(HttpService) as jest.Mocked<HttpService>;
-    userProfileService = module.get(
-      UserProfileService,
-    ) as jest.Mocked<UserProfileService>;
+    httpService = module.get(HttpService);
+    userProfileService = module.get(UserProfileService);
   });
 
   it('should call Keycloak token endpoint and userinfo, then ensure profile exists', async () => {
@@ -81,4 +79,3 @@ describe('AuthService.login', () => {
     expect(result).toEqual(tokens);
   });
 });
-
