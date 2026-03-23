@@ -51,20 +51,8 @@ export class UserProfileService {
     given_name?: string;
     family_name?: string;
   }): Promise<UserProfile> {
-    // 1) Try to find by keycloakId (sub claim)
     let user = await this.userRepository.findByKeycloakId(keycloakUser.sub);
 
-    // 2) Fallback: try by email, and if found, align keycloakId
-    if (!user && keycloakUser.email) {
-      const byEmail = await this.userRepository.findByEmail(keycloakUser.email);
-      if (byEmail) {
-        user = await this.userRepository.update(byEmail.id, {
-          keycloakId: keycloakUser.sub,
-        });
-      }
-    }
-
-    // 3) If still not found, create a new user
     if (!user) {
       user = await this.userRepository.create({
         keycloakId: keycloakUser.sub,
