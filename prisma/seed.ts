@@ -21,9 +21,6 @@ async function main() {
   console.log('=====================================');
 
   try {
-    const foods = await seedFoods(prisma);
-    // 1. OpenFoodFacts from local CSV only (no API). Recipe ingredients with source=off link to Food by name.
-    const offResult = await seedOpenFoodFactsFromCsv(prisma);
     // 1. OpenFoodFacts from local JSON only (no API). Recipe ingredients with source=off link to Food by name.
     const offResult = await seedOpenFoodFactsFromJson(prisma);
     if (offResult.skipped) {
