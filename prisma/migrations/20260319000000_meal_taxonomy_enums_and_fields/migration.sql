@@ -2,31 +2,22 @@
 
 -- CreateEnum
 CREATE TYPE "MealCategory" AS ENUM (
-  'MEAT',
-  'POULTRY',
+  'ANIMAL_PROTEIN',
   'SEAFOOD',
-  'PASTA_NOODLES',
-  'GRAINS_STARCHES',
-  'LEGUMES_BEANS',
-  'VEGETABLE_BASED',
-  'FRUIT_BASED',
-  'EGG_BASED',
-  'DAIRY_BASED',
   'PLANT_PROTEIN',
-  'MIXED',
-  'OTHER'
+  'STARCH_GRAIN',
+  'VEGGIES_FRUIT',
+  'DAIRY',
+  'MIXED_OTHER'
 );
 
 -- CreateEnum
 CREATE TYPE "MealCourse" AS ENUM (
-  'STARTER',
-  'MAIN',
-  'SIDE',
+  'MAIN_DISH',
+  'SIDE_SNACK',
   'DESSERT',
-  'SNACK',
   'BEVERAGE',
-  'SAUCE_CONDIMENT',
-  'OTHER'
+  'SAUCE_OTHER'
 );
 
 -- CreateEnum
