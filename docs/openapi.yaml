@@ -5825,7 +5825,7 @@ paths:
       tags: *ref_29
   /api/v1/catalog/startup:
     get:
-      operationId: startup
+      operationId: getMealCategories
       parameters: []
       responses:
         '200':
@@ -5867,9 +5867,9 @@ paths:
       summary: Static values needed at regular app startup (excluding world geography)
       tags: &ref_30
         - catalog
-  /api/v1/catalog/genders:
+  /api/v1/catalog/meal-courses:
     get:
-      operationId: genders
+      operationId: getMealCourses
       parameters: []
       responses:
         '200':
@@ -6041,7 +6041,7 @@ paths:
       tags: *ref_30
   /api/v1/catalog/dietary-preferences:
     get:
-      operationId: dietaryPreferences
+      operationId: getDietaryPreferences
       parameters: []
       responses:
         '200':
@@ -6169,10 +6169,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - keycloak-oauth2:
-            - openid
-            - profile
-            - roles
         - JWT-auth: []
       summary: List units
       tags: *ref_30
@@ -8529,10 +8525,10 @@ components:
         mealCategories:
           type: array
           description: Meal categories for filtering and analytics
-          example: &ref_27
+          example: &ref_30
             - ANIMAL_PROTEIN
             - STARCH_GRAIN
-          items: &ref_28
+          items: &ref_31
             type: string
             enum:
               - ANIMAL_PROTEIN
@@ -8545,7 +8541,7 @@ components:
         mealCourse:
           type: string
           description: Meal course role
-          enum: &ref_29
+          enum: &ref_32
             - MAIN_DISH
             - SIDE_SNACK
             - DESSERT
@@ -8555,9 +8551,9 @@ components:
         dietaryPreferences:
           type: array
           description: Dietary preferences associated with this meal
-          example: &ref_30
+          example: &ref_33
             - VEGAN
-          items: &ref_31
+          items: &ref_34
             type: string
             enum:
               - VEGAN
@@ -8721,18 +8717,18 @@ components:
         mealCategories:
           type: array
           description: Meal categories for filtering and analytics
-          example: *ref_27
-          items: *ref_28
+          example: *ref_30
+          items: *ref_31
         mealCourse:
           type: string
           description: Meal course role
-          enum: *ref_29
+          enum: *ref_32
           example: MAIN_DISH
         dietaryPreferences:
           type: array
           description: Dietary preferences associated with this meal
-          example: *ref_30
-          items: *ref_31
+          example: *ref_33
+          items: *ref_34
     MealItemResponseDto:
       type: object
       properties:
@@ -8978,7 +8974,7 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: &ref_36
+          example: &ref_39
             - vegan
             - gluten-free
           type: array
@@ -8986,7 +8982,7 @@ components:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: &ref_37
+          example: &ref_40
             - name: Chicken Breast
               measure: 500g
               order: 1
@@ -9279,13 +9275,13 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: *ref_36
+          example: *ref_39
           type: array
           items:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: *ref_37
+          example: *ref_40
           type: array
           items:
             $ref: '#/components/schemas/CreateRecipeIngredientDto'
@@ -10194,96 +10190,3 @@ components:
               - Paris
               - Berlin
             score: 1
-    CatalogValueDto:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Stable identifier/code for the value
-        label:
-          type: string
-          description: Human-readable label
-        meta:
-          type: object
-          description: Optional metadata (e.g. countryCode for regions)
-          additionalProperties: true
-      required:
-        - code
-        - label
-    CatalogStartupDataDto:
-      type: object
-      properties:
-        genders:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        activityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        educationLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        annualIncomeLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        dietaryPreferences:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        shoppingResponsibilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-      required:
-        - genders
-        - activityLevels
-        - educationLevels
-        - annualIncomeLevels
-        - dietaryPreferences
-        - shoppingResponsibilities
-    CatalogStartupResponseDto:
-      type: object
-      properties:
-        data:
-          description: Profile completion dropdown values (small, non-paginated)
-          allOf:
-            - $ref: '#/components/schemas/CatalogStartupDataDto'
-      required:
-        - data
-    CatalogListResponseDto:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-      required:
-        - data
-    PaginatedCatalogListResponseDto:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        total:
-          type: number
-          description: Total items
-        page:
-          type: number
-          description: Page number
-        limit:
-          type: number
-          description: Items per page
-        totalPages:
-          type: number
-          description: Total pages
-      required:
-        - data
-        - total
-        - page
-        - limit
-        - totalPages
