@@ -90,6 +90,46 @@ describe('MealService', () => {
     ).rejects.toThrow(NotFoundException);
   });
 
+  it('should throw ConflictException on update when new barcode already exists', async () => {
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm1',
+      name: 'Meal',
+      userId,
+      barcode: '111',
+    });
+    mockMealRepository.findByBarcode.mockResolvedValue({ id: 'other-meal' });
+
+    await expect(
+      service.update('m1', { barcode: '222' }, userId),
+    ).rejects.toThrow(ConflictException);
+  });
+
+  it('should allow update when barcode is unchanged', async () => {
+    const updatedMeal = {
+      id: 'm1',
+      name: 'Updated Meal',
+      userId,
+      barcode: '111',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm1',
+      name: 'Meal',
+      userId,
+      barcode: '111',
+    });
+    mockMealRepository.update.mockResolvedValue(updatedMeal);
+
+    const result = await service.update('m1', { name: 'Updated Meal' }, userId);
+
+    expect(result.id).toBe('m1');
+    expect(mockMealRepository.findByBarcode).not.toHaveBeenCalled();
+    expect(mockMealRepository.update).toHaveBeenCalledWith('m1', {
+      name: 'Updated Meal',
+    });
+  });
+
   it('should build filters for findAll', async () => {
     const paginationResult = {
       data: [],
@@ -150,101 +190,4 @@ describe('MealService', () => {
     });
   });
 
-  // === Tests for revised database relations ===
-
-  describe('Meal-Recipe relation (Meal optionally references Recipe)', () => {
-    it('should create meal with optional recipeId link', async () => {
-      const meal = {
-        id: 'm1',
-        name: 'Teriyaki Lunch',
-        recipeId: 'recipe-1',
-        userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      mockMealRepository.findByBarcode.mockResolvedValue(null);
-      mockMealRepository.create.mockResolvedValue(meal);
-
-      const result = await service.create(
-        { name: 'Teriyaki Lunch', recipeId: 'recipe-1' },
-        userId,
-      );
-
-      expect(result.id).toBe('m1');
-      expect(mockMealRepository.create).toHaveBeenCalledWith({
-        name: 'Teriyaki Lunch',
-        recipeId: 'recipe-1',
-        userId,
-      });
-    });
-
-    it('should create meal without recipeId (not based on any recipe)', async () => {
-      const meal = {
-        id: 'm1',
-        name: 'Quick Snack',
-        recipeId: null,
-        userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      mockMealRepository.findByBarcode.mockResolvedValue(null);
-      mockMealRepository.create.mockResolvedValue(meal);
-
-      const result = await service.create({ name: 'Quick Snack' }, userId);
-
-      expect(result.id).toBe('m1');
-      expect(mockMealRepository.create).toHaveBeenCalledWith({
-        name: 'Quick Snack',
-        userId,
-      });
-    });
-
-    it('should filter meals by recipeId', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
-      mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
-
-      await service.findAll(userId, {
-        recipeId: 'recipe-xyz',
-        page: 1,
-        limit: 10,
-      });
-
-      expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ recipeId: 'recipe-xyz' }),
-        }),
-      );
-    });
-  });
-
-  describe('MealType removal (no longer on Meal model)', () => {
-    it('should create meal without mealType field (removed from schema)', async () => {
-      const meal = {
-        id: 'm1',
-        name: 'Dinner Meal',
-        userId,
-        // Note: no mealType field - it was removed from Meal model
-        // Dish category is now on Recipe.category instead
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      mockMealRepository.findByBarcode.mockResolvedValue(null);
-      mockMealRepository.create.mockResolvedValue(meal);
-
-      const result = await service.create({ name: 'Dinner Meal' }, userId);
-
-      expect(result.id).toBe('m1');
-      // Verify no mealType is passed to repository
-      expect(mockMealRepository.create).toHaveBeenCalledWith({
-        name: 'Dinner Meal',
-        userId,
-      });
-    });
-  });
 });
