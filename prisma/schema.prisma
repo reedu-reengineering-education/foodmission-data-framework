@@ -419,7 +419,7 @@ model Meal {
   userId              String
   mealCategories      MealCategory[] @default([])
   mealCourse          MealCourse?
-  dietaryLabels       DietStyle[] @default([])
+  dietaryLabels       DietaryLabel[] @default([])
 
   // Optional link to a recipe this meal is based on
   recipeId            String?
@@ -681,16 +681,15 @@ enum Allergens {
   OTHER
 }
 
-enum DietStyle {
-  STANDARD      // No specific restrictions
-  VEGETARIAN    // No meat/fish (usually includes eggs/dairy)
-  VEGAN         // No animal products at all
-  PESCATARIAN   // Vegetarian + Seafood
-  KETO          // High fat, ultra-low carb (important for tracking grains/starches)
-  PALEO         // Whole foods, no grains/legumes/dairy
-  FLEXITARIAN   // Primarily plant-based but occasionally eats meat/fish
-  LOW_CARB      // General carb reduction without strict Keto levels
-  OTHER
+enum DietaryLabel {
+  VEGAN
+  VEGETARIAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  NUT_FREE
+  HALAL
+  KOSHER
 }
 
 enum GroupRole {

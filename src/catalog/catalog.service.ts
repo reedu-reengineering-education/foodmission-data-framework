@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DietStyle, MealCategory, MealCourse } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 @Injectable()
 export class CatalogService {
@@ -15,7 +15,7 @@ export class CatalogService {
     return this.enumValues(MealCourse);
   }
 
-  getDietaryLabels(): string[] {
-    return this.enumValues(DietStyle);
+  getDietaryPreferences(): string[] {
+    return this.enumValues(DietaryLabel);
   }
 }

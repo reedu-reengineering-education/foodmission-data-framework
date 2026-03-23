@@ -2,7 +2,7 @@ import {
   Meal,
   MealCategory,
   MealCourse,
-  DietStyle,
+  DietaryLabel,
   PrismaClient,
   Recipe,
 } from '@prisma/client';
@@ -10,11 +10,11 @@ import {
 function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
   mealCategories: MealCategory[];
   mealCourse?: MealCourse;
-  dietaryLabels: DietStyle[];
+  dietaryLabels: DietaryLabel[];
 } {
   const category = recipe.category?.trim().toLowerCase();
   const mealCategories = new Set<MealCategory>();
-  const dietaryLabels = new Set<DietStyle>();
+  const dietaryLabels = new Set<DietaryLabel>();
   let mealCourse: MealCourse | undefined;
 
   switch (category) {
@@ -35,11 +35,11 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
       break;
     case 'vegetarian':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietStyle.VEGETARIAN);
+      dietaryLabels.add(DietaryLabel.VEGETARIAN);
       break;
     case 'vegan':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietStyle.VEGAN);
+      dietaryLabels.add(DietaryLabel.VEGAN);
       break;
     case 'starter':
       mealCourse = MealCourse.SIDE_SNACK;
@@ -57,26 +57,18 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
 
   for (const raw of recipe.dietaryLabels) {
     const normalized = raw.trim().toLowerCase();
-    if (normalized === 'vegan') dietaryLabels.add(DietStyle.VEGAN);
-    if (normalized === 'vegetarian') dietaryLabels.add(DietStyle.VEGETARIAN);
-    if (normalized === 'pescatarian') dietaryLabels.add(DietStyle.PESCATARIAN);
+    if (normalized === 'vegan') dietaryLabels.add(DietaryLabel.VEGAN);
+    if (normalized === 'vegetarian')
+      dietaryLabels.add(DietaryLabel.VEGETARIAN);
+    if (normalized === 'pescatarian')
+      dietaryLabels.add(DietaryLabel.PESCATARIAN);
 
-    // TheMealDB "dietary labels" contain many specific restriction strings
-    // (gluten-free, dairy-free, etc.). Map what we can, and collapse the rest.
-    if (normalized === 'keto') dietaryLabels.add(DietStyle.KETO);
-    if (normalized === 'paleo') dietaryLabels.add(DietStyle.PALEO);
-    if (normalized === 'flexitarian') dietaryLabels.add(DietStyle.FLEXITARIAN);
-    if (normalized === 'low-carb') dietaryLabels.add(DietStyle.LOW_CARB);
-
-    if (
-      normalized === 'gluten-free' ||
-      normalized === 'dairy-free' ||
-      normalized === 'nut-free' ||
-      normalized === 'halal' ||
-      normalized === 'kosher'
-    ) {
-      dietaryLabels.add(DietStyle.OTHER);
-    }
+    if (normalized === 'gluten-free')
+      dietaryLabels.add(DietaryLabel.GLUTEN_FREE);
+    if (normalized === 'dairy-free') dietaryLabels.add(DietaryLabel.DAIRY_FREE);
+    if (normalized === 'nut-free') dietaryLabels.add(DietaryLabel.NUT_FREE);
+    if (normalized === 'halal') dietaryLabels.add(DietaryLabel.HALAL);
+    if (normalized === 'kosher') dietaryLabels.add(DietaryLabel.KOSHER);
   }
 
   return {

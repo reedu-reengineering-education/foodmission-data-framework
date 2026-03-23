@@ -42,13 +42,18 @@ export class MealService {
       }
     }
 
+    const { dietaryPreferences, ...rest } = createMealDto;
     const meal = await this.mealRepository.create({
-      ...createMealDto,
+      ...rest,
       ...(createMealDto.mealCategories
-        ? { mealCategories: this.uniqueEnumArray(createMealDto.mealCategories) }
+        ? {
+            mealCategories: this.uniqueEnumArray(createMealDto.mealCategories),
+          }
         : {}),
-      ...(createMealDto.dietaryLabels
-        ? { dietaryLabels: this.uniqueEnumArray(createMealDto.dietaryLabels) }
+      ...(dietaryPreferences
+        ? {
+            dietaryLabels: this.uniqueEnumArray(dietaryPreferences),
+          }
         : {}),
       userId,
     });
@@ -67,7 +72,7 @@ export class MealService {
       search,
       mealCategory,
       mealCourse,
-      dietaryLabel,
+      dietaryPreference,
     } = query;
     const skip = (page - 1) * limit;
 
@@ -76,7 +81,9 @@ export class MealService {
       ...(recipeId ? { recipeId } : {}),
       ...(mealCategory ? { mealCategories: { has: mealCategory } } : {}),
       ...(mealCourse ? { mealCourse } : {}),
-      ...(dietaryLabel ? { dietaryLabels: { has: dietaryLabel } } : {}),
+      ...(dietaryPreference
+        ? { dietaryLabels: { has: dietaryPreference } }
+        : {}),
       ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
     };
 
@@ -120,13 +127,16 @@ export class MealService {
       throw new ConflictException('Meal with this barcode already exists');
     }
 
+    const { dietaryPreferences, ...rest } = updateMealDto;
     const updated = await this.mealRepository.update(id, {
-      ...updateMealDto,
+      ...rest,
       ...(updateMealDto.mealCategories
-        ? { mealCategories: this.uniqueEnumArray(updateMealDto.mealCategories) }
+        ? {
+            mealCategories: this.uniqueEnumArray(updateMealDto.mealCategories),
+          }
         : {}),
-      ...(updateMealDto.dietaryLabels
-        ? { dietaryLabels: this.uniqueEnumArray(updateMealDto.dietaryLabels) }
+      ...(dietaryPreferences
+        ? { dietaryLabels: this.uniqueEnumArray(dietaryPreferences) }
         : {}),
     });
     return this.toResponseDto(updated);
@@ -138,7 +148,12 @@ export class MealService {
   }
 
   private toResponseDto(meal: any): MealResponseDto {
-    return plainToInstance(MealResponseDto, meal, {
+    // Rename DB column `dietaryLabels` to API field `dietaryPreferences`.
+    const mapped = {
+      ...meal,
+      dietaryPreferences: meal.dietaryLabels,
+    };
+    return plainToInstance(MealResponseDto, mapped, {
       excludeExtraneousValues: true,
     });
   }

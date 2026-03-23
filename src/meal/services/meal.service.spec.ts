@@ -132,7 +132,7 @@ describe('MealService', () => {
     await service.findAll(userId, {
       mealCategory: 'ANIMAL_PROTEIN' as any,
       mealCourse: 'MAIN_DISH' as any,
-      dietaryLabel: 'VEGAN' as any,
+      dietaryPreference: 'VEGAN' as any,
       page: 1,
       limit: 10,
     });

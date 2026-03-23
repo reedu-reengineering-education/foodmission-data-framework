@@ -12,7 +12,7 @@ describe('CatalogController', () => {
     const mockCatalogService = {
       getMealCategories: jest.fn(),
       getMealCourses: jest.fn(),
-      getDietaryLabels: jest.fn(),
+      getDietaryPreferences: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({

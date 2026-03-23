@@ -32,7 +32,7 @@ import {
   MultipleMealResponseDto,
 } from '../dto/meal-response.dto';
 import { QueryMealDto } from '../dto/query-meal.dto';
-import { DietStyle, MealCategory, MealCourse } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 @ApiTags('meals')
 @Controller('meals')
@@ -67,7 +67,11 @@ export class MealController {
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'mealCategory', required: false, enum: MealCategory })
   @ApiQuery({ name: 'mealCourse', required: false, enum: MealCourse })
-  @ApiQuery({ name: 'dietaryLabel', required: false, enum: DietStyle })
+  @ApiQuery({
+    name: 'dietaryPreference',
+    required: false,
+    enum: DietaryLabel,
+  })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({

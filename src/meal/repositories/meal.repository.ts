@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
-  DietStyle,
+  DietaryLabel,
   MealCategory,
   MealCourse,
   Prisma,
@@ -35,7 +35,7 @@ export interface CreateMealData {
   barcode?: string;
   mealCategories?: MealCategory[];
   mealCourse?: MealCourse;
-  dietaryLabels?: DietStyle[];
+  dietaryLabels?: DietaryLabel[];
   userId: string;
 }
 

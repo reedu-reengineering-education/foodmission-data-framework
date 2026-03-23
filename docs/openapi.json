@@ -4256,21 +4256,20 @@
             }
           },
           {
-            "name": "dietaryLabel",
+            "name": "dietaryPreference",
             "required": false,
             "in": "query",
-            "description": "Filter by dietary label",
+            "description": "Filter by dietary preference",
             "schema": {
               "enum": [
-                "STANDARD",
-                "VEGETARIAN",
                 "VEGAN",
+                "VEGETARIAN",
                 "PESCATARIAN",
-                "KETO",
-                "PALEO",
-                "FLEXITARIAN",
-                "LOW_CARB",
-                "OTHER"
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
               ],
               "type": "string"
             }
@@ -13320,24 +13319,23 @@
             ],
             "example": "MAIN_DISH"
           },
-          "dietaryLabels": {
+          "dietaryPreferences": {
             "type": "array",
-            "description": "Dietary styles associated with this meal",
+            "description": "Dietary preferences associated with this meal",
             "example": [
               "VEGAN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "STANDARD",
-                "VEGETARIAN",
                 "VEGAN",
+                "VEGETARIAN",
                 "PESCATARIAN",
-                "KETO",
-                "PALEO",
-                "FLEXITARIAN",
-                "LOW_CARB",
-                "OTHER"
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
               ]
             }
           }
@@ -13414,21 +13412,20 @@
               "SAUCE_OTHER"
             ]
           },
-          "dietaryLabels": {
+          "dietaryPreferences": {
             "type": "array",
-            "description": "Dietary styles",
+            "description": "Dietary preferences",
             "items": {
               "type": "string",
               "enum": [
-                "STANDARD",
-                "VEGETARIAN",
                 "VEGAN",
+                "VEGETARIAN",
                 "PESCATARIAN",
-                "KETO",
-                "PALEO",
-                "FLEXITARIAN",
-                "LOW_CARB",
-                "OTHER"
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
               ]
             }
           },
@@ -13568,24 +13565,23 @@
             ],
             "example": "MAIN_DISH"
           },
-          "dietaryLabels": {
+          "dietaryPreferences": {
             "type": "array",
-            "description": "Dietary styles associated with this meal",
+            "description": "Dietary preferences associated with this meal",
             "example": [
               "VEGAN"
             ],
             "items": {
               "type": "string",
               "enum": [
-                "STANDARD",
-                "VEGETARIAN",
                 "VEGAN",
+                "VEGETARIAN",
                 "PESCATARIAN",
-                "KETO",
-                "PALEO",
-                "FLEXITARIAN",
-                "LOW_CARB",
-                "OTHER"
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
               ]
             }
           }

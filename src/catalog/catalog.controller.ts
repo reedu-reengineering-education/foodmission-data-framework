@@ -34,12 +34,12 @@ export class CatalogController {
     return this.catalogService.getMealCourses();
   }
 
-  @Get('dietary-labels')
+  @Get('dietary-preferences')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get available dietary labels' })
-  @ApiResponse({ status: 200, description: 'Dietary labels' })
-  getDietaryLabels() {
-    return this.catalogService.getDietaryLabels();
+  @ApiOperation({ summary: 'Get available dietary preferences' })
+  @ApiResponse({ status: 200, description: 'Dietary preferences' })
+  getDietaryPreferences() {
+    return this.catalogService.getDietaryPreferences();
   }
 }

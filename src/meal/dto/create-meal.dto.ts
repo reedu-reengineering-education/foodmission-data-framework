@@ -11,7 +11,7 @@ import {
   IsEnum,
   ArrayMaxSize,
 } from 'class-validator';
-import { DietStyle, MealCategory, MealCourse } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class CreateMealDto {
   @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
@@ -93,14 +93,14 @@ export class CreateMealDto {
   mealCourse?: MealCourse;
 
   @ApiPropertyOptional({
-    description: 'Dietary styles associated with this meal',
-    enum: DietStyle,
+    description: 'Dietary preferences associated with this meal',
+    enum: DietaryLabel,
     isArray: true,
-    example: [DietStyle.VEGAN],
+    example: [DietaryLabel.VEGAN],
   })
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(8)
-  @IsEnum(DietStyle, { each: true })
-  dietaryLabels?: DietStyle[];
+  @IsEnum(DietaryLabel, { each: true })
+  dietaryPreferences?: DietaryLabel[];
 }

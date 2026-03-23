@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TransformTrimToUndefined } from '../../common/decorators/transformers';
-import { DietStyle, MealCategory, MealCourse } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class QueryMealDto {
   @ApiPropertyOptional({ description: 'Filter by recipe id', format: 'uuid' })
@@ -40,12 +40,12 @@ export class QueryMealDto {
   mealCourse?: MealCourse;
 
   @ApiPropertyOptional({
-    description: 'Filter by dietary label',
-    enum: DietStyle,
+    description: 'Filter by dietary preference',
+    enum: DietaryLabel,
   })
   @IsOptional()
-  @IsEnum(DietStyle)
-  dietaryLabel?: DietStyle;
+  @IsEnum(DietaryLabel)
+  dietaryPreference?: DietaryLabel;
 
   @ApiPropertyOptional({ description: 'Page number', default: 1 })
   @IsOptional()
