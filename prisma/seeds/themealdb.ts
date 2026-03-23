@@ -7,7 +7,6 @@ const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
 const SOURCE_NEVO = 'nevo';
 const SOURCE_OFF = 'openfoodfacts';
-const SOURCE_THEMEALDB = 'themealdb';
 
 interface ThemealdbData {
   ingredientMappings: {
@@ -178,7 +177,6 @@ function toRecipeCreateData(
         ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
         : undefined,
     sustainabilityScore: recipe.sustainabilityScore ?? undefined,
-    source: SOURCE_THEMEALDB,
     isPublic: true,
     userId: null,
   };

@@ -12,7 +12,6 @@ describe('RecipeRepository', () => {
     title: 'Test Recipe',
     isPublic: false,
     externalId: null,
-    source: 'user',
     category: null,
     cuisineType: null,
     createdAt: new Date('2025-01-01T00:00:00Z'),

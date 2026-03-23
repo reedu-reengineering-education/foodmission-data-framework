@@ -5184,16 +5184,6 @@
             }
           },
           {
-            "name": "source",
-            "required": false,
-            "in": "query",
-            "description": "Filter by source",
-            "schema": {
-              "example": "themealdb",
-              "type": "string"
-            }
-          },
-          {
             "name": "isPublic",
             "required": false,
             "in": "query",
@@ -13872,11 +13862,6 @@
             "description": "External identifier (e.g., TheMealDB idMeal)",
             "example": "52772"
           },
-          "source": {
-            "type": "string",
-            "description": "Source of the recipe",
-            "example": "themealdb"
-          },
           "imageUrl": {
             "type": "string",
             "description": "Image URL",
@@ -14110,10 +14095,6 @@
             "type": "string",
             "description": "External ID (e.g., TheMealDB idMeal)"
           },
-          "source": {
-            "type": "string",
-            "description": "Recipe source (themealdb, user, etc.)"
-          },
           "imageUrl": {
             "type": "string",
             "description": "Image URL"
@@ -14289,11 +14270,6 @@
             "type": "string",
             "description": "External identifier (e.g., TheMealDB idMeal)",
             "example": "52772"
-          },
-          "source": {
-            "type": "string",
-            "description": "Source of the recipe",
-            "example": "themealdb"
           },
           "imageUrl": {
             "type": "string",

@@ -93,7 +93,7 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
 
   let recipes = await prisma.recipe.findMany({
     where: {
-      OR: [{ isPublic: true }, { source: 'themealdb' }],
+      isPublic: true,
     },
     orderBy: { createdAt: 'asc' },
     take: 10,

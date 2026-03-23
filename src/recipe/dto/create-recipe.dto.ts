@@ -111,14 +111,6 @@ export class CreateRecipeDto {
   externalId?: string;
 
   @ApiPropertyOptional({
-    description: 'Source of the recipe',
-    example: 'themealdb',
-  })
-  @IsOptional()
-  @IsString()
-  source?: string;
-
-  @ApiPropertyOptional({
     description: 'Image URL',
     example: 'https://www.themealdb.com/images/media/meals/xxx.jpg',
   })

@@ -56,6 +56,7 @@ describe('RecipeService', () => {
       title: 'Test Recipe',
       userId,
       allergens: [],
+      isPublic: false,
     });
   });
 
@@ -112,7 +113,6 @@ describe('RecipeService', () => {
     await service.findAll(userId, {
       category: 'Chicken',
       cuisineType: 'Italian',
-      source: 'themealdb',
       tags: [' quick '],
       allergens: ['TREE_NUTS' as any],
       dietaryLabels: [' vegan '],
@@ -129,7 +129,6 @@ describe('RecipeService', () => {
         OR: [{ userId }, { isPublic: true }],
         category: 'Chicken',
         cuisineType: 'Italian',
-        source: 'themealdb',
         difficulty: 'easy',
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
@@ -174,13 +173,12 @@ describe('RecipeService', () => {
   // === Tests for revised database relations ===
 
   describe('Recipe-Meal relation (Recipe standalone, Meal references Recipe)', () => {
-    it('should create recipe with new external source fields', async () => {
+    it('should create recipe with external integration fields', async () => {
       const recipe = {
         id: 'r1',
         userId,
         title: 'Teriyaki Chicken',
         externalId: '52772',
-        source: 'themealdb',
         imageUrl: 'https://themealdb.com/images/meals/52772.jpg',
         videoUrl: 'https://youtube.com/watch?v=xyz',
         cuisineType: 'Japanese',
@@ -196,7 +194,6 @@ describe('RecipeService', () => {
       const dto = {
         title: 'Teriyaki Chicken',
         externalId: '52772',
-        source: 'themealdb',
         imageUrl: 'https://themealdb.com/images/meals/52772.jpg',
         videoUrl: 'https://youtube.com/watch?v=xyz',
         cuisineType: 'Japanese',
@@ -207,11 +204,11 @@ describe('RecipeService', () => {
       const result = await service.create(dto as any, userId);
 
       expect(result.externalId).toBe('52772');
-      expect(result.source).toBe('themealdb');
       expect(result.cuisineType).toBe('Japanese');
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
         ...dto,
         allergens: [],
+        isPublic: false,
         userId,
       });
     });
@@ -238,6 +235,7 @@ describe('RecipeService', () => {
         title: 'Simple Salad',
         userId,
         allergens: [],
+        isPublic: false,
       });
     });
   });
@@ -252,7 +250,6 @@ describe('RecipeService', () => {
             userId: null,
             title: 'System Recipe',
             isPublic: true,
-            source: 'themealdb',
           },
         ],
         total: 2,
@@ -310,7 +307,6 @@ describe('RecipeService', () => {
         userId: null,
         title: 'TheMealDB Recipe',
         isPublic: true,
-        source: 'themealdb',
         externalId: '52772',
         ingredients: [],
         createdAt: new Date(),
@@ -412,26 +408,6 @@ describe('RecipeService', () => {
       );
     });
 
-    it('should filter recipes by source (themealdb, user)', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(
-        paginationResult,
-      );
-
-      await service.findAll(userId, { source: 'themealdb', page: 1 } as any);
-
-      expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ source: 'themealdb' }),
-        }),
-      );
-    });
   });
 
   describe('Recipe ingredients handling', () => {
@@ -484,6 +460,7 @@ describe('RecipeService', () => {
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
         ...createDto,
         allergens: [],
+        isPublic: false,
         userId,
       });
     });

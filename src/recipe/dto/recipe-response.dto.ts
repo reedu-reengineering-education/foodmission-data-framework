@@ -88,10 +88,6 @@ export class RecipeResponseDto {
   @Expose()
   externalId?: string;
 
-  @ApiPropertyOptional({ description: 'Recipe source (themealdb, user, etc.)' })
-  @Expose()
-  source?: string;
-
   @ApiPropertyOptional({ description: 'Image URL' })
   @Expose()
   imageUrl?: string;

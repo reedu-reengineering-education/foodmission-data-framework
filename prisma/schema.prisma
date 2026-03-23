@@ -483,7 +483,6 @@ model Recipe {
 
   // New fields for external recipes (TheMealDB integration)
   externalId          String?  @unique  // TheMealDB idMeal
-  source              String?  // "themealdb", "user", etc.
   imageUrl            String?
   videoUrl            String?
   cuisineType         String?  // Japanese, Italian, Mexican, etc.

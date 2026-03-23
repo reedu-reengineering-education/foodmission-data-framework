@@ -32,7 +32,6 @@ export interface CreateRecipeData {
   allergens?: Allergens[];
   // New fields for external recipes
   externalId?: string;
-  source?: string;
   imageUrl?: string;
   videoUrl?: string;
   cuisineType?: string;

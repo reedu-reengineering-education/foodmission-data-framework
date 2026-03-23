@@ -193,7 +193,7 @@ describe('Database Seeding (e2e)', () => {
       // Clean up recipes before TheMealDB tests
       try {
         await prisma.recipe.deleteMany({
-          where: { source: 'themealdb' },
+          where: { userId: null, isPublic: true, externalId: { not: null } },
         });
       } catch {
         // Ignore if table doesn't exist or is empty
@@ -212,7 +212,7 @@ describe('Database Seeding (e2e)', () => {
 
       // Verify no recipes were actually created
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
       expect(recipes.length).toBe(0);
     });
@@ -227,7 +227,7 @@ describe('Database Seeding (e2e)', () => {
 
       // Verify recipes were created
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
       expect(recipes.length).toBe(3);
     });
@@ -236,14 +236,13 @@ describe('Database Seeding (e2e)', () => {
       await seedTheMealDbRecipes(prisma, { limit: 2 });
 
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         include: { ingredients: true },
       });
 
       recipes.forEach((recipe) => {
         // System recipe properties
         expect(recipe.userId).toBeNull();
-        expect(recipe.source).toBe('themealdb');
         expect(recipe.isPublic).toBe(true);
         expect(recipe.externalId).toBeDefined();
 
@@ -266,7 +265,7 @@ describe('Database Seeding (e2e)', () => {
       await seedTheMealDbRecipes(prisma, { limit: 1 });
 
       const recipe = await prisma.recipe.findFirst({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         include: {
           ingredients: {
             include: {
@@ -305,7 +304,7 @@ describe('Database Seeding (e2e)', () => {
 
       // Verify no duplicates
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
       expect(recipes.length).toBe(3);
     });
@@ -318,7 +317,7 @@ describe('Database Seeding (e2e)', () => {
       // Force won't create duplicates due to unique constraint on externalId
       // But it will attempt to create them (and fail/skip due to constraint)
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
       expect(recipes.length).toBe(2);
     });
@@ -327,7 +326,7 @@ describe('Database Seeding (e2e)', () => {
       await seedTheMealDbRecipes(prisma, { limit: 10 });
 
       const recipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         select: { externalId: true },
       });
 

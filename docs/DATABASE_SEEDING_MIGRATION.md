@@ -249,7 +249,7 @@ The integration uses three external data sources. OFF and NEVO populate the **Fo
 - Food categories are seeded from `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` into the **FoodCategory** table.
 
 **TheMealDB**  
-- **Database Seeding** (`prisma/seeds/themealdb.ts`): Reads `prisma/seeds/data/themealdb-data.json` and creates Recipe and RecipeIngredient records; resolves each ingredient’s mapping to `FoodCategory.id` (NEVO) or `Food.id` (OFF). Sets `source: 'themealdb'`, `isPublic: true`, `userId: null`.
+- **Database Seeding** (`prisma/seeds/themealdb.ts`): Reads `prisma/seeds/data/themealdb-data.json` and creates Recipe and RecipeIngredient records; resolves each ingredient’s mapping to `FoodCategory.id` (NEVO) or `Food.id` (OFF). Sets `isPublic: true`, `userId: null`.
 
 ### Seed order (OpenFoodFacts and NEVO first)
 

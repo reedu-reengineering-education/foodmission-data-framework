@@ -134,7 +134,6 @@ ALTER TABLE "recipes"
   ADD COLUMN "externalId" TEXT,
   ADD COLUMN "imageUrl" TEXT,
   ADD COLUMN "isPublic" BOOLEAN NOT NULL DEFAULT false,
-  ADD COLUMN "source" TEXT,
   ADD COLUMN "videoUrl" TEXT,
   ALTER COLUMN "userId" DROP NOT NULL;
 

@@ -34,15 +34,6 @@ export class QueryRecipeDto extends PaginationQueryDto {
   cuisineType?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by source',
-    example: 'themealdb',
-  })
-  @IsOptional()
-  @IsString()
-  @TransformTrimToUndefined()
-  source?: string;
-
-  @ApiPropertyOptional({
     description: 'Filter public recipes only',
     type: Boolean,
   })

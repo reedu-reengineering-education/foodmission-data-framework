@@ -41,7 +41,9 @@ describe('Recipe Query Integration (e2e)', () => {
     }
 
     try {
-      await prisma.recipe.deleteMany({ where: { source: 'themealdb' } });
+      await prisma.recipe.deleteMany({
+        where: { userId: null, isPublic: true, externalId: { not: null } },
+      });
       await prisma.recipe.deleteMany({ where: { userId: testUserId } });
       await seedTheMealDbRecipes(prisma, { limit: 20 });
     } catch (e: unknown) {
@@ -59,7 +61,9 @@ describe('Recipe Query Integration (e2e)', () => {
 
   afterAll(async () => {
     if (!skipSuite) {
-      await prisma.recipe.deleteMany({ where: { source: 'themealdb' } });
+      await prisma.recipe.deleteMany({
+        where: { userId: null, isPublic: true, externalId: { not: null } },
+      });
       await prisma.recipe.deleteMany({ where: { userId: testUserId } });
     }
     await prisma.$disconnect();
@@ -70,7 +74,7 @@ describe('Recipe Query Integration (e2e)', () => {
       if (skipSuite) return;
       const recipes = await prisma.recipe.findMany({
         where: {
-          source: 'themealdb',
+          userId: null,
           isPublic: true,
         },
       });
@@ -82,7 +86,7 @@ describe('Recipe Query Integration (e2e)', () => {
       recipes.forEach((recipe) => {
         expect(recipe.isPublic).toBe(true);
         expect(recipe.userId).toBeNull();
-        expect(recipe.source).toBe('themealdb');
+        expect(recipe.externalId).toBeTruthy();
       });
     });
 
@@ -90,7 +94,7 @@ describe('Recipe Query Integration (e2e)', () => {
       if (skipSuite) return;
       // Get all categories in our seeded data
       const allRecipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         select: { category: true },
       });
       const categories = [...new Set(allRecipes.map((r) => r.category))];
@@ -99,7 +103,9 @@ describe('Recipe Query Integration (e2e)', () => {
         const targetCategory = categories[0];
         const filtered = await prisma.recipe.findMany({
           where: {
-            source: 'themealdb',
+            userId: null,
+            isPublic: true,
+            externalId: { not: null },
             category: targetCategory,
           },
         });
@@ -114,7 +120,7 @@ describe('Recipe Query Integration (e2e)', () => {
     it('should filter recipes by cuisineType', async () => {
       if (skipSuite) return;
       const allRecipes = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         select: { cuisineType: true },
       });
       const cuisines = [...new Set(allRecipes.map((r) => r.cuisineType))];
@@ -123,7 +129,9 @@ describe('Recipe Query Integration (e2e)', () => {
         const targetCuisine = cuisines[0];
         const filtered = await prisma.recipe.findMany({
           where: {
-            source: 'themealdb',
+            userId: null,
+            isPublic: true,
+            externalId: { not: null },
             cuisineType: targetCuisine,
           },
         });
@@ -141,7 +149,7 @@ describe('Recipe Query Integration (e2e)', () => {
 
       // First page
       const page1 = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         take: pageSize,
         skip: 0,
         orderBy: { title: 'asc' },
@@ -149,7 +157,7 @@ describe('Recipe Query Integration (e2e)', () => {
 
       // Second page
       const page2 = await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
         take: pageSize,
         skip: pageSize,
         orderBy: { title: 'asc' },
@@ -169,7 +177,7 @@ describe('Recipe Query Integration (e2e)', () => {
     it('should return count for filtered queries', async () => {
       if (skipSuite) return;
       const count = await prisma.recipe.count({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
 
       expect(count).toBeGreaterThan(0);
@@ -187,7 +195,6 @@ describe('Recipe Query Integration (e2e)', () => {
           title: 'Test User Recipe',
           userId: testUserId,
           isPublic: false,
-          source: 'user',
           tags: [],
           allergens: [],
         },
@@ -248,7 +255,8 @@ describe('Recipe Query Integration (e2e)', () => {
       const systemRecipes = await prisma.recipe.findMany({
         where: {
           userId: null,
-          source: 'themealdb',
+          isPublic: true,
+          externalId: { not: null },
         },
       });
 
@@ -264,7 +272,9 @@ describe('Recipe Query Integration (e2e)', () => {
       if (skipSuite) return;
       const recipe = await prisma.recipe.findFirst({
         where: {
-          source: 'themealdb',
+          userId: null,
+          isPublic: true,
+          externalId: { not: null },
         },
         include: {
           ingredients: {
@@ -293,7 +303,9 @@ describe('Recipe Query Integration (e2e)', () => {
       if (skipSuite) return;
       const recipes = await prisma.recipe.findMany({
         where: {
-          source: 'themealdb',
+          userId: null,
+          isPublic: true,
+          externalId: { not: null },
         },
         include: {
           ingredients: {
@@ -324,7 +336,9 @@ describe('Recipe Query Integration (e2e)', () => {
       if (skipSuite) return;
       const recipes = await prisma.recipe.findMany({
         where: {
-          source: 'themealdb',
+          userId: null,
+          isPublic: true,
+          externalId: { not: null },
           ingredients: {
             some: {
               name: { contains: 'Chicken', mode: 'insensitive' },
@@ -347,12 +361,12 @@ describe('Recipe Query Integration (e2e)', () => {
   });
 
   describe('Index usage verification', () => {
-    it('should efficiently query by source using index', async () => {
+    it('should efficiently query system recipe subset', async () => {
       if (skipSuite) return;
       const start = Date.now();
 
       await prisma.recipe.findMany({
-        where: { source: 'themealdb' },
+        where: { userId: null, isPublic: true, externalId: { not: null } },
       });
 
       const duration = Date.now() - start;

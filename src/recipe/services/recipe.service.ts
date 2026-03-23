@@ -43,6 +43,7 @@ export class RecipeService {
       const recipe = await this.recipeRepository.create({
         ...createRecipeDto,
         allergens: createRecipeDto.allergens ?? [],
+        isPublic: createRecipeDto.isPublic ?? false,
         userId,
       });
       return this.toResponse(recipe);
@@ -60,7 +61,6 @@ export class RecipeService {
       limit = 10,
       category,
       cuisineType,
-      source,
       isPublic,
       dietaryLabels,
       tags,
@@ -82,7 +82,6 @@ export class RecipeService {
       ...visibilityWhere,
       ...(category ? { category } : {}),
       ...(cuisineType ? { cuisineType } : {}),
-      ...(source ? { source } : {}),
       ...(difficulty ? { difficulty } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
