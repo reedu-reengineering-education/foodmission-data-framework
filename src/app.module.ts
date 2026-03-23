@@ -27,6 +27,8 @@ import { MealLogModule } from './mealLog/meal-log.module';
 import { ChallengesModule } from './challenges/challenges.module';
 import { MissionsModule } from './missions/missions.module';
 import { UserGroupModule } from './userGroup/userGroup.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { UserGroupModule } from './userGroup/userGroup.module';
     ChallengesModule,
     MissionsModule,
     UserGroupModule,
+    KnowledgeModule,
+    CatalogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

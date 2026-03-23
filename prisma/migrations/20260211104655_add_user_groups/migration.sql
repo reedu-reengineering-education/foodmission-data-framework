@@ -50,9 +50,7 @@ CREATE INDEX "user_groups_createdBy_idx" ON "user_groups"("createdBy");
 CREATE INDEX "group_memberships_groupId_idx" ON "group_memberships"("groupId");
 
 -- CreateIndex: partial unique index for registered users only
-CREATE UNIQUE INDEX "group_memberships_userId_groupId_key" 
-ON "group_memberships"("userId", "groupId") 
-WHERE "userId" IS NOT NULL;
+CREATE UNIQUE INDEX "group_memberships_userId_groupId_key" ON "group_memberships"("userId", "groupId");
 
 -- CreateIndex
 CREATE INDEX "group_memberships_createdBy_idx" ON "group_memberships"("createdBy");

@@ -5244,6 +5244,1175 @@ paths:
         - JWT-auth: []
       summary: Promote member to admin
       tags: *ref_26
+  /api/v1/knowledge:
+    post:
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKnowledgeDto'
+      responses:
+        '201':
+          description: Knowledge created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - &ref_27
+          keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - &ref_28
+          JWT-auth: []
+        - JWT-auth: []
+      summary: Create a knowledge/quiz item
+      tags: &ref_29
+        - knowledge
+    get:
+      operationId: findAll
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            default: 1
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            default: 10
+            example: 10
+            type: number
+        - name: available
+          required: false
+          in: query
+          description: Filter by availability
+          schema:
+            example: true
+            type: boolean
+        - name: search
+          required: false
+          in: query
+          description: Search in title or description
+          schema:
+            example: nutrition
+            type: string
+      responses:
+        '200':
+          description: Knowledge items retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleKnowledgeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: List knowledge items
+      tags: *ref_29
+  /api/v1/knowledge/progress/me:
+    get:
+      operationId: getAllProgress
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            default: 10
+            type: number
+      responses:
+        '200':
+          description: All progress retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Get all progress for the current user
+      tags: *ref_29
+  /api/v1/knowledge/{id}:
+    get:
+      operationId: findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Knowledge retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Get knowledge item by id
+      tags: *ref_29
+    patch:
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKnowledgeDto'
+      responses:
+        '200':
+          description: Knowledge updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Update knowledge item
+      tags: *ref_29
+    delete:
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Knowledge deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Delete knowledge item
+      tags: *ref_29
+  /api/v1/knowledge/{id}/progress:
+    get:
+      operationId: getProgress
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Knowledge ID
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Progress retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Get user progress for a knowledge item
+      tags: *ref_29
+    patch:
+      operationId: updateProgress
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Knowledge ID
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProgressDto'
+      responses:
+        '200':
+          description: Progress updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgressResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Patch user progress for a knowledge item
+      tags: *ref_29
+    delete:
+      operationId: deleteProgress
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Knowledge ID
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Progress deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - *ref_27
+        - *ref_28
+        - JWT-auth: []
+      summary: Delete user progress for a knowledge item
+      tags: *ref_29
+  /api/v1/catalog/startup:
+    get:
+      operationId: startup
+      parameters: []
+      responses:
+        '200':
+          description: Startup catalog values retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogStartupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: Static values needed at regular app startup (excluding world geography)
+      tags: &ref_30
+        - catalog
+  /api/v1/catalog/genders:
+    get:
+      operationId: genders
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List genders
+      tags: *ref_30
+  /api/v1/catalog/activity-levels:
+    get:
+      operationId: activityLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List activity levels
+      tags: *ref_30
+  /api/v1/catalog/education-levels:
+    get:
+      operationId: educationLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List education levels
+      tags: *ref_30
+  /api/v1/catalog/annual-income-levels:
+    get:
+      operationId: annualIncomeLevels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List annual income levels
+      tags: *ref_30
+  /api/v1/catalog/dietary-preferences:
+    get:
+      operationId: dietaryPreferences
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: >-
+        List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to
+        recipe tags)
+      tags: *ref_30
+  /api/v1/catalog/shopping-responsibilities:
+    get:
+      operationId: shoppingResponsibilities
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List shopping responsibility options
+      tags: *ref_30
+  /api/v1/catalog/units:
+    get:
+      operationId: units
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List units
+      tags: *ref_30
+  /api/v1/catalog/type-of-meals:
+    get:
+      operationId: typeOfMeals
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List type of meal values
+      tags: *ref_30
+  /api/v1/catalog/group-roles:
+    get:
+      operationId: groupRoles
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List group roles
+      tags: *ref_30
+  /api/v1/catalog/languages:
+    get:
+      operationId: languages
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List languages (paginated)
+      tags: *ref_30
+  /api/v1/catalog/countries:
+    get:
+      operationId: countries
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List countries (paginated)
+      tags: *ref_30
+  /api/v1/catalog/regions:
+    get:
+      operationId: regions
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+        - name: countryCode
+          required: false
+          in: query
+          description: >-
+            ISO 3166-1 alpha-2 country code. Required unless search is provided
+            (world-wide list is large).
+          schema:
+            example: NL
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List regions/subdivisions (paginated)
+      tags: *ref_30
   /api/v1:
     get:
       description: >-
@@ -5522,7 +6691,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_27
+          enum: &ref_31
             - MALE
             - FEMALE
             - OTHER
@@ -5596,7 +6765,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_27
+          enum: *ref_31
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -5831,7 +7000,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_28
+          enum: &ref_32
             - A
             - B
             - C
@@ -6441,7 +7610,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_28
+          enum: *ref_32
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -7259,7 +8428,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: &ref_29
+          enum: &ref_33
             - SALAD
             - MEAT
             - PASTA
@@ -7277,7 +8446,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_30
+          example: &ref_34
             carbs: 40
             fats: 20
             sugar: 5
@@ -7385,7 +8554,7 @@ components:
           example: Grilled chicken salad
         mealType:
           type: string
-          enum: *ref_29
+          enum: *ref_33
           description: Meal type
         calories:
           type: number
@@ -7398,7 +8567,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_30
+          example: *ref_34
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -7559,7 +8728,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_31
+          example: &ref_35
             - vegan
             - quick
           type: array
@@ -7568,7 +8737,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_32
+          example: &ref_36
             carbs: 50
             fats: 10
             fiber: 8
@@ -7582,7 +8751,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: &ref_33
+          example: &ref_37
             - nuts
             - gluten
           type: array
@@ -7733,14 +8902,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_31
+          example: *ref_35
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_32
+          example: *ref_36
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -7751,7 +8920,7 @@ components:
           example: 12.5
         allergens:
           description: Known allergens
-          example: *ref_33
+          example: *ref_37
           type: array
           items:
             type: string
@@ -7765,7 +8934,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_34
+          enum: &ref_38
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -7873,7 +9042,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_34
+          enum: *ref_38
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)
@@ -8384,3 +9553,370 @@ components:
           description: Free-form preferences (JSON object)
           example:
             dietaryPreference: VEGETARIAN
+    QuizQuestionDto:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The question text
+          example: What is the capital of France?
+        options:
+          description: Array of possible answers
+          example:
+            - Paris
+            - London
+            - Berlin
+            - Madrid
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: string
+          description: The correct answer from the options
+          example: Paris
+      required:
+        - question
+        - options
+        - correctAnswer
+    QuizContentDto:
+      type: object
+      properties:
+        questions:
+          description: Array of quiz questions
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionDto'
+      required:
+        - questions
+    CreateKnowledgeDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Knowledge title
+          example: Nutrition Basics Quiz
+        description:
+          type: string
+          description: Knowledge description
+          example: Test your knowledge about basic nutrition concepts
+        available:
+          type: boolean
+          description: Is this knowledge available to users
+          example: true
+          default: true
+        content:
+          description: Quiz content with questions and answers
+          allOf:
+            - $ref: '#/components/schemas/QuizContentDto'
+      required:
+        - title
+        - content
+    QuizQuestionResponseDto:
+      type: object
+      properties:
+        question:
+          type: string
+          description: Question text
+        options:
+          description: Answer options
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: string
+          description: Correct answer
+      required:
+        - question
+        - options
+        - correctAnswer
+    QuizContentResponseDto:
+      type: object
+      properties:
+        questions:
+          description: Quiz questions
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionResponseDto'
+      required:
+        - questions
+    UserProgressSummaryDto:
+      type: object
+      properties:
+        completed:
+          type: boolean
+          description: Is completed
+        progress:
+          type: object
+          description: Progress data
+        lastAccessedAt:
+          format: date-time
+          type: string
+          description: Last accessed
+      required:
+        - completed
+        - lastAccessedAt
+    KnowledgeResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Knowledge id
+          format: uuid
+        userId:
+          type: string
+          description: Owner user id
+          format: uuid
+        title:
+          type: string
+          description: Knowledge title
+        description:
+          type: string
+          description: Description
+        available:
+          type: boolean
+          description: Is available
+        content:
+          description: Quiz content
+          allOf:
+            - $ref: '#/components/schemas/QuizContentResponseDto'
+        createdAt:
+          format: date-time
+          type: string
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          description: Updated at
+        userProgress:
+          description: User progress data if available
+          allOf:
+            - $ref: '#/components/schemas/UserProgressSummaryDto'
+      required:
+        - id
+        - userId
+        - title
+        - available
+        - content
+        - createdAt
+        - updatedAt
+    MultipleKnowledgeResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeResponseDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
+    ProgressResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Progress id
+          format: uuid
+        userId:
+          type: string
+          description: User id
+          format: uuid
+        knowledgeId:
+          type: string
+          description: Knowledge id
+          format: uuid
+        completed:
+          type: boolean
+          description: Is completed
+        progress:
+          type: object
+          description: Progress data
+        lastAccessedAt:
+          format: date-time
+          type: string
+          description: Last accessed at
+        createdAt:
+          format: date-time
+          type: string
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          description: Updated at
+      required:
+        - id
+        - userId
+        - knowledgeId
+        - completed
+        - progress
+        - lastAccessedAt
+        - createdAt
+        - updatedAt
+    MultipleProgressResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressResponseDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
+    UpdateKnowledgeDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Knowledge title
+          example: Nutrition Basics Quiz
+        description:
+          type: string
+          description: Knowledge description
+          example: Test your knowledge about basic nutrition concepts
+        available:
+          type: boolean
+          description: Is this knowledge available to users
+          example: true
+          default: true
+        content:
+          description: Quiz content with questions and answers
+          allOf:
+            - $ref: '#/components/schemas/QuizContentDto'
+    UpdateProgressDto:
+      type: object
+      properties:
+        completed:
+          type: boolean
+          description: Mark as completed
+          example: true
+        progress:
+          type: object
+          description: Progress data (currentQuestionIndex, answers, score)
+          example:
+            currentQuestionIndex: 2
+            answers:
+              - Paris
+              - Berlin
+            score: 1
+    CatalogValueDto:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Stable identifier/code for the value
+        label:
+          type: string
+          description: Human-readable label
+        meta:
+          type: object
+          description: Optional metadata (e.g. countryCode for regions)
+          additionalProperties: true
+      required:
+        - code
+        - label
+    CatalogStartupDataDto:
+      type: object
+      properties:
+        genders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        activityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        educationLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        annualIncomeLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        dietaryPreferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        shoppingResponsibilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - genders
+        - activityLevels
+        - educationLevels
+        - annualIncomeLevels
+        - dietaryPreferences
+        - shoppingResponsibilities
+    CatalogStartupResponseDto:
+      type: object
+      properties:
+        data:
+          description: Profile completion dropdown values (small, non-paginated)
+          allOf:
+            - $ref: '#/components/schemas/CatalogStartupDataDto'
+      required:
+        - data
+    CatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - data
+    PaginatedCatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
