@@ -5825,7 +5825,7 @@ paths:
       tags: *ref_29
   /api/v1/catalog/startup:
     get:
-      operationId: getMealCategories
+      operationId: startup
       parameters: []
       responses:
         '200':
@@ -5867,9 +5867,9 @@ paths:
       summary: Static values needed at regular app startup (excluding world geography)
       tags: &ref_30
         - catalog
-  /api/v1/catalog/meal-courses:
+  /api/v1/catalog/genders:
     get:
-      operationId: getMealCourses
+      operationId: genders
       parameters: []
       responses:
         '200':
@@ -6041,7 +6041,7 @@ paths:
       tags: *ref_30
   /api/v1/catalog/dietary-preferences:
     get:
-      operationId: getDietaryPreferences
+      operationId: dietaryPreferences
       parameters: []
       responses:
         '200':
@@ -6169,6 +6169,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
         - JWT-auth: []
       summary: List units
       tags: *ref_30
@@ -10190,3 +10194,96 @@ components:
               - Paris
               - Berlin
             score: 1
+    CatalogValueDto:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Stable identifier/code for the value
+        label:
+          type: string
+          description: Human-readable label
+        meta:
+          type: object
+          description: Optional metadata (e.g. countryCode for regions)
+          additionalProperties: true
+      required:
+        - code
+        - label
+    CatalogStartupDataDto:
+      type: object
+      properties:
+        genders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        activityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        educationLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        annualIncomeLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        dietaryPreferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        shoppingResponsibilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - genders
+        - activityLevels
+        - educationLevels
+        - annualIncomeLevels
+        - dietaryPreferences
+        - shoppingResponsibilities
+    CatalogStartupResponseDto:
+      type: object
+      properties:
+        data:
+          description: Profile completion dropdown values (small, non-paginated)
+          allOf:
+            - $ref: '#/components/schemas/CatalogStartupDataDto'
+      required:
+        - data
+    CatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - data
+    PaginatedCatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
