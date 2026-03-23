@@ -1,26 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipeRepository } from './recipe.repository';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  buildRecipe,
+  buildRecipeIngredient,
+} from '../../../test/fixtures/recipe.fixtures';
 
 describe('RecipeRepository', () => {
   let repository: RecipeRepository;
   let mockPrismaService: any;
 
-  const mockRecipe = {
-    id: 'recipe-1',
-    userId: 'user-1',
-    title: 'Test Recipe',
-    isPublic: false,
-    externalId: null,
-    category: null,
-    cuisineType: null,
-    createdAt: new Date('2025-01-01T00:00:00Z'),
-    updatedAt: new Date('2025-01-01T00:00:00Z'),
-    ingredients: [],
-  };
+  const mockRecipe = buildRecipe({ id: 'recipe-1' });
 
   const mockIngredients = [
-    {
+    buildRecipeIngredient({
       id: 'ing-1',
       recipeId: 'recipe-1',
       name: 'Chicken',
@@ -29,10 +22,8 @@ describe('RecipeRepository', () => {
       itemType: 'food_category',
       foodId: null,
       foodCategoryId: 'fc-1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
+    }),
+    buildRecipeIngredient({
       id: 'ing-2',
       recipeId: 'recipe-1',
       name: 'Salt',
@@ -41,9 +32,7 @@ describe('RecipeRepository', () => {
       itemType: 'food_category',
       foodId: null,
       foodCategoryId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+    }),
   ];
 
   const expectedInclude = {

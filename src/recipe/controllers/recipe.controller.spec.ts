@@ -3,19 +3,21 @@ import { RecipeController } from './recipe.controller';
 import { RecipeService } from '../services/recipe.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import {
+  buildRecipe,
+  emptyPaginationMock,
+} from '../../../test/fixtures/recipe.fixtures';
 
 describe('RecipeController', () => {
   let controller: RecipeController;
   let service: jest.Mocked<RecipeService>;
 
-  const mockRecipe = {
+  const mockRecipe = buildRecipe({
     id: 'recipe-1',
     title: 'Test recipe',
     userId: 'user-1',
     isPublic: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  });
 
   beforeEach(async () => {
     const mockRecipeService = {
@@ -55,14 +57,19 @@ describe('RecipeController', () => {
 
   it('findAll should pass filters and user id', async () => {
     const query = { category: 'Chicken', tags: ['vegan'], page: 1 };
-    service.findAll.mockResolvedValueOnce({
-      data: [mockRecipe],
-      total: 1,
-    } as any);
+    service.findAll.mockResolvedValueOnce(
+      emptyPaginationMock({
+        data: [mockRecipe],
+        total: 1,
+        totalPages: 1,
+      }) as any,
+    );
 
     const result = await controller.findAll('user-1', query as any);
 
-    expect(result).toEqual({ data: [mockRecipe], total: 1 });
+    expect(result).toEqual(
+      expect.objectContaining({ data: [mockRecipe], total: 1 }),
+    );
     expect(service.findAll).toHaveBeenCalledWith('user-1', query);
   });
 

@@ -7,6 +7,11 @@ import {
   ResourceAlreadyExistsException,
   ResourceNotFoundException,
 } from '../../common/exceptions/business.exception';
+import {
+  buildRecipe,
+  buildRecipeIngredient,
+  emptyPaginationMock,
+} from '../../../test/fixtures/recipe.fixtures';
 
 describe('RecipeService', () => {
   let service: RecipeService;
@@ -36,14 +41,7 @@ describe('RecipeService', () => {
   });
 
   it('should create recipe for user', async () => {
-    const recipe = {
-      id: 'r1',
-      userId,
-      title: 'Test Recipe',
-      isPublic: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const recipe = buildRecipe({ id: 'r1', userId, title: 'Test Recipe' });
     mockRecipeRepository.create.mockResolvedValue(recipe);
 
     const result = await service.create(
@@ -101,13 +99,7 @@ describe('RecipeService', () => {
   });
 
   it('should build filters for findAll with new query fields', async () => {
-    const paginationResult = {
-      data: [],
-      total: 0,
-      page: 1,
-      limit: 10,
-      totalPages: 0,
-    };
+    const paginationResult = emptyPaginationMock();
     mockRecipeRepository.findWithPagination.mockResolvedValue(paginationResult);
 
     await service.findAll(userId, {
@@ -174,7 +166,7 @@ describe('RecipeService', () => {
 
   describe('Recipe-Meal relation (Recipe standalone, Meal references Recipe)', () => {
     it('should create recipe with external integration fields', async () => {
-      const recipe = {
+      const recipe = buildRecipe({
         id: 'r1',
         userId,
         title: 'Teriyaki Chicken',
@@ -183,12 +175,8 @@ describe('RecipeService', () => {
         videoUrl: 'https://youtube.com/watch?v=xyz',
         cuisineType: 'Japanese',
         category: 'Chicken',
-        isPublic: false,
-        dietaryLabels: [],
         ingredients: [{ name: 'chicken', measure: '500g' }],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      });
       mockRecipeRepository.create.mockResolvedValue(recipe);
 
       const dto = {
@@ -214,14 +202,7 @@ describe('RecipeService', () => {
     });
 
     it('should allow creating recipe without mealId (recipes are standalone)', async () => {
-      const recipe = {
-        id: 'r1',
-        userId,
-        title: 'Simple Salad',
-        isPublic: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      const recipe = buildRecipe({ id: 'r1', userId, title: 'Simple Salad' });
       mockRecipeRepository.create.mockResolvedValue(recipe);
 
       // Note: no mealId required - recipes are standalone content
@@ -242,21 +223,19 @@ describe('RecipeService', () => {
 
   describe('Public and system recipes visibility', () => {
     it('should include public recipes in findAll results for any user', async () => {
-      const paginationResult = {
+      const paginationResult = emptyPaginationMock({
         data: [
-          { id: 'r1', userId, title: 'My Recipe', isPublic: false },
-          {
+          buildRecipe({ id: 'r1', userId, title: 'My Recipe', isPublic: false }),
+          buildRecipe({
             id: 'r2',
             userId: null,
             title: 'System Recipe',
             isPublic: true,
-          },
+          }),
         ],
         total: 2,
-        page: 1,
-        limit: 10,
         totalPages: 1,
-      };
+      });
       mockRecipeRepository.findWithPagination.mockResolvedValue(
         paginationResult,
       );
@@ -274,13 +253,7 @@ describe('RecipeService', () => {
     });
 
     it('should filter by isPublic when explicitly requested', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
+      const paginationResult = emptyPaginationMock();
       mockRecipeRepository.findWithPagination.mockResolvedValue(
         paginationResult,
       );
@@ -301,17 +274,13 @@ describe('RecipeService', () => {
     });
 
     it('should allow findOne for public system recipes', async () => {
-      // Public recipes (even with userId=null) can be viewed by any user
-      const systemRecipe = {
+      const systemRecipe = buildRecipe({
         id: 'sys-1',
         userId: null,
         title: 'TheMealDB Recipe',
         isPublic: true,
         externalId: '52772',
-        ingredients: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      });
       mockRecipeRepository.findById.mockResolvedValue(systemRecipe);
 
       const result = await service.findOne('sys-1', userId);
@@ -322,12 +291,12 @@ describe('RecipeService', () => {
     });
 
     it('should block findOne for private recipes owned by other users', async () => {
-      const privateRecipe = {
+      const privateRecipe = buildRecipe({
         id: 'r-private',
         userId: 'other-user',
         title: 'Private Recipe',
         isPublic: false,
-      };
+      });
       mockRecipeRepository.findById.mockResolvedValue(privateRecipe);
 
       await expect(service.findOne('r-private', userId)).rejects.toThrow(
@@ -337,82 +306,37 @@ describe('RecipeService', () => {
   });
 
   describe('New query filters for recipes', () => {
-    it('should filter recipes by category', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
+    it.each([
+      {
+        query: { category: 'Chicken', page: 1 },
+        where: { category: 'Chicken' },
+      },
+      {
+        query: { cuisineType: 'Japanese', page: 1 },
+        where: { cuisineType: 'Japanese' },
+      },
+      {
+        query: { dietaryLabels: ['vegan', 'gluten-free'], page: 1 },
+        where: { dietaryLabels: { hasSome: ['vegan', 'gluten-free'] } },
+      },
+    ])('should apply query filter %#', async ({ query, where }) => {
       mockRecipeRepository.findWithPagination.mockResolvedValue(
-        paginationResult,
+        emptyPaginationMock(),
       );
 
-      await service.findAll(userId, { category: 'Chicken', page: 1 } as any);
+      await service.findAll(userId, query as any);
 
       expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({ category: 'Chicken' }),
+          where: expect.objectContaining(where),
         }),
       );
     });
-
-    it('should filter recipes by cuisineType', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(
-        paginationResult,
-      );
-
-      await service.findAll(userId, {
-        cuisineType: 'Japanese',
-        page: 1,
-      } as any);
-
-      expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ cuisineType: 'Japanese' }),
-        }),
-      );
-    });
-
-    it('should filter recipes by dietaryLabels array', async () => {
-      const paginationResult = {
-        data: [],
-        total: 0,
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-      };
-      mockRecipeRepository.findWithPagination.mockResolvedValue(
-        paginationResult,
-      );
-
-      await service.findAll(userId, {
-        dietaryLabels: ['vegan', 'gluten-free'],
-        page: 1,
-      } as any);
-
-      expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            dietaryLabels: { hasSome: ['vegan', 'gluten-free'] },
-          }),
-        }),
-      );
-    });
-
   });
 
   describe('Recipe ingredients handling', () => {
     const mockIngredients = [
-      {
+      buildRecipeIngredient({
         id: 'ing-1',
         recipeId: 'r1',
         name: 'Chicken Breast',
@@ -421,8 +345,8 @@ describe('RecipeService', () => {
         itemType: 'food_category',
         foodCategoryId: 'fc-1',
         foodCategory: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
-      },
-      {
+      }),
+      buildRecipeIngredient({
         id: 'ing-2',
         recipeId: 'r1',
         name: 'Olive Oil',
@@ -430,19 +354,16 @@ describe('RecipeService', () => {
         order: 1,
         itemType: 'food_category',
         foodCategoryId: null,
-      },
+      }),
     ];
 
     it('should create recipe with ingredients', async () => {
-      const recipeWithIngredients = {
+      const recipeWithIngredients = buildRecipe({
         id: 'r1',
         userId,
         title: 'Chicken Dinner',
-        isPublic: false,
         ingredients: mockIngredients,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      });
       mockRecipeRepository.create.mockResolvedValue(recipeWithIngredients);
 
       const createDto = {
@@ -466,13 +387,12 @@ describe('RecipeService', () => {
     });
 
     it('should return recipe with ingredients in findOne', async () => {
-      const recipeWithIngredients = {
+      const recipeWithIngredients = buildRecipe({
         id: 'r1',
         userId,
         title: 'My Recipe',
-        isPublic: false,
         ingredients: mockIngredients,
-      };
+      });
       mockRecipeRepository.findById.mockResolvedValue(recipeWithIngredients);
 
       const result = await service.findOne('r1', userId);
@@ -489,21 +409,21 @@ describe('RecipeService', () => {
         ingredients: mockIngredients,
       });
 
-      const updatedRecipe = {
+      const updatedRecipe = buildRecipe({
         id: 'r1',
         userId,
         title: 'Updated Recipe',
         ingredients: [
-          {
+          buildRecipeIngredient({
             id: 'ing-new',
             recipeId: 'r1',
             name: 'New Ingredient',
             measure: '100g',
             order: 0,
             itemType: 'food_category',
-          },
+          }),
         ],
-      };
+      });
       mockRecipeRepository.update.mockResolvedValue(updatedRecipe);
 
       const result = await service.update(
@@ -520,21 +440,18 @@ describe('RecipeService', () => {
     });
 
     it('should include ingredients with food category details in findAll', async () => {
-      const paginationResult = {
+      const paginationResult = emptyPaginationMock({
         data: [
-          {
+          buildRecipe({
             id: 'r1',
             userId,
             title: 'Recipe 1',
-            isPublic: false,
             ingredients: mockIngredients,
-          },
+          }),
         ],
         total: 1,
-        page: 1,
-        limit: 10,
         totalPages: 1,
-      };
+      });
       mockRecipeRepository.findWithPagination.mockResolvedValue(
         paginationResult,
       );
@@ -546,12 +463,12 @@ describe('RecipeService', () => {
     });
 
     it('should create recipe with ingredients linked to Food', async () => {
-      const recipeWithFoodIngredient = {
+      const recipeWithFoodIngredient = buildRecipe({
         id: 'r1',
         userId,
         title: 'Product Recipe',
         ingredients: [
-          {
+          buildRecipeIngredient({
             id: 'ing-1',
             recipeId: 'r1',
             name: 'Branded Product',
@@ -564,11 +481,9 @@ describe('RecipeService', () => {
               name: 'Branded Product',
               imageUrl: 'http://...',
             },
-          },
+          }),
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+      });
       mockRecipeRepository.create.mockResolvedValue(recipeWithFoodIngredient);
 
       const result = await service.create(
