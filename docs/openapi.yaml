@@ -3907,7 +3907,7 @@ paths:
         - JWT-auth: []
       summary: Delete challenge
       tags: *ref_22
-  /api/v1/challenge-progress:
+  /api/v1/challenges/{challengeId}/progress/all:
     get:
       description: Retrieves all challenge progresses for the authenticated user.
       operationId: getAll
@@ -3955,8 +3955,8 @@ paths:
         - JWT-auth: []
       summary: Get all challenge progresses for the current user
       tags: &ref_23
-        - challenge-progress
-  /api/v1/challenge-progress/{challengeId}:
+        - challenges/:challengeId/progress
+  /api/v1/challenges/{challengeId}/progress:
     get:
       description: >-
         Retrieves the progress of a specific challenge for the authenticated

@@ -167,6 +167,11 @@ async function bootstrap() {
       'catalog',
       'Reference datasets and dropdown options (regions, countries, profile enums)',
     )
+    .addTag(
+      'challenges',
+      'Challenge management - Create and manage user challenges',
+    )
+    .addTag('missions', 'Mission management - Create and manage user missions')
     .addServer('http://localhost:3000/', 'Development server')
     .addServer('https://api.foodmission.dev/', 'Production server')
     .addServer('https://staging-api.foodmission.dev/', 'Staging server')
@@ -190,6 +195,8 @@ async function bootstrap() {
       showRequestHeaders: true,
       showCommonExtensions: true,
       tryItOutEnabled: true,
+      displayOperationId: false,
+      displayRequestDuration: true,
       oauth2RedirectUrl: `http://localhost:3000/api/docs/oauth2-redirect.html`, // TODO: get url from environment or app
       initOAuth: {
         clientId: process.env.KEYCLOAK_CLIENT_ID,

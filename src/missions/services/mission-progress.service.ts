@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
-import {  MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
+import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
 
 @Injectable()
 export class MissionProgressService {
@@ -22,10 +22,11 @@ export class MissionProgressService {
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Getting mission ${missionId} for user: ${userId}`);
 
-    const progress = await this.missionProgressRepository.findByUserIdAndMissionId(
-      userId,
-      missionId,
-    );
+    const progress =
+      await this.missionProgressRepository.findByUserIdAndMissionId(
+        userId,
+        missionId,
+      );
 
     if (!progress) {
       throw new NotFoundException('Mission not found');
@@ -43,7 +44,8 @@ export class MissionProgressService {
   ): Promise<MissionProgressResponseDto[]> {
     this.logger.log(`Getting all missions for user: ${userId}`);
 
-    const progresses = await this.missionProgressRepository.findAllByUserId(userId);
+    const progresses =
+      await this.missionProgressRepository.findAllByUserId(userId);
 
     return progresses.map((p) => this.transformToResponseDto(p));
   }
@@ -55,10 +57,11 @@ export class MissionProgressService {
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Updating mission ${missionId} for user: ${userId}`);
 
-    const existing = await this.missionProgressRepository.findByUserIdAndMissionId(
-      userId,
-      missionId,
-    );
+    const existing =
+      await this.missionProgressRepository.findByUserIdAndMissionId(
+        userId,
+        missionId,
+      );
 
     if (!existing) {
       throw new NotFoundException('Mission not found');

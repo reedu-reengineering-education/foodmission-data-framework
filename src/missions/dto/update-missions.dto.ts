@@ -3,12 +3,11 @@ import { IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UpdateMissionsDto {
-@ApiPropertyOptional({
+  @ApiPropertyOptional({
     description: 'Updated if the mission is available',
     example: true,
   })
   @IsOptional()
   @Type(() => Boolean)
   available?: boolean;
-
 }

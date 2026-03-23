@@ -26,7 +26,9 @@ export class ChallengesRepository {
   }
 
   async findAll() {
-    return this.prisma.challenges.findMany({ include: { challengeProgresses: true } });
+    return this.prisma.challenges.findMany({
+      include: { challengeProgresses: true },
+    });
   }
 
   async findById(id: string) {

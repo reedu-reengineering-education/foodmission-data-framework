@@ -50,9 +50,7 @@ export class MissionsService {
       handleServiceError(error, 'Failed to create mission');
     }
   }
-  async getMissionById(
-    missionId: string,
-  ): Promise<MissionsResponseDto> {
+  async getMissionById(missionId: string): Promise<MissionsResponseDto> {
     this.logger.log(`Getting mission ${missionId}`);
 
     const mission = await this.missionRepository.findById(missionId);
@@ -63,7 +61,7 @@ export class MissionsService {
     return this.transformToResponseDto(mission);
   }
 
-    async getAllMissions(): Promise<MissionsResponseDto[]> {
+  async getAllMissions(): Promise<MissionsResponseDto[]> {
     this.logger.log(`Getting All missions`);
 
     const missions = await this.missionRepository.findAll();
@@ -85,7 +83,7 @@ export class MissionsService {
       );
       return this.transformToResponseDto(updatedMission);
     } catch (error) {
-          if (
+      if (
         error instanceof ConflictException ||
         error instanceof BadRequestException ||
         error instanceof NotFoundException ||
@@ -107,8 +105,8 @@ export class MissionsService {
     } catch (error) {
       handleServiceError(error, 'Failed to delete Mission');
     }
-  }   
-  
+  }
+
   private transformToResponseDto(mission: any): MissionsResponseDto {
     return {
       id: mission.id,
@@ -116,9 +114,10 @@ export class MissionsService {
       description: mission.description,
       startDate: mission.startDate,
       endDate: mission.endDate,
-      progress: mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) || 0,
+      progress:
+        mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) ||
+        0,
       available: mission.available,
     };
   }
-}   
-
+}

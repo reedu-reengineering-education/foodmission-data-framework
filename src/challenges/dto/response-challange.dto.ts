@@ -24,7 +24,7 @@ export class ChallengeResponseDto {
   @Expose()
   description: string;
 
-    @ApiProperty({
+  @ApiProperty({
     description: 'Indicates if the challenge is currently available',
     example: true,
   })

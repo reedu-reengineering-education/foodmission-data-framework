@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MissionProgress } from '@prisma/client';
-import {
-  IsNotEmpty,
-  IsUUID,
-} from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 
 export class QueryMissionsDto {
   @ApiProperty({

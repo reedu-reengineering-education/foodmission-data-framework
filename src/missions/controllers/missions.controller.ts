@@ -25,15 +25,18 @@ import { MissionsService } from '../services/missions.service';
 import { CreateMissionsDto } from '../dto/create-missions.dto';
 import { UpdateMissionsDto } from '../dto/update-missions.dto';
 import { Roles } from 'nest-keycloak-connect';
-import { MissionProgressResponseDto } from '../mission-progress/dto/response-mission-progress.dto';
+import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { MissionProgressService } from '../mission-progress/services/mission-progress.service';
+import { MissionProgressService } from '../services/mission-progress.service';
 
 @ApiTags('missions')
 @Controller('missions')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class MissionsController {
-  constructor(private readonly missionService: MissionsService, private readonly missionProgressService: MissionProgressService) {}
+  constructor(
+    private readonly missionService: MissionsService,
+    private readonly missionProgressService: MissionProgressService,
+  ) {}
   @Post()
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
@@ -56,7 +59,7 @@ export class MissionsController {
   async create(
     @Body() createMissionDto: CreateMissionsDto,
   ): Promise<MissionsResponseDto> {
-    return this.missionService.create(createMissionDto,);
+    return this.missionService.create(createMissionDto);
   }
 
   @Get(':id')
@@ -110,8 +113,7 @@ export class MissionsController {
     description: 'No missions found',
   })
   @ApiCrudErrorResponses()
-  async getAllMissions(
-  ): Promise<MissionsResponseDto[]> {
+  async getAllMissions(): Promise<MissionsResponseDto[]> {
     return this.missionService.getAllMissions();
   }
 
@@ -162,13 +164,11 @@ export class MissionsController {
     description: 'Mission not found',
   })
   @ApiCrudErrorResponses()
-  async remove(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.missionService.remove(id);
   }
 
-    @Get('progress')
+  @Get('progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({

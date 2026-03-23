@@ -18,7 +18,8 @@ export class MissionsContentDto {
 
   @ApiProperty({
     description: 'Detailed description of the mission',
-    example: 'Reduce plastic usage by avoiding single-use plastics for a month.',
+    example:
+      'Reduce plastic usage by avoiding single-use plastics for a month.',
   })
   @IsString()
   @IsNotEmpty()

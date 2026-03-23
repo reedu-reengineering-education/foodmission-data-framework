@@ -7,9 +7,9 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { ChallengesController } from './controllers/challenges.controller';
 import { ChallengesService } from './services/challenges.service';
 import { ChallengesRepository } from './repositories/challenges.repository';
-import { ChallengeProgressController } from './challenge-progress/controllers/challenge-progress.controller';
-import { ChallengeProgressService } from './challenge-progress/services/challenge-progress.service';
-import { ChallengeProgressRepository } from './challenge-progress/repositories/challenge-progress.repository';
+import { ChallengeProgressController } from './controllers/challenge-progress.controller';
+import { ChallengeProgressService } from './services/challenge-progress.service';
+import { ChallengeProgressRepository } from './repositories/challenge-progress.repository';
 
 @Module({
   imports: [DatabaseModule, HttpModule, CommonModule],
@@ -21,6 +21,11 @@ import { ChallengeProgressRepository } from './challenge-progress/repositories/c
     ChallengeProgressRepository,
     UserRepository,
   ],
-  exports: [ChallengesService, ChallengesRepository, ChallengeProgressService, ChallengeProgressRepository],
+  exports: [
+    ChallengesService,
+    ChallengesRepository,
+    ChallengeProgressService,
+    ChallengeProgressRepository,
+  ],
 })
 export class ChallengesModule {}

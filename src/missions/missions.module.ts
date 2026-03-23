@@ -7,9 +7,9 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { MissionsController } from './controllers/missions.controller';
 import { MissionsService } from './services/missions.service';
 import { MissionsRepository } from './repositories/missions.repository';
-import { MissionProgressController } from './mission-progress/controllers/mission-progress.controller';
-import { MissionProgressService } from './mission-progress/services/mission-progress.service';
-import { MissionProgressRepository } from './mission-progress/repositories/mission-progress.repository';
+import { MissionProgressController } from './controllers/mission-progress.controller';
+import { MissionProgressService } from './services/mission-progress.service';
+import { MissionProgressRepository } from './repositories/mission-progress.repository';
 
 @Module({
   imports: [DatabaseModule, HttpModule, CommonModule],
@@ -21,6 +21,11 @@ import { MissionProgressRepository } from './mission-progress/repositories/missi
     MissionProgressRepository,
     UserRepository,
   ],
-  exports: [MissionsService, MissionsRepository, MissionProgressService, MissionProgressRepository],
+  exports: [
+    MissionsService,
+    MissionsRepository,
+    MissionProgressService,
+    MissionProgressRepository,
+  ],
 })
 export class MissionsModule {}

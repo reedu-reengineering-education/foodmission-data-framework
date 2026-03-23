@@ -22,7 +22,7 @@ export class CreateChallengesDto {
   @MaxLength(255)
   description: string;
 
-    @ApiProperty({
+  @ApiProperty({
     description: 'Whether the challenge is currently available',
     example: true,
   })

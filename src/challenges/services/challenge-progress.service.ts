@@ -22,10 +22,11 @@ export class ChallengeProgressService {
   ): Promise<ChallengeProgressResponseDto> {
     this.logger.log(`Getting challenge ${challengeId} for user: ${userId}`);
 
-    const progress = await this.challengeProgressRepository.findByUserIdAndChallengeId(
-      userId,
-      challengeId,
-    );
+    const progress =
+      await this.challengeProgressRepository.findByUserIdAndChallengeId(
+        userId,
+        challengeId,
+      );
 
     if (!progress) {
       throw new NotFoundException('Challenge not found');
@@ -44,7 +45,8 @@ export class ChallengeProgressService {
   ): Promise<ChallengeProgressResponseDto[]> {
     this.logger.log(`Getting all challenges for user: ${userId}`);
 
-    const progresses = await this.challengeProgressRepository.findAllByUserId(userId);
+    const progresses =
+      await this.challengeProgressRepository.findAllByUserId(userId);
 
     return progresses.map((p) => this.transformToResponseDto(p));
   }
@@ -56,10 +58,11 @@ export class ChallengeProgressService {
   ): Promise<ChallengeProgressResponseDto> {
     this.logger.log(`Updating challenge ${challengeId} for user: ${userId}`);
 
-    const existing = await this.challengeProgressRepository.findByUserIdAndChallengeId(
-      userId,
-      challengeId,
-    );
+    const existing =
+      await this.challengeProgressRepository.findByUserIdAndChallengeId(
+        userId,
+        challengeId,
+      );
 
     if (!existing) {
       throw new NotFoundException('Challenge not found');

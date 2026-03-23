@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsUUID,
-} from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 
 export class QueryChallengeDto {
   @ApiProperty({
@@ -13,13 +10,12 @@ export class QueryChallengeDto {
   @IsUUID()
   challengeId: string;
 
-    @ApiProperty({
+  @ApiProperty({
     description: 'Check if the challenge is completed by the user',
     example: true,
   })
   @IsNotEmpty()
   completed: boolean;
-
 
   @ApiProperty({
     description: 'The progress made in the challenge',

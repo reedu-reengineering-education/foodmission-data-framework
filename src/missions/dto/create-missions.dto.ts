@@ -41,5 +41,5 @@ export class CreateMissionsDto {
     example: '2024-04-30T23:59:59.000Z',
   })
   @IsNotEmpty()
-  endDate: Date;  
+  endDate: Date;
 }

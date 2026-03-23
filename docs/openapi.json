@@ -6421,7 +6421,7 @@
         ]
       }
     },
-    "/api/v1/challenge-progress": {
+    "/api/v1/challenges/{challengeId}/progress/all": {
       "get": {
         "description": "Retrieves all challenge progresses for the authenticated user.",
         "operationId": "getAll",
@@ -6498,11 +6498,11 @@
         ],
         "summary": "Get all challenge progresses for the current user",
         "tags": [
-          "challenge-progress"
+          "challenges/:challengeId/progress"
         ]
       }
     },
-    "/api/v1/challenge-progress/{challengeId}": {
+    "/api/v1/challenges/{challengeId}/progress": {
       "get": {
         "description": "Retrieves the progress of a specific challenge for the authenticated user.",
         "operationId": "getChallengeById",
@@ -6572,7 +6572,7 @@
         ],
         "summary": "Get challenge progress by challenge ID",
         "tags": [
-          "challenge-progress"
+          "challenges/:challengeId/progress"
         ]
       },
       "patch": {
@@ -6654,7 +6654,7 @@
         ],
         "summary": "Update challenge progress",
         "tags": [
-          "challenge-progress"
+          "challenges/:challengeId/progress"
         ]
       }
     },

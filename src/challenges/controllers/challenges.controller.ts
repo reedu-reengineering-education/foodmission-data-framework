@@ -25,12 +25,18 @@ import { ChallengesService } from '../services/challenges.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { UpdateChallengesDto } from '../dto/update-challenges.dto';
 import { CreateChallengesDto } from '../dto/create-challenges.dto';
+import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { ChallengeProgressService } from '../services/challenge-progress.service';
 
-@ApiTags('challenges/:challenges/progress')
+@ApiTags('challenges')
 @Controller('challenges')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class ChallengesController {
-  constructor(private readonly challengeService: ChallengesService) {}
+  constructor(
+    private readonly challengeService: ChallengesService,
+    private readonly challengeProgressService: ChallengeProgressService,
+  ) {}
 
   @Post()
   @Roles('admin')
@@ -38,7 +44,8 @@ export class ChallengesController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new Challenge',
-    description: 'Creates a new challenge as an Admin. Automatically creates a ChallengeProgress entry for every existing user.',
+    description:
+      'Creates a new challenge as an Admin. Automatically creates a ChallengeProgress entry for every existing user.',
   })
   @ApiBody({ type: CreateChallengesDto })
   @ApiResponse({
@@ -103,7 +110,8 @@ export class ChallengesController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update challenge',
-    description: 'Updates challenge metadata like title, description, dates or availability. Admin only.',
+    description:
+      'Updates challenge metadata like title, description, dates or availability. Admin only.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
@@ -128,7 +136,8 @@ export class ChallengesController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Delete challenge',
-    description: 'Deletes a specific challenge by ID including all its progress entries. Admin only.',
+    description:
+      'Deletes a specific challenge by ID including all its progress entries. Admin only.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
@@ -140,9 +149,27 @@ export class ChallengesController {
     description: 'Challenge not found',
   })
   @ApiCrudErrorResponses()
-  async delete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.challengeService.delete(id);
+  }
+
+  @Get('/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all challenge progresses for the current user',
+    description:
+      'Retrieves all challenge progresses for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of challenge progresses retrieved successfully',
+    type: [ChallengeProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgress(
+    @CurrentUser('id') userId: string,
+  ): Promise<ChallengeProgressResponseDto[]> {
+    return this.challengeProgressService.getAllChallengesByUserId(userId);
   }
 }

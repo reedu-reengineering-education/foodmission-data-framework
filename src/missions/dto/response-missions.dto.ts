@@ -24,8 +24,7 @@ export class MissionsResponseDto {
   @Expose()
   description: string;
 
-
-    @ApiProperty({
+  @ApiProperty({
     description: 'Indicates if the mission is currently available',
     example: true,
   })

@@ -51,9 +51,10 @@ export class MissionsRepository {
   }
 
   async findAll() {
-    return this.prisma.missions.findMany({ include: { missionProgresses: true } });
+    return this.prisma.missions.findMany({
+      include: { missionProgresses: true },
+    });
   }
-
 
   async update(id: string, data: UpdateMissionData) {
     return this.prisma.missions.update({

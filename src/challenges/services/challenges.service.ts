@@ -17,15 +17,14 @@ import { ChallengesRepository } from '../repositories/challenges.repository';
 export class ChallengesService {
   private readonly logger = new Logger(ChallengesService.name);
 
-  constructor(
-    private readonly challengesRepository: ChallengesRepository,
-  ) {}
+  constructor(private readonly challengesRepository: ChallengesRepository) {}
 
   async create(
     createChallengeDto: CreateChallengesDto,
   ): Promise<ChallengeResponseDto> {
     try {
-      const challenge = await this.challengesRepository.create(createChallengeDto);
+      const challenge =
+        await this.challengesRepository.create(createChallengeDto);
       return this.transformToResponseDto(challenge);
     } catch (error) {
       if (
@@ -61,7 +60,9 @@ export class ChallengesService {
 
     const challenges = await this.challengesRepository.findAll();
 
-    return challenges.map((challenge) => this.transformToResponseDto(challenge));
+    return challenges.map((challenge) =>
+      this.transformToResponseDto(challenge),
+    );
   }
 
   async update(
@@ -102,7 +103,10 @@ export class ChallengesService {
       title: challenge.title,
       description: challenge.description,
       available: challenge.available,
-      progress: challenge.challengeProgresses?.find((cp) => cp.userId === challenge.userId)?.progress || 0, 
+      progress:
+        challenge.challengeProgresses?.find(
+          (cp) => cp.userId === challenge.userId,
+        )?.progress || 0,
       startDate: challenge.startDate,
       endDate: challenge.endDate,
     };
