@@ -30,7 +30,7 @@ Includes:
 - `activityLevels`
 - `educationLevels`
 - `annualIncomeLevels`
-- `dietaryPreferences` (Phase 1)
+- `dietaryPreferences`
 - `shoppingResponsibilities`
 
 ### World-wide geography (paginated)
@@ -64,22 +64,19 @@ These lists are derived from Prisma enums (`@prisma/client`) to stay canonical t
 - `GET /api/v1/catalog/type-of-meals`
 - `GET /api/v1/catalog/group-roles`
 
-## Dietary preferences (two phases)
-
-### Phase 1 (implemented)
+## Dietary preferences
 
 `GET /api/v1/catalog/dietary-preferences`
 
-Provides a minimal set aligned with the current recipe seed/tagging pipeline:
-- `NONE`
-- `VEGAN` → maps to recipe tag filter `tags=vegan`
-- `VEGETARIAN` → maps to recipe tag filter `tags=vegetarian`
-
-Each option may include a `meta.recipeFilter.includeTags` hint that matches the existing recipes query API (`GET /api/v1/recipes?tags=...`).
-
-### Phase 2 (planned)
-
-Add "free-from" options (e.g. `GLUTEN_FREE`, `DAIRY_FREE`) once the recipes API supports **negative** allergen filtering (e.g. `excludeAllergens=`) or the seed pipeline adds explicit `gluten-free`/`dairy-free` tags.
+Returns the full set of currently supported dietary preference values:
+- `VEGAN`
+- `VEGETARIAN`
+- `PESCATARIAN`
+- `GLUTEN_FREE`
+- `DAIRY_FREE`
+- `NUT_FREE`
+- `HALAL`
+- `KOSHER`
 
 ## Shopping responsibility
 

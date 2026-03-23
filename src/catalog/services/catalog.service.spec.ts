@@ -84,9 +84,10 @@ describe('CatalogService', () => {
     );
   });
 
-  it('provides dietary preferences phase 1 mapped to recipe tags', () => {
-    const res = service.listDietaryPreferencesPhase1();
-    const vegan = res.data.find((x) => x.code === 'VEGAN');
-    expect(vegan?.meta?.recipeFilter?.includeTags).toEqual(['vegan']);
+  it('lists dietary preferences from Prisma enum', () => {
+    const res = service.listDietaryPreferences();
+    const codes = res.data.map((x) => x.code);
+    expect(codes).toContain('VEGAN');
+    expect(codes).toContain('VEGETARIAN');
   });
 });

@@ -15,7 +15,7 @@ describe('CatalogController', () => {
       listActivityLevels: jest.fn(),
       listEducationLevels: jest.fn(),
       listAnnualIncomeLevels: jest.fn(),
-      listDietaryPreferencesPhase1: jest.fn(),
+      listDietaryPreferences: jest.fn(),
       listShoppingResponsibilities: jest.fn(),
       listLanguages: jest.fn(),
       listCountries: jest.fn(),

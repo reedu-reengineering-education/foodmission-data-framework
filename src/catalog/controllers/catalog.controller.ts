@@ -84,13 +84,12 @@ export class CatalogController {
   @Get('dietary-preferences')
   @Public()
   @ApiOperation({
-    summary:
-      'List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to recipe tags)',
+    summary: 'List dietary preferences',
   })
   @ApiResponse({ status: 200, type: CatalogListResponseDto })
   @ApiCrudErrorResponses()
   dietaryPreferences(): CatalogListResponseDto {
-    return this.catalogService.listDietaryPreferencesPhase1();
+    return this.catalogService.listDietaryPreferences();
   }
 
   @Get('shopping-responsibilities')

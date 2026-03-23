@@ -150,21 +150,23 @@ export class CatalogService {
     };
   }
 
-  listDietaryPreferencesPhase1(): CatalogListResponseDto {
-    const data: CatalogValueDto[] = [
-      { code: 'NONE', label: 'No specific dietary preference' },
-      {
-        code: 'VEGAN',
-        label: 'Vegan',
-        meta: { recipeFilter: { includeTags: ['vegan'] } },
-      },
-      {
-        code: 'VEGETARIAN',
-        label: 'Vegetarian',
-        meta: { recipeFilter: { includeTags: ['vegetarian'] } },
-      },
+  listDietaryPreferences(): CatalogListResponseDto {
+    const values = [
+      'VEGAN',
+      'VEGETARIAN',
+      'PESCATARIAN',
+      'GLUTEN_FREE',
+      'DAIRY_FREE',
+      'NUT_FREE',
+      'HALAL',
+      'KOSHER',
     ];
-    return { data };
+    return {
+      data: values.map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
   }
 
   listShoppingResponsibilities(): CatalogListResponseDto {
@@ -265,7 +267,7 @@ export class CatalogService {
         activityLevels: this.listActivityLevels().data,
         educationLevels: this.listEducationLevels().data,
         annualIncomeLevels: this.listAnnualIncomeLevels().data,
-        dietaryPreferences: this.listDietaryPreferencesPhase1().data,
+        dietaryPreferences: this.listDietaryPreferences().data,
         shoppingResponsibilities: this.listShoppingResponsibilities().data,
       },
     };
