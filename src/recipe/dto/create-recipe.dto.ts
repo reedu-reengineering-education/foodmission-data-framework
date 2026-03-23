@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsInt,
   IsNumber,
   IsObject,
@@ -11,6 +12,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { Allergens } from '@prisma/client';
 import { CreateRecipeIngredientDto } from './recipe-ingredient.dto';
 
 export class CreateRecipeDto {
@@ -89,13 +91,15 @@ export class CreateRecipeDto {
 
   @ApiPropertyOptional({
     description: 'Known allergens',
-    type: [String],
-    example: ['nuts', 'gluten'],
+    enum: Allergens,
+    isArray: true,
+    example: [Allergens.TREE_NUTS, Allergens.GLUTEN],
   })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  allergens?: string[];
+  @IsEnum(Allergens, { each: true })
+  allergens?: Allergens[];
 
   // New fields for external recipes (TheMealDB integration)
   @ApiPropertyOptional({

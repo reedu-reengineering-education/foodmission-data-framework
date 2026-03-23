@@ -5234,7 +5234,22 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "GLUTEN",
+                  "DAIRY",
+                  "PEANUTS",
+                  "TREE_NUTS",
+                  "SHELLFISH",
+                  "FISH",
+                  "EGGS",
+                  "SOY",
+                  "SESAME",
+                  "SULFITES",
+                  "MUSTARD",
+                  "NIGHTSHADES",
+                  "OTHER"
+                ]
               }
             }
           },
@@ -13827,14 +13842,29 @@
             "example": 12.5
           },
           "allergens": {
+            "type": "array",
             "description": "Known allergens",
             "example": [
-              "nuts",
-              "gluten"
+              "TREE_NUTS",
+              "GLUTEN"
             ],
-            "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
             }
           },
           "externalId": {
@@ -14037,10 +14067,25 @@
             "description": "Estimated price or cost"
           },
           "allergens": {
-            "description": "Allergens",
             "type": "array",
+            "description": "Allergens",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
             }
           },
           "rating": {
@@ -14215,14 +14260,29 @@
             "example": 12.5
           },
           "allergens": {
+            "type": "array",
             "description": "Known allergens",
             "example": [
-              "nuts",
-              "gluten"
+              "TREE_NUTS",
+              "GLUTEN"
             ],
-            "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
             }
           },
           "externalId": {

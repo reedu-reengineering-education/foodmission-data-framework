@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { Allergens } from '@prisma/client';
 import { RecipeIngredientResponseDto } from './recipe-ingredient.dto';
 
 export class RecipeResponseDto {
@@ -58,9 +59,13 @@ export class RecipeResponseDto {
   @Expose()
   price?: number;
 
-  @ApiPropertyOptional({ type: [String], description: 'Allergens' })
+  @ApiPropertyOptional({
+    isArray: true,
+    enum: Allergens,
+    description: 'Allergens',
+  })
   @Expose()
-  allergens?: string[];
+  allergens?: Allergens[];
 
   @ApiProperty({ description: 'Aggregate rating value' })
   @Expose()

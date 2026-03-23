@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Recipe } from '@prisma/client';
+import { Allergens, Prisma, Recipe } from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
@@ -29,7 +29,7 @@ export interface CreateRecipeData {
   nutritionalInfo?: Prisma.InputJsonValue;
   sustainabilityScore?: number;
   price?: number;
-  allergens?: string[];
+  allergens?: Allergens[];
   // New fields for external recipes
   externalId?: string;
   source?: string;

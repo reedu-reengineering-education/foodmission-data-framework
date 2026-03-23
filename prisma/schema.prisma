@@ -475,7 +475,7 @@ model Recipe {
   nutritionalInfo     Json?
   sustainabilityScore Float?
   price               Float?
-  allergens           String[]
+  allergens           Allergens[]
   rating              Float    @default(0)
   ratingCount         Int      @default(0)
   createdAt           DateTime @default(now())

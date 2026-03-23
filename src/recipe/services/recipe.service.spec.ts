@@ -55,6 +55,7 @@ describe('RecipeService', () => {
     expect(mockRecipeRepository.create).toHaveBeenCalledWith({
       title: 'Test Recipe',
       userId,
+      allergens: [],
     });
   });
 
@@ -113,7 +114,7 @@ describe('RecipeService', () => {
       cuisineType: 'Italian',
       source: 'themealdb',
       tags: [' quick '],
-      allergens: [' nuts '],
+      allergens: ['TREE_NUTS' as any],
       dietaryLabels: [' vegan '],
       difficulty: 'easy',
       search: 'pasta',
@@ -131,7 +132,7 @@ describe('RecipeService', () => {
         source: 'themealdb',
         difficulty: 'easy',
         tags: { hasSome: ['quick'] },
-        allergens: { hasSome: ['nuts'] },
+        allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
         title: { contains: 'pasta', mode: 'insensitive' },
       },
@@ -210,6 +211,7 @@ describe('RecipeService', () => {
       expect(result.cuisineType).toBe('Japanese');
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
         ...dto,
+        allergens: [],
         userId,
       });
     });
@@ -235,6 +237,7 @@ describe('RecipeService', () => {
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
         title: 'Simple Salad',
         userId,
+        allergens: [],
       });
     });
   });
@@ -480,6 +483,7 @@ describe('RecipeService', () => {
       expect(result.ingredients).toHaveLength(2);
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
         ...createDto,
+        allergens: [],
         userId,
       });
     });

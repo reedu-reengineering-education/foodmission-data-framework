@@ -3203,6 +3203,20 @@ paths:
             type: array
             items:
               type: string
+              enum:
+                - GLUTEN
+                - DAIRY
+                - PEANUTS
+                - TREE_NUTS
+                - SHELLFISH
+                - FISH
+                - EGGS
+                - SOY
+                - SESAME
+                - SULFITES
+                - MUSTARD
+                - NIGHTSHADES
+                - OTHER
         - name: difficulty
           required: false
           in: query
@@ -8912,6 +8926,7 @@ components:
           description: Estimated recipe price or cost
           example: 12.5
         allergens:
+          type: array
           description: Known allergens
           example: &ref_37
             - nuts
@@ -8919,6 +8934,20 @@ components:
           type: array
           items:
             type: string
+            enum:
+              - GLUTEN
+              - DAIRY
+              - PEANUTS
+              - TREE_NUTS
+              - SHELLFISH
+              - FISH
+              - EGGS
+              - SOY
+              - SESAME
+              - SULFITES
+              - MUSTARD
+              - NIGHTSHADES
+              - OTHER
         externalId:
           type: string
           description: External identifier (e.g., TheMealDB idMeal)
@@ -8949,7 +8978,7 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: &ref_35
+          example: &ref_36
             - vegan
             - gluten-free
           type: array
@@ -8957,7 +8986,7 @@ components:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: &ref_36
+          example: &ref_37
             - name: Chicken Breast
               measure: 500g
               order: 1
@@ -9070,10 +9099,24 @@ components:
           type: number
           description: Estimated price or cost
         allergens:
-          description: Allergens
           type: array
+          description: Allergens
           items:
             type: string
+            enum:
+              - GLUTEN
+              - DAIRY
+              - PEANUTS
+              - TREE_NUTS
+              - SHELLFISH
+              - FISH
+              - EGGS
+              - SOY
+              - SESAME
+              - SULFITES
+              - MUSTARD
+              - NIGHTSHADES
+              - OTHER
         rating:
           type: number
           description: Aggregate rating value
@@ -9200,6 +9243,7 @@ components:
           description: Estimated recipe price or cost
           example: 12.5
         allergens:
+          type: array
           description: Known allergens
           example: *ref_37
           type: array
@@ -9235,13 +9279,13 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: *ref_35
+          example: *ref_36
           type: array
           items:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: *ref_36
+          example: *ref_37
           type: array
           items:
             $ref: '#/components/schemas/CreateRecipeIngredientDto'

@@ -1,11 +1,18 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import {
   TransformCSVToStringArray,
   TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { Allergens } from '@prisma/client';
 
 export class QueryRecipeDto extends PaginationQueryDto {
   @ApiPropertyOptional({
@@ -61,12 +68,16 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @TransformCSVToStringArray()
   tags?: string[];
 
-  @ApiPropertyOptional({ description: 'Filter by allergens', type: [String] })
+  @ApiPropertyOptional({
+    description: 'Filter by allergens',
+    enum: Allergens,
+    isArray: true,
+  })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(Allergens, { each: true })
   @TransformCSVToStringArray()
-  allergens?: string[];
+  allergens?: Allergens[];
 
   @ApiPropertyOptional({ description: 'Difficulty label' })
   @IsOptional()

@@ -46,7 +46,10 @@ describe('Recipe Query Integration (e2e)', () => {
       await seedTheMealDbRecipes(prisma, { limit: 20 });
     } catch (e: unknown) {
       const msg = String((e as Error)?.message ?? e);
-      if (msg.includes('does not exist') || (e as { code?: string })?.code === 'P2021') {
+      if (
+        msg.includes('does not exist') ||
+        (e as { code?: string })?.code === 'P2021'
+      ) {
         skipSuite = true;
       } else {
         throw e;

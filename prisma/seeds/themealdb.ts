@@ -21,7 +21,7 @@
  * @see docs/DATABASE_SEEDING_MIGRATION.md for full documentation
  */
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Allergens, Prisma, PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -58,6 +58,48 @@ interface ThemealdbData {
     allergens?: string[];
     sustainabilityScore?: number | null;
   }[];
+}
+
+function mapAllergenTokenToEnum(token: string): Allergens {
+  const normalized = token.trim().toLowerCase();
+
+  switch (normalized) {
+    case 'gluten':
+      return Allergens.GLUTEN;
+    case 'milk':
+      return Allergens.DAIRY;
+    case 'eggs':
+      return Allergens.EGGS;
+    case 'fish':
+      return Allergens.FISH;
+    case 'crustaceans':
+    case 'molluscs':
+      return Allergens.SHELLFISH;
+    case 'nuts':
+      return Allergens.TREE_NUTS;
+    case 'peanuts':
+      return Allergens.PEANUTS;
+    case 'soy':
+      return Allergens.SOY;
+    case 'mustard':
+      return Allergens.MUSTARD;
+    case 'sesame':
+      return Allergens.SESAME;
+    case 'sulphites':
+      return Allergens.SULFITES;
+    case 'nightshades':
+      return Allergens.NIGHTSHADES;
+    default:
+      return Allergens.OTHER;
+  }
+}
+
+function mapAllergensToEnum(tokens?: string[]): Allergens[] {
+  if (!tokens?.length) return [];
+  // Keep order stable, just drop duplicates
+  return tokens
+    .map((t) => mapAllergenTokenToEnum(t))
+    .filter((v, i, arr) => arr.indexOf(v) === i);
 }
 
 interface RecipeIngredientData {
@@ -172,7 +214,7 @@ function toRecipeCreateData(
     tags: recipe.tags ?? [],
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
-    allergens: recipe.allergens ?? [],
+    allergens: mapAllergensToEnum(recipe.allergens),
     nutritionalInfo:
       recipe.nutritionalInfo != null
         ? (recipe.nutritionalInfo as Prisma.InputJsonValue)

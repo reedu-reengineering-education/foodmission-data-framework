@@ -42,6 +42,7 @@ export class RecipeService {
     try {
       const recipe = await this.recipeRepository.create({
         ...createRecipeDto,
+        allergens: createRecipeDto.allergens ?? [],
         userId,
       });
       return this.toResponse(recipe);
@@ -87,7 +88,7 @@ export class RecipeService {
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
         : {}),
       ...(allergens && allergens.length
-        ? { allergens: { hasSome: allergens.map((a) => a.trim()) } }
+        ? { allergens: { hasSome: allergens } }
         : {}),
       ...(dietaryLabels && dietaryLabels.length
         ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
