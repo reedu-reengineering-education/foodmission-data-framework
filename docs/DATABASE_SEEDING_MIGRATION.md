@@ -243,7 +243,7 @@ The integration uses three external data sources. OFF and NEVO populate the **Fo
 ```
 
 **OpenFoodFacts (OFF)**  
-- Seed reads from `prisma/seeds/data/openfoodfacts-foods.json` via `prisma/seeds/openfoodfacts-from-json.ts`. No API calls during seed. If the JSON file is missing, no OFF products are loaded.
+- Seed reads from `prisma/seeds/data/openfoodfacts-foods.json` via `prisma/seeds/openfoodfacts.ts`. No API calls during seed. If the JSON file is missing, no OFF products are loaded.
 
 **NEVO**  
 - Food categories are seeded from `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` into the **FoodCategory** table.
@@ -255,7 +255,7 @@ The integration uses three external data sources. OFF and NEVO populate the **Fo
 
 Recipe seeding depends on **Food** (OpenFoodFacts) and **FoodCategory** (NEVO) being present so ingredient links can be resolved. The main seed (`npm run db:seed`) runs in this order:
 
-1. **OpenFoodFacts** – from JSON only: if `prisma/seeds/data/openfoodfacts-foods.json` exists, it is loaded into the Food table via `prisma/seeds/openfoodfacts-from-json.ts`; if not, no OFF products are seeded.
+1. **OpenFoodFacts** – from JSON only: if `prisma/seeds/data/openfoodfacts-foods.json` exists, it is loaded into the Food table via `prisma/seeds/openfoodfacts.ts`; if not, no OFF products are seeded.
 2. **Food categories (NEVO)** – from `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` into FoodCategory.
 3. **TheMealDB recipes** – from `prisma/seeds/data/themealdb-data.json` via `prisma/seeds/themealdb.ts` (recipes + ingredients + mappings + enriched nutritionalInfo/allergens/sustainability).
 

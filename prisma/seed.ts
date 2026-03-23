@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { seedOpenFoodFactsFromJson } from './seeds/openfoodfacts-from-json';
+import { seedOpenFoodFactsFromJson } from './seeds/openfoodfacts';
 import { seedUsers } from './seeds/users';
 import { seedShoppingLists } from './seeds/shoppingList';
 import { seedShoppingListItems } from './seeds/shoppingListItem';
@@ -21,7 +21,6 @@ async function main() {
   console.log('=====================================');
 
   try {
-    // 1. OpenFoodFacts from local JSON only (no API). Recipe ingredients with source=off link to Food by name.
     const offResult = await seedOpenFoodFactsFromJson(prisma);
     if (offResult.skipped) {
       console.log(
@@ -34,19 +33,16 @@ async function main() {
     const shoppingListItem = await seedShoppingListItems(prisma);
     const pantry = await seedPantries(prisma);
     const pantryItem = await seedPantryItems(prisma);
-    // 2. Food categories (NEVO) – required before TheMealDB so ingredient→FoodCategory links work
     const foodCategories = await seedFoodCategories(prisma);
     const userGroups = await seedUserGroups(prisma);
     const virtualMembers = await seedVirtualMembers(prisma);
     const knowledge = await seedKnowledge(prisma);
     const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
     const challenges = await seedChallenges(prisma);
-
     const missions = await seedMissions(prisma);
     // 3. TheMealDB recipes (depends on Food + FoodCategory being seeded)
     const themealdbResult = await seedTheMealDbRecipes(prisma);
 
-    // 4. Meals linked to recipes (depends on Recipes + Users)
     const meals = await seedMeals(prisma);
 
     console.log('=====================================');

@@ -1,4 +1,11 @@
-import { PrismaClient, User } from '@prisma/client';
+import {
+  ActivityLevel,
+  AnnualIncomeLevel,
+  EducationLevel,
+  Gender,
+  PrismaClient,
+  User,
+} from '@prisma/client';
 
 export interface UserSeedData {
   keycloakId: string;
@@ -13,7 +20,6 @@ export interface UserSeedData {
 }
 
 export const userData: UserSeedData[] = [
-  // Developer user – matches Keycloak user (developer / dev123)
   {
     keycloakId: 'dev-user-1',
     email: 'dev@foodmission.dev',
@@ -58,7 +64,6 @@ export const userData: UserSeedData[] = [
       preferredCategories: ['Proteins', 'Dairy', 'Vegetables'],
     },
   },
-  // Admin user – matches Keycloak user (admin / admin123)
   {
     keycloakId: 'admin-user-1',
     email: 'admin@foodmission.dev',
@@ -99,7 +104,6 @@ export async function seedUsers(prisma: PrismaClient) {
       },
     });
 
-    // Update user with preferences if provided
     if (userInfo.preferences) {
       await prisma.user.update({
         where: { id: user.id },
@@ -113,7 +117,6 @@ export async function seedUsers(prisma: PrismaClient) {
   }
 
   console.log(`✅ Created/updated ${users.length} users with preferences`);
-  // Generate and upsert an additional batch of seeded users (400)
   const generated: User[] = [];
 
   const firstNames = [
@@ -160,7 +163,6 @@ export async function seedUsers(prisma: PrismaClient) {
     'Lee',
     'Walker',
   ];
-  // European countries only
   const countries = [
     'GB',
     'DE',
@@ -180,7 +182,6 @@ export async function seedUsers(prisma: PrismaClient) {
     'PT',
   ];
 
-  // Common region/state names in Europe (informational strings)
   const regions = [
     'England',
     'Bavaria',
@@ -203,6 +204,13 @@ export async function seedUsers(prisma: PrismaClient) {
   const randomInt = (min: number, max: number) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
   const pad = (n: number, width = 4) => String(n).padStart(width, '0');
+  const pick = <T>(values: readonly T[]): T =>
+    values[Math.floor(Math.random() * values.length)];
+
+  const genders = Object.values(Gender);
+  const activityLevels = Object.values(ActivityLevel);
+  const incomeLevels = Object.values(AnnualIncomeLevel);
+  const educationLevels = Object.values(EducationLevel);
 
   for (let i = 1; i <= 400; i++) {
     const keycloakId = `seed-user-${i}`;
@@ -212,47 +220,17 @@ export async function seedUsers(prisma: PrismaClient) {
     const country = countries[Math.floor(Math.random() * countries.length)];
     const region = regions[Math.floor(Math.random() * regions.length)];
     const zip = String(randomInt(10000, 99999));
-    // yearOfBirth between 1950 and 2008 (>=18 in 2026)
     const yearOfBirth = randomInt(1950, 2008);
-
-    // profile enums
-    const genders = [
-      'MALE',
-      'FEMALE',
-      'OTHER',
-      'UNSPECIFIED',
-      'PREFER_NOT_TO_SAY',
-    ];
-    const activityLevels = [
-      'SEDENTARY',
-      'LIGHT',
-      'MODERATE',
-      'ACTIVE',
-      'VERY_ACTIVE',
-    ];
-    const incomeLevels = [
-      'BELOW_10000',
-      'FROM_10000_TO_19999',
-      'FROM_20000_TO_34999',
-      'FROM_35000_TO_49999',
-      'FROM_50000_TO_74999',
-      'FROM_75000_TO_99999',
-      'ABOVE_100000',
-    ];
-    const educationLevels = [
-      'NO_FORMAL_EDUCATION',
-      'PRIMARY',
-      'SECONDARY',
-      'VOCATIONAL',
-      'BACHELORS',
-      'MASTERS',
-      'DOCTORATE',
-    ];
+    const profileEnums = {
+      gender: pick(genders),
+      activityLevel: pick(activityLevels),
+      annualIncome: pick(incomeLevels),
+      educationLevel: pick(educationLevels),
+    };
 
     try {
       const u = await prisma.user.upsert({
         where: { keycloakId },
-        // cast to any because generated Prisma client in some environments may not include optional fields
         update: {
           email,
           firstName,
@@ -261,14 +239,7 @@ export async function seedUsers(prisma: PrismaClient) {
           country,
           region,
           zip,
-          // add randomized profile enums
-          gender: genders[Math.floor(Math.random() * genders.length)],
-          activityLevel:
-            activityLevels[Math.floor(Math.random() * activityLevels.length)],
-          annualIncome:
-            incomeLevels[Math.floor(Math.random() * incomeLevels.length)],
-          educationLevel:
-            educationLevels[Math.floor(Math.random() * educationLevels.length)],
+          ...profileEnums,
         } as any,
         create: {
           keycloakId,
@@ -279,13 +250,7 @@ export async function seedUsers(prisma: PrismaClient) {
           country,
           region,
           zip,
-          gender: genders[Math.floor(Math.random() * genders.length)],
-          activityLevel:
-            activityLevels[Math.floor(Math.random() * activityLevels.length)],
-          annualIncome:
-            incomeLevels[Math.floor(Math.random() * incomeLevels.length)],
-          educationLevel:
-            educationLevels[Math.floor(Math.random() * educationLevels.length)],
+          ...profileEnums,
         } as any,
       });
 

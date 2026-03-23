@@ -1,39 +1,14 @@
-/**
- * TheMealDB Recipe Seeding Script
- *
- * Seeds the database with recipes from TheMealDB, enriched with food mappings
- * from the NEVO Dutch Food Composition Database and OpenFoodFacts.
- *
- * This script:
- * - Loads recipes from themealdb-data.json (recipes + ingredients + mappings)
- * - Maps ingredients to Food (OFF) or FoodCategory (NEVO) where matches exist
- * - Creates Recipe records with userId=null (system recipes), isPublic=true
- *
- * Data Sources:
- * - TheMealDB API: https://www.themealdb.com/api.php
- * - NEVO Dutch Food Composition Database: https://nevo-online.rivm.nl/
- *
- * Usage:
- *   npx ts-node prisma/seeds/themealdb.ts           # Seed all recipes
- *   npx ts-node prisma/seeds/themealdb.ts --limit=50  # Seed first 50 recipes
- *   npx ts-node prisma/seeds/themealdb.ts --dry-run   # Preview without seeding
- *
- * @see docs/DATABASE_SEEDING_MIGRATION.md for full documentation
- */
-
 import { Allergens, Prisma, PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Single data file containing recipes + ingredients + mappings (+ enriched fields).
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
 const SOURCE_NEVO = 'nevo';
-const SOURCE_OFF = 'openfoodfacts'; // alias: 'off'
+const SOURCE_OFF = 'openfoodfacts';
 const SOURCE_THEMEALDB = 'themealdb';
 
-// Types (match themealdb-data.json)
 interface ThemealdbData {
   ingredientMappings: {
     ingredientName: string;
@@ -96,7 +71,6 @@ function mapAllergenTokenToEnum(token: string): Allergens {
 
 function mapAllergensToEnum(tokens?: string[]): Allergens[] {
   if (!tokens?.length) return [];
-  // Keep order stable, just drop duplicates
   return tokens
     .map((t) => mapAllergenTokenToEnum(t))
     .filter((v, i, arr) => arr.indexOf(v) === i);
@@ -106,11 +80,8 @@ interface RecipeIngredientData {
   name: string;
   measure: string;
   order: number;
-  // Link to Food table (OpenFoodFacts products)
   foodId?: string;
-  // Link to FoodCategory table (NEVO generic foods)
   foodCategoryId?: string;
-  // Derived itemType for Prisma
   itemType: 'food' | 'food_category';
 }
 
@@ -120,9 +91,6 @@ interface SeedOptions {
   skipExisting?: boolean;
 }
 
-/**
- * Load single themealdb-data.json (see DATABASE_SEEDING_MIGRATION docs for how it is produced).
- */
 function loadThemealdbData(): ThemealdbData {
   if (!fs.existsSync(DATA_PATH)) {
     throw new Error(
@@ -133,16 +101,12 @@ function loadThemealdbData(): ThemealdbData {
   return JSON.parse(content) as ThemealdbData;
 }
 
-/** Lookup maps for resolving ingredient names to Food/FoodCategory IDs */
 interface IngredientLookupMaps {
   foodIdByBarcode: Map<string, string>;
   foodIdByName: Map<string, string>;
   foodCategoryByNevoCode: Map<number, string>;
 }
 
-/**
- * Build ingredient name -> mapping lookup from data.ingredientMappings
- */
 function buildIngredientMapping(
   mappings: ThemealdbData['ingredientMappings'],
 ): Map<string, (typeof mappings)[0]> {
@@ -153,9 +117,6 @@ function buildIngredientMapping(
   return map;
 }
 
-/**
- * Resolve one recipe ingredient to RecipeIngredientData (with optional foodId/foodCategoryId).
- */
 function resolveIngredient(
   ing: { name: string; measure: string; order: number },
   mapping: ThemealdbData['ingredientMappings'][0] | undefined,
@@ -197,9 +158,6 @@ function resolveIngredient(
   return ingredient;
 }
 
-/**
- * Build Prisma create input for one recipe (no ingredients; those are created separately).
- */
 function toRecipeCreateData(
   recipe: ThemealdbData['recipes'][0],
 ): Prisma.RecipeUncheckedCreateInput {
@@ -226,9 +184,6 @@ function toRecipeCreateData(
   };
 }
 
-/**
- * Main seeding function for TheMealDB recipes
- */
 export async function seedTheMealDbRecipes(
   prisma: PrismaClient,
   options: SeedOptions = {},
@@ -250,7 +205,6 @@ export async function seedTheMealDbRecipes(
     console.log(`   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`);
   }
 
-  // Build lookup maps for linking ingredients (empty when dry run)
   const foodIdByBarcode = new Map<string, string>();
   const foodIdByName = new Map<string, string>();
   const foodCategoryByNevoCode = new Map<number, string>();
@@ -293,7 +247,6 @@ export async function seedTheMealDbRecipes(
 
   for (const recipe of recipesToProcess) {
     try {
-      // Check if recipe already exists
       if (skipExisting && !dryRun) {
         const existing = await prisma.recipe.findUnique({
           where: { externalId: recipe.externalId },
@@ -397,7 +350,6 @@ async function main() {
   }
 }
 
-// Run if called directly
 if (require.main === module) {
   void main();
 }

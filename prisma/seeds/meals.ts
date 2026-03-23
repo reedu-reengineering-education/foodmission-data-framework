@@ -2,7 +2,6 @@ import {
   Meal,
   MealCategory,
   MealCourse,
-  DietaryLabel,
   PrismaClient,
   Recipe,
 } from '@prisma/client';
@@ -10,11 +9,11 @@ import {
 function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
   mealCategories: MealCategory[];
   mealCourse?: MealCourse;
-  dietaryLabels: DietaryLabel[];
+  dietaryLabels: string[];
 } {
   const category = recipe.category?.trim().toLowerCase();
   const mealCategories = new Set<MealCategory>();
-  const dietaryLabels = new Set<DietaryLabel>();
+  const dietaryLabels = new Set<string>();
   let mealCourse: MealCourse | undefined;
 
   switch (category) {
@@ -35,11 +34,11 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
       break;
     case 'vegetarian':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietaryLabel.VEGETARIAN);
+      dietaryLabels.add('VEGETARIAN');
       break;
     case 'vegan':
       mealCategories.add(MealCategory.PLANT_PROTEIN);
-      dietaryLabels.add(DietaryLabel.VEGAN);
+      dietaryLabels.add('VEGAN');
       break;
     case 'starter':
       mealCourse = MealCourse.SIDE_SNACK;
@@ -57,18 +56,14 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
 
   for (const raw of recipe.dietaryLabels) {
     const normalized = raw.trim().toLowerCase();
-    if (normalized === 'vegan') dietaryLabels.add(DietaryLabel.VEGAN);
-    if (normalized === 'vegetarian')
-      dietaryLabels.add(DietaryLabel.VEGETARIAN);
-    if (normalized === 'pescatarian')
-      dietaryLabels.add(DietaryLabel.PESCATARIAN);
-
-    if (normalized === 'gluten-free')
-      dietaryLabels.add(DietaryLabel.GLUTEN_FREE);
-    if (normalized === 'dairy-free') dietaryLabels.add(DietaryLabel.DAIRY_FREE);
-    if (normalized === 'nut-free') dietaryLabels.add(DietaryLabel.NUT_FREE);
-    if (normalized === 'halal') dietaryLabels.add(DietaryLabel.HALAL);
-    if (normalized === 'kosher') dietaryLabels.add(DietaryLabel.KOSHER);
+    if (normalized === 'vegan') dietaryLabels.add('VEGAN');
+    if (normalized === 'vegetarian') dietaryLabels.add('VEGETARIAN');
+    if (normalized === 'pescatarian') dietaryLabels.add('PESCATARIAN');
+    if (normalized === 'gluten-free') dietaryLabels.add('GLUTEN_FREE');
+    if (normalized === 'dairy-free') dietaryLabels.add('DAIRY_FREE');
+    if (normalized === 'nut-free') dietaryLabels.add('NUT_FREE');
+    if (normalized === 'halal') dietaryLabels.add('HALAL');
+    if (normalized === 'kosher') dietaryLabels.add('KOSHER');
   }
 
   return {
@@ -78,21 +73,9 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
   };
 }
 
-/**
- * Seed Meal records that are linked to existing recipes.
- *
- * Requirements:
- * - Always create 2 meals for the developer user (developer / dev123 in Keycloak).
- * - Always create 3 meals for the admin user (admin / admin123 in Keycloak).
- *
- * We look up users by email to avoid coupling to a specific DB id:
- * - Developer: dev@foodmission.dev (Keycloak realm user)
- * - Admin: admin@foodmission.dev (Keycloak realm user)
- */
 export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
   console.log('🍽️ Seeding meals for developer and admin users...');
 
-  // Look up developer and admin users by email (must match Keycloak realm users)
   const developer = await prisma.user.findFirst({
     where: { email: 'dev@foodmission.dev' },
   });
@@ -108,7 +91,6 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
     return [];
   }
 
-  // Prefer public/system recipes (TheMealDB), fall back to any recipe if needed
   let recipes = await prisma.recipe.findMany({
     where: {
       OR: [{ isPublic: true }, { source: 'themealdb' }],
@@ -123,7 +105,6 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
       orderBy: { createdAt: 'asc' },
       take: 10,
     });
-    // Merge and de-duplicate by id
     const byId = new Map(extra.concat(recipes).map((r) => [r.id, r]));
     recipes = Array.from(byId.values());
   }
@@ -144,15 +125,14 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
     return recipe;
   };
 
-  // 2 meals for developer
-  if (developer) {
-    for (let i = 0; i < 2; i++) {
+  const createMealsForUser = async (userId: string, count: number) => {
+    for (let i = 0; i < count; i++) {
       const recipe = nextRecipe();
       const taxonomy = mapRecipeCategoryToMealTaxonomy(recipe);
       const meal = await prisma.meal.create({
         data: {
           name: recipe.title,
-          userId: developer.id,
+          userId,
           recipeId: recipe.id,
           calories: null,
           proteins: null,
@@ -162,40 +142,23 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
           barcode: null,
           mealCategories: taxonomy.mealCategories,
           mealCourse: taxonomy.mealCourse,
-          dietaryLabels: taxonomy.dietaryLabels,
+          dietaryLabels: taxonomy.dietaryLabels as any,
         },
       });
       meals.push(meal);
     }
+  };
+
+  if (developer) {
+    await createMealsForUser(developer.id, 2);
   } else {
     console.log(
       '   ⏭️  Developer user dev@foodmission.dev not found; skipping developer meals.',
     );
   }
 
-  // 3 meals for admin
   if (admin) {
-    for (let i = 0; i < 3; i++) {
-      const recipe = nextRecipe();
-      const taxonomy = mapRecipeCategoryToMealTaxonomy(recipe);
-      const meal = await prisma.meal.create({
-        data: {
-          name: recipe.title,
-          userId: admin.id,
-          recipeId: recipe.id,
-          calories: null,
-          proteins: null,
-          nutritionalInfo: recipe.nutritionalInfo ?? undefined,
-          sustainabilityScore: recipe.sustainabilityScore ?? undefined,
-          price: recipe.price ?? undefined,
-          barcode: null,
-          mealCategories: taxonomy.mealCategories,
-          mealCourse: taxonomy.mealCourse,
-          dietaryLabels: taxonomy.dietaryLabels,
-        },
-      });
-      meals.push(meal);
-    }
+    await createMealsForUser(admin.id, 3);
   } else {
     console.log(
       '   ⏭️  Admin user admin@foodmission.com not found; skipping admin meals.',
