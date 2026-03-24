@@ -182,7 +182,7 @@ function toRecipeCreateData(
   };
 }
 
-export async function seedTheMealDbRecipes(
+export async function seedRecipes(
   prisma: PrismaClient,
   options: SeedOptions = {},
 ): Promise<{ created: number; skipped: number; errors: number }> {
@@ -335,7 +335,7 @@ async function main() {
     console.log(`Options: ${JSON.stringify(options)}`);
     console.log('');
 
-    const result = await seedTheMealDbRecipes(prisma, options);
+    const result = await seedRecipes(prisma, options);
 
     if (result.errors > 0) {
       process.exit(1);

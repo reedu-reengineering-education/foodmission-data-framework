@@ -136,17 +136,17 @@ The imported realm includes:
 
 - **Realm**: `foodmission`
 - **Client**: `foodmission-api & foodmission-service`
-- **Pre-configured users**:
-  - `admin` user with `admin` and `user` roles
-  - `developer` user with `user` role
+- **Pre-configured users** (passwords and JWT `sub` ↔ DB `keycloakId` alignment — see [keycloak/README.md](keycloak/README.md#seeded-users-and-database)):
+  - `developer`, `jane`, `mike`, `sarah`, `admin` (plus service accounts as needed)
 - **Roles**: `admin` and `user` roles for the `foodmission-api` client
+
+After seeding the database, JWT **`sub`** must match **`User.keycloakId`** for these users. Use the bundled realm file so user IDs stay stable.
 
 #### 3.3. Verify the Import
 
 1. Switch to the `foodmission` realm using the dropdown in the top-left corner
-2. Navigate to **Users** → You should see:
-   - `admin` user
-   - `developer` user
+2. Navigate to **Users** → You should see at least:
+   - `admin`, `developer`, `jane`, `mike`, `sarah`
 3. Navigate to **Clients** → You should see:
    - `foodmission-api` client
 

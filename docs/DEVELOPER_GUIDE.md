@@ -374,6 +374,10 @@ npm run db:migrate:reset
 
 ### Seeding
 
+#### Keycloak and dev users
+
+`User.keycloakId` must match the JWT **`sub`** claim. Development seeds use stable UUIDs in `prisma/seeds/keycloak-dev-user-ids.ts`; the same IDs appear as user `id` values in `keycloak/foodmission-realm.dev.json`. Import that realm into Keycloak before relying on seeded pantries, lists, and knowledge progress. Details: [keycloak/README.md](../keycloak/README.md#seeded-users-and-database).
+
 #### Development Seeds
 
 ```typescript

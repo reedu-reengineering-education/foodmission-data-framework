@@ -1,6 +1,6 @@
 import './otel-logging.bootstrap';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SecurityService } from './security/security.service';
@@ -229,5 +229,11 @@ async function bootstrap() {
   console.log(
     `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
   );
+  if (process.env.NODE_ENV === 'development') {
+    Logger.log(
+      'JWT `sub` must match `User.keycloakId` for seeded dev users — see keycloak/README.md#seeded-users-and-database',
+      'Bootstrap',
+    );
+  }
 }
 void bootstrap();

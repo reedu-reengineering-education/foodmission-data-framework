@@ -7,6 +7,7 @@ import {
   User,
 } from '@prisma/client';
 import { randomInt as cryptoRandomInt } from 'crypto';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
 
 export interface UserSeedData {
   keycloakId: string;
@@ -22,7 +23,7 @@ export interface UserSeedData {
 
 export const userData: UserSeedData[] = [
   {
-    keycloakId: 'dev-user-1',
+    keycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     email: 'dev@foodmission.dev',
     firstName: 'Developer',
     lastName: 'User',
@@ -33,7 +34,7 @@ export const userData: UserSeedData[] = [
     },
   },
   {
-    keycloakId: 'dev-user-2',
+    keycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     email: 'jane.smith@example.com',
     firstName: 'Jane',
     lastName: 'Smith',
@@ -44,7 +45,7 @@ export const userData: UserSeedData[] = [
     },
   },
   {
-    keycloakId: 'dev-user-3',
+    keycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     email: 'mike.johnson@example.com',
     firstName: 'Mike',
     lastName: 'Johnson',
@@ -55,7 +56,7 @@ export const userData: UserSeedData[] = [
     },
   },
   {
-    keycloakId: 'dev-user-4',
+    keycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     email: 'sarah.wilson@example.com',
     firstName: 'Sarah',
     lastName: 'Wilson',
@@ -66,7 +67,7 @@ export const userData: UserSeedData[] = [
     },
   },
   {
-    keycloakId: 'admin-user-1',
+    keycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     email: 'admin@foodmission.dev',
     firstName: 'Admin',
     lastName: 'User',
@@ -118,6 +119,11 @@ export async function seedUsers(prisma: PrismaClient) {
   }
 
   console.log(`✅ Created/updated ${users.length} users with preferences`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(
+      'ℹ️  Import keycloak/foodmission-realm.dev.json into Keycloak so JWT `sub` matches User.keycloakId (see keycloak/README.md).',
+    );
+  }
   const generated: User[] = [];
 
   const firstNames = [
