@@ -1,52 +1,71 @@
+# ============================================================================
+# ⚠️  SECURITY WARNING - SECRET MANAGEMENT ⚠️
+# ============================================================================
+# This file contains placeholder secrets (CHANGEME).
+#
+# When creating your actual values file (e.g., values.prod.yaml):
+# 1. Copy this file
+# 2. Replace CHANGEME with real secrets
+# 3. NEVER commit the file with real secrets to git
+# 4. Store it securely (password manager, encrypted storage)
+#
+# For better security, consider using:
+# - Kubernetes Secrets (kubectl create secret)
+# - Sealed Secrets (encrypted secrets in git)
+# - External Secrets Operator (AWS Secrets Manager, Vault, etc.)
+#
+# See K3S_SECRETS_MANAGEMENT_EXPLANATION.md for details.
+# ============================================================================
+
 # Namespace for all resources
 # Change this per environment (e.g., foodmission-test, foodmission-staging, foodmission-prod)
-namespace: foodmission  # Change if you want a different namespace
+namespace: foodmission # Change if you want a different namespace
 
 # ClusterIssuer is a cluster-wide resource - only enable for first install
 clusterIssuer:
-  enabled: false  # Set to true only if ClusterIssuer doesn't exist yet
+  enabled: false # Set to true only if ClusterIssuer doesn't exist yet
 
 keycloak:
-  image: ghcr.io/reedu-reengineering-education/foodmission-keycloak:main  # Change image/tag as needed
-  hostname: staging.auth.api.foodmission.eu  # Change per environment
+  image: ghcr.io/reedu-reengineering-education/foodmission-keycloak:main # Change image/tag as needed
+  hostname: staging.auth.api.foodmission.eu # Change per environment
   db:
-    url: jdbc:postgresql://10.0.0.5:5432/keycloak  # Change DB host/user/db as needed
-    username: keycloak_user  # Change per environment
-    password: CHANGEME  # Set real secret in your actual values file
+    url: jdbc:postgresql://10.0.0.5:5432/keycloak # Change DB host/user/db as needed
+    username: keycloak_user # Change per environment
+    password: CHANGEME # Set real secret in your actual values file
   admin:
-    user: admin  # Change if needed
-    password: CHANGEME  # Set real secret in your actual values file
+    user: admin # Change if needed
+    password: CHANGEME # Set real secret in your actual values file
 
 api:
-  image: ghcr.io/reedu-reengineering-education/foodmission-data-framework:latest  # Change image/tag as needed
-  hostname: staging.api.foodmission.eu  # Change per environment
+  image: ghcr.io/reedu-reengineering-education/foodmission-data-framework:latest # Change image/tag as needed
+  hostname: staging.api.foodmission.eu # Change per environment
   db:
-    url: postgresql://foodmission_user:CHANGEME@10.0.0.5:5432/foodmission  # Change DB host/user/db as needed
-  sessionSecret: CHANGEME  # Set real secret in your actual values file
-  encryptionKey: CHANGEME  # Set real secret in your actual values file
+    url: postgresql://foodmission_user:CHANGEME@10.0.0.5:5432/foodmission # Change DB host/user/db as needed
+  sessionSecret: CHANGEME # Set real secret in your actual values file
+  encryptionKey: CHANGEME # Set real secret in your actual values file
   keycloak:
-    baseUrl: https://staging.auth.api.foodmission.eu  # Change per environment
-    realm: foodmission  # Change if needed
-    clientId: foodmission-api  # Change if needed
-    clientSecret: CHANGEME  # Set real secret in your actual values file
-    redirectUri: https://staging.api.foodmission.eu/auth/callback  # Change per environment
-    serviceClientId: foodmission-service  # Change if needed
-    serviceClientSecret: CHANGEME  # Set real secret in your actual values file
+    baseUrl: https://staging.auth.api.foodmission.eu # Change per environment
+    realm: foodmission # Change if needed
+    clientId: foodmission-api # Change if needed
+    clientSecret: CHANGEME # Set real secret in your actual values file
+    redirectUri: https://staging.api.foodmission.eu/auth/callback # Change per environment
+    serviceClientId: foodmission-service # Change if needed
+    serviceClientSecret: CHANGEME # Set real secret in your actual values file
   # Logging configuration
   logging:
-    level: info  # debug, info, warn, error
-    console: "true"
-    file: "true"
+    level: info # debug, info, warn, error
+    console: 'true'
+    file: 'true'
   # OpenTelemetry configuration (optional - set to enable observability)
   opentelemetry:
-    enabled: "false"  # Set to "true" to enable OpenTelemetry
+    enabled: 'false' # Set to "true" to enable OpenTelemetry
     # endpoint: "http://otel-collector.observability.svc.cluster.local:4318"  # OTEL Collector endpoint
     # headers: '{"Authorization":"Bearer your-token"}'  # Uncomment if authentication required
     # serviceName: "foodmission-api"  # Optional: defaults to foodmission-api
     # serviceVersion: "1.0.0"  # Optional: defaults to package version
 
 ingress:
-  tlsSecret: foodmission-tls-cert  # Change if your TLS secret has a different name
+  tlsSecret: foodmission-tls-cert # Change if your TLS secret has a different name
   hosts:
-    - staging.auth.api.foodmission.eu  # Change per environment
-    - staging.api.foodmission.eu  # Change per environment
+    - staging.auth.api.foodmission.eu # Change per environment
+    - staging.api.foodmission.eu # Change per environment

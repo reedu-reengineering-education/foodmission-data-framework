@@ -272,6 +272,14 @@ Thumbs.db
 *.kubeconfig
 k8s/secrets.yaml
 
+# K3S Helm values files with real secrets
+# Keep only the example file in git
+k3s/values.prod.yaml
+k3s/values.staging.yaml
+k3s/values.test.yaml
+k3s/values.*.yaml
+!k3s/values.example.yaml
+
 # Terraform
 *.tfstate
 *.tfstate.*
