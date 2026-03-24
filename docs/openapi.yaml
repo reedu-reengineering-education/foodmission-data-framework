@@ -1,5 +1,23 @@
 openapi: 3.0.0
 paths:
+  /api/v1:
+    get:
+      description: >-
+        Returns a simple health check message to verify the application is
+        running.
+      operationId: getHello
+      parameters: []
+      responses:
+        '200':
+          description: Application is running
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Hello World!
+      summary: Application health check
+      tags:
+        - health
   /api/v1/auth/info:
     get:
       description: >-
@@ -294,6 +312,211 @@ paths:
         - JWT-auth: []
       summary: Admin-only test endpoint
       tags: *ref_0
+  /api/v1/health:
+    get:
+      operationId: check
+      parameters: []
+      responses:
+        '200':
+          description: Health check passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: up
+                      openfoodfacts:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: up
+                  error:
+                    type: object
+                  details:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: up
+                      openfoodfacts:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: up
+        '503':
+          description: Health check failed
+      summary: Get application health status
+      tags: &ref_1
+        - Health
+  /api/v1/health/ready:
+    get:
+      operationId: readiness
+      parameters: []
+      responses:
+        '200':
+          description: Application is ready
+        '503':
+          description: Application is not ready
+      summary: Get readiness probe status
+      tags: *ref_1
+  /api/v1/health/live:
+    get:
+      operationId: liveness
+      parameters: []
+      responses:
+        '200':
+          description: Application is alive
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database: &ref_2
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis: &ref_3
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *ref_2
+                      redis: *ref_3
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+      summary: Get liveness probe status
+      tags: *ref_1
+  /api/v1/metrics:
+    get:
+      description: Returns application metrics in Prometheus format for scraping
+      operationId: getMetrics
+      parameters: []
+      responses:
+        '200':
+          description: Metrics in Prometheus format
+          content:
+            text/plain:
+              example: >-
+                # HELP http_requests_total Total number of HTTP requests
+
+                # TYPE http_requests_total counter
+
+                http_requests_total{method="GET",route="/api/foods",status_code="200"}
+                42
+
+
+                # HELP http_request_duration_seconds Duration of HTTP requests
+                in seconds
+
+                # TYPE http_request_duration_seconds histogram
+
+                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.1"}
+                10
+
+                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.3"}
+                25
+
+                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.5"}
+                35
+
+                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="+Inf"}
+                42
+
+                http_request_duration_seconds_sum{method="GET",route="/api/foods",status_code="200"}
+                8.2
+
+                http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"}
+                42
+      summary: Get Prometheus metrics
+      tags:
+        - Monitoring
+  /api/v1/performance/summary:
+    get:
+      operationId: getPerformanceSummary
+      parameters: []
+      responses:
+        '200':
+          description: Performance summary retrieved successfully
+      summary: Get performance summary
+      tags: &ref_4
+        - Performance
+  /api/v1/performance/cache/stats:
+    get:
+      operationId: getCacheStats
+      parameters: []
+      responses:
+        '200':
+          description: Cache statistics retrieved successfully
+      summary: Get cache statistics
+      tags: *ref_4
+  /api/v1/performance/cache/hit-rate:
+    get:
+      operationId: getCacheHitRates
+      parameters: []
+      responses:
+        '200':
+          description: Cache hit rates retrieved successfully
+      summary: Get cache hit rates by prefix
+      tags: *ref_4
+  /api/v1/performance/database/stats:
+    get:
+      operationId: getDatabaseStats
+      parameters: []
+      responses:
+        '200':
+          description: Database statistics retrieved successfully
+      summary: Get database performance statistics
+      tags: *ref_4
   /api/v1/users:
     post:
       operationId: create
@@ -338,7 +561,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Create a new user
-      tags: &ref_1
+      tags: &ref_5
         - users
     get:
       operationId: findAll
@@ -353,7 +576,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Get all users
-      tags: *ref_1
+      tags: *ref_5
   /api/v1/users/{id}:
     get:
       operationId: findOne
@@ -397,7 +620,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Get user by ID
-      tags: *ref_1
+      tags: *ref_5
     patch:
       operationId: update
       parameters:
@@ -446,7 +669,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Update user
-      tags: *ref_1
+      tags: *ref_5
     delete:
       operationId: remove
       parameters:
@@ -467,7 +690,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: Delete user
-      tags: *ref_1
+      tags: *ref_5
   /api/v1/profile/me:
     get:
       operationId: getMyProfile
@@ -478,7 +701,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get current user profile
-      tags: &ref_2
+      tags: &ref_6
         - profile
     delete:
       operationId: deleteMe
@@ -494,7 +717,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete current user (optionally cascade all data)
-      tags: *ref_2
+      tags: *ref_6
   /api/v1/profile:
     patch:
       operationId: updateProfile
@@ -511,7 +734,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update profile
-      tags: *ref_2
+      tags: *ref_6
   /api/v1/profile/complete:
     get:
       operationId: isComplete
@@ -524,7 +747,776 @@ paths:
       summary: >-
         Check whether basic profile is complete (needs: username, yearOfBirth,
         country, region, zip, language)
-      tags: *ref_2
+      tags: *ref_6
+  /api/v1/groups:
+    post:
+      description: >-
+        Creates a new group and adds the creator as an admin. Returns the group
+        with its unique invite code.
+      operationId: create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserGroupDto'
+      responses:
+        '201':
+          description: Group created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Create a new group
+      tags: &ref_7
+        - groups
+    get:
+      description: Returns all groups where the authenticated user is a member.
+      operationId: findAll
+      parameters: []
+      responses:
+        '200':
+          description: List of groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all groups for current user
+      tags: *ref_7
+  /api/v1/groups/{id}:
+    get:
+      description: Returns a specific group if the user is a member.
+      operationId: findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Group found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get group by ID
+      tags: *ref_7
+    patch:
+      description: Updates group name/description. Admin only.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserGroupDto'
+      responses:
+        '200':
+          description: Group updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update group
+      tags: *ref_7
+    delete:
+      description: Deletes a group and all its memberships/virtual members. Admin only.
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Group deleted successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Delete group
+      tags: *ref_7
+  /api/v1/groups/join:
+    post:
+      description: Joins an existing group using the invite code.
+      operationId: join
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinGroupDto'
+      responses:
+        '201':
+          description: Successfully joined the group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGroupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Join a group by invite code
+      tags: *ref_7
+  /api/v1/groups/{id}/leave:
+    post:
+      description: Leaves a group. Last admin cannot leave without transferring rights.
+      operationId: leave
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Left the group successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Leave a group
+      tags: *ref_7
+  /api/v1/groups/{id}/invite-code:
+    get:
+      description: Returns the current invite code for the group. Admin only.
+      operationId: getInviteCode
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Invite code returned
+          content:
+            application/json:
+              schema:
+                properties:
+                  inviteCode:
+                    type: string
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get invite code
+      tags: *ref_7
+  /api/v1/groups/{id}/regenerate-code:
+    post:
+      description: Generates a new invite code, invalidating the old one. Admin only.
+      operationId: regenerateInviteCode
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: New invite code generated
+          content:
+            application/json:
+              schema:
+                properties:
+                  inviteCode:
+                    type: string
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Regenerate invite code
+      tags: *ref_7
+  /api/v1/groups/{id}/members:
+    get:
+      description: >-
+        Returns all members of the group (both registered users and virtual
+        members). Use the `isVirtual` field to distinguish between them.
+      operationId: getMembers
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Members list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Get all members
+      tags: *ref_7
+    post:
+      description: >-
+        Adds a member without an account (e.g., child or dependent). Any group
+        member can add virtual members.
+      operationId: addMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMemberDto'
+      responses:
+        '201':
+          description: Virtual member added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Add a virtual member
+      tags: *ref_7
+  /api/v1/groups/{id}/members/{memberId}:
+    patch:
+      description: >-
+        Updates virtual member information. Any group member can update. Cannot
+        update registered users.
+      operationId: updateMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemberDto'
+      responses:
+        '200':
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Update a virtual member
+      tags: *ref_7
+    delete:
+      description: >-
+        Removes a member from the group. Admin required for registered users;
+        any member can remove virtual members.
+      operationId: removeMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Member removed successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Remove a member
+      tags: *ref_7
+  /api/v1/groups/{id}/members/{memberId}/make-admin:
+    post:
+      description: >-
+        Promotes a regular member to admin role. Existing admin only. Only
+        registered users can be promoted. Use this before leaving if you are the
+        last admin.
+      operationId: transferAdmin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Group ID
+          schema:
+            format: uuid
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          description: Membership ID to promote
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: Member promoted to admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - JWT-auth: []
+      summary: Promote member to admin
+      tags: *ref_7
   /api/v1/foods:
     post:
       description: Creates a new food item in the database. Requires user or admin role.
@@ -567,14 +1559,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: &ref_3
+      security: &ref_8
         - keycloak-oauth2:
             - openid
             - profile
             - roles
         - JWT-auth: []
       summary: Create a new food item
-      tags: &ref_4
+      tags: &ref_9
         - foods
     get:
       description: >-
@@ -595,9 +1587,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Get all food items
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/foods/search/openfoodfacts:
     get:
       description: >-
@@ -677,9 +1669,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Search OpenFoodFacts database
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/foods/import/openfoodfacts/{barcode}:
     post:
       description: Imports a food item from OpenFoodFacts database using barcode.
@@ -735,9 +1727,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Import food from OpenFoodFacts
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/foods/barcode/{barcode}:
     get:
       description: >-
@@ -776,9 +1768,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Find food by barcode
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/foods/{id}:
     get:
       description: >-
@@ -818,9 +1810,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Find food by ID
-      tags: *ref_4
+      tags: *ref_9
     patch:
       description: Updates a food item by its ID. Requires user or admin role.
       operationId: update
@@ -869,9 +1861,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Update food item
-      tags: *ref_4
+      tags: *ref_9
     delete:
       description: Deletes a food item by its ID. Requires admin role.
       operationId: remove
@@ -910,9 +1902,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Delete food item
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/foods/{id}/openfoodfacts:
     get:
       description: >-
@@ -954,9 +1946,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_3
+      security: *ref_8
       summary: Get OpenFoodFacts information for food item
-      tags: *ref_4
+      tags: *ref_9
   /api/v1/food-categories:
     post:
       description: 'Admin only: Create a new food category with nutritional data'
@@ -981,10 +1973,10 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin role required
-      security: &ref_5
+      security: &ref_10
         - JWT-auth: []
       summary: Create a new food category
-      tags: &ref_6
+      tags: &ref_11
         - food-categories
     get:
       description: Get a paginated list of food categories with optional filtering
@@ -1023,9 +2015,9 @@ paths:
       responses:
         '200':
           description: Food categories retrieved successfully
-      security: *ref_5
+      security: *ref_10
       summary: Get all food categories
-      tags: *ref_6
+      tags: *ref_11
   /api/v1/food-categories/food-groups:
     get:
       description: >-
@@ -1048,9 +2040,9 @@ paths:
                 type: array
                 items:
                   type: string
-      security: *ref_5
+      security: *ref_10
       summary: Get all unique food groups
-      tags: *ref_6
+      tags: *ref_11
   /api/v1/food-categories/{id}:
     get:
       description: Get detailed information about a specific food category
@@ -1070,9 +2062,9 @@ paths:
                 $ref: '#/components/schemas/FoodCategoryResponseDto'
         '404':
           description: Food category not found
-      security: *ref_5
+      security: *ref_10
       summary: Get food category by ID
-      tags: *ref_6
+      tags: *ref_11
     patch:
       description: 'Admin only: Update a food category by ID'
       operationId: update
@@ -1103,9 +2095,9 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_5
+      security: *ref_10
       summary: Update food category
-      tags: *ref_6
+      tags: *ref_11
     delete:
       description: 'Admin only: Delete a food category by ID'
       operationId: delete
@@ -1124,214 +2116,757 @@ paths:
           description: Forbidden - Admin role required
         '404':
           description: Food category not found
-      security: *ref_5
+      security: *ref_10
       summary: Delete food category
-      tags: *ref_6
-  /api/v1/health:
+      tags: *ref_11
+  /api/v1/catalog/startup:
     get:
-      operationId: check
+      operationId: startup
       parameters: []
       responses:
         '200':
-          description: Health check passed
+          description: Startup catalog values retrieved successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-                  info:
-                    type: object
-                    properties:
-                      database:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            example: up
-                      openfoodfacts:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            example: up
-                  error:
-                    type: object
-                  details:
-                    type: object
-                    properties:
-                      database:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            example: up
-                      openfoodfacts:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            example: up
-        '503':
-          description: Health check failed
-      summary: Get application health status
-      tags: &ref_7
-        - Health
-  /api/v1/health/ready:
-    get:
-      operationId: readiness
-      parameters: []
-      responses:
-        '200':
-          description: Application is ready
-        '503':
-          description: Application is not ready
-      summary: Get readiness probe status
-      tags: *ref_7
-  /api/v1/health/live:
-    get:
-      operationId: liveness
-      parameters: []
-      responses:
-        '200':
-          description: Application is alive
-        '503':
-          description: The Health Check is not successful
+                $ref: '#/components/schemas/CatalogStartupResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  info:
-                    type: object
-                    example:
-                      database: &ref_8
-                        status: up
-                    additionalProperties:
-                      type: object
-                      required:
-                        - status
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties: true
-                    nullable: true
-                  error:
-                    type: object
-                    example:
-                      redis: &ref_9
-                        status: down
-                        message: Could not connect
-                    additionalProperties:
-                      type: object
-                      required:
-                        - status
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties: true
-                    nullable: true
-                  details:
-                    type: object
-                    example:
-                      database: *ref_8
-                      redis: *ref_9
-                    additionalProperties:
-                      type: object
-                      required:
-                        - status
-                      properties:
-                        status:
-                          type: string
-                      additionalProperties: true
-      summary: Get liveness probe status
-      tags: *ref_7
-  /api/v1/metrics:
-    get:
-      description: Returns application metrics in Prometheus format for scraping
-      operationId: getMetrics
-      parameters: []
-      responses:
-        '200':
-          description: Metrics in Prometheus format
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
           content:
-            text/plain:
-              example: >-
-                # HELP http_requests_total Total number of HTTP requests
-
-                # TYPE http_requests_total counter
-
-                http_requests_total{method="GET",route="/api/foods",status_code="200"}
-                42
-
-
-                # HELP http_request_duration_seconds Duration of HTTP requests
-                in seconds
-
-                # TYPE http_request_duration_seconds histogram
-
-                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.1"}
-                10
-
-                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.3"}
-                25
-
-                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.5"}
-                35
-
-                http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="+Inf"}
-                42
-
-                http_request_duration_seconds_sum{method="GET",route="/api/foods",status_code="200"}
-                8.2
-
-                http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"}
-                42
-      summary: Get Prometheus metrics
-      tags:
-        - Monitoring
-  /api/v1/performance/summary:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: Static values needed at regular app startup (excluding world geography)
+      tags: &ref_12
+        - catalog
+  /api/v1/catalog/genders:
     get:
-      operationId: getPerformanceSummary
+      operationId: genders
       parameters: []
       responses:
         '200':
-          description: Performance summary retrieved successfully
-      summary: Get performance summary
-      tags: &ref_10
-        - Performance
-  /api/v1/performance/cache/stats:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List genders
+      tags: *ref_12
+  /api/v1/catalog/activity-levels:
     get:
-      operationId: getCacheStats
+      operationId: activityLevels
       parameters: []
       responses:
         '200':
-          description: Cache statistics retrieved successfully
-      summary: Get cache statistics
-      tags: *ref_10
-  /api/v1/performance/cache/hit-rate:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List activity levels
+      tags: *ref_12
+  /api/v1/catalog/education-levels:
     get:
-      operationId: getCacheHitRates
+      operationId: educationLevels
       parameters: []
       responses:
         '200':
-          description: Cache hit rates retrieved successfully
-      summary: Get cache hit rates by prefix
-      tags: *ref_10
-  /api/v1/performance/database/stats:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List education levels
+      tags: *ref_12
+  /api/v1/catalog/annual-income-levels:
     get:
-      operationId: getDatabaseStats
+      operationId: annualIncomeLevels
       parameters: []
       responses:
         '200':
-          description: Database statistics retrieved successfully
-      summary: Get database performance statistics
-      tags: *ref_10
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List annual income levels
+      tags: *ref_12
+  /api/v1/catalog/dietary-preferences:
+    get:
+      operationId: dietaryPreferences
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List dietary preferences
+      tags: *ref_12
+  /api/v1/catalog/shopping-responsibilities:
+    get:
+      operationId: shoppingResponsibilities
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List shopping responsibility options
+      tags: *ref_12
+  /api/v1/catalog/units:
+    get:
+      operationId: units
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List units
+      tags: *ref_12
+  /api/v1/catalog/type-of-meals:
+    get:
+      operationId: typeOfMeals
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List type of meal values
+      tags: *ref_12
+  /api/v1/catalog/meal-categories:
+    get:
+      operationId: mealCategories
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List meal categories
+      tags: *ref_12
+  /api/v1/catalog/meal-courses:
+    get:
+      operationId: mealCourses
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List meal courses
+      tags: *ref_12
+  /api/v1/catalog/group-roles:
+    get:
+      operationId: groupRoles
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List group roles
+      tags: *ref_12
+  /api/v1/catalog/languages:
+    get:
+      operationId: languages
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List languages (paginated)
+      tags: *ref_12
+  /api/v1/catalog/countries:
+    get:
+      operationId: countries
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List countries (paginated)
+      tags: *ref_12
+  /api/v1/catalog/regions:
+    get:
+      operationId: regions
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: 'Page number (default: 1, min: 1)'
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: 'Items per page (default: 10, min: 1, max: 100)'
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Case-insensitive search over label/name
+          schema:
+            example: nether
+            type: string
+        - name: countryCode
+          required: false
+          in: query
+          description: >-
+            ISO 3166-1 alpha-2 country code. Required unless search is provided
+            (world-wide list is large).
+          schema:
+            example: NL
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      summary: List regions/subdivisions (paginated)
+      tags: *ref_12
   /api/v1/shopping-lists:
     post:
       description: Creates a new ShoppingList in the database. Requires user or admin role.
@@ -1381,16 +2916,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - &ref_11
+        - &ref_13
           keycloak-oauth2:
             - openid
             - profile
             - roles
-        - &ref_12
+        - &ref_14
           JWT-auth: []
         - JWT-auth: []
       summary: Create a new Shopping List
-      tags: &ref_13
+      tags: &ref_15
         - shopping-lists
     get:
       operationId: findAll
@@ -1427,11 +2962,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_11
-        - *ref_12
+        - *ref_13
+        - *ref_14
         - JWT-auth: []
       summary: Get all shopping lists for authenticated user
-      tags: *ref_13
+      tags: *ref_15
   /api/v1/shopping-lists/{id}:
     get:
       operationId: findById
@@ -1480,11 +3015,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_11
-        - *ref_12
+        - *ref_13
+        - *ref_14
         - JWT-auth: []
       summary: Get specific shopping list by ID
-      tags: *ref_13
+      tags: *ref_15
     patch:
       operationId: update
       parameters:
@@ -1538,11 +3073,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_11
-        - *ref_12
+        - *ref_13
+        - *ref_14
         - JWT-auth: []
       summary: Update shopping list
-      tags: *ref_13
+      tags: *ref_15
     delete:
       operationId: remove
       parameters:
@@ -1586,11 +3121,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - *ref_11
-        - *ref_12
+        - *ref_13
+        - *ref_14
         - JWT-auth: []
       summary: Delete specific shopping list by ID
-      tags: *ref_13
+      tags: *ref_15
   /api/v1/shopping-lists/{shoppingListId}/items:
     get:
       description: Returns all items for the shopping list, with optional filters.
@@ -1669,7 +3204,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List items in a shopping list
-      tags: &ref_14
+      tags: &ref_16
         - shopping-list-items
     post:
       description: >-
@@ -1729,7 +3264,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to shopping list
-      tags: *ref_14
+      tags: *ref_16
   /api/v1/shopping-lists/{shoppingListId}/items/clear-checked:
     delete:
       description: Remove all checked items from a specific shopping list
@@ -1777,7 +3312,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Clear all checked items from shopping list
-      tags: *ref_14
+      tags: *ref_16
   /api/v1/shopping-lists/{shoppingListId}/items/{itemId}:
     get:
       operationId: findById
@@ -1834,7 +3369,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific shopping list item by ID
-      tags: *ref_14
+      tags: *ref_16
     patch:
       description: Update quantity, unit, notes, or checked status of a shopping list item
       operationId: update
@@ -1897,7 +3432,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update shopping list item
-      tags: *ref_14
+      tags: *ref_16
     delete:
       description: Delete a specific shopping list item by ID
       operationId: remove
@@ -1950,7 +3485,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from shopping list
-      tags: *ref_14
+      tags: *ref_16
   /api/v1/shopping-lists/{shoppingListId}/items/{itemId}/toggle-checked:
     patch:
       description: Quick endpoint to toggle the checked status of an item
@@ -6941,6 +8476,276 @@ components:
             dietaryPreference: VEGETARIAN
             allergies:
               - peanuts
+    CreateUserGroupDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+          maxLength: 255
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+          maxLength: 1000
+      required:
+        - name
+    MemberResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the membership
+          example: uuid-membership-id
+        role:
+          type: string
+          description: The role of the member in the group
+          enum:
+            - ADMIN
+            - MEMBER
+          example: MEMBER
+        joinedAt:
+          format: date-time
+          type: string
+          description: When the member joined the group
+        isVirtual:
+          type: boolean
+          description: Whether this is a virtual member (true) or registered user (false)
+          example: false
+        userId:
+          type: string
+          description: The user ID (only for registered users)
+          example: uuid-user-id
+        firstName:
+          type: string
+          description: First name (only for registered users)
+          example: John
+        lastName:
+          type: string
+          description: Last name (only for registered users)
+          example: Doe
+        email:
+          type: string
+          description: Email (only for registered users)
+          example: john@example.com
+        nickname:
+          type: string
+          description: >-
+            Nickname (primarily for virtual members, optional display name for
+            registered)
+          example: Little Timmy
+        age:
+          type: number
+          description: Age (only for virtual members)
+          example: 8
+        gender:
+          type: string
+          description: Gender (only for virtual members)
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level (only for virtual members)
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level (only for virtual members)
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (only for virtual members)
+        createdBy:
+          type: string
+          description: ID of the user who created this virtual member
+      required:
+        - id
+        - role
+        - joinedAt
+        - isVirtual
+    UserGroupResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the group
+          example: uuid-group-id
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+        inviteCode:
+          type: string
+          description: The invite code for joining the group (7-character alphanumeric)
+          example: AXY1278
+          minLength: 7
+          maxLength: 7
+          pattern: ^[A-Z0-9]{7}$
+        createdBy:
+          type: string
+          description: The user ID who created the group
+          example: uuid-user-id
+        createdAt:
+          format: date-time
+          type: string
+          description: When the group was created
+        members:
+          description: >-
+            List of all members (both registered users and virtual members). Use
+            `isVirtual` to distinguish.
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberResponseDto'
+      required:
+        - id
+        - name
+        - inviteCode
+        - createdBy
+        - createdAt
+        - members
+    UpdateUserGroupDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the group
+          example: Smith Family
+          maxLength: 255
+        description:
+          type: string
+          description: Optional description of the group
+          example: Our family shopping and meal planning group
+          maxLength: 1000
+    JoinGroupDto:
+      type: object
+      properties:
+        inviteCode:
+          type: string
+          description: The invite code to join the group (7-character alphanumeric)
+          example: AXY1278
+          minLength: 7
+          maxLength: 7
+          pattern: ^[A-Z0-9]{7}$
+      required:
+        - inviteCode
+    CreateMemberDto:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Nickname of the virtual member
+          example: Little Timmy
+          maxLength: 255
+        age:
+          type: number
+          description: Age of the virtual member
+          example: 8
+          minimum: 0
+          maximum: 150
+        gender:
+          type: string
+          description: Gender of the virtual member
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (JSON object)
+          example:
+            dietaryPreference: VEGETARIAN
+      required:
+        - nickname
+    UpdateMemberDto:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: Nickname of the virtual member
+          example: Little Timmy
+          maxLength: 255
+        age:
+          type: number
+          description: Age of the virtual member
+          example: 8
+          minimum: 0
+          maximum: 150
+        gender:
+          type: string
+          description: Gender of the virtual member
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+            - UNSPECIFIED
+            - PREFER_NOT_TO_SAY
+        activityLevel:
+          type: string
+          description: Physical activity level
+          enum:
+            - SEDENTARY
+            - LIGHT
+            - MODERATE
+            - ACTIVE
+            - VERY_ACTIVE
+        annualIncome:
+          type: string
+          description: Annual income level
+          enum:
+            - BELOW_10000
+            - FROM_10000_TO_19999
+            - FROM_20000_TO_34999
+            - FROM_35000_TO_49999
+            - FROM_50000_TO_74999
+            - FROM_75000_TO_99999
+            - ABOVE_100000
+        preferences:
+          type: object
+          description: Free-form preferences (JSON object)
+          example:
+            dietaryPreference: VEGETARIAN
     CreateFoodDto:
       type: object
       properties:
@@ -8147,6 +9952,99 @@ components:
         folateTotal:
           type: number
           description: Folate total (µg)
+    CatalogValueDto:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Stable identifier/code for the value
+        label:
+          type: string
+          description: Human-readable label
+        meta:
+          type: object
+          description: Optional metadata (e.g. countryCode for regions)
+          additionalProperties: true
+      required:
+        - code
+        - label
+    CatalogStartupDataDto:
+      type: object
+      properties:
+        genders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        activityLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        educationLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        annualIncomeLevels:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        dietaryPreferences:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        shoppingResponsibilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - genders
+        - activityLevels
+        - educationLevels
+        - annualIncomeLevels
+        - dietaryPreferences
+        - shoppingResponsibilities
+    CatalogStartupResponseDto:
+      type: object
+      properties:
+        data:
+          description: Profile completion dropdown values (small, non-paginated)
+          allOf:
+            - $ref: '#/components/schemas/CatalogStartupDataDto'
+      required:
+        - data
+    CatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+      required:
+        - data
+    PaginatedCatalogListResponseDto:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogValueDto'
+        total:
+          type: number
+          description: Total items
+        page:
+          type: number
+          description: Page number
+        limit:
+          type: number
+          description: Items per page
+        totalPages:
+          type: number
+          description: Total pages
+      required:
+        - data
+        - total
+        - page
+        - limit
+        - totalPages
     CreateShoppingListDto:
       type: object
       properties:
@@ -9630,276 +11528,6 @@ components:
           type: boolean
           description: Whether the mission is completed
           example: true
-    CreateUserGroupDto:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the group
-          example: Smith Family
-          maxLength: 255
-        description:
-          type: string
-          description: Optional description of the group
-          example: Our family shopping and meal planning group
-          maxLength: 1000
-      required:
-        - name
-    MemberResponseDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the membership
-          example: uuid-membership-id
-        role:
-          type: string
-          description: The role of the member in the group
-          enum:
-            - ADMIN
-            - MEMBER
-          example: MEMBER
-        joinedAt:
-          format: date-time
-          type: string
-          description: When the member joined the group
-        isVirtual:
-          type: boolean
-          description: Whether this is a virtual member (true) or registered user (false)
-          example: false
-        userId:
-          type: string
-          description: The user ID (only for registered users)
-          example: uuid-user-id
-        firstName:
-          type: string
-          description: First name (only for registered users)
-          example: John
-        lastName:
-          type: string
-          description: Last name (only for registered users)
-          example: Doe
-        email:
-          type: string
-          description: Email (only for registered users)
-          example: john@example.com
-        nickname:
-          type: string
-          description: >-
-            Nickname (primarily for virtual members, optional display name for
-            registered)
-          example: Little Timmy
-        age:
-          type: number
-          description: Age (only for virtual members)
-          example: 8
-        gender:
-          type: string
-          description: Gender (only for virtual members)
-          enum:
-            - MALE
-            - FEMALE
-            - OTHER
-            - UNSPECIFIED
-            - PREFER_NOT_TO_SAY
-        activityLevel:
-          type: string
-          description: Physical activity level (only for virtual members)
-          enum:
-            - SEDENTARY
-            - LIGHT
-            - MODERATE
-            - ACTIVE
-            - VERY_ACTIVE
-        annualIncome:
-          type: string
-          description: Annual income level (only for virtual members)
-          enum:
-            - BELOW_10000
-            - FROM_10000_TO_19999
-            - FROM_20000_TO_34999
-            - FROM_35000_TO_49999
-            - FROM_50000_TO_74999
-            - FROM_75000_TO_99999
-            - ABOVE_100000
-        preferences:
-          type: object
-          description: Free-form preferences (only for virtual members)
-        createdBy:
-          type: string
-          description: ID of the user who created this virtual member
-      required:
-        - id
-        - role
-        - joinedAt
-        - isVirtual
-    UserGroupResponseDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the group
-          example: uuid-group-id
-        name:
-          type: string
-          description: The name of the group
-          example: Smith Family
-        description:
-          type: string
-          description: Optional description of the group
-          example: Our family shopping and meal planning group
-        inviteCode:
-          type: string
-          description: The invite code for joining the group (7-character alphanumeric)
-          example: AXY1278
-          minLength: 7
-          maxLength: 7
-          pattern: ^[A-Z0-9]{7}$
-        createdBy:
-          type: string
-          description: The user ID who created the group
-          example: uuid-user-id
-        createdAt:
-          format: date-time
-          type: string
-          description: When the group was created
-        members:
-          description: >-
-            List of all members (both registered users and virtual members). Use
-            `isVirtual` to distinguish.
-          type: array
-          items:
-            $ref: '#/components/schemas/MemberResponseDto'
-      required:
-        - id
-        - name
-        - inviteCode
-        - createdBy
-        - createdAt
-        - members
-    UpdateUserGroupDto:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the group
-          example: Smith Family
-          maxLength: 255
-        description:
-          type: string
-          description: Optional description of the group
-          example: Our family shopping and meal planning group
-          maxLength: 1000
-    JoinGroupDto:
-      type: object
-      properties:
-        inviteCode:
-          type: string
-          description: The invite code to join the group (7-character alphanumeric)
-          example: AXY1278
-          minLength: 7
-          maxLength: 7
-          pattern: ^[A-Z0-9]{7}$
-      required:
-        - inviteCode
-    CreateMemberDto:
-      type: object
-      properties:
-        nickname:
-          type: string
-          description: Nickname of the virtual member
-          example: Little Timmy
-          maxLength: 255
-        age:
-          type: number
-          description: Age of the virtual member
-          example: 8
-          minimum: 0
-          maximum: 150
-        gender:
-          type: string
-          description: Gender of the virtual member
-          enum:
-            - MALE
-            - FEMALE
-            - OTHER
-            - UNSPECIFIED
-            - PREFER_NOT_TO_SAY
-        activityLevel:
-          type: string
-          description: Physical activity level
-          enum:
-            - SEDENTARY
-            - LIGHT
-            - MODERATE
-            - ACTIVE
-            - VERY_ACTIVE
-        annualIncome:
-          type: string
-          description: Annual income level
-          enum:
-            - BELOW_10000
-            - FROM_10000_TO_19999
-            - FROM_20000_TO_34999
-            - FROM_35000_TO_49999
-            - FROM_50000_TO_74999
-            - FROM_75000_TO_99999
-            - ABOVE_100000
-        preferences:
-          type: object
-          description: Free-form preferences (JSON object)
-          example:
-            dietaryPreference: VEGETARIAN
-      required:
-        - nickname
-    UpdateMemberDto:
-      type: object
-      properties:
-        nickname:
-          type: string
-          description: Nickname of the virtual member
-          example: Little Timmy
-          maxLength: 255
-        age:
-          type: number
-          description: Age of the virtual member
-          example: 8
-          minimum: 0
-          maximum: 150
-        gender:
-          type: string
-          description: Gender of the virtual member
-          enum:
-            - MALE
-            - FEMALE
-            - OTHER
-            - UNSPECIFIED
-            - PREFER_NOT_TO_SAY
-        activityLevel:
-          type: string
-          description: Physical activity level
-          enum:
-            - SEDENTARY
-            - LIGHT
-            - MODERATE
-            - ACTIVE
-            - VERY_ACTIVE
-        annualIncome:
-          type: string
-          description: Annual income level
-          enum:
-            - BELOW_10000
-            - FROM_10000_TO_19999
-            - FROM_20000_TO_34999
-            - FROM_35000_TO_49999
-            - FROM_50000_TO_74999
-            - FROM_75000_TO_99999
-            - ABOVE_100000
-        preferences:
-          type: object
-          description: Free-form preferences (JSON object)
-          example:
-            dietaryPreference: VEGETARIAN
     QuizQuestionDto:
       type: object
       properties:
@@ -10174,96 +11802,3 @@ components:
               - Paris
               - Berlin
             score: 1
-    CatalogValueDto:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Stable identifier/code for the value
-        label:
-          type: string
-          description: Human-readable label
-        meta:
-          type: object
-          description: Optional metadata (e.g. countryCode for regions)
-          additionalProperties: true
-      required:
-        - code
-        - label
-    CatalogStartupDataDto:
-      type: object
-      properties:
-        genders:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        activityLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        educationLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        annualIncomeLevels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        dietaryPreferences:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        shoppingResponsibilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-      required:
-        - genders
-        - activityLevels
-        - educationLevels
-        - annualIncomeLevels
-        - dietaryPreferences
-        - shoppingResponsibilities
-    CatalogStartupResponseDto:
-      type: object
-      properties:
-        data:
-          description: Profile completion dropdown values (small, non-paginated)
-          allOf:
-            - $ref: '#/components/schemas/CatalogStartupDataDto'
-      required:
-        - data
-    CatalogListResponseDto:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-      required:
-        - data
-    PaginatedCatalogListResponseDto:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogValueDto'
-        total:
-          type: number
-          description: Total items
-        page:
-          type: number
-          description: Page number
-        limit:
-          type: number
-          description: Items per page
-        totalPages:
-          type: number
-          description: Total pages
-      required:
-        - data
-        - total
-        - page
-        - limit
-        - totalPages

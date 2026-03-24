@@ -110,6 +110,7 @@ foodmission-data-framework/
 │   └── schema.prisma     # Prisma schema
 ├── scripts/              # Utility scripts
 ├── src/                  # Application source code
+│   ├── app/              # Barrel modules that group `AppModule` imports (infrastructure, catalog, domains)
 │   ├── auth/             # Authentication module
 │   ├── cache/            # Caching services
 │   ├── common/           # Shared utilities
