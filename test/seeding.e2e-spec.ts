@@ -11,6 +11,40 @@ describe('Database Seeding (e2e)', () => {
   let skipSuite = false;
   let hasCoreTables = false;
   let hasRecipeTables = false;
+  let originalFetch: typeof global.fetch | undefined;
+
+  const offProductsByBarcode: Record<string, any> = {
+    '3017620422003': {
+      product_name: 'Nutella',
+      generic_name: 'Hazelnut cocoa spread',
+      brands: 'Ferrero',
+      nutriments: { 'energy-kcal_100g': 539, proteins_100g: 6.3, fat_100g: 30.9 },
+    },
+    '4017074053166': {
+      product_name: 'ISO-SPORTIV-DRINK',
+      generic_name: 'Sports drink',
+      brands: 'Töftes',
+      nutriments: { 'energy-kcal_100g': 25, proteins_100g: 0, fat_100g: 0 },
+    },
+    '4000417025005': {
+      product_name: 'MARZIPAN DARK CHOCOLATE WITH MARZIPAN',
+      generic_name: 'Chocolate bar',
+      brands: 'Milka',
+      nutriments: { 'energy-kcal_100g': 520, proteins_100g: 5.2, fat_100g: 29 },
+    },
+    '8712100849084': {
+      product_name: 'Magnum Glace Bâtonnet Double Caramel 4x88ml',
+      generic_name: 'Ice cream',
+      brands: 'Magnum',
+      nutriments: { 'energy-kcal_100g': 320, proteins_100g: 3.8, fat_100g: 20 },
+    },
+    '8000500037560': {
+      product_name: 'bueno',
+      generic_name: 'Chocolate wafer',
+      brands: 'Kinder',
+      nutriments: { 'energy-kcal_100g': 568, proteins_100g: 8.7, fat_100g: 36.3 },
+    },
+  };
 
   async function resetDatabaseForIsolation(): Promise<void> {
     const tableRowsRaw: unknown = await prisma.$queryRawUnsafe(
@@ -105,12 +139,42 @@ describe('Database Seeding (e2e)', () => {
   });
 
   afterAll(async () => {
+    if (originalFetch) {
+      global.fetch = originalFetch;
+    }
     await prisma.$disconnect();
   });
 
   beforeEach(async () => {
     if (skipSuite || !hasCoreTables) return;
+    originalFetch = global.fetch;
+    global.fetch = jest.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const match = url.match(/\/product\/(\d+)\.json$/);
+      const barcode = match?.[1] ?? '';
+      const product = offProductsByBarcode[barcode];
+
+      if (!product) {
+        return {
+          json: async () => ({ status: 0 }),
+        } as Response;
+      }
+
+      return {
+        json: async () => ({
+          status: 1,
+          product,
+        }),
+      } as Response;
+    }) as typeof global.fetch;
+
     await resetDatabaseForIsolation();
+  });
+
+  afterEach(() => {
+    if (originalFetch) {
+      global.fetch = originalFetch;
+    }
   });
 
   describe('Food Seeding', () => {
