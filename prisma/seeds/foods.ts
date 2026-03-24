@@ -112,7 +112,15 @@ export async function seedFoods(
 
       if (existingFood) {
         console.log(`⏭️  Skipping ${barcode} - already exists`);
-        foods.push(existingFood);
+        if (existingFood.createdBy !== 'system-seed-openfoodfacts') {
+          const normalizedFood = await prisma.food.update({
+            where: { id: existingFood.id },
+            data: { createdBy: 'system-seed-openfoodfacts' },
+          });
+          foods.push(normalizedFood);
+        } else {
+          foods.push(existingFood);
+        }
         skipCount++;
         continue;
       }

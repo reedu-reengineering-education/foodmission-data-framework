@@ -40,26 +40,25 @@ describe('Database Seeding (e2e)', () => {
     }
 
     if (!skipSuite) {
-      const [usersTable] = (await prisma.$queryRawUnsafe<
-        Array<{ exists: boolean }>
-      >(
+      const usersRows = (await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.users') IS NOT NULL AS exists`,
-      )) ?? [{ exists: false }];
-      const [foodsTable] = (await prisma.$queryRawUnsafe<
-        Array<{ exists: boolean }>
-      >(
+      )) as Array<{ exists: boolean }>;
+      const foodsRows = (await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.foods') IS NOT NULL AS exists`,
-      )) ?? [{ exists: false }];
-      const [recipesTable] = (await prisma.$queryRawUnsafe<
-        Array<{ exists: boolean }>
-      >(
+      )) as Array<{ exists: boolean }>;
+      const recipesRows = (await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.recipes') IS NOT NULL AS exists`,
-      )) ?? [{ exists: false }];
-      const [recipeIngredientsTable] = (await prisma.$queryRawUnsafe<
-        Array<{ exists: boolean }>
-      >(
+      )) as Array<{ exists: boolean }>;
+      const recipeIngredientsRows = (await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.recipe_ingredients') IS NOT NULL AS exists`,
-      )) ?? [{ exists: false }];
+      )) as Array<{ exists: boolean }>;
+
+      const [usersTable] = usersRows ?? [{ exists: false }];
+      const [foodsTable] = foodsRows ?? [{ exists: false }];
+      const [recipesTable] = recipesRows ?? [{ exists: false }];
+      const [recipeIngredientsTable] = recipeIngredientsRows ?? [
+        { exists: false },
+      ];
 
       hasCoreTables = Boolean(usersTable?.exists && foodsTable?.exists);
       hasRecipeTables = Boolean(
