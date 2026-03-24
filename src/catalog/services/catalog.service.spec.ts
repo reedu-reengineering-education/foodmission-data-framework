@@ -90,4 +90,18 @@ describe('CatalogService', () => {
     expect(codes).toContain('VEGAN');
     expect(codes).toContain('VEGETARIAN');
   });
+
+  it('lists meal categories from Prisma enum', () => {
+    const res = service.listMealCategories();
+    const codes = res.data.map((x) => x.code);
+    expect(codes).toContain('ANIMAL_PROTEIN');
+    expect(codes).toContain('VEGGIES_FRUIT');
+  });
+
+  it('lists meal courses from Prisma enum', () => {
+    const res = service.listMealCourses();
+    const codes = res.data.map((x) => x.code);
+    expect(codes).toContain('MAIN_DISH');
+    expect(codes).toContain('SIDE_SNACK');
+  });
 });

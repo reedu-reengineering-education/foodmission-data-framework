@@ -5,6 +5,8 @@ import {
   EducationLevel,
   Gender,
   GroupRole,
+  MealCategory,
+  MealCourse,
   TypeOfMeal,
   Unit,
 } from '@prisma/client';
@@ -135,6 +137,24 @@ export class CatalogService {
   listTypeOfMeals(): CatalogListResponseDto {
     return {
       data: Object.values(TypeOfMeal).map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
+  }
+
+  listMealCategories(): CatalogListResponseDto {
+    return {
+      data: Object.values(MealCategory).map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
+  }
+
+  listMealCourses(): CatalogListResponseDto {
+    return {
+      data: Object.values(MealCourse).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),

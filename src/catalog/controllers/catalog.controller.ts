@@ -123,6 +123,28 @@ export class CatalogController {
     return this.catalogService.listTypeOfMeals();
   }
 
+  @Get('meal-categories')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  @ApiOperation({ summary: 'List meal categories' })
+  @ApiResponse({ status: 200, type: CatalogListResponseDto })
+  @ApiCrudErrorResponses()
+  mealCategories(): CatalogListResponseDto {
+    return this.catalogService.listMealCategories();
+  }
+
+  @Get('meal-courses')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  @ApiOperation({ summary: 'List meal courses' })
+  @ApiResponse({ status: 200, type: CatalogListResponseDto })
+  @ApiCrudErrorResponses()
+  mealCourses(): CatalogListResponseDto {
+    return this.catalogService.listMealCourses();
+  }
+
   @Get('group-roles')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
