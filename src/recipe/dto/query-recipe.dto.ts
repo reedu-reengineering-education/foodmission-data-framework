@@ -1,20 +1,56 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { MealType } from '@prisma/client';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import {
   TransformCSVToStringArray,
   TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { Allergens } from '@prisma/client';
 
 export class QueryRecipeDto extends PaginationQueryDto {
   @ApiPropertyOptional({
-    description: 'Filter by meal type',
-    enum: MealType,
+    description: 'Filter by category',
+    example: 'Chicken',
   })
   @IsOptional()
-  @IsEnum(MealType)
-  mealType?: MealType;
+  @IsString()
+  @TransformTrimToUndefined()
+  category?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter by cuisine type',
+    example: 'Italian',
+  })
+  @IsOptional()
+  @IsString()
+  @TransformTrimToUndefined()
+  cuisineType?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter public recipes only',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isPublic?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Filter by dietary labels',
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @TransformCSVToStringArray()
+  dietaryLabels?: string[];
 
   @ApiPropertyOptional({ description: 'Filter by tags', type: [String] })
   @IsOptional()
@@ -23,12 +59,16 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @TransformCSVToStringArray()
   tags?: string[];
 
-  @ApiPropertyOptional({ description: 'Filter by allergens', type: [String] })
+  @ApiPropertyOptional({
+    description: 'Filter by allergens',
+    enum: Allergens,
+    isArray: true,
+  })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(Allergens, { each: true })
   @TransformCSVToStringArray()
-  allergens?: string[];
+  allergens?: Allergens[];
 
   @ApiPropertyOptional({ description: 'Difficulty label' })
   @IsOptional()

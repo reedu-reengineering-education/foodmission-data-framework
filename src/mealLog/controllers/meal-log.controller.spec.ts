@@ -3,7 +3,7 @@ import { MealLogController } from './meal-log.controller';
 import { MealLogService } from '../services/meal-log.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { MealType, TypeOfMeal } from '@prisma/client';
+import { TypeOfMeal } from '@prisma/client';
 
 describe('MealLogController', () => {
   let controller: MealLogController;
@@ -58,7 +58,11 @@ describe('MealLogController', () => {
   });
 
   it('findAll should pass filters and user id', async () => {
-    const query = { mealType: MealType.MEAT, mealFromPantry: true, page: 2 };
+    const query = {
+      typeOfMeal: TypeOfMeal.DINNER,
+      mealFromPantry: true,
+      page: 2,
+    };
     service.findAll.mockResolvedValueOnce({ data: [mockLog], total: 1 } as any);
 
     const result = await controller.findAll('user-1', query as any);

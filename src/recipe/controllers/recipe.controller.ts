@@ -62,7 +62,6 @@ export class RecipeController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'List recipes' })
-  @ApiQuery({ name: 'mealType', required: false })
   @ApiQuery({ name: 'tags', required: false, isArray: true })
   @ApiQuery({ name: 'allergens', required: false, isArray: true })
   @ApiQuery({ name: 'difficulty', required: false })

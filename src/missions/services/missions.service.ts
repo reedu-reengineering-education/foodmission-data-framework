@@ -1,0 +1,123 @@
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  handlePrismaError,
+  handleServiceError,
+} from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { MissionsResponseDto } from '../dto/response-missions.dto';
+import { MissionsRepository } from '../repositories/missions.repository';
+import { CreateMissionsDto } from '../dto/create-missions.dto';
+import { UpdateMissionsDto } from '../dto/update-missions.dto';
+import { PrismaService } from '../../database/prisma.service';
+
+@Injectable()
+export class MissionsService {
+  private readonly logger = new Logger(MissionsService.name);
+
+  constructor(
+    private readonly missionRepository: MissionsRepository,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  async create(
+    createMissionDto: CreateMissionsDto,
+  ): Promise<MissionsResponseDto> {
+    try {
+      const mission = await this.missionRepository.create({
+        ...createMissionDto,
+      });
+      return this.transformToResponseDto(mission);
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(error, 'create', 'mission');
+        throw businessException;
+      }
+
+      handleServiceError(error, 'Failed to create mission');
+    }
+  }
+  async getMissionById(missionId: string): Promise<MissionsResponseDto> {
+    this.logger.log(`Getting mission ${missionId}`);
+
+    const mission = await this.missionRepository.findById(missionId);
+
+    if (!mission) {
+      throw new NotFoundException('Mission not found');
+    }
+    return this.transformToResponseDto(mission);
+  }
+
+  async getAllMissions(): Promise<MissionsResponseDto[]> {
+    this.logger.log(`Getting All missions`);
+
+    const missions = await this.missionRepository.findAll();
+
+    if (!missions || missions.length === 0) {
+      throw new NotFoundException('No missions found');
+    }
+    return missions.map((mission) => this.transformToResponseDto(mission));
+  }
+
+  async update(
+    missionId: string,
+    updateMissionDto: UpdateMissionsDto,
+  ): Promise<MissionsResponseDto> {
+    try {
+      const updatedMission = await this.missionRepository.update(
+        missionId,
+        updateMissionDto,
+      );
+      return this.transformToResponseDto(updatedMission);
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error;
+      }
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(error, 'update', 'mission');
+        throw businessException;
+      }
+      handleServiceError(error, 'Failed to update mission');
+    }
+  }
+
+  async remove(missionId: string): Promise<void> {
+    try {
+      await this.missionRepository.delete(missionId);
+    } catch (error) {
+      handleServiceError(error, 'Failed to delete Mission');
+    }
+  }
+
+  private transformToResponseDto(mission: any): MissionsResponseDto {
+    return {
+      id: mission.id,
+      title: mission.title,
+      description: mission.description,
+      startDate: mission.startDate,
+      endDate: mission.endDate,
+      progress:
+        mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) ||
+        0,
+      available: mission.available,
+    };
+  }
+}

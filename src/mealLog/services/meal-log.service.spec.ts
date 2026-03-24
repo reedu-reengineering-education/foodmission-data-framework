@@ -3,7 +3,7 @@ import { MealLogService } from './meal-log.service';
 import { MealLogRepository } from '../repositories/meal-log.repository';
 import { MealRepository } from '../../meal/repositories/meal.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { MealType, TypeOfMeal } from '@prisma/client';
+import { TypeOfMeal } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   ResourceAlreadyExistsException,
@@ -55,7 +55,6 @@ describe('MealLogService', () => {
       id: 'm1',
       userId: 'other',
     });
-
     await expect(
       service.create({ mealId: 'm1', typeOfMeal: TypeOfMeal.LUNCH }, userId),
     ).rejects.toThrow(ForbiddenException);
@@ -159,7 +158,7 @@ describe('MealLogService', () => {
     ).rejects.toBeInstanceOf(ResourceNotFoundException);
   });
 
-  it('should build filters for findAll including dates and nested mealType', async () => {
+  it('should build filters for findAll including dates', async () => {
     const paginationResult = {
       data: [],
       total: 0,
@@ -175,7 +174,6 @@ describe('MealLogService', () => {
       dateFrom: '2025-01-01T00:00:00.000Z',
       dateTo: '2025-01-31T00:00:00.000Z',
       typeOfMeal: TypeOfMeal.LUNCH,
-      mealType: MealType.MEAT,
       mealFromPantry: true,
       eatenOut: false,
       page: 2,
@@ -194,7 +192,6 @@ describe('MealLogService', () => {
           gte: new Date('2025-01-01T00:00:00.000Z'),
           lte: new Date('2025-01-31T00:00:00.000Z'),
         },
-        meal: { mealType: MealType.MEAT },
       },
       orderBy: { timestamp: 'desc' },
       include: { meal: true },

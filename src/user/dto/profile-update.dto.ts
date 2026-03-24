@@ -99,4 +99,14 @@ export class ProfileUpdateDto {
   @IsOptional()
   @IsObject()
   nutritionTargets?: Record<string, any>;
+
+  @ApiProperty({
+    description:
+      'User preferences (JSON) - dietary preferences, allergies, etc.',
+    required: false,
+    example: { dietaryPreference: 'VEGETARIAN', allergies: ['peanuts'] },
+  })
+  @IsOptional()
+  @IsObject()
+  preferences?: Record<string, any>;
 }

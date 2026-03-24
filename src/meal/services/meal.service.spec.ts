@@ -6,7 +6,6 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { MealType } from '@prisma/client';
 
 describe('MealService', () => {
   let service: MealService;
@@ -43,7 +42,6 @@ describe('MealService', () => {
       service.create(
         {
           name: 'Meal',
-          mealType: MealType.MEAT,
           barcode: '111',
         },
         userId,
@@ -55,7 +53,6 @@ describe('MealService', () => {
     const meal = {
       id: 'm1',
       name: 'Meal',
-      mealType: MealType.MEAT,
       userId,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -63,15 +60,11 @@ describe('MealService', () => {
     mockMealRepository.findByBarcode.mockResolvedValue(null);
     mockMealRepository.create.mockResolvedValue(meal);
 
-    const result = await service.create(
-      { name: 'Meal', mealType: MealType.MEAT },
-      userId,
-    );
+    const result = await service.create({ name: 'Meal' }, userId);
 
     expect(result.id).toBe('m1');
     expect(mockMealRepository.create).toHaveBeenCalledWith({
       name: 'Meal',
-      mealType: MealType.MEAT,
       userId,
     });
   });
@@ -80,7 +73,6 @@ describe('MealService', () => {
     const meal = {
       id: 'm1',
       name: 'Meal',
-      mealType: MealType.MEAT,
       userId: 'other',
     };
     mockMealRepository.findById.mockResolvedValue(meal);
@@ -98,6 +90,46 @@ describe('MealService', () => {
     ).rejects.toThrow(NotFoundException);
   });
 
+  it('should throw ConflictException on update when new barcode already exists', async () => {
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm1',
+      name: 'Meal',
+      userId,
+      barcode: '111',
+    });
+    mockMealRepository.findByBarcode.mockResolvedValue({ id: 'other-meal' });
+
+    await expect(
+      service.update('m1', { barcode: '222' }, userId),
+    ).rejects.toThrow(ConflictException);
+  });
+
+  it('should allow update when barcode is unchanged', async () => {
+    const updatedMeal = {
+      id: 'm1',
+      name: 'Updated Meal',
+      userId,
+      barcode: '111',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockMealRepository.findById.mockResolvedValue({
+      id: 'm1',
+      name: 'Meal',
+      userId,
+      barcode: '111',
+    });
+    mockMealRepository.update.mockResolvedValue(updatedMeal);
+
+    const result = await service.update('m1', { name: 'Updated Meal' }, userId);
+
+    expect(result.id).toBe('m1');
+    expect(mockMealRepository.findByBarcode).not.toHaveBeenCalled();
+    expect(mockMealRepository.update).toHaveBeenCalledWith('m1', {
+      name: 'Updated Meal',
+    });
+  });
+
   it('should build filters for findAll', async () => {
     const paginationResult = {
       data: [],
@@ -109,21 +141,53 @@ describe('MealService', () => {
     mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
 
     await service.findAll(userId, {
-      mealType: MealType.MEAT,
+      recipeId: 'recipe-1',
       search: 'chick',
       page: 2,
       limit: 5,
-    } as any);
+    });
 
     expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith({
       skip: 5,
       take: 5,
       where: {
         userId,
-        mealType: MealType.MEAT,
+        recipeId: 'recipe-1',
         name: { contains: 'chick', mode: 'insensitive' },
       },
       orderBy: { createdAt: 'desc' },
     });
   });
+
+  it('should build taxonomy filters for findAll', async () => {
+    const paginationResult = {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    };
+    mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
+
+    await service.findAll(userId, {
+      mealCategory: 'ANIMAL_PROTEIN' as any,
+      mealCourse: 'MAIN_DISH' as any,
+      dietaryPreference: 'VEGAN' as any,
+      page: 1,
+      limit: 10,
+    });
+
+    expect(mockMealRepository.findWithPagination).toHaveBeenCalledWith({
+      skip: 0,
+      take: 10,
+      where: {
+        userId,
+        mealCategories: { has: 'ANIMAL_PROTEIN' },
+        mealCourse: 'MAIN_DISH',
+        dietaryLabels: { has: 'VEGAN' },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  });
+
 });

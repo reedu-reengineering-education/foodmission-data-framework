@@ -3,7 +3,6 @@ import { MealController } from './meal.controller';
 import { MealService } from '../services/meal.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { MealType } from '@prisma/client';
 
 describe('MealController', () => {
   let controller: MealController;
@@ -12,7 +11,6 @@ describe('MealController', () => {
   const mockMeal = {
     id: 'meal-1',
     name: 'Test meal',
-    mealType: MealType.MEAT,
     userId: 'user-1',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -47,14 +45,14 @@ describe('MealController', () => {
 
   it('create should delegate to service with user id', async () => {
     service.create.mockResolvedValueOnce(mockMeal as any);
-    const dto = { name: 'New', mealType: MealType.MEAT };
+    const dto = { name: 'New' };
     const result = await controller.create(dto as any, 'user-1');
     expect(result).toEqual(mockMeal);
     expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
   });
 
   it('findAll should pass query and user id', async () => {
-    const query = { mealType: MealType.MEAT, search: 'chick', page: 2 };
+    const query = { recipeId: 'recipe-1', search: 'chick', page: 2 };
     service.findAll.mockResolvedValueOnce({
       data: [mockMeal],
       total: 1,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemRepository } from './meal-item.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { Unit, MealType } from '@prisma/client';
+import { Unit } from '@prisma/client';
 
 describe('MealItemRepository', () => {
   let repository: MealItemRepository;
@@ -29,7 +29,6 @@ describe('MealItemRepository', () => {
     meal: {
       id: TEST_IDS.MEAL,
       name: 'Breakfast',
-      mealType: MealType.SALAD,
       userId: TEST_IDS.USER,
       calories: 500,
       proteins: 20,
@@ -37,6 +36,7 @@ describe('MealItemRepository', () => {
       sustainabilityScore: null,
       price: null,
       barcode: null,
+      recipeId: null,
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },

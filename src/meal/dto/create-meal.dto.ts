@@ -1,23 +1,30 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
   IsObject,
   IsNumber,
+  IsArray,
+  IsEnum,
+  ArrayMaxSize,
 } from 'class-validator';
-import { MealType } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class CreateMealDto {
   @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
   @IsString()
   name: string;
 
-  @ApiProperty({ enum: MealType, description: 'Meal type' })
-  @IsEnum(MealType)
-  mealType: MealType;
+  @ApiPropertyOptional({
+    description: 'Optional recipe this meal is based on',
+    format: 'uuid',
+  })
+  @IsOptional()
+  @IsUUID()
+  recipeId?: string;
 
   @ApiPropertyOptional({ description: 'Calories for the meal', example: 520 })
   @IsOptional()
@@ -63,4 +70,37 @@ export class CreateMealDto {
   @IsOptional()
   @IsString()
   barcode?: string;
+
+  @ApiPropertyOptional({
+    description: 'Meal categories for filtering and analytics',
+    enum: MealCategory,
+    isArray: true,
+    example: [MealCategory.ANIMAL_PROTEIN, MealCategory.STARCH_GRAIN],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(3)
+  @IsEnum(MealCategory, { each: true })
+  mealCategories?: MealCategory[];
+
+  @ApiPropertyOptional({
+    description: 'Meal course role',
+    enum: MealCourse,
+    example: MealCourse.MAIN_DISH,
+  })
+  @IsOptional()
+  @IsEnum(MealCourse)
+  mealCourse?: MealCourse;
+
+  @ApiPropertyOptional({
+    description: 'Dietary preferences associated with this meal',
+    enum: DietaryLabel,
+    isArray: true,
+    example: [DietaryLabel.VEGAN],
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(8)
+  @IsEnum(DietaryLabel, { each: true })
+  dietaryPreferences?: DietaryLabel[];
 }
