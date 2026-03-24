@@ -13,9 +13,12 @@ describe('Database Seeding (e2e)', () => {
   let hasRecipeTables = false;
 
   async function resetDatabaseForIsolation(): Promise<void> {
-    const tableRows = (await prisma.$queryRawUnsafe(
+    const tableRowsRaw: unknown = await prisma.$queryRawUnsafe(
       `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
-    )) as Array<{ tablename: string }>;
+    );
+    const tableRows: Array<{ tablename: string }> = Array.isArray(tableRowsRaw)
+      ? (tableRowsRaw as Array<{ tablename: string }>)
+      : [];
 
     const tableNames = tableRows
       .map((row) => row.tablename)
@@ -57,25 +60,42 @@ describe('Database Seeding (e2e)', () => {
     }
 
     if (!skipSuite) {
-      const usersRows = (await prisma.$queryRawUnsafe(
+      const usersRowsRaw: unknown = await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.users') IS NOT NULL AS exists`,
-      )) as Array<{ exists: boolean }>;
-      const foodsRows = (await prisma.$queryRawUnsafe(
+      );
+      const foodsRowsRaw: unknown = await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.foods') IS NOT NULL AS exists`,
-      )) as Array<{ exists: boolean }>;
-      const recipesRows = (await prisma.$queryRawUnsafe(
+      );
+      const recipesRowsRaw: unknown = await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.recipes') IS NOT NULL AS exists`,
-      )) as Array<{ exists: boolean }>;
-      const recipeIngredientsRows = (await prisma.$queryRawUnsafe(
+      );
+      const recipeIngredientsRowsRaw: unknown = await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.recipe_ingredients') IS NOT NULL AS exists`,
-      )) as Array<{ exists: boolean }>;
+      );
 
-      const [usersTable] = usersRows ?? [{ exists: false }];
-      const [foodsTable] = foodsRows ?? [{ exists: false }];
-      const [recipesTable] = recipesRows ?? [{ exists: false }];
-      const [recipeIngredientsTable] = recipeIngredientsRows ?? [
-        { exists: false },
-      ];
+      const usersRows: Array<{ exists: boolean }> = Array.isArray(usersRowsRaw)
+        ? (usersRowsRaw as Array<{ exists: boolean }>)
+        : [];
+      const foodsRows: Array<{ exists: boolean }> = Array.isArray(foodsRowsRaw)
+        ? (foodsRowsRaw as Array<{ exists: boolean }>)
+        : [];
+      const recipesRows: Array<{ exists: boolean }> = Array.isArray(
+        recipesRowsRaw,
+      )
+        ? (recipesRowsRaw as Array<{ exists: boolean }>)
+        : [];
+      const recipeIngredientsRows: Array<{ exists: boolean }> = Array.isArray(
+        recipeIngredientsRowsRaw,
+      )
+        ? (recipeIngredientsRowsRaw as Array<{ exists: boolean }>)
+        : [];
+
+      const usersTable = usersRows[0] ?? { exists: false };
+      const foodsTable = foodsRows[0] ?? { exists: false };
+      const recipesTable = recipesRows[0] ?? { exists: false };
+      const recipeIngredientsTable = recipeIngredientsRows[0] ?? {
+        exists: false,
+      };
 
       hasCoreTables = Boolean(usersTable?.exists && foodsTable?.exists);
       hasRecipeTables = Boolean(
