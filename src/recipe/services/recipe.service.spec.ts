@@ -225,7 +225,12 @@ describe('RecipeService', () => {
     it('should include public recipes in findAll results for any user', async () => {
       const paginationResult = emptyPaginationMock({
         data: [
-          buildRecipe({ id: 'r1', userId, title: 'My Recipe', isPublic: false }),
+          buildRecipe({
+            id: 'r1',
+            userId,
+            title: 'My Recipe',
+            isPublic: false,
+          }),
           buildRecipe({
             id: 'r2',
             userId: null,

@@ -16,10 +16,8 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 
 import { SecurityMiddleware } from './security/middleware/security.middleware';
-import { ShoppingListModule } from './shoppingList/shoppingList.module';
-import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
-import { PantryModule } from './pantry/pantry.module';
-import { PantryItemModule } from './pantryItem/pantry.module';
+import { ShoppingListsModule } from './shopping-lists/shopping-lists.module';
+import { PantriesModule } from './pantries/pantries.module';
 import { MealModule } from './meal/meal.module';
 import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
@@ -42,10 +40,8 @@ import { CatalogModule } from './catalog/catalog.module';
     FoodCategoryModule,
     HealthModule,
     MonitoringModule,
-    ShoppingListModule,
-    ShoppingListItemModule,
-    PantryModule,
-    PantryItemModule,
+    ShoppingListsModule,
+    PantriesModule,
     MealModule,
     MealItemModule,
     RecipeModule,
