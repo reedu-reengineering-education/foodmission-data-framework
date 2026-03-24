@@ -24,8 +24,9 @@ export class LoggingMiddleware implements NestMiddleware {
     req.traceId = traceId;
     req.requestId = requestId;
 
-    // Add trace ID to response headers for client debugging
+    // Add trace ID and request ID to response headers for client debugging
     res.setHeader('X-Trace-ID', traceId);
+    res.setHeader('X-Request-ID', requestId);
 
     // Set trace ID in logging service
     this.loggingService.setTraceId(traceId);
@@ -80,10 +81,7 @@ export class LoggingMiddleware implements NestMiddleware {
         const payload = this.decodeJwtPayload(token);
 
         if (payload && payload.sub) {
-          this.loggingService.setUserContext(
-            payload.sub,
-            payload.email || payload.preferred_username,
-          );
+          this.loggingService.setUserContext(payload.sub);
         }
       }
     } catch {
