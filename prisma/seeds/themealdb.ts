@@ -93,7 +93,7 @@ interface SeedOptions {
 function loadThemealdbData(): ThemealdbData {
   if (!fs.existsSync(DATA_PATH)) {
     throw new Error(
-      `TheMealDB data file not found: ${DATA_PATH}. See docs/DATABASE_SEEDING_MIGRATION.md for how to obtain themealdb-data.json.`,
+      `TheMealDB data file not found: ${DATA_PATH}. Place themealdb-data.json in prisma/seeds/data/ (see prisma/seed.ts and seed scripts that import this module).`,
     );
   }
   const content = fs.readFileSync(DATA_PATH, 'utf-8');
