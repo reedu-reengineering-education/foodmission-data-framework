@@ -4203,19 +4203,13 @@
         "operationId": "findAll",
         "parameters": [
           {
-            "name": "mealType",
+            "name": "recipeId",
             "required": false,
             "in": "query",
-            "description": "Filter by meal type",
+            "description": "Filter by recipe id",
             "schema": {
-              "type": "string",
-              "enum": [
-                "SALAD",
-                "MEAT",
-                "PASTA",
-                "RICE",
-                "VEGAN"
-              ]
+              "format": "uuid",
+              "type": "string"
             }
           },
           {
@@ -4224,6 +4218,59 @@
             "in": "query",
             "description": "Search by name substring",
             "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mealCategory",
+            "required": false,
+            "in": "query",
+            "description": "Filter by meal category",
+            "schema": {
+              "enum": [
+                "ANIMAL_PROTEIN",
+                "SEAFOOD",
+                "PLANT_PROTEIN",
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "mealCourse",
+            "required": false,
+            "in": "query",
+            "description": "Filter by meal course",
+            "schema": {
+              "enum": [
+                "MAIN_DISH",
+                "SIDE_SNACK",
+                "DESSERT",
+                "BEVERAGE",
+                "SAUCE_OTHER"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "dietaryPreference",
+            "required": false,
+            "in": "query",
+            "description": "Filter by dietary preference",
+            "schema": {
+              "enum": [
+                "VEGAN",
+                "VEGETARIAN",
+                "PESCATARIAN",
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
+              ],
               "type": "string"
             }
           },
@@ -5117,19 +5164,44 @@
             }
           },
           {
-            "name": "mealType",
+            "name": "category",
             "required": false,
             "in": "query",
-            "description": "Filter by meal type",
+            "description": "Filter by category",
             "schema": {
-              "type": "string",
-              "enum": [
-                "SALAD",
-                "MEAT",
-                "PASTA",
-                "RICE",
-                "VEGAN"
-              ]
+              "example": "Chicken",
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuisineType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by cuisine type",
+            "schema": {
+              "example": "Italian",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isPublic",
+            "required": false,
+            "in": "query",
+            "description": "Filter public recipes only",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dietaryLabels",
+            "required": false,
+            "in": "query",
+            "description": "Filter by dietary labels",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -5152,7 +5224,22 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "GLUTEN",
+                  "DAIRY",
+                  "PEANUTS",
+                  "TREE_NUTS",
+                  "SHELLFISH",
+                  "FISH",
+                  "EGGS",
+                  "SOY",
+                  "SESAME",
+                  "SULFITES",
+                  "MUSTARD",
+                  "NIGHTSHADES",
+                  "OTHER"
+                ]
               }
             }
           },
@@ -5647,23 +5734,8 @@
                 "LUNCH",
                 "DINNER",
                 "SNACK",
-                "SPECIAL_DRINKS"
-              ]
-            }
-          },
-          {
-            "name": "mealType",
-            "required": false,
-            "in": "query",
-            "description": "Filter by underlying meal type",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "SALAD",
-                "MEAT",
-                "PASTA",
-                "RICE",
-                "VEGAN"
+                "DRINKS",
+                "OTHER"
               ]
             }
           },
@@ -13182,16 +13254,10 @@
             "description": "Meal name",
             "example": "Grilled chicken salad"
           },
-          "mealType": {
+          "recipeId": {
             "type": "string",
-            "enum": [
-              "SALAD",
-              "MEAT",
-              "PASTA",
-              "RICE",
-              "VEGAN"
-            ],
-            "description": "Meal type"
+            "description": "Optional recipe this meal is based on",
+            "format": "uuid"
           },
           "calories": {
             "type": "number",
@@ -13225,11 +13291,62 @@
           "barcode": {
             "type": "string",
             "description": "Barcode of the meal (if packaged)"
+          },
+          "mealCategories": {
+            "type": "array",
+            "description": "Meal categories for filtering and analytics",
+            "example": [
+              "ANIMAL_PROTEIN",
+              "STARCH_GRAIN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "ANIMAL_PROTEIN",
+                "SEAFOOD",
+                "PLANT_PROTEIN",
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
+              ]
+            }
+          },
+          "mealCourse": {
+            "type": "string",
+            "description": "Meal course role",
+            "enum": [
+              "MAIN_DISH",
+              "SIDE_SNACK",
+              "DESSERT",
+              "BEVERAGE",
+              "SAUCE_OTHER"
+            ],
+            "example": "MAIN_DISH"
+          },
+          "dietaryPreferences": {
+            "type": "array",
+            "description": "Dietary preferences associated with this meal",
+            "example": [
+              "VEGAN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "VEGAN",
+                "VEGETARIAN",
+                "PESCATARIAN",
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
+              ]
+            }
           }
         },
         "required": [
-          "name",
-          "mealType"
+          "name"
         ]
       },
       "MealResponseDto": {
@@ -13244,16 +13361,10 @@
             "type": "string",
             "description": "Meal name"
           },
-          "mealType": {
+          "recipeId": {
             "type": "string",
-            "enum": [
-              "SALAD",
-              "MEAT",
-              "PASTA",
-              "RICE",
-              "VEGAN"
-            ],
-            "description": "Meal type"
+            "description": "Optional recipe this meal is based on",
+            "format": "uuid"
           },
           "calories": {
             "type": "number",
@@ -13279,6 +13390,50 @@
             "type": "object",
             "description": "Barcode"
           },
+          "mealCategories": {
+            "type": "array",
+            "description": "Meal categories",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ANIMAL_PROTEIN",
+                "SEAFOOD",
+                "PLANT_PROTEIN",
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
+              ]
+            }
+          },
+          "mealCourse": {
+            "type": "string",
+            "description": "Meal course",
+            "enum": [
+              "MAIN_DISH",
+              "SIDE_SNACK",
+              "DESSERT",
+              "BEVERAGE",
+              "SAUCE_OTHER"
+            ]
+          },
+          "dietaryPreferences": {
+            "type": "array",
+            "description": "Dietary preferences",
+            "items": {
+              "type": "string",
+              "enum": [
+                "VEGAN",
+                "VEGETARIAN",
+                "PESCATARIAN",
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
+              ]
+            }
+          },
           "userId": {
             "type": "string",
             "description": "User owner",
@@ -13298,7 +13453,6 @@
         "required": [
           "id",
           "name",
-          "mealType",
           "userId",
           "createdAt",
           "updatedAt"
@@ -13346,16 +13500,10 @@
             "description": "Meal name",
             "example": "Grilled chicken salad"
           },
-          "mealType": {
+          "recipeId": {
             "type": "string",
-            "enum": [
-              "SALAD",
-              "MEAT",
-              "PASTA",
-              "RICE",
-              "VEGAN"
-            ],
-            "description": "Meal type"
+            "description": "Optional recipe this meal is based on",
+            "format": "uuid"
           },
           "calories": {
             "type": "number",
@@ -13389,6 +13537,58 @@
           "barcode": {
             "type": "string",
             "description": "Barcode of the meal (if packaged)"
+          },
+          "mealCategories": {
+            "type": "array",
+            "description": "Meal categories for filtering and analytics",
+            "example": [
+              "ANIMAL_PROTEIN",
+              "STARCH_GRAIN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "ANIMAL_PROTEIN",
+                "SEAFOOD",
+                "PLANT_PROTEIN",
+                "STARCH_GRAIN",
+                "VEGGIES_FRUIT",
+                "DAIRY",
+                "MIXED_OTHER"
+              ]
+            }
+          },
+          "mealCourse": {
+            "type": "string",
+            "description": "Meal course role",
+            "enum": [
+              "MAIN_DISH",
+              "SIDE_SNACK",
+              "DESSERT",
+              "BEVERAGE",
+              "SAUCE_OTHER"
+            ],
+            "example": "MAIN_DISH"
+          },
+          "dietaryPreferences": {
+            "type": "array",
+            "description": "Dietary preferences associated with this meal",
+            "example": [
+              "VEGAN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "VEGAN",
+                "VEGETARIAN",
+                "PESCATARIAN",
+                "GLUTEN_FREE",
+                "DAIRY_FREE",
+                "NUT_FREE",
+                "HALAL",
+                "KOSHER"
+              ]
+            }
           }
         }
       },
@@ -13531,14 +13731,43 @@
           }
         }
       },
+      "CreateRecipeIngredientDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Ingredient name",
+            "example": "Chicken Breast"
+          },
+          "measure": {
+            "type": "string",
+            "description": "Measurement/amount",
+            "example": "500g"
+          },
+          "order": {
+            "type": "number",
+            "description": "Order in the recipe",
+            "example": 1,
+            "minimum": 0
+          },
+          "foodId": {
+            "type": "string",
+            "description": "ID of linked Food (OpenFoodFacts product)",
+            "example": "uuid-food-id"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "ID of linked FoodCategory (NEVO generic food)",
+            "example": "uuid-food-category-id"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "CreateRecipeDto": {
         "type": "object",
         "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "Meal identifier this recipe is based on",
-            "format": "uuid"
-          },
           "title": {
             "type": "string",
             "description": "Recipe title",
@@ -13603,20 +13832,163 @@
             "example": 12.5
           },
           "allergens": {
+            "type": "array",
             "description": "Known allergens",
             "example": [
-              "nuts",
-              "gluten"
+              "TREE_NUTS",
+              "GLUTEN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
+            }
+          },
+          "externalId": {
+            "type": "string",
+            "description": "External identifier (e.g., TheMealDB idMeal)",
+            "example": "52772"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Image URL",
+            "example": "https://www.themealdb.com/images/media/meals/xxx.jpg"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "Video URL",
+            "example": "https://www.youtube.com/watch?v=xxx"
+          },
+          "cuisineType": {
+            "type": "string",
+            "description": "Cuisine type",
+            "example": "Italian"
+          },
+          "category": {
+            "type": "string",
+            "description": "Recipe category",
+            "example": "Pasta"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether recipe is publicly visible",
+            "default": false
+          },
+          "dietaryLabels": {
+            "description": "Dietary labels",
+            "example": [
+              "vegan",
+              "gluten-free"
             ],
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "ingredients": {
+            "description": "Recipe ingredients",
+            "example": [
+              {
+                "name": "Chicken Breast",
+                "measure": "500g",
+                "order": 1
+              },
+              {
+                "name": "Olive Oil",
+                "measure": "2 tbsp",
+                "order": 2,
+                "foodCategoryId": "uuid"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
+            }
           }
         },
         "required": [
-          "mealId",
           "title"
+        ]
+      },
+      "RecipeIngredientResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Ingredient ID",
+            "format": "uuid"
+          },
+          "recipeId": {
+            "type": "string",
+            "description": "Recipe ID",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Ingredient name"
+          },
+          "measure": {
+            "type": "string",
+            "description": "Measurement/amount"
+          },
+          "order": {
+            "type": "number",
+            "description": "Order in recipe"
+          },
+          "itemType": {
+            "type": "string",
+            "description": "Item type (food or food_category)"
+          },
+          "foodId": {
+            "type": "string",
+            "description": "Linked Food ID",
+            "format": "uuid"
+          },
+          "foodCategoryId": {
+            "type": "string",
+            "description": "Linked FoodCategory ID",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at"
+          },
+          "food": {
+            "type": "object",
+            "description": "Linked Food details"
+          },
+          "foodCategory": {
+            "type": "object",
+            "description": "Linked FoodCategory details"
+          }
+        },
+        "required": [
+          "id",
+          "recipeId",
+          "name",
+          "order",
+          "itemType",
+          "createdAt",
+          "updatedAt"
         ]
       },
       "RecipeResponseDto": {
@@ -13629,12 +14001,7 @@
           },
           "userId": {
             "type": "string",
-            "description": "Owner user id",
-            "format": "uuid"
-          },
-          "mealId": {
-            "type": "string",
-            "description": "Meal reference id",
+            "description": "Owner user id (null for system recipes)",
             "format": "uuid"
           },
           "title": {
@@ -13685,10 +14052,25 @@
             "description": "Estimated price or cost"
           },
           "allergens": {
-            "description": "Allergens",
             "type": "array",
+            "description": "Allergens",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
             }
           },
           "rating": {
@@ -13709,24 +14091,53 @@
             "type": "string",
             "description": "Updated at"
           },
-          "meal": {
-            "description": "Attached meal",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/MealResponseDto"
-              }
-            ]
+          "externalId": {
+            "type": "string",
+            "description": "External ID (e.g., TheMealDB idMeal)"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Image URL"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "Video URL"
+          },
+          "cuisineType": {
+            "type": "string",
+            "description": "Cuisine type"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether recipe is publicly visible"
+          },
+          "dietaryLabels": {
+            "description": "Dietary labels",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ingredients": {
+            "description": "Recipe ingredients",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientResponseDto"
+            }
           }
         },
         "required": [
           "id",
-          "userId",
-          "mealId",
           "title",
           "rating",
           "ratingCount",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "isPublic"
         ]
       },
       "MultipleRecipeResponseDto": {
@@ -13766,11 +14177,6 @@
       "UpdateRecipeDto": {
         "type": "object",
         "properties": {
-          "mealId": {
-            "type": "string",
-            "description": "Meal identifier this recipe is based on",
-            "format": "uuid"
-          },
           "title": {
             "type": "string",
             "description": "Recipe title",
@@ -13835,14 +14241,90 @@
             "example": 12.5
           },
           "allergens": {
+            "type": "array",
             "description": "Known allergens",
             "example": [
-              "nuts",
-              "gluten"
+              "TREE_NUTS",
+              "GLUTEN"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "GLUTEN",
+                "DAIRY",
+                "PEANUTS",
+                "TREE_NUTS",
+                "SHELLFISH",
+                "FISH",
+                "EGGS",
+                "SOY",
+                "SESAME",
+                "SULFITES",
+                "MUSTARD",
+                "NIGHTSHADES",
+                "OTHER"
+              ]
+            }
+          },
+          "externalId": {
+            "type": "string",
+            "description": "External identifier (e.g., TheMealDB idMeal)",
+            "example": "52772"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Image URL",
+            "example": "https://www.themealdb.com/images/media/meals/xxx.jpg"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "Video URL",
+            "example": "https://www.youtube.com/watch?v=xxx"
+          },
+          "cuisineType": {
+            "type": "string",
+            "description": "Cuisine type",
+            "example": "Italian"
+          },
+          "category": {
+            "type": "string",
+            "description": "Recipe category",
+            "example": "Pasta"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "description": "Whether recipe is publicly visible",
+            "default": false
+          },
+          "dietaryLabels": {
+            "description": "Dietary labels",
+            "example": [
+              "vegan",
+              "gluten-free"
             ],
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "ingredients": {
+            "description": "Recipe ingredients",
+            "example": [
+              {
+                "name": "Chicken Breast",
+                "measure": "500g",
+                "order": 1
+              },
+              {
+                "name": "Olive Oil",
+                "measure": "2 tbsp",
+                "order": 2,
+                "foodCategoryId": "uuid"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
             }
           }
         }
@@ -13863,7 +14345,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {
@@ -13909,7 +14392,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {
@@ -14006,7 +14490,8 @@
               "LUNCH",
               "DINNER",
               "SNACK",
-              "SPECIAL_DRINKS"
+              "DRINKS",
+              "OTHER"
             ]
           },
           "timestamp": {

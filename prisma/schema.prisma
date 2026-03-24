@@ -36,26 +36,27 @@ model Food {
 
   // --- Nutriments (per 100 g) ---
   nutritionDataPer String? // "100g" or "serving" — basis of nutrition values
-  energyKcal       Float?
-  energyKj         Float?
-  fat              Float?
-  saturatedFat     Float?
-  transFat         Float?
-  cholesterol      Float?
-  carbohydrates    Float?
-  sugars           Float?
-  addedSugars      Float?
-  fiber            Float?
-  proteins         Float?
-  salt             Float?
-  sodium           Float?
-  vitaminA         Float?
-  vitaminC         Float?
-  calcium          Float?
-  iron             Float?
-  potassium        Float?
-  magnesium        Float?
-  zinc             Float?
+  energyKcal     Float?
+  energyKj       Float?
+  fat            Float?
+  saturatedFat   Float?
+  transFat       Float?
+  cholesterol    Float?
+  carbohydrates  Float?
+  sugars         Float?
+  addedSugars    Float?
+  fiber          Float?
+  proteins       Float?
+  salt           Float?
+  sodium         Float?
+  vitaminA       Float?
+  vitaminC       Float?
+  vitaminD       Float? // Vitamin D (µg) — used in recipe nutrition aggregation
+  calcium        Float?
+  iron           Float?
+  potassium      Float?
+  magnesium      Float?
+  zinc           Float?
 
   // --- Full nutriments JSON (everything from OpenFoodFacts as-is) ---
   nutrimentsRaw Json? // Complete nutriments object for fields not covered above
@@ -89,6 +90,7 @@ model Food {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([name])
   @@index([createdAt])
@@ -144,31 +146,33 @@ model FoodCategory {
   transFat           Float? // Trans fatty acids (g)
 
   // --- Minerals ---
-  chloride    Float? // Chloride (mg)
-  sodium      Float? // Sodium (mg)
-  potassium   Float? // Potassium (mg)
-  calcium     Float? // Calcium (mg)
-  phosphorus  Float? // Phosphorus (mg)
-  magnesium   Float? // Magnesium (mg)
-  iron        Float? // Iron (mg)
-  ironHaem    Float? // Haem iron (mg)
-  ironNonHaem Float? // Non-haem iron (mg)
-  copper      Float? // Copper (mg)
-  selenium    Float? // Selenium (µg)
-  zinc        Float? // Zinc (mg)
-  iodine      Float? // Iodine (µg)
+  chloride     Float? // Chloride (mg)
+  sodium       Float? // Sodium (mg)
+  salt         Float? // Salt (g) — for recipe aggregation consistency with Food
+  potassium    Float? // Potassium (mg)
+  calcium      Float? // Calcium (mg)
+  phosphorus   Float? // Phosphorus (mg)
+  magnesium    Float? // Magnesium (mg)
+  iron         Float? // Iron (mg)
+  ironHaem     Float? // Haem iron (mg)
+  ironNonHaem  Float? // Non-haem iron (mg)
+  copper       Float? // Copper (mg)
+  selenium     Float? // Selenium (µg)
+  zinc         Float? // Zinc (mg)
+  iodine       Float? // Iodine (µg)
 
   // --- Vitamins ---
-  vitaminARae            Float? // Vitamin A - retinol activity equivalents (µg)
-  vitaminARe             Float? // Vitamin A - retinol equivalents (µg)
-  retinol                Float? // Retinol (µg)
-  betaCarotene           Float? // Beta-carotene total (µg)
-  alphaCarotene          Float? // Alpha-carotene (µg)
-  lutein                 Float? // Lutein (µg)
-  zeaxanthin             Float? // Zeaxanthin (µg)
-  betaCryptoxanthin      Float? // Beta-cryptoxanthin (µg)
-  lycopene               Float? // Lycopene (µg)
-  vitaminD               Float? // Vitamin D (µg)
+  vitaminA             Float? // Vitamin A (µg) — for recipe aggregation; backfill from vitaminARae
+  vitaminARae          Float? // Vitamin A - retinol activity equivalents (µg)
+  vitaminARe           Float? // Vitamin A - retinol equivalents (µg)
+  retinol              Float? // Retinol (µg)
+  betaCarotene         Float? // Beta-carotene total (µg)
+  alphaCarotene        Float? // Alpha-carotene (µg)
+  lutein               Float? // Lutein (µg)
+  zeaxanthin           Float? // Zeaxanthin (µg)
+  betaCryptoxanthin    Float? // Beta-cryptoxanthin (µg)
+  lycopene             Float? // Lycopene (µg)
+  vitaminD             Float? // Vitamin D (µg)
   hydroxyCholecalciferol Float? // 25-hydroxycholecalciferol (µg)
   cholecalciferol        Float? // Cholecalciferol / D3 (µg)
   ergocalciferol         Float? // Ergocalciferol / D2 (µg)
@@ -273,6 +277,7 @@ model FoodCategory {
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
   mealItems         MealItem[]
+  recipeIngredients RecipeIngredient[]
 
   @@index([foodGroup])
   @@index([foodName])
@@ -405,7 +410,6 @@ model PantryItem {
 model Meal {
   id                  String   @id @default(uuid())
   name                String
-  mealType            MealType
   calories            Int?
   proteins            Int?
   nutritionalInfo     Json?
@@ -413,17 +417,23 @@ model Meal {
   price               Float?
   barcode             String?  @unique
   userId              String
+  mealCategories      MealCategory[] @default([])
+  mealCourse          MealCourse?
+  dietaryLabels       DietaryLabel[] @default([])
 
-  user     User       @relation(fields: [userId], references: [id])
-  items    MealItem[]
-  recipes  Recipe[]
-  mealLogs MealLog[]
+  // Optional link to a recipe this meal is based on
+  recipeId            String?
+
+  user      User       @relation(fields: [userId], references: [id])
+  recipe    Recipe?    @relation(fields: [recipeId], references: [id])
+  items     MealItem[]
+  mealLogs  MealLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([mealType])
+  @@index([recipeId])
 }
 
 model MealItem {
@@ -453,8 +463,7 @@ model MealItem {
 
 model Recipe {
   id                  String   @id @default(uuid())
-  userId              String
-  mealId              String
+  userId              String?  // Nullable for system recipes (TheMealDB, etc.)
   title               String
   description         String?
   instructions        String?
@@ -466,18 +475,56 @@ model Recipe {
   nutritionalInfo     Json?
   sustainabilityScore Float?
   price               Float?
-  allergens           String[]
+  allergens           Allergens[]
   rating              Float    @default(0)
   ratingCount         Int      @default(0)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
-  user User @relation(fields: [userId], references: [id])
+  // New fields for external recipes (TheMealDB integration)
+  externalId          String?  @unique  // TheMealDB idMeal
+  imageUrl            String?
+  videoUrl            String?
+  cuisineType         String?  // Japanese, Italian, Mexican, etc.
+  category            String?  // Chicken, Seafood, Dessert, etc.
+  isPublic            Boolean  @default(false)
+  dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
+
+  // Relations
+  user        User?              @relation(fields: [userId], references: [id])
+  meals       Meal[]             // Meals can reference this recipe
+  ingredients RecipeIngredient[] // Structured ingredients with food links
 
   @@index([userId])
-  @@index([mealId])
+  @@index([isPublic])
+  @@index([category])
+  @@index([cuisineType])
   @@map("recipes")
+}
+
+model RecipeIngredient {
+  id       String  @id @default(uuid())
+  recipeId String
+  name     String  // Original ingredient name from recipe
+  measure  String? // Amount/measurement string
+  order    Int     @default(0)
+
+  // Polymorphic reference (same pattern as MealItem, PantryItem, etc.)
+  itemType       String @default("food_category") // "food" | "food_category"
+  foodId         String?
+  foodCategoryId String?
+
+  recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  food         Food?         @relation(fields: [foodId], references: [id])
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([recipeId])
+  @@index([foodId])
+  @@index([foodCategoryId])
+  @@map("recipe_ingredients")
 }
 
 model MealLog {
@@ -595,15 +642,53 @@ enum TypeOfMeal {
   LUNCH
   DINNER
   SNACK
-  SPECIAL_DRINKS
+  DRINKS
+  OTHER
 }
 
-enum MealType {
-  SALAD
-  MEAT
-  PASTA
-  RICE
+enum MealCategory {
+  ANIMAL_PROTEIN // Meat, Poultry, Eggs
+  SEAFOOD
+  PLANT_PROTEIN  // Beans, Legumes, Plant-based meats
+  STARCH_GRAIN   // Pasta, Rice, Potatoes
+  VEGGIES_FRUIT  // Fruits & Veggies
+  DAIRY
+  MIXED_OTHER
+}
+
+enum MealCourse {
+  MAIN_DISH   // The anchor of the meal
+  SIDE_SNACK  // Anything eaten with a main or between meals
+  DESSERT     // Sweets and treats
+  BEVERAGE    // All liquids
+  SAUCE_OTHER     // Sauces, dressings, or "Other"
+}
+
+enum Allergens {
+  GLUTEN        // Wheat, barley, rye
+  DAIRY         // Milk, cheese, butter, lactose
+  PEANUTS       // Specifically groundnuts
+  TREE_NUTS     // Almonds, walnuts, cashews, etc.
+  SHELLFISH     // Shrimp, crab, lobster
+  FISH          // Finfish (some are allergic to fish but not shellfish)
+  EGGS          // Very common in baking/sauces
+  SOY           // Found in many processed foods and plant proteins
+  SESAME        // Increasingly recognized as a major allergen
+  SULFITES      // Common in wine and dried fruits
+  MUSTARD       // Common in European labeling requirements
+  NIGHTSHADES  // (Optional) Peppers, potatoes, tomatoes (common sensitivity)
+  OTHER
+}
+
+enum DietaryLabel {
   VEGAN
+  VEGETARIAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  NUT_FREE
+  HALAL
+  KOSHER
 }
 
 enum GroupRole {

@@ -8,8 +8,26 @@ import {
   MultipleMealResponseDto,
 } from '../dto/meal-response.dto';
 import { QueryMealDto } from '../dto/query-meal.dto';
-import { Prisma } from '@prisma/client';
+import { DietaryLabel, MealCategory, MealCourse, Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
+
+type MealDtoSource = {
+  id: string;
+  name: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  recipeId?: string | null;
+  calories?: number | null;
+  proteins?: number | null;
+  nutritionalInfo?: Prisma.JsonValue | null;
+  sustainabilityScore?: number | null;
+  price?: number | null;
+  barcode?: string | null;
+  mealCategories?: MealCategory[];
+  mealCourse?: MealCourse | null;
+  dietaryLabels?: DietaryLabel[];
+};
 
 @Injectable()
 export class MealService {
@@ -17,7 +35,7 @@ export class MealService {
 
   constructor(private readonly mealRepository: MealRepository) {}
 
-  private getOwnedMealOrThrow(mealId: string, userId: string) {
+  private requireOwnedMeal(mealId: string, userId: string) {
     return getOwnedEntityOrThrow(
       mealId,
       userId,
@@ -43,7 +61,8 @@ export class MealService {
     }
 
     const meal = await this.mealRepository.create({
-      ...createMealDto,
+      name: createMealDto.name,
+      ...this.mapMealWriteInput(createMealDto),
       userId,
     });
 
@@ -54,12 +73,25 @@ export class MealService {
     userId: string,
     query: QueryMealDto,
   ): Promise<MultipleMealResponseDto> {
-    const { page = 1, limit = 10, mealType, search } = query;
+    const {
+      page = 1,
+      limit = 10,
+      recipeId,
+      search,
+      mealCategory,
+      mealCourse,
+      dietaryPreference,
+    } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.MealWhereInput = {
       userId,
-      ...(mealType ? { mealType } : {}),
+      ...(recipeId ? { recipeId } : {}),
+      ...(mealCategory ? { mealCategories: { has: mealCategory } } : {}),
+      ...(mealCourse ? { mealCourse } : {}),
+      ...(dietaryPreference
+        ? { dietaryLabels: { has: dietaryPreference } }
+        : {}),
       ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
     };
 
@@ -84,7 +116,7 @@ export class MealService {
   }
 
   async findOne(id: string, userId: string): Promise<MealResponseDto> {
-    const meal = await this.getOwnedMealOrThrow(id, userId);
+    const meal = await this.requireOwnedMeal(id, userId);
     return this.toResponseDto(meal);
   }
 
@@ -93,7 +125,7 @@ export class MealService {
     updateMealDto: UpdateMealDto,
     userId: string,
   ): Promise<MealResponseDto> {
-    const meal = await this.getOwnedMealOrThrow(id, userId);
+    const meal = await this.requireOwnedMeal(id, userId);
 
     if (
       updateMealDto.barcode &&
@@ -103,18 +135,59 @@ export class MealService {
       throw new ConflictException('Meal with this barcode already exists');
     }
 
-    const updated = await this.mealRepository.update(id, updateMealDto);
+    const updated = await this.mealRepository.update(id, {
+      ...this.mapMealWriteInput(updateMealDto),
+    });
     return this.toResponseDto(updated);
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    await this.getOwnedMealOrThrow(id, userId);
+    await this.requireOwnedMeal(id, userId);
     await this.mealRepository.delete(id);
   }
 
-  private toResponseDto(meal: any): MealResponseDto {
-    return plainToInstance(MealResponseDto, meal, {
+  private toResponseDto(meal: MealDtoSource): MealResponseDto {
+    // Rename DB column `dietaryLabels` to API field `dietaryPreferences`.
+    const mapped = {
+      ...meal,
+      dietaryPreferences: meal.dietaryLabels,
+    };
+    return plainToInstance(MealResponseDto, mapped, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private uniqueEnumArray<T extends string>(values?: T[]): T[] | undefined {
+    if (!values) return undefined;
+    return Array.from(new Set(values));
+  }
+
+  private mapMealWriteInput(
+    dto: Partial<
+      Pick<
+        CreateMealDto,
+        | 'recipeId'
+        | 'calories'
+        | 'proteins'
+        | 'nutritionalInfo'
+        | 'sustainabilityScore'
+        | 'price'
+        | 'barcode'
+        | 'mealCategories'
+        | 'mealCourse'
+        | 'dietaryPreferences'
+      >
+    >,
+  ) {
+    const { dietaryPreferences, ...rest } = dto;
+    return {
+      ...rest,
+      ...(dto.mealCategories
+        ? { mealCategories: this.uniqueEnumArray(dto.mealCategories) }
+        : {}),
+      ...(dietaryPreferences
+        ? { dietaryLabels: this.uniqueEnumArray(dietaryPreferences) }
+        : {}),
+    };
   }
 }

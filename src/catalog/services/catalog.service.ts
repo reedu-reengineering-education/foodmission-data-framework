@@ -1,4 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  ActivityLevel,
+  AnnualIncomeLevel,
+  EducationLevel,
+  Gender,
+  GroupRole,
+  MealCategory,
+  MealCourse,
+  TypeOfMeal,
+  Unit,
+} from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
@@ -8,15 +19,6 @@ import {
   CatalogStartupResponseDto,
   PaginatedCatalogListResponseDto,
 } from '../dto/catalog-response.dto';
-import {
-  ACTIVITY_LEVELS,
-  ANNUAL_INCOME_LEVELS,
-  EDUCATION_LEVELS,
-  GENDERS,
-  GROUP_ROLES,
-  TYPE_OF_MEALS,
-  UNITS,
-} from '../catalog.constants';
 
 function titleCaseFromEnum(value: string): string {
   return value
@@ -89,7 +91,7 @@ export class CatalogService {
 
   listGenders(): CatalogListResponseDto {
     return {
-      data: GENDERS.map((code) => ({
+      data: Object.values(Gender).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -98,7 +100,7 @@ export class CatalogService {
 
   listActivityLevels(): CatalogListResponseDto {
     return {
-      data: ACTIVITY_LEVELS.map((code) => ({
+      data: Object.values(ActivityLevel).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -107,7 +109,7 @@ export class CatalogService {
 
   listEducationLevels(): CatalogListResponseDto {
     return {
-      data: EDUCATION_LEVELS.map((code) => ({
+      data: Object.values(EducationLevel).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -116,7 +118,7 @@ export class CatalogService {
 
   listAnnualIncomeLevels(): CatalogListResponseDto {
     return {
-      data: ANNUAL_INCOME_LEVELS.map((code) => ({
+      data: Object.values(AnnualIncomeLevel).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -125,7 +127,7 @@ export class CatalogService {
 
   listUnits(): CatalogListResponseDto {
     return {
-      data: UNITS.map((code) => ({
+      data: Object.values(Unit).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -134,7 +136,25 @@ export class CatalogService {
 
   listTypeOfMeals(): CatalogListResponseDto {
     return {
-      data: TYPE_OF_MEALS.map((code) => ({
+      data: Object.values(TypeOfMeal).map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
+  }
+
+  listMealCategories(): CatalogListResponseDto {
+    return {
+      data: Object.values(MealCategory).map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
+  }
+
+  listMealCourses(): CatalogListResponseDto {
+    return {
+      data: Object.values(MealCourse).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
@@ -143,28 +163,30 @@ export class CatalogService {
 
   listGroupRoles(): CatalogListResponseDto {
     return {
-      data: GROUP_ROLES.map((code) => ({
+      data: Object.values(GroupRole).map((code) => ({
         code,
         label: titleCaseFromEnum(code),
       })),
     };
   }
 
-  listDietaryPreferencesPhase1(): CatalogListResponseDto {
-    const data: CatalogValueDto[] = [
-      { code: 'NONE', label: 'No specific dietary preference' },
-      {
-        code: 'VEGAN',
-        label: 'Vegan',
-        meta: { recipeFilter: { includeTags: ['vegan'] } },
-      },
-      {
-        code: 'VEGETARIAN',
-        label: 'Vegetarian',
-        meta: { recipeFilter: { includeTags: ['vegetarian'] } },
-      },
+  listDietaryPreferences(): CatalogListResponseDto {
+    const values = [
+      'VEGAN',
+      'VEGETARIAN',
+      'PESCATARIAN',
+      'GLUTEN_FREE',
+      'DAIRY_FREE',
+      'NUT_FREE',
+      'HALAL',
+      'KOSHER',
     ];
-    return { data };
+    return {
+      data: values.map((code) => ({
+        code,
+        label: titleCaseFromEnum(code),
+      })),
+    };
   }
 
   listShoppingResponsibilities(): CatalogListResponseDto {
@@ -265,7 +287,7 @@ export class CatalogService {
         activityLevels: this.listActivityLevels().data,
         educationLevels: this.listEducationLevels().data,
         annualIncomeLevels: this.listAnnualIncomeLevels().data,
-        dietaryPreferences: this.listDietaryPreferencesPhase1().data,
+        dietaryPreferences: this.listDietaryPreferences().data,
         shoppingResponsibilities: this.listShoppingResponsibilities().data,
       },
     };
