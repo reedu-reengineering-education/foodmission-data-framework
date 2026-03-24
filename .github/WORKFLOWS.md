@@ -130,7 +130,7 @@ DATABASE_URL_PRODUCTION     # PostgreSQL connection string for production
 
 The workflows use the following environment variables:
 
-- `NODE_VERSION`: Node.js version (default: 22)
+- `NODE_VERSION`: Node.js version (default: 24)
 - `REGISTRY`: Container registry (ghcr.io)
 - `IMAGE_NAME`: Docker image name (repository name)
 
@@ -205,7 +205,7 @@ gh workflow run performance.yml
 
 - **Health checks**: Kubernetes liveness/readiness probes
 - **Metrics**: Prometheus metrics collection
-- **Logging**: Structured logging with correlation IDs
+- **Logging**: Structured logging with trace IDs
 - **Alerting**: Set up alerts for critical failures
 
 ## Best Practices

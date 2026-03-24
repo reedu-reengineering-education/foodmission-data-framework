@@ -1,0 +1,72 @@
+# Minimal Loki configuration for k3s SingleBinary mode
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+  
+  commonConfig:
+    replication_factor: 1
+  
+  storage:
+    type: 'filesystem'
+  
+  schemaConfig:
+    configs:
+      - from: 2024-01-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  
+  limits_config:
+    retention_period: 168h  # 7 days
+  
+  server:
+    http_listen_port: 3100
+    grpc_listen_port: 9095
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+# Disable all distributed components
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+gateway:
+  enabled: false
+
+# Disable monitoring and canary
+monitoring:
+  selfMonitoring:
+    enabled: false
+  lokiCanary:
+    enabled: false
+
+lokiCanary:
+  enabled: false
+
+# Disable memberlist (not needed for single binary)
+memberlist:
+  enabled: false
+
+test:
+  enabled: false
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false

@@ -11,5 +11,8 @@
   "moduleNameMapper": {
     "^nest-keycloak-connect$": "<rootDir>/__mocks__/nest-keycloak-connect.js",
     "^keycloak-connect$": "<rootDir>/__mocks__/keycloak-connect.js"
-  }
+  },
+  "transformIgnorePatterns": [
+    "node_modules/(?!(uuid)/)"
+  ]
 }

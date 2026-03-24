@@ -39,49 +39,24 @@ A comprehensive, production-ready backend system for managing food-related data 
 
 ## 🔧 Prerequisites
 
-- **Node.js** 22+ (specified in `.nvmrc`)
-- **npm** 10.x (comes with Node.js 22, see `package.json` engines field)
+- **Node.js** 24+ (specified in `.nvmrc`)
+- **npm** 10+ (comes with Node.js 24)
 - **Docker** and Docker Compose
 - **Git**
 
 ### Version Management
 
-This project uses Node.js 22 with npm 10.x. To ensure you're using the correct versions:
+This project uses Node.js 24. To ensure you're using the correct version:
 
 **Using nvm (recommended):**
 
 ```bash
 # Install nvm if you haven't already: https://github.com/nvm-sh/nvm
-nvm install 22
-nvm use 22
+nvm install 24
+nvm use 24
 ```
 
 The project includes an `.nvmrc` file that automatically sets the Node.js version when you run `nvm use` in the project directory.
-
-**Installing the correct npm version:**
-
-If you already have Node.js 22 installed but a different npm version, you can install npm 10.x:
-
-```bash
-# Check your current versions
-node --version  # Should be v22.x.x
-npm --version   # Should be 10.x.x
-
-# If npm is not 10.x, install npm 10.x globally
-npm install -g npm@10
-
-# Or install a specific version (e.g., 10.9.4 to match Docker)
-npm install -g npm@10.9.4
-
-# Verify the installation
-npm --version   # Should now show 10.x.x
-```
-
-**Why npm 10.x is required:**
-
-- The Docker environment uses `node:22-alpine`, which includes npm 10.9.4
-- Using npm 11.x or higher will cause `package-lock.json` to be regenerated with different metadata
-- The `package.json` engines field enforces npm 10.x to prevent version mismatches
 
 ## ⚡ Quick Start
 
@@ -281,13 +256,12 @@ For the best development experience, use the provided DevContainer:
 ### Manual Setup
 
 ```bash
-# Ensure you're using the correct Node.js and npm versions
-# If using nvm, the .nvmrc file will automatically set Node.js 22
+# Ensure you're using the correct Node.js version
+# If using nvm, the .nvmrc file will automatically set Node.js 24
 nvm use
 
-# Verify versions (Node.js 22.x, npm 10.x)
-node --version  # Should be v22.x.x
-npm --version   # Should be 10.x.x
+# Verify version
+node --version  # Should be v24.x.x
 
 # Install dependencies
 npm install
