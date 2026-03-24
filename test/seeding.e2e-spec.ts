@@ -12,6 +12,23 @@ describe('Database Seeding (e2e)', () => {
   let hasCoreTables = false;
   let hasRecipeTables = false;
 
+  async function resetDatabaseForIsolation(): Promise<void> {
+    const tableRows = (await prisma.$queryRawUnsafe(
+      `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
+    )) as Array<{ tablename: string }>;
+
+    const tableNames = tableRows
+      .map((row) => row.tablename)
+      .filter((name) => name !== '_prisma_migrations');
+
+    if (tableNames.length === 0) return;
+
+    const quoted = tableNames.map((name) => `"public"."${name}"`).join(', ');
+    await prisma.$executeRawUnsafe(
+      `TRUNCATE TABLE ${quoted} RESTART IDENTITY CASCADE`,
+    );
+  }
+
   beforeAll(async () => {
     prisma = new PrismaClient({
       datasources: {
@@ -73,13 +90,7 @@ describe('Database Seeding (e2e)', () => {
 
   beforeEach(async () => {
     if (skipSuite || !hasCoreTables) return;
-    // Clean up database before each test
-    try {
-      await prisma.user.deleteMany();
-      await prisma.food.deleteMany();
-    } catch {
-      // Keep tests resilient when DB is not fully migrated.
-    }
+    await resetDatabaseForIsolation();
   });
 
   describe('Food Seeding', () => {
