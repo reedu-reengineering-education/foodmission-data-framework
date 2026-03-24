@@ -18,7 +18,11 @@ describe('Database Seeding (e2e)', () => {
       product_name: 'Nutella',
       generic_name: 'Hazelnut cocoa spread',
       brands: 'Ferrero',
-      nutriments: { 'energy-kcal_100g': 539, proteins_100g: 6.3, fat_100g: 30.9 },
+      nutriments: {
+        'energy-kcal_100g': 539,
+        proteins_100g: 6.3,
+        fat_100g: 30.9,
+      },
     },
     '4017074053166': {
       product_name: 'ISO-SPORTIV-DRINK',
@@ -42,7 +46,11 @@ describe('Database Seeding (e2e)', () => {
       product_name: 'bueno',
       generic_name: 'Chocolate wafer',
       brands: 'Kinder',
-      nutriments: { 'energy-kcal_100g': 568, proteins_100g: 8.7, fat_100g: 36.3 },
+      nutriments: {
+        'energy-kcal_100g': 568,
+        proteins_100g: 8.7,
+        fat_100g: 36.3,
+      },
     },
   };
 
@@ -148,24 +156,32 @@ describe('Database Seeding (e2e)', () => {
   beforeEach(async () => {
     if (skipSuite || !hasCoreTables) return;
     originalFetch = global.fetch;
-    global.fetch = jest.fn(async (input: RequestInfo | URL) => {
-      const url = String(input);
+    global.fetch = jest.fn((input: RequestInfo | URL) => {
+      const url =
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.toString()
+            : 'url' in input
+              ? input.url
+              : '';
       const match = url.match(/\/product\/(\d+)\.json$/);
       const barcode = match?.[1] ?? '';
       const product = offProductsByBarcode[barcode];
 
       if (!product) {
-        return {
-          json: async () => ({ status: 0 }),
-        } as Response;
+        return Promise.resolve({
+          json: () => Promise.resolve({ status: 0 }),
+        } as Response);
       }
 
-      return {
-        json: async () => ({
-          status: 1,
-          product,
-        }),
-      } as Response;
+      return Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            status: 1,
+            product,
+          }),
+      } as Response);
     }) as typeof global.fetch;
 
     await resetDatabaseForIsolation();
