@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersProfileService } from '../user/services/users-profile.service';
+import { UsersProfileService } from '../users/services/users-profile.service';
 
 /**
  * Service to handle user context resolution between Keycloak IDs and internal user IDs

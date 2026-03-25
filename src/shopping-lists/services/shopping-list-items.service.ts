@@ -31,6 +31,11 @@ import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
+} from '../repositories/shopping-list-items.repository';
+import { PantryItemService } from '../../pantries/services/pantry-items.service';
+import { PantryService } from '../../pantries/services/pantries.service';
+import { FoodRepository } from '../../foods/repositories/food.repository';
+import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 

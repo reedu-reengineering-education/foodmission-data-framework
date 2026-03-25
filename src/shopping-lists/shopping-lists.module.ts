@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
-import { UsersRepository } from '../user/repositories/users.repository';
-import { FoodModule } from '../food/food.module';
-import { FoodCategoryModule } from '../foodCategory/food-category.module';
+import { UsersRepository } from '../users/repositories/users.repository';
+import { FoodsModule } from '../foods/foods.module';
+import { FoodCategoriesModule } from '../foodCategories/food-categories.module';
 import { PantriesModule } from '../pantries/pantries.module';
 import { ShoppingListsController } from './controllers/shopping-lists.controller';
 import { ShoppingListItemsController } from './controllers/shopping-list-items.controller';
@@ -19,8 +19,8 @@ import { ShoppingListItemRepository } from './repositories/shopping-list-items.r
     HttpModule,
     CommonModule,
     PantriesModule,
-    FoodModule,
-    FoodCategoryModule,
+    FoodsModule,
+    FoodCategoriesModule,
   ],
   controllers: [ShoppingListsController, ShoppingListItemsController],
   providers: [

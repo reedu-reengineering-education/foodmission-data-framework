@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { CatalogModule as AppCatalogModule } from '../catalog/catalog.module';
-import { FoodModule } from '../food/food.module';
-import { FoodCategoryModule } from '../foodCategory/food-category.module';
+import { FoodsModule } from '../foods/foods.module';
+import { FoodCategoriesModule } from '../foodCategories/food-categories.module';
 
 @Module({
-  imports: [FoodModule, FoodCategoryModule, AppCatalogModule],
+  imports: [FoodsModule, FoodCategoriesModule, AppCatalogModule],
 })
 export class CatalogFeatureModule {}

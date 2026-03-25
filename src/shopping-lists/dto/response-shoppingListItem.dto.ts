@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { FoodResponseDto } from '../../food/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../foodCategory/dto/food-category-response.dto';
+import { FoodResponseDto } from '../../foods/dto/food-response.dto';
+import { FoodCategoryResponseDto } from '../../foodCategories/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
 
 @Exclude()

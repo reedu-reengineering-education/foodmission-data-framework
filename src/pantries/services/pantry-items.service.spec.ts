@@ -16,7 +16,7 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
-import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
+import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
 import {
   TEST_IDS,
   TEST_DATA,

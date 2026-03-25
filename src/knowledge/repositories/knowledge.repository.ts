@@ -19,15 +19,12 @@ export interface CreateKnowledgeData {
 export type UpdateKnowledgeData = Partial<CreateKnowledgeData>;
 
 @Injectable()
-export class KnowledgeRepository
-  implements
-    BaseRepository<
-      Knowledge,
-      CreateKnowledgeData,
-      UpdateKnowledgeData,
-      Prisma.KnowledgeWhereInput
-    >
-{
+export class KnowledgeRepository implements BaseRepository<
+  Knowledge,
+  CreateKnowledgeData,
+  UpdateKnowledgeData,
+  Prisma.KnowledgeWhereInput
+> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(

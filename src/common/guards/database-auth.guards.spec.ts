@@ -2,7 +2,7 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from './database-auth.guards';
-import { UsersRepository } from '../../user/repositories/users.repository';
+import { UsersRepository } from '../../users/repositories/users.repository';
 
 describe('DataBaseAuthGuard', () => {
   let guard: DataBaseAuthGuard;

@@ -11,7 +11,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserContextService } from './user-context.service';
 import { DatabaseModule } from '../database/database.module';
-import { UsersModule } from '../user/users.module';
+import { UsersModule } from '../users/users.module';
 import { KeycloakAdminModule } from '../keycloak-admin/keycloak-admin.module';
 
 @Module({

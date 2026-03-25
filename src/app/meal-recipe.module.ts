@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MealModule } from '../meal/meal.module';
-import { MealItemModule } from '../mealItem/meal-item.module';
-import { MealLogModule } from '../mealLog/meal-log.module';
-import { RecipeModule } from '../recipe/recipe.module';
+import { MealModule } from '../meals/meals.module';
+import { MealItemsModule } from '../mealItems/meal-items.module';
+import { MealLogModule } from '../mealLogs/meal-log.module';
+import { RecipeModule } from '../recipes/recipes.module';
 
 @Module({
-  imports: [MealModule, MealItemModule, RecipeModule, MealLogModule],
+  imports: [MealModule, MealItemsModule, RecipeModule, MealLogModule],
 })
 export class MealRecipeModule {}

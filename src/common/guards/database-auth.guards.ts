@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
-import { UsersRepository } from '../../user/repositories/users.repository';
+import { UsersRepository } from '../../users/repositories/users.repository';
 
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {

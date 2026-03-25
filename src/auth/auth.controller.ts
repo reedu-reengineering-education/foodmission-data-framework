@@ -15,7 +15,7 @@ import {
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { UsersProfileService } from '../user/services/users-profile.service';
+import { UsersProfileService } from '../users/services/users-profile.service';
 import { Body, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';

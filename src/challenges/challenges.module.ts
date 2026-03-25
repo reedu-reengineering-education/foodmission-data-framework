@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database/database.module';
 
 import { CommonModule } from '../common/common.module';
-import { UsersRepository } from '../user/repositories/users.repository';
+import { UsersRepository } from '../users/repositories/users.repository';
 import { ChallengesController } from './controllers/challenges.controller';
 import { ChallengesService } from './services/challenges.service';
 import { ChallengesRepository } from './repositories/challenges.repository';

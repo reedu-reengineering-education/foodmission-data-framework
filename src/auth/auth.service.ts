@@ -10,8 +10,8 @@ import { firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { UsersRepository } from '../user/repositories/users.repository';
-import { UsersProfileService } from '../user/services/users-profile.service';
+import { UsersRepository } from '../users/repositories/users.repository';
+import { UsersProfileService } from '../users/services/users-profile.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 
 @Injectable()

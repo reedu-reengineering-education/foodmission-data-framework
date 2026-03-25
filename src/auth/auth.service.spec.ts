@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { HttpService } from '@nestjs/axios';
-import { UsersRepository } from '../user/repositories/users.repository';
-import { UsersProfileService } from '../user/services/users-profile.service';
+import { UsersRepository } from '../users/repositories/users.repository';
+import { UsersProfileService } from '../users/services/users-profile.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 import { HttpException } from '@nestjs/common';
 

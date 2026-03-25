@@ -1,5 +1,5 @@
 import { AuthController } from './auth.controller';
-import { UsersProfileService } from '../user/services/users-profile.service';
+import { UsersProfileService } from '../users/services/users-profile.service';
 
 describe('Stateless Authentication', () => {
   let controller: AuthController;

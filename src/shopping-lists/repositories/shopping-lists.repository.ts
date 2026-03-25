@@ -16,10 +16,11 @@ export interface UpdateShoppingListDto {
 }
 
 @Injectable()
-export class ShoppingListRepository
-  implements
-    BaseRepository<ShoppingList, CreateShoppingListDto, UpdateShoppingListDto>
-{
+export class ShoppingListRepository implements BaseRepository<
+  ShoppingList,
+  CreateShoppingListDto,
+  UpdateShoppingListDto
+> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(
