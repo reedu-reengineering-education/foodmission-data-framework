@@ -12,18 +12,27 @@
  * - Graceful shutdown handling
  */
 
-import 'dotenv/config'
+import 'dotenv/config';
 
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { PrismaInstrumentation } from '@prisma/instrumentation';
-import { BatchLogRecordProcessor, LoggerProvider } from '@opentelemetry/sdk-logs';
+import {
+  BatchLogRecordProcessor,
+  LoggerProvider,
+} from '@opentelemetry/sdk-logs';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import { loadOtelConfig, validateOtelConfig } from './common/logging/otel.config';
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
+import {
+  loadOtelConfig,
+  validateOtelConfig,
+} from './common/logging/otel.config';
 import { logs } from '@opentelemetry/api-logs';
 
 const config = loadOtelConfig();
@@ -31,7 +40,9 @@ const config = loadOtelConfig();
 if (config.enabled) {
   // Validate configuration before initializing
   if (!validateOtelConfig(config)) {
-    console.error('Invalid OpenTelemetry configuration. Skipping initialization.');
+    console.error(
+      'Invalid OpenTelemetry configuration. Skipping initialization.',
+    );
     process.exit(1);
   }
 
@@ -56,9 +67,9 @@ if (config.enabled) {
 
     // Create and register LoggerProvider explicitly
     const logRecordProcessor = new BatchLogRecordProcessor(logExporter);
-    const loggerProvider = new LoggerProvider({ 
+    const loggerProvider = new LoggerProvider({
       resource,
-      processors: [logRecordProcessor]
+      processors: [logRecordProcessor],
     });
     logs.setGlobalLoggerProvider(loggerProvider);
 
