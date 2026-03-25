@@ -11,10 +11,6 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 import { SecurityMiddleware } from './security/middleware/security.middleware';
 
-/**
- * Root application module. Feature areas are grouped via barrel modules under `src/app/`;
- * middleware stays centralized here.
- */
 @Module({
   imports: [
     InfrastructureModule,

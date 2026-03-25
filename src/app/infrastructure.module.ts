@@ -7,9 +7,6 @@ import { HealthModule } from '../health/health.module';
 import { MonitoringModule } from '../monitoring/monitoring.module';
 import { SecurityModule } from '../security/security.module';
 
-/**
- * Cross-cutting infrastructure: common utilities, persistence, cache, security, auth, observability.
- */
 @Module({
   imports: [
     CommonModule,
