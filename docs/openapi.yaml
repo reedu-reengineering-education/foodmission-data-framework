@@ -1903,119 +1903,13 @@ paths:
       summary: Clear all checked items from shopping list
       tags: *ref_14
   /api/v1/pantry:
-    post:
-      description: >-
-        Creates a new pantry for the authenticated user. Users can have multiple
-        pantries. If a pantry with the same title already exists for the user,
-        returns a conflict error. Requires user or admin role.
-      operationId: create
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePantryDto'
-      responses:
-        '201':
-          description: Pantry created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PantryResponseDto'
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '404':
-          description: Not Found - Resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '409':
-          description: A pantry with this title already exists for this user.
-      security:
-        - JWT-auth: []
-      summary: Create a new Pantry
-      tags: &ref_15
-        - pantry
     get:
       description: >-
-        Retrieves all pantries for the authenticated user with all items.
-        Returns an empty array if no pantries exist.
-      operationId: getAllPantries
+        Retrieves the authenticated user's dedicated pantry with all items.
+        Every user has exactly one pantry that is automatically created when
+        needed. Requires user or admin role.
+      operationId: getPantry
       parameters: []
-      responses:
-        '200':
-          description: List of pantries retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PantryResponseDto'
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '404':
-          description: Not Found - Resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '409':
-          description: Conflict - Resource already exists or state conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - JWT-auth: []
-      summary: Get all user pantries
-      tags: *ref_15
-  /api/v1/pantry/{id}:
-    get:
-      description: >-
-        Retrieves a specific pantry by ID for the authenticated user. Only the
-        pantry owner can access it.
-      operationId: getPantryById
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            format: uuid
-            type: string
       responses:
         '200':
           description: Pantry retrieved successfully
@@ -2036,56 +1930,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
         '403':
-          description: No permission - user does not own this pantry
-        '404':
-          description: Pantry not found
-        '409':
-          description: Conflict - Resource already exists or state conflict
+          description: Forbidden - Insufficient permissions
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - JWT-auth: []
-      summary: Get pantry by ID
-      tags: *ref_15
-    patch:
-      description: Updates the pantry title. Only the pantry owner can update their pantry.
-      operationId: update
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            format: uuid
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdatePantryDto'
-      responses:
-        '200':
-          description: Pantry updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PantryResponseDto'
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: No permission - user does not own this pantry
         '404':
           description: Not Found - Resource does not exist
           content:
@@ -2100,57 +1949,15 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
         - JWT-auth: []
-      summary: Update pantry
-      tags: *ref_15
-    delete:
-      description: >-
-        Deletes a specific pantry by ID. Only the pantry owner can delete their
-        pantry. All pantry items will be deleted as well (cascade delete).
-      operationId: remove
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            format: uuid
-            type: string
-      responses:
-        '200':
-          description: Pantry deleted successfully
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: No permission - user does not own this pantry
-        '404':
-          description: Pantry not found
-        '409':
-          description: Conflict - Resource already exists or state conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - JWT-auth: []
-      summary: Delete pantry
-      tags: *ref_15
+      summary: Get user pantry
+      tags:
+        - pantry
   /api/v1/pantry-item:
     post:
       description: >-
-        Creates a new Pantry Item and adds it to the specified pantry. The
-        pantryId must be provided in the request body and must belong to the
-        authenticated user. Users can have multiple pantries. The unit field is
-        optional and defaults to PIECES if not provided. Requires user or admin
-        role.
+        Creates a new Pantry Item and adds it to your dedicated pantry. The unit
+        field is optional and defaults to PIECES if not provided. Requires user
+        or admin role.
       operationId: create
       parameters: []
       requestBody:
@@ -2161,10 +1968,6 @@ paths:
               oneOf:
                 - type: object
                   properties:
-                    pantryId:
-                      type: string
-                      format: uuid
-                      example: uuid-pantry-id
                     quantity:
                       type: number
                       example: 2
@@ -2176,6 +1979,10 @@ paths:
                     notes:
                       type: string
                       example: Store in cool place
+                    location:
+                      type: string
+                      example: Pantry shelf A
+                      description: Optional location of the item within your pantry.
                     expiryDate:
                       type: string
                       format: date
@@ -2186,15 +1993,10 @@ paths:
                       example: uuid-food-id
                       description: UUID of the food item (OpenFoodFacts).
                   required:
-                    - pantryId
                     - foodId
                     - quantity
                 - type: object
                   properties:
-                    pantryId:
-                      type: string
-                      format: uuid
-                      example: uuid-pantry-id
                     quantity:
                       type: number
                       example: 2
@@ -2206,6 +2008,10 @@ paths:
                     notes:
                       type: string
                       example: Store in cool place
+                    location:
+                      type: string
+                      example: Pantry shelf A
+                      description: Optional location of the item within your pantry.
                     expiryDate:
                       type: string
                       format: date
@@ -2216,7 +2022,6 @@ paths:
                       example: uuid-food-category-id
                       description: UUID of the food category (NEVO generic).
                   required:
-                    - pantryId
                     - foodCategoryId
                     - quantity
       responses:
@@ -2259,22 +2064,14 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a new item to Pantry
-      tags: &ref_16
+      tags: &ref_15
         - pantry-item
     get:
       description: >-
-        Retrieve pantry items from a specific pantry. The pantryId must be
-        provided as a query parameter and must belong to the authenticated user.
-        Optional filtering by foodId, unit, or expiryDate.
+        Retrieve pantry items from your dedicated pantry. Optional filtering by
+        foodId, foodCategoryId, unit, or expiryDate.
       operationId: findAll
       parameters:
-        - name: pantryId
-          required: true
-          in: query
-          description: The ID of the pantry to get items from (UUID)
-          schema:
-            example: uuid-pantry-id
-            type: string
         - name: foodId
           required: false
           in: query
@@ -2349,7 +2146,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get pantry items
-      tags: *ref_16
+      tags: *ref_15
   /api/v1/pantry-item/{id}:
     get:
       operationId: findById
@@ -2400,7 +2197,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get specific pantry item by ID
-      tags: *ref_16
+      tags: *ref_15
     patch:
       description: >-
         Update quantity, unit, notes, or expiry date of a pantry item. All
@@ -2459,7 +2256,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update pantry item
-      tags: *ref_16
+      tags: *ref_15
     delete:
       description: Delete a specific pantry item by ID
       operationId: remove
@@ -2506,7 +2303,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove item from pantry
-      tags: *ref_16
+      tags: *ref_15
   /api/v1/meals:
     post:
       operationId: create
@@ -2557,7 +2354,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal
-      tags: &ref_17
+      tags: &ref_16
         - meals
     get:
       operationId: findAll
@@ -2670,7 +2467,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meals for the user
-      tags: *ref_17
+      tags: *ref_16
   /api/v1/meals/{id}:
     get:
       operationId: findOne
@@ -2721,7 +2518,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get a meal by id
-      tags: *ref_17
+      tags: *ref_16
     patch:
       operationId: update
       parameters:
@@ -2777,7 +2574,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a meal
-      tags: *ref_17
+      tags: *ref_16
     delete:
       operationId: remove
       parameters:
@@ -2823,7 +2620,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete a meal
-      tags: *ref_17
+      tags: *ref_16
   /api/v1/meals/{mealId}/items:
     post:
       description: >-
@@ -2917,10 +2714,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: &ref_18
+      security: &ref_17
         - JWT-auth: []
       summary: Add a food item to a meal
-      tags: &ref_19
+      tags: &ref_18
         - meal-items
     get:
       description: Retrieves all food items (products and categories) for a specific meal
@@ -2958,9 +2755,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_18
+      security: *ref_17
       summary: Get all items in a meal
-      tags: *ref_19
+      tags: *ref_18
   /api/v1/meals/{mealId}/items/{id}:
     get:
       description: Retrieves a specific item from a meal by its ID
@@ -2996,9 +2793,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_18
+      security: *ref_17
       summary: Get a specific meal item
-      tags: *ref_19
+      tags: *ref_18
     patch:
       description: >-
         Updates an existing meal item. Can change the food/category reference,
@@ -3047,9 +2844,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_18
+      security: *ref_17
       summary: Update a meal item
-      tags: *ref_19
+      tags: *ref_18
     delete:
       description: Removes a specific item from a meal
       operationId: delete
@@ -3080,9 +2877,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      security: *ref_18
+      security: *ref_17
       summary: Remove a meal item
-      tags: *ref_19
+      tags: *ref_18
   /api/v1/recipes:
     post:
       operationId: create
@@ -3133,7 +2930,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a recipe
-      tags: &ref_20
+      tags: &ref_19
         - recipes
     get:
       operationId: findAll
@@ -3262,7 +3059,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List recipes
-      tags: *ref_20
+      tags: *ref_19
   /api/v1/recipes/{id}:
     get:
       operationId: findOne
@@ -3313,7 +3110,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get recipe by id
-      tags: *ref_20
+      tags: *ref_19
     patch:
       operationId: update
       parameters:
@@ -3369,7 +3166,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update recipe
-      tags: *ref_20
+      tags: *ref_19
     delete:
       operationId: remove
       parameters:
@@ -3415,7 +3212,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete recipe
-      tags: *ref_20
+      tags: *ref_19
   /api/v1/meal-logs:
     post:
       operationId: create
@@ -3466,7 +3263,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a meal log
-      tags: &ref_21
+      tags: &ref_20
         - meal-logs
     get:
       operationId: findAll
@@ -3562,7 +3359,7 @@ paths:
       security:
         - JWT-auth: []
       summary: List meal logs
-      tags: *ref_21
+      tags: *ref_20
   /api/v1/meal-logs/{id}:
     get:
       operationId: findOne
@@ -3613,7 +3410,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get meal log by id
-      tags: *ref_21
+      tags: *ref_20
     patch:
       operationId: update
       parameters:
@@ -3669,7 +3466,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update meal log
-      tags: *ref_21
+      tags: *ref_20
     delete:
       operationId: remove
       parameters:
@@ -3715,7 +3512,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete meal log
-      tags: *ref_21
+      tags: *ref_20
   /api/v1/challenges:
     post:
       description: >-
@@ -3765,8 +3562,8 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Challenge
-      tags: &ref_22
-        - challenges/:challenges/progress
+      tags: &ref_21
+        - challenges
     get:
       description: Retrieves all challenges. Admin only.
       operationId: getAll
@@ -3813,7 +3610,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all challenges
-      tags: *ref_22
+      tags: *ref_21
   /api/v1/challenges/{id}:
     get:
       description: Retrieves a specific challenge by its ID.
@@ -3861,7 +3658,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get challenge by ID
-      tags: *ref_22
+      tags: *ref_21
     patch:
       description: >-
         Updates challenge metadata like title, description, dates or
@@ -3916,7 +3713,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update challenge
-      tags: *ref_22
+      tags: *ref_21
     delete:
       description: >-
         Deletes a specific challenge by ID including all its progress entries.
@@ -3961,11 +3758,11 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete challenge
-      tags: *ref_22
-  /api/v1/challenges/{challengeId}/progress/all:
+      tags: *ref_21
+  /api/v1/challenges/progress:
     get:
       description: Retrieves all challenge progresses for the authenticated user.
-      operationId: getAll
+      operationId: getAllProgress
       parameters: []
       responses:
         '200':
@@ -4009,8 +3806,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all challenge progresses for the current user
-      tags: &ref_23
-        - challenges/:challengeId/progress
+      tags: *ref_21
   /api/v1/challenges/{challengeId}/progress:
     get:
       description: >-
@@ -4056,7 +3852,8 @@ paths:
       security:
         - JWT-auth: []
       summary: Get challenge progress by challenge ID
-      tags: *ref_23
+      tags: &ref_22
+        - challenges
     patch:
       description: >-
         Updates the progress or completion status of a specific challenge for
@@ -4107,7 +3904,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update challenge progress
-      tags: *ref_23
+      tags: *ref_22
   /api/v1/missions:
     post:
       description: Creates a new mission as an Admin
@@ -4155,7 +3952,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new Mission
-      tags: &ref_24
+      tags: &ref_23
         - missions
     get:
       description: >-
@@ -4197,7 +3994,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all missions
-      tags: *ref_24
+      tags: *ref_23
   /api/v1/missions/{id}:
     get:
       description: >-
@@ -4243,7 +4040,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get mission by ID
-      tags: *ref_24
+      tags: *ref_23
     patch:
       description: Updates the mission progress.
       operationId: update
@@ -4296,7 +4093,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update mission
-      tags: *ref_24
+      tags: *ref_23
     delete:
       description: >-
         Deletes a specific mission by ID. Only the admin can delete missions.
@@ -4337,7 +4134,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete mission
-      tags: *ref_24
+      tags: *ref_23
   /api/v1/missions/progress:
     get:
       description: Retrieves all mission progresses for the authenticated user.
@@ -4385,56 +4182,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all mission progresses for the current user
-      tags: *ref_24
-  /api/v1/missions/{missionId}/progress/all:
-    get:
-      description: Retrieves all mission progresses for the authenticated user.
-      operationId: getAll
-      parameters: []
-      responses:
-        '200':
-          description: List of mission progresses retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MissionProgressResponseDto'
-        '400':
-          description: Bad Request - Invalid input data or validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '401':
-          description: Unauthorized - Authentication required or invalid token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '403':
-          description: Forbidden - Insufficient permissions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '404':
-          description: Not Found - Resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-        '409':
-          description: Conflict - Resource already exists or state conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponseDto'
-      security:
-        - JWT-auth: []
-      summary: Get all mission progresses for the current user
-      tags: &ref_25
-        - missions/:missionId/progress
+      tags: *ref_23
   /api/v1/missions/{missionId}/progress:
     get:
       description: Retrieves the progress of a specific mission for the authenticated user.
@@ -4478,7 +4226,8 @@ paths:
       security:
         - JWT-auth: []
       summary: Get mission progress by mission ID
-      tags: *ref_25
+      tags: &ref_24
+        - missions
     patch:
       description: >-
         Updates the progress or completion status of a specific mission for the
@@ -4529,7 +4278,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update mission progress
-      tags: *ref_25
+      tags: *ref_24
   /api/v1/groups:
     post:
       description: >-
@@ -4583,7 +4332,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Create a new group
-      tags: &ref_26
+      tags: &ref_25
         - groups
     get:
       description: Returns all groups where the authenticated user is a member.
@@ -4631,7 +4380,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all groups for current user
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}:
     get:
       description: Returns a specific group if the user is a member.
@@ -4683,7 +4432,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get group by ID
-      tags: *ref_26
+      tags: *ref_25
     patch:
       description: Updates group name/description. Admin only.
       operationId: update
@@ -4740,7 +4489,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update group
-      tags: *ref_26
+      tags: *ref_25
     delete:
       description: Deletes a group and all its memberships/virtual members. Admin only.
       operationId: remove
@@ -4787,7 +4536,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Delete group
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/join:
     post:
       description: Joins an existing group using the invite code.
@@ -4839,7 +4588,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Join a group by invite code
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/leave:
     post:
       description: Leaves a group. Last admin cannot leave without transferring rights.
@@ -4887,7 +4636,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Leave a group
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/invite-code:
     get:
       description: Returns the current invite code for the group. Admin only.
@@ -4941,7 +4690,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get invite code
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/regenerate-code:
     post:
       description: Generates a new invite code, invalidating the old one. Admin only.
@@ -4995,7 +4744,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Regenerate invite code
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/members:
     get:
       description: >-
@@ -5051,7 +4800,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Get all members
-      tags: *ref_26
+      tags: *ref_25
     post:
       description: >-
         Adds a member without an account (e.g., child or dependent). Any group
@@ -5110,7 +4859,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Add a virtual member
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/members/{memberId}:
     patch:
       description: >-
@@ -5178,7 +4927,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Update a virtual member
-      tags: *ref_26
+      tags: *ref_25
     delete:
       description: >-
         Removes a member from the group. Admin required for registered users;
@@ -5235,7 +4984,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Remove a member
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/groups/{id}/members/{memberId}/make-admin:
     post:
       description: >-
@@ -5298,7 +5047,7 @@ paths:
       security:
         - JWT-auth: []
       summary: Promote member to admin
-      tags: *ref_26
+      tags: *ref_25
   /api/v1/knowledge:
     post:
       operationId: create
@@ -5347,16 +5096,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
-        - &ref_27
+        - &ref_26
           keycloak-oauth2:
             - openid
             - profile
             - roles
-        - &ref_28
+        - &ref_27
           JWT-auth: []
         - JWT-auth: []
       summary: Create a knowledge/quiz item
-      tags: &ref_29
+      tags: &ref_28
         - knowledge
     get:
       operationId: findAll
@@ -5429,11 +5178,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: List knowledge items
-      tags: *ref_29
+      tags: *ref_28
   /api/v1/knowledge/progress/me:
     get:
       operationId: getAllProgress
@@ -5490,11 +5239,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Get all progress for the current user
-      tags: *ref_29
+      tags: *ref_28
   /api/v1/knowledge/{id}:
     get:
       operationId: findOne
@@ -5543,11 +5292,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Get knowledge item by id
-      tags: *ref_29
+      tags: *ref_28
     patch:
       operationId: update
       parameters:
@@ -5601,11 +5350,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Update knowledge item
-      tags: *ref_29
+      tags: *ref_28
     delete:
       operationId: remove
       parameters:
@@ -5649,11 +5398,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Delete knowledge item
-      tags: *ref_29
+      tags: *ref_28
   /api/v1/knowledge/{id}/progress:
     get:
       operationId: getProgress
@@ -5703,11 +5452,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Get user progress for a knowledge item
-      tags: *ref_29
+      tags: *ref_28
     patch:
       operationId: updateProgress
       parameters:
@@ -5762,11 +5511,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Patch user progress for a knowledge item
-      tags: *ref_29
+      tags: *ref_28
     delete:
       operationId: deleteProgress
       parameters:
@@ -5811,11 +5560,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       security:
+        - *ref_26
         - *ref_27
-        - *ref_28
         - JWT-auth: []
       summary: Delete user progress for a knowledge item
-      tags: *ref_29
+      tags: *ref_28
   /api/v1/catalog/startup:
     get:
       operationId: startup
@@ -5858,7 +5607,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: Static values needed at regular app startup (excluding world geography)
-      tags: &ref_30
+      tags: &ref_29
         - catalog
   /api/v1/catalog/genders:
     get:
@@ -5902,7 +5651,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List genders
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/activity-levels:
     get:
       operationId: activityLevels
@@ -5945,7 +5694,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List activity levels
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/education-levels:
     get:
       operationId: educationLevels
@@ -5988,7 +5737,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List education levels
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/annual-income-levels:
     get:
       operationId: annualIncomeLevels
@@ -6031,7 +5780,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List annual income levels
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/dietary-preferences:
     get:
       operationId: dietaryPreferences
@@ -6073,10 +5822,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
-      summary: >-
-        List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to
-        recipe tags)
-      tags: *ref_30
+      summary: List dietary preferences
+      tags: *ref_29
   /api/v1/catalog/shopping-responsibilities:
     get:
       operationId: shoppingResponsibilities
@@ -6119,7 +5866,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List shopping responsibility options
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/units:
     get:
       operationId: units
@@ -6168,7 +5915,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: List units
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/type-of-meals:
     get:
       operationId: typeOfMeals
@@ -6217,7 +5964,105 @@ paths:
             - roles
         - JWT-auth: []
       summary: List type of meal values
-      tags: *ref_30
+      tags: *ref_29
+  /api/v1/catalog/meal-categories:
+    get:
+      operationId: mealCategories
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List meal categories
+      tags: *ref_29
+  /api/v1/catalog/meal-courses:
+    get:
+      operationId: mealCourses
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogListResponseDto'
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '404':
+          description: Not Found - Resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+        '409':
+          description: Conflict - Resource already exists or state conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponseDto'
+      security:
+        - keycloak-oauth2:
+            - openid
+            - profile
+            - roles
+        - JWT-auth: []
+      summary: List meal courses
+      tags: *ref_29
   /api/v1/catalog/group-roles:
     get:
       operationId: groupRoles
@@ -6266,7 +6111,7 @@ paths:
             - roles
         - JWT-auth: []
       summary: List group roles
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/languages:
     get:
       operationId: languages
@@ -6330,7 +6175,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List languages (paginated)
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/countries:
     get:
       operationId: countries
@@ -6394,7 +6239,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List countries (paginated)
-      tags: *ref_30
+      tags: *ref_29
   /api/v1/catalog/regions:
     get:
       operationId: regions
@@ -6467,7 +6312,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponseDto'
       summary: List regions/subdivisions (paginated)
-      tags: *ref_30
+      tags: *ref_29
   /api/v1:
     get:
       description: >-
@@ -6746,7 +6591,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: &ref_31
+          enum: &ref_30
             - MALE
             - FEMALE
             - OTHER
@@ -6820,7 +6665,7 @@ components:
         gender:
           type: string
           description: Gender
-          enum: *ref_31
+          enum: *ref_30
         annualIncome:
           type: string
           description: Annual income (optional)
@@ -7055,7 +6900,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: &ref_32
+          enum: &ref_31
             - A
             - B
             - C
@@ -7665,7 +7510,7 @@ components:
         nutriscoreGrade:
           type: string
           description: Nutri-Score grade
-          enum: *ref_32
+          enum: *ref_31
         nutriscoreScore:
           type: number
           description: Nutri-Score numeric score
@@ -8324,16 +8169,6 @@ components:
           type: string
           description: The ID of the food item
           example: uuid-food-id
-    CreatePantryDto:
-      type: object
-      properties:
-        title:
-          type: string
-          description: The name of the pantry
-          example: Home Pantry
-          maxLength: 255
-      required:
-        - title
     PantryItemResponseDto:
       type: object
       properties:
@@ -8362,6 +8197,11 @@ components:
           description: Additional notes for the item
           example: Store in cool place
           maxLength: 500
+        location:
+          type: string
+          description: Location where the item is stored
+          example: Top shelf, pantry
+          maxLength: 200
         expiryDate:
           format: date-time
           type: string
@@ -8403,10 +8243,6 @@ components:
           type: string
           description: The user ID who owns this pantry
           example: uuid-user-id
-        title:
-          type: string
-          description: The pantry title
-          example: Home or Work
         items:
           description: List of items in the pantry
           type: array
@@ -8415,18 +8251,7 @@ components:
       required:
         - id
         - userId
-        - title
         - items
-    UpdatePantryDto:
-      type: object
-      properties:
-        title:
-          type: string
-          description: The name of the pantry
-          example: Refrigerator
-          maxLength: 255
-      required:
-        - title
     MultiplePantryItemResponseDto:
       type: object
       properties:
@@ -8461,6 +8286,11 @@ components:
           description: Additional notes for the item
           example: Buy organic if available
           maxLength: 500
+        location:
+          type: string
+          description: Location where the item is stored
+          example: Top shelf, pantry
+          maxLength: 200
         expiryDate:
           format: date-time
           type: string
@@ -8483,14 +8313,6 @@ components:
           example: Grilled chicken salad
         recipeId:
           type: string
-          enum: &ref_33
-            - SALAD
-            - MEAT
-            - PASTA
-            - RICE
-            - VEGAN
-          description: Meal type
-          format: uuid
           description: Optional recipe this meal is based on
           format: uuid
         calories:
@@ -8504,7 +8326,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: &ref_34
+          example: &ref_32
             carbs: 40
             fats: 20
             sugar: 5
@@ -8522,10 +8344,10 @@ components:
         mealCategories:
           type: array
           description: Meal categories for filtering and analytics
-          example: &ref_30
+          example: &ref_33
             - ANIMAL_PROTEIN
             - STARCH_GRAIN
-          items: &ref_31
+          items: &ref_34
             type: string
             enum:
               - ANIMAL_PROTEIN
@@ -8538,7 +8360,7 @@ components:
         mealCourse:
           type: string
           description: Meal course role
-          enum: &ref_32
+          enum: &ref_35
             - MAIN_DISH
             - SIDE_SNACK
             - DESSERT
@@ -8548,9 +8370,9 @@ components:
         dietaryPreferences:
           type: array
           description: Dietary preferences associated with this meal
-          example: &ref_33
+          example: &ref_36
             - VEGAN
-          items: &ref_34
+          items: &ref_37
             type: string
             enum:
               - VEGAN
@@ -8683,9 +8505,6 @@ components:
           example: Grilled chicken salad
         recipeId:
           type: string
-          enum: *ref_33
-          description: Meal type
-          format: uuid
           description: Optional recipe this meal is based on
           format: uuid
         calories:
@@ -8699,7 +8518,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional information
-          example: *ref_34
+          example: *ref_32
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -8714,18 +8533,18 @@ components:
         mealCategories:
           type: array
           description: Meal categories for filtering and analytics
-          example: *ref_30
-          items: *ref_31
+          example: *ref_33
+          items: *ref_34
         mealCourse:
           type: string
           description: Meal course role
-          enum: *ref_32
+          enum: *ref_35
           example: MAIN_DISH
         dietaryPreferences:
           type: array
           description: Dietary preferences associated with this meal
-          example: *ref_33
-          items: *ref_34
+          example: *ref_36
+          items: *ref_37
     MealItemResponseDto:
       type: object
       properties:
@@ -8897,7 +8716,7 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: &ref_35
+          example: &ref_38
             - vegan
             - quick
           type: array
@@ -8906,7 +8725,7 @@ components:
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: &ref_36
+          example: &ref_39
             carbs: 50
             fats: 10
             fiber: 8
@@ -8921,11 +8740,10 @@ components:
         allergens:
           type: array
           description: Known allergens
-          example: &ref_37
-            - nuts
-            - gluten
-          type: array
-          items:
+          example: &ref_40
+            - TREE_NUTS
+            - GLUTEN
+          items: &ref_41
             type: string
             enum:
               - GLUTEN
@@ -8967,7 +8785,7 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: &ref_39
+          example: &ref_42
             - vegan
             - gluten-free
           type: array
@@ -8975,7 +8793,7 @@ components:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: &ref_40
+          example: &ref_43
             - name: Chicken Breast
               measure: 500g
               order: 1
@@ -9212,14 +9030,14 @@ components:
           example: easy
         tags:
           description: Tags for filtering
-          example: *ref_35
+          example: *ref_38
           type: array
           items:
             type: string
         nutritionalInfo:
           type: object
           description: Structured nutritional info
-          example: *ref_36
+          example: *ref_39
         sustainabilityScore:
           type: number
           description: Sustainability score
@@ -9231,10 +9049,8 @@ components:
         allergens:
           type: array
           description: Known allergens
-          example: *ref_37
-          type: array
-          items:
-            type: string
+          example: *ref_40
+          items: *ref_41
         externalId:
           type: string
           description: External identifier (e.g., TheMealDB idMeal)
@@ -9261,13 +9077,13 @@ components:
           default: false
         dietaryLabels:
           description: Dietary labels
-          example: *ref_39
+          example: *ref_42
           type: array
           items:
             type: string
         ingredients:
           description: Recipe ingredients
-          example: *ref_40
+          example: *ref_43
           type: array
           items:
             $ref: '#/components/schemas/CreateRecipeIngredientDto'
@@ -9281,7 +9097,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: &ref_38
+          enum: &ref_44
             - BREAKFAST
             - LUNCH
             - DINNER
@@ -9391,7 +9207,7 @@ components:
         typeOfMeal:
           type: string
           description: Type of meal
-          enum: *ref_38
+          enum: *ref_44
         timestamp:
           type: string
           description: Timestamp of consumption (ISO string)

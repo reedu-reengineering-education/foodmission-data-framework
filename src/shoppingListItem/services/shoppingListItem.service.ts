@@ -29,7 +29,6 @@ import {
 } from '../repositories/shoppingListItem.repository';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { PantryItemService } from '../../pantryItem/services/pantryItem.service';
-import { PantryService } from '../../pantry/services/pantry.service';
 import { FoodRepository } from '../../food/repositories/food.repository';
 import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
 import { ShoppingListRepository } from '../../shoppingList/repositories/shoppingList.repository';
@@ -54,7 +53,6 @@ export class ShoppingListItemService {
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userRepository: UserRepository,
     private readonly pantryItemService: PantryItemService,
-    private readonly pantryService: PantryService,
     private readonly foodRepository: FoodRepository,
     private readonly foodCategoryRepository: FoodCategoryRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
@@ -253,12 +251,61 @@ export class ShoppingListItemService {
     shoppingListId: string,
     userId: string,
   ): Promise<void> {
+    const prisma = this.shoppingListItemRepository['prisma'];
     try {
       await this.validateShoppingListAccess(shoppingListId, userId);
-      await this.shoppingListItemRepository.clearCheckedItems(
-        shoppingListId,
-        userId,
-      );
+      const user = await this.validateUserExists(userId);
+      await prisma.$transaction(async (tx) => {
+        if (user.autoAddCheckedItemsToPantry) {
+          const checkedItems =
+            await this.shoppingListItemRepository.findByShoppingListId(
+              shoppingListId,
+              userId,
+              { checked: true },
+              tx,
+            );
+
+          for (const item of checkedItems) {
+            if (item.foodId || item.foodCategoryId) {
+              try {
+                const dto = Object.assign(new CreateShoppingListItemDto(), {
+                  foodId: item.foodId || undefined,
+                  foodCategoryId: item.foodCategoryId || undefined,
+                  quantity: item.quantity,
+                  unit: item.unit,
+                });
+                await this.pantryItemService.createFromShoppingList(
+                  dto,
+                  userId,
+                  tx,
+                );
+              } catch (error) {
+                if (error instanceof ConflictException) {
+                  this.logger.debug(
+                    `Item ${item.foodId || item.foodCategoryId} already in pantry, skipping`,
+                  );
+                } else {
+                  this.logger.warn(
+                    formatErrorForLogging(
+                      error,
+                      `Failed to add item ${item.id} to pantry`,
+                    ),
+                    error instanceof Error ? error.stack : undefined,
+                  );
+                  throw error; // fail transaction on unexpected error
+                }
+              }
+            }
+          }
+        }
+
+        // Delete all checked items
+        await this.shoppingListItemRepository.clearCheckedItems(
+          shoppingListId,
+          userId,
+          tx,
+        );
+      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         const businessException = handlePrismaError(
@@ -410,13 +457,11 @@ export class ShoppingListItemService {
     userId: string,
     willBeChecked: boolean,
   ): Promise<void> {
-    if (!willBeChecked || user.shouldAutoAddToPantry !== true) {
+    if (!willBeChecked || user.autoAddCheckedItemsToPantry !== true) {
       return;
     }
 
     try {
-      const pantryId = await this.pantryService.validatePantryExists(userId);
-
       const dto = item.foodId
         ? Object.assign(new CreateShoppingListItemDto(), {
             foodId: item.foodId,
@@ -429,11 +474,7 @@ export class ShoppingListItemService {
             unit: item.unit,
           });
 
-      await this.pantryItemService.createFromShoppingList(
-        dto,
-        userId,
-        pantryId,
-      );
+      await this.pantryItemService.createFromShoppingList(dto, userId);
     } catch (error) {
       if (
         error instanceof NotFoundException ||

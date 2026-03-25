@@ -26,6 +26,7 @@ export interface CreatePantryItemData {
   quantity: number;
   unit: Unit;
   notes?: string;
+  location?: string;
   expiryDate?: Date;
 }
 
@@ -33,8 +34,12 @@ export interface CreatePantryItemData {
 export class PantryItemRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreatePantryItemData): Promise<PantryItemWithRelations> {
-    return this.prisma.pantryItem.create({
+  async create(
+    data: CreatePantryItemData,
+    tx?: Prisma.TransactionClient,
+  ): Promise<PantryItemWithRelations> {
+    const client = tx ?? this.prisma;
+    return client.pantryItem.create({
       data: {
         pantryId: data.pantryId,
         foodId: data.foodId,
@@ -43,6 +48,7 @@ export class PantryItemRepository {
         quantity: data.quantity,
         unit: data.unit,
         notes: data.notes,
+        location: data.location,
         expiryDate: data.expiryDate,
       },
       include: {
@@ -117,8 +123,10 @@ export class PantryItemRepository {
   async findFoodInPantry(
     pantryId: string,
     foodId: string,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
-    return this.prisma.pantryItem.findFirst({
+    const client = tx ?? this.prisma;
+    return client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
         foodId: foodId,
@@ -134,8 +142,10 @@ export class PantryItemRepository {
   async findFoodCategoryInPantry(
     pantryId: string,
     foodCategoryId: string,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
-    return this.prisma.pantryItem.findFirst({
+    const client = tx ?? this.prisma;
+    return client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
         foodCategoryId: foodCategoryId,

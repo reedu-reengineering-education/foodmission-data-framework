@@ -677,42 +677,11 @@ describe('PantryItemService', () => {
         id: 'new-item',
       });
 
-      const result = await service.createFromShoppingList(
-        dto,
-        userId,
-        pantryId,
-      );
+      const result = await service.createFromShoppingList(dto, userId);
 
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
       expect(mockPantryItemRepository.create).toHaveBeenCalled();
       expect(result.id).toBe('new-item');
     });
-
-    it.each([
-      ['', 'empty string'],
-      [null, 'null'],
-      [undefined, 'undefined'],
-    ])(
-      'should throw BadRequestException when pantryId is %s',
-      async (
-        invalidPantryId,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        _description,
-      ) => {
-        const dto = Object.assign(new CreateShoppingListItemDto(), {
-          foodId: TEST_IDS.FOOD,
-          quantity: TEST_DATA.QUANTITY,
-          unit: Unit.KG,
-        });
-
-        await expect(
-          service.createFromShoppingList(
-            dto,
-            userId,
-            invalidPantryId as string,
-          ),
-        ).rejects.toThrow(BadRequestException);
-      },
-    );
   });
 });
