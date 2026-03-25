@@ -35,7 +35,7 @@ import { FoodCategoryRepository } from '../../foodCategory/repositories/food-cat
 import { PantryItemService } from '../../pantries/services/pantry-items.service';
 import { PantryService } from '../../pantries/services/pantries.service';
 import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 
@@ -58,7 +58,7 @@ export class ShoppingListItemService {
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly pantryItemService: PantryItemService,
     private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoryRepository,
+    private readonly foodCategoryRepository: FoodCategoriesRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
   ) {}
 

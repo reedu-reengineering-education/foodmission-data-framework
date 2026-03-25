@@ -4,7 +4,7 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { FoodsModule } from '../foods/foods.module';
-import { FoodCategoriesModule } from '../foodCategories/food-categories.module';
+import { FoodCategoriesModule } from '../food-category/food-categories.module';
 import { PantriesModule } from '../pantries/pantries.module';
 import { ShoppingListsController } from './controllers/shopping-lists.controller';
 import { ShoppingListItemsController } from './controllers/shopping-list-items.controller';

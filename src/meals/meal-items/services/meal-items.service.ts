@@ -9,7 +9,7 @@ import {
 } from '../repositories/meal-items.repository';
 import { MealsRepository } from '../../repositories/meals.repository';
 import { FoodRepository } from '../../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../../foodCategories/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../../food-category/repositories/food-categories.repository';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { handlePrismaError } from '../../../common/utils/error.utils';
@@ -20,7 +20,7 @@ export class MealItemService {
     private readonly mealItemRepository: MealItemRepository,
     private readonly mealRepository: MealsRepository,
     private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoryRepository,
+    private readonly foodCategoryRepository: FoodCategoriesRepository,
   ) {}
 
   async create(

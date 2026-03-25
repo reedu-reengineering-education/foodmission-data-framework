@@ -5,7 +5,7 @@ import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 
 @Injectable()
-export class FoodCategoryRepository {
+export class FoodCategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateFoodCategoryDto) {

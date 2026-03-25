@@ -16,7 +16,7 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
-import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import {
   TEST_IDS,
   TEST_DATA,
@@ -52,7 +52,7 @@ describe('PantryItemService', () => {
     validatePantryExists: jest.fn(),
   };
 
-  const mockFoodCategoryRepository = {
+  const mockFoodCategoriesRepository = {
     findById: jest.fn(),
   };
 
@@ -110,8 +110,8 @@ describe('PantryItemService', () => {
           useValue: mockPantryService,
         },
         {
-          provide: FoodCategoryRepository,
-          useValue: mockFoodCategoryRepository,
+          provide: FoodCategoriesRepository,
+          useValue: mockFoodCategoriesRepository,
         },
       ],
     }).compile();

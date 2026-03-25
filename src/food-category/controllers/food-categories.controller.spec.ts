@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { FoodCategoryController } from './food-categories.controller';
-import { FoodCategoryService } from '../services/food-category.service';
+import { FoodCategoriesService } from '../services/food-categories.service';
 import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
@@ -11,7 +11,7 @@ import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 
 describe('FoodCategoryController', () => {
   let controller: FoodCategoryController;
-  let service: jest.Mocked<FoodCategoryService>;
+  let service: jest.Mocked<FoodCategoriesService>;
 
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
 
@@ -29,7 +29,7 @@ describe('FoodCategoryController', () => {
       controllers: [FoodCategoryController],
       providers: [
         {
-          provide: FoodCategoryService,
+          provide: FoodCategoriesService,
           useValue: mockServiceMethods,
         },
       ],
@@ -41,7 +41,7 @@ describe('FoodCategoryController', () => {
       .compile();
 
     controller = module.get<FoodCategoryController>(FoodCategoryController);
-    service = module.get(FoodCategoryService);
+    service = module.get(FoodCategoriesService);
   });
 
   afterEach(() => {

@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
-import { FoodCategoryService } from './food-category.service';
-import { FoodCategoryRepository } from '../repositories/food-category.repository';
+import { FoodCategoriesService } from './food-categories.service';
+import { FoodCategoriesRepository } from '../repositories/food-categories.repository';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
-describe('FoodCategoryService', () => {
-  let service: FoodCategoryService;
-  let repository: jest.Mocked<FoodCategoryRepository>;
+describe('FoodCategoriesService', () => {
+  let service: FoodCategoriesService;
+  let repository: jest.Mocked<FoodCategoriesRepository>;
 
   // Simplified mock - cast as any to avoid listing all 100+ Prisma fields
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
@@ -27,16 +27,16 @@ describe('FoodCategoryService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FoodCategoryService,
+        FoodCategoriesService,
         {
-          provide: FoodCategoryRepository,
+          provide: FoodCategoriesRepository,
           useValue: mockRepositoryMethods,
         },
       ],
     }).compile();
 
-    service = module.get<FoodCategoryService>(FoodCategoryService);
-    repository = module.get(FoodCategoryRepository);
+    service = module.get<FoodCategoriesService>(FoodCategoriesService);
+    repository = module.get(FoodCategoriesRepository);
   });
 
   afterEach(() => {

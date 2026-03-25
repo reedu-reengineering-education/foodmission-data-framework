@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FoodCategoryRepository } from './food-category.repository';
+import { FoodCategoriesRepository } from './food-categories.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
-describe('FoodCategoryRepository', () => {
-  let repository: FoodCategoryRepository;
+describe('FoodCategoriesRepository', () => {
+  let repository: FoodCategoriesRepository;
   let prisma: any;
 
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
@@ -26,7 +26,7 @@ describe('FoodCategoryRepository', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FoodCategoryRepository,
+        FoodCategoriesRepository,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -34,7 +34,7 @@ describe('FoodCategoryRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<FoodCategoryRepository>(FoodCategoryRepository);
+    repository = module.get<FoodCategoriesRepository>(FoodCategoriesRepository);
     prisma = module.get(PrismaService);
   });
 

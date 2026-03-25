@@ -16,7 +16,7 @@ import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
 import { PantryItemService } from '../../pantries/services/pantry-items.service';
 import { PantryService } from '../../pantries/services/pantries.service';
 import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 
 describe('ShoppingListItemService', () => {
@@ -155,7 +155,7 @@ describe('ShoppingListItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockFoodCategoryRepository = {
+  const mockFoodCategoriesRepository = {
     findById: jest.fn(),
   };
 
@@ -206,8 +206,8 @@ describe('ShoppingListItemService', () => {
           useValue: mockFoodRepository,
         },
         {
-          provide: FoodCategoryRepository,
-          useValue: mockFoodCategoryRepository,
+          provide: FoodCategoriesRepository,
+          useValue: mockFoodCategoriesRepository,
         },
         {
           provide: ShoppingListRepository,

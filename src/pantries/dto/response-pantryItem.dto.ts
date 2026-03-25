@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { FoodResponseDto } from '../../foods/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../foodCategories/dto/food-category-response.dto';
+import { FoodCategoryResponseDto } from '../../food-category/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
 
 export class PantryItemResponseDto {

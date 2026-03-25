@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FoodCategoryRepository } from '../repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../repositories/food-categories.repository';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 import { FoodCategoryResponseDto } from '../dto/food-category-response.dto';
 
 @Injectable()
-export class FoodCategoryService {
+export class FoodCategoriesService {
   constructor(
-    private readonly foodCategoryRepository: FoodCategoryRepository,
+    private readonly foodCategoryRepository: FoodCategoriesRepository,
   ) {}
 
   async create(

@@ -19,7 +19,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { Roles, Public } from 'nest-keycloak-connect';
-import { FoodCategoryService } from '../services/food-category.service';
+import { FoodCategoriesService } from '../services/food-categories.service';
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
@@ -31,7 +31,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 @UseGuards(DataBaseAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class FoodCategoryController {
-  constructor(private readonly foodCategoryService: FoodCategoryService) {}
+  constructor(private readonly foodCategoryService: FoodCategoriesService) {}
 
   @Post()
   @Roles('admin')

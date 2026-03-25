@@ -3,7 +3,7 @@ import { MealItemService } from './meal-items.service';
 import { MealItemRepository } from '../repositories/meal-items.repository';
 import { MealsRepository } from '../../repositories/meals.repository';
 import { FoodRepository } from '../../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../../foodCategories/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../../food-category/repositories/food-categories.repository';
 import { Unit } from '@prisma/client';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
@@ -14,7 +14,7 @@ describe('MealItemService', () => {
   let mealItemRepository: MealItemRepository;
   let mealRepository: MealsRepository;
   let foodRepository: FoodRepository;
-  let foodCategoryRepository: FoodCategoryRepository;
+  let foodCategoriesRepository: FoodCategoriesRepository;
 
   const TEST_IDS = {
     USER: 'user-uuid-123',
@@ -121,7 +121,7 @@ describe('MealItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockFoodCategoryRepository = {
+  const mockFoodCategoriesRepository = {
     findById: jest.fn(),
   };
 
@@ -142,8 +142,8 @@ describe('MealItemService', () => {
           useValue: mockFoodRepository,
         },
         {
-          provide: FoodCategoryRepository,
-          useValue: mockFoodCategoryRepository,
+          provide: FoodCategoriesRepository,
+          useValue: mockFoodCategoriesRepository,
         },
       ],
     }).compile();
@@ -152,8 +152,8 @@ describe('MealItemService', () => {
     mealItemRepository = module.get<MealItemRepository>(MealItemRepository);
     mealRepository = module.get<MealsRepository>(MealsRepository);
     foodRepository = module.get<FoodRepository>(FoodRepository);
-    foodCategoryRepository = module.get<FoodCategoryRepository>(
-      FoodCategoryRepository,
+    foodCategoriesRepository = module.get<FoodCategoriesRepository>(
+      FoodCategoriesRepository,
     );
 
     // Reset all mocks before each test
@@ -204,14 +204,14 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoryRepository.findById.mockResolvedValue(mockFoodCategory);
+      mockFoodCategoriesRepository.findById.mockResolvedValue(mockFoodCategory);
       mockMealItemRepository.findByMealAndFoodCategory.mockResolvedValue(null);
       mockMealItemRepository.create.mockResolvedValue(mockMealItemWithCategory);
 
       const result = await service.create(createDto, TEST_IDS.USER);
 
       expect(result).toEqual(mockMealItemWithCategory);
-      expect(foodCategoryRepository.findById).toHaveBeenCalledWith(
+      expect(foodCategoriesRepository.findById).toHaveBeenCalledWith(
         TEST_IDS.FOOD_CATEGORY,
       );
       expect(mealItemRepository.findByMealAndFoodCategory).toHaveBeenCalledWith(
@@ -285,7 +285,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoryRepository.findById.mockResolvedValue(null);
+      mockFoodCategoriesRepository.findById.mockResolvedValue(null);
 
       await expect(service.create(createDto, TEST_IDS.USER)).rejects.toThrow(
         DatabaseOperationException,
@@ -320,7 +320,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoryRepository.findById.mockResolvedValue(mockFoodCategory);
+      mockFoodCategoriesRepository.findById.mockResolvedValue(mockFoodCategory);
       mockMealItemRepository.findByMealAndFoodCategory.mockResolvedValue(
         mockMealItemWithCategory,
       );

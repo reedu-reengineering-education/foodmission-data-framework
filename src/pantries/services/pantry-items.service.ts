@@ -24,7 +24,7 @@ import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
 import { PantryService } from './pantries.service';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shoppingListItem.dto';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
-import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
+import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { Prisma, Unit } from '@prisma/client';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class PantryItemService {
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
-    private readonly foodCategoryRepository: FoodCategoryRepository,
+    private readonly foodCategoryRepository: FoodCategoriesRepository,
   ) {}
 
   async createFromShoppingList(
