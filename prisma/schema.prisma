@@ -286,37 +286,37 @@ model FoodCategory {
 }
 
 model User {
-  id                    String                  @id @default(uuid())
-  keycloakId            String                  @unique
-  email                 String                  @unique
-  firstName             String?
-  lastName              String?
-  username              String?                 @unique
-  yearOfBirth           Int?
-  country               String?
-  region                String?
-  zip                   String?
-  language              String?
-  preferences           Json                    @default("{}") // Flexible JSON for app-specific preferences
-  settings              Json                    @default("{}") // Flexible JSON for app-specific settings
-  gender                Gender?
-  annualIncome          AnnualIncomeLevel?
-  educationLevel        EducationLevel?
-  weightKg              Float?
-  heightCm              Float?
-  activityLevel         ActivityLevel?
-  healthGoals           Json?                   @default("{}")
-  nutritionTargets      Json?                   @default("{}")
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
-  shouldAutoAddToPantry Boolean                 @default(true)
-  shoppingList          ShoppingList[]
-  pantry                Pantry?
-  recipes               Recipe[]
-  meals                 Meal[]
-  mealLogs              MealLog[]
-  knowledge             Knowledge[]
-  knowledgeProgress     UserKnowledgeProgress[]
+  id                          String                  @id @default(uuid())
+  keycloakId                  String                  @unique
+  email                       String                  @unique
+  firstName                   String?
+  lastName                    String?
+  username                    String?                 @unique
+  yearOfBirth                 Int?
+  country                     String?
+  region                      String?
+  zip                         String?
+  language                    String?
+  preferences                 Json                    @default("{}") // Flexible JSON for app-specific preferences
+  settings                    Json                    @default("{}") // Flexible JSON for app-specific settings
+  gender                      Gender?
+  annualIncome                AnnualIncomeLevel?
+  educationLevel              EducationLevel?
+  weightKg                    Float?
+  heightCm                    Float?
+  activityLevel               ActivityLevel?
+  healthGoals                 Json?                   @default("{}")
+  nutritionTargets            Json?                   @default("{}")
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  autoAddCheckedItemsToPantry Boolean                 @default(true)
+  shoppingList                ShoppingList[]
+  pantry                      Pantry?
+  recipes                     Recipe[]
+  meals                       Meal[]
+  mealLogs                    MealLog[]
+  knowledge                   Knowledge[]
+  knowledgeProgress           UserKnowledgeProgress[]
 
   challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]

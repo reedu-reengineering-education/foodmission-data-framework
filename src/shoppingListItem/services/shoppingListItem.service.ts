@@ -256,7 +256,7 @@ export class ShoppingListItemService {
 
       const user = await this.validateUserExists(userId);
 
-      if (user.shouldAutoAddToPantry) {
+      if (user.autoAddCheckedItemsToPantry) {
         const checkedItems =
           await this.shoppingListItemRepository.findByShoppingListId(
             shoppingListId,
@@ -448,7 +448,7 @@ export class ShoppingListItemService {
     userId: string,
     willBeChecked: boolean,
   ): Promise<void> {
-    if (!willBeChecked || user.shouldAutoAddToPantry !== true) {
+    if (!willBeChecked || user.autoAddCheckedItemsToPantry !== true) {
       return;
     }
 
