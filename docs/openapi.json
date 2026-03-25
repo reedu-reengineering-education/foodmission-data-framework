@@ -753,6 +753,88 @@
         ]
       }
     },
+    "/api/v1/users/me": {
+      "get": {
+        "operationId": "getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Whether basic profile is complete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update current user profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteMe",
+        "parameters": [
+          {
+            "name": "deleteAll",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete current user account (optionally cascade all data)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/v1/users": {
       "post": {
         "operationId": "create",
@@ -1049,103 +1131,6 @@
         "summary": "Delete user",
         "tags": [
           "users"
-        ]
-      }
-    },
-    "/api/v1/profile/me": {
-      "get": {
-        "operationId": "getMyProfile",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Get current user profile",
-        "tags": [
-          "profile"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteMe",
-        "parameters": [
-          {
-            "name": "deleteAll",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Delete current user (optionally cascade all data)",
-        "tags": [
-          "profile"
-        ]
-      }
-    },
-    "/api/v1/profile": {
-      "patch": {
-        "operationId": "updateProfile",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProfileUpdateDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Update profile",
-        "tags": [
-          "profile"
-        ]
-      }
-    },
-    "/api/v1/profile/complete": {
-      "get": {
-        "operationId": "isComplete",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT-auth": []
-          }
-        ],
-        "summary": "Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)",
-        "tags": [
-          "profile"
         ]
       }
     },
@@ -10966,6 +10951,105 @@
           "token"
         ]
       },
+      "ProfileUpdateDto": {
+        "type": "object",
+        "properties": {
+          "yearOfBirth": {
+            "type": "number",
+            "description": "Year of birth (YYYY)"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region / state / province"
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP / postal code"
+          },
+          "language": {
+            "type": "string",
+            "description": "Language preference"
+          },
+          "gender": {
+            "type": "string",
+            "description": "Gender",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "OTHER",
+              "UNSPECIFIED",
+              "PREFER_NOT_TO_SAY"
+            ]
+          },
+          "annualIncome": {
+            "type": "string",
+            "description": "Annual income",
+            "enum": [
+              "BELOW_10000",
+              "FROM_10000_TO_19999",
+              "FROM_20000_TO_34999",
+              "FROM_35000_TO_49999",
+              "FROM_50000_TO_74999",
+              "FROM_75000_TO_99999",
+              "ABOVE_100000"
+            ]
+          },
+          "educationLevel": {
+            "type": "string",
+            "description": "Education level",
+            "enum": [
+              "NO_FORMAL_EDUCATION",
+              "PRIMARY",
+              "SECONDARY",
+              "VOCATIONAL",
+              "BACHELORS",
+              "MASTERS",
+              "DOCTORATE"
+            ]
+          },
+          "weightKg": {
+            "type": "number",
+            "description": "Weight in kg"
+          },
+          "heightCm": {
+            "type": "number",
+            "description": "Height in cm"
+          },
+          "activityLevel": {
+            "type": "string",
+            "description": "Activity level",
+            "enum": [
+              "SEDENTARY",
+              "LIGHT",
+              "MODERATE",
+              "ACTIVE",
+              "VERY_ACTIVE"
+            ]
+          },
+          "healthGoals": {
+            "type": "object",
+            "description": "Health goals (JSON)"
+          },
+          "nutritionTargets": {
+            "type": "object",
+            "description": "Nutrition targets (JSON)"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences (JSON) - dietary preferences, allergies, etc.",
+            "example": {
+              "dietaryPreference": "VEGETARIAN",
+              "allergies": [
+                "peanuts"
+              ]
+            }
+          }
+        }
+      },
       "CreateUserDto": {
         "type": "object",
         "properties": {
@@ -11153,105 +11237,6 @@
           "nutritionTargets": {
             "type": "object",
             "description": "Nutrition targets (JSON)"
-          }
-        }
-      },
-      "ProfileUpdateDto": {
-        "type": "object",
-        "properties": {
-          "yearOfBirth": {
-            "type": "number",
-            "description": "Year of birth (YYYY)"
-          },
-          "country": {
-            "type": "string",
-            "description": "Country"
-          },
-          "region": {
-            "type": "string",
-            "description": "Region / state / province"
-          },
-          "zip": {
-            "type": "string",
-            "description": "ZIP / postal code"
-          },
-          "language": {
-            "type": "string",
-            "description": "Language preference"
-          },
-          "gender": {
-            "type": "string",
-            "description": "Gender",
-            "enum": [
-              "MALE",
-              "FEMALE",
-              "OTHER",
-              "UNSPECIFIED",
-              "PREFER_NOT_TO_SAY"
-            ]
-          },
-          "annualIncome": {
-            "type": "string",
-            "description": "Annual income",
-            "enum": [
-              "BELOW_10000",
-              "FROM_10000_TO_19999",
-              "FROM_20000_TO_34999",
-              "FROM_35000_TO_49999",
-              "FROM_50000_TO_74999",
-              "FROM_75000_TO_99999",
-              "ABOVE_100000"
-            ]
-          },
-          "educationLevel": {
-            "type": "string",
-            "description": "Education level",
-            "enum": [
-              "NO_FORMAL_EDUCATION",
-              "PRIMARY",
-              "SECONDARY",
-              "VOCATIONAL",
-              "BACHELORS",
-              "MASTERS",
-              "DOCTORATE"
-            ]
-          },
-          "weightKg": {
-            "type": "number",
-            "description": "Weight in kg"
-          },
-          "heightCm": {
-            "type": "number",
-            "description": "Height in cm"
-          },
-          "activityLevel": {
-            "type": "string",
-            "description": "Activity level",
-            "enum": [
-              "SEDENTARY",
-              "LIGHT",
-              "MODERATE",
-              "ACTIVE",
-              "VERY_ACTIVE"
-            ]
-          },
-          "healthGoals": {
-            "type": "object",
-            "description": "Health goals (JSON)"
-          },
-          "nutritionTargets": {
-            "type": "object",
-            "description": "Nutrition targets (JSON)"
-          },
-          "preferences": {
-            "type": "object",
-            "description": "User preferences (JSON) - dietary preferences, allergies, etc.",
-            "example": {
-              "dietaryPreference": "VEGETARIAN",
-              "allergies": [
-                "peanuts"
-              ]
-            }
           }
         }
       },

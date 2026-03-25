@@ -2,12 +2,12 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from './database-auth.guards';
-import { UserRepository } from '../../user/repositories/user.repository';
+import { UsersRepository } from '../../user/repositories/users.repository';
 
 describe('DataBaseAuthGuard', () => {
   let guard: DataBaseAuthGuard;
   let mockReflector: jest.Mocked<Reflector>;
-  let mockUserRepository: jest.Mocked<UserRepository>;
+  let mockUserRepository: jest.Mocked<UsersRepository>;
   let mockExecutionContext: jest.Mocked<ExecutionContext>;
   let mockRequest: any;
 

@@ -8,30 +8,44 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { UserProfileService } from '../services/user-profile.service';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { UsersProfileService } from '../services/users-profile.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@ApiTags('profile')
-@Controller('profile')
-export class UserProfileController {
-  constructor(private readonly userProfileService: UserProfileService) {}
+@ApiTags('users')
+@Controller('users')
+export class UsersProfileController {
+  constructor(private readonly usersProfileService: UsersProfileService) {}
 
   @Get('me')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiOperation({
+    summary:
+      'Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)',
+  })
+  @ApiOkResponse({
+    description: 'Whether basic profile is complete',
+    schema: { type: 'boolean' },
+  })
   async getMyProfile(@CurrentUser('id') userId: string) {
-    return this.userProfileService.getProfileByUserId(userId);
+    const user = await this.usersProfileService.getProfileByUserId(userId);
+    if (!user) return false;
+    return this.usersProfileService.isBasicProfileComplete(user.keycloakId);
   }
 
-  @Patch()
+  @Patch('me')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update profile' })
+  @ApiOperation({ summary: 'Update current user profile' })
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
@@ -43,7 +57,7 @@ export class UserProfileController {
     @CurrentUser('id') userId: string,
     @Body() payload: ProfileUpdateDto,
   ) {
-    const user = await this.userProfileService.getProfileByUserId(userId);
+    const user = await this.usersProfileService.getProfileByUserId(userId);
     if (!user) throw new NotFoundException('User not found');
 
     const cleanedPayload: Record<string, any> = {};
@@ -54,7 +68,7 @@ export class UserProfileController {
     }
 
     if (Object.keys(cleanedPayload).length > 0) {
-      return this.userProfileService.updateProfile(
+      return this.usersProfileService.updateProfile(
         user.keycloakId,
         cleanedPayload,
       );
@@ -63,35 +77,18 @@ export class UserProfileController {
     return user;
   }
 
-  @Get('complete')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary:
-      'Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)',
-  })
-  async isComplete(@CurrentUser('id') userId: string) {
-    const user = await this.userProfileService.getProfileByUserId(userId);
-    if (!user) return { complete: false };
-    const ok = await this.userProfileService.isBasicProfileComplete(
-      user.keycloakId,
-    );
-    return { complete: ok };
-  }
-
   @Delete('me')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Delete current user (optionally cascade all data)',
+    summary: 'Delete current user account (optionally cascade all data)',
   })
   async deleteMe(
     @CurrentUser('id') userId: string,
     @Query('deleteAll') deleteAll: string = 'false',
   ) {
-    // deleteAll is a string ('true' or 'false') from query param
     const cascade = deleteAll === 'true';
-    await this.userProfileService.deleteUserById(userId, cascade);
+    await this.usersProfileService.deleteUserById(userId, cascade);
     return { deleted: true, cascade };
   }
 }

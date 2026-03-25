@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
-import { UserRepository } from '../../user/repositories/user.repository';
+import { UsersRepository } from '../../user/repositories/users.repository';
 
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private userRepository: UserRepository,
+    private usersRepository: UsersRepository,
   ) {}
 
   private userCache = new Map<string, any>();
@@ -49,15 +49,15 @@ export class DataBaseAuthGuard implements CanActivate {
 
     try {
       // Primary lookup by keycloakId (sub claim)
-      let dbUser = await this.userRepository.findByKeycloakId(keycloakId);
+      let dbUser = await this.usersRepository.findByKeycloakId(keycloakId);
 
       // Fallback: if not found, try by email and update keycloakId to align seeded users with Keycloak
       if (!dbUser && request.user?.email) {
-        const byEmail = await this.userRepository.findByEmail(
+        const byEmail = await this.usersRepository.findByEmail(
           request.user.email,
         );
         if (byEmail) {
-          dbUser = await this.userRepository.update(byEmail.id, {
+          dbUser = await this.usersRepository.update(byEmail.id, {
             keycloakId,
           });
         }

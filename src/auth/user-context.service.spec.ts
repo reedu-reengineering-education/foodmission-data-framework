@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserContextService } from './user-context.service';
-import { UserProfileService } from '../user/services/user-profile.service';
+import { UsersProfileService } from '../user/services/users-profile.service';
 
 describe('UserContextService', () => {
   let service: UserContextService;
-  let userProfileService: jest.Mocked<UserProfileService>;
+  let userProfileService: jest.Mocked<UsersProfileService>;
 
   beforeEach(async () => {
     const mockUserProfileService = {
@@ -16,14 +16,14 @@ describe('UserContextService', () => {
       providers: [
         UserContextService,
         {
-          provide: UserProfileService,
+          provide: UsersProfileService,
           useValue: mockUserProfileService,
         },
       ],
     }).compile();
 
     service = module.get<UserContextService>(UserContextService);
-    userProfileService = module.get(UserProfileService);
+    userProfileService = module.get(UsersProfileService);
   });
 
   it('should be defined', () => {

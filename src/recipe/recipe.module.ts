@@ -5,7 +5,7 @@ import { RecipeNutritionService } from './services/recipe-nutrition.service';
 import { RecipeRepository } from './repositories/recipe.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../user/repositories/users.repository';
 
 @Module({
   imports: [DatabaseModule, CommonModule],
@@ -14,7 +14,7 @@ import { UserRepository } from '../user/repositories/user.repository';
     RecipeService,
     RecipeNutritionService,
     RecipeRepository,
-    UserRepository,
+    UsersRepository,
   ],
   exports: [RecipeService, RecipeNutritionService, RecipeRepository],
 })

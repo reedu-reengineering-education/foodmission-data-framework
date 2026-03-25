@@ -10,8 +10,8 @@ import { firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { UserRepository } from '../user/repositories/user.repository';
-import { UserProfileService } from '../user/services/user-profile.service';
+import { UsersRepository } from '../user/repositories/users.repository';
+import { UsersProfileService } from '../user/services/users-profile.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 
 @Injectable()
@@ -20,8 +20,8 @@ export class AuthService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly userRepository: UserRepository,
-    private readonly userProfileService: UserProfileService,
+    private readonly userRepository: UsersRepository,
+    private readonly userProfileService: UsersProfileService,
     private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
 

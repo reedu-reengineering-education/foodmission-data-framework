@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserProfileService } from './user-profile.service';
-import { UserRepository } from '../repositories/user.repository';
+import { UsersProfileService } from './users-profile.service';
+import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { NotFoundException } from '@nestjs/common';
 
-describe('UserProfileService - deleteUserById', () => {
-  let service: UserProfileService;
-  let userRepository: jest.Mocked<UserRepository>;
+describe('UsersProfileService - deleteUserById', () => {
+  let service: UsersProfileService;
+  let userRepository: jest.Mocked<UsersRepository>;
   let prisma: jest.Mocked<PrismaService>;
   let keycloakAdminService: jest.Mocked<KeycloakAdminService>;
 
@@ -30,7 +30,7 @@ describe('UserProfileService - deleteUserById', () => {
   };
 
   beforeEach(async () => {
-    const mockRepo: Partial<jest.Mocked<UserRepository>> = {
+    const mockRepo: Partial<jest.Mocked<UsersRepository>> = {
       findByKeycloakId: jest.fn(),
       findById: jest.fn(),
       create: jest.fn(),
@@ -68,9 +68,9 @@ describe('UserProfileService - deleteUserById', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserProfileService,
+        UsersProfileService,
         {
-          provide: UserRepository,
+          provide: UsersRepository,
           useValue: mockRepo,
         },
         {
@@ -84,8 +84,8 @@ describe('UserProfileService - deleteUserById', () => {
       ],
     }).compile();
 
-    service = module.get<UserProfileService>(UserProfileService);
-    userRepository = module.get(UserRepository);
+    service = module.get<UsersProfileService>(UsersProfileService);
+    userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
     keycloakAdminService = module.get(KeycloakAdminService);
   });
@@ -257,7 +257,7 @@ describe('UserProfileService - deleteUserById', () => {
     });
   });
 
-  describe('other UserProfileService methods', () => {
+  describe('other UsersProfileService methods', () => {
     it('should get user ID from keycloak ID', async () => {
       (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
         mockUser,

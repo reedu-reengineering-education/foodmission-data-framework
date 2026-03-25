@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
-import { UserRepository } from '../repositories/user.repository';
+import { UsersController } from './users.controller';
+import { UsersRepository } from '../repositories/users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-describe('UserController', () => {
-  let controller: UserController;
-  let repository: jest.Mocked<UserRepository>;
+describe('UsersController', () => {
+  let controller: UsersController;
+  let repository: jest.Mocked<UsersRepository>;
 
   const mockUser = {
     id: 'user-1',
@@ -21,7 +21,7 @@ describe('UserController', () => {
   };
 
   beforeEach(async () => {
-    const mockRepo: Partial<jest.Mocked<UserRepository>> = {
+    const mockRepo: Partial<jest.Mocked<UsersRepository>> = {
       create: jest.fn(),
       findAll: jest.fn(),
       findOne: jest.fn(),
@@ -31,17 +31,17 @@ describe('UserController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
+      controllers: [UsersController],
       providers: [
         {
-          provide: UserRepository,
+          provide: UsersRepository,
           useValue: mockRepo,
         },
       ],
     }).compile();
 
-    controller = module.get<UserController>(UserController);
-    repository = module.get(UserRepository);
+    controller = module.get<UsersController>(UsersController);
+    repository = module.get(UsersRepository);
   });
 
   afterEach(() => {

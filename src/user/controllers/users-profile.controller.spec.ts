@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserProfileController } from './user-profile.controller';
-import { UserProfileService } from '../services/user-profile.service';
+import { UsersProfileController } from './users-profile.controller';
+import { UsersProfileService } from '../services/users-profile.service';
 import { NotFoundException } from '@nestjs/common';
 import {
   ActivityLevel,
@@ -9,9 +9,9 @@ import {
 } from '../dto/create-user.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
-describe('UserProfileController', () => {
-  let controller: UserProfileController;
-  let service: jest.Mocked<UserProfileService>;
+describe('UsersProfileController', () => {
+  let controller: UsersProfileController;
+  let service: jest.Mocked<UsersProfileService>;
 
   const mockUserProfile = {
     id: 'user-1',
@@ -38,7 +38,7 @@ describe('UserProfileController', () => {
   };
 
   beforeEach(async () => {
-    const mockService: Partial<jest.Mocked<UserProfileService>> = {
+    const mockService: Partial<jest.Mocked<UsersProfileService>> = {
       getProfileByUserId: jest.fn(),
       updateProfile: jest.fn(),
       isBasicProfileComplete: jest.fn(),
@@ -46,10 +46,10 @@ describe('UserProfileController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserProfileController],
+      controllers: [UsersProfileController],
       providers: [
         {
-          provide: UserProfileService,
+          provide: UsersProfileService,
           useValue: mockService,
         },
       ],
@@ -58,8 +58,8 @@ describe('UserProfileController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<UserProfileController>(UserProfileController);
-    service = module.get(UserProfileService);
+    controller = module.get<UsersProfileController>(UsersProfileController);
+    service = module.get(UsersProfileService);
   });
 
   afterEach(() => {
@@ -67,22 +67,36 @@ describe('UserProfileController', () => {
   });
 
   describe('getMyProfile', () => {
-    it('should return user profile', async () => {
+    it('should return true if profile is complete', async () => {
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+      service.isBasicProfileComplete.mockResolvedValue(true);
 
       const result = await controller.getMyProfile('user-1');
 
-      expect(result).toEqual(mockUserProfile);
+      expect(result).toBe(true);
       expect(service.getProfileByUserId).toHaveBeenCalledWith('user-1');
+      expect(service.isBasicProfileComplete).toHaveBeenCalledWith('kc-1');
     });
 
-    it('should return null if user not found', async () => {
+    it('should return false if profile is incomplete', async () => {
+      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+      service.isBasicProfileComplete.mockResolvedValue(false);
+
+      const result = await controller.getMyProfile('user-1');
+
+      expect(result).toBe(false);
+      expect(service.getProfileByUserId).toHaveBeenCalledWith('user-1');
+      expect(service.isBasicProfileComplete).toHaveBeenCalledWith('kc-1');
+    });
+
+    it('should return false if user not found', async () => {
       service.getProfileByUserId.mockResolvedValue(null);
 
       const result = await controller.getMyProfile('user-1');
 
-      expect(result).toBeNull();
+      expect(result).toBe(false);
       expect(service.getProfileByUserId).toHaveBeenCalledWith('user-1');
+      expect(service.isBasicProfileComplete).not.toHaveBeenCalled();
     });
   });
 
@@ -145,36 +159,6 @@ describe('UserProfileController', () => {
         country: 'DE',
         zip: '10115',
       });
-    });
-  });
-
-  describe('isComplete', () => {
-    it('should return complete true if profile is complete', async () => {
-      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
-      service.isBasicProfileComplete.mockResolvedValue(true);
-
-      const result = await controller.isComplete('user-1');
-
-      expect(result).toEqual({ complete: true });
-      expect(service.isBasicProfileComplete).toHaveBeenCalledWith('kc-1');
-    });
-
-    it('should return complete false if profile is incomplete', async () => {
-      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
-      service.isBasicProfileComplete.mockResolvedValue(false);
-
-      const result = await controller.isComplete('user-1');
-
-      expect(result).toEqual({ complete: false });
-    });
-
-    it('should return complete false if user not found', async () => {
-      service.getProfileByUserId.mockResolvedValue(null);
-
-      const result = await controller.isComplete('user-1');
-
-      expect(result).toEqual({ complete: false });
-      expect(service.isBasicProfileComplete).not.toHaveBeenCalled();
     });
   });
 

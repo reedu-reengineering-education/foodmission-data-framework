@@ -6,7 +6,7 @@ import { FoodController } from './controllers/food.controller';
 import { FoodService } from './services/food.service';
 import { OpenFoodFactsService } from './services/openfoodfacts.service';
 import { FoodRepository } from './repositories/food.repository';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../user/repositories/users.repository';
 import { CommonModule } from '../common/common.module';
 
 @Module({
@@ -16,7 +16,7 @@ import { CommonModule } from '../common/common.module';
     FoodService,
     OpenFoodFactsService,
     FoodRepository,
-    UserRepository,
+    UsersRepository,
   ],
   exports: [FoodService, OpenFoodFactsService, FoodRepository],
 })

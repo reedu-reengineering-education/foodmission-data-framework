@@ -3,7 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepository } from '../repositories/user.repository';
+import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   ActivityLevel,
@@ -38,9 +38,9 @@ export interface UserProfile {
 }
 
 @Injectable()
-export class UserProfileService {
+export class UsersProfileService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly usersRepository: UsersRepository,
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
@@ -52,13 +52,15 @@ export class UserProfileService {
     family_name?: string;
   }): Promise<UserProfile> {
     // 1) Try to find by keycloakId (sub claim)
-    let user = await this.userRepository.findByKeycloakId(keycloakUser.sub);
+    let user = await this.usersRepository.findByKeycloakId(keycloakUser.sub);
 
     // 2) Fallback: try by email, and if found, align keycloakId
     if (!user && keycloakUser.email) {
-      const byEmail = await this.userRepository.findByEmail(keycloakUser.email);
+      const byEmail = await this.usersRepository.findByEmail(
+        keycloakUser.email,
+      );
       if (byEmail) {
-        user = await this.userRepository.update(byEmail.id, {
+        user = await this.usersRepository.update(byEmail.id, {
           keycloakId: keycloakUser.sub,
         });
       }
@@ -66,7 +68,7 @@ export class UserProfileService {
 
     // 3) If still not found, create a new user
     if (!user) {
-      user = await this.userRepository.create({
+      user = await this.usersRepository.create({
         keycloakId: keycloakUser.sub,
         email: keycloakUser.email,
         firstName: keycloakUser.given_name || '',
@@ -79,7 +81,7 @@ export class UserProfileService {
   }
 
   async updateProfile(keycloakId: string, payload: any): Promise<UserProfile> {
-    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    const user = await this.usersRepository.findByKeycloakId(keycloakId);
     if (!user) throw new NotFoundException('User not found');
 
     const updateData: any = {};
@@ -143,12 +145,12 @@ export class UserProfileService {
       return this.formatUserProfile(user);
     }
 
-    const updatedUser = await this.userRepository.update(user.id, updateData);
+    const updatedUser = await this.usersRepository.update(user.id, updateData);
     return this.formatUserProfile(updatedUser);
   }
 
   async isBasicProfileComplete(keycloakId: string): Promise<boolean> {
-    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    const user = await this.usersRepository.findByKeycloakId(keycloakId);
     if (!user) return false;
     return Boolean(
       (user as any).username &&
@@ -192,7 +194,7 @@ export class UserProfileService {
   }
 
   async getUserIdFromKeycloakId(keycloakId: string): Promise<string> {
-    const user = await this.userRepository.findByKeycloakId(keycloakId);
+    const user = await this.usersRepository.findByKeycloakId(keycloakId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -200,7 +202,7 @@ export class UserProfileService {
   }
 
   async getProfileByUserId(userId: string): Promise<UserProfile | null> {
-    const user = await this.userRepository.findById(userId);
+    const user = await this.usersRepository.findById(userId);
     if (!user) {
       return null;
     }
@@ -215,7 +217,7 @@ export class UserProfileService {
    */
   async deleteUserById(userId: string, cascade = false): Promise<void> {
     // First, get the user to retrieve keycloakId
-    const user = await this.userRepository.findById(userId);
+    const user = await this.usersRepository.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -238,7 +240,7 @@ export class UserProfileService {
     }
 
     // Delete from local database
-    await this.userRepository.remove(userId);
+    await this.usersRepository.remove(userId);
 
     // Delete from Keycloak
     await this.keycloakAdminService.deleteUser(user.keycloakId);

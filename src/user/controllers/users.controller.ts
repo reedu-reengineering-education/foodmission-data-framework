@@ -15,15 +15,15 @@ import {
   ApiOAuth2,
 } from '@nestjs/swagger';
 import { Roles } from 'nest-keycloak-connect';
-import { UserRepository } from '../repositories/user.repository';
+import { UsersRepository } from '../repositories/users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 
 @ApiTags('users')
 @Controller('users')
-export class UserController {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UsersController {
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   @Post()
   @Roles('admin')
@@ -38,7 +38,7 @@ export class UserController {
     conflict: true,
   })
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.userRepository.create(createUserDto);
+    return this.usersRepository.create(createUserDto);
   }
 
   @Get()
@@ -48,7 +48,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'List of all users' })
   async findAll() {
-    return this.userRepository.findAll();
+    return this.usersRepository.findAll();
   }
 
   @Get(':id')
@@ -64,7 +64,7 @@ export class UserController {
     notFound: true,
   })
   async findOne(@Param('id') id: string) {
-    return this.userRepository.findOne(id);
+    return this.usersRepository.findOne(id);
   }
 
   @Patch(':id')
@@ -80,7 +80,7 @@ export class UserController {
     notFound: true,
   })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+    return this.usersRepository.update(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -91,6 +91,6 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   async remove(@Param('id') id: string) {
-    return this.userRepository.remove(id);
+    return this.usersRepository.remove(id);
   }
 }

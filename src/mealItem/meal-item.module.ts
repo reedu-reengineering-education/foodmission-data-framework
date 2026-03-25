@@ -8,7 +8,7 @@ import { FoodModule } from '../food/food.module';
 import { FoodCategoryModule } from '../foodCategory/food-category.module';
 import { AuthModule } from '../auth/auth.module';
 import { CommonModule } from '../common/common.module';
-import { UserModule } from '../user/user.module';
+import { UsersModule } from '../user/users.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { UserModule } from '../user/user.module';
     FoodCategoryModule,
     AuthModule,
     CommonModule,
-    UserModule,
+    UsersModule,
   ],
   controllers: [MealItemController],
   providers: [MealItemService, MealItemRepository],

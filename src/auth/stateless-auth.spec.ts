@@ -1,9 +1,9 @@
 import { AuthController } from './auth.controller';
-import { UserProfileService } from '../user/services/user-profile.service';
+import { UsersProfileService } from '../user/services/users-profile.service';
 
 describe('Stateless Authentication', () => {
   let controller: AuthController;
-  let userProfileService: jest.Mocked<UserProfileService>;
+  let userProfileService: jest.Mocked<UsersProfileService>;
   const originalEnv = process.env;
 
   beforeEach(() => {
