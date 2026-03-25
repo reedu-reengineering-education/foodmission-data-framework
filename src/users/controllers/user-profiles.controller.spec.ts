@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersProfileController } from './users-profile.controller';
-import { UsersProfileService } from '../services/users-profile.service';
+import { UserProfilesController } from './user-profiles.controller';
+import { UserProfilesService } from '../services/user-profiles.service';
 import { NotFoundException } from '@nestjs/common';
 import {
   ActivityLevel,
@@ -9,9 +9,9 @@ import {
 } from '../dto/create-user.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
-describe('UsersProfileController', () => {
-  let controller: UsersProfileController;
-  let service: jest.Mocked<UsersProfileService>;
+describe('UserProfilesController', () => {
+  let controller: UserProfilesController;
+  let service: jest.Mocked<UserProfilesService>;
 
   const mockUserProfile = {
     id: 'user-1',
@@ -38,7 +38,7 @@ describe('UsersProfileController', () => {
   };
 
   beforeEach(async () => {
-    const mockService: Partial<jest.Mocked<UsersProfileService>> = {
+    const mockService: Partial<jest.Mocked<UserProfilesService>> = {
       getProfileByUserId: jest.fn(),
       updateProfile: jest.fn(),
       isBasicProfileComplete: jest.fn(),
@@ -46,10 +46,10 @@ describe('UsersProfileController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersProfileController],
+      controllers: [UserProfilesController],
       providers: [
         {
-          provide: UsersProfileService,
+          provide: UserProfilesService,
           useValue: mockService,
         },
       ],
@@ -58,8 +58,8 @@ describe('UsersProfileController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<UsersProfileController>(UsersProfileController);
-    service = module.get(UsersProfileService);
+    controller = module.get<UserProfilesController>(UserProfilesController);
+    service = module.get(UserProfilesService);
   });
 
   afterEach(() => {

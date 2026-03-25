@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersProfileService } from '../users/services/users-profile.service';
+import { UserProfilesService } from '../users/services/user-profiles.service';
 
 /**
  * Service to handle user context resolution between Keycloak IDs and internal user IDs
@@ -9,7 +9,7 @@ import { UsersProfileService } from '../users/services/users-profile.service';
  */
 @Injectable()
 export class UserContextService {
-  constructor(private readonly userProfileService: UsersProfileService) {}
+  constructor(private readonly userProfileService: UserProfilesService) {}
 
   /**
    * Extract keycloak ID from request object

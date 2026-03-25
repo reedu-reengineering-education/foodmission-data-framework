@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { HttpService } from '@nestjs/axios';
 import { UsersRepository } from '../users/repositories/users.repository';
-import { UsersProfileService } from '../users/services/users-profile.service';
+import { UserProfilesService } from '../users/services/user-profiles.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 import { HttpException } from '@nestjs/common';
 
@@ -10,7 +10,7 @@ describe('AuthService.register', () => {
   let service: AuthService;
   let mockHttpService: jest.Mocked<Partial<HttpService>>;
   let mockUserRepo: jest.Mocked<Partial<UsersRepository>>;
-  let mockProfileService: jest.Mocked<Partial<UsersProfileService>>;
+  let mockProfileService: jest.Mocked<Partial<UserProfilesService>>;
   let mockKeycloakAdminService: jest.Mocked<Partial<KeycloakAdminService>>;
 
   beforeEach(async () => {
@@ -38,7 +38,7 @@ describe('AuthService.register', () => {
         AuthService,
         { provide: HttpService, useValue: mockHttpService },
         { provide: UsersRepository, useValue: mockUserRepo },
-        { provide: UsersProfileService, useValue: mockProfileService },
+        { provide: UserProfilesService, useValue: mockProfileService },
         { provide: KeycloakAdminService, useValue: mockKeycloakAdminService },
       ],
     }).compile();

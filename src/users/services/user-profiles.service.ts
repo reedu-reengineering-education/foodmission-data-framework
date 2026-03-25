@@ -38,7 +38,7 @@ export interface UserProfile {
 }
 
 @Injectable()
-export class UsersProfileService {
+export class UserProfilesService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly prisma: PrismaService,

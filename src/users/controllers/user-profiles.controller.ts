@@ -14,7 +14,7 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { UsersProfileService } from '../services/users-profile.service';
+import { UserProfilesService } from '../services/user-profiles.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
@@ -22,8 +22,8 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('users')
 @Controller('users')
-export class UsersProfileController {
-  constructor(private readonly usersProfileService: UsersProfileService) {}
+export class UserProfilesController {
+  constructor(private readonly userProfilesService: UserProfilesService) {}
 
   @Get('me')
   @UseGuards(DataBaseAuthGuard)
@@ -37,9 +37,9 @@ export class UsersProfileController {
     schema: { type: 'boolean' },
   })
   async getMyProfile(@CurrentUser('id') userId: string) {
-    const user = await this.usersProfileService.getProfileByUserId(userId);
+    const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) return false;
-    return this.usersProfileService.isBasicProfileComplete(user.keycloakId);
+    return this.userProfilesService.isBasicProfileComplete(user.keycloakId);
   }
 
   @Patch('me')
@@ -57,7 +57,7 @@ export class UsersProfileController {
     @CurrentUser('id') userId: string,
     @Body() payload: ProfileUpdateDto,
   ) {
-    const user = await this.usersProfileService.getProfileByUserId(userId);
+    const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) throw new NotFoundException('User not found');
 
     const cleanedPayload: Record<string, any> = {};
@@ -68,7 +68,7 @@ export class UsersProfileController {
     }
 
     if (Object.keys(cleanedPayload).length > 0) {
-      return this.usersProfileService.updateProfile(
+      return this.userProfilesService.updateProfile(
         user.keycloakId,
         cleanedPayload,
       );
@@ -88,7 +88,7 @@ export class UsersProfileController {
     @Query('deleteAll') deleteAll: string = 'false',
   ) {
     const cascade = deleteAll === 'true';
-    await this.usersProfileService.deleteUserById(userId, cascade);
+    await this.userProfilesService.deleteUserById(userId, cascade);
     return { deleted: true, cascade };
   }
 }

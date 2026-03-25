@@ -11,7 +11,7 @@ import { AxiosResponse } from 'axios';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UsersRepository } from '../users/repositories/users.repository';
-import { UsersProfileService } from '../users/services/users-profile.service';
+import { UserProfilesService } from '../users/services/user-profiles.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class AuthService {
   constructor(
     private readonly httpService: HttpService,
     private readonly userRepository: UsersRepository,
-    private readonly userProfileService: UsersProfileService,
+    private readonly userProfileService: UserProfilesService,
     private readonly keycloakAdminService: KeycloakAdminService,
   ) {}
 

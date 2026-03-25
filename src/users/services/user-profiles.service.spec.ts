@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersProfileService } from './users-profile.service';
+import { UserProfilesService } from './user-profiles.service';
 import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { NotFoundException } from '@nestjs/common';
 
-describe('UsersProfileService - deleteUserById', () => {
-  let service: UsersProfileService;
+describe('UserProfilesService - deleteUserById', () => {
+  let service: UserProfilesService;
   let userRepository: jest.Mocked<UsersRepository>;
   let prisma: jest.Mocked<PrismaService>;
   let keycloakAdminService: jest.Mocked<KeycloakAdminService>;
@@ -68,7 +68,7 @@ describe('UsersProfileService - deleteUserById', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersProfileService,
+        UserProfilesService,
         {
           provide: UsersRepository,
           useValue: mockRepo,
@@ -84,7 +84,7 @@ describe('UsersProfileService - deleteUserById', () => {
       ],
     }).compile();
 
-    service = module.get<UsersProfileService>(UsersProfileService);
+    service = module.get<UserProfilesService>(UserProfilesService);
     userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
     keycloakAdminService = module.get(KeycloakAdminService);
@@ -257,7 +257,7 @@ describe('UsersProfileService - deleteUserById', () => {
     });
   });
 
-  describe('other UsersProfileService methods', () => {
+  describe('other UserProfilesService methods', () => {
     it('should get user ID from keycloak ID', async () => {
       (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
         mockUser,
