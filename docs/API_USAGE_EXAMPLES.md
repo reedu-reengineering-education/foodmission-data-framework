@@ -401,7 +401,7 @@ curl -X POST http://localhost:3000/api/v1/foods \
   "error": "Bad Request",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods",
-  "correlationId": "req-12345"
+  "traceId": "req-12345"
 }
 ```
 
@@ -421,7 +421,7 @@ curl -X GET http://localhost:3000/api/v1/foods/non-existent-uuid \
   "error": "Not Found",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods/non-existent-uuid",
-  "correlationId": "req-12346"
+  "traceId": "req-12346"
 }
 ```
 
@@ -440,7 +440,7 @@ curl -X GET http://localhost:3000/api/v1/foods
   "error": "Unauthorized",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods",
-  "correlationId": "req-12347"
+  "traceId": "req-12347"
 }
 ```
 
@@ -455,7 +455,7 @@ curl -X GET http://localhost:3000/api/v1/foods
   "error": "Internal Server Error",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods",
-  "correlationId": "req-12348"
+  "traceId": "req-12348"
 }
 ```
 
@@ -493,7 +493,7 @@ X-RateLimit-Reset: 1640995200
   "error": "Too Many Requests",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "path": "/api/v1/foods",
-  "correlationId": "req-12349"
+  "traceId": "req-12349"
 }
 ```
 

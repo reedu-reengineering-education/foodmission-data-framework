@@ -36,7 +36,7 @@ describe('ValidationExceptionFilter', () => {
       url: '/api/test',
       method: 'POST',
       headers: {
-        'x-correlation-id': 'test-correlation-id',
+        'x-trace-id': 'test-trace-id',
       },
     };
 
@@ -65,7 +65,7 @@ describe('ValidationExceptionFilter', () => {
         error: 'VALIDATION_ERROR',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
         details: {
           errors: ['name should not be empty', 'email must be an email'],
         },
@@ -140,7 +140,7 @@ describe('ValidationExceptionFilter', () => {
         error: 'VALIDATION_ERROR',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
         details: {
           errors: [
             'email: email must be an email, email: email should not be empty',
@@ -149,7 +149,7 @@ describe('ValidationExceptionFilter', () => {
       });
     });
 
-    it('should generate correlation ID if not provided in headers', () => {
+    it('should generate trace ID if not provided in headers', () => {
       const exception = new BadRequestException({
         message: ['name should not be empty'],
         error: 'Bad Request',
@@ -162,7 +162,8 @@ describe('ValidationExceptionFilter', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       const callArgs = mockResponse.json.mock.calls[0][0];
-      expect(callArgs.correlationId).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format
+      expect(callArgs.traceId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     });
   });
 });

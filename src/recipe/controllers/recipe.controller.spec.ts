@@ -3,20 +3,21 @@ import { RecipeController } from './recipe.controller';
 import { RecipeService } from '../services/recipe.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { MealType } from '@prisma/client';
+import {
+  buildRecipe,
+  emptyPaginationMock,
+} from '../../../test/fixtures/recipe.fixtures';
 
 describe('RecipeController', () => {
   let controller: RecipeController;
   let service: jest.Mocked<RecipeService>;
 
-  const mockRecipe = {
+  const mockRecipe = buildRecipe({
     id: 'recipe-1',
-    mealId: 'meal-1',
     title: 'Test recipe',
     userId: 'user-1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+    isPublic: false,
+  });
 
   beforeEach(async () => {
     const mockRecipeService = {
@@ -47,7 +48,7 @@ describe('RecipeController', () => {
 
   it('create should delegate with user id', async () => {
     service.create.mockResolvedValueOnce(mockRecipe as any);
-    const dto = { mealId: 'meal-1', title: 'R' };
+    const dto = { title: 'R' };
     const result = await controller.create(dto as any, 'user-1');
 
     expect(result).toEqual(mockRecipe);
@@ -55,15 +56,20 @@ describe('RecipeController', () => {
   });
 
   it('findAll should pass filters and user id', async () => {
-    const query = { mealType: MealType.MEAT, tags: ['vegan'], page: 1 };
-    service.findAll.mockResolvedValueOnce({
-      data: [mockRecipe],
-      total: 1,
-    } as any);
+    const query = { category: 'Chicken', tags: ['vegan'], page: 1 };
+    service.findAll.mockResolvedValueOnce(
+      emptyPaginationMock({
+        data: [mockRecipe],
+        total: 1,
+        totalPages: 1,
+      }) as any,
+    );
 
     const result = await controller.findAll('user-1', query as any);
 
-    expect(result).toEqual({ data: [mockRecipe], total: 1 });
+    expect(result).toEqual(
+      expect.objectContaining({ data: [mockRecipe], total: 1 }),
+    );
     expect(service.findAll).toHaveBeenCalledWith('user-1', query);
   });
 

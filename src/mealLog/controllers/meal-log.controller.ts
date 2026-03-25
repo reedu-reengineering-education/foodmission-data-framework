@@ -65,7 +65,6 @@ export class MealLogController {
   @ApiQuery({ name: 'dateFrom', required: false })
   @ApiQuery({ name: 'dateTo', required: false })
   @ApiQuery({ name: 'typeOfMeal', required: false })
-  @ApiQuery({ name: 'mealType', required: false })
   @ApiQuery({ name: 'mealFromPantry', required: false })
   @ApiQuery({ name: 'eatenOut', required: false })
   @ApiQuery({ name: 'page', required: false })

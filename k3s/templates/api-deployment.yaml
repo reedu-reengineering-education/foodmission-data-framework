@@ -24,15 +24,9 @@ spec:
           capabilities:
             drop:
               - ALL
-        volumeMounts:
-        - name: log-storage
-          mountPath: /app/logs
         ports:
         - containerPort: 3000
         envFrom:
           - secretRef:
               name: foodmission-api-secret
         # All environment variables are now loaded from the secret foodmission-api-secret
-      volumes:
-      - name: log-storage
-        emptyDir: {}

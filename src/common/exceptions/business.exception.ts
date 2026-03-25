@@ -6,7 +6,7 @@ export interface BusinessExceptionResponse {
   error: string;
   timestamp: string;
   path?: string;
-  correlationId?: string;
+  traceId?: string;
   details?: any;
 }
 

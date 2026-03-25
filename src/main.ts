@@ -1,3 +1,4 @@
+import './otel-logging.bootstrap';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -77,7 +78,7 @@ async function bootstrap() {
       - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')
       - **timestamp**: ISO 8601 timestamp when the error occurred
       - **path**: API path where the error occurred
-      - **correlationId**: Unique identifier for request tracing
+      - **traceId**: Unique identifier for request tracing
       - **details**: Optional object containing additional error information (e.g., validation errors array)
       
       ### Common Error Responses
@@ -89,7 +90,7 @@ async function bootstrap() {
       - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
       - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
       - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
-      - **500 Internal Server Error**: An unexpected server error occurred. The correlation ID can be used for support.
+      - **500 Internal Server Error**: An unexpected server error occurred. The trace ID can be used for support.
       
       ### Example Error Response
       
@@ -100,7 +101,7 @@ async function bootstrap() {
         "error": "VALIDATION_ERROR",
         "timestamp": "2024-01-15T10:30:00.000Z",
         "path": "/api/v1/foods",
-        "correlationId": "abc123def456",
+        "traceId": "abc123def456",
         "details": {
           "errors": [
             "name should not be empty",
@@ -167,6 +168,11 @@ async function bootstrap() {
       'catalog',
       'Reference datasets and dropdown options (regions, countries, profile enums)',
     )
+    .addTag(
+      'challenges',
+      'Challenge management - Create and manage user challenges',
+    )
+    .addTag('missions', 'Mission management - Create and manage user missions')
     .addServer('http://localhost:3000/', 'Development server')
     .addServer('https://api.foodmission.dev/', 'Production server')
     .addServer('https://staging-api.foodmission.dev/', 'Staging server')
@@ -190,6 +196,8 @@ async function bootstrap() {
       showRequestHeaders: true,
       showCommonExtensions: true,
       tryItOutEnabled: true,
+      displayOperationId: false,
+      displayRequestDuration: true,
       oauth2RedirectUrl: `http://localhost:3000/api/docs/oauth2-redirect.html`, // TODO: get url from environment or app
       initOAuth: {
         clientId: process.env.KEYCLOAK_CLIENT_ID,

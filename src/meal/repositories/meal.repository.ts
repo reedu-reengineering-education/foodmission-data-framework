@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient, MealType } from '@prisma/client';
+import {
+  DietaryLabel,
+  MealCategory,
+  MealCourse,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
@@ -20,13 +26,16 @@ type MealInclude = Prisma.MealInclude;
 
 export interface CreateMealData {
   name: string;
-  mealType: MealType;
+  recipeId?: string;
   calories?: number;
   proteins?: number;
   nutritionalInfo?: Prisma.InputJsonValue;
   sustainabilityScore?: number;
   price?: number;
   barcode?: string;
+  mealCategories?: MealCategory[];
+  mealCourse?: MealCourse;
+  dietaryLabels?: DietaryLabel[];
   userId: string;
 }
 

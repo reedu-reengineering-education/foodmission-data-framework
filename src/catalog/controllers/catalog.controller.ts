@@ -84,13 +84,12 @@ export class CatalogController {
   @Get('dietary-preferences')
   @Public()
   @ApiOperation({
-    summary:
-      'List dietary preferences (Phase 1: NONE/VEGAN/VEGETARIAN mapped to recipe tags)',
+    summary: 'List dietary preferences',
   })
   @ApiResponse({ status: 200, type: CatalogListResponseDto })
   @ApiCrudErrorResponses()
   dietaryPreferences(): CatalogListResponseDto {
-    return this.catalogService.listDietaryPreferencesPhase1();
+    return this.catalogService.listDietaryPreferences();
   }
 
   @Get('shopping-responsibilities')
@@ -122,6 +121,28 @@ export class CatalogController {
   @ApiCrudErrorResponses()
   typeOfMeals(): CatalogListResponseDto {
     return this.catalogService.listTypeOfMeals();
+  }
+
+  @Get('meal-categories')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  @ApiOperation({ summary: 'List meal categories' })
+  @ApiResponse({ status: 200, type: CatalogListResponseDto })
+  @ApiCrudErrorResponses()
+  mealCategories(): CatalogListResponseDto {
+    return this.catalogService.listMealCategories();
+  }
+
+  @Get('meal-courses')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
+  @ApiOperation({ summary: 'List meal courses' })
+  @ApiResponse({ status: 200, type: CatalogListResponseDto })
+  @ApiCrudErrorResponses()
+  mealCourses(): CatalogListResponseDto {
+    return this.catalogService.listMealCourses();
   }
 
   @Get('group-roles')
