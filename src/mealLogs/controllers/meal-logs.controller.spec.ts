@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MealLogController } from './meal-log.controller';
-import { MealLogService } from '../services/meal-log.service';
+import { MealLogsController } from './meal-logs.controller';
+import { MealLogsService } from '../services/meal-logs.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { TypeOfMeal } from '@prisma/client';
 
-describe('MealLogController', () => {
-  let controller: MealLogController;
-  let service: jest.Mocked<MealLogService>;
+describe('MealLogsController', () => {
+  let controller: MealLogsController;
+  let service: jest.Mocked<MealLogsService>;
 
   const mockLog = {
     id: 'log-1',
@@ -31,8 +31,8 @@ describe('MealLogController', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [MealLogController],
-      providers: [{ provide: MealLogService, useValue: mockMealLogService }],
+      controllers: [MealLogsController],
+      providers: [{ provide: MealLogsService, useValue: mockMealLogService }],
     })
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
@@ -40,8 +40,8 @@ describe('MealLogController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<MealLogController>(MealLogController);
-    service = module.get(MealLogService);
+    controller = module.get<MealLogsController>(MealLogsController);
+    service = module.get(MealLogsService);
   });
 
   afterEach(() => {

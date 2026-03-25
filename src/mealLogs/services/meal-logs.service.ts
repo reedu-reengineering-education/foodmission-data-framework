@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { MealLogRepository } from '../repositories/meal-log.repository';
-import { MealRepository } from '../../meals/repositories/meal.repository';
+import { MealLogsRepository } from '../repositories/meal-logs.repository';
+import { MealsRepository } from '../../meals/repositories/meals.repository';
 import { CreateMealLogDto } from '../dto/create-meal-log.dto';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
@@ -14,12 +14,12 @@ import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 
 @Injectable()
-export class MealLogService {
-  private readonly logger = new Logger(MealLogService.name);
+export class MealLogsService {
+  private readonly logger = new Logger(MealLogsService.name);
 
   constructor(
-    private readonly mealLogRepository: MealLogRepository,
-    private readonly mealRepository: MealRepository,
+    private readonly mealLogRepository: MealLogsRepository,
+    private readonly mealRepository: MealsRepository,
   ) {}
 
   private getOwnedMealOrThrow(mealId: string, userId: string) {

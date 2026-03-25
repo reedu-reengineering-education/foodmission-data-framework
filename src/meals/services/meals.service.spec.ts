@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MealService } from './meal.service';
-import { MealRepository } from '../repositories/meal.repository';
+import { MealsService } from './meals.service';
+import { MealsRepository } from '../repositories/meals.repository';
 import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 
-describe('MealService', () => {
-  let service: MealService;
+describe('MealsService', () => {
+  let service: MealsService;
   const userId = 'user-1';
 
   const mockMealRepository = {
@@ -23,12 +23,12 @@ describe('MealService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MealService,
-        { provide: MealRepository, useValue: mockMealRepository },
+        MealsService,
+        { provide: MealsRepository, useValue: mockMealRepository },
       ],
     }).compile();
 
-    service = module.get<MealService>(MealService);
+    service = module.get<MealsService>(MealsService);
   });
 
   afterEach(() => {

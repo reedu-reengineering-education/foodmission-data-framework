@@ -20,7 +20,7 @@ export interface CreateMealLogData {
 export type UpdateMealLogData = Partial<Omit<CreateMealLogData, 'userId'>>;
 
 @Injectable()
-export class MealLogRepository implements BaseRepository<
+export class MealLogsRepository implements BaseRepository<
   MealLog,
   CreateMealLogData,
   UpdateMealLogData,

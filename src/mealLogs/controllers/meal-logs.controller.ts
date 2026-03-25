@@ -24,7 +24,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { MealLogService } from '../services/meal-log.service';
+import { MealLogsService } from '../services/meal-logs.service';
 import { CreateMealLogDto } from '../dto/create-meal-log.dto';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
@@ -36,8 +36,8 @@ import { QueryMealLogDto } from '../dto/query-meal-log.dto';
 @ApiTags('meal-logs')
 @Controller('meal-logs')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
-export class MealLogController {
-  constructor(private readonly mealLogService: MealLogService) {}
+export class MealLogsController {
+  constructor(private readonly mealLogService: MealLogsService) {}
 
   @Post()
   @Roles('user', 'admin')

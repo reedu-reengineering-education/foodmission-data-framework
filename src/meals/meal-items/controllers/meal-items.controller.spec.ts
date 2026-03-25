@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemController } from './meal-items.controller';
 import { MealItemService } from '../services/meal-items.service';
-import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { Unit } from '@prisma/client';

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { MealRepository } from '../repositories/meal.repository';
+import { MealsRepository } from '../repositories/meals.repository';
 import { CreateMealDto } from '../dto/create-meal.dto';
 import { UpdateMealDto } from '../dto/update-meal.dto';
 import {
@@ -30,10 +30,10 @@ type MealDtoSource = {
 };
 
 @Injectable()
-export class MealService {
-  private readonly logger = new Logger(MealService.name);
+export class MealsService {
+  private readonly logger = new Logger(MealsService.name);
 
-  constructor(private readonly mealRepository: MealRepository) {}
+  constructor(private readonly mealRepository: MealsRepository) {}
 
   private requireOwnedMeal(mealId: string, userId: string) {
     return getOwnedEntityOrThrow(

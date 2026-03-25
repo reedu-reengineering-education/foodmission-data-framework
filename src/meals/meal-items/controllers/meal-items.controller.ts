@@ -19,13 +19,13 @@ import { MealItemService } from '../services/meal-items.service';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { MealItemResponseDto } from '../dto/meal-item-response.dto';
-import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
+import { ApiCommonErrorResponses } from '../../../common/decorators/api-error-responses.decorator';
 
 @ApiTags('meal-items')
-@Controller('meals/:mealId/items')
+@Controller('meals/:mealId/meal-items')
 @UseGuards(DataBaseAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class MealItemController {

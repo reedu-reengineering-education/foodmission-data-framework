@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemRepository } from './meal-items.repository';
-import { PrismaService } from '../../database/prisma.service';
+import { PrismaService } from '../../../database/prisma.service';
 import { Unit } from '@prisma/client';
 
 describe('MealItemRepository', () => {

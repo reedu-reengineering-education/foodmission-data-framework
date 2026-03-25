@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemService } from './meal-items.service';
 import { MealItemRepository } from '../repositories/meal-items.repository';
-import { MealRepository } from '../../meals/repositories/meal.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
+import { MealsRepository } from '../../repositories/meals.repository';
+import { FoodRepository } from '../../../foods/repositories/food.repository';
+import { FoodCategoryRepository } from '../../../foodCategories/repositories/food-category.repository';
 import { Unit } from '@prisma/client';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
-import { DatabaseOperationException } from '../../common/exceptions/business.exception';
+import { DatabaseOperationException } from '../../../common/exceptions/business.exception';
 
 describe('MealItemService', () => {
   let service: MealItemService;
   let mealItemRepository: MealItemRepository;
-  let mealRepository: MealRepository;
+  let mealRepository: MealsRepository;
   let foodRepository: FoodRepository;
   let foodCategoryRepository: FoodCategoryRepository;
 
@@ -134,7 +134,7 @@ describe('MealItemService', () => {
           useValue: mockMealItemRepository,
         },
         {
-          provide: MealRepository,
+          provide: MealsRepository,
           useValue: mockMealRepository,
         },
         {
@@ -150,7 +150,7 @@ describe('MealItemService', () => {
 
     service = module.get<MealItemService>(MealItemService);
     mealItemRepository = module.get<MealItemRepository>(MealItemRepository);
-    mealRepository = module.get<MealRepository>(MealRepository);
+    mealRepository = module.get<MealsRepository>(MealsRepository);
     foodRepository = module.get<FoodRepository>(FoodRepository);
     foodCategoryRepository = module.get<FoodCategoryRepository>(
       FoodCategoryRepository,

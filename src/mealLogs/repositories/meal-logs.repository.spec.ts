@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MealLogRepository } from './meal-log.repository';
+import { MealLogsRepository } from './meal-logs.repository';
 import { PrismaService } from '../../database/prisma.service';
 
-describe('MealLogRepository', () => {
-  let repository: MealLogRepository;
+describe('MealLogsRepository', () => {
+  let repository: MealLogsRepository;
   let mockPrismaService: any;
 
   const mockMealLog = {
@@ -30,7 +30,7 @@ describe('MealLogRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MealLogRepository,
+        MealLogsRepository,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -38,7 +38,7 @@ describe('MealLogRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<MealLogRepository>(MealLogRepository);
+    repository = module.get<MealLogsRepository>(MealLogsRepository);
     jest.clearAllMocks();
   });
 

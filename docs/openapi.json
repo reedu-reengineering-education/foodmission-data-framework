@@ -7109,7 +7109,7 @@
         ]
       }
     },
-    "/api/v1/meals/{mealId}/items": {
+    "/api/v1/meals/{mealId}/meal-items": {
       "post": {
         "description": "Adds a specific food product or food category to a meal. Either foodId or foodCategoryId must be provided, but not both.",
         "operationId": "create",
@@ -7325,7 +7325,7 @@
         ]
       }
     },
-    "/api/v1/meals/{mealId}/items/{id}": {
+    "/api/v1/meals/{mealId}/meal-items/{id}": {
       "get": {
         "description": "Retrieves a specific item from a meal by its ID",
         "operationId": "findById",

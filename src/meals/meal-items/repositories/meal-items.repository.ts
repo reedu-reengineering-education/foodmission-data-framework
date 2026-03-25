@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, MealItem } from '@prisma/client';
-import { PrismaService } from '../../database/prisma.service';
+import { PrismaService } from '../../../database/prisma.service';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
-import { BaseRepository } from '../../common/interfaces/base-repository.interface';
+import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
 
 export type MealItemWithRelations = Prisma.MealItemGetPayload<{
   include: {
@@ -21,7 +21,7 @@ export class MealItemRepository implements BaseRepository<
 > {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
+  create(
     data: Prisma.MealItemUncheckedCreateInput,
   ): Promise<MealItemWithRelations> {
     return this.prisma.mealItem.create({
@@ -34,7 +34,7 @@ export class MealItemRepository implements BaseRepository<
     });
   }
 
-  async findAll(): Promise<MealItemWithRelations[]> {
+  findAll(): Promise<MealItemWithRelations[]> {
     return this.prisma.mealItem.findMany({
       include: {
         meal: true,
@@ -44,11 +44,11 @@ export class MealItemRepository implements BaseRepository<
     });
   }
 
-  async count(): Promise<number> {
+  count(): Promise<number> {
     return this.prisma.mealItem.count();
   }
 
-  async findByMealId(mealId: string): Promise<MealItemWithRelations[]> {
+  findByMealId(mealId: string): Promise<MealItemWithRelations[]> {
     return this.prisma.mealItem.findMany({
       where: { mealId },
       include: {
@@ -60,7 +60,7 @@ export class MealItemRepository implements BaseRepository<
     });
   }
 
-  async findById(id: string): Promise<MealItemWithRelations | null> {
+  findById(id: string): Promise<MealItemWithRelations | null> {
     return this.prisma.mealItem.findUnique({
       where: { id },
       include: {
@@ -71,7 +71,7 @@ export class MealItemRepository implements BaseRepository<
     });
   }
 
-  async findByMealAndFood(
+  findByMealAndFood(
     mealId: string,
     foodId: string,
   ): Promise<MealItemWithRelations | null> {
@@ -88,7 +88,7 @@ export class MealItemRepository implements BaseRepository<
     });
   }
 
-  async findByMealAndFoodCategory(
+  findByMealAndFoodCategory(
     mealId: string,
     foodCategoryId: string,
   ): Promise<MealItemWithRelations | null> {
@@ -118,7 +118,7 @@ export class MealItemRepository implements BaseRepository<
     return null;
   }
 
-  async update(
+  update(
     id: string,
     data: Prisma.MealItemUpdateInput,
   ): Promise<MealItemWithRelations> {

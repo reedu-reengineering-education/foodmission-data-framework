@@ -24,7 +24,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { MealService } from '../services/meal.service';
+import { MealsService } from '../services/meals.service';
 import { CreateMealDto } from '../dto/create-meal.dto';
 import { UpdateMealDto } from '../dto/update-meal.dto';
 import {
@@ -38,7 +38,7 @@ import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 @Controller('meals')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class MealsController {
-  constructor(private readonly mealService: MealService) {}
+  constructor(private readonly mealService: MealsService) {}
 
   @Post()
   @Roles('user', 'admin')

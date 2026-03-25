@@ -7,18 +7,18 @@ import {
   MealItemRepository,
   MealItemWithRelations,
 } from '../repositories/meal-items.repository';
-import { MealRepository } from '../../meals/repositories/meal.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoryRepository } from '../../foodCategories/repositories/food-category.repository';
+import { MealsRepository } from '../../repositories/meals.repository';
+import { FoodRepository } from '../../../foods/repositories/food.repository';
+import { FoodCategoryRepository } from '../../../foodCategories/repositories/food-category.repository';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
-import { handlePrismaError } from '../../common/utils/error.utils';
+import { handlePrismaError } from '../../../common/utils/error.utils';
 
 @Injectable()
 export class MealItemService {
   constructor(
     private readonly mealItemRepository: MealItemRepository,
-    private readonly mealRepository: MealRepository,
+    private readonly mealRepository: MealsRepository,
     private readonly foodRepository: FoodRepository,
     private readonly foodCategoryRepository: FoodCategoryRepository,
   ) {}
@@ -33,7 +33,6 @@ export class MealItemService {
 
       // Validate meal exists and belongs to user
       const meal = await this.mealRepository.findById(mealId);
-      console.log(createMealItemDto);
       if (!meal) {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
       }

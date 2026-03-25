@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MealLogService } from './meal-log.service';
-import { MealLogRepository } from '../repositories/meal-log.repository';
-import { MealRepository } from '../../meals/repositories/meal.repository';
+import { MealLogsService } from './meal-logs.service';
+import { MealLogsRepository } from '../repositories/meal-logs.repository';
+import { MealsRepository } from '../../meals/repositories/meals.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { TypeOfMeal } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -10,8 +10,8 @@ import {
   ResourceNotFoundException,
 } from '../../common/exceptions/business.exception';
 
-describe('MealLogService', () => {
-  let service: MealLogService;
+describe('MealLogsService', () => {
+  let service: MealLogsService;
   const userId = 'user-1';
 
   const mockMealLogRepository = {
@@ -29,13 +29,13 @@ describe('MealLogService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MealLogService,
-        { provide: MealLogRepository, useValue: mockMealLogRepository },
-        { provide: MealRepository, useValue: mockMealRepository },
+        MealLogsService,
+        { provide: MealLogsRepository, useValue: mockMealLogRepository },
+        { provide: MealsRepository, useValue: mockMealRepository },
       ],
     }).compile();
 
-    service = module.get<MealLogService>(MealLogService);
+    service = module.get<MealLogsService>(MealLogsService);
   });
 
   afterEach(() => {
