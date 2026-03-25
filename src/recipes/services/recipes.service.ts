@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RecipeRepository } from '../repositories/recipe.repository';
+import { RecipesRepository } from '../repositories/recipes.repository';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
 import {
@@ -18,10 +18,10 @@ import { handlePrismaError } from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
-export class RecipeService {
-  private readonly logger = new Logger(RecipeService.name);
+export class RecipesService {
+  private readonly logger = new Logger(RecipesService.name);
 
-  constructor(private readonly recipeRepository: RecipeRepository) {}
+  constructor(private readonly recipeRepository: RecipesRepository) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
     return getOwnedEntityOrThrow(

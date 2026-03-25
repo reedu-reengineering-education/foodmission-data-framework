@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RecipeRepository } from './recipe.repository';
+import { RecipesRepository } from './recipes.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   buildRecipe,
   buildRecipeIngredient,
 } from '../../../test/fixtures/recipe.fixtures';
 
-describe('RecipeRepository', () => {
-  let repository: RecipeRepository;
+describe('RecipesRepository', () => {
+  let repository: RecipesRepository;
   let mockPrismaService: any;
 
   const mockRecipe = buildRecipe({ id: 'recipe-1' });
@@ -70,7 +70,7 @@ describe('RecipeRepository', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        RecipeRepository,
+        RecipesRepository,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -78,7 +78,7 @@ describe('RecipeRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<RecipeRepository>(RecipeRepository);
+    repository = module.get<RecipesRepository>(RecipesRepository);
     jest.clearAllMocks();
   });
 

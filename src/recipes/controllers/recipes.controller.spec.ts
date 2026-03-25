@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipeController } from './recipes.controller';
-import { RecipeService } from '../services/recipe.service';
+import { RecipesService } from '../services/recipes.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import {
@@ -10,7 +10,7 @@ import {
 
 describe('RecipeController', () => {
   let controller: RecipeController;
-  let service: jest.Mocked<RecipeService>;
+  let service: jest.Mocked<RecipesService>;
 
   const mockRecipe = buildRecipe({
     id: 'recipe-1',
@@ -30,7 +30,7 @@ describe('RecipeController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [RecipeController],
-      providers: [{ provide: RecipeService, useValue: mockRecipeService }],
+      providers: [{ provide: RecipesService, useValue: mockRecipeService }],
     })
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
@@ -39,7 +39,7 @@ describe('RecipeController', () => {
       .compile();
 
     controller = module.get<RecipeController>(RecipeController);
-    service = module.get(RecipeService);
+    service = module.get(RecipesService);
   });
 
   afterEach(() => {

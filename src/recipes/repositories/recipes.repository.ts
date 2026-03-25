@@ -50,7 +50,7 @@ export interface UpdateRecipeData extends Partial<
 }
 
 @Injectable()
-export class RecipeRepository implements BaseRepository<
+export class RecipesRepository implements BaseRepository<
   Recipe,
   CreateRecipeData,
   UpdateRecipeData,

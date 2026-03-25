@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RecipeService } from './recipe.service';
-import { RecipeRepository } from '../repositories/recipe.repository';
+import { RecipesService } from './recipes.service';
+import { RecipesRepository } from '../repositories/recipes.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
@@ -13,8 +13,8 @@ import {
   emptyPaginationMock,
 } from '../../../test/fixtures/recipe.fixtures';
 
-describe('RecipeService', () => {
-  let service: RecipeService;
+describe('RecipesService', () => {
+  let service: RecipesService;
   const userId = 'user-1';
 
   const mockRecipeRepository = {
@@ -28,12 +28,12 @@ describe('RecipeService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        RecipeService,
-        { provide: RecipeRepository, useValue: mockRecipeRepository },
+        RecipesService,
+        { provide: RecipesRepository, useValue: mockRecipeRepository },
       ],
     }).compile();
 
-    service = module.get<RecipeService>(RecipeService);
+    service = module.get<RecipesService>(RecipesService);
   });
 
   afterEach(() => {

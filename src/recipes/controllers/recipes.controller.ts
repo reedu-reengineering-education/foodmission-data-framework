@@ -24,7 +24,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { RecipeService } from '../services/recipe.service';
+import { RecipesService } from '../services/recipes.service';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { UpdateRecipeDto } from '../dto/update-recipe.dto';
 import {
@@ -37,7 +37,7 @@ import { QueryRecipeDto } from '../dto/query-recipe.dto';
 @Controller('recipes')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class RecipeController {
-  constructor(private readonly recipeService: RecipeService) {}
+  constructor(private readonly recipeService: RecipesService) {}
 
   @Post()
   @Roles('user', 'admin')
