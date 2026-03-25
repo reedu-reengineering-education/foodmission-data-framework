@@ -740,7 +740,7 @@ paths:
         - JWT-auth: []
       summary: Delete user
       tags: *ref_6
-  /api/v1/groups:
+  /api/v1/user-groups:
     post:
       description: >-
         Creates a new group and adds the creator as an admin. Returns the group
@@ -794,7 +794,7 @@ paths:
         - JWT-auth: []
       summary: Create a new group
       tags: &ref_7
-        - groups
+        - user-groups
     get:
       description: Returns all groups where the authenticated user is a member.
       operationId: findAll
@@ -842,7 +842,7 @@ paths:
         - JWT-auth: []
       summary: Get all groups for current user
       tags: *ref_7
-  /api/v1/groups/{id}:
+  /api/v1/user-groups/{id}:
     get:
       description: Returns a specific group if the user is a member.
       operationId: findOne
@@ -998,7 +998,7 @@ paths:
         - JWT-auth: []
       summary: Delete group
       tags: *ref_7
-  /api/v1/groups/join:
+  /api/v1/user-groups/join:
     post:
       description: Joins an existing group using the invite code.
       operationId: join
@@ -1050,7 +1050,7 @@ paths:
         - JWT-auth: []
       summary: Join a group by invite code
       tags: *ref_7
-  /api/v1/groups/{id}/leave:
+  /api/v1/user-groups/{id}/leave:
     post:
       description: Leaves a group. Last admin cannot leave without transferring rights.
       operationId: leave
@@ -1098,7 +1098,7 @@ paths:
         - JWT-auth: []
       summary: Leave a group
       tags: *ref_7
-  /api/v1/groups/{id}/invite-code:
+  /api/v1/user-groups/{id}/invite-code:
     get:
       description: Returns the current invite code for the group. Admin only.
       operationId: getInviteCode
@@ -1152,7 +1152,7 @@ paths:
         - JWT-auth: []
       summary: Get invite code
       tags: *ref_7
-  /api/v1/groups/{id}/regenerate-code:
+  /api/v1/user-groups/{id}/regenerate-code:
     post:
       description: Generates a new invite code, invalidating the old one. Admin only.
       operationId: regenerateInviteCode
@@ -1206,7 +1206,7 @@ paths:
         - JWT-auth: []
       summary: Regenerate invite code
       tags: *ref_7
-  /api/v1/groups/{id}/members:
+  /api/v1/user-groups/{id}/members:
     get:
       description: >-
         Returns all members of the group (both registered users and virtual
@@ -1321,7 +1321,7 @@ paths:
         - JWT-auth: []
       summary: Add a virtual member
       tags: *ref_7
-  /api/v1/groups/{id}/members/{memberId}:
+  /api/v1/user-groups/{id}/members/{memberId}:
     patch:
       description: >-
         Updates virtual member information. Any group member can update. Cannot
@@ -1446,7 +1446,7 @@ paths:
         - JWT-auth: []
       summary: Remove a member
       tags: *ref_7
-  /api/v1/groups/{id}/members/{memberId}/make-admin:
+  /api/v1/user-groups/{id}/members/{memberId}/make-admin:
     post:
       description: >-
         Promotes a regular member to admin role. Existing admin only. Only

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserGroupService } from './userGroup.service';
-import { UserGroupRepository } from '../repositories/userGroup.repository';
-import { GroupMembershipRepository } from '../repositories/groupMembership.repository';
+import { UserGroupService as UserGroupsService } from './user-groups.service';
+import { UserGroupRepository } from '../repositories/user-groups.repository';
+import { GroupMembershipRepository } from '../repositories/group-memberships.repository';
 import { GroupRole } from '@prisma/client';
-import { UserGroupTestBuilder } from '../test-utils/userGroup-test-builders';
+import { UserGroupTestBuilder } from '../test-utils/user-groups-test-builders';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 import {
   GroupNotFoundException,
@@ -19,10 +19,10 @@ import {
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
 
-describe('UserGroupService', () => {
-  let service: UserGroupService;
+describe('UserGroupsService', () => {
+  let service: UserGroupsService;
 
-  const mockUserGroupRepository = {
+  const mockUserGroupsRepository = {
     create: jest.fn(),
     findById: jest.fn(),
     findByInviteCode: jest.fn(),
@@ -51,10 +51,10 @@ describe('UserGroupService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserGroupService,
+        UserGroupsService,
         {
           provide: UserGroupRepository,
-          useValue: mockUserGroupRepository,
+          useValue: mockUserGroupsRepository,
         },
         {
           provide: GroupMembershipRepository,
@@ -63,7 +63,7 @@ describe('UserGroupService', () => {
       ],
     }).compile();
 
-    service = module.get<UserGroupService>(UserGroupService);
+    service = module.get<UserGroupsService>(UserGroupsService);
   });
 
   afterEach(() => {
@@ -84,13 +84,13 @@ describe('UserGroupService', () => {
         createdAt: new Date(),
         memberships: [],
       };
-      mockUserGroupRepository.create.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.create.mockResolvedValue(mockGroup);
 
       const result = await service.create(createDto, userId);
 
       expect(result.id).toBe(TEST_IDS.USER_GROUP);
       expect(result.name).toBe(createDto.name);
-      expect(mockUserGroupRepository.create).toHaveBeenCalledWith({
+      expect(mockUserGroupsRepository.create).toHaveBeenCalledWith({
         ...createDto,
         createdBy: userId,
       });
@@ -110,7 +110,7 @@ describe('UserGroupService', () => {
       };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -121,7 +121,7 @@ describe('UserGroupService', () => {
     });
 
     it('should throw GroupNotFoundException when group not found', async () => {
-      mockUserGroupRepository.findById.mockResolvedValue(null);
+      mockUserGroupsRepository.findById.mockResolvedValue(null);
 
       await expect(service.findById(groupId, userId)).rejects.toThrow(
         GroupNotFoundException,
@@ -130,7 +130,7 @@ describe('UserGroupService', () => {
 
     it('should throw NotGroupMemberException when user is not a member', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(service.findById(groupId, userId)).rejects.toThrow(
@@ -155,12 +155,12 @@ describe('UserGroupService', () => {
           virtualMembers: [],
         },
       ];
-      mockUserGroupRepository.findAllByUserId.mockResolvedValue(mockGroups);
+      mockUserGroupsRepository.findAllByUserId.mockResolvedValue(mockGroups);
 
       const result = await service.findAllByUserId(userId);
 
       expect(result).toHaveLength(2);
-      expect(mockUserGroupRepository.findAllByUserId).toHaveBeenCalledWith(
+      expect(mockUserGroupsRepository.findAllByUserId).toHaveBeenCalledWith(
         userId,
       );
     });
@@ -175,11 +175,11 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
-      mockUserGroupRepository.update.mockResolvedValue({
+      mockUserGroupsRepository.update.mockResolvedValue({
         ...mockGroup,
         name: updateDto.name,
       });
@@ -193,7 +193,7 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -212,21 +212,21 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
 
       await service.remove(groupId, userId);
 
-      expect(mockUserGroupRepository.delete).toHaveBeenCalledWith(groupId);
+      expect(mockUserGroupsRepository.delete).toHaveBeenCalledWith(groupId);
     });
 
     it('should throw GroupAdminRequiredException when user is not admin', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -239,7 +239,7 @@ describe('UserGroupService', () => {
     it('should throw NotGroupMemberException when user is not a member', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(service.remove(groupId, userId)).rejects.toThrow(
@@ -259,10 +259,10 @@ describe('UserGroupService', () => {
         memberships: [],
         virtualMembers: [],
       };
-      mockUserGroupRepository.findByInviteCode.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findByInviteCode.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
       mockMembershipRepository.create.mockResolvedValue({});
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
 
       const result = await service.joinByInviteCode(inviteCode, userId);
 
@@ -275,7 +275,7 @@ describe('UserGroupService', () => {
     });
 
     it('should throw InvalidInviteCodeException for invalid invite code', async () => {
-      mockUserGroupRepository.findByInviteCode.mockResolvedValue(null);
+      mockUserGroupsRepository.findByInviteCode.mockResolvedValue(null);
 
       await expect(
         service.joinByInviteCode('invalid-code', userId),
@@ -286,7 +286,7 @@ describe('UserGroupService', () => {
       const mockGroup = { id: TEST_IDS.USER_GROUP, inviteCode };
       const mockMembership = { userId, groupId: TEST_IDS.USER_GROUP };
 
-      mockUserGroupRepository.findByInviteCode.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findByInviteCode.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -362,7 +362,7 @@ describe('UserGroupService', () => {
 
       await service.leave(groupId, userId);
 
-      expect(mockUserGroupRepository.delete).toHaveBeenCalledWith(groupId);
+      expect(mockUserGroupsRepository.delete).toHaveBeenCalledWith(groupId);
       expect(mockMembershipRepository.delete).not.toHaveBeenCalled();
     });
   });
@@ -376,11 +376,11 @@ describe('UserGroupService', () => {
       const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
       const newInviteCode = 'new-invite-code-456';
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
-      mockUserGroupRepository.regenerateInviteCode.mockResolvedValue({
+      mockUserGroupsRepository.regenerateInviteCode.mockResolvedValue({
         ...mockGroup,
         inviteCode: newInviteCode,
       });
@@ -388,16 +388,16 @@ describe('UserGroupService', () => {
       const result = await service.regenerateInviteCode(groupId, userId);
 
       expect(result.inviteCode).toBe(newInviteCode);
-      expect(mockUserGroupRepository.regenerateInviteCode).toHaveBeenCalledWith(
-        groupId,
-      );
+      expect(
+        mockUserGroupsRepository.regenerateInviteCode,
+      ).toHaveBeenCalledWith(groupId);
     });
 
     it('should throw GroupAdminRequiredException when user is not admin', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -421,7 +421,7 @@ describe('UserGroupService', () => {
       };
       const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -435,7 +435,7 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -446,7 +446,7 @@ describe('UserGroupService', () => {
     });
 
     it('should throw GroupNotFoundException when group not found', async () => {
-      mockUserGroupRepository.findById.mockResolvedValue(null);
+      mockUserGroupsRepository.findById.mockResolvedValue(null);
 
       await expect(service.getInviteCode(groupId, userId)).rejects.toThrow(
         GroupNotFoundException,
@@ -485,7 +485,7 @@ describe('UserGroupService', () => {
         },
       ];
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -502,7 +502,7 @@ describe('UserGroupService', () => {
     it('should throw NotGroupMemberException when user is not a member', async () => {
       const mockGroup = { id: groupId, memberships: [], virtualMembers: [] };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(service.getMembers(groupId, userId)).rejects.toThrow(
@@ -530,7 +530,7 @@ describe('UserGroupService', () => {
         joinedAt: new Date(),
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -548,7 +548,7 @@ describe('UserGroupService', () => {
 
     it('should throw NotGroupMemberException when not a member', async () => {
       const mockGroup = { id: groupId };
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
 
       await expect(
@@ -576,7 +576,7 @@ describe('UserGroupService', () => {
         joinedAt: new Date(),
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -605,7 +605,7 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -627,7 +627,7 @@ describe('UserGroupService', () => {
         joinedAt: new Date(),
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -655,7 +655,7 @@ describe('UserGroupService', () => {
         role: GroupRole.MEMBER,
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findById.mockResolvedValue(mockVirtualMember);
       mockMembershipRepository.isVirtual.mockReturnValue(true);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
@@ -681,7 +681,7 @@ describe('UserGroupService', () => {
 
       mockMembershipRepository.findById.mockResolvedValue(mockRegisteredMember);
       mockMembershipRepository.isVirtual.mockReturnValue(false);
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -712,7 +712,7 @@ describe('UserGroupService', () => {
         role: GroupRole.ADMIN,
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockAdminMembership,
       );
@@ -745,7 +745,7 @@ describe('UserGroupService', () => {
         role: GroupRole.MEMBER,
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockAdminMembership,
       );
@@ -767,7 +767,7 @@ describe('UserGroupService', () => {
         role: GroupRole.ADMIN,
       };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockAdminMembership,
       );
@@ -783,7 +783,7 @@ describe('UserGroupService', () => {
       const mockGroup = { id: groupId };
       const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
 
-      mockUserGroupRepository.findById.mockResolvedValue(mockGroup);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );

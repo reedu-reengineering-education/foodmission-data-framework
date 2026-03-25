@@ -1,30 +1,30 @@
 import { TestingModule } from '@nestjs/testing';
-import { UserGroupController } from './groups.controller';
-import { UserGroupService } from '../services/userGroup.service';
+import { UserGroupController as UserGroupsController } from './user-groups.controller';
+import { UserGroupService as UserGroupsService } from '../services/user-groups.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
-import { createMockUserGroupService } from '../test-utils/userGroup-service.mock';
-import { UserGroupTestBuilder } from '../test-utils/userGroup-test-builders';
+import { createMockUserGroupsService } from '../test-utils/user-groups-service.mock';
+import { UserGroupTestBuilder } from '../test-utils/user-groups-test-builders';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 import { GroupRole } from '@prisma/client';
 
-describe('UserGroupController', () => {
-  let controller: UserGroupController;
-  let service: UserGroupService;
-  let mockUserGroupService: ReturnType<typeof createMockUserGroupService>;
+describe('UserGroupsController', () => {
+  let controller: UserGroupsController;
+  let service: UserGroupsService;
+  let mockUserGroupsService: ReturnType<typeof createMockUserGroupsService>;
 
   beforeEach(async () => {
-    mockUserGroupService = createMockUserGroupService();
+    mockUserGroupsService = createMockUserGroupsService();
     const module: TestingModule = await createControllerTestModule<
-      UserGroupController,
-      UserGroupService
+      UserGroupsController,
+      UserGroupsService
     >({
-      ControllerClass: UserGroupController,
-      ServiceToken: UserGroupService,
-      mockService: mockUserGroupService,
+      ControllerClass: UserGroupsController,
+      ServiceToken: UserGroupsService,
+      mockService: mockUserGroupsService,
     });
 
-    controller = module.get<UserGroupController>(UserGroupController);
-    service = module.get<UserGroupService>(UserGroupService);
+    controller = module.get<UserGroupsController>(UserGroupsController);
+    service = module.get<UserGroupsService>(UserGroupsService);
   });
 
   afterEach(() => {
@@ -37,7 +37,7 @@ describe('UserGroupController', () => {
     const mockResponse = UserGroupTestBuilder.createUserGroupResponseDto();
 
     it('should call service with correct parameters and return result', async () => {
-      mockUserGroupService.create.mockResolvedValue(mockResponse);
+      mockUserGroupsService.create.mockResolvedValue(mockResponse);
 
       const result = await controller.create(createDto, userId);
 
@@ -53,7 +53,7 @@ describe('UserGroupController', () => {
       UserGroupTestBuilder.createUserGroupResponseDtoArray(2);
 
     it('should call service with userId and return result', async () => {
-      mockUserGroupService.findAllByUserId.mockResolvedValue(mockResponse);
+      mockUserGroupsService.findAllByUserId.mockResolvedValue(mockResponse);
 
       const result = await controller.findAll(userId);
 
@@ -71,7 +71,7 @@ describe('UserGroupController', () => {
     });
 
     it('should call service with groupId and userId and return result', async () => {
-      mockUserGroupService.findById.mockResolvedValue(mockResponse);
+      mockUserGroupsService.findById.mockResolvedValue(mockResponse);
 
       const result = await controller.findOne(groupId, userId);
 
@@ -91,7 +91,7 @@ describe('UserGroupController', () => {
     });
 
     it('should call service with correct parameters and return result', async () => {
-      mockUserGroupService.update.mockResolvedValue(mockResponse);
+      mockUserGroupsService.update.mockResolvedValue(mockResponse);
 
       const result = await controller.update(groupId, updateDto, userId);
 
@@ -106,7 +106,7 @@ describe('UserGroupController', () => {
     const groupId = TEST_IDS.USER_GROUP;
 
     it('should call service with correct parameters', async () => {
-      mockUserGroupService.remove.mockResolvedValue(undefined);
+      mockUserGroupsService.remove.mockResolvedValue(undefined);
 
       await controller.remove(groupId, userId);
 
@@ -121,7 +121,7 @@ describe('UserGroupController', () => {
     const mockResponse = UserGroupTestBuilder.createUserGroupResponseDto();
 
     it('should call service with invite code and return result', async () => {
-      mockUserGroupService.joinByInviteCode.mockResolvedValue(mockResponse);
+      mockUserGroupsService.joinByInviteCode.mockResolvedValue(mockResponse);
 
       const result = await controller.join({ inviteCode }, userId);
 
@@ -136,7 +136,7 @@ describe('UserGroupController', () => {
     const groupId = TEST_IDS.USER_GROUP;
 
     it('should call service with correct parameters', async () => {
-      mockUserGroupService.leave.mockResolvedValue(undefined);
+      mockUserGroupsService.leave.mockResolvedValue(undefined);
 
       await controller.leave(groupId, userId);
 
@@ -151,7 +151,7 @@ describe('UserGroupController', () => {
     const mockResponse = { inviteCode: TEST_DATA.INVITE_CODE };
 
     it('should call service and return invite code', async () => {
-      mockUserGroupService.getInviteCode.mockResolvedValue(mockResponse);
+      mockUserGroupsService.getInviteCode.mockResolvedValue(mockResponse);
 
       const result = await controller.getInviteCode(groupId, userId);
 
@@ -166,7 +166,9 @@ describe('UserGroupController', () => {
     const mockResponse = { inviteCode: 'new-invite-code' };
 
     it('should call service and return new invite code', async () => {
-      mockUserGroupService.regenerateInviteCode.mockResolvedValue(mockResponse);
+      mockUserGroupsService.regenerateInviteCode.mockResolvedValue(
+        mockResponse,
+      );
 
       const result = await controller.regenerateInviteCode(groupId, userId);
 
@@ -187,7 +189,7 @@ describe('UserGroupController', () => {
     ];
 
     it('should call service and return members list', async () => {
-      mockUserGroupService.getMembers.mockResolvedValue(mockResponse);
+      mockUserGroupsService.getMembers.mockResolvedValue(mockResponse);
 
       const result = await controller.getMembers(groupId, userId);
 
@@ -203,7 +205,7 @@ describe('UserGroupController', () => {
     const mockResponse = UserGroupTestBuilder.createVirtualMemberResponseDto();
 
     it('should call service and return created member', async () => {
-      mockUserGroupService.addMember.mockResolvedValue(mockResponse);
+      mockUserGroupsService.addMember.mockResolvedValue(mockResponse);
 
       const result = await controller.addMember(groupId, createDto, userId);
 
@@ -226,7 +228,7 @@ describe('UserGroupController', () => {
     });
 
     it('should call service with correct parameters and return result', async () => {
-      mockUserGroupService.updateMember.mockResolvedValue(mockResponse);
+      mockUserGroupsService.updateMember.mockResolvedValue(mockResponse);
 
       const result = await controller.updateMember(
         groupId,
@@ -251,7 +253,7 @@ describe('UserGroupController', () => {
     const memberId = TEST_IDS.VIRTUAL_MEMBER;
 
     it('should call service with correct parameters', async () => {
-      mockUserGroupService.removeMember.mockResolvedValue(undefined);
+      mockUserGroupsService.removeMember.mockResolvedValue(undefined);
 
       await controller.removeMember(groupId, memberId, userId);
 
@@ -275,7 +277,7 @@ describe('UserGroupController', () => {
     );
 
     it('should call service and return updated member', async () => {
-      mockUserGroupService.transferAdmin.mockResolvedValue(mockResponse);
+      mockUserGroupsService.transferAdmin.mockResolvedValue(mockResponse);
 
       const result = await controller.transferAdmin(groupId, memberId, userId);
 

@@ -1,8 +1,8 @@
 import { GroupRole } from '@prisma/client';
-import { UserGroupResponseDto } from '../dto/response-userGroup.dto';
+import { UserGroupResponseDto } from '../dto/response-user-group.dto';
 import { MemberResponseDto } from '../dto/response-member.dto';
-import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
-import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
+import { CreateUserGroupDto } from '../dto/create-user-group.dto';
+import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
 import { CreateMemberDto } from '../dto/create-member.dto';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 

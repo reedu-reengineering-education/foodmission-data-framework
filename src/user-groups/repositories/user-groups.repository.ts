@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
-import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
+import { CreateUserGroupDto } from '../dto/create-user-group.dto';
+import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
 import { GroupRole, Prisma } from '@prisma/client';
 import { GroupNotFoundException } from '../../common/exceptions/business.exception';
 import { generateInviteCode } from '../../common/utils/invite-code';

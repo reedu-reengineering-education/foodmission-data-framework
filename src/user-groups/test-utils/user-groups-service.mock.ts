@@ -1,8 +1,8 @@
-import { UserGroupService } from '../services/userGroup.service';
+import { UserGroupService as UserGroupsService } from '../services/user-groups.service';
 
-export const createMockUserGroupService = (): jest.Mocked<
+export const createMockUserGroupsService = (): jest.Mocked<
   Pick<
-    UserGroupService,
+    UserGroupsService,
     | 'create'
     | 'findById'
     | 'findAllByUserId'

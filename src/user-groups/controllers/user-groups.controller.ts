@@ -22,7 +22,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { UserGroupService } from '../services/userGroup.service';
+import { UserGroupService } from '../services/user-groups.service';
 import {
   CreateUserGroupDto,
   UpdateUserGroupDto,
@@ -33,8 +33,8 @@ import {
   MemberResponseDto,
 } from '../dto';
 
-@ApiTags('groups')
-@Controller('groups')
+@ApiTags('user-groups')
+@Controller('user-groups')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class UserGroupController {
   constructor(private readonly userGroupService: UserGroupService) {}

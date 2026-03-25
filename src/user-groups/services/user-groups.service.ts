@@ -1,16 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { GroupRole } from '@prisma/client';
-import { UserGroupRepository } from '../repositories/userGroup.repository';
+import { UserGroupRepository } from '../repositories/user-groups.repository';
 import {
   GroupMembershipRepository,
   GroupMembershipWithUser,
-} from '../repositories/groupMembership.repository';
-import { CreateUserGroupDto } from '../dto/create-userGroup.dto';
-import { UpdateUserGroupDto } from '../dto/update-userGroup.dto';
+} from '../repositories/group-memberships.repository';
+import { CreateUserGroupDto } from '../dto/create-user-group.dto';
+import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
 import { CreateMemberDto } from '../dto/create-member.dto';
 import { UpdateMemberDto } from '../dto/update-member.dto';
-import { UserGroupResponseDto } from '../dto/response-userGroup.dto';
+import { UserGroupResponseDto } from '../dto/response-user-group.dto';
 import { MemberResponseDto } from '../dto/response-member.dto';
 import {
   GroupNotFoundException,
@@ -25,7 +25,7 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
-import { UserGroupWithRelations } from '../repositories/userGroup.repository';
+import { UserGroupWithRelations } from '../repositories/user-groups.repository';
 
 @Injectable()
 export class UserGroupService {
