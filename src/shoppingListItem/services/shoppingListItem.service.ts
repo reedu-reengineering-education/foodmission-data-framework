@@ -266,10 +266,11 @@ export class ShoppingListItemService {
             );
 
           for (const item of checkedItems) {
-            if (item.foodId) {
+            if (item.foodId || item.foodCategoryId) {
               try {
                 const dto = Object.assign(new CreateShoppingListItemDto(), {
-                  foodId: item.foodId,
+                  foodId: item.foodId || undefined,
+                  foodCategoryId: item.foodCategoryId || undefined,
                   quantity: item.quantity,
                   unit: item.unit,
                 });
@@ -281,7 +282,7 @@ export class ShoppingListItemService {
               } catch (error) {
                 if (error instanceof ConflictException) {
                   this.logger.debug(
-                    `Item ${item.foodId} already in pantry, skipping`,
+                    `Item ${item.foodId || item.foodCategoryId} already in pantry, skipping`,
                   );
                 } else {
                   this.logger.warn(

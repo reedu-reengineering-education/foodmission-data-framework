@@ -860,7 +860,7 @@ describe('ShoppingListItemService', () => {
       expect(repository.clearCheckedItems).toHaveBeenCalled();
     });
 
-    it('should skip food category items (only add food items to pantry)', async () => {
+    it('should add both food and food category items to pantry', async () => {
       mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
       mockUserRepository.findById.mockResolvedValue({
         ...mockUser,
@@ -875,15 +875,52 @@ describe('ShoppingListItemService', () => {
 
       await service.clearCheckedItems('list-1', 'user-1');
 
-      // Should only be called once for the food item, not for the category item
+      // Should be called for both the food item and the category item
       expect(
         mockPantryItemService.createFromShoppingList,
-      ).toHaveBeenCalledTimes(1);
+      ).toHaveBeenCalledTimes(2);
       expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
-        expect.objectContaining({ foodId: 'food-1' }),
+        expect.objectContaining({
+          foodId: 'food-1',
+          foodCategoryId: undefined,
+        }),
         'user-1',
         mockPrismaService, // transaction parameter
       );
+      expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
+        expect.objectContaining({
+          foodId: undefined,
+          foodCategoryId: 'category-1',
+        }),
+        'user-1',
+        mockPrismaService, // transaction parameter
+      );
+      expect(repository.clearCheckedItems).toHaveBeenCalled();
+    });
+
+    it('should skip items without foodId or foodCategoryId', async () => {
+      const invalidItem = {
+        ...mockShoppingListItem,
+        id: 'invalid-item',
+        checked: true,
+        foodId: null,
+        foodCategoryId: null,
+      };
+      mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      mockUserRepository.findById.mockResolvedValue({
+        ...mockUser,
+        autoAddCheckedItemsToPantry: true,
+      });
+      repository.findByShoppingListId.mockResolvedValue([invalidItem]);
+      repository.clearCheckedItems.mockResolvedValue({ count: 1 });
+
+      await service.clearCheckedItems('list-1', 'user-1');
+
+      // Should not attempt to add invalid items to pantry
+      expect(
+        mockPantryItemService.createFromShoppingList,
+      ).not.toHaveBeenCalled();
+      // But should still clear the items
       expect(repository.clearCheckedItems).toHaveBeenCalled();
     });
 
