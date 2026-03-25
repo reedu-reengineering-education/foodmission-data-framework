@@ -28,11 +28,11 @@ import {
   ShoppingListItemWithRelations,
 } from '../repositories/shopping-list-items.repository';
 import { PantryItemService } from '../../pantries/services/pantry-items.service';
-import { PantryService } from '../../pantries/services/pantries.service';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
+import { UsersRepository } from '../../users/repositories/users.repository';
 
 @Injectable()
 export class ShoppingListItemService {
@@ -55,6 +55,7 @@ export class ShoppingListItemService {
     private readonly foodRepository: FoodRepository,
     private readonly foodCategoryRepository: FoodCategoriesRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   async create(
@@ -234,7 +235,63 @@ export class ShoppingListItemService {
     userId: string,
     shoppingListId?: string,
   ): Promise<ShoppingListItemResponseDto> {
-    await this.findById(id, userId, shoppingListId);
+    const existing = await this.shoppingListItemRepository.findById(id);
+
+    if (!existing) {
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.ITEM_NOT_FOUND,
+      );
+    }
+
+    if (existing.shoppingList.userId !== userId) {
+      throw new ForbiddenException(
+        ShoppingListItemService.ERROR_MESSAGES.SHOPPING_LIST_ACCESS_DENIED,
+      );
+    }
+
+    if (
+      shoppingListId !== undefined &&
+      existing.shoppingListId !== shoppingListId
+    ) {
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.ITEM_NOT_FOUND,
+      );
+    }
+
+    const willBeChecked = existing.checked !== true;
+    if (willBeChecked) {
+      const user = await this.validateUserExists(userId);
+      const autoAdd =
+        (user as any).autoAddCheckedItemsToPantry ??
+        (user as any).shouldAutoAddToPantry;
+
+      if (autoAdd === true) {
+        try {
+          if (existing.foodId) {
+            const dto = Object.assign(new CreateShoppingListItemDto(), {
+              foodId: existing.foodId,
+              quantity: existing.quantity,
+              unit: existing.unit,
+            });
+            await this.pantryItemService.createFromShoppingList(dto, userId);
+          } else if (existing.foodCategoryId) {
+            // PantryItemService.createFromShoppingList only supports foods,
+            // so directly create a pantry item from the food category reference.
+            await this.pantryItemService.create(
+              {
+                foodCategoryId: existing.foodCategoryId,
+                quantity: existing.quantity,
+                unit: existing.unit,
+              } as any,
+              userId,
+            );
+          }
+        } catch (e) {
+          if (!(e instanceof ConflictException)) throw e;
+        }
+      }
+    }
+
     const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
     return this.transformToResponseDto(updatedItem);
   }
@@ -270,7 +327,10 @@ export class ShoppingListItemService {
       await this.validateShoppingListAccess(shoppingListId, userId);
       const user = await this.validateUserExists(userId);
       await prisma.$transaction(async (tx) => {
-        if (user.autoAddCheckedItemsToPantry) {
+        if (
+          (user as any).autoAddCheckedItemsToPantry ??
+          (user as any).shouldAutoAddToPantry
+        ) {
           const checkedItems =
             await this.shoppingListItemRepository.findByShoppingListId(
               shoppingListId,
@@ -359,6 +419,16 @@ export class ShoppingListItemService {
     }
 
     return shoppingList;
+  }
+
+  private async validateUserExists(userId: string): Promise<User> {
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException(
+        ShoppingListItemService.ERROR_MESSAGES.USER_NOT_FOUND,
+      );
+    }
+    return user as unknown as User;
   }
 
   private validateShoppingListOwnership(
@@ -457,7 +527,10 @@ export class ShoppingListItemService {
     userId: string,
     willBeChecked: boolean,
   ): Promise<void> {
-    if (!willBeChecked || user.autoAddCheckedItemsToPantry !== true) {
+    const autoAdd =
+      (user as any).autoAddCheckedItemsToPantry ??
+      (user as any).shouldAutoAddToPantry;
+    if (!willBeChecked || autoAdd !== true) {
       return;
     }
 

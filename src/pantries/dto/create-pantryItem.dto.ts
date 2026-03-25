@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 import {
   IsNotEmpty,
@@ -105,6 +105,4 @@ export class CreatePantryItemDto {
 }
 
 /** Body for POST /pantries/:pantryId/items (pantryId comes from the URL). */
-export class CreatePantryItemBodyDto extends OmitType(CreatePantryItemDto, [
-  'pantryId',
-] as const) {}
+export class CreatePantryItemBodyDto extends CreatePantryItemDto {}

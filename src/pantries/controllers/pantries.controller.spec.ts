@@ -32,10 +32,10 @@ describe('PantriesController', () => {
 
   describe('getPantry', () => {
     const userId = TEST_IDS.USER;
-    const mockResponse = PantryTestBuilder.createPantryResponseDto();
+    const mockResponse = PantriesTestBuilder.createPantryResponseDto();
 
     it('should call service with userId and return result', async () => {
-      mockPantryService.getOrCreatePantry.mockResolvedValue(mockResponse);
+      mockPantriesService.getOrCreatePantry.mockResolvedValue(mockResponse);
 
       const result = await controller.getPantry(userId);
 
@@ -45,11 +45,13 @@ describe('PantriesController', () => {
     });
 
     it('should auto-create pantry if it does not exist', async () => {
-      const newPantryResponse = PantryTestBuilder.createPantryResponseDto({
+      const newPantryResponse = PantriesTestBuilder.createPantryResponseDto({
         id: TEST_IDS.PANTRY,
         userId: userId,
       });
-      mockPantryService.getOrCreatePantry.mockResolvedValue(newPantryResponse);
+      mockPantriesService.getOrCreatePantry.mockResolvedValue(
+        newPantryResponse,
+      );
 
       const result = await controller.getPantry(userId);
 

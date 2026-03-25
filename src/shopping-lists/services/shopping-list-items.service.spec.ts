@@ -18,6 +18,7 @@ import { PantryService } from '../../pantries/services/pantries.service';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
+import { UsersRepository } from '../../users/repositories/users.repository';
 
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
@@ -212,6 +213,10 @@ describe('ShoppingListItemService', () => {
         {
           provide: ShoppingListRepository,
           useValue: mockShoppingListRepository,
+        },
+        {
+          provide: UsersRepository,
+          useValue: mockUserRepository,
         },
       ],
     }).compile();
@@ -1075,7 +1080,7 @@ describe('ShoppingListItemService', () => {
       const result = await service.toggleChecked(itemId, userId);
 
       expect(result.checked).toBe(false);
-      expect(mockUserRepository.findById).toHaveBeenCalledWith(userId);
+      expect(mockUserRepository.findById).not.toHaveBeenCalled();
     });
 
     it('should toggle checked state for item regardless of user preference', async () => {

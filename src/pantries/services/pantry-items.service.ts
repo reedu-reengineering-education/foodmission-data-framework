@@ -43,14 +43,21 @@ export class PantryItemService {
     userId: string,
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemResponseDto> {
-    if (!createShoppingListItemDto.foodId) {
+    const { foodId, foodCategoryId } = createShoppingListItemDto;
+    if (!foodId && !foodCategoryId) {
       throw new BadRequestException(
-        'Only food items (not food categories) can be added to pantry from shopping list',
+        'Either foodId or foodCategoryId is required to add item to pantry from shopping list',
+      );
+    }
+    if (foodId && foodCategoryId) {
+      throw new BadRequestException(
+        'Provide either foodId or foodCategoryId, not both, to add item to pantry from shopping list',
       );
     }
 
     const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
-      foodId: createShoppingListItemDto.foodId,
+      foodId: foodId ?? undefined,
+      foodCategoryId: foodCategoryId ?? undefined,
       quantity: createShoppingListItemDto.quantity,
       unit: createShoppingListItemDto.unit,
     });

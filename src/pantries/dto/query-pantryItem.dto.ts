@@ -1,11 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
-import {
-  IsOptional,
-  IsUUID,
-  IsEnum,
-  IsDateString,
-} from 'class-validator';
+import { IsOptional, IsUUID, IsEnum, IsDateString } from 'class-validator';
 
 export class QueryPantryItemDto {
   @ApiPropertyOptional({
@@ -43,6 +38,4 @@ export class QueryPantryItemDto {
 }
 
 /** Query for GET /pantries/:pantryId/items (pantryId comes from the URL). */
-export class QueryPantryItemsFilterDto extends OmitType(QueryPantryItemDto, [
-  'pantryId',
-] as const) {}
+export class QueryPantryItemsFilterDto extends QueryPantryItemDto {}
