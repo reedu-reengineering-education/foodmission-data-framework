@@ -179,7 +179,7 @@ describe('ShoppingListItemService', () => {
     };
 
     // Configure $transaction to execute the callback immediately
-    mockPrismaService.$transaction.mockImplementation(async (callback) => {
+    mockPrismaService.$transaction.mockImplementation((callback) => {
       return callback(mockPrismaService);
     });
 
