@@ -25,7 +25,7 @@ import { PantryService } from '../../pantry/services/pantry.service';
 import { CreateShoppingListItemDto } from '../../shoppingListItem/dto/create-shoppingListItem.dto';
 import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
 import { FoodCategoryRepository } from '../../foodCategory/repositories/food-category.repository';
-import { Unit } from '@prisma/client';
+import { Prisma, Unit } from '@prisma/client';
 
 @Injectable()
 export class PantryItemService {
@@ -41,6 +41,7 @@ export class PantryItemService {
   async createFromShoppingList(
     createShoppingListItemDto: CreateShoppingListItemDto,
     userId: string,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemResponseDto> {
     if (!createShoppingListItemDto.foodId) {
       throw new BadRequestException(
@@ -54,12 +55,13 @@ export class PantryItemService {
       unit: createShoppingListItemDto.unit,
     });
 
-    return this.create(createPantryItemDto, userId);
+    return this.create(createPantryItemDto, userId, tx);
   }
 
   async create(
     createDto: CreatePantryItemDto,
     userId: string,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemResponseDto> {
     try {
       // Get or auto-create user's pantry
@@ -73,6 +75,7 @@ export class PantryItemService {
         const existingItem = await this.pantryItemRepository.findFoodInPantry(
           pantryId,
           foodId,
+          tx,
         );
 
         if (existingItem) {
@@ -86,6 +89,7 @@ export class PantryItemService {
           await this.pantryItemRepository.findFoodCategoryInPantry(
             pantryId,
             foodCategoryId,
+            tx,
           );
 
         if (existingItem) {
@@ -106,17 +110,20 @@ export class PantryItemService {
       const unit = createDto.unit ?? Unit.PIECES;
       const itemType = foodId ? 'food' : 'food_category';
 
-      const item = await this.pantryItemRepository.create({
-        quantity: createDto.quantity,
-        unit: unit,
-        notes: createDto.notes,
-        location: createDto.location,
-        expiryDate: expiryDate,
-        pantryId: pantryId,
-        foodId: foodId || null,
-        foodCategoryId: foodCategoryId || null,
-        itemType,
-      });
+      const item = await this.pantryItemRepository.create(
+        {
+          quantity: createDto.quantity,
+          unit: unit,
+          notes: createDto.notes,
+          location: createDto.location,
+          expiryDate: expiryDate,
+          pantryId: pantryId,
+          foodId: foodId || null,
+          foodCategoryId: foodCategoryId || null,
+          itemType,
+        },
+        tx,
+      );
 
       return this.transformToResponseDto(item);
     } catch (error) {
@@ -131,7 +138,7 @@ export class PantryItemService {
       this.logger.error('Failed to create pantry item:', error);
 
       if (error && typeof error === 'object' && 'code' in error) {
-        const prismaError = error;
+        const prismaError = error as Prisma.PrismaClientKnownRequestError;
         if (prismaError.code === 'P2002') {
           throw new ConflictException(
             'This food item is already in your pantry',
@@ -276,7 +283,9 @@ export class PantryItemService {
         }),
         ...(updateDto.unit !== undefined && { unit: updateDto.unit }),
         ...(updateDto.notes !== undefined && { notes: updateDto.notes }),
-        ...(updateDto.location !== undefined && { location: updateDto.location }),
+        ...(updateDto.location !== undefined && {
+          location: updateDto.location,
+        }),
         ...(expiryDate !== undefined && {
           expiryDate: expiryDate,
         }),

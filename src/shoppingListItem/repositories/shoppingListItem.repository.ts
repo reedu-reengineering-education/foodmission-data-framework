@@ -22,14 +22,11 @@ export interface ShoppingListItemFilter {
 }
 
 @Injectable()
-export class ShoppingListItemRepository
-  implements
-    BaseRepository<
-      ShoppingListItem,
-      CreateShoppingListItemDto,
-      UpdateShoppingListItemDto
-    >
-{
+export class ShoppingListItemRepository implements BaseRepository<
+  ShoppingListItem,
+  CreateShoppingListItemDto,
+  UpdateShoppingListItemDto
+> {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(
@@ -84,6 +81,7 @@ export class ShoppingListItemRepository
     shoppingListId: string,
     userId?: string,
     filter?: Pick<ShoppingListItemFilter, 'foodId' | 'checked' | 'unit'>,
+    tx?: Prisma.TransactionClient,
   ): Promise<ShoppingListItemWithRelations[]> {
     const whereConditions: Prisma.ShoppingListItemWhereInput = {
       shoppingListId,
@@ -98,7 +96,8 @@ export class ShoppingListItemRepository
       };
     }
 
-    return this.prisma.shoppingListItem.findMany({
+    const client = tx ?? this.prisma;
+    return client.shoppingListItem.findMany({
       where: whereConditions,
       include: {
         shoppingList: true,
@@ -257,6 +256,7 @@ export class ShoppingListItemRepository
   async clearCheckedItems(
     shoppingListId: string,
     userId?: string,
+    tx?: Prisma.TransactionClient,
   ): Promise<{ count: number }> {
     const whereConditions: Prisma.ShoppingListItemWhereInput = {
       shoppingListId,
@@ -269,7 +269,8 @@ export class ShoppingListItemRepository
       };
     }
 
-    return this.prisma.shoppingListItem.deleteMany({
+    const client = tx ?? this.prisma;
+    return client.shoppingListItem.deleteMany({
       where: whereConditions,
     });
   }

@@ -251,52 +251,61 @@ export class ShoppingListItemService {
     shoppingListId: string,
     userId: string,
   ): Promise<void> {
+    const prisma = this.shoppingListItemRepository['prisma'];
     try {
-      await this.validateShoppingListAccess(shoppingListId, userId);
+      await prisma.$transaction(async (tx) => {
+        await this.validateShoppingListAccess(shoppingListId, userId);
+        const user = await this.validateUserExists(userId);
 
-      const user = await this.validateUserExists(userId);
+        if (user.autoAddCheckedItemsToPantry) {
+          const checkedItems =
+            await this.shoppingListItemRepository.findByShoppingListId(
+              shoppingListId,
+              userId,
+              { checked: true },
+              tx,
+            );
 
-      if (user.autoAddCheckedItemsToPantry) {
-        const checkedItems =
-          await this.shoppingListItemRepository.findByShoppingListId(
-            shoppingListId,
-            userId,
-            { checked: true },
-          );
-
-        for (const item of checkedItems) {
-          if (item.foodId) {
-            try {
-              const dto = Object.assign(new CreateShoppingListItemDto(), {
-                foodId: item.foodId,
-                quantity: item.quantity,
-                unit: item.unit,
-              });
-              await this.pantryItemService.createFromShoppingList(dto, userId);
-            } catch (error) {
-              if (error instanceof ConflictException) {
-                this.logger.debug(
-                  `Item ${item.foodId} already in pantry, skipping`,
+          for (const item of checkedItems) {
+            if (item.foodId) {
+              try {
+                const dto = Object.assign(new CreateShoppingListItemDto(), {
+                  foodId: item.foodId,
+                  quantity: item.quantity,
+                  unit: item.unit,
+                });
+                await this.pantryItemService.createFromShoppingList(
+                  dto,
+                  userId,
+                  tx,
                 );
-              } else {
-                this.logger.warn(
-                  formatErrorForLogging(
-                    error,
-                    `Failed to add item ${item.id} to pantry`,
-                  ),
-                  error instanceof Error ? error.stack : undefined,
-                );
+              } catch (error) {
+                if (error instanceof ConflictException) {
+                  this.logger.debug(
+                    `Item ${item.foodId} already in pantry, skipping`,
+                  );
+                } else {
+                  this.logger.warn(
+                    formatErrorForLogging(
+                      error,
+                      `Failed to add item ${item.id} to pantry`,
+                    ),
+                    error instanceof Error ? error.stack : undefined,
+                  );
+                  throw error; // fail transaction on unexpected error
+                }
               }
             }
           }
         }
-      }
 
-      // Delete all checked items
-      await this.shoppingListItemRepository.clearCheckedItems(
-        shoppingListId,
-        userId,
-      );
+        // Delete all checked items
+        await this.shoppingListItemRepository.clearCheckedItems(
+          shoppingListId,
+          userId,
+          tx,
+        );
+      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         const businessException = handlePrismaError(
