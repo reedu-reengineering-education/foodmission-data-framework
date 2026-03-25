@@ -34,6 +34,7 @@ describe('ShoppingListItemService', () => {
     shoppingListItem: {
       create: jest.fn(),
     },
+    $transaction: jest.fn(),
   };
 
   const mockShoppingListItem = {
@@ -174,7 +175,13 @@ describe('ShoppingListItemService', () => {
       toggleChecked: jest.fn(),
       delete: jest.fn(),
       clearCheckedItems: jest.fn(),
+      prisma: mockPrismaService,
     };
+
+    // Configure $transaction to execute the callback immediately
+    mockPrismaService.$transaction.mockImplementation(async (callback) => {
+      return callback(mockPrismaService);
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -822,6 +829,7 @@ describe('ShoppingListItemService', () => {
         'list-1',
         'user-1',
         { checked: true },
+        mockPrismaService, // transaction parameter
       );
       expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -830,6 +838,7 @@ describe('ShoppingListItemService', () => {
           unit: checkedFoodItem.unit,
         }),
         'user-1',
+        mockPrismaService, // transaction parameter
       );
       expect(repository.clearCheckedItems).toHaveBeenCalled();
     });
@@ -873,6 +882,7 @@ describe('ShoppingListItemService', () => {
       expect(mockPantryItemService.createFromShoppingList).toHaveBeenCalledWith(
         expect.objectContaining({ foodId: 'food-1' }),
         'user-1',
+        mockPrismaService, // transaction parameter
       );
       expect(repository.clearCheckedItems).toHaveBeenCalled();
     });
@@ -908,7 +918,7 @@ describe('ShoppingListItemService', () => {
       expect(repository.clearCheckedItems).toHaveBeenCalled();
     });
 
-    it('should continue clearing even if pantry item creation fails with other errors', async () => {
+    it('should fail transaction if pantry item creation fails with unexpected errors', async () => {
       mockShoppingListRepository.findById.mockResolvedValue(mockShoppingList);
       mockUserRepository.findById.mockResolvedValue({
         ...mockUser,
@@ -920,10 +930,12 @@ describe('ShoppingListItemService', () => {
       );
       repository.clearCheckedItems.mockResolvedValue({ count: 1 });
 
-      await service.clearCheckedItems('list-1', 'user-1');
+      await expect(
+        service.clearCheckedItems('list-1', 'user-1'),
+      ).rejects.toThrow('Failed to clear checked items');
 
-      // Should still delete items even if pantry creation failed
-      expect(repository.clearCheckedItems).toHaveBeenCalled();
+      // Transaction should fail, so items should NOT be cleared
+      expect(repository.clearCheckedItems).not.toHaveBeenCalled();
     });
 
     it('should still delete items after adding to pantry', async () => {
@@ -944,6 +956,7 @@ describe('ShoppingListItemService', () => {
       expect(repository.clearCheckedItems).toHaveBeenCalledWith(
         'list-1',
         'user-1',
+        mockPrismaService, // transaction parameter
       );
     });
   });

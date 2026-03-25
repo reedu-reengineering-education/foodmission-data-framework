@@ -253,10 +253,9 @@ export class ShoppingListItemService {
   ): Promise<void> {
     const prisma = this.shoppingListItemRepository['prisma'];
     try {
+      await this.validateShoppingListAccess(shoppingListId, userId);
+      const user = await this.validateUserExists(userId);
       await prisma.$transaction(async (tx) => {
-        await this.validateShoppingListAccess(shoppingListId, userId);
-        const user = await this.validateUserExists(userId);
-
         if (user.autoAddCheckedItemsToPantry) {
           const checkedItems =
             await this.shoppingListItemRepository.findByShoppingListId(
