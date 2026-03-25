@@ -2,24 +2,24 @@ import { TestingModule } from '@nestjs/testing';
 import { PantryItemsController } from './pantry-items.controller';
 import { PantryItemService } from '../services/pantry-items.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
-import { createMockPantryItemService } from '../test-utils/pantry-item-service.mock';
-import { PantryItemTestBuilder } from '../test-utils/pantry-item-test-builders';
+import { createMockPantryItemsService } from '../test-utils/pantry-items-service.mock';
+import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantryItemsController', () => {
   let controller: PantryItemsController;
   let service: PantryItemService;
-  let mockPantryItemService: ReturnType<typeof createMockPantryItemService>;
+  let mockPantryItemsService: ReturnType<typeof createMockPantryItemsService>;
 
   beforeEach(async () => {
-    mockPantryItemService = createMockPantryItemService();
+    mockPantryItemsService = createMockPantryItemsService();
     const module: TestingModule = await createControllerTestModule<
       PantryItemsController,
       PantryItemService
     >({
       ControllerClass: PantryItemsController,
       ServiceToken: PantryItemService,
-      mockService: mockPantryItemService,
+      mockService: mockPantryItemsService,
     });
 
     controller = module.get<PantryItemsController>(PantryItemsController);
@@ -33,14 +33,14 @@ describe('PantryItemsController', () => {
   describe('create', () => {
     const userId = TEST_IDS.USER;
     const pantryId = TEST_IDS.PANTRY;
-    const body = PantryItemTestBuilder.createCreatePantryItemDto({
+    const body = PantryItemsTestBuilder.createCreatePantryItemDto({
       pantryId: undefined,
     } as any);
     delete (body as any).pantryId;
-    const mockResponse = PantryItemTestBuilder.createPantryItemResponseDto();
+    const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto();
 
     it('should call service with merged pantryId and return result', async () => {
-      mockPantryItemService.create.mockResolvedValue(mockResponse);
+      mockPantryItemsService.create.mockResolvedValue(mockResponse);
 
       const result = await controller.create(pantryId, body as any, userId);
 
@@ -59,10 +59,10 @@ describe('PantryItemsController', () => {
     const mockResponse = { data: [] };
 
     it('should call service with query including pantryId and return result', async () => {
-      const query = PantryItemTestBuilder.createQueryPantryItemDto();
+      const query = PantryItemsTestBuilder.createQueryPantryItemDto();
       delete (query as any).pantryId;
 
-      mockPantryItemService.findAll.mockResolvedValue(mockResponse);
+      mockPantryItemsService.findAll.mockResolvedValue(mockResponse);
 
       const result = await controller.findAll(pantryId, query as any, userId);
 
@@ -80,12 +80,12 @@ describe('PantryItemsController', () => {
     const pantryId = TEST_IDS.PANTRY;
     const itemId = TEST_IDS.PANTRY_ITEM;
 
-    const mockResponse = PantryItemTestBuilder.createPantryItemResponseDto({
+    const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto({
       id: itemId,
     });
 
     it('should call service with itemId, userId, and pantryId', async () => {
-      mockPantryItemService.findById.mockResolvedValue(mockResponse);
+      mockPantryItemsService.findById.mockResolvedValue(mockResponse);
 
       const result = await controller.findById(pantryId, itemId, userId);
 
@@ -99,14 +99,14 @@ describe('PantryItemsController', () => {
     const userId = TEST_IDS.USER;
     const pantryId = TEST_IDS.PANTRY;
     const itemId = TEST_IDS.PANTRY_ITEM;
-    const updateDto = PantryItemTestBuilder.createUpdatePantryItemDto();
-    const mockResponse = PantryItemTestBuilder.createPantryItemResponseDto({
+    const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto();
+    const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto({
       id: itemId,
       ...updateDto,
     });
 
     it('should call service with correct parameters and return result', async () => {
-      mockPantryItemService.update.mockResolvedValue(mockResponse);
+      mockPantryItemsService.update.mockResolvedValue(mockResponse);
 
       const result = await controller.update(
         pantryId,
@@ -132,7 +132,7 @@ describe('PantryItemsController', () => {
     const itemId = TEST_IDS.PANTRY_ITEM;
 
     it('should call service with itemId, userId, and pantryId', async () => {
-      mockPantryItemService.remove.mockResolvedValue(undefined);
+      mockPantryItemsService.remove.mockResolvedValue(undefined);
 
       await controller.remove(pantryId, itemId, userId);
 

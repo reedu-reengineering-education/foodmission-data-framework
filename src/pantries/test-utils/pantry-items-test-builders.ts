@@ -9,7 +9,7 @@ import {
   TEST_DATES,
 } from '../../common/test-utils/test-constants';
 
-export class PantryItemTestBuilder {
+export class PantryItemsTestBuilder {
   static createPantryItemResponseDto(
     overrides?: Partial<PantryItemResponseDto>,
   ): PantryItemResponseDto {

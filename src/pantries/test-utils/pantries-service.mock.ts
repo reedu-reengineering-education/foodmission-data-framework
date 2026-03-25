@@ -1,7 +1,7 @@
 import { PantryService } from '../services/pantries.service';
 import { MockService } from '../../common/test-utils/type-helpers';
 
-export function createMockPantryService(): MockService<PantryService> {
+export function createMockPantriesService(): MockService<PantryService> {
   return {
     getOrCreatePantry: jest.fn(),
     validatePantryExists: jest.fn(),

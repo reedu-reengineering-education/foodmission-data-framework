@@ -2,24 +2,24 @@ import { TestingModule } from '@nestjs/testing';
 import { PantriesController } from './pantries.controller';
 import { PantryService } from '../services/pantries.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
-import { createMockPantryService } from '../test-utils/pantry-service.mock';
-import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
+import { createMockPantriesService } from '../test-utils/pantries-service.mock';
+import { PantriesTestBuilder } from '../test-utils/pantries-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantriesController', () => {
   let controller: PantriesController;
   let service: PantryService;
-  let mockPantryService: ReturnType<typeof createMockPantryService>;
+  let mockPantriesService: ReturnType<typeof createMockPantriesService>;
 
   beforeEach(async () => {
-    mockPantryService = createMockPantryService();
+    mockPantriesService = createMockPantriesService();
     const module: TestingModule = await createControllerTestModule<
       PantriesController,
       PantryService
     >({
       ControllerClass: PantriesController,
       ServiceToken: PantryService,
-      mockService: mockPantryService,
+      mockService: mockPantriesService,
     });
 
     controller = module.get<PantriesController>(PantriesController);

@@ -1,7 +1,7 @@
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
-export class PantryTestBuilder {
+export class PantriesTestBuilder {
   static createPantryResponseDto(
     overrides?: Partial<PantryResponseDto>,
   ): PantryResponseDto {
