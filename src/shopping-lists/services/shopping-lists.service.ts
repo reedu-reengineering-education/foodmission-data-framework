@@ -10,13 +10,13 @@ import { handlePrismaError } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
-import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
+import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
 import {
   MultipleShoppingListResponseDto,
   ShoppingListResponseDto,
-} from '../dto/shoppingList-response.dto';
+} from '../dto/shopping-list-response.dto';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
 
 @Injectable()

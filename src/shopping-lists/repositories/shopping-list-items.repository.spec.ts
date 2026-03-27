@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from './shopping-list-items.repository';
-import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
+import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
 import {
   TEST_FOOD,
   TEST_FOOD_CATEGORY,

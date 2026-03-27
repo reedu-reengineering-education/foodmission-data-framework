@@ -1,4 +1,4 @@
-import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
+import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { Unit } from '@prisma/client';
 
 export type SanitizedShoppingListItemFilters = {

@@ -7,8 +7,8 @@ import {
 import { ShoppingListService } from './shopping-lists.service';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
-import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
-import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
+import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 

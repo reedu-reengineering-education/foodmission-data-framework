@@ -26,16 +26,16 @@ import { ShoppingListItemService } from '../services/shopping-list-items.service
 import {
   CreateShoppingListItemDto,
   CreateShoppingListItemBodyDto,
-} from '../dto/create-shoppingListItem.dto';
+} from '../dto/create-shopping-list-item.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
-} from '../dto/response-shoppingListItem.dto';
+} from '../dto/response-shopping-list-item.dto';
 import {
   QueryShoppingListItemDto,
   QueryShoppingListItemsFilterDto,
-} from '../dto/query-shoppingListItem.dto';
-import { UpdateShoppingListItemDto } from '../dto/update-shoppingListItem.dto';
+} from '../dto/query-shopping-list-item.dto';
+import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Unit } from '@prisma/client';

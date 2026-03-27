@@ -22,12 +22,12 @@ import { ApiCrudErrorResponses } from '../../common/decorators/api-error-respons
 import { Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shopping-lists.service';
-import { CreateShoppingListDto } from '../dto/create-shoppingList.dto';
+import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
 import {
   MultipleShoppingListResponseDto,
   ShoppingListResponseDto,
-} from '../dto/shoppingList-response.dto';
-import { UpdateShoppingListDto } from '../dto/update.shoppingList.dto';
+} from '../dto/shopping-list-response.dto';
+import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 @ApiTags('shopping-lists')

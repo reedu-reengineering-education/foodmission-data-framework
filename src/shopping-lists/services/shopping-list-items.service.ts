@@ -15,13 +15,13 @@ import { validatePolymorphicItem } from '../../common/utils/polymorphic-item.uti
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
-import { CreateShoppingListItemDto } from '../dto/create-shoppingListItem.dto';
-import { QueryShoppingListItemDto } from '../dto/query-shoppingListItem.dto';
+import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
+import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import {
   MultipleShoppingListItemResponseDto,
   ShoppingListItemResponseDto,
-} from '../dto/response-shoppingListItem.dto';
-import { UpdateShoppingListItemDto } from '../dto/update-shoppingListItem.dto';
+} from '../dto/response-shopping-list-item.dto';
+import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { plainToInstance } from 'class-transformer';
 import {
   ShoppingListItemRepository,

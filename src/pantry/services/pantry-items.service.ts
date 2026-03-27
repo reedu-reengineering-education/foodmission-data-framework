@@ -22,7 +22,7 @@ import {
 import { QueryPantryItemDto } from '../dto/query-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryService } from './pantry.service';
-import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shoppingListItem.dto';
+import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopping-list-item.dto';
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { Prisma, Unit } from '@prisma/client';
