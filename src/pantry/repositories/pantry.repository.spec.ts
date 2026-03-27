@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PantryRepository } from './pantries.repository';
+import { PantryRepository } from './pantry.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { Pantry } from '@prisma/client';
 import { TEST_IDS } from '../../common/test-utils/test-constants';

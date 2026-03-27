@@ -8,15 +8,15 @@ import {
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { PantryService } from '../services/pantries.service';
+import { PantryService } from '../services/pantry.service';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 
-@ApiTags('pantries')
-@Controller('pantries')
+@ApiTags('pantry')
+@Controller('pantry')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
-export class PantriesController {
+export class PantryController {
   constructor(private readonly pantryService: PantryService) {}
 
   @Get()

@@ -18,12 +18,12 @@ import { PrismaService } from '../../database/prisma.service';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
-} from '../dto/response-pantryItem.dto';
-import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
-import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
-import { PantryService } from './pantries.service';
+} from '../dto/response-pantry-item.dto';
+import { QueryPantryItemDto } from '../dto/query-pantry-item.dto';
+import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
+import { PantryService } from './pantry.service';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shoppingListItem.dto';
-import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
+import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { Prisma, Unit } from '@prisma/client';
 
@@ -234,11 +234,7 @@ export class PantryItemService {
     }
   }
 
-  async findById(
-    id: string,
-    userId: string,
-    pantryId?: string,
-  ): Promise<PantryItemResponseDto> {
+  async findById(id: string, userId: string): Promise<PantryItemResponseDto> {
     const item = await this.pantryItemRepository.findById(id);
 
     if (!item) {
@@ -251,10 +247,6 @@ export class PantryItemService {
       );
     }
 
-    if (pantryId !== undefined && item.pantryId !== pantryId) {
-      throw new NotFoundException('Pantry item not found');
-    }
-
     return this.transformToResponseDto(item);
   }
 
@@ -262,9 +254,8 @@ export class PantryItemService {
     id: string,
     updateDto: UpdatePantryItemDto,
     userId: string,
-    pantryId?: string,
   ): Promise<PantryItemResponseDto> {
-    await this.findById(id, userId, pantryId);
+    await this.findById(id, userId);
 
     if (updateDto.foodId) {
       await this.validateFoodExists(updateDto.foodId);
@@ -348,8 +339,8 @@ export class PantryItemService {
     }
   }
 
-  async remove(id: string, userId: string, pantryId?: string): Promise<void> {
-    await this.findById(id, userId, pantryId);
+  async remove(id: string, userId: string): Promise<void> {
+    await this.findById(id, userId);
     await this.pantryItemRepository.delete(id);
   }
 

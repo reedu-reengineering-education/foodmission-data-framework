@@ -104,5 +104,5 @@ export class CreatePantryItemDto {
   expiryDate?: Date;
 }
 
-/** Body for POST /pantries/:pantryId/items (pantryId comes from the URL). */
+/** Body for POST /pantry/items */
 export class CreatePantryItemBodyDto extends CreatePantryItemDto {}

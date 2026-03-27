@@ -1,28 +1,28 @@
 import { TestingModule } from '@nestjs/testing';
-import { PantriesController } from './pantries.controller';
-import { PantryService } from '../services/pantries.service';
+import { PantryController } from './pantry.controller';
+import { PantryService } from '../services/pantry.service';
 import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
-import { createMockPantriesService } from '../test-utils/pantries-service.mock';
-import { PantriesTestBuilder } from '../test-utils/pantries-test-builders';
+import { createMockPantryService } from '../test-utils/pantry-service.mock';
+import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantriesController', () => {
-  let controller: PantriesController;
+  let controller: PantryController;
   let service: PantryService;
-  let mockPantriesService: ReturnType<typeof createMockPantriesService>;
+  let mockPantriesService: ReturnType<typeof createMockPantryService>;
 
   beforeEach(async () => {
-    mockPantriesService = createMockPantriesService();
+    mockPantriesService = createMockPantryService();
     const module: TestingModule = await createControllerTestModule<
-      PantriesController,
+      PantryController,
       PantryService
     >({
-      ControllerClass: PantriesController,
+      ControllerClass: PantryController,
       ServiceToken: PantryService,
       mockService: mockPantriesService,
     });
 
-    controller = module.get<PantriesController>(PantriesController);
+    controller = module.get<PantryController>(PantryController);
     service = module.get<PantryService>(PantryService);
   });
 
@@ -32,7 +32,7 @@ describe('PantriesController', () => {
 
   describe('getPantry', () => {
     const userId = TEST_IDS.USER;
-    const mockResponse = PantriesTestBuilder.createPantryResponseDto();
+    const mockResponse = PantryTestBuilder.createPantryResponseDto();
 
     it('should call service with userId and return result', async () => {
       mockPantriesService.getOrCreatePantry.mockResolvedValue(mockResponse);
@@ -45,7 +45,7 @@ describe('PantriesController', () => {
     });
 
     it('should auto-create pantry if it does not exist', async () => {
-      const newPantryResponse = PantriesTestBuilder.createPantryResponseDto({
+      const newPantryResponse = PantryTestBuilder.createPantryResponseDto({
         id: TEST_IDS.PANTRY,
         userId: userId,
       });

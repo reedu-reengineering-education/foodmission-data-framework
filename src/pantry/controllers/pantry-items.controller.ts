@@ -28,20 +28,17 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import {
   CreatePantryItemDto,
   CreatePantryItemBodyDto,
-} from '../dto/create-pantryItem.dto';
+} from '../dto/create-pantry-item.dto';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
-} from '../dto/response-pantryItem.dto';
-import {
-  QueryPantryItemDto,
-  QueryPantryItemsFilterDto,
-} from '../dto/query-pantryItem.dto';
-import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
+} from '../dto/response-pantry-item.dto';
+import { QueryPantryItemsFilterDto } from '../dto/query-pantry-item.dto';
+import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { Unit } from '@prisma/client';
 
-@ApiTags('pantry-items')
-@Controller('pantries/:pantryId/items')
+@ApiTags('pantry')
+@Controller('pantry/items')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class PantryItemsController {
   constructor(private readonly pantryItemService: PantryItemService) {}
@@ -55,7 +52,6 @@ export class PantryItemsController {
     description:
       'Creates a new Pantry Item and adds it to your dedicated pantry. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
   })
-  @ApiParam({ name: 'pantryId', format: 'uuid' })
   @ApiBody({
     schema: {
       oneOf: [
@@ -117,14 +113,10 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async create(
-    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Body() body: CreatePantryItemBodyDto,
     @CurrentUser('id') userId: string,
   ) {
-    const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
-      ...body,
-      pantryId,
-    });
+    const createPantryItemDto = Object.assign(new CreatePantryItemDto(), body);
     return this.pantryItemService.create(createPantryItemDto, userId);
   }
 
@@ -136,7 +128,6 @@ export class PantryItemsController {
     description:
       'Retrieve pantry items from your dedicated pantry. Optional filtering by foodId, foodCategoryId, unit, or expiryDate.',
   })
-  @ApiParam({ name: 'pantryId', format: 'uuid' })
   @ApiQuery({
     name: 'foodId',
     required: false,
@@ -168,12 +159,10 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async findAll(
-    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Query() query: QueryPantryItemsFilterDto,
     @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    const fullQuery = { ...query, pantryId } as QueryPantryItemDto;
-    return this.pantryItemService.findAll(fullQuery, userId);
+    return this.pantryItemService.findAll(query, userId);
   }
 
   @Get(':itemId')
@@ -182,7 +171,6 @@ export class PantryItemsController {
   @ApiOperation({
     summary: 'Get specific pantry item by ID',
   })
-  @ApiParam({ name: 'pantryId', format: 'uuid' })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiResponse({
     status: 200,
@@ -191,11 +179,10 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async findById(
-    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @CurrentUser('id') userId: string,
   ): Promise<PantryItemResponseDto> {
-    return this.pantryItemService.findById(itemId, userId, pantryId);
+    return this.pantryItemService.findById(itemId, userId);
   }
 
   @Patch(':itemId')
@@ -206,7 +193,6 @@ export class PantryItemsController {
     description:
       'Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional.',
   })
-  @ApiParam({ name: 'pantryId', format: 'uuid' })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiBody({ type: UpdatePantryItemDto })
   @ApiResponse({
@@ -216,17 +202,11 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async update(
-    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @Body() updatePantryItemDto: UpdatePantryItemDto,
     @CurrentUser('id') userId: string,
   ): Promise<PantryItemResponseDto> {
-    return this.pantryItemService.update(
-      itemId,
-      updatePantryItemDto,
-      userId,
-      pantryId,
-    );
+    return this.pantryItemService.update(itemId, updatePantryItemDto, userId);
   }
 
   @Delete(':itemId')
@@ -236,7 +216,6 @@ export class PantryItemsController {
     summary: 'Remove item from pantry',
     description: 'Delete a specific pantry item by ID',
   })
-  @ApiParam({ name: 'pantryId', format: 'uuid' })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiResponse({
     status: 200,
@@ -244,10 +223,9 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async remove(
-    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @CurrentUser('id') userId: string,
   ): Promise<void> {
-    return this.pantryItemService.remove(itemId, userId, pantryId);
+    return this.pantryItemService.remove(itemId, userId);
   }
 }

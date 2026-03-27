@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PantryService } from './pantries.service';
-import { PantryRepository } from '../repositories/pantries.repository';
+import { PantryService } from './pantry.service';
+import { PantryRepository } from '../repositories/pantry.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { PantriesTestBuilder } from '../test-utils/pantries-test-builders';
+import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
 describe('PantryService', () => {
@@ -38,7 +38,7 @@ describe('PantryService', () => {
     const userId = TEST_IDS.USER;
 
     it('should return existing pantry when it exists', async () => {
-      const mockPantry = PantriesTestBuilder.createPantryResponseDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto();
       mockPantryRepository.getOrCreate.mockResolvedValue(mockPantry);
 
       const result = await service.getOrCreatePantry(userId);
@@ -49,7 +49,7 @@ describe('PantryService', () => {
     });
 
     it('should create and return new pantry when it does not exist', async () => {
-      const mockPantry = PantriesTestBuilder.createPantryResponseDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto();
       mockPantryRepository.getOrCreate.mockResolvedValue(mockPantry);
 
       const result = await service.getOrCreatePantry(userId);
@@ -59,7 +59,7 @@ describe('PantryService', () => {
     });
 
     it('should log when getting or creating pantry', async () => {
-      const mockPantry = PantriesTestBuilder.createPantryResponseDto();
+      const mockPantry = PantryTestBuilder.createPantryResponseDto();
       mockPantryRepository.getOrCreate.mockResolvedValue(mockPantry);
       const loggerSpy = jest.spyOn(service['logger'], 'log');
 
@@ -77,7 +77,7 @@ describe('PantryService', () => {
 
     describe('when pantryId is provided', () => {
       it('should return pantryId when pantry exists and belongs to user', async () => {
-        const mockPantry = PantriesTestBuilder.createPantryResponseDto({
+        const mockPantry = PantryTestBuilder.createPantryResponseDto({
           id: pantryId,
           userId: userId,
         });
@@ -98,7 +98,7 @@ describe('PantryService', () => {
       });
 
       it('should throw ForbiddenException when pantry belongs to different user', async () => {
-        const mockPantry = PantriesTestBuilder.createPantryResponseDto({
+        const mockPantry = PantryTestBuilder.createPantryResponseDto({
           id: pantryId,
           userId: 'different-user-id',
         });
@@ -112,7 +112,7 @@ describe('PantryService', () => {
 
     describe('when pantryId is not provided', () => {
       it('should auto-create pantry and return its ID', async () => {
-        const mockPantry = PantriesTestBuilder.createPantryResponseDto();
+        const mockPantry = PantryTestBuilder.createPantryResponseDto();
         mockPantryRepository.getOrCreate.mockResolvedValue(mockPantry);
 
         const result = await service.validatePantryExists(userId);

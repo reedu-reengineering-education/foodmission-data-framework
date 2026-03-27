@@ -5,7 +5,7 @@ import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { FoodsModule } from '../foods/foods.module';
 import { FoodCategoriesModule } from '../food-category/food-categories.module';
-import { PantriesModule } from '../pantries/pantries.module';
+import { PantryModule } from '../pantry/pantry.module';
 import { ShoppingListsController } from './controllers/shopping-lists.controller';
 import { ShoppingListItemsController } from './controllers/shopping-list-items.controller';
 import { ShoppingListService } from './services/shopping-lists.service';
@@ -18,7 +18,7 @@ import { ShoppingListItemRepository } from './repositories/shopping-list-items.r
     DatabaseModule,
     HttpModule,
     CommonModule,
-    PantriesModule,
+    PantryModule,
     FoodsModule,
     FoodCategoriesModule,
   ],

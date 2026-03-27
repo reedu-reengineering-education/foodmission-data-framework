@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemService } from './pantry-items.service';
 import { PantryItemRepository } from '../repositories/pantry-items.repository';
 import { PrismaService } from '../../database/prisma.service';
-import { PantryService } from './pantries.service';
+import { PantryService } from './pantry.service';
 import {
   BadRequestException,
   ConflictException,
@@ -13,8 +13,8 @@ import { Unit } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shoppingListItem.dto';
-import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
-import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
+import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
+import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import {

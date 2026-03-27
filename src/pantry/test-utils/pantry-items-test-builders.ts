@@ -1,7 +1,7 @@
-import { PantryItemResponseDto } from '../dto/response-pantryItem.dto';
-import { CreatePantryItemDto } from '../dto/create-pantryItem.dto';
-import { UpdatePantryItemDto } from '../dto/update-pantryItem.dto';
-import { QueryPantryItemDto } from '../dto/query-pantryItem.dto';
+import { PantryItemResponseDto } from '../dto/response-pantry-item.dto';
+import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
+import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
+import { QueryPantryItemDto } from '../dto/query-pantry-item.dto';
 import { Unit } from '@prisma/client';
 import {
   TEST_IDS,

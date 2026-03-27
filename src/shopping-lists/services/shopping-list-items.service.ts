@@ -27,7 +27,7 @@ import {
   ShoppingListItemRepository,
   ShoppingListItemWithRelations,
 } from '../repositories/shopping-list-items.repository';
-import { PantryItemService } from '../../pantries/services/pantry-items.service';
+import { PantryItemService } from '../../pantry/services/pantry-items.service';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';

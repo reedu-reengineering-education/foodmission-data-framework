@@ -32,21 +32,20 @@ describe('PantryItemsController', () => {
 
   describe('create', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const body = PantryItemsTestBuilder.createCreatePantryItemDto({
       pantryId: undefined,
     } as any);
     delete (body as any).pantryId;
     const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto();
 
-    it('should call service with merged pantryId and return result', async () => {
+    it('should call service and return result', async () => {
       mockPantryItemsService.create.mockResolvedValue(mockResponse);
 
-      const result = await controller.create(pantryId, body as any, userId);
+      const result = await controller.create(body as any, userId);
 
       expect(result).toEqual(mockResponse);
       expect(service.create).toHaveBeenCalledWith(
-        expect.objectContaining({ pantryId }),
+        expect.objectContaining(body),
         userId,
       );
       expect(service.create).toHaveBeenCalledTimes(1);
@@ -55,49 +54,43 @@ describe('PantryItemsController', () => {
 
   describe('findAll', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const mockResponse = { data: [] };
 
-    it('should call service with query including pantryId and return result', async () => {
+    it('should call service with query and return result', async () => {
       const query = PantryItemsTestBuilder.createQueryPantryItemDto();
       delete (query as any).pantryId;
 
       mockPantryItemsService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll(pantryId, query as any, userId);
+      const result = await controller.findAll(query as any, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.findAll).toHaveBeenCalledWith(
-        expect.objectContaining({ pantryId }),
-        userId,
-      );
+      expect(service.findAll).toHaveBeenCalledWith(query, userId);
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('findById', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const itemId = TEST_IDS.PANTRY_ITEM;
 
     const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto({
       id: itemId,
     });
 
-    it('should call service with itemId, userId, and pantryId', async () => {
+    it('should call service with itemId and userId', async () => {
       mockPantryItemsService.findById.mockResolvedValue(mockResponse);
 
-      const result = await controller.findById(pantryId, itemId, userId);
+      const result = await controller.findById(itemId, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.findById).toHaveBeenCalledWith(itemId, userId, pantryId);
+      expect(service.findById).toHaveBeenCalledWith(itemId, userId);
       expect(service.findById).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('update', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const itemId = TEST_IDS.PANTRY_ITEM;
     const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto();
     const mockResponse = PantryItemsTestBuilder.createPantryItemResponseDto({
@@ -108,35 +101,24 @@ describe('PantryItemsController', () => {
     it('should call service with correct parameters and return result', async () => {
       mockPantryItemsService.update.mockResolvedValue(mockResponse);
 
-      const result = await controller.update(
-        pantryId,
-        itemId,
-        updateDto,
-        userId,
-      );
+      const result = await controller.update(itemId, updateDto, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.update).toHaveBeenCalledWith(
-        itemId,
-        updateDto,
-        userId,
-        pantryId,
-      );
+      expect(service.update).toHaveBeenCalledWith(itemId, updateDto, userId);
       expect(service.update).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('remove', () => {
     const userId = TEST_IDS.USER;
-    const pantryId = TEST_IDS.PANTRY;
     const itemId = TEST_IDS.PANTRY_ITEM;
 
-    it('should call service with itemId, userId, and pantryId', async () => {
+    it('should call service with itemId and userId', async () => {
       mockPantryItemsService.remove.mockResolvedValue(undefined);
 
-      await controller.remove(pantryId, itemId, userId);
+      await controller.remove(itemId, userId);
 
-      expect(service.remove).toHaveBeenCalledWith(itemId, userId, pantryId);
+      expect(service.remove).toHaveBeenCalledWith(itemId, userId);
       expect(service.remove).toHaveBeenCalledTimes(1);
     });
   });

@@ -4,16 +4,16 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { FoodCategoriesModule } from '../food-category/food-categories.module';
-import { PantriesController } from './controllers/pantries.controller';
+import { PantryController } from './controllers/pantry.controller';
 import { PantryItemsController } from './controllers/pantry-items.controller';
-import { PantryService } from './services/pantries.service';
+import { PantryService } from './services/pantry.service';
 import { PantryItemService } from './services/pantry-items.service';
-import { PantryRepository } from './repositories/pantries.repository';
+import { PantryRepository } from './repositories/pantry.repository';
 import { PantryItemRepository } from './repositories/pantry-items.repository';
 
 @Module({
   imports: [DatabaseModule, HttpModule, CommonModule, FoodCategoriesModule],
-  controllers: [PantriesController, PantryItemsController],
+  controllers: [PantryController, PantryItemsController],
   providers: [
     PantryService,
     PantryItemService,
@@ -28,4 +28,4 @@ import { PantryItemRepository } from './repositories/pantry-items.repository';
     PantryItemRepository,
   ],
 })
-export class PantriesModule {}
+export class PantryModule {}

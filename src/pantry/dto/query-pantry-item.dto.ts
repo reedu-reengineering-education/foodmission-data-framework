@@ -37,5 +37,5 @@ export class QueryPantryItemDto {
   expiryDate?: Date;
 }
 
-/** Query for GET /pantries/:pantryId/items (pantryId comes from the URL). */
+/** Query for GET /pantry/items */
 export class QueryPantryItemsFilterDto extends QueryPantryItemDto {}

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PantryResponseDto } from '../dto/response-pantry.dto';
 import { plainToClass } from 'class-transformer';
-import { PantryRepository } from '../repositories/pantries.repository';
+import { PantryRepository } from '../repositories/pantry.repository';
 
 @Injectable()
 export class PantryService {
