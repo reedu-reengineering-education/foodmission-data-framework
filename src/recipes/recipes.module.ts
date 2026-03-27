@@ -18,4 +18,4 @@ import { UsersRepository } from '../users/repositories/users.repository';
   ],
   exports: [RecipesService, RecipeNutritionService, RecipesRepository],
 })
-export class RecipeModule {}
+export class RecipesModule {}

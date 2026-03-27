@@ -12,4 +12,4 @@ import { UsersRepository } from '../users/repositories/users.repository';
   providers: [MealsService, MealsRepository, UsersRepository],
   exports: [MealsService, MealsRepository],
 })
-export class MealModule {}
+export class MealsModule {}

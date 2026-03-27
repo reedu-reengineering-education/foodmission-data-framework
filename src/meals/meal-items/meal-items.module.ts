@@ -3,7 +3,7 @@ import { MealItemController } from './controllers/meal-items.controller';
 import { MealItemService } from './services/meal-items.service';
 import { MealItemRepository } from './repositories/meal-items.repository';
 import { DatabaseModule } from '../../database/database.module';
-import { MealModule } from '../meals.module';
+import { MealsModule } from '../meals.module';
 import { FoodsModule } from '../../foods/foods.module';
 import { FoodCategoriesModule } from '../../food-category/food-categories.module';
 import { AuthModule } from '../../auth/auth.module';
@@ -13,7 +13,7 @@ import { UsersModule } from '../../users/users.module';
 @Module({
   imports: [
     DatabaseModule,
-    MealModule,
+    MealsModule,
     FoodsModule,
     FoodCategoriesModule,
     AuthModule,
