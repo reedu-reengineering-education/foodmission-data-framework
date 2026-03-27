@@ -13,7 +13,7 @@ describe('ChallengesRepository', () => {
         {
           provide: PrismaService,
           useValue: {
-            challenges: {
+            challenge: {
               create: jest.fn(),
               findMany: jest.fn(),
               findUnique: jest.fn(),
@@ -51,14 +51,14 @@ describe('ChallengesRepository', () => {
         { id: 'u1' },
         { id: 'u2' },
       ]);
-      (prisma.challenges.create as jest.Mock).mockResolvedValue(mockChallenge);
+      (prisma.challenge.create as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await repository.create(dto);
 
       expect(prisma.user.findMany).toHaveBeenCalledWith({
         select: { id: true },
       });
-      expect(prisma.challenges.create).toHaveBeenCalledWith({
+      expect(prisma.challenge.create).toHaveBeenCalledWith({
         data: {
           ...dto,
           challengeProgresses: {
@@ -77,13 +77,13 @@ describe('ChallengesRepository', () => {
   describe('findAll', () => {
     it('should return all challenges with progress', async () => {
       const mockChallenges = [{ id: 'c1', challengeProgresses: [] }];
-      (prisma.challenges.findMany as jest.Mock).mockResolvedValue(
+      (prisma.challenge.findMany as jest.Mock).mockResolvedValue(
         mockChallenges,
       );
 
       const result = await repository.findAll();
 
-      expect(prisma.challenges.findMany).toHaveBeenCalledWith({
+      expect(prisma.challenge.findMany).toHaveBeenCalledWith({
         include: { challengeProgresses: true },
       });
       expect(result).toBe(mockChallenges);
@@ -93,13 +93,13 @@ describe('ChallengesRepository', () => {
   describe('findById', () => {
     it('should return challenge by id with progress', async () => {
       const mockChallenge = { id: 'c1', challengeProgresses: [] };
-      (prisma.challenges.findUnique as jest.Mock).mockResolvedValue(
+      (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(
         mockChallenge,
       );
 
       const result = await repository.findById('c1');
 
-      expect(prisma.challenges.findUnique).toHaveBeenCalledWith({
+      expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
         where: { id: 'c1' },
         include: { challengeProgresses: true },
       });
@@ -107,7 +107,7 @@ describe('ChallengesRepository', () => {
     });
 
     it('should return null if challenge not found', async () => {
-      (prisma.challenges.findUnique as jest.Mock).mockResolvedValue(null);
+      (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(null);
 
       const result = await repository.findById('nonexistent');
 
@@ -119,11 +119,11 @@ describe('ChallengesRepository', () => {
     it('should update challenge', async () => {
       const updateDto = { available: false };
       const mockChallenge = { id: 'c1', available: false };
-      (prisma.challenges.update as jest.Mock).mockResolvedValue(mockChallenge);
+      (prisma.challenge.update as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await repository.update('c1', updateDto);
 
-      expect(prisma.challenges.update).toHaveBeenCalledWith({
+      expect(prisma.challenge.update).toHaveBeenCalledWith({
         where: { id: 'c1' },
         data: { ...updateDto },
       });
@@ -134,11 +134,11 @@ describe('ChallengesRepository', () => {
   describe('delete', () => {
     it('should delete challenge', async () => {
       const mockChallenge = { id: 'c1' };
-      (prisma.challenges.delete as jest.Mock).mockResolvedValue(mockChallenge);
+      (prisma.challenge.delete as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await repository.delete('c1');
 
-      expect(prisma.challenges.delete).toHaveBeenCalledWith({
+      expect(prisma.challenge.delete).toHaveBeenCalledWith({
         where: { id: 'c1' },
       });
       expect(result).toBe(mockChallenge);

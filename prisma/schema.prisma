@@ -340,6 +340,7 @@ model ShoppingList {
 
   @@unique([userId, title])
   @@index([userId])
+  @@map("shopping_lists")
 }
 
 model ShoppingListItem {
@@ -378,6 +379,7 @@ model Pantry {
   items PantryItem[]
 
   @@index([userId])
+  @@map("pantries")
 }
 
 model PantryItem {
@@ -434,6 +436,7 @@ model Meal {
 
   @@index([userId])
   @@index([recipeId])
+  @@map("meals")
 }
 
 model MealItem {
@@ -546,7 +549,7 @@ model MealLog {
   @@map("meal_logs")
 }
 
-model Missions {
+model Mission {
   id                String            @id @default(uuid())
   title             String
   description       String
@@ -555,6 +558,8 @@ model Missions {
   endDate           DateTime
   content           Json              @default("{}") // Flexible JSON for mission-specific content
   missionProgresses MissionProgress[]
+
+  @@map("missions")
 }
 
 model MissionProgress {
@@ -563,13 +568,14 @@ model MissionProgress {
   completed Boolean @default(false)
   progress  Float
 
-  user    User     @relation(fields: [userId], references: [id], onDelete: Restrict)
-  mission Missions @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
 
   @@id([userId, missionId])
+  @@map("mission_progress")
 }
 
-model Challenges {
+model Challenge {
   id                  String              @id @default(uuid())
   title               String
   description         String
@@ -578,6 +584,8 @@ model Challenges {
   endDate             DateTime
   content             Json                @default("{}") // Flexible JSON for challenge-specific content
   challengeProgresses ChallengeProgress[]
+
+  @@map("challenges")
 }
 
 model ChallengeProgress {
@@ -586,10 +594,11 @@ model ChallengeProgress {
   completed   Boolean @default(false)
   progress    Float
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Restrict)
-  challenge Challenges @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@id([userId, challengeId])
+  @@map("challenge_progress")
 }
 
 enum Gender {

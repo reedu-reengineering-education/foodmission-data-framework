@@ -24,7 +24,7 @@ export class MissionsRepository {
   async create(data: CreateMissionData) {
     const allUsers = await this.prisma.user.findMany({ select: { id: true } });
 
-    return this.prisma.missions.create({
+    return this.prisma.mission.create({
       data: {
         title: data.title,
         description: data.description,
@@ -44,20 +44,20 @@ export class MissionsRepository {
   }
 
   async findById(id: string) {
-    return this.prisma.missions.findUnique({
+    return this.prisma.mission.findUnique({
       where: { id },
       include: { missionProgresses: true },
     });
   }
 
   async findAll() {
-    return this.prisma.missions.findMany({
+    return this.prisma.mission.findMany({
       include: { missionProgresses: true },
     });
   }
 
   async update(id: string, data: UpdateMissionData) {
-    return this.prisma.missions.update({
+    return this.prisma.mission.update({
       where: { id },
       data: {
         title: data.title,
@@ -71,7 +71,7 @@ export class MissionsRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.missions.delete({
+    await this.prisma.mission.delete({
       where: { id },
     });
   }
