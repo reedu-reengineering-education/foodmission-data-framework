@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateChallengesDto } from '../dto/create-challenges.dto';
-import { UpdateChallengesDto } from '../dto/update-challenges.dto';
+import { CreateChallengeDto } from '../dto/create-challenge.dto';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 
 @Injectable()
 export class ChallengesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createChallengeDto: CreateChallengesDto) {
+  async create(createChallengeDto: CreateChallengeDto) {
     const allUsers = await this.prisma.user.findMany({ select: { id: true } });
 
     return this.prisma.challenge.create({
@@ -38,7 +38,7 @@ export class ChallengesRepository {
     });
   }
 
-  async update(id: string, updateChallengeDto: UpdateChallengesDto) {
+  async update(id: string, updateChallengeDto: UpdateChallengeDto) {
     return this.prisma.challenge.update({
       where: { id },
       data: { ...updateChallengeDto },

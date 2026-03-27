@@ -23,8 +23,8 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { ChallengesService } from '../services/challenges.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
-import { UpdateChallengesDto } from '../dto/update-challenges.dto';
-import { CreateChallengesDto } from '../dto/create-challenges.dto';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
+import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
@@ -47,7 +47,7 @@ export class ChallengesController {
     description:
       'Creates a new challenge as an Admin. Automatically creates a ChallengeProgress entry for every existing user.',
   })
-  @ApiBody({ type: CreateChallengesDto })
+  @ApiBody({ type: CreateChallengeDto })
   @ApiResponse({
     status: 201,
     description: 'Challenge created successfully',
@@ -59,7 +59,7 @@ export class ChallengesController {
   })
   @ApiCrudErrorResponses()
   async create(
-    @Body() createChallengeDto: CreateChallengesDto,
+    @Body() createChallengeDto: CreateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     return this.challengeService.create(createChallengeDto);
   }
@@ -126,7 +126,7 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateChallengeDto: UpdateChallengesDto,
+    @Body() updateChallengeDto: UpdateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     return this.challengeService.update(id, updateChallengeDto);
   }

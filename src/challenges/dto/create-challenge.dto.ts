@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, MaxLength, IsDateString } from 'class-validator';
 
-export class CreateChallengesDto {
+export class CreateChallengeDto {
   @ApiProperty({
     description: 'The name of the challenge',
     example: 'Bring Your Own Bag',
