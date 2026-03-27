@@ -1,4 +1,9 @@
 import { PrismaClient, PantryItem, Unit } from '@prisma/client';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import {
+  findUserByKeycloakId,
+  warnSeedSkippedMissingUser,
+} from './seed-helpers';
 
 export interface PantryItemSeedData {
   userKeycloakId: string;
@@ -12,7 +17,7 @@ export interface PantryItemSeedData {
 export const pantryItemData: PantryItemSeedData[] = [
   // Dev User 1 - My Kitchen Pantry
   {
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Tomatoes',
     quantity: 5,
     unit: Unit.KG,
@@ -20,14 +25,14 @@ export const pantryItemData: PantryItemSeedData[] = [
     expiryDate: new Date('2025-10-15'),
   },
   {
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Pasta',
     quantity: 300,
     unit: Unit.G,
     notes: 'Whole wheat',
   },
   {
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Olive Oil',
     quantity: 1,
     unit: Unit.L,
@@ -36,21 +41,21 @@ export const pantryItemData: PantryItemSeedData[] = [
 
   // Dev User 2 - Vegan Pantry
   {
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Chickpeas in Cans',
     quantity: 4,
     unit: Unit.PIECES,
     notes: 'Organic',
   },
   {
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Almond Milk',
     quantity: 2,
     unit: Unit.L,
     expiryDate: new Date('2025-10-08'),
   },
   {
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Quinoa',
     quantity: 1.5,
     unit: Unit.KG,
@@ -59,7 +64,7 @@ export const pantryItemData: PantryItemSeedData[] = [
 
   // Dev User 3 - BBQ Supplies
   {
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'BBQ Sauce',
     quantity: 300,
     unit: Unit.ML,
@@ -67,7 +72,7 @@ export const pantryItemData: PantryItemSeedData[] = [
     expiryDate: new Date('2026-01-15'),
   },
   {
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'Charcoal',
     quantity: 10,
     unit: Unit.KG,
@@ -75,14 +80,14 @@ export const pantryItemData: PantryItemSeedData[] = [
 
   // Dev User 4 - Keto Pantry
   {
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Coconut Oil',
     quantity: 2,
     unit: Unit.ML,
     notes: 'Virgin coconut oil',
   },
   {
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Almonds',
     quantity: 0.5,
     unit: Unit.KG,
@@ -90,7 +95,7 @@ export const pantryItemData: PantryItemSeedData[] = [
     expiryDate: new Date('2025-12-01'),
   },
   {
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Cheese',
     quantity: 0.8,
     unit: Unit.KG,
@@ -100,20 +105,20 @@ export const pantryItemData: PantryItemSeedData[] = [
 
   // Admin User 1 - Office Kitchen
   {
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Coffee',
     quantity: 2,
     unit: Unit.KG,
     notes: 'Arabica beans',
   },
   {
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Sugar',
     quantity: 1,
     unit: Unit.KG,
   },
   {
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Tea Bags',
     quantity: 100,
     unit: Unit.PIECES,
@@ -128,14 +133,12 @@ export async function seedPantryItems(prisma: PrismaClient) {
   let skippedCount = 0;
 
   for (const itemInfo of pantryItemData) {
-    // Find user
-    const user = await prisma.user.findUnique({
-      where: { keycloakId: itemInfo.userKeycloakId },
-    });
+    const user = await findUserByKeycloakId(prisma, itemInfo.userKeycloakId);
 
     if (!user) {
-      console.warn(
-        `⚠️  User ${itemInfo.userKeycloakId} not found, skipping item "${itemInfo.foodName}"`,
+      warnSeedSkippedMissingUser(
+        itemInfo.userKeycloakId,
+        `item "${itemInfo.foodName}"`,
       );
       skippedCount++;
       continue;

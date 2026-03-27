@@ -9,8 +9,8 @@ import {
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
-import { CreateChallengesDto } from '../dto/create-challenges.dto';
-import { UpdateChallengesDto } from '../dto/update-challenges.dto';
+import { CreateChallengeDto } from '../dto/create-challenge.dto';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 import { ChallengesRepository } from '../repositories/challenges.repository';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class ChallengesService {
   constructor(private readonly challengesRepository: ChallengesRepository) {}
 
   async create(
-    createChallengeDto: CreateChallengesDto,
+    createChallengeDto: CreateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     try {
       const challenge =
@@ -67,7 +67,7 @@ export class ChallengesService {
 
   async update(
     challengeId: string,
-    updateChallengeDto: UpdateChallengesDto,
+    updateChallengeDto: UpdateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     this.logger.log(`Updating challenge ${challengeId}`);
 

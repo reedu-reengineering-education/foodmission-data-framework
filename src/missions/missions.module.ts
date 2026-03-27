@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database/database.module';
 
 import { CommonModule } from '../common/common.module';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../users/repositories/users.repository';
 import { MissionsController } from './controllers/missions.controller';
 import { MissionsService } from './services/missions.service';
 import { MissionsRepository } from './repositories/missions.repository';
@@ -19,7 +19,7 @@ import { MissionProgressRepository } from './repositories/mission-progress.repos
     MissionsRepository,
     MissionProgressService,
     MissionProgressRepository,
-    UserRepository,
+    UsersRepository,
   ],
   exports: [
     MissionsService,

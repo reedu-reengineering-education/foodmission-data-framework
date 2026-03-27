@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateChallengesDto } from '../dto/create-challenges.dto';
-import { UpdateChallengesDto } from '../dto/update-challenges.dto';
+import { CreateChallengeDto } from '../dto/create-challenge.dto';
+import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 
 @Injectable()
 export class ChallengesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createChallengeDto: CreateChallengesDto) {
+  async create(createChallengeDto: CreateChallengeDto) {
     const allUsers = await this.prisma.user.findMany({ select: { id: true } });
 
-    return this.prisma.challenges.create({
+    return this.prisma.challenge.create({
       data: {
         ...createChallengeDto,
         challengeProgresses: {
@@ -26,26 +26,26 @@ export class ChallengesRepository {
   }
 
   async findAll() {
-    return this.prisma.challenges.findMany({
+    return this.prisma.challenge.findMany({
       include: { challengeProgresses: true },
     });
   }
 
   async findById(id: string) {
-    return this.prisma.challenges.findUnique({
+    return this.prisma.challenge.findUnique({
       where: { id },
       include: { challengeProgresses: true },
     });
   }
 
-  async update(id: string, updateChallengeDto: UpdateChallengesDto) {
-    return this.prisma.challenges.update({
+  async update(id: string, updateChallengeDto: UpdateChallengeDto) {
+    return this.prisma.challenge.update({
       where: { id },
       data: { ...updateChallengeDto },
     });
   }
 
   async delete(id: string) {
-    return this.prisma.challenges.delete({ where: { id } });
+    return this.prisma.challenge.delete({ where: { id } });
   }
 }

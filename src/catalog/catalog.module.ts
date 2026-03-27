@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CatalogController } from './controllers/catalog.controller';
 import { CatalogService } from './services/catalog.service';
-import { UserModule } from '../user/user.module';
+import { UsersModule } from '../users/users.module';
 import { CommonModule } from '../common/common.module';
 import { DatabaseModule } from '../database/database.module';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../users/repositories/users.repository';
 
 @Module({
-  imports: [CommonModule, DatabaseModule, UserModule],
+  imports: [CommonModule, DatabaseModule, UsersModule],
   controllers: [CatalogController],
-  providers: [CatalogService, UserRepository],
+  providers: [CatalogService, UsersRepository],
   exports: [CatalogService],
 })
 export class CatalogModule {}

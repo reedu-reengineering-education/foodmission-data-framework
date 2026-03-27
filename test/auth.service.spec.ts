@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../src/auth/auth.service';
 import { HttpService } from '@nestjs/axios';
-import { UserRepository } from '../src/user/repositories/user.repository';
-import { UserProfileService } from '../src/user/services/user-profile.service';
+import { UsersRepository } from '../src/users/repositories/users.repository';
+import { UserProfilesService } from '../src/users/services/user-profiles.service';
 import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
 import { of } from 'rxjs';
 
 describe('AuthService.login', () => {
   let service: AuthService;
   let httpService: jest.Mocked<HttpService>;
-  let userProfileService: jest.Mocked<UserProfileService>;
+  let userProfileService: jest.Mocked<UserProfilesService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,11 +23,11 @@ describe('AuthService.login', () => {
           },
         },
         {
-          provide: UserRepository,
+          provide: UsersRepository,
           useValue: {},
         },
         {
-          provide: UserProfileService,
+          provide: UserProfilesService,
           useValue: {
             getOrCreateProfile: jest.fn(),
           },
@@ -41,7 +41,7 @@ describe('AuthService.login', () => {
 
     service = module.get<AuthService>(AuthService);
     httpService = module.get(HttpService);
-    userProfileService = module.get(UserProfileService);
+    userProfileService = module.get(UserProfilesService);
   });
 
   it('should call Keycloak token endpoint and userinfo, then ensure profile exists', async () => {

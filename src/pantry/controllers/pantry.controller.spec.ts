@@ -6,20 +6,20 @@ import { createMockPantryService } from '../test-utils/pantry-service.mock';
 import { PantryTestBuilder } from '../test-utils/pantry-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
 
-describe('PantryController', () => {
+describe('PantriesController', () => {
   let controller: PantryController;
   let service: PantryService;
-  let mockPantryService: ReturnType<typeof createMockPantryService>;
+  let mockPantriesService: ReturnType<typeof createMockPantryService>;
 
   beforeEach(async () => {
-    mockPantryService = createMockPantryService();
+    mockPantriesService = createMockPantryService();
     const module: TestingModule = await createControllerTestModule<
       PantryController,
       PantryService
     >({
       ControllerClass: PantryController,
       ServiceToken: PantryService,
-      mockService: mockPantryService,
+      mockService: mockPantriesService,
     });
 
     controller = module.get<PantryController>(PantryController);
@@ -35,7 +35,7 @@ describe('PantryController', () => {
     const mockResponse = PantryTestBuilder.createPantryResponseDto();
 
     it('should call service with userId and return result', async () => {
-      mockPantryService.getOrCreatePantry.mockResolvedValue(mockResponse);
+      mockPantriesService.getOrCreatePantry.mockResolvedValue(mockResponse);
 
       const result = await controller.getPantry(userId);
 
@@ -49,7 +49,9 @@ describe('PantryController', () => {
         id: TEST_IDS.PANTRY,
         userId: userId,
       });
-      mockPantryService.getOrCreatePantry.mockResolvedValue(newPantryResponse);
+      mockPantriesService.getOrCreatePantry.mockResolvedValue(
+        newPantryResponse,
+      );
 
       const result = await controller.getPantry(userId);
 

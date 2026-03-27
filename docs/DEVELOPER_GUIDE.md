@@ -110,6 +110,7 @@ foodmission-data-framework/
 │   └── schema.prisma     # Prisma schema
 ├── scripts/              # Utility scripts
 ├── src/                  # Application source code
+│   ├── app/              # Barrel modules that group `AppModule` imports (infrastructure, catalog, domains)
 │   ├── auth/             # Authentication module
 │   ├── cache/            # Caching services
 │   ├── common/           # Shared utilities
@@ -372,6 +373,10 @@ npm run db:migrate:reset
 4. **Consider data migration scripts for complex changes**
 
 ### Seeding
+
+#### Keycloak and dev users
+
+`User.keycloakId` must match the JWT **`sub`** claim. Development seeds use stable UUIDs in `prisma/seeds/keycloak-dev-user-ids.ts`; the same IDs appear as user `id` values in `keycloak/foodmission-realm.dev.json`. Import that realm into Keycloak before relying on seeded pantries, lists, and knowledge progress. Details: [keycloak/README.md](../keycloak/README.md#seeded-users-and-database).
 
 #### Development Seeds
 

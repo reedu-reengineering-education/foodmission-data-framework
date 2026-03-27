@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 import { seedFoods } from '../prisma/seeds/foods';
 import { seedUsers } from '../prisma/seeds/users';
-import { seedTheMealDbRecipes } from '../prisma/seeds/themealdb';
+import { seedRecipes } from '../prisma/seeds/themealdb';
 
 jest.setTimeout(10 * 60 * 1000);
 
@@ -370,7 +370,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should seed TheMealDB recipes with dry-run option', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      const result = await seedTheMealDbRecipes(prisma, {
+      const result = await seedRecipes(prisma, {
         dryRun: true,
         limit: 5,
       });
@@ -388,7 +388,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should seed limited TheMealDB recipes', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      const result = await seedTheMealDbRecipes(prisma, {
+      const result = await seedRecipes(prisma, {
         limit: 3,
       });
 
@@ -404,7 +404,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should create recipes with correct properties', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 2 });
+      await seedRecipes(prisma, { limit: 2 });
 
       const recipes = await prisma.recipe.findMany({
         where: { isPublic: true, externalId: { not: null } },
@@ -434,7 +434,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should have ingredients with expected structure', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 1 });
+      await seedRecipes(prisma, { limit: 1 });
 
       const recipe = await prisma.recipe.findFirst({
         where: { isPublic: true, externalId: { not: null } },
@@ -467,11 +467,11 @@ describe('Database Seeding (e2e)', () => {
     it('should skip existing recipes on re-run', async () => {
       if (skipSuite || !hasRecipeTables) return;
       // First run
-      const firstResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      const firstResult = await seedRecipes(prisma, { limit: 3 });
       expect(firstResult.created).toBe(3);
 
       // Second run with same limit
-      const secondResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      const secondResult = await seedRecipes(prisma, { limit: 3 });
       expect(secondResult.created).toBe(0);
       expect(secondResult.skipped).toBe(3);
 
@@ -486,7 +486,7 @@ describe('Database Seeding (e2e)', () => {
       if (skipSuite || !hasRecipeTables) return;
       // Note: Force option isn't implemented to update existing,
       // it just doesn't skip. This test documents current behavior.
-      await seedTheMealDbRecipes(prisma, { limit: 2 });
+      await seedRecipes(prisma, { limit: 2 });
 
       // Force won't create duplicates due to unique constraint on externalId
       // But it will attempt to create them (and fail/skip due to constraint)
@@ -498,7 +498,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should have unique externalIds', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 10 });
+      await seedRecipes(prisma, { limit: 10 });
 
       const recipes = await prisma.recipe.findMany({
         where: { isPublic: true, externalId: { not: null } },
@@ -526,7 +526,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should seed TheMealDB recipes with dry-run option', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      const result = await seedTheMealDbRecipes(prisma, {
+      const result = await seedRecipes(prisma, {
         dryRun: true,
         limit: 5,
       });
@@ -544,7 +544,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should seed limited TheMealDB recipes', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      const result = await seedTheMealDbRecipes(prisma, {
+      const result = await seedRecipes(prisma, {
         limit: 3,
       });
 
@@ -560,7 +560,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should create recipes with correct properties', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 2 });
+      await seedRecipes(prisma, { limit: 2 });
 
       const recipes = await prisma.recipe.findMany({
         where: { isPublic: true, externalId: { not: null } },
@@ -590,7 +590,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should have ingredients with expected structure', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 1 });
+      await seedRecipes(prisma, { limit: 1 });
 
       const recipe = await prisma.recipe.findFirst({
         where: { isPublic: true, externalId: { not: null } },
@@ -623,11 +623,11 @@ describe('Database Seeding (e2e)', () => {
     it('should skip existing recipes on re-run', async () => {
       if (skipSuite || !hasRecipeTables) return;
       // First run
-      const firstResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      const firstResult = await seedRecipes(prisma, { limit: 3 });
       expect(firstResult.created).toBe(3);
 
       // Second run with same limit
-      const secondResult = await seedTheMealDbRecipes(prisma, { limit: 3 });
+      const secondResult = await seedRecipes(prisma, { limit: 3 });
       expect(secondResult.created).toBe(0);
       expect(secondResult.skipped).toBe(3);
 
@@ -642,7 +642,7 @@ describe('Database Seeding (e2e)', () => {
       if (skipSuite || !hasRecipeTables) return;
       // Note: Force option isn't implemented to update existing,
       // it just doesn't skip. This test documents current behavior.
-      await seedTheMealDbRecipes(prisma, { limit: 2 });
+      await seedRecipes(prisma, { limit: 2 });
 
       // Force won't create duplicates due to unique constraint on externalId
       // But it will attempt to create them (and fail/skip due to constraint)
@@ -654,7 +654,7 @@ describe('Database Seeding (e2e)', () => {
 
     it('should have unique externalIds', async () => {
       if (skipSuite || !hasRecipeTables) return;
-      await seedTheMealDbRecipes(prisma, { limit: 10 });
+      await seedRecipes(prisma, { limit: 10 });
 
       const recipes = await prisma.recipe.findMany({
         where: { isPublic: true, externalId: { not: null } },

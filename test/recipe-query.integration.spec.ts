@@ -13,7 +13,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { seedTheMealDbRecipes } from '../prisma/seeds/themealdb';
+import { seedRecipes } from '../prisma/seeds/themealdb';
 
 const testDbUrl =
   process.env.DATABASE_URL ||
@@ -45,7 +45,7 @@ describe('Recipe Query Integration (e2e)', () => {
         where: { userId: null, isPublic: true, externalId: { not: null } },
       });
       await prisma.recipe.deleteMany({ where: { userId: testUserId } });
-      await seedTheMealDbRecipes(prisma, { limit: 20 });
+      await seedRecipes(prisma, { limit: 20 });
     } catch (e: unknown) {
       const msg = String((e as Error)?.message ?? e);
       if (

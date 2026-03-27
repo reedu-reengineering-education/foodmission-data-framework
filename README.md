@@ -136,17 +136,17 @@ The imported realm includes:
 
 - **Realm**: `foodmission`
 - **Client**: `foodmission-api & foodmission-service`
-- **Pre-configured users**:
-  - `admin` user with `admin` and `user` roles
-  - `developer` user with `user` role
+- **Pre-configured users** (passwords and JWT `sub` ↔ DB `keycloakId` alignment — see [keycloak/README.md](keycloak/README.md#seeded-users-and-database)):
+  - `developer`, `jane`, `mike`, `sarah`, `admin` (plus service accounts as needed)
 - **Roles**: `admin` and `user` roles for the `foodmission-api` client
+
+After seeding the database, JWT **`sub`** must match **`User.keycloakId`** for these users. Use the bundled realm file so user IDs stay stable.
 
 #### 3.3. Verify the Import
 
 1. Switch to the `foodmission` realm using the dropdown in the top-left corner
-2. Navigate to **Users** → You should see:
-   - `admin` user
-   - `developer` user
+2. Navigate to **Users** → You should see at least:
+   - `admin`, `developer`, `jane`, `mike`, `sarah`
 3. Navigate to **Clients** → You should see:
    - `foodmission-api` client
 
@@ -321,75 +321,8 @@ npm run start:dev
 
 ### Swagger/OpenAPI
 
-The API documentation is automatically generated and available at:
-
-- **Development**: http://localhost:3000/api/docs
-- **Production**: https://your-domain.com/api/docs
-
-### API Endpoints
-
-#### Authentication
-
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/logout` - User logout
-- `GET /api/v1/auth/profile` - Get user profile
-
-#### Food Management
-
-- `GET /api/v1/foods` - List foods with pagination and filtering
-- `POST /api/v1/foods` - Create new food item
-- `GET /api/v1/foods/:id` - Get food by ID
-- `PUT /api/v1/foods/:id` - Update food item
-- `DELETE /api/v1/foods/:id` - Delete food item
-- `GET /api/v1/foods/barcode/:barcode` - Get food by barcode
-- `POST /api/v1/foods/import/openfoodfacts` - Import from OpenFoodFacts
-
-#### User Management
-
-- `GET /api/v1/users/profile` - Get user profile
-- `PUT /api/v1/users/profile` - Update user profile
-- `GET /api/v1/users/preferences` - Get user preferences
-- `PUT /api/v1/users/preferences` - Update user preferences
-
-#### Health & Monitoring
-
-- `GET /api/v1/health` - Health check
-- `GET /api/v1/health/readiness` - Readiness probe
-- `GET /api/v1/health/liveness` - Liveness probe
-- `GET /api/v1/metrics` - Prometheus metrics
-
-### API Usage Examples
-
-#### Create a Food Item
-
-```bash
-curl -X POST http://localhost:3000/api/v1/foods \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "Organic Banana",
-    "description": "Fresh organic banana",
-    "barcode": "1234567890123"
-  }'
-```
-
-#### Search Foods
-
-```bash
-curl "http://localhost:3000/api/v1/foods?search=banana&page=1&limit=10" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-#### Import from OpenFoodFacts
-
-```bash
-curl -X POST http://localhost:3000/api/v1/foods/import/openfoodfacts \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "barcode": "3017620422003"
-  }'
-```
+- **Interactive UI (Swagger)**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs) when the app is running (replace host in production). Use **Try it out** for request/response examples.
+- **Generated files** (commit after API changes): [`docs/openapi.yaml`](docs/openapi.yaml) and [`docs/openapi.json`](docs/openapi.json) — regenerate with `npm run docs:generate`.
 
 ## 🧪 Testing
 

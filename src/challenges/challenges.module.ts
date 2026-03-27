@@ -3,7 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database/database.module';
 
 import { CommonModule } from '../common/common.module';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../users/repositories/users.repository';
 import { ChallengesController } from './controllers/challenges.controller';
 import { ChallengesService } from './services/challenges.service';
 import { ChallengesRepository } from './repositories/challenges.repository';
@@ -19,7 +19,7 @@ import { ChallengeProgressRepository } from './repositories/challenge-progress.r
     ChallengesRepository,
     ChallengeProgressService,
     ChallengeProgressRepository,
-    UserRepository,
+    UsersRepository,
   ],
   exports: [
     ChallengesService,

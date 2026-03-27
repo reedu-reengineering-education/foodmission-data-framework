@@ -374,6 +374,8 @@ pids/
 # Generated documentation
 docs/generated/
 api-docs/
+docs/openapi.yaml
+docs/openapi.json
 
 # Storybook
 storybook-static/

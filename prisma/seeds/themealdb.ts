@@ -93,7 +93,7 @@ interface SeedOptions {
 function loadThemealdbData(): ThemealdbData {
   if (!fs.existsSync(DATA_PATH)) {
     throw new Error(
-      `TheMealDB data file not found: ${DATA_PATH}. See docs/DATABASE_SEEDING_MIGRATION.md for how to obtain themealdb-data.json.`,
+      `TheMealDB data file not found: ${DATA_PATH}. Place themealdb-data.json in prisma/seeds/data/ (see prisma/seed.ts and seed scripts that import this module).`,
     );
   }
   const content = fs.readFileSync(DATA_PATH, 'utf-8');
@@ -182,7 +182,7 @@ function toRecipeCreateData(
   };
 }
 
-export async function seedTheMealDbRecipes(
+export async function seedRecipes(
   prisma: PrismaClient,
   options: SeedOptions = {},
 ): Promise<{ created: number; skipped: number; errors: number }> {
@@ -335,7 +335,7 @@ async function main() {
     console.log(`Options: ${JSON.stringify(options)}`);
     console.log('');
 
-    const result = await seedTheMealDbRecipes(prisma, options);
+    const result = await seedRecipes(prisma, options);
 
     if (result.errors > 0) {
       process.exit(1);

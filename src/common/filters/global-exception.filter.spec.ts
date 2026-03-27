@@ -158,7 +158,9 @@ describe('GlobalExceptionFilter', () => {
 
       const responseCall = mockResponse.json.mock.calls[0][0];
       // UUID v4 format
-      expect(responseCall.traceId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(responseCall.traceId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
     });
 
     it('should use trace ID from logging service', () => {
@@ -213,9 +215,7 @@ describe('GlobalExceptionFilter', () => {
 
       filter.catch(exception, mockHost);
 
-      expect(loggingService.setTraceId).toHaveBeenCalledWith(
-        'test-trace-id',
-      );
+      expect(loggingService.setTraceId).toHaveBeenCalledWith('test-trace-id');
       expect(loggingService.setRequestContext).toHaveBeenCalledWith({
         method: 'GET',
         url: '/api/test',

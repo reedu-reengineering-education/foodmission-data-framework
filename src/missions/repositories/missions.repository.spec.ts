@@ -13,7 +13,7 @@ describe('MissionsRepository', () => {
         {
           provide: PrismaService,
           useValue: {
-            missions: {
+            mission: {
               create: jest.fn(),
               findUnique: jest.fn(),
               findMany: jest.fn(),
@@ -37,7 +37,7 @@ describe('MissionsRepository', () => {
   });
 
   describe('create', () => {
-    it('should call prisma.missions.create with missionProgresses for all users', async () => {
+    it('should call prisma.mission.create with missionProgresses for all users', async () => {
       const data = {
         userId: 'u1',
         title: 't',
@@ -49,12 +49,12 @@ describe('MissionsRepository', () => {
       const mockUsers = [{ id: 'u1' }, { id: 'u2' }];
       const mockReturn = { id: 'm1', missionProgresses: [] };
       (prisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
-      (prisma.missions.create as jest.Mock).mockResolvedValue(mockReturn);
+      (prisma.mission.create as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.create(data);
       expect(prisma.user.findMany).toHaveBeenCalledWith({
         select: { id: true },
       });
-      expect(prisma.missions.create).toHaveBeenCalledWith({
+      expect(prisma.mission.create).toHaveBeenCalledWith({
         data: {
           title: data.title,
           description: data.description,
@@ -75,11 +75,11 @@ describe('MissionsRepository', () => {
   });
 
   describe('findById', () => {
-    it('should call prisma.missions.findUnique with include missionProgresses', async () => {
+    it('should call prisma.mission.findUnique with include missionProgresses', async () => {
       const mockReturn = { id: 'm1', missionProgresses: [] };
-      (prisma.missions.findUnique as jest.Mock).mockResolvedValue(mockReturn);
+      (prisma.mission.findUnique as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findById('m1');
-      expect(prisma.missions.findUnique).toHaveBeenCalledWith({
+      expect(prisma.mission.findUnique).toHaveBeenCalledWith({
         where: { id: 'm1' },
         include: { missionProgresses: true },
       });
@@ -88,11 +88,11 @@ describe('MissionsRepository', () => {
   });
 
   describe('findAll', () => {
-    it('should call prisma.missions.findMany with include missionProgresses', async () => {
+    it('should call prisma.mission.findMany with include missionProgresses', async () => {
       const mockReturn = [{ id: 'm1', missionProgresses: [] }];
-      (prisma.missions.findMany as jest.Mock).mockResolvedValue(mockReturn);
+      (prisma.mission.findMany as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findAll();
-      expect(prisma.missions.findMany).toHaveBeenCalledWith({
+      expect(prisma.mission.findMany).toHaveBeenCalledWith({
         include: { missionProgresses: true },
       });
       expect(result).toBe(mockReturn);
@@ -100,12 +100,12 @@ describe('MissionsRepository', () => {
   });
 
   describe('update', () => {
-    it('should call prisma.missions.update with include missionProgresses', async () => {
+    it('should call prisma.mission.update with include missionProgresses', async () => {
       const mockReturn = { id: 'm1', missionProgresses: [] };
       const updateData = { available: false };
-      (prisma.missions.update as jest.Mock).mockResolvedValue(mockReturn);
+      (prisma.mission.update as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.update('m1', updateData);
-      expect(prisma.missions.update).toHaveBeenCalledWith({
+      expect(prisma.mission.update).toHaveBeenCalledWith({
         where: { id: 'm1' },
         data: {
           title: undefined,
@@ -121,10 +121,10 @@ describe('MissionsRepository', () => {
   });
 
   describe('delete', () => {
-    it('should call prisma.missions.delete with correct params', async () => {
-      (prisma.missions.delete as jest.Mock).mockResolvedValue(undefined);
+    it('should call prisma.mission.delete with correct params', async () => {
+      (prisma.mission.delete as jest.Mock).mockResolvedValue(undefined);
       await repository.delete('m1');
-      expect(prisma.missions.delete).toHaveBeenCalledWith({
+      expect(prisma.mission.delete).toHaveBeenCalledWith({
         where: { id: 'm1' },
       });
     });

@@ -1,4 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import {
+  findUserByKeycloakId,
+  warnSeedSkippedMissingOwner,
+  warnSeedSkippedMissingUser,
+} from './seed-helpers';
 
 export interface KnowledgeSeedData {
   ownerKeycloakId: string;
@@ -10,7 +16,7 @@ export interface KnowledgeSeedData {
 
 export const knowledgeData: KnowledgeSeedData[] = [
   {
-    ownerKeycloakId: 'admin-user-1',
+    ownerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     title: 'Nutrition Basics',
     description: 'A short quiz about basic nutrition facts and macros.',
     available: true,
@@ -30,7 +36,7 @@ export const knowledgeData: KnowledgeSeedData[] = [
     },
   },
   {
-    ownerKeycloakId: 'admin-user-1',
+    ownerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     title: 'Food Safety 101',
     description: 'Basic food safety practices to avoid contamination.',
     available: true,
@@ -57,16 +63,16 @@ export interface UserKnowledgeProgressSeedData {
 
 export const userKnowledgeProgressData: UserKnowledgeProgressSeedData[] = [
   {
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     knowledgeTitle: 'Nutrition Basics',
-    knowledgeOwnerKeycloakId: 'admin-user-1',
+    knowledgeOwnerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     completed: false,
     progress: { currentQuestionIndex: 1, answers: [0], score: 0 },
   },
   {
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     knowledgeTitle: 'Food Safety 101',
-    knowledgeOwnerKeycloakId: 'admin-user-1',
+    knowledgeOwnerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     completed: true,
     progress: { currentQuestionIndex: 1, answers: [1], score: 1 },
   },
@@ -78,13 +84,12 @@ export async function seedKnowledge(prisma: PrismaClient) {
   const created: any[] = [];
 
   for (const k of knowledgeData) {
-    const owner = await prisma.user.findUnique({
-      where: { keycloakId: k.ownerKeycloakId },
-    });
+    const owner = await findUserByKeycloakId(prisma, k.ownerKeycloakId);
 
     if (!owner) {
-      console.warn(
-        `⚠️  Owner ${k.ownerKeycloakId} not found, skipping knowledge "${k.title}"`,
+      warnSeedSkippedMissingOwner(
+        k.ownerKeycloakId,
+        `knowledge "${k.title}"`,
       );
       continue;
     }
@@ -129,23 +134,21 @@ export async function seedUserKnowledgeProgress(prisma: PrismaClient) {
   const created: any[] = [];
 
   for (const p of userKnowledgeProgressData) {
-    const user = await prisma.user.findUnique({
-      where: { keycloakId: p.userKeycloakId },
-    });
+    const user = await findUserByKeycloakId(prisma, p.userKeycloakId);
     if (!user) {
-      console.warn(
-        `⚠️  User ${p.userKeycloakId} not found, skipping progress for "${p.knowledgeTitle}"`,
+      warnSeedSkippedMissingUser(
+        p.userKeycloakId,
+        `progress for "${p.knowledgeTitle}"`,
       );
       continue;
     }
 
     const ownerKeycloak = p.knowledgeOwnerKeycloakId ?? p.userKeycloakId;
-    const owner = await prisma.user.findUnique({
-      where: { keycloakId: ownerKeycloak },
-    });
+    const owner = await findUserByKeycloakId(prisma, ownerKeycloak);
     if (!owner) {
-      console.warn(
-        `⚠️  Knowledge owner ${ownerKeycloak} not found, skipping progress for "${p.knowledgeTitle}"`,
+      warnSeedSkippedMissingOwner(
+        ownerKeycloak,
+        `progress for "${p.knowledgeTitle}"`,
       );
       continue;
     }
@@ -181,10 +184,8 @@ export async function seedUserKnowledgeProgress(prisma: PrismaClient) {
 
       created.push(upserted);
     } catch (err) {
-      console.error(
-        '❌ Error upserting user knowledge progress:',
-        err.message || err,
-      );
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('❌ Error upserting user knowledge progress:', msg);
     }
   }
 

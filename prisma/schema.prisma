@@ -286,42 +286,42 @@ model FoodCategory {
 }
 
 model User {
-  id                          String                  @id @default(uuid())
-  keycloakId                  String                  @unique
-  email                       String                  @unique
+  id                          String             @id @default(uuid())
+  keycloakId                  String             @unique
+  email                       String             @unique
   firstName                   String?
   lastName                    String?
-  username                    String?                 @unique
+  username                    String?            @unique
   yearOfBirth                 Int?
   country                     String?
   region                      String?
   zip                         String?
   language                    String?
-  preferences                 Json                    @default("{}") // Flexible JSON for app-specific preferences
-  settings                    Json                    @default("{}") // Flexible JSON for app-specific settings
+  preferences                 Json               @default("{}") // Flexible JSON for app-specific preferences
+  settings                    Json               @default("{}") // Flexible JSON for app-specific settings
   gender                      Gender?
   annualIncome                AnnualIncomeLevel?
   educationLevel              EducationLevel?
   weightKg                    Float?
   heightCm                    Float?
   activityLevel               ActivityLevel?
-  healthGoals                 Json?                   @default("{}")
-  nutritionTargets            Json?                   @default("{}")
-  createdAt                   DateTime                @default(now())
-  updatedAt                   DateTime                @updatedAt
-  autoAddCheckedItemsToPantry Boolean                 @default(true)
-  shoppingList                ShoppingList[]
-  pantry                      Pantry?
-  recipes                     Recipe[]
-  meals                       Meal[]
-  mealLogs                    MealLog[]
-  knowledge                   Knowledge[]
-  knowledgeProgress           UserKnowledgeProgress[]
+  healthGoals                 Json?              @default("{}")
+  nutritionTargets            Json?              @default("{}")
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  autoAddCheckedItemsToPantry Boolean            @default(true)
 
+  // Relations
+  shoppingList      ShoppingList[]
+  pantry            Pantry?
+  recipes           Recipe[]
+  meals             Meal[]
+  mealLogs          MealLog[]
+  knowledge         Knowledge[]
+  knowledgeProgress UserKnowledgeProgress[]
   challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]
-
-  groupMemberships GroupMembership[]
+  groupMemberships  GroupMembership[]
 
   @@index([email])
   @@index([createdAt])
@@ -335,36 +335,40 @@ model ShoppingList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User               @relation(fields: [userId], references: [id])
+  // Relations
+  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   items ShoppingListItem[]
 
   @@unique([userId, title])
   @@index([userId])
+  @@map("shopping_lists")
 }
 
 model ShoppingListItem {
-  id             String  @id @default(uuid())
-  quantity       Int     @default(1)
-  unit           Unit    @default(PIECES)
+  id             String   @id @default(uuid())
+  quantity       Int      @default(1)
+  unit           Unit     @default(PIECES)
   notes          String?
-  checked        Boolean @default(false)
+  checked        Boolean  @default(false)
   shoppingListId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
   foodCategoryId String?
 
+  // Relations
   shoppingList ShoppingList  @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
-  food         Food?         @relation(fields: [foodId], references: [id])
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
 
   @@unique([shoppingListId, foodId])
   @@unique([shoppingListId, foodCategoryId])
   @@index([shoppingListId])
+  @@index([foodId])
+  @@index([foodCategoryId])
   @@map("shopping_list_items")
 }
 
@@ -374,10 +378,12 @@ model Pantry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   items PantryItem[]
 
   @@index([userId])
+  @@map("pantries")
 }
 
 model PantryItem {
@@ -388,22 +394,25 @@ model PantryItem {
   location   String?
   expiryDate DateTime?
   pantryId   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
   foodCategoryId String?
 
+  // Relations
   pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
-  food         Food?         @relation(fields: [foodId], references: [id])
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
 
   @@unique([pantryId, foodId])
   @@unique([pantryId, foodCategoryId])
   @@index([pantryId])
+  @@index([foodId])
+  @@index([foodCategoryId])
+  @@index([expiryDate])
   @@map("pantry_items")
 }
 
@@ -417,47 +426,48 @@ model Meal {
   price               Float?
   barcode             String?        @unique
   userId              String
+  recipeId            String? // Optional link to a recipe this meal is based on
   mealCategories      MealCategory[] @default([])
   mealCourse          MealCourse?
   dietaryLabels       DietaryLabel[] @default([])
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 
-  // Optional link to a recipe this meal is based on
-  recipeId String?
-
-  user     User       @relation(fields: [userId], references: [id])
-  recipe   Recipe?    @relation(fields: [recipeId], references: [id])
+  // Relations
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe   Recipe?    @relation(fields: [recipeId], references: [id], onDelete: SetNull)
   items    MealItem[]
   mealLogs MealLog[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   @@index([userId])
   @@index([recipeId])
+  @@map("meals")
 }
 
 model MealItem {
-  id       String  @id @default(uuid())
-  quantity Int     @default(1)
-  unit     Unit    @default(PIECES)
-  notes    String?
-  mealId   String
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+  unit      Unit     @default(PIECES)
+  notes     String?
+  mealId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
   foodId         String?
   foodCategoryId String?
 
+  // Relations
   meal         Meal          @relation(fields: [mealId], references: [id], onDelete: Cascade)
-  food         Food?         @relation(fields: [foodId], references: [id])
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
 
   @@unique([mealId, foodId])
   @@unique([mealId, foodCategoryId])
   @@index([mealId])
+  @@index([foodId])
+  @@index([foodCategoryId])
   @@map("meal_items")
 }
 
@@ -478,48 +488,47 @@ model Recipe {
   allergens           Allergens[]
   rating              Float       @default(0)
   ratingCount         Int         @default(0)
+  externalId          String?     @unique // TheMealDB idMeal
+  imageUrl            String?
+  videoUrl            String?
+  cuisineType         String? // Japanese, Italian, Mexican, etc.
+  category            String? // Chicken, Seafood, Dessert, etc.
+  isPublic            Boolean     @default(false)
+  dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 
-  // New fields for external recipes (TheMealDB integration)
-  externalId    String?  @unique // TheMealDB idMeal
-  imageUrl      String?
-  videoUrl      String?
-  cuisineType   String? // Japanese, Italian, Mexican, etc.
-  category      String? // Chicken, Seafood, Dessert, etc.
-  isPublic      Boolean  @default(false)
-  dietaryLabels String[] // ["vegan", "vegetarian", "gluten-free"]
-
   // Relations
-  user        User?              @relation(fields: [userId], references: [id])
-  meals       Meal[] // Meals can reference this recipe
-  ingredients RecipeIngredient[] // Structured ingredients with food links
+  user        User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  meals       Meal[]
+  ingredients RecipeIngredient[]
 
   @@index([userId])
   @@index([isPublic])
   @@index([category])
   @@index([cuisineType])
+  @@index([isPublic, category])
   @@map("recipes")
 }
 
 model RecipeIngredient {
-  id       String  @id @default(uuid())
-  recipeId String
-  name     String // Original ingredient name from recipe
-  measure  String? // Amount/measurement string
-  order    Int     @default(0)
+  id        String   @id @default(uuid())
+  recipeId  String
+  name      String // Original ingredient name from recipe
+  measure   String? // Amount/measurement string
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Polymorphic reference (same pattern as MealItem, PantryItem, etc.)
+  // Polymorphic reference
   itemType       String  @default("food_category") // "food" | "food_category"
   foodId         String?
   foodCategoryId String?
 
+  // Relations
   recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  food         Food?         @relation(fields: [foodId], references: [id])
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
 
   @@index([recipeId])
   @@index([foodId])
@@ -538,23 +547,29 @@ model MealLog {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
-  meal Meal @relation(fields: [mealId], references: [id], onDelete: Restrict)
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
 
   @@index([userId, timestamp])
   @@index([typeOfMeal])
+  @@index([userId, typeOfMeal])
   @@map("meal_logs")
 }
 
-model Missions {
-  id                String            @id @default(uuid())
-  title             String
-  description       String
-  available         Boolean           @default(false)
-  startDate         DateTime
-  endDate           DateTime
-  content           Json              @default("{}") // Flexible JSON for mission-specific content
+model Mission {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  available   Boolean  @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  content     Json     @default("{}") // Flexible JSON for mission-specific content
+
+  // Relations
   missionProgresses MissionProgress[]
+
+  @@map("missions")
 }
 
 model MissionProgress {
@@ -563,21 +578,27 @@ model MissionProgress {
   completed Boolean @default(false)
   progress  Float
 
-  user    User     @relation(fields: [userId], references: [id], onDelete: Restrict)
-  mission Missions @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
 
   @@id([userId, missionId])
+  @@map("mission_progress")
 }
 
-model Challenges {
-  id                  String              @id @default(uuid())
-  title               String
-  description         String
-  available           Boolean             @default(false)
-  startDate           DateTime
-  endDate             DateTime
-  content             Json                @default("{}") // Flexible JSON for challenge-specific content
+model Challenge {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  available   Boolean  @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  content     Json     @default("{}") // Flexible JSON for challenge-specific content
+
+  // Relations
   challengeProgresses ChallengeProgress[]
+
+  @@map("challenges")
 }
 
 model ChallengeProgress {
@@ -586,10 +607,12 @@ model ChallengeProgress {
   completed   Boolean @default(false)
   progress    Float
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Restrict)
-  challenge Challenges @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
   @@id([userId, challengeId])
+  @@map("challenge_progress")
 }
 
 enum Gender {
@@ -701,10 +724,11 @@ model UserGroup {
   name        String
   description String?
   inviteCode  String   @unique
+  createdBy   String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  createdBy   String
 
+  // Relations
   memberships GroupMembership[]
 
   @@index([inviteCode])
@@ -713,14 +737,10 @@ model UserGroup {
 }
 
 model GroupMembership {
-  id       String    @id @default(uuid())
-  groupId  String
-  role     GroupRole @default(MEMBER)
-  joinedAt DateTime  @default(now())
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id            String             @id @default(uuid())
+  groupId       String
+  userId        String?
+  role          GroupRole          @default(MEMBER)
   nickname      String?
   age           Int?
   gender        Gender?
@@ -728,8 +748,11 @@ model GroupMembership {
   activityLevel ActivityLevel?
   annualIncome  AnnualIncomeLevel?
   createdBy     String?
+  joinedAt      DateTime           @default(now())
   updatedAt     DateTime?          @updatedAt
 
+  // Relations
+  user  User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   group UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([userId, groupId])
@@ -740,7 +763,7 @@ model GroupMembership {
 
 model Knowledge {
   id          String   @id @default(uuid())
-  userId      String // Creator/owner of the knowledge item. For admin-created global quizzes, use a system user or extend with isGlobal field
+  userId      String // Creator/owner of the knowledge item
   title       String
   description String?
   available   Boolean  @default(true)
@@ -748,6 +771,7 @@ model Knowledge {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // Relations
   user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userProgress UserKnowledgeProgress[]
 
@@ -766,6 +790,7 @@ model UserKnowledgeProgress {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  // Relations
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   knowledge Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
 

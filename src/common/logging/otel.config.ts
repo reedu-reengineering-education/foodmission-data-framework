@@ -17,16 +17,19 @@ export interface OtelConfig {
 
 /**
  * Load OpenTelemetry configuration from environment variables
- * 
+ *
  * Uses a single OTEL Collector endpoint that routes logs and traces to appropriate backends.
  */
 export const loadOtelConfig = (): OtelConfig => {
   const enabled = process.env.OTEL_LOGS_ENABLED === 'true';
-  const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+  const endpoint =
+    process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
   const serviceName = process.env.OTEL_SERVICE_NAME || 'foodmission-api';
   const serviceNamespace = process.env.OTEL_SERVICE_NAMESPACE || 'foodmission';
   const serviceVersion =
-    process.env.npm_package_version || process.env.OTEL_SERVICE_VERSION || '1.0.0';
+    process.env.npm_package_version ||
+    process.env.OTEL_SERVICE_VERSION ||
+    '1.0.0';
   const environment = process.env.NODE_ENV || 'development';
 
   let headers: Record<string, string> | undefined;
@@ -61,7 +64,9 @@ export const validateOtelConfig = (config: OtelConfig): boolean => {
   }
 
   if (!config.endpoint) {
-    console.error('OTEL_EXPORTER_OTLP_ENDPOINT is required when OTEL is enabled');
+    console.error(
+      'OTEL_EXPORTER_OTLP_ENDPOINT is required when OTEL is enabled',
+    );
     return false;
   }
 
