@@ -112,7 +112,7 @@
     "@opentelemetry/sdk-trace-base": "^2.6.0",
     "@opentelemetry/semantic-conventions": "^1.40.0",
     "@prisma/client": "^6.16.2",
-    "@prisma/instrumentation": "^6.16.2",
+    "@prisma/instrumentation": "^7.6.0",
     "axios": "^1.12.2",
     "cache-manager": "^7.2.0",
     "class-transformer": "^0.5.1",
