@@ -138,7 +138,6 @@ describe('PantryItemService', () => {
 
     service = module.get<PantryItemService>(PantryItemService);
     repository = module.get<PantryItemRepository>(PantryItemRepository);
-    prisma = module.get<PrismaService>(PrismaService);
     pantryService = module.get<PantryService>(PantryService);
   });
 
