@@ -415,6 +415,35 @@ npm run db:seed:test
 npm run db:seed
 ```
 
+#### FoodKeeper Shelf Life Data
+
+Pantry item expiration dates can be auto-calculated using USDA FoodKeeper data. This data is sourced from:
+
+**Source:** [USDA FSIS FoodKeeper Data](https://catalog.data.gov/dataset/fsis-foodkeeper-data)
+
+The transformed data is stored in `prisma/seeds/data/foodkeeper-data.json` and seeded into the `FoodShelfLife` table. The `ShelfLifeService` uses this data to:
+
+1. Match food names to FoodKeeper products using keyword-based lookup
+2. Determine default storage type (pantry/refrigerator/freezer) based on food category
+3. Calculate expiration dates based on shelf life duration from the database
+
+When a pantry item is created without an explicit `expiryDate`, the system automatically calculates one based on the matching FoodKeeper product. The `expiryDateSource` field indicates whether the date was set manually (`"manual"`) or auto-calculated (`"auto_foodkeeper"`).
+
+**Storage Type Inference:**
+
+| FoodKeeper Category | Default Storage |
+|---------------------|-----------------|
+| Dairy Products & Eggs | refrigerator |
+| Meat | refrigerator |
+| Poultry | refrigerator |
+| Seafood | refrigerator |
+| Deli & Prepared Foods | refrigerator |
+| Baked Goods | pantry |
+| Grains, Beans & Pasta | pantry |
+| Canned Goods | pantry |
+| Condiments, Sauces & Canned Goods | pantry |
+| Beverages | pantry |
+
 ## Testing Strategy
 
 ### Test Types
