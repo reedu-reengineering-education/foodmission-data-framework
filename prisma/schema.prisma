@@ -285,6 +285,31 @@ model FoodCategory {
   @@map("food_categories")
 }
 
+model FoodShelfLife {
+  id                           String   @id @default(uuid())
+  foodKeeperProductId          Int      @unique
+  foodKeeperCategoryId         Int?
+  name                         String
+  keywords                     String[]
+  categoryName                 String?
+  defaultStorageType           String? // "pantry" | "refrigerator" | "freezer"
+  pantryMinDays                Int?
+  pantryMaxDays                Int?
+  pantryAfterOpeningDays       Int?
+  refrigeratorMinDays          Int?
+  refrigeratorMaxDays          Int?
+  refrigeratorAfterOpeningDays Int?
+  freezerMinDays               Int?
+  freezerMaxDays               Int?
+  tips                         String?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+
+  @@index([name])
+  @@index([categoryName])
+  @@map("food_shelf_life")
+}
+
 model User {
   id                          String             @id @default(uuid())
   keycloakId                  String             @unique
@@ -387,15 +412,16 @@ model Pantry {
 }
 
 model PantryItem {
-  id         String    @id @default(uuid())
-  quantity   Int       @default(1)
-  unit       Unit      @default(PIECES)
-  notes      String?
-  location   String?
-  expiryDate DateTime?
-  pantryId   String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  quantity         Int       @default(1)
+  unit             Unit      @default(PIECES)
+  notes            String?
+  location         String?
+  expiryDate       DateTime?
+  expiryDateSource String? // "manual" | "auto_foodkeeper"
+  pantryId         String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
