@@ -4,6 +4,7 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { FoodCategoriesModule } from '../food-category/food-categories.module';
+import { FoodsModule } from '../foods/foods.module';
 import { ShelfLifeModule } from '../shelf-life/shelf-life.module';
 import { PantryController } from './controllers/pantry.controller';
 import { PantryItemsController } from './controllers/pantry-items.controller';
@@ -18,6 +19,7 @@ import { PantryItemRepository } from './repositories/pantry-items.repository';
     HttpModule,
     CommonModule,
     FoodCategoriesModule,
+    FoodsModule,
     ShelfLifeModule,
   ],
   controllers: [PantryController, PantryItemsController],

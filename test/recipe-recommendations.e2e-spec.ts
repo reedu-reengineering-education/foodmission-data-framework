@@ -95,7 +95,9 @@ describe('Recipe Recommendations (e2e)', () => {
         }),
       );
 
-      expect(mockRecommendationsService.getRecommendations).toHaveBeenCalledWith(
+      expect(
+        mockRecommendationsService.getRecommendations,
+      ).toHaveBeenCalledWith(
         'test-user-id',
         expect.objectContaining({
           expiringWithinDays: undefined,
@@ -115,7 +117,9 @@ describe('Recipe Recommendations (e2e)', () => {
         })
         .expect(200);
 
-      expect(mockRecommendationsService.getRecommendations).toHaveBeenCalledWith(
+      expect(
+        mockRecommendationsService.getRecommendations,
+      ).toHaveBeenCalledWith(
         'test-user-id',
         expect.objectContaining({
           expiringWithinDays: 14,

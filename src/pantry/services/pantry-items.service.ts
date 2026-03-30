@@ -25,6 +25,7 @@ import { PantryService } from './pantry.service';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopping-list-item.dto';
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
+import { FoodRepository } from '../../foods/repositories/food.repository';
 import { Prisma, Unit } from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 
@@ -37,6 +38,7 @@ export class PantryItemService {
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
     private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodRepository: FoodRepository,
     private readonly shelfLifeService: ShelfLifeService,
   ) {}
 
@@ -232,9 +234,7 @@ export class PantryItemService {
   }
 
   private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.prisma.food.findUnique({
-      where: { id: foodId },
-    });
+    const food = await this.foodRepository.findById(foodId);
 
     if (!food) {
       throw new NotFoundException('Food item not found');
@@ -259,10 +259,7 @@ export class PantryItemService {
     foodCategoryId?: string,
   ): Promise<string | null> {
     if (foodId) {
-      const food = await this.prisma.food.findUnique({
-        where: { id: foodId },
-        select: { name: true },
-      });
+      const food = await this.foodRepository.findById(foodId);
       return food?.name ?? null;
     }
     if (foodCategoryId) {
