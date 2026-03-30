@@ -122,9 +122,9 @@ describe('Recipe Recommendations (e2e)', () => {
       ).toHaveBeenCalledWith(
         'test-user-id',
         expect.objectContaining({
-          expiringWithinDays: 14,
-          minMatchPercentage: 50,
-          limit: 5,
+          expiringWithinDays: '14',
+          minMatchPercentage: '50',
+          limit: '5',
         }),
       );
     });
