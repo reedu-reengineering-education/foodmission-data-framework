@@ -28,7 +28,6 @@ import {
 describe('PantryItemService', () => {
   let service: PantryItemService;
   let repository: PantryItemRepository;
-  let prisma: PrismaService;
   let pantryService: PantryService;
 
   const mockPrismaService = {
