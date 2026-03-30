@@ -3,9 +3,10 @@ import { RecipeRecommendationsController } from './controllers/recipe-recommenda
 import { RecipeRecommendationsService } from './services/recipe-recommendations.service';
 import { DatabaseModule } from '../database/database.module';
 import { PantryModule } from '../pantry/pantry.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [DatabaseModule, PantryModule],
+  imports: [DatabaseModule, PantryModule, UsersModule],
   controllers: [RecipeRecommendationsController],
   providers: [RecipeRecommendationsService],
   exports: [RecipeRecommendationsService],
