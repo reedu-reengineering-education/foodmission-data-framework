@@ -51,6 +51,14 @@ export class PantryItemResponseDto {
   @Expose()
   expiryDate?: Date;
 
+  @ApiPropertyOptional({
+    description: 'Source of expiry date calculation',
+    example: 'auto_foodkeeper',
+    enum: ['manual', 'auto_foodkeeper'],
+  })
+  @Expose()
+  expiryDateSource?: string;
+
   @ApiProperty({
     description: 'The ID of the pantry',
     example: 'uuid-pantry-id',
