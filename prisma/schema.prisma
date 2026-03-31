@@ -288,7 +288,6 @@ model FoodCategory {
 model FoodShelfLife {
   id                           String   @id @default(uuid())
   foodKeeperProductId          Int      @unique
-  foodKeeperCategoryId         Int?
   name                         String
   keywords                     String[]
   categoryName                 String?

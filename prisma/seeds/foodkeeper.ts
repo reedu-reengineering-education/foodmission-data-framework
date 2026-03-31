@@ -113,7 +113,6 @@ export async function seedFoodKeeper(
         },
         create: {
           foodKeeperProductId: product.id,
-          foodKeeperCategoryId: product.categoryId,
           name: product.name,
           keywords: product.keywords,
           categoryName: category?.name ?? null,
