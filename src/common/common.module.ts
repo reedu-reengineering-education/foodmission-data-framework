@@ -4,13 +4,13 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggingService } from './logging/logging.service';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { validateEnvironment } from '../security/config/environment.validation';
-import { UserModule } from '../user/user.module';
+import { UsersModule } from '../users/users.module';
 import { DataBaseAuthGuard } from './guards/database-auth.guards';
 
 @Global()
 @Module({
   imports: [
-    UserModule,
+    UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateEnvironment,

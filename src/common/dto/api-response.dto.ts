@@ -41,11 +41,11 @@ export class ApiErrorResponseDto {
   path: string;
 
   @ApiProperty({
-    description: 'Correlation ID for request tracing',
+    description: 'Trace ID for request tracing',
     example: 'abc123def456',
     required: false,
   })
-  correlationId?: string;
+  traceId?: string;
 }
 
 export class ApiSuccessResponseDto<T> {
@@ -68,11 +68,11 @@ export class ApiSuccessResponseDto<T> {
   timestamp: string;
 
   @ApiProperty({
-    description: 'Correlation ID for request tracing',
+    description: 'Trace ID for request tracing',
     example: 'abc123def456',
     required: false,
   })
-  correlationId?: string;
+  traceId?: string;
 }
 
 export class PaginationMetaDto {

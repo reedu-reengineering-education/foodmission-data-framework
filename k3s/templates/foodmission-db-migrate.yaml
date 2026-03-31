@@ -22,7 +22,7 @@ spec:
           capabilities:
             drop:
               - ALL
-        command: ["npx", "prisma", "migrate", "deploy"]
+        command: ["node", "node_modules/.bin/prisma", "migrate", "deploy"]
         envFrom:
           - secretRef:
               name: foodmission-api-secret

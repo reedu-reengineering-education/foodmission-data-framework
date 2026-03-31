@@ -19,13 +19,11 @@ This guide provides comprehensive information for developers working on the FOOD
 
 ### Prerequisites
 
-- **Node.js** 22+ (specified in `.nvmrc`)
-- **npm** 10.x (comes with Node.js 22, see `package.json` engines field)
+- **Node.js** 24+ (specified in `.nvmrc`)
+- **npm** 10+ (comes with Node.js 24)
 - **Docker** and Docker Compose
 - **Git**
 - **VSCode** (recommended) with Dev Containers extension
-
-**Note:** This project requires npm 10.x to match the Docker environment. If you're using a different npm version, use `nvm use` to switch to Node.js 22, which includes npm 10.x.
 
 ### Development Setup
 
@@ -112,6 +110,7 @@ foodmission-data-framework/
 │   └── schema.prisma     # Prisma schema
 ├── scripts/              # Utility scripts
 ├── src/                  # Application source code
+│   ├── app/              # Barrel modules that group `AppModule` imports (infrastructure, catalog, domains)
 │   ├── auth/             # Authentication module
 │   ├── cache/            # Caching services
 │   ├── common/           # Shared utilities
@@ -324,7 +323,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error: errorInfo.error,
       timestamp: new Date().toISOString(),
       path: request.url,
-      correlationId: this.getCorrelationId(request),
+      traceId: this.getTraceId(request),
     });
   }
 }
@@ -374,6 +373,10 @@ npm run db:migrate:reset
 4. **Consider data migration scripts for complex changes**
 
 ### Seeding
+
+#### Keycloak and dev users
+
+`User.keycloakId` must match the JWT **`sub`** claim. Development seeds use stable UUIDs in `prisma/seeds/keycloak-dev-user-ids.ts`; the same IDs appear as user `id` values in `keycloak/foodmission-realm.dev.json`. Import that realm into Keycloak before relying on seeded pantries, lists, and knowledge progress. Details: [keycloak/README.md](../keycloak/README.md#seeded-users-and-database).
 
 #### Development Seeds
 
@@ -810,7 +813,7 @@ kubectl logs -f deployment/foodmission-api -n foodmission
 # Search for specific errors
 kubectl logs deployment/foodmission-api -n foodmission | grep "ERROR"
 
-# View logs with correlation ID
+# View logs with trace ID
 kubectl logs deployment/foodmission-api -n foodmission | grep "req-12345"
 ```
 

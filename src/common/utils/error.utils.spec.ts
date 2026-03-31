@@ -17,7 +17,7 @@ import {
   isClientError,
   isServerError,
   sanitizeErrorForClient,
-  generateCorrelationId,
+  generateTraceId,
   formatErrorForLogging,
   isRetryableError,
   getUserFriendlyMessage,
@@ -290,18 +290,21 @@ describe('ErrorUtils', () => {
     });
   });
 
-  describe('generateCorrelationId', () => {
-    it('should generate a correlation ID', () => {
-      const id = generateCorrelationId();
+  describe('generateTraceId', () => {
+    it('should generate a trace ID (UUID format)', () => {
+      const id = generateTraceId();
 
       expect(typeof id).toBe('string');
       expect(id.length).toBeGreaterThan(0);
-      expect(id).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+      expect(id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
     });
 
     it('should generate unique IDs', () => {
-      const id1 = generateCorrelationId();
-      const id2 = generateCorrelationId();
+      const id1 = generateTraceId();
+      const id2 = generateTraceId();
 
       expect(id1).not.toBe(id2);
     });

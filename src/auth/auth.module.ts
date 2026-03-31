@@ -11,13 +11,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserContextService } from './user-context.service';
 import { DatabaseModule } from '../database/database.module';
-import { UserModule } from '../user/user.module';
+import { UsersModule } from '../users/users.module';
 import { KeycloakAdminModule } from '../keycloak-admin/keycloak-admin.module';
 
 @Module({
   imports: [
     DatabaseModule,
-    UserModule,
+    UsersModule,
     KeycloakAdminModule,
     HttpModule,
     ConfigModule,

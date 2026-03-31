@@ -18,10 +18,6 @@ export class SecurityMiddleware implements NestMiddleware {
     this.helmetMiddleware(req, res, () => {
       // Add custom security headers
       res.setHeader('X-API-Version', '1.0.0');
-      res.setHeader(
-        'X-Request-ID',
-        req.headers['x-correlation-id'] || 'unknown',
-      );
 
       // Remove sensitive headers that might leak information
       res.removeHeader('X-Powered-By');
@@ -66,7 +62,7 @@ export class SecurityMiddleware implements NestMiddleware {
         method: req.method,
         body: req.body,
         query: req.query,
-        headers: req.headers,
+        headers: this.sanitizeHeaders(req.headers),
       });
     }
 
@@ -87,5 +83,25 @@ export class SecurityMiddleware implements NestMiddleware {
         paramCount: Object.keys(req.query || {}).length,
       });
     }
+  }
+
+  private sanitizeHeaders(headers: any): any {
+    const sanitized = { ...headers };
+
+    // Remove sensitive headers
+    const sensitiveHeaders = [
+      'authorization',
+      'cookie',
+      'x-api-key',
+      'x-auth-token',
+    ];
+
+    sensitiveHeaders.forEach((header) => {
+      if (sanitized[header]) {
+        sanitized[header] = '[REDACTED]';
+      }
+    });
+
+    return sanitized;
   }
 }
