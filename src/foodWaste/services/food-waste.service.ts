@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { FoodWasteRepository } from '../repositories/food-waste.repository';
 import { CreateFoodWasteDto } from '../dto/create-food-waste.dto';
@@ -191,9 +196,13 @@ export class FoodWasteService {
         if (!pantryItem) {
           throw new NotFoundException('Pantry item not found');
         }
-        // Validate pantry ownership through pantry
-        // This should be done by checking if pantry.userId === userId
-        // For now, trusting the controller to handle auth
+        
+        // Validate pantry ownership - security check
+        if (pantryItem.pantry.userId !== userId) {
+          throw new ForbiddenException(
+            'Cannot create waste entry for pantry item that does not belong to you',
+          );
+        }
       }
 
       // Calculate carbon footprint if not provided
