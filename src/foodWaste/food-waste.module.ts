@@ -6,11 +6,16 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { PantryModule } from '../pantry/pantry.module';
 import { FoodsModule } from '../foods/foods.module';
+import { UsersRepository } from '../users/repositories/users.repository';
 
 @Module({
   imports: [DatabaseModule, CommonModule, PantryModule, FoodsModule],
   controllers: [FoodWasteController],
-  providers: [FoodWasteService, FoodWasteRepository],
+  providers: [
+    FoodWasteService,
+    FoodWasteRepository,
+    UsersRepository,
+  ],
   exports: [FoodWasteService, FoodWasteRepository],
 })
 export class FoodWasteModule {}
