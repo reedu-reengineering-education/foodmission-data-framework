@@ -99,6 +99,31 @@ export class PantryItemRepository {
     });
   }
 
+  /**
+   * Find all expired items for a specific user
+   * Filters by userId through pantry relation for security
+   */
+  async findExpiredByUser(
+    userId: string,
+    currentDate: Date,
+  ): Promise<PantryItemWithRelations[]> {
+    return await this.prisma.pantryItem.findMany({
+      where: {
+        expiryDate: {
+          lt: currentDate,
+        },
+        pantry: {
+          userId: userId,
+        },
+      },
+      include: {
+        pantry: true,
+        food: true,
+        foodCategory: true,
+      },
+    });
+  }
+
   async update(
     id: string,
     data: Prisma.PantryItemUpdateInput,

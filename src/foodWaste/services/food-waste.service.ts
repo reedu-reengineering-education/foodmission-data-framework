@@ -5,6 +5,10 @@ import { CreateFoodWasteDto } from '../dto/create-food-waste.dto';
 import { UpdateFoodWasteDto } from '../dto/update-food-waste.dto';
 import { QueryFoodWasteDto } from '../dto/query-food-waste.dto';
 import {
+  BatchCreateFoodWasteDto,
+  ExpiredItemToWasteDto,
+} from '../dto/batch-create-food-waste.dto';
+import {
   FoodWasteResponseDto,
   MultipleFoodWasteResponseDto,
 } from '../dto/food-waste-response.dto';
@@ -360,26 +364,18 @@ export class FoodWasteService {
   }
 
   /**
-   * Detect expired items from pantry
-   * TODO: Optimize to filter by userId through pantry relation
+   * Detect expired items from pantry for the authenticated user
+   * Filters by userId through pantry relation for security and performance
    */
   async detectExpiredItems(userId: string): Promise<any[]> {
     try {
-      // Get all pantry items for the user that have expired
       const now = new Date();
 
-      // We need to get user's pantries first, then items
-      // For simplicity, we'll query all pantry items and filter by expiry
-      // This should be optimized with proper joins
-      const allItems = await this.pantryItemRepository.findAll();
-
-      // Filter for expired items belonging to user's pantries
-      // Note: This is simplified - in production, would use proper query with joins
-      const expiredItems = allItems.filter((item) => {
-        // For now, returning all expired items
-        // TODO: Filter by userId through item.pantry.userId === userId
-        return item.expiryDate && item.expiryDate < now;
-      });
+      // Query expired items with proper userId filtering through pantry relation
+      const expiredItems = await this.pantryItemRepository.findExpiredByUser(
+        userId,
+        now,
+      );
 
       this.logger.debug(
         `Found ${expiredItems.length} expired items for user ${userId}`,
@@ -399,6 +395,88 @@ export class FoodWasteService {
       this.logger.error('Error detecting expired items', error);
       throw handlePrismaError(error, 'detect expired items', 'PantryItem');
     }
+  }
+
+  /**
+   * Batch create food waste entries from expired pantry items
+   * User selects which expired items to record as waste
+   */
+  async batchCreateFromExpired(
+    dto: BatchCreateFoodWasteDto,
+    userId: string,
+  ): Promise<FoodWasteResponseDto[]> {
+    const results: FoodWasteResponseDto[] = [];
+    const errors: Array<{ pantryItemId: string; error: string }> = [];
+
+    for (const item of dto.items) {
+      try {
+        // Load pantry item with relations
+        const pantryItem = await this.pantryItemRepository.findById(
+          item.pantryItemId,
+        );
+
+        if (!pantryItem) {
+          errors.push({
+            pantryItemId: item.pantryItemId,
+            error: 'Pantry item not found',
+          });
+          continue;
+        }
+
+        // Validate ownership through pantry.userId
+        if (pantryItem.pantry.userId !== userId) {
+          errors.push({
+            pantryItemId: item.pantryItemId,
+            error: 'Not authorized - item does not belong to user',
+          });
+          continue;
+        }
+
+        // Calculate carbon footprint
+        const carbonFootprint = await this.calculateCarbonFootprint(
+          pantryItem.foodId!,
+          pantryItem.quantity,
+          pantryItem.unit,
+        );
+
+        // Create waste entry
+        const waste = await this.foodWasteRepository.create({
+          userId,
+          pantryItemId: item.pantryItemId,
+          foodId: pantryItem.foodId!,
+          quantity: pantryItem.quantity,
+          unit: pantryItem.unit,
+          wasteReason: WasteReason.EXPIRED,
+          detectionMethod: DetectionMethod.AUTOMATIC,
+          costEstimate: item.costEstimate,
+          notes: item.notes,
+          carbonFootprint,
+          wastedAt: new Date(),
+        });
+
+        results.push(this.toResponse(waste));
+      } catch (error) {
+        this.logger.error(
+          `Error creating waste for pantry item ${item.pantryItemId}`,
+          error,
+        );
+        errors.push({
+          pantryItemId: item.pantryItemId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+
+    // Log summary
+    this.logger.log(
+      `Batch create: ${results.length} succeeded, ${errors.length} failed`,
+    );
+
+    if (errors.length > 0) {
+      this.logger.warn('Failed items:', errors);
+    }
+
+    return results;
   }
 
   /**

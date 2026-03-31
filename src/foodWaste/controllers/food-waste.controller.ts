@@ -30,6 +30,7 @@ import { FoodWasteService } from '../services/food-waste.service';
 import { CreateFoodWasteDto } from '../dto/create-food-waste.dto';
 import { UpdateFoodWasteDto } from '../dto/update-food-waste.dto';
 import { QueryFoodWasteDto } from '../dto/query-food-waste.dto';
+import { BatchCreateFoodWasteDto } from '../dto/batch-create-food-waste.dto';
 import {
   FoodWasteResponseDto,
   MultipleFoodWasteResponseDto,
@@ -160,6 +161,29 @@ export class FoodWasteController {
   @ApiCrudErrorResponses()
   detectExpired(@CurrentUser('id') userId: string): Promise<any[]> {
     return this.foodWasteService.detectExpiredItems(userId);
+  }
+
+  @Post('batch-create-from-expired')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @ApiOperation({
+    summary: 'Batch create waste entries from expired items',
+    description:
+      'Create multiple food waste entries from selected expired pantry items in one request. User can choose which items to record and provide individual cost estimates.',
+  })
+  @ApiBody({ type: BatchCreateFoodWasteDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Waste entries created successfully',
+    type: [FoodWasteResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  batchCreateFromExpired(
+    @Body() dto: BatchCreateFoodWasteDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<FoodWasteResponseDto[]> {
+    return this.foodWasteService.batchCreateFromExpired(dto, userId);
   }
 
   @Get('statistics')
