@@ -2506,6 +2506,190 @@ paths:
         - JWT-auth: []
       summary: Remove item from pantry
       tags: *ref_16
+  /api/v1/food-waste:
+    post:
+      operationId: createFoodWaste
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodWasteDto'
+            example:
+              pantryItemId: "11111111-1111-1111-1111-111111111111"
+              foodId: "22222222-2222-2222-2222-222222222222"
+              quantity: 0.5
+              unit: "KG"
+              wasteReason: "EXPIRED"
+              detectionMethod: "AUTOMATIC"
+              notes: "Found past expiry date in the back of the fridge"
+              costEstimate: 2.99
+              # optional: carbonFootprint can be omitted to calculate automatically
+              wastedAt: "2026-03-11T10:30:00.000Z"
+      responses:
+        '201':
+          description: Food waste entry created successfully
+        '400':
+          description: Bad Request - Invalid input data or validation failed
+        '401':
+          description: Unauthorized - Authentication required or invalid token
+        '403':
+          description: Forbidden - Insufficient permissions
+      security:
+        - JWT-auth: []
+      summary: Create a new food waste entry
+      tags:
+        - food-waste
+    get:
+      operationId: listFoodWaste
+      parameters:
+        - name: foodId
+          required: false
+        - name: pantryItemId
+          required: false
+        - name: wasteReason
+          required: false
+        - name: detectionMethod
+          required: false
+        - name: dateFrom
+          required: false
+        - name: dateTo
+          required: false
+        - name: page
+          required: false
+        - name: limit
+          required: false
+      responses:
+        '200':
+          description: List of food waste entries
+      security:
+        - JWT-auth: []
+      summary: List food waste entries with filtering and pagination
+      tags:
+        - food-waste
+  /api/v1/food-waste/detect-expired:
+    get:
+      operationId: detectExpiredFoodWaste
+      parameters: []
+      responses:
+        '200':
+          description: Expired pantry items detected and suggested waste entries
+      security:
+        - JWT-auth: []
+      summary: Detect expired pantry items for the authenticated user
+      tags:
+        - food-waste
+  /api/v1/food-waste/statistics:
+    get:
+      operationId: getFoodWasteStatistics
+      parameters:
+        - name: dateFrom
+          required: false
+        - name: dateTo
+          required: false
+      responses:
+        '200':
+          description: Aggregated food waste statistics
+      security:
+        - JWT-auth: []
+      summary: Get aggregated food waste statistics (totals, breakdowns, top foods)
+      tags:
+        - food-waste
+  /api/v1/food-waste/trends:
+    get:
+      operationId: getFoodWasteTrends
+      parameters:
+        - name: dateFrom
+          required: true
+        - name: dateTo
+          required: true
+        - name: interval
+          required: false
+          schema:
+            type: string
+            enum:
+              - day
+              - week
+              - month
+      responses:
+        '200':
+          description: Time-series waste trends
+      security:
+        - JWT-auth: []
+      summary: Get time-series trends for food waste
+      tags:
+        - food-waste
+  /api/v1/food-waste/{id}:
+    get:
+      operationId: getFoodWasteById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Food waste entry retrieved successfully
+        '404':
+          description: Not Found
+      security:
+        - JWT-auth: []
+      summary: Get a food waste entry by ID
+      tags:
+        - food-waste
+    patch:
+      operationId: updateFoodWaste
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFoodWasteDto'
+            example:
+              quantity: 1.0
+              unit: "KG"
+              wasteReason: "SPOILED"
+              notes: "Updated after closer inspection"
+              costEstimate: 4.5
+              wastedAt: "2026-03-12T08:00:00.000Z"
+      responses:
+        '200':
+          description: Food waste entry updated successfully
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      security:
+        - JWT-auth: []
+      summary: Update a food waste entry
+      tags:
+        - food-waste
+    delete:
+      operationId: deleteFoodWaste
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Food waste entry deleted successfully
+        '404':
+          description: Not Found
+      security:
+        - JWT-auth: []
+      summary: Delete a food waste entry
+      tags:
+        - food-waste
   /api/v1/meals:
     post:
       operationId: create
@@ -3768,6 +3952,8 @@ tags:
     description: User profile management and dietary preferences configuration
   - name: health
     description: Application health checks, readiness probes, and monitoring metrics
+  - name: food-waste
+    description: Food waste tracking, automatic detection, carbon & cost statistics
 servers:
   - url: http://localhost:3000
     description: Development server
