@@ -16,8 +16,8 @@ import {
   MostWastedFoodDto,
   WasteTrendDataPointDto,
 } from '../dto/food-waste-statistics.dto';
-import { PantryItemRepository } from '../../pantryItem/repositories/pantryItem.repository';
-import { FoodRepository } from '../../food/repositories/food.repository';
+import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
+import { FoodRepository } from '../../foods/repositories/food.repository';
 import { Prisma, WasteReason, DetectionMethod, Unit } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
