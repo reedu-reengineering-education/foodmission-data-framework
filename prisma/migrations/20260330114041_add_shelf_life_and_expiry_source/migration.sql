@@ -1,11 +1,10 @@
 -- AlterTable
-ALTER TABLE "pantry_items" ADD COLUMN     "expiryDateSource" TEXT;
+ALTER TABLE "pantry_items" ADD COLUMN "expiryDateSource" TEXT;
 
 -- CreateTable
 CREATE TABLE "food_shelf_life" (
     "id" TEXT NOT NULL,
     "foodKeeperProductId" INTEGER NOT NULL,
-    "foodKeeperCategoryId" INTEGER,
     "name" TEXT NOT NULL,
     "keywords" TEXT[],
     "categoryName" TEXT,
@@ -18,7 +17,6 @@ CREATE TABLE "food_shelf_life" (
     "refrigeratorAfterOpeningDays" INTEGER,
     "freezerMinDays" INTEGER,
     "freezerMaxDays" INTEGER,
-    "tips" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
