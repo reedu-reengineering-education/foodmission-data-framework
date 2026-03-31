@@ -13,10 +13,10 @@ import {
 } from '../interfaces/recommendation-score.interface';
 import {
   MatchedIngredientDto,
-  MultipleRecipeRecommendationResponseDto,
-  RecipeRecommendationResponseDto,
-} from '../dto/recipe-recommendation-response.dto';
-import { RecipeResponseDto } from '../../recipes/dto/recipe-response.dto';
+  MultipleRecommendationResponseDto,
+  RecommendationResponseDto,
+} from '../dto/recommendation-response.dto';
+import { RecipeResponseDto } from '../dto/recipe-response.dto';
 
 export interface RecommendationOptions {
   expiringWithinDays?: number;
@@ -25,8 +25,8 @@ export interface RecommendationOptions {
 }
 
 @Injectable()
-export class RecipeRecommendationsService {
-  private readonly logger = new Logger(RecipeRecommendationsService.name);
+export class RecommendationsService {
+  private readonly logger = new Logger(RecommendationsService.name);
   private readonly EXPIRY_BOOST = 10;
 
   constructor(
@@ -38,7 +38,7 @@ export class RecipeRecommendationsService {
   async getRecommendations(
     userId: string,
     options: RecommendationOptions = {},
-  ): Promise<MultipleRecipeRecommendationResponseDto> {
+  ): Promise<MultipleRecommendationResponseDto> {
     const {
       expiringWithinDays = 7,
       minMatchPercentage = 30,
@@ -262,7 +262,7 @@ export class RecipeRecommendationsService {
 
   private toRecommendationResponse(
     scored: RecipeRecommendationScore,
-  ): RecipeRecommendationResponseDto {
+  ): RecommendationResponseDto {
     const recipe = plainToInstance(RecipeResponseDto, scored.recipe, {
       excludeExtraneousValues: true,
     });
@@ -281,7 +281,7 @@ export class RecipeRecommendationsService {
     );
 
     return plainToInstance(
-      RecipeRecommendationResponseDto,
+      RecommendationResponseDto,
       {
         recipeId: scored.recipeId,
         recipe,

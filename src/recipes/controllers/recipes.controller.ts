@@ -81,6 +81,29 @@ export class RecipeController {
     return this.recipeService.findAll(userId, query);
   }
 
+  @Get('me')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: "List current user's own recipes" })
+  @ApiQuery({ name: 'tags', required: false, isArray: true })
+  @ApiQuery({ name: 'allergens', required: false, isArray: true })
+  @ApiQuery({ name: 'difficulty', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'My recipes retrieved successfully',
+    type: MultipleRecipeResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  findMine(
+    @CurrentUser('id') userId: string,
+    @Query() query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
+    return this.recipeService.findMine(userId, query);
+  }
+
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

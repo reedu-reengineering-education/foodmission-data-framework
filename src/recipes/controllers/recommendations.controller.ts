@@ -9,16 +9,16 @@ import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { RecipeRecommendationsService } from '../services/recipe-recommendations.service';
+import { RecommendationsService } from '../services/recommendations.service';
 import { QueryRecommendationsDto } from '../dto/query-recommendations.dto';
-import { MultipleRecipeRecommendationResponseDto } from '../dto/recipe-recommendation-response.dto';
+import { MultipleRecommendationResponseDto } from '../dto/recommendation-response.dto';
 
-@ApiTags('recipe-recommendations')
-@Controller('recipe-recommendations')
+@ApiTags('recipes')
+@Controller('recipes/me/recommendations')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
-export class RecipeRecommendationsController {
+export class RecommendationsController {
   constructor(
-    private readonly recommendationsService: RecipeRecommendationsService,
+    private readonly recommendationsService: RecommendationsService,
   ) {}
 
   @Get()
@@ -34,12 +34,12 @@ export class RecipeRecommendationsController {
   @ApiResponse({
     status: 200,
     description: 'Recipe recommendations retrieved successfully',
-    type: MultipleRecipeRecommendationResponseDto,
+    type: MultipleRecommendationResponseDto,
   })
   async getRecommendations(
     @CurrentUser('id') userId: string,
     @Query() query: QueryRecommendationsDto,
-  ): Promise<MultipleRecipeRecommendationResponseDto> {
+  ): Promise<MultipleRecommendationResponseDto> {
     return this.recommendationsService.getRecommendations(userId, {
       expiringWithinDays: query.expiringWithinDays,
       minMatchPercentage: query.minMatchPercentage,

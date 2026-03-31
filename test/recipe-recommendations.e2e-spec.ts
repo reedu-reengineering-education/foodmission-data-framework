@@ -4,8 +4,8 @@ import request from 'supertest';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../src/common/guards/database-auth.guards';
 import { createTestApp, closeTestApp } from './test-utils/e2e-helpers';
-import { RecipeRecommendationsController } from '../src/recipe-recommendations/controllers/recipe-recommendations.controller';
-import { RecipeRecommendationsService } from '../src/recipe-recommendations/services/recipe-recommendations.service';
+import { RecommendationsController } from '../src/recipes/controllers/recommendations.controller';
+import { RecommendationsService } from '../src/recipes/services/recommendations.service';
 
 describe('Recipe Recommendations (e2e)', () => {
   let app: INestApplication;
@@ -50,10 +50,10 @@ describe('Recipe Recommendations (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      controllers: [RecipeRecommendationsController],
+      controllers: [RecommendationsController],
       providers: [
         {
-          provide: RecipeRecommendationsService,
+          provide: RecommendationsService,
           useValue: mockRecommendationsService,
         },
       ],
@@ -81,10 +81,10 @@ describe('Recipe Recommendations (e2e)', () => {
     jest.clearAllMocks();
   });
 
-  describe('GET /recipe-recommendations', () => {
+  describe('GET /recipes/me/recommendations', () => {
     it('should return recipe recommendations with default parameters', async () => {
       const res = await request(app.getHttpServer())
-        .get('/recipe-recommendations')
+        .get('/recipes/me/recommendations')
         .expect(200);
 
       expect(res.body).toEqual(
@@ -109,7 +109,7 @@ describe('Recipe Recommendations (e2e)', () => {
 
     it('should pass query parameters to service', async () => {
       await request(app.getHttpServer())
-        .get('/recipe-recommendations')
+        .get('/recipes/me/recommendations')
         .query({
           expiringWithinDays: 14,
           minMatchPercentage: 50,
@@ -131,7 +131,7 @@ describe('Recipe Recommendations (e2e)', () => {
 
     it('should return recommendation data with expected structure', async () => {
       const res = await request(app.getHttpServer())
-        .get('/recipe-recommendations')
+        .get('/recipes/me/recommendations')
         .expect(200);
 
       expect(res.body.data).toHaveLength(1);
@@ -156,7 +156,7 @@ describe('Recipe Recommendations (e2e)', () => {
 
     it('should return matched ingredients with expiry info', async () => {
       const res = await request(app.getHttpServer())
-        .get('/recipe-recommendations')
+        .get('/recipes/me/recommendations')
         .expect(200);
 
       const matchedIngredients = res.body.data[0].matchedIngredients;
@@ -177,7 +177,7 @@ describe('Recipe Recommendations (e2e)', () => {
       });
 
       const res = await request(app.getHttpServer())
-        .get('/recipe-recommendations')
+        .get('/recipes/me/recommendations')
         .expect(200);
 
       expect(res.body.data).toHaveLength(0);

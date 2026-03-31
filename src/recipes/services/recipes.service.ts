@@ -52,6 +52,64 @@ export class RecipesService {
     }
   }
 
+  async findMine(
+    userId: string,
+    query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
+    const {
+      page = 1,
+      limit = 10,
+      category,
+      cuisineType,
+      dietaryLabels,
+      tags,
+      allergens,
+      difficulty,
+      search,
+    } = query;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.RecipeWhereInput = {
+      userId,
+      ...(category ? { category } : {}),
+      ...(cuisineType ? { cuisineType } : {}),
+      ...(difficulty ? { difficulty } : {}),
+      ...(tags && tags.length
+        ? { tags: { hasSome: tags.map((t) => t.trim()) } }
+        : {}),
+      ...(allergens && allergens.length
+        ? { allergens: { hasSome: allergens } }
+        : {}),
+      ...(dietaryLabels && dietaryLabels.length
+        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
+        : {}),
+      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
+    };
+
+    try {
+      const result = await this.recipeRepository.findWithPagination({
+        skip,
+        take: limit,
+        where,
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return plainToInstance(
+        MultipleRecipeResponseDto,
+        {
+          data: result.data.map((recipe) => this.toResponse(recipe)),
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
+          totalPages: result.totalPages,
+        },
+        { excludeExtraneousValues: true },
+      );
+    } catch (error) {
+      throw handlePrismaError(error, 'find recipes', 'Recipe');
+    }
+  }
+
   async findAll(
     userId: string,
     query: QueryRecipeDto,

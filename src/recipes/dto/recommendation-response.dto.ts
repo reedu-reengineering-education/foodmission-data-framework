@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { RecipeResponseDto } from '../../recipes/dto/recipe-response.dto';
+import { RecipeResponseDto } from './recipe-response.dto';
 
 export class MatchedIngredientDto {
   @ApiProperty({
@@ -23,7 +23,7 @@ export class MatchedIngredientDto {
   daysUntilExpiry: number | null;
 }
 
-export class RecipeRecommendationResponseDto {
+export class RecommendationResponseDto {
   @ApiProperty({ description: 'Recipe ID', example: 'uuid-recipe-id' })
   @Expose()
   recipeId: string;
@@ -62,14 +62,14 @@ export class RecipeRecommendationResponseDto {
   matchedIngredients: MatchedIngredientDto[];
 }
 
-export class MultipleRecipeRecommendationResponseDto {
+export class MultipleRecommendationResponseDto {
   @ApiProperty({
     description: 'Recipe recommendations',
-    type: [RecipeRecommendationResponseDto],
+    type: [RecommendationResponseDto],
   })
   @Expose()
-  @Type(() => RecipeRecommendationResponseDto)
-  data: RecipeRecommendationResponseDto[];
+  @Type(() => RecommendationResponseDto)
+  data: RecommendationResponseDto[];
 
   @ApiProperty({ description: 'Number of items expiring soon', example: 5 })
   @Expose()
