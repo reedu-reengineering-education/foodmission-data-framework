@@ -1,7 +1,7 @@
 # Multi-stage Docker build for NestJS application
 
 # Stage 1: Development/Builder stage
-FROM node:24-alpine AS builder
+FROM node:25-alpine AS builder
 
 # Upgrade Alpine packages to fix security vulnerabilities (e.g., zlib)
 RUN apk update && apk upgrade --no-cache
@@ -30,7 +30,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production stage
-FROM node:24-alpine AS production
+FROM node:25-alpine AS production
 
 # Upgrade Alpine packages to fix security vulnerabilities (e.g., zlib)
 RUN apk update && apk upgrade --no-cache
