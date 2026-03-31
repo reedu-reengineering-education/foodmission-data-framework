@@ -23,7 +23,6 @@ interface FoodKeeperProduct {
   refrigeratorAfterOpeningDays: number | null;
   freezerMinDays: number | null;
   freezerMaxDays: number | null;
-  tips: string;
 }
 
 interface FoodKeeperData {
@@ -111,7 +110,6 @@ export async function seedFoodKeeper(
           refrigeratorAfterOpeningDays: product.refrigeratorAfterOpeningDays,
           freezerMinDays: product.freezerMinDays,
           freezerMaxDays: product.freezerMaxDays,
-          tips: product.tips,
         },
         create: {
           foodKeeperProductId: product.id,
@@ -128,7 +126,6 @@ export async function seedFoodKeeper(
           refrigeratorAfterOpeningDays: product.refrigeratorAfterOpeningDays,
           freezerMinDays: product.freezerMinDays,
           freezerMaxDays: product.freezerMaxDays,
-          tips: product.tips,
         },
       });
       created++;

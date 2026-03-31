@@ -72,13 +72,6 @@ export class FoodShelfLifeResponseDto {
   @ApiPropertyOptional({ description: 'Maximum days in freezer', example: 180 })
   @Expose()
   freezerMaxDays: number | null;
-
-  @ApiPropertyOptional({
-    description: 'Storage tips',
-    example: 'Keep refrigerated.',
-  })
-  @Expose()
-  tips: string | null;
 }
 
 export class MultipleFoodShelfLifeResponseDto {

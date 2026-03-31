@@ -301,7 +301,6 @@ model FoodShelfLife {
   refrigeratorAfterOpeningDays Int?
   freezerMinDays               Int?
   freezerMaxDays               Int?
-  tips                         String?
   createdAt                    DateTime @default(now())
   updatedAt                    DateTime @updatedAt
 
