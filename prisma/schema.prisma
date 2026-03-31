@@ -91,6 +91,7 @@ model Food {
   pantryItems       PantryItem[]
   mealItems         MealItem[]
   recipeIngredients RecipeIngredient[]
+  foodWastes        FoodWaste[]
 
   @@index([name])
   @@index([createdAt])
@@ -318,7 +319,7 @@ model User {
   meals             Meal[]
   mealLogs          MealLog[]
   knowledge         Knowledge[]
-  foodWaste                      FoodWaste[]
+  foodWaste         FoodWaste[]
   knowledgeProgress UserKnowledgeProgress[]
   challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]
@@ -407,7 +408,7 @@ model PantryItem {
   pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
   food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
   foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
-  foodWaste FoodWaste[]
+  foodWaste    FoodWaste[]
 
   @@unique([pantryId, foodId])
   @@unique([pantryId, foodCategoryId])
@@ -415,8 +416,6 @@ model PantryItem {
   @@index([expiryDate])
   @@map("pantry_items")
 }
-
-
 
 enum WasteReason {
   EXPIRED
@@ -431,8 +430,6 @@ enum DetectionMethod {
   AUTOMATIC
   MANUAL
 }
-
-
 
 model Meal {
   id                  String         @id @default(uuid())
@@ -601,6 +598,7 @@ model FoodWaste {
   @@index([wasteReason])
   @@map("food_waste")
 }
+
 model Mission {
   id          String   @id @default(uuid())
   title       String
