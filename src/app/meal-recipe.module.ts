@@ -5,11 +5,6 @@ import { MealLogsModule } from '../meal-logs/meal-logs.module';
 import { RecipesModule } from '../recipes/recipes.module';
 
 @Module({
-  imports: [
-    MealsModule,
-    MealItemsModule,
-    RecipesModule,
-    MealLogsModule,
-  ],
+  imports: [MealsModule, MealItemsModule, RecipesModule, MealLogsModule],
 })
 export class MealRecipeModule {}
