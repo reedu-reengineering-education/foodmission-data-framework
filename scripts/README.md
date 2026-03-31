@@ -68,4 +68,5 @@ chmod +x scripts/*.sh
 
 ## Documentation
 
-See `docs/DATABASE_SEEDING_MIGRATION.md` for comprehensive documentation.
+- Root [README.md](../README.md) — setup, migrations, and `npm run db:*` commands.
+- [prisma/seed.ts](../prisma/seed.ts) — main database seed entrypoint.

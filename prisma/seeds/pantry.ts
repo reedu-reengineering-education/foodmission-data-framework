@@ -1,4 +1,9 @@
 import { PrismaClient, Pantry } from '@prisma/client';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import {
+  findUserByKeycloakId,
+  warnSeedSkippedMissingUser,
+} from './seed-helpers';
 
 export interface PantrySeedData {
   userKeycloakId: string;
@@ -6,54 +11,37 @@ export interface PantrySeedData {
 }
 
 export const pantryData: PantrySeedData[] = [
-  { userKeycloakId: 'dev-user-1', title: 'My Kitchen Pantry' },
-  { userKeycloakId: 'dev-user-2', title: 'Vegan Pantry' },
-  { userKeycloakId: 'dev-user-3', title: 'BBQ Supplies' },
-  { userKeycloakId: 'dev-user-4', title: 'Keto Pantry' },
-  { userKeycloakId: 'admin-user-1', title: 'Office Kitchen' },
+  { userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1, title: 'My Kitchen Pantry' },
+  { userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2, title: 'Vegan Pantry' },
+  { userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3, title: 'BBQ Supplies' },
+  { userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4, title: 'Keto Pantry' },
+  { userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1, title: 'Office Kitchen' },
 ];
 
 export async function seedPantries(prisma: PrismaClient) {
   console.log('🥫 Seeding pantries...');
 
-  const pantries: Pantry[] = [];
+  const users = await prisma.user.findMany({
+    include: { pantry: true },
+  });
 
-  for (const pantryInfo of pantryData) {
-    const user = await prisma.user.findUnique({
-      where: { keycloakId: pantryInfo.userKeycloakId },
-    });
-
-    if (!user) {
-      console.warn(
-        `⚠️  User ${pantryInfo.userKeycloakId} not found, skipping pantry "${pantryInfo.title}"`,
-      );
-      continue;
-    }
-
-    // Check if pantry with same title already exists for this user
-    const existingPantry = await prisma.pantry.findFirst({
-      where: {
-        userId: user.id,
-        title: pantryInfo.title,
-      },
-    });
-
-    if (existingPantry) {
-      console.log(
-        `ℹ️  Pantry "${pantryInfo.title}" already exists for user ${pantryInfo.userKeycloakId}, skipping...`,
-      );
-      pantries.push(existingPantry);
-    } else {
-      const pantry = await prisma.pantry.create({
+  let created = 0;
+  for (const user of users) {
+    if (!user.pantry) {
+      await prisma.pantry.create({
         data: {
-          title: pantryInfo.title,
           userId: user.id,
         },
       });
-      pantries.push(pantry);
+      created++;
     }
   }
 
-  console.log(`✅ Created/updated ${pantries.length} pantries`);
-  return pantries;
+  const totalPantries = await prisma.pantry.count();
+  if (created > 0) {
+    console.log(`✅ Created ${created} missing pantries`);
+  }
+  console.log(`📊 Total pantries: ${totalPantries}`);
+  
+  return await prisma.pantry.findMany();
 }

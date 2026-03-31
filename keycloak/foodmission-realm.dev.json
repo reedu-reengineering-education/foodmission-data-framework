@@ -459,6 +459,7 @@
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "users": [
     {
+      "id": "a1000000-0000-4000-8000-000000000005",
       "username": "admin",
       "enabled": true,
       "emailVerified": true,
@@ -475,10 +476,62 @@
       }
     },
     {
+      "id": "a1000000-0000-4000-8000-000000000001",
       "username": "developer",
       "enabled": true,
       "emailVerified": true,
       "email": "dev@foodmission.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "username": "jane",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "jane.smith@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "username": "mike",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "mike.johnson@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "username": "sarah",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "sarah.wilson@example.com",
       "credentials": [
         {
           "type": "password",

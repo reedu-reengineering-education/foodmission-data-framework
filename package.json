@@ -5,10 +5,11 @@
   "author": "",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": ">=22.0.0",
-    "npm": "^10.0.0"
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
   },
   "overrides": {
+    "file-type": "^21.3.1",
     "glob": "^12.0.0",
     "@jest/reporters": {
       "glob": "^12.0.0"
@@ -58,6 +59,7 @@
     "test:integration": "jest --testPathPatterns=\"test/.*\\.integration\\.spec\\.ts$\"",
     "test:e2e": "jest --config test/jest-e2e.json",
     "test:all": "jest --coverage --testPathPatterns=\"(src/.*\\.spec\\.ts$|test/.*\\.(integration|e2e)-spec\\.ts$)\"",
+    "test:otel": "ts-node scripts/test-otel-setup.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -99,7 +101,18 @@
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api-logs": "^0.213.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.71.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.213.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.213.0",
+    "@opentelemetry/resources": "^2.6.0",
+    "@opentelemetry/sdk-logs": "^0.213.0",
+    "@opentelemetry/sdk-node": "^0.213.0",
+    "@opentelemetry/sdk-trace-base": "^2.6.0",
+    "@opentelemetry/semantic-conventions": "^1.40.0",
     "@prisma/client": "^6.16.2",
+    "@prisma/instrumentation": "^6.16.2",
     "axios": "^1.12.2",
     "cache-manager": "^7.2.0",
     "class-transformer": "^0.5.1",
@@ -108,19 +121,18 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
+    "iso-3166-2": "^1.0.0",
+    "iso-639-1": "^3.1.5",
     "joi": "^18.0.1",
     "keycloak-connect": "^26.1.1",
     "keyv": "^5.5.1",
     "nest-keycloak-connect": "^2.0.0-alpha.2",
-    "nest-winston": "^1.10.2",
     "prisma": "^6.16.2",
     "prom-client": "^15.1.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "sanitize-html": "^2.17.0",
-    "uuid": "^13.0.0",
-    "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
@@ -152,6 +164,6 @@
     "typescript-eslint": "^8.44.0"
   },
   "volta": {
-    "node": "22.22.0"
+    "node": "24.0.0"
   }
 }

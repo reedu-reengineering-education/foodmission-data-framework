@@ -1,11 +1,12 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { LoggingService } from '../logging/logging.service';
+import { trace } from '@opentelemetry/api';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface RequestWithLogging extends Request {
   startTime?: number;
-  correlationId?: string;
+  traceId?: string;
   requestId?: string;
 }
 
@@ -14,17 +15,21 @@ export class LoggingMiddleware implements NestMiddleware {
   constructor(private readonly loggingService: LoggingService) {}
 
   use(req: RequestWithLogging, res: Response, next: NextFunction): void {
-    // Generate IDs for request tracking
-    const correlationId = this.getOrGenerateCorrelationId(req);
+    // Get trace ID from OpenTelemetry (or generate fallback)
+    const traceId = this.getTraceId();
     const requestId = uuidv4();
 
     // Set timing
     req.startTime = Date.now();
-    req.correlationId = correlationId;
+    req.traceId = traceId;
     req.requestId = requestId;
 
-    // Set correlation ID in logging service
-    this.loggingService.setCorrelationId(correlationId);
+    // Add trace ID and request ID to response headers for client debugging
+    res.setHeader('X-Trace-ID', traceId);
+    res.setHeader('X-Request-ID', requestId);
+
+    // Set trace ID in logging service
+    this.loggingService.setTraceId(traceId);
 
     // Set request context
     this.loggingService.setRequestContext({
@@ -55,12 +60,16 @@ export class LoggingMiddleware implements NestMiddleware {
     next();
   }
 
-  private getOrGenerateCorrelationId(req: Request): string {
-    return (
-      (req.headers['x-correlation-id'] as string) ||
-      (req.headers['x-request-id'] as string) ||
-      uuidv4()
-    );
+  private getTraceId(): string {
+    // Try to get trace ID from OpenTelemetry active span
+    const span = trace.getActiveSpan();
+    if (span) {
+      const traceId = span.spanContext().traceId;
+      if (traceId) return traceId;
+    }
+
+    // Fallback: generate UUID if OpenTelemetry is not active
+    return uuidv4();
   }
 
   private extractUserContext(req: RequestWithLogging): void {
@@ -72,10 +81,7 @@ export class LoggingMiddleware implements NestMiddleware {
         const payload = this.decodeJwtPayload(token);
 
         if (payload && payload.sub) {
-          this.loggingService.setUserContext(
-            payload.sub,
-            payload.email || payload.preferred_username,
-          );
+          this.loggingService.setUserContext(payload.sub);
         }
       }
     } catch {
@@ -106,7 +112,7 @@ export class LoggingMiddleware implements NestMiddleware {
       query: req.query,
       headers: this.sanitizeHeaders(req.headers),
       body: this.sanitizeBody(req.body),
-      correlationId: req.correlationId,
+      traceId: req.traceId,
       requestId: req.requestId,
     });
   }
@@ -125,7 +131,7 @@ export class LoggingMiddleware implements NestMiddleware {
       statusCode: res.statusCode,
       responseTime,
       contentLength: res.get('content-length'),
-      correlationId: req.correlationId,
+      traceId: req.traceId,
       requestId: req.requestId,
     });
 
@@ -145,7 +151,7 @@ export class LoggingMiddleware implements NestMiddleware {
         url: req.url,
         statusCode: res.statusCode,
         responseTime,
-        correlationId: req.correlationId,
+        traceId: req.traceId,
       });
     }
   }
