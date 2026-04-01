@@ -56,34 +56,12 @@ export class RecipesService {
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const {
-      page = 1,
-      limit = 10,
-      category,
-      cuisineType,
-      dietaryLabels,
-      tags,
-      allergens,
-      difficulty,
-      search,
-    } = query;
+    const { page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.RecipeWhereInput = {
       userId,
-      ...(category ? { category } : {}),
-      ...(cuisineType ? { cuisineType } : {}),
-      ...(difficulty ? { difficulty } : {}),
-      ...(tags && tags.length
-        ? { tags: { hasSome: tags.map((t) => t.trim()) } }
-        : {}),
-      ...(allergens && allergens.length
-        ? { allergens: { hasSome: allergens } }
-        : {}),
-      ...(dietaryLabels && dietaryLabels.length
-        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
-        : {}),
-      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
+      ...this.buildFiltersWhere(query),
     };
 
     try {
@@ -114,18 +92,7 @@ export class RecipesService {
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const {
-      page = 1,
-      limit = 10,
-      category,
-      cuisineType,
-      isPublic,
-      dietaryLabels,
-      tags,
-      allergens,
-      difficulty,
-      search,
-    } = query;
+    const { page = 1, limit = 10, isPublic } = query;
     const skip = (page - 1) * limit;
 
     // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
@@ -138,19 +105,7 @@ export class RecipesService {
 
     const where: Prisma.RecipeWhereInput = {
       ...visibilityWhere,
-      ...(category ? { category } : {}),
-      ...(cuisineType ? { cuisineType } : {}),
-      ...(difficulty ? { difficulty } : {}),
-      ...(tags && tags.length
-        ? { tags: { hasSome: tags.map((t) => t.trim()) } }
-        : {}),
-      ...(allergens && allergens.length
-        ? { allergens: { hasSome: allergens } }
-        : {}),
-      ...(dietaryLabels && dietaryLabels.length
-        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
-        : {}),
-      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
+      ...this.buildFiltersWhere(query),
     };
 
     try {
@@ -175,6 +130,27 @@ export class RecipesService {
     } catch (error) {
       throw handlePrismaError(error, 'find recipes', 'Recipe');
     }
+  }
+
+  private buildFiltersWhere(
+    query: QueryRecipeDto,
+  ): Prisma.RecipeWhereInput {
+    const { category, cuisineType, dietaryLabels, tags, allergens, difficulty, search } = query;
+    return {
+      ...(category ? { category } : {}),
+      ...(cuisineType ? { cuisineType } : {}),
+      ...(difficulty ? { difficulty } : {}),
+      ...(tags && tags.length
+        ? { tags: { hasSome: tags.map((t) => t.trim()) } }
+        : {}),
+      ...(allergens && allergens.length
+        ? { allergens: { hasSome: allergens } }
+        : {}),
+      ...(dietaryLabels && dietaryLabels.length
+        ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
+        : {}),
+      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
+    };
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {

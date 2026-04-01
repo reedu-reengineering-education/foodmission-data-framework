@@ -330,7 +330,8 @@ export class PantryItemService {
           location: updateDto.location,
         }),
         ...(expiryDate !== undefined && {
-          expiryDate: expiryDate,
+          expiryDate,
+          expiryDateSource: 'manual',
         }),
       };
 
