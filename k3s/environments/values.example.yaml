@@ -1,0 +1,179 @@
+# Example Environment Configuration Template
+# Copy this file to create a new environment configuration
+# Replace all CHANGEME values with actual secrets
+
+# ============================================================================
+# ⚠️  SECURITY WARNING - SECRET MANAGEMENT ⚠️
+# ============================================================================
+# This file contains placeholder secrets (CHANGEME).
+#
+# When creating your actual values file:
+# 1. Copy this file to environments/<env-name>/values.yaml
+# 2. Replace ALL CHANGEME values with real secrets
+# 3. NEVER commit the file with real secrets to git
+# 4. Store it securely (password manager, encrypted storage)
+#
+# Generate secure secrets with:
+# - Session secret (64 chars): openssl rand -hex 32
+# - Encryption key (32 chars): openssl rand -hex 16
+# - Admin password: openssl rand -base64 12
+# - Database password: openssl rand -base64 24
+#
+# For better security, consider using:
+# - Kubernetes Secrets (kubectl create secret)
+# - Sealed Secrets (encrypted secrets in git)
+# - External Secrets Operator (AWS Secrets Manager, Vault, etc.)
+# ============================================================================
+
+# ============================================================================
+# Global Values
+# ============================================================================
+global:
+  namespace: foodmission-CHANGEME  # e.g., foodmission-dev, foodmission-staging
+  domain: CHANGEME.api.foodmission.eu  # e.g., dev.api.foodmission.eu
+  environment: CHANGEME  # e.g., development, staging, production
+  tlsSecret: foodmission-tls-cert-CHANGEME  # e.g., foodmission-tls-cert-dev
+  
+  # CNPG database configuration (shared across infra and app layers)
+  cnpg:
+    clusterName: foodmission-pg-CHANGEME  # e.g., foodmission-pg-dev
+    database: foodmission
+    owner: foodmission_user
+    password: CHANGEME  # Generate with: openssl rand -base64 24
+
+# ============================================================================
+# Infrastructure Layer
+# ============================================================================
+infra:
+  enabled: true
+  
+  # ClusterIssuer configuration
+  clusterIssuer:
+    enabled: false  # Set to true only if ClusterIssuer doesn't exist yet
+    email: CHANGEME@foodmission.eu  # Email for Let's Encrypt notifications
+  
+  # CNPG configuration
+  cnpg:
+    enabled: true
+    instances: 1  # 1 for dev/test, 3+ for staging/prod
+    imageName: 'ghcr.io/cloudnative-pg/postgresql:18.3'  # Or leave empty for default
+    secretName: foodmission-pg-CHANGEME-credentials
+    
+    # Additional databases (using single user approach - recommended)
+    additionalDatabases:
+      - name: keycloak
+        # No owner/password - uses primary owner (foodmission_user) from global.cnpg
+    
+    # Alternative: Separate users per database (only if needed for compliance)
+    # additionalDatabases:
+    #   - name: keycloak
+    #     owner: keycloak_user
+    #     password: CHANGEME  # Generate with: openssl rand -base64 24
+    
+    # Storage
+    storageSize: 10Gi  # Adjust based on environment (10Gi dev, 50Gi+ prod)
+    storageClass: ''  # Leave empty for default, or specify (e.g., local-path)
+    
+    # Backup configuration
+    backup:
+      enabled: false  # Set to true for staging/prod
+      barmanStoreName: foodmission-backup-store
+      destinationPath: 's3://CHANGEME/backups'  # Your S3 bucket path
+      s3Secret: foodmission-pg-s3-credentials
+      s3AccessKeyId: 'CHANGEME'  # Your S3 access key
+      s3SecretAccessKey: 'CHANGEME'  # Your S3 secret key
+      endpointURL: ''  # Empty for AWS S3, or https://s3.example.com for S3-compatible
+      retentionPolicy: '30d'  # Backup retention period
+    
+    scheduledBackup:
+      enabled: false  # Set to true for staging/prod
+      schedule: '0 2 * * *'  # Daily at 2 AM UTC (cron format)
+    
+    monitoring: false  # Set to true if Prometheus is available
+
+# ============================================================================
+# Application Layer
+# ============================================================================
+app:
+  enabled: true
+  
+  # API configuration
+  api:
+    image: ghcr.io/reedu-reengineering-education/foodmission-data-framework:latest
+    hostname: CHANGEME.api.foodmission.eu  # e.g., dev.api.foodmission.eu
+    
+    sessionSecret: CHANGEME  # Generate with: openssl rand -hex 32
+    encryptionKey: CHANGEME  # Generate with: openssl rand -hex 16
+    
+    keycloak:
+      baseUrl: https://CHANGEME.auth.foodmission.eu  # e.g., https://dev.auth.foodmission.eu
+      realm: foodmission
+      clientId: foodmission-api
+      clientSecret: CHANGEME  # Get from Keycloak admin console
+      redirectUri: https://CHANGEME.api.foodmission.eu/auth/callback
+      serviceClientId: foodmission-service
+      serviceClientSecret: CHANGEME  # Get from Keycloak admin console
+    
+    logging:
+      level: info  # debug, info, warn, error
+      console: 'true'
+      file: 'true'
+    
+    opentelemetry:
+      enabled: 'false'  # Set to 'true' if observability layer is enabled
+      endpoint: 'http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318'
+      serviceNamespace: 'foodmission-CHANGEME'
+  
+  # Keycloak configuration
+  keycloak:
+    image: ghcr.io/reedu-reengineering-education/foodmission-keycloak:main
+    hostname: CHANGEME.auth.foodmission.eu  # e.g., dev.auth.foodmission.eu
+    
+    admin:
+      user: admin
+      password: CHANGEME  # Generate with: openssl rand -base64 12
+  
+  # Ingress configuration
+  ingress:
+    tlsSecret: foodmission-tls-cert-CHANGEME
+    hosts:
+      - CHANGEME.auth.foodmission.eu
+      - CHANGEME.api.foodmission.eu
+
+
+
+# ============================================================================
+# Deployment Instructions
+# ============================================================================
+# 1. Copy this file to environments/<env-name>/values.yaml
+# 2. Replace all CHANGEME values
+# 3. Deploy global observability FIRST (once per cluster):
+#    helm dependency update k3s/
+#    helm upgrade --install observability k3s/ \
+#      -f k3s/environments/observability/values.yaml \
+#      --create-namespace \
+#      --namespace observability
+#
+# 4. Deploy your environment:
+#    helm upgrade --install foodmission-<env> k3s/ \
+#      -f k3s/environments/<env-name>/values.yaml \
+#      --create-namespace \
+#      --namespace foodmission-<env>
+#
+# 5. Preview changes before applying:
+#    helm diff upgrade foodmission-<env> k3s/ \
+#      -f k3s/environments/<env-name>/values.yaml
+#
+# 6. Deploy individual layers:
+#    # Infrastructure only:
+#    helm upgrade --install foodmission-<env> k3s/ \
+#      -f k3s/environments/<env-name>/values.yaml \
+#      --set app.enabled=false
+#
+#    # Add application layer:
+#    helm upgrade --install foodmission-<env> k3s/ \
+#      -f k3s/environments/<env-name>/values.yaml
+#
+# Note: Observability is deployed globally in the "observability" namespace.
+# Your application automatically sends metrics/logs/traces to it via OpenTelemetry
+# (configured in app.api.opentelemetry above).

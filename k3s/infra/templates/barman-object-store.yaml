@@ -1,0 +1,32 @@
+{{- if .Values.cnpg.backup.enabled }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ .Values.cnpg.backup.barmanStoreName }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: backup-store
+    app.kubernetes.io/part-of: foodmission
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    environment: {{ .Values.global.environment }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    description: "Barman Cloud object store configuration for CNPG backups"
+spec:
+  configuration:
+    destinationPath: {{ required "cnpg.backup.destinationPath is required when backup is enabled" .Values.cnpg.backup.destinationPath }}
+    s3Credentials:
+      accessKeyId:
+        name: {{ .Values.cnpg.backup.s3Secret }}
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: {{ .Values.cnpg.backup.s3Secret }}
+        key: ACCESS_SECRET_KEY
+    {{- if .Values.cnpg.backup.endpointURL }}
+    endpointURL: {{ .Values.cnpg.backup.endpointURL }}
+    {{- end }}
+    wal:
+      compression: gzip
+{{- end }}

@@ -1,0 +1,26 @@
+{{- if .Values.clusterIssuer.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: certificate-issuer
+    app.kubernetes.io/part-of: foodmission
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    environment: {{ .Values.global.environment }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    description: "Let's Encrypt certificate issuer for TLS certificates"
+spec:
+  acme:
+    server: {{ .Values.clusterIssuer.server }}
+    email: {{ .Values.clusterIssuer.email }}
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+{{- end }}

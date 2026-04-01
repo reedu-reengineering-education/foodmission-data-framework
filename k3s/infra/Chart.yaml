@@ -1,0 +1,5 @@
+apiVersion: v2
+name: infra
+version: 0.1.0
+description: Infrastructure layer - CNPG, cert-manager, namespace management
+appVersion: "1.0.0"

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: foodmission
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    environment: {{ .Values.global.environment }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    description: "FoodMission API deployment"
+spec:
+  replicas: {{ .Values.api.replicaCount | default 2 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: foodmission
+        environment: {{ .Values.global.environment }}
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/api/v1/metrics'
+        prometheus.io/port: '3000'
+    spec:
+      containers:
+      - name: api
+        image: {{ .Values.api.image }}
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: {{ .Values.api.resources.requests.cpu | default "100m" }}
+            memory: {{ .Values.api.resources.requests.memory | default "256Mi" }}
+          limits:
+            memory: {{ .Values.api.resources.limits.memory | default "512Mi" }}
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+        envFrom:
+          - secretRef:
+              name: foodmission-api-secret
+        # All environment variables are now loaded from the secret foodmission-api-secret

@@ -1,0 +1,96 @@
+{{- if .Values.cnpg.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.global.cnpg.clusterName }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: foodmission
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    environment: {{ .Values.global.environment }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    description: "CloudNativePG PostgreSQL cluster for FoodMission"
+spec:
+  instances: {{ .Values.cnpg.instances }}
+  
+  {{- if .Values.cnpg.imageName }}
+  imageName: {{ .Values.cnpg.imageName }}
+  {{- end }}
+  
+  {{- if .Values.cnpg.backup.enabled }}
+  # Barman Cloud Plugin configuration for WAL archiving and backups
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: {{ .Values.cnpg.backup.barmanStoreName }}
+        {{- if .Values.cnpg.backup.retentionPolicy }}
+        retentionPolicy: {{ .Values.cnpg.backup.retentionPolicy }}
+        {{- end }}
+  {{- end }}
+  
+  bootstrap:
+    {{- if .Values.cnpg.bootstrap }}
+    # Restore mode - bootstrap from backup
+    recovery:
+      {{- if .Values.cnpg.bootstrap.recovery }}
+      {{- if .Values.cnpg.bootstrap.recovery.backup }}
+      backup:
+        name: {{ .Values.cnpg.bootstrap.recovery.backup.name }}
+      {{- end }}
+      {{- if .Values.cnpg.bootstrap.recovery.source }}
+      source: {{ .Values.cnpg.bootstrap.recovery.source }}
+      {{- end }}
+      {{- if .Values.cnpg.bootstrap.recovery.recoveryTarget }}
+      {{- if .Values.cnpg.bootstrap.recovery.recoveryTarget.targetTime }}
+      recoveryTarget:
+        targetTime: {{ .Values.cnpg.bootstrap.recovery.recoveryTarget.targetTime | quote }}
+      {{- else if .Values.cnpg.bootstrap.recovery.recoveryTarget.backupID }}
+      recoveryTarget:
+        backupID: {{ .Values.cnpg.bootstrap.recovery.recoveryTarget.backupID | quote }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+    {{- else }}
+    # Normal mode - create empty databases
+    initdb:
+      database: {{ .Values.global.cnpg.database }}
+      owner: {{ .Values.global.cnpg.owner }}
+      secret:
+        name: {{ .Values.cnpg.secretName }}
+      {{- if .Values.cnpg.additionalDatabases }}
+      postInitSQL:
+        {{- range .Values.cnpg.additionalDatabases }}
+        - CREATE DATABASE {{ .name }};
+        {{- if .owner }}
+        - CREATE USER {{ .owner }} WITH PASSWORD '{{ .password }}';
+        - GRANT ALL PRIVILEGES ON DATABASE {{ .name }} TO {{ .owner }};
+        - ALTER DATABASE {{ .name }} OWNER TO {{ .owner }};
+        {{- else }}
+        - GRANT ALL PRIVILEGES ON DATABASE {{ .name }} TO {{ $.Values.global.cnpg.owner }};
+        - ALTER DATABASE {{ .name }} OWNER TO {{ $.Values.global.cnpg.owner }};
+        {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  
+  {{- if .Values.cnpg.externalClusters }}
+  externalClusters:
+    {{- toYaml .Values.cnpg.externalClusters | nindent 4 }}
+  {{- end }}
+  
+  storage:
+    size: {{ .Values.cnpg.storageSize }}
+    {{- if .Values.cnpg.storageClass }}
+    storageClass: {{ .Values.cnpg.storageClass }}
+    {{- end }}
+  
+  {{- if .Values.cnpg.monitoring }}
+  monitoring:
+    enablePodMonitor: {{ .Values.cnpg.monitoring }}
+  {{- end }}
+{{- end }}

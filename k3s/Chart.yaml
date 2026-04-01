@@ -1,5 +1,17 @@
 apiVersion: v2
 name: foodmission
-version: 0.2.0
-description: A Helm chart for FoodMission deployments
+version: 0.3.0
+description: FoodMission k3s deployment with layered architecture
 appVersion: "1.0.0"
+
+dependencies:
+  - name: infra
+    version: "0.1.0"
+    condition: infra.enabled
+    repository: "file://./infra"
+  
+  - name: app
+    version: "0.1.0"
+    condition: app.enabled
+    repository: "file://./app"
+

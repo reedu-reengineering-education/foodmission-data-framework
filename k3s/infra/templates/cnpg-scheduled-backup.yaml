@@ -1,0 +1,25 @@
+{{- if and .Values.cnpg.enabled .Values.cnpg.scheduledBackup.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ .Values.global.cnpg.clusterName }}-backup
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: scheduled-backup
+    app.kubernetes.io/part-of: foodmission
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    environment: {{ .Values.global.environment }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    description: "Scheduled backup for CNPG cluster"
+spec:
+  schedule: {{ .Values.cnpg.scheduledBackup.schedule | default "0 2 * * *" | quote }}
+  backupOwnerReference: self
+  cluster:
+    name: {{ .Values.global.cnpg.clusterName }}
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+{{- end }}

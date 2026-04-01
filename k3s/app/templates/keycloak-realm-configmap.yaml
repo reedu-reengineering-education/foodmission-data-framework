@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-keycloak-realm
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/component: keycloak
+data:
+  realm.json: |-
+{{ (.Files.Get "files/foodmission-realm.production.json" 
+    | replace "CHANGEME_FOODMISSION_API_SECRET" .Values.keycloak.realm.clientSecrets.foodmissionApi 
+    | replace "CHANGEME_FOODMISSION_SERVICE_SECRET" .Values.keycloak.realm.clientSecrets.foodmissionService 
+    | replace "CHANGEME_SMTP_HOST" .Values.keycloak.realm.smtp.host 
+    | replace "CHANGEME_SMTP_PORT" .Values.keycloak.realm.smtp.port 
+    | replace "CHANGEME_SMTP_USER" .Values.keycloak.realm.smtp.user 
+    | replace "CHANGEME_SMTP_PASSWORD" .Values.keycloak.realm.smtp.password 
+    | replace "CHANGEME_SMTP_FROM_NAME" .Values.keycloak.realm.smtp.fromDisplayName
+    | replace "CHANGEME_SMTP_FROM" .Values.keycloak.realm.smtp.from 
+  ) | indent 4 }}

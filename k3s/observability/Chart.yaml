@@ -1,0 +1,31 @@
+apiVersion: v2
+name: observability
+version: 0.1.0
+description: Observability layer - Grafana, Loki, Prometheus, Tempo, OpenTelemetry
+appVersion: "1.0.0"
+
+dependencies:
+  - name: grafana
+    version: "10.5.15"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: grafana.enabled
+  
+  - name: loki
+    version: "6.55.0"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: loki.enabled
+  
+  - name: prometheus
+    version: "28.14.1"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: prometheus.enabled
+  
+  - name: tempo
+    version: "1.24.4"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: tempo.enabled
+  
+  - name: opentelemetry-collector
+    version: "0.147.1"
+    repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"
+    condition: opentelemetry-collector.enabled
