@@ -6,24 +6,20 @@ import {
 } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
-import { OpenFoodFactsHealthIndicator } from './openfoodfacts.health';
 
 describe('HealthController', () => {
   let controller: HealthController;
   let healthCheckService: jest.Mocked<HealthCheckService>;
   let databaseHealth: jest.Mocked<DatabaseHealthIndicator>;
-  let openFoodFactsHealth: jest.Mocked<OpenFoodFactsHealthIndicator>;
 
   const mockHealthResult: HealthCheckResult = {
     status: 'ok' as HealthCheckStatus,
     info: {
       database: { status: 'up' },
-      openfoodfacts: { status: 'up' },
     },
     error: {},
     details: {
       database: { status: 'up' },
-      openfoodfacts: { status: 'up' },
     },
   };
 
@@ -33,10 +29,6 @@ describe('HealthController', () => {
     };
 
     const mockDatabaseHealth = {
-      isHealthy: jest.fn(),
-    };
-
-    const mockOpenFoodFactsHealth = {
       isHealthy: jest.fn(),
     };
 
@@ -51,17 +43,12 @@ describe('HealthController', () => {
           provide: DatabaseHealthIndicator,
           useValue: mockDatabaseHealth,
         },
-        {
-          provide: OpenFoodFactsHealthIndicator,
-          useValue: mockOpenFoodFactsHealth,
-        },
       ],
     }).compile();
 
     controller = module.get<HealthController>(HealthController);
     healthCheckService = module.get(HealthCheckService);
     databaseHealth = module.get(DatabaseHealthIndicator);
-    openFoodFactsHealth = module.get(OpenFoodFactsHealthIndicator);
   });
 
   it('should be defined', () => {
@@ -77,11 +64,10 @@ describe('HealthController', () => {
       expect(result).toEqual(mockHealthResult);
       expect(healthCheckService.check).toHaveBeenCalledWith([
         expect.any(Function),
-        expect.any(Function),
       ]);
     });
 
-    it('should call database and openfoodfacts health indicators', async () => {
+    it('should call database health indicator', async () => {
       healthCheckService.check.mockImplementation(async (checks) => {
         // Execute the health check functions
         for (const check of checks) {
@@ -93,16 +79,10 @@ describe('HealthController', () => {
       databaseHealth.isHealthy.mockResolvedValue({
         database: { status: 'up' },
       });
-      openFoodFactsHealth.isHealthy.mockResolvedValue({
-        openfoodfacts: { status: 'up' },
-      });
 
       await controller.check();
 
       expect(databaseHealth.isHealthy).toHaveBeenCalledWith('database');
-      expect(openFoodFactsHealth.isHealthy).toHaveBeenCalledWith(
-        'openfoodfacts',
-      );
     });
   });
 

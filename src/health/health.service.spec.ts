@@ -40,9 +40,7 @@ describe('HealthService', () => {
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
 
       // Mock successful external service checks
-      (fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true }) // Keycloak
-        .mockResolvedValueOnce({ ok: true }); // OpenFoodFacts
+      (fetch as jest.Mock).mockResolvedValueOnce({ ok: true }); // Keycloak
 
       const result = await service.getHealth();
 
@@ -53,7 +51,6 @@ describe('HealthService', () => {
       expect(result.environment).toBeDefined();
       expect(result.checks.database.status).toBe('ok');
       expect(result.checks.keycloak.status).toBe('ok');
-      expect(result.checks.openFoodFacts.status).toBe('ok');
     });
 
     it('should throw ServiceUnavailableException when database check fails', async () => {
@@ -63,9 +60,7 @@ describe('HealthService', () => {
       );
 
       // Mock successful external service checks
-      (fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: true }) // Keycloak
-        .mockResolvedValueOnce({ ok: true }); // OpenFoodFacts
+      (fetch as jest.Mock).mockResolvedValueOnce({ ok: true }); // Keycloak
 
       await expect(service.getHealth()).rejects.toThrow(
         ServiceUnavailableException,
@@ -80,9 +75,7 @@ describe('HealthService', () => {
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
 
       // Mock failed keycloak check
-      (fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: false }) // Keycloak
-        .mockResolvedValueOnce({ ok: true }); // OpenFoodFacts
+      (fetch as jest.Mock).mockResolvedValueOnce({ ok: false }); // Keycloak
 
       await expect(service.getHealth()).rejects.toThrow(
         ServiceUnavailableException,
@@ -99,9 +92,7 @@ describe('HealthService', () => {
       mockPrismaService.$queryRaw.mockResolvedValueOnce([{ '?column?': 1 }]);
 
       // Mock failed external service checks (should be ignored in test env)
-      (fetch as jest.Mock)
-        .mockResolvedValueOnce({ ok: false }) // Keycloak
-        .mockResolvedValueOnce({ ok: false }); // OpenFoodFacts
+      (fetch as jest.Mock).mockResolvedValueOnce({ ok: false }); // Keycloak
 
       const result = await service.getHealth();
 
@@ -266,42 +257,6 @@ describe('HealthService', () => {
 
       process.env.KEYCLOAK_AUTH_SERVER_URL = originalUrl;
       process.env.KEYCLOAK_REALM = originalRealm;
-    });
-  });
-
-  describe('checkOpenFoodFacts', () => {
-    it('should return ok status when OpenFoodFacts is accessible', async () => {
-      (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
-
-      const result = await service['checkOpenFoodFacts']();
-
-      expect(result.status).toBe('ok');
-      expect(result.responseTime).toBeGreaterThanOrEqual(0);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
-        expect.objectContaining({
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        }),
-      );
-    });
-
-    it('should return error status when OpenFoodFacts is not accessible', async () => {
-      (fetch as jest.Mock).mockResolvedValueOnce({ ok: false });
-
-      const result = await service['checkOpenFoodFacts']();
-
-      expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should return error status when OpenFoodFacts request throws', async () => {
-      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
-
-      const result = await service['checkOpenFoodFacts']();
-
-      expect(result.status).toBe('error');
-      expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
   });
 });
