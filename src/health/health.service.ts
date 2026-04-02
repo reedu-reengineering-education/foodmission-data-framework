@@ -17,14 +17,11 @@ export class HealthService {
     const checks = {
       database: await this.checkDatabase(),
       keycloak: await this.checkKeycloak(),
-      openFoodFacts: await this.checkOpenFoodFacts(),
     };
 
     // In test environment, only require database to be healthy
     const isTestEnv = process.env.NODE_ENV === 'test';
-    const requiredChecks = isTestEnv
-      ? ['database']
-      : ['database', 'keycloak', 'openFoodFacts'];
+    const requiredChecks = isTestEnv ? ['database'] : ['database', 'keycloak'];
 
     const allHealthy = requiredChecks.every(
       (checkName) => checks[checkName]?.status === 'ok',
@@ -149,41 +146,6 @@ export class HealthService {
 
       const response = await fetch(
         `${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`,
-        {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-          signal: AbortSignal.timeout(5000), // 5 second timeout
-        },
-      );
-
-      if (response.ok) {
-        return {
-          status: 'ok',
-          responseTime: Date.now() - start,
-        };
-      } else {
-        return {
-          status: 'error',
-          responseTime: Date.now() - start,
-        };
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      return {
-        status: 'error',
-        responseTime: Date.now() - start,
-      };
-    }
-  }
-
-  private async checkOpenFoodFacts(): Promise<{
-    status: string;
-    responseTime: number;
-  }> {
-    const start = Date.now();
-    try {
-      const response = await fetch(
-        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
         {
           method: 'GET',
           headers: { Accept: 'application/json' },

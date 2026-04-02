@@ -7,7 +7,6 @@ import {
   HealthCheckResult,
 } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from './database.health';
-import { OpenFoodFactsHealthIndicator } from './openfoodfacts.health';
 
 @ApiTags('Health')
 @Controller('health')
@@ -15,7 +14,6 @@ export class HealthController {
   constructor(
     private health: HealthCheckService,
     private db: DatabaseHealthIndicator,
-    private openFoodFacts: OpenFoodFactsHealthIndicator,
   ) {}
 
   @Get()
@@ -37,12 +35,6 @@ export class HealthController {
                 status: { type: 'string', example: 'up' },
               },
             },
-            openfoodfacts: {
-              type: 'object',
-              properties: {
-                status: { type: 'string', example: 'up' },
-              },
-            },
           },
         },
         error: { type: 'object' },
@@ -50,12 +42,6 @@ export class HealthController {
           type: 'object',
           properties: {
             database: {
-              type: 'object',
-              properties: {
-                status: { type: 'string', example: 'up' },
-              },
-            },
-            openfoodfacts: {
               type: 'object',
               properties: {
                 status: { type: 'string', example: 'up' },
@@ -72,10 +58,7 @@ export class HealthController {
   })
   @HealthCheck()
   check(): Promise<HealthCheckResult> {
-    return this.health.check([
-      () => this.db.isHealthy('database'),
-      () => this.openFoodFacts.isHealthy('openfoodfacts'),
-    ]);
+    return this.health.check([() => this.db.isHealthy('database')]);
   }
 
   @Get('ready')
