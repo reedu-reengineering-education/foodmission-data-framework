@@ -9,10 +9,7 @@ import { FoodWasteRepository } from '../repositories/food-waste.repository';
 import { CreateFoodWasteDto } from '../dto/create-food-waste.dto';
 import { UpdateFoodWasteDto } from '../dto/update-food-waste.dto';
 import { QueryFoodWasteDto } from '../dto/query-food-waste.dto';
-import {
-  BatchCreateFoodWasteDto,
-  ExpiredItemToWasteDto,
-} from '../dto/batch-create-food-waste.dto';
+import { BatchCreateFoodWasteDto } from '../dto/batch-create-food-waste.dto';
 import {
   FoodWasteResponseDto,
   MultipleFoodWasteResponseDto,
