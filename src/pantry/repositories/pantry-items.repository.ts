@@ -28,6 +28,7 @@ export interface CreatePantryItemData {
   notes?: string;
   location?: string;
   expiryDate?: Date;
+  expiryDateSource?: string;
 }
 
 @Injectable()
@@ -50,6 +51,7 @@ export class PantryItemRepository {
         notes: data.notes,
         location: data.location,
         expiryDate: data.expiryDate,
+        expiryDateSource: data.expiryDateSource,
       },
       include: {
         pantry: true,
@@ -155,6 +157,30 @@ export class PantryItemRepository {
         food: true,
         foodCategory: true,
       },
+    });
+  }
+
+  async findExpiringSoon(
+    pantryId: string,
+    withinDays: number,
+  ): Promise<PantryItemWithRelations[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() + withinDays);
+
+    return this.prisma.pantryItem.findMany({
+      where: {
+        pantryId,
+        expiryDate: {
+          lte: cutoffDate,
+          gte: new Date(),
+        },
+      },
+      include: {
+        pantry: true,
+        food: true,
+        foodCategory: true,
+      },
+      orderBy: { expiryDate: 'asc' },
     });
   }
 }

@@ -25,7 +25,9 @@ import { PantryService } from './pantry.service';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopping-list-item.dto';
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
+import { FoodRepository } from '../../foods/repositories/food.repository';
 import { Prisma, Unit } from '@prisma/client';
+import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 
 @Injectable()
 export class PantryItemService {
@@ -36,6 +38,8 @@ export class PantryItemService {
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
     private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodRepository: FoodRepository,
+    private readonly shelfLifeService: ShelfLifeService,
   ) {}
 
   async createFromShoppingList(
@@ -107,11 +111,28 @@ export class PantryItemService {
       }
 
       let expiryDate: Date | undefined;
+      let expiryDateSource: string | undefined;
+
       if (createDto.expiryDate) {
         expiryDate =
           createDto.expiryDate instanceof Date
             ? createDto.expiryDate
             : new Date(createDto.expiryDate);
+        expiryDateSource = 'manual';
+      } else {
+        // Auto-calculate expiry from FoodKeeper data
+        const foodName = await this.getFoodName(foodId, foodCategoryId);
+        if (foodName) {
+          const calcResult =
+            await this.shelfLifeService.calculateExpiryDate(foodName);
+          if (calcResult.expiryDate) {
+            expiryDate = calcResult.expiryDate;
+            expiryDateSource = calcResult.source;
+            this.logger.debug(
+              `Auto-calculated expiry for ${foodName}: ${expiryDate.toISOString()} (${expiryDateSource})`,
+            );
+          }
+        }
       }
 
       const unit = createDto.unit ?? Unit.PIECES;
@@ -124,6 +145,7 @@ export class PantryItemService {
           notes: createDto.notes,
           location: createDto.location,
           expiryDate: expiryDate,
+          expiryDateSource: expiryDateSource,
           pantryId: pantryId,
           foodId: foodId || null,
           foodCategoryId: foodCategoryId || null,
@@ -212,9 +234,7 @@ export class PantryItemService {
   }
 
   private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.prisma.food.findUnique({
-      where: { id: foodId },
-    });
+    const food = await this.foodRepository.findById(foodId);
 
     if (!food) {
       throw new NotFoundException('Food item not found');
@@ -232,6 +252,22 @@ export class PantryItemService {
         `Food category with ID '${foodCategoryId}' not found`,
       );
     }
+  }
+
+  private async getFoodName(
+    foodId?: string,
+    foodCategoryId?: string,
+  ): Promise<string | null> {
+    if (foodId) {
+      const food = await this.foodRepository.findById(foodId);
+      return food?.name ?? null;
+    }
+    if (foodCategoryId) {
+      const foodCategory =
+        await this.foodCategoryRepository.findById(foodCategoryId);
+      return foodCategory?.foodName ?? null;
+    }
+    return null;
   }
 
   async findById(id: string, userId: string): Promise<PantryItemResponseDto> {
@@ -294,7 +330,8 @@ export class PantryItemService {
           location: updateDto.location,
         }),
         ...(expiryDate !== undefined && {
-          expiryDate: expiryDate,
+          expiryDate,
+          expiryDateSource: 'manual',
         }),
       };
 
@@ -356,6 +393,7 @@ export class PantryItemService {
         notes: item.notes,
         location: item.location,
         expiryDate: item.expiryDate,
+        expiryDateSource: item.expiryDateSource,
         pantryId: item.pantryId,
         foodId: item.foodId,
         foodCategoryId: item.foodCategoryId,
