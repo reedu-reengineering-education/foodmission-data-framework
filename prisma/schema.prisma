@@ -91,6 +91,7 @@ model Food {
   pantryItems       PantryItem[]
   mealItems         MealItem[]
   recipeIngredients RecipeIngredient[]
+  foodWastes        FoodWaste[]
 
   @@index([name])
   @@index([createdAt])
@@ -318,6 +319,7 @@ model User {
   meals             Meal[]
   mealLogs          MealLog[]
   knowledge         Knowledge[]
+  foodWaste         FoodWaste[]
   knowledgeProgress UserKnowledgeProgress[]
   challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]
@@ -406,14 +408,27 @@ model PantryItem {
   pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
   food         Food?         @relation(fields: [foodId], references: [id], onDelete: SetNull)
   foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: SetNull)
+  foodWaste    FoodWaste[]
 
   @@unique([pantryId, foodId])
   @@unique([pantryId, foodCategoryId])
   @@index([pantryId])
-  @@index([foodId])
-  @@index([foodCategoryId])
   @@index([expiryDate])
   @@map("pantry_items")
+}
+
+enum WasteReason {
+  EXPIRED
+  SPOILED
+  OVERCOOKED
+  UNWANTED
+  PORTION_TOO_LARGE
+  OTHER
+}
+
+enum DetectionMethod {
+  AUTOMATIC
+  MANUAL
 }
 
 model Meal {
@@ -555,6 +570,33 @@ model MealLog {
   @@index([typeOfMeal])
   @@index([userId, typeOfMeal])
   @@map("meal_logs")
+}
+
+model FoodWaste {
+  id              String          @id @default(uuid())
+  userId          String
+  pantryItemId    String?
+  foodId          String
+  quantity        Float
+  unit            Unit
+  wasteReason     WasteReason
+  detectionMethod DetectionMethod
+  notes           String?
+  costEstimate    Float?
+  carbonFootprint Float?
+  wastedAt        DateTime
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  food       Food        @relation(fields: [foodId], references: [id], onDelete: Restrict)
+  pantryItem PantryItem? @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+
+  @@index([userId, wastedAt])
+  @@index([foodId])
+  @@index([detectionMethod])
+  @@index([wasteReason])
+  @@map("food_waste")
 }
 
 model Mission {
