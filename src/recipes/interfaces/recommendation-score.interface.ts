@@ -23,7 +23,5 @@ export interface RecipeRecommendationScore {
   matchedIngredients: IngredientMatch[];
   totalIngredients: number;
   matchCount: number;
-  matchPercentage: number;
   expiringMatchCount: number;
-  finalScore: number;
 }

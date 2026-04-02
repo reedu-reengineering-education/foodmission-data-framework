@@ -22,11 +22,9 @@ describe('Recipe Recommendations (e2e)', () => {
             category: 'Chicken',
             cuisineType: 'Italian',
           },
-          matchPercentage: 75,
           matchCount: 6,
           totalIngredients: 8,
           expiringMatchCount: 2,
-          finalScore: 95,
           matchedIngredients: [
             {
               ingredientName: 'Chicken Breast',
@@ -101,7 +99,6 @@ describe('Recipe Recommendations (e2e)', () => {
         'test-user-id',
         expect.objectContaining({
           expiringWithinDays: undefined,
-          minMatchPercentage: undefined,
           limit: undefined,
         }),
       );
@@ -112,7 +109,6 @@ describe('Recipe Recommendations (e2e)', () => {
         .get('/recipes/me/recommendations')
         .query({
           expiringWithinDays: 14,
-          minMatchPercentage: 50,
           limit: 5,
         })
         .expect(200);
@@ -123,7 +119,6 @@ describe('Recipe Recommendations (e2e)', () => {
         'test-user-id',
         expect.objectContaining({
           expiringWithinDays: '14',
-          minMatchPercentage: '50',
           limit: '5',
         }),
       );
@@ -144,11 +139,9 @@ describe('Recipe Recommendations (e2e)', () => {
             id: expect.any(String),
             title: expect.any(String),
           }),
-          matchPercentage: expect.any(Number),
           matchCount: expect.any(Number),
           totalIngredients: expect.any(Number),
           expiringMatchCount: expect.any(Number),
-          finalScore: expect.any(Number),
           matchedIngredients: expect.any(Array),
         }),
       );

@@ -33,10 +33,6 @@ export class RecommendationResponseDto {
   @Type(() => RecipeResponseDto)
   recipe: RecipeResponseDto;
 
-  @ApiProperty({ description: 'Ingredient match percentage', example: 75 })
-  @Expose()
-  matchPercentage: number;
-
   @ApiProperty({ description: 'Number of matched ingredients', example: 6 })
   @Expose()
   matchCount: number;
@@ -48,10 +44,6 @@ export class RecommendationResponseDto {
   @ApiProperty({ description: 'Number of expiring items matched', example: 2 })
   @Expose()
   expiringMatchCount: number;
-
-  @ApiProperty({ description: 'Final recommendation score', example: 95 })
-  @Expose()
-  finalScore: number;
 
   @ApiProperty({
     description: 'Matched ingredients details',

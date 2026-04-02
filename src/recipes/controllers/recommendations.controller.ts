@@ -28,8 +28,8 @@ export class RecommendationsController {
   @ApiOperation({
     summary: 'Get recipe recommendations based on expiring pantry items',
     description:
-      'Returns recipes ranked by ingredient match and expiring item priority. ' +
-      'Recipes using ingredients that are expiring soon are boosted in the ranking.',
+      'Returns recipes sorted by the number of expiring pantry items that match ingredients, ' +
+      'then by total pantry ingredient matches.',
   })
   @ApiResponse({
     status: 200,
@@ -42,7 +42,6 @@ export class RecommendationsController {
   ): Promise<MultipleRecommendationResponseDto> {
     return this.recommendationsService.getRecommendations(userId, {
       expiringWithinDays: query.expiringWithinDays,
-      minMatchPercentage: query.minMatchPercentage,
       limit: query.limit,
     });
   }

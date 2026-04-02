@@ -20,14 +20,12 @@ import { RecipeResponseDto } from '../dto/recipe-response.dto';
 
 export interface RecommendationOptions {
   expiringWithinDays?: number;
-  minMatchPercentage?: number;
   limit?: number;
 }
 
 @Injectable()
 export class RecommendationsService {
   private readonly logger = new Logger(RecommendationsService.name);
-  private readonly EXPIRY_BOOST = 10;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -39,11 +37,7 @@ export class RecommendationsService {
     userId: string,
     options: RecommendationOptions = {},
   ): Promise<MultipleRecommendationResponseDto> {
-    const {
-      expiringWithinDays = 7,
-      minMatchPercentage = 30,
-      limit = 10,
-    } = options;
+    const { expiringWithinDays = 7, limit = 10 } = options;
 
     // Step 1: Get or create user's pantry
     const pantryId = await this.pantryService.validatePantryExists(userId);
@@ -109,14 +103,17 @@ export class RecommendationsService {
       expiringCategoryIds,
     );
 
-    // Step 7: Filter and sort
-    const filteredRecipes = scoredRecipes
-      .filter((r) => r.matchPercentage >= minMatchPercentage)
-      .sort((a, b) => b.finalScore - a.finalScore)
+    // Step 7: Sort — most expiring pantry matches first, then most total matches
+    const rankedRecipes = scoredRecipes
+      .sort(
+        (a, b) =>
+          b.expiringMatchCount - a.expiringMatchCount ||
+          b.matchCount - a.matchCount,
+      )
       .slice(0, limit);
 
     // Step 8: Transform to response DTOs
-    const data = filteredRecipes.map((scored) =>
+    const data = rankedRecipes.map((scored) =>
       this.toRecommendationResponse(scored),
     );
 
@@ -225,10 +222,6 @@ export class RecommendationsService {
       const totalIngredients = recipe.ingredients.length;
       const matchCount = matches.length;
       const expiringMatchCount = matches.filter((m) => m.isExpiringSoon).length;
-      const matchPercentage =
-        totalIngredients > 0 ? (matchCount / totalIngredients) * 100 : 0;
-      const finalScore =
-        matchPercentage + expiringMatchCount * this.EXPIRY_BOOST;
 
       return {
         recipeId: recipe.id,
@@ -236,9 +229,7 @@ export class RecommendationsService {
         matchedIngredients: matches,
         totalIngredients,
         matchCount,
-        matchPercentage: Math.round(matchPercentage * 10) / 10,
         expiringMatchCount,
-        finalScore: Math.round(finalScore * 10) / 10,
       };
     });
   }
@@ -285,11 +276,9 @@ export class RecommendationsService {
       {
         recipeId: scored.recipeId,
         recipe,
-        matchPercentage: scored.matchPercentage,
         matchCount: scored.matchCount,
         totalIngredients: scored.totalIngredients,
         expiringMatchCount: scored.expiringMatchCount,
-        finalScore: scored.finalScore,
         matchedIngredients,
       },
       { excludeExtraneousValues: true },

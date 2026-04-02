@@ -16,18 +16,6 @@ export class QueryRecommendationsDto {
   expiringWithinDays?: number;
 
   @ApiPropertyOptional({
-    description: 'Minimum ingredient match percentage',
-    example: 30,
-    default: 30,
-  })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  @Max(100)
-  @Type(() => Number)
-  minMatchPercentage?: number;
-
-  @ApiPropertyOptional({
     description: 'Maximum number of recommendations',
     example: 10,
     default: 10,
