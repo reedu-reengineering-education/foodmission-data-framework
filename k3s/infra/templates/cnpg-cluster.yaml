@@ -65,14 +65,14 @@ spec:
       {{- if .Values.cnpg.additionalDatabases }}
       postInitSQL:
         {{- range .Values.cnpg.additionalDatabases }}
-        - CREATE DATABASE {{ .name }};
+        - CREATE DATABASE {{ .name | quote }};
         {{- if .owner }}
-        - CREATE USER {{ .owner }} WITH PASSWORD '{{ .password }}';
-        - GRANT ALL PRIVILEGES ON DATABASE {{ .name }} TO {{ .owner }};
-        - ALTER DATABASE {{ .name }} OWNER TO {{ .owner }};
+        - CREATE USER {{ .owner | quote }} WITH PASSWORD '{{ .password | replace "'" "''" }}';
+        - GRANT ALL PRIVILEGES ON DATABASE {{ .name | quote }} TO {{ .owner | quote }};
+        - ALTER DATABASE {{ .name | quote }} OWNER TO {{ .owner | quote }};
         {{- else }}
-        - GRANT ALL PRIVILEGES ON DATABASE {{ .name }} TO {{ $.Values.global.cnpg.owner }};
-        - ALTER DATABASE {{ .name }} OWNER TO {{ $.Values.global.cnpg.owner }};
+        - GRANT ALL PRIVILEGES ON DATABASE {{ .name | quote }} TO {{ $.Values.global.cnpg.owner | quote }};
+        - ALTER DATABASE {{ .name | quote }} OWNER TO {{ $.Values.global.cnpg.owner | quote }};
         {{- end }}
         {{- end }}
       {{- end }}

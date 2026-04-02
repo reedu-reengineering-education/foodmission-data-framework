@@ -9,12 +9,12 @@ metadata:
 data:
   realm.json: |-
 {{ (.Files.Get "files/foodmission-realm.production.json" 
-    | replace "CHANGEME_FOODMISSION_API_SECRET" .Values.keycloak.realm.clientSecrets.foodmissionApi 
-    | replace "CHANGEME_FOODMISSION_SERVICE_SECRET" .Values.keycloak.realm.clientSecrets.foodmissionService 
-    | replace "CHANGEME_SMTP_HOST" .Values.keycloak.realm.smtp.host 
-    | replace "CHANGEME_SMTP_PORT" .Values.keycloak.realm.smtp.port 
-    | replace "CHANGEME_SMTP_USER" .Values.keycloak.realm.smtp.user 
-    | replace "CHANGEME_SMTP_PASSWORD" .Values.keycloak.realm.smtp.password 
-    | replace "CHANGEME_SMTP_FROM_NAME" .Values.keycloak.realm.smtp.fromDisplayName
-    | replace "CHANGEME_SMTP_FROM" .Values.keycloak.realm.smtp.from 
+    | replace "CHANGEME_FOODMISSION_API_SECRET" ((required "keycloak.realm.clientSecrets.foodmissionApi is required" .Values.keycloak.realm.clientSecrets.foodmissionApi) | toJson | trimAll "\"")
+    | replace "CHANGEME_FOODMISSION_SERVICE_SECRET" ((required "keycloak.realm.clientSecrets.foodmissionService is required" .Values.keycloak.realm.clientSecrets.foodmissionService) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_HOST" ((required "keycloak.realm.smtp.host is required" .Values.keycloak.realm.smtp.host) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_PORT" ((required "keycloak.realm.smtp.port is required" .Values.keycloak.realm.smtp.port) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_USER" ((required "keycloak.realm.smtp.user is required" .Values.keycloak.realm.smtp.user) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_PASSWORD" ((required "keycloak.realm.smtp.password is required" .Values.keycloak.realm.smtp.password) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_FROM_NAME" ((required "keycloak.realm.smtp.fromDisplayName is required" .Values.keycloak.realm.smtp.fromDisplayName) | toJson | trimAll "\"")
+    | replace "CHANGEME_SMTP_FROM" ((required "keycloak.realm.smtp.from is required" .Values.keycloak.realm.smtp.from) | toJson | trimAll "\"")
   ) | indent 4 }}
