@@ -15,7 +15,7 @@ metadata:
     meta.helm.sh/release-namespace: {{ .Release.Namespace }}
     description: "Scheduled backup for CNPG cluster"
 spec:
-  schedule: {{ .Values.cnpg.scheduledBackup.schedule | default "0 2 * * *" | quote }}
+  schedule: {{ .Values.cnpg.scheduledBackup.schedule | default "0 0 2 * * *" | quote }}
   backupOwnerReference: self
   cluster:
     name: {{ .Values.global.cnpg.clusterName }}

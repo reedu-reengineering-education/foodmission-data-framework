@@ -87,7 +87,7 @@ infra:
     
     scheduledBackup:
       enabled: false  # Set to true for staging/prod
-      schedule: '0 2 * * *'  # Daily at 2 AM UTC (cron format)
+      schedule: '0 0 2 * * *'  # Daily at 2 AM UTC (6-field: sec min hour dom mon dow)
     
     monitoring: false  # Set to true if Prometheus is available
 
