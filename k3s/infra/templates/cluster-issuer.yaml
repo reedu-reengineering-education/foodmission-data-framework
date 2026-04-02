@@ -15,8 +15,8 @@ metadata:
     description: "Let's Encrypt certificate issuer for TLS certificates"
 spec:
   acme:
-    server: {{ .Values.clusterIssuer.server }}
-    email: {{ .Values.clusterIssuer.email }}
+    server: {{ required "clusterIssuer.server is required when clusterIssuer.enabled is true" .Values.clusterIssuer.server | quote }}
+    email: {{ required "clusterIssuer.email is required when clusterIssuer.enabled is true" .Values.clusterIssuer.email | quote }}
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
