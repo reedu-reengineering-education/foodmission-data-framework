@@ -89,6 +89,12 @@ spec:
     storageClass: {{ .Values.cnpg.storageClass }}
     {{- end }}
   
+  # Spread database instances across different nodes for HA
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+    podAntiAffinityType: preferred
+  
   {{- if .Values.cnpg.monitoring }}
   monitoring:
     enablePodMonitor: {{ .Values.cnpg.monitoring }}

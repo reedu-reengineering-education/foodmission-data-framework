@@ -1,0 +1,46 @@
+cluster_name: foodmission-k3s
+protect_against_deletion: true
+kubeconfig_path: '~/.kube/config' # Default location for kubeconfig
+k3s_version: v1.35.1+k3s1
+
+networking:
+  ssh:
+    port: 22
+    use_agent: false
+    public_key_path: '~/.ssh/foodmission_reedu_id_ed25519.pub'
+    private_key_path: '~/.ssh/foodmission_reedu_id_ed25519'
+  allowed_networks:
+    ssh:
+      - 0.0.0.0/0
+    api:
+      - 0.0.0.0/0
+
+addons:
+  metrics_server:
+    enabled: true
+
+# The Control Plane
+masters_pool:
+  instance_type: cpx22 # Smallest instance for master
+  instance_count: 3 # HA masters
+  locations:
+    - fsn1
+    - hel1
+    - nbg1
+
+# The Worker Plane (Required by the tool)
+worker_node_pools:
+- name: workers
+  instance_type: cpx32
+  location: fsn1
+  autoscaling:
+    enabled: true
+    min_instances: 2
+    max_instances: 5
+- name: workers-arm64
+  instance_type: cax11
+  location: nbg1
+  autoscaling:
+    enabled: true
+    min_instances: 2
+    max_instances: 5

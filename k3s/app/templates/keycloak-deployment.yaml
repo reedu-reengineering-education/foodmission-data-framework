@@ -31,6 +31,24 @@ spec:
         prometheus.io/path: '/metrics'
         prometheus.io/port: '9000'
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ .Release.Name }}
+              app.kubernetes.io/component: keycloak
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ .Release.Name }}
+                    app.kubernetes.io/component: keycloak
+                topologyKey: kubernetes.io/hostname
       containers:
       - name: keycloak
         image: {{ .Values.keycloak.image }}

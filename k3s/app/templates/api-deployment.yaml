@@ -31,6 +31,24 @@ spec:
         prometheus.io/path: '/api/v1/metrics'
         prometheus.io/port: '3000'
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ .Release.Name }}
+              app.kubernetes.io/component: api
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: {{ .Release.Name }}
+                    app.kubernetes.io/component: api
+                topologyKey: kubernetes.io/hostname
       containers:
       - name: api
         image: {{ .Values.api.image }}
