@@ -30,10 +30,17 @@ masters_pool:
 
 # The Worker Plane (Required by the tool)
 worker_node_pools:
-  - name: workers
-    instance_type: cpx32
-    location: fsn1
-    autoscaling:
-      enabled: true
-      min_instances: 2
-      max_instances: 5
+- name: workers
+  instance_type: cpx32
+  location: fsn1
+  autoscaling:
+    enabled: true
+    min_instances: 2
+    max_instances: 5
+- name: workers-arm64
+  instance_type: cax11
+  location: nbg1
+  autoscaling:
+    enabled: true
+    min_instances: 2
+    max_instances: 5

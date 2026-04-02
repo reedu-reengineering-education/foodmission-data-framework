@@ -3,3 +3,8 @@ values.yaml
 values.test.yaml
 values.staging.yaml
 values.prod.yaml
+
+# Ignore Helm dependency charts (auto-generated)
+charts/
+*.tgz
+Chart.lock
