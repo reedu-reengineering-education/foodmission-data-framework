@@ -53,6 +53,11 @@ export class RecommendationsService {
         data: [],
         expiringItemsCount: 0,
         totalPantryItems: 0,
+        total: 0,
+        offset,
+        limit,
+        page: 1,
+        totalPages: 1,
       };
     }
 
@@ -94,6 +99,11 @@ export class RecommendationsService {
         data: [],
         expiringItemsCount: expiringItems.length,
         totalPantryItems: allPantryItems.length,
+        total: 0,
+        offset,
+        limit,
+        page: 1,
+        totalPages: 1,
       };
     }
 
@@ -108,12 +118,11 @@ export class RecommendationsService {
     );
 
     // Step 7: Sort — most expiring pantry matches first, then most total matches
-    const sortedRecipes = scoredRecipes
-      .sort(
-        (a, b) =>
-          b.expiringMatchCount - a.expiringMatchCount ||
-          b.matchCount - a.matchCount,
-      );
+    const sortedRecipes = scoredRecipes.sort(
+      (a, b) =>
+        b.expiringMatchCount - a.expiringMatchCount ||
+        b.matchCount - a.matchCount,
+    );
     const rankedRecipes = sortedRecipes.slice(offset, offset + limit);
 
     // Step 8: Transform to response DTOs
