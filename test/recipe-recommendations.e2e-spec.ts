@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../src/common/guards/database-auth.guards';
@@ -68,7 +68,9 @@ describe('Recipe Recommendations (e2e)', () => {
       })
       .compile();
 
-    app = await createTestApp(moduleFixture);
+    app = await createTestApp(moduleFixture, (a) =>
+      a.useGlobalPipes(new ValidationPipe({ transform: true })),
+    );
   });
 
   afterAll(async () => {
@@ -118,8 +120,8 @@ describe('Recipe Recommendations (e2e)', () => {
       ).toHaveBeenCalledWith(
         'test-user-id',
         expect.objectContaining({
-          expiringWithinDays: '14',
-          limit: '5',
+          expiringWithinDays: 14,
+          limit: 5,
         }),
       );
     });

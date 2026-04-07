@@ -438,11 +438,15 @@ When a pantry item is created without an explicit `expiryDate`, the system autom
 | Poultry | refrigerator |
 | Seafood | refrigerator |
 | Deli & Prepared Foods | refrigerator |
+| Fruits & Vegetables | refrigerator |
 | Baked Goods | pantry |
 | Grains, Beans & Pasta | pantry |
 | Canned Goods | pantry |
-| Condiments, Sauces & Canned Goods | pantry |
+| Condiments, Sauces & Oils | pantry |
 | Beverages | pantry |
+| Snacks & Sweets | pantry |
+| Baby Food | pantry |
+| Frozen Foods | freezer |
 
 ## Testing Strategy
 
