@@ -81,8 +81,9 @@ export class PantryItemService {
       const { foodId, foodCategoryId } = createDto;
 
       // Validate either food or foodCategory exists
+      let resolvedFoodName: string | null = null;
       if (foodId) {
-        await this.validateFoodExists(foodId);
+        const food = await this.validateFoodExists(foodId);
         const existingItem = await this.pantryItemRepository.findFoodInPantry(
           pantryId,
           foodId,
@@ -94,8 +95,10 @@ export class PantryItemService {
             'This food item is already in your pantry',
           );
         }
+        resolvedFoodName = food.name;
       } else if (foodCategoryId) {
-        await this.validateFoodCategoryExists(foodCategoryId);
+        const foodCategory =
+          await this.validateFoodCategoryExists(foodCategoryId);
         const existingItem =
           await this.pantryItemRepository.findFoodCategoryInPantry(
             pantryId,
@@ -108,10 +111,11 @@ export class PantryItemService {
             'This food category is already in your pantry',
           );
         }
+        resolvedFoodName = foodCategory.foodName;
       }
 
       let expiryDate: Date | undefined;
-      let expiryDateSource: string | undefined;
+      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
 
       if (createDto.expiryDate) {
         expiryDate =
@@ -119,19 +123,16 @@ export class PantryItemService {
             ? createDto.expiryDate
             : new Date(createDto.expiryDate);
         expiryDateSource = 'manual';
-      } else {
+      } else if (resolvedFoodName) {
         // Auto-calculate expiry from FoodKeeper data
-        const foodName = await this.getFoodName(foodId, foodCategoryId);
-        if (foodName) {
-          const calcResult =
-            await this.shelfLifeService.calculateExpiryDate(foodName);
-          if (calcResult.expiryDate) {
-            expiryDate = calcResult.expiryDate;
-            expiryDateSource = calcResult.source;
-            this.logger.debug(
-              `Auto-calculated expiry for ${foodName}: ${expiryDate.toISOString()} (${expiryDateSource})`,
-            );
-          }
+        const calcResult =
+          await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
+        if (calcResult.expiryDate) {
+          expiryDate = calcResult.expiryDate;
+          expiryDateSource = 'auto_foodkeeper';
+          this.logger.debug(
+            `Auto-calculated expiry for ${resolvedFoodName}: ${expiryDate.toISOString()} (${expiryDateSource})`,
+          );
         }
       }
 
@@ -233,17 +234,17 @@ export class PantryItemService {
     return { data: transformedData };
   }
 
-  private async validateFoodExists(foodId: string): Promise<void> {
+  private async validateFoodExists(foodId: string) {
     const food = await this.foodRepository.findById(foodId);
 
     if (!food) {
       throw new NotFoundException('Food item not found');
     }
+
+    return food;
   }
 
-  private async validateFoodCategoryExists(
-    foodCategoryId: string,
-  ): Promise<void> {
+  private async validateFoodCategoryExists(foodCategoryId: string) {
     const foodCategory =
       await this.foodCategoryRepository.findById(foodCategoryId);
 
@@ -252,22 +253,8 @@ export class PantryItemService {
         `Food category with ID '${foodCategoryId}' not found`,
       );
     }
-  }
 
-  private async getFoodName(
-    foodId?: string,
-    foodCategoryId?: string,
-  ): Promise<string | null> {
-    if (foodId) {
-      const food = await this.foodRepository.findById(foodId);
-      return food?.name ?? null;
-    }
-    if (foodCategoryId) {
-      const foodCategory =
-        await this.foodCategoryRepository.findById(foodCategoryId);
-      return foodCategory?.foodName ?? null;
-    }
-    return null;
+    return foodCategory;
   }
 
   async findById(id: string, userId: string): Promise<PantryItemResponseDto> {

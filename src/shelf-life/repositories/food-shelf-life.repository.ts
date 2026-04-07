@@ -36,9 +36,7 @@ export class FoodShelfLifeRepository {
     if (exactMatch) return exactMatch;
 
     // Tokenize and search by keywords (normalizedName is already lowercased)
-    const tokens = normalizedName
-      .split(/[\s,]+/)
-      .filter((t) => t.length > 2);
+    const tokens = normalizedName.split(/[\s,]+/).filter((t) => t.length > 2);
 
     if (tokens.length === 0) return null;
 

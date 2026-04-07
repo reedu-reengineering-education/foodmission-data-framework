@@ -6,7 +6,7 @@ export type StorageType = 'pantry' | 'refrigerator' | 'freezer';
 
 export interface ExpiryCalculationResult {
   expiryDate: Date | null;
-  source: 'manual' | 'auto_foodkeeper' | 'none';
+  source: 'auto_foodkeeper' | 'none';
   shelfLifeDays: number | null;
   storageType: StorageType | null;
 }
@@ -110,7 +110,8 @@ export class ShelfLifeService {
 
   /**
    * Get shelf life days for a specific storage type.
-   * Prefers maxDays over minDays for a conservative estimate.
+   * Prefers maxDays over minDays — an optimistic estimate that sets the expiry date
+   * further in the future. Use minDays if earlier warnings are preferred.
    */
   getDaysForStorageType(
     shelfLife: FoodShelfLife,

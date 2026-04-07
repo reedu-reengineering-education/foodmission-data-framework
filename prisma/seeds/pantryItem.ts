@@ -13,7 +13,7 @@ export interface PantryItemSeedData {
   unit: Unit;
   notes?: string;
   expiryDate?: Date;
-  expiryDateSource?: string;
+  expiryDateSource?: 'manual' | 'auto_foodkeeper';
 }
 
 const getExpiryDate = () => {
@@ -31,7 +31,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.KG,
     notes: 'Fresh from farmers market',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
@@ -40,7 +39,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.G,
     notes: 'Whole wheat',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
@@ -48,7 +46,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     quantity: 1,
     unit: Unit.L,
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
 
   // Dev User 2 - Vegan Pantry
@@ -59,7 +56,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.PIECES,
     notes: 'Organic',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
@@ -67,7 +63,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     quantity: 2,
     unit: Unit.L,
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
@@ -76,7 +71,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.KG,
     notes: 'Red quinoa',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
 
   // Dev User 3 - BBQ Supplies
@@ -87,7 +81,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.ML,
     notes: 'Spicy variant',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
@@ -95,7 +88,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     quantity: 10,
     unit: Unit.KG,
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
 
   // Dev User 4 - Keto Pantry
@@ -106,7 +98,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.ML,
     notes: 'Virgin coconut oil',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
@@ -115,7 +106,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.KG,
     notes: 'Raw, unsalted',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
@@ -124,7 +114,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.KG,
     notes: 'Cheddar',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
 
   // Admin User 1 - Office Kitchen
@@ -135,7 +124,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.KG,
     notes: 'Arabica beans',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
@@ -143,7 +131,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     quantity: 1,
     unit: Unit.KG,
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
@@ -152,7 +139,6 @@ export const pantryItemData: PantryItemSeedData[] = [
     unit: Unit.PIECES,
     notes: 'Black tea',
     expiryDate: getExpiryDate(),
-    expiryDateSource: 'manual',
   },
 ];
 

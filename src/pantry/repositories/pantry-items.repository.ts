@@ -28,7 +28,7 @@ export interface CreatePantryItemData {
   notes?: string;
   location?: string;
   expiryDate?: Date;
-  expiryDateSource?: string;
+  expiryDateSource?: 'manual' | 'auto_foodkeeper';
 }
 
 @Injectable()

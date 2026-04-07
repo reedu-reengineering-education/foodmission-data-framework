@@ -57,7 +57,7 @@ export class PantryItemResponseDto {
     enum: ['manual', 'auto_foodkeeper'],
   })
   @Expose()
-  expiryDateSource?: string;
+  expiryDateSource?: 'manual' | 'auto_foodkeeper';
 
   @ApiProperty({
     description: 'The ID of the pantry',

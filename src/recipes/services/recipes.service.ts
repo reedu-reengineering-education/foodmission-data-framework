@@ -132,10 +132,16 @@ export class RecipesService {
     }
   }
 
-  private buildFiltersWhere(
-    query: QueryRecipeDto,
-  ): Prisma.RecipeWhereInput {
-    const { category, cuisineType, dietaryLabels, tags, allergens, difficulty, search } = query;
+  private buildFiltersWhere(query: QueryRecipeDto): Prisma.RecipeWhereInput {
+    const {
+      category,
+      cuisineType,
+      dietaryLabels,
+      tags,
+      allergens,
+      difficulty,
+      search,
+    } = query;
     return {
       ...(category ? { category } : {}),
       ...(cuisineType ? { cuisineType } : {}),
