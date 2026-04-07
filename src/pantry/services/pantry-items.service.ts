@@ -82,6 +82,7 @@ export class PantryItemService {
 
       // Validate either food or foodCategory exists
       let resolvedFoodName: string | null = null;
+      let linkedShelfLifeId: string | null = null;
       if (foodId) {
         const food = await this.validateFoodExists(foodId);
         const existingItem = await this.pantryItemRepository.findFoodInPantry(
@@ -96,6 +97,7 @@ export class PantryItemService {
           );
         }
         resolvedFoodName = food.name;
+        linkedShelfLifeId = food.shelfLifeId ?? null;
       } else if (foodCategoryId) {
         const foodCategory =
           await this.validateFoodCategoryExists(foodCategoryId);
@@ -112,28 +114,52 @@ export class PantryItemService {
           );
         }
         resolvedFoodName = foodCategory.foodName;
+        linkedShelfLifeId = foodCategory.shelfLifeId ?? null;
       }
 
       let expiryDate: Date | undefined;
       let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
 
-      if (createDto.expiryDate) {
-        expiryDate =
-          createDto.expiryDate instanceof Date
-            ? createDto.expiryDate
-            : new Date(createDto.expiryDate);
-        expiryDateSource = 'manual';
+      // Step 1: auto-calculate from FK-linked shelf life (O(1) lookup)
+      if (linkedShelfLifeId) {
+        const shelfLife = await this.prisma.foodShelfLife.findUnique({
+          where: { id: linkedShelfLifeId },
+        });
+        if (shelfLife) {
+          const storageType = this.shelfLifeService.inferStorageType(shelfLife);
+          const days = this.shelfLifeService.getDaysForStorageType(
+            shelfLife,
+            storageType,
+          );
+          if (days !== null) {
+            expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + days);
+            expiryDateSource = 'auto_foodkeeper';
+            this.logger.debug(
+              `Expiry from FK shelf life for ${resolvedFoodName}: ${days} days (${storageType}) -> ${expiryDate.toISOString()}`,
+            );
+          }
+        }
       } else if (resolvedFoodName) {
-        // Auto-calculate expiry from FoodKeeper data
+        // Step 2: fallback to fuzzy name match when no FK link exists
         const calcResult =
           await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
         if (calcResult.expiryDate) {
           expiryDate = calcResult.expiryDate;
           expiryDateSource = 'auto_foodkeeper';
           this.logger.debug(
-            `Auto-calculated expiry for ${resolvedFoodName}: ${expiryDate.toISOString()} (${expiryDateSource})`,
+            `Expiry from fuzzy match for ${resolvedFoodName}: ${expiryDate.toISOString()}`,
           );
         }
+      }
+
+      // Step 3: manual date overrides auto-calculated value (user correction)
+      if (createDto.expiryDate) {
+        expiryDate =
+          createDto.expiryDate instanceof Date
+            ? createDto.expiryDate
+            : new Date(createDto.expiryDate);
+        expiryDateSource = 'manual';
       }
 
       const unit = createDto.unit ?? Unit.PIECES;
