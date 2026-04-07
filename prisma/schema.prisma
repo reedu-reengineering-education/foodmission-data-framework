@@ -86,6 +86,10 @@ model Food {
   // --- Data quality ---
   completeness Float? // 0.0 - 1.0
 
+  // --- Shelf life link ---
+  shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
+  shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
+
   // --- Relations ---
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
@@ -96,6 +100,7 @@ model Food {
   @@index([createdAt])
   @@index([nutriscoreGrade])
   @@index([novaGroup])
+  @@index([shelfLifeId])
   @@map("foods")
 }
 
@@ -273,6 +278,10 @@ model FoodCategory {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  // --- Shelf life link ---
+  shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
+  shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
+
   // --- Relations ---
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
@@ -282,6 +291,7 @@ model FoodCategory {
   @@index([foodGroup])
   @@index([foodName])
   @@index([nevoCode])
+  @@index([shelfLifeId])
   @@map("food_categories")
 }
 
@@ -302,6 +312,9 @@ model FoodShelfLife {
   freezerMaxDays               Int?
   createdAt                    DateTime @default(now())
   updatedAt                    DateTime @updatedAt
+
+  foods          Food[]
+  foodCategories FoodCategory[]
 
   @@index([name])
   @@index([categoryName])
