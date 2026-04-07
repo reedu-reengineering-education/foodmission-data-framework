@@ -14,6 +14,7 @@ import { seedMissions } from './seeds/missions';
 import { seedRecipes } from './seeds/themealdb';
 import { seedMeals } from './seeds/meals';
 import { seedFoodKeeper } from './seeds/foodkeeper';
+import { linkShelfLife } from './seeds/link-shelf-life';
 
 const prisma = new PrismaClient();
 
@@ -44,6 +45,7 @@ async function main() {
     const recipes = await seedRecipes(prisma);
     const meals = await seedMeals(prisma);
     const shelfLife = await seedFoodKeeper(prisma);
+    const shelfLifeLinks = await linkShelfLife(prisma);
     const foodCount = await prisma.food.count();
 
     console.log('=====================================');
@@ -71,6 +73,10 @@ async function main() {
       {
         label: 'shelfLife',
         value: `${shelfLife.created} created, ${shelfLife.skipped} skipped`,
+      },
+      {
+        label: 'shelfLife links',
+        value: `${shelfLifeLinks.foods} foods, ${shelfLifeLinks.categories} categories`,
       },
     ];
     for (const row of summaryRows) {
