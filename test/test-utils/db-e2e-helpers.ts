@@ -6,6 +6,11 @@ export const TEST_DB_URL =
   process.env.DATABASE_URL || process.env.TEST_DATABASE_URL;
 
 export function createTestPrismaClient(): PrismaClient {
+  if (!TEST_DB_URL) {
+    throw new Error(
+      'No test database URL configured. Set DATABASE_URL or TEST_DATABASE_URL.',
+    );
+  }
   return new PrismaClient({
     datasources: { db: { url: TEST_DB_URL } },
   });

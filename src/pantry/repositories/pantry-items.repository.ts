@@ -159,28 +159,4 @@ export class PantryItemRepository {
       },
     });
   }
-
-  async findExpiringSoon(
-    pantryId: string,
-    withinDays: number,
-  ): Promise<PantryItemWithRelations[]> {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() + withinDays);
-
-    return this.prisma.pantryItem.findMany({
-      where: {
-        pantryId,
-        expiryDate: {
-          lte: cutoffDate,
-          gte: new Date(),
-        },
-      },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
-      orderBy: { expiryDate: 'asc' },
-    });
-  }
 }

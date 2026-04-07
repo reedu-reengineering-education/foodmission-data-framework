@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
 import { PantryService } from '../../pantry/services/pantry.service';
+import { RecipesRepository } from '../repositories/recipes.repository';
 import {
   PantryItemRepository,
   PantryItemWithRelations,
@@ -28,9 +28,9 @@ export class RecommendationsService {
   private readonly logger = new Logger(RecommendationsService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
     private readonly pantryService: PantryService,
     private readonly pantryItemRepository: PantryItemRepository,
+    private readonly recipesRepository: RecipesRepository,
   ) {}
 
   async getRecommendations(
@@ -55,10 +55,12 @@ export class RecommendationsService {
       };
     }
 
-    // Step 3: Get expiring items
-    const expiringItems = await this.pantryItemRepository.findExpiringSoon(
-      pantryId,
-      expiringWithinDays,
+    // Step 3: Derive expiring items in memory — avoids a second DB round-trip
+    const now = new Date();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() + expiringWithinDays);
+    const expiringItems = allPantryItems.filter(
+      (i) => i.expiryDate && i.expiryDate >= now && i.expiryDate <= cutoffDate,
     );
 
     // Step 4: Build lookup sets
@@ -83,6 +85,7 @@ export class RecommendationsService {
     const candidateRecipes = await this.findCandidateRecipes(
       pantryFoodIds,
       pantryCategoryIds,
+      userId,
     );
 
     if (candidateRecipes.length === 0) {
@@ -127,41 +130,13 @@ export class RecommendationsService {
   private async findCandidateRecipes(
     pantryFoodIds: Set<string>,
     pantryCategoryIds: Set<string>,
+    userId: string,
   ): Promise<RecipeWithIngredients[]> {
-    const foodIds = Array.from(pantryFoodIds);
-    const categoryIds = Array.from(pantryCategoryIds);
-
-    if (foodIds.length === 0 && categoryIds.length === 0) {
-      return [];
-    }
-
-    const orConditions: any[] = [];
-    if (foodIds.length > 0) {
-      orConditions.push({ foodId: { in: foodIds } });
-    }
-    if (categoryIds.length > 0) {
-      orConditions.push({ foodCategoryId: { in: categoryIds } });
-    }
-
-    return this.prisma.recipe.findMany({
-      where: {
-        isPublic: true,
-        ingredients: {
-          some: {
-            OR: orConditions,
-          },
-        },
-      },
-      include: {
-        ingredients: {
-          orderBy: { order: 'asc' },
-          include: {
-            food: true,
-            foodCategory: true,
-          },
-        },
-      },
-    });
+    return this.recipesRepository.findCandidatesForRecommendation(
+      Array.from(pantryFoodIds),
+      Array.from(pantryCategoryIds),
+      userId,
+    );
   }
 
   private scoreRecipes(
