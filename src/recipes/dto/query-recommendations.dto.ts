@@ -26,4 +26,15 @@ export class QueryRecommendationsDto {
   @Max(50)
   @Type(() => Number)
   limit?: number;
+
+  @ApiPropertyOptional({
+    description: 'Offset for pagination (number of items to skip)',
+    example: 0,
+    default: 0,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Type(() => Number)
+  offset?: number;
 }

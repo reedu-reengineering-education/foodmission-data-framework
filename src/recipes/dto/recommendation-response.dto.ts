@@ -70,4 +70,24 @@ export class MultipleRecommendationResponseDto {
   @ApiProperty({ description: 'Total pantry items', example: 15 })
   @Expose()
   totalPantryItems: number;
+
+  @ApiProperty({ description: 'Total number of recommendations', example: 42 })
+  @Expose()
+  total: number;
+
+  @ApiProperty({ description: 'Offset for pagination', example: 0 })
+  @Expose()
+  offset: number;
+
+  @ApiProperty({ description: 'Limit (page size)', example: 10 })
+  @Expose()
+  limit: number;
+
+  @ApiProperty({ description: 'Current page number', example: 1 })
+  @Expose()
+  page: number;
+
+  @ApiProperty({ description: 'Total number of pages', example: 5 })
+  @Expose()
+  totalPages: number;
 }

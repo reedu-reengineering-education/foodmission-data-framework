@@ -21,6 +21,7 @@ import { RecipeResponseDto } from '../dto/recipe-response.dto';
 export interface RecommendationOptions {
   expiringWithinDays?: number;
   limit?: number;
+  offset?: number;
 }
 
 @Injectable()
@@ -37,7 +38,7 @@ export class RecommendationsService {
     userId: string,
     options: RecommendationOptions = {},
   ): Promise<MultipleRecommendationResponseDto> {
-    const { expiringWithinDays = 7, limit = 10 } = options;
+    const { expiringWithinDays = 7, limit = 10, offset = 0 } = options;
 
     // Step 1: Get or create user's pantry
     const pantryId = await this.pantryService.validatePantryExists(userId);
@@ -107,13 +108,13 @@ export class RecommendationsService {
     );
 
     // Step 7: Sort — most expiring pantry matches first, then most total matches
-    const rankedRecipes = scoredRecipes
+    const sortedRecipes = scoredRecipes
       .sort(
         (a, b) =>
           b.expiringMatchCount - a.expiringMatchCount ||
           b.matchCount - a.matchCount,
-      )
-      .slice(0, limit);
+      );
+    const rankedRecipes = sortedRecipes.slice(offset, offset + limit);
 
     // Step 8: Transform to response DTOs
     const data = rankedRecipes.map((scored) =>
@@ -124,6 +125,11 @@ export class RecommendationsService {
       data,
       expiringItemsCount: expiringItems.length,
       totalPantryItems: allPantryItems.length,
+      total: sortedRecipes.length,
+      offset,
+      limit,
+      totalPages: Math.ceil(sortedRecipes.length / limit),
+      page: Math.floor(offset / limit) + 1,
     };
   }
 

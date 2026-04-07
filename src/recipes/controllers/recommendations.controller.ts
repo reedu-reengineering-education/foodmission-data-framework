@@ -43,6 +43,7 @@ export class RecommendationsController {
     return this.recommendationsService.getRecommendations(userId, {
       expiringWithinDays: query.expiringWithinDays,
       limit: query.limit,
+      offset: query.offset,
     });
   }
 }
