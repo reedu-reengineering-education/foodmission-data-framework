@@ -73,10 +73,14 @@ export class PantryItemService {
     createDto: CreatePantryItemDto,
     userId: string,
     tx?: Prisma.TransactionClient,
+    pantryId?: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      // Get or auto-create user's pantry
-      const pantryId = await this.pantryService.validatePantryExists(userId);
+      // Validate pantry exists and belongs to user; auto-create if no pantryId given
+      const resolvedPantryId = await this.pantryService.validatePantryExists(
+        userId,
+        pantryId,
+      );
 
       const { foodId, foodCategoryId } = createDto;
 
@@ -86,7 +90,7 @@ export class PantryItemService {
       if (foodId) {
         const food = await this.validateFoodExists(foodId);
         const existingItem = await this.pantryItemRepository.findFoodInPantry(
-          pantryId,
+          resolvedPantryId,
           foodId,
           tx,
         );
@@ -103,7 +107,7 @@ export class PantryItemService {
           await this.validateFoodCategoryExists(foodCategoryId);
         const existingItem =
           await this.pantryItemRepository.findFoodCategoryInPantry(
-            pantryId,
+            resolvedPantryId,
             foodCategoryId,
             tx,
           );
@@ -173,7 +177,7 @@ export class PantryItemService {
           location: createDto.location,
           expiryDate: expiryDate,
           expiryDateSource: expiryDateSource,
-          pantryId: pantryId,
+          pantryId: resolvedPantryId,
           foodId: foodId || null,
           foodCategoryId: foodCategoryId || null,
           itemType,
@@ -216,11 +220,15 @@ export class PantryItemService {
   async findAll(
     query: QueryPantryItemDto,
     userId: string,
+    pantryId?: string,
   ): Promise<MultiplePantryItemResponseDto> {
     const { foodId, foodCategoryId, unit, expiryDate } = query;
 
-    // Get or auto-create user's pantry
-    const pantryId = await this.pantryService.validatePantryExists(userId);
+    // Validate pantry exists and belongs to user; auto-create if no pantryId given
+    const resolvedPantryId = await this.pantryService.validatePantryExists(
+      userId,
+      pantryId,
+    );
 
     if (foodId) {
       await this.validateFoodExists(foodId);
@@ -231,7 +239,7 @@ export class PantryItemService {
     }
 
     const filter: any = {
-      pantryId,
+      pantryId: resolvedPantryId,
     };
 
     if (foodId) {
