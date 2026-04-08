@@ -125,9 +125,10 @@ export class PantryItemService {
 
       // Manual expiry date always takes precedence
       if (createDto.expiryDate) {
-        expiryDate = createDto.expiryDate instanceof Date
-          ? createDto.expiryDate
-          : new Date(createDto.expiryDate);
+        expiryDate =
+          createDto.expiryDate instanceof Date
+            ? createDto.expiryDate
+            : new Date(createDto.expiryDate);
         expiryDateSource = 'manual';
       }
 
@@ -251,7 +252,10 @@ export class PantryItemService {
         }),
       };
     } catch (err) {
-      if (err instanceof NotFoundException || err instanceof ConflictException) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException
+      ) {
         throw err;
       }
       throw new BadRequestException(
@@ -382,7 +386,15 @@ export class PantryItemService {
         throw err;
       }
       // Prisma error code for unique constraint
-      if (err?.code === 'P2002' || err?.code === 'P2003' || (err?.meta && err?.meta.target && (err?.meta.target.includes('pantryId') || err?.meta.target.includes('foodId') || err?.meta.target.includes('foodCategoryId')))) {
+      if (
+        err?.code === 'P2002' ||
+        err?.code === 'P2003' ||
+        (err?.meta &&
+          err?.meta.target &&
+          (err?.meta.target.includes('pantryId') ||
+            err?.meta.target.includes('foodId') ||
+            err?.meta.target.includes('foodCategoryId')))
+      ) {
         throw new ConflictException(err.message || 'Unique constraint failed');
       }
       throw new BadRequestException(
