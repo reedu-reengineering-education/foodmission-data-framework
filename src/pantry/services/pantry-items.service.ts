@@ -3,7 +3,6 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { handlePrismaError } from '../../common/utils/error.utils';
@@ -31,8 +30,6 @@ import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 
 @Injectable()
 export class PantryItemService {
-  private readonly logger = new Logger(PantryItemService.name);
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
@@ -76,7 +73,6 @@ export class PantryItemService {
     pantryId?: string,
   ): Promise<PantryItemResponseDto> {
     try {
-      // Validate pantry exists and belongs to user; auto-create if no pantryId given
       const resolvedPantryId = await this.pantryService.validatePantryExists(
         userId,
         pantryId,
@@ -84,7 +80,6 @@ export class PantryItemService {
 
       const { foodId, foodCategoryId } = createDto;
 
-      // Validate either food or foodCategory exists
       let resolvedFoodName: string | null = null;
       let linkedShelfLifeId: string | null = null;
       if (foodId) {
@@ -124,7 +119,6 @@ export class PantryItemService {
       let expiryDate: Date | undefined;
       let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
 
-      // Step 1: auto-calculate from FK-linked shelf life (O(1) lookup)
       if (linkedShelfLifeId) {
         const shelfLife = await this.prisma.foodShelfLife.findUnique({
           where: { id: linkedShelfLifeId },
@@ -139,25 +133,17 @@ export class PantryItemService {
             expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + days);
             expiryDateSource = 'auto_foodkeeper';
-            this.logger.debug(
-              `Expiry from FK shelf life for ${resolvedFoodName}: ${days} days (${storageType}) -> ${expiryDate.toISOString()}`,
-            );
           }
         }
       } else if (resolvedFoodName) {
-        // Step 2: fallback to fuzzy name match when no FK link exists
         const calcResult =
           await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
         if (calcResult.expiryDate) {
           expiryDate = calcResult.expiryDate;
           expiryDateSource = 'auto_foodkeeper';
-          this.logger.debug(
-            `Expiry from fuzzy match for ${resolvedFoodName}: ${expiryDate.toISOString()}`,
-          );
         }
       }
 
-      // Step 3: manual date overrides auto-calculated value (user correction)
       if (createDto.expiryDate) {
         expiryDate =
           createDto.expiryDate instanceof Date
@@ -195,8 +181,6 @@ export class PantryItemService {
         throw error;
       }
 
-      this.logger.error('Failed to create pantry item:', error);
-
       if (error && typeof error === 'object' && 'code' in error) {
         const prismaError = error as Prisma.PrismaClientKnownRequestError;
         if (prismaError.code === 'P2002') {
@@ -224,7 +208,6 @@ export class PantryItemService {
   ): Promise<MultiplePantryItemResponseDto> {
     const { foodId, foodCategoryId, unit, expiryDate } = query;
 
-    // Validate pantry exists and belongs to user; auto-create if no pantryId given
     const resolvedPantryId = await this.pantryService.validatePantryExists(
       userId,
       pantryId,
@@ -322,7 +305,6 @@ export class PantryItemService {
       await this.validateFoodCategoryExists(updateDto.foodCategoryId);
     }
 
-    // Prevent setting both foodId and foodCategoryId
     if (updateDto.foodId && updateDto.foodCategoryId) {
       throw new BadRequestException(
         'Only one of foodId or foodCategoryId can be provided, not both',
@@ -340,7 +322,6 @@ export class PantryItemService {
               : undefined;
       }
 
-      // When switching reference type, clear the other one
       const updateData: any = {
         ...(updateDto.quantity !== undefined && {
           quantity: updateDto.quantity,
