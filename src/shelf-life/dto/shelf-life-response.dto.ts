@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class ShelfLifeResponseDto {
   @ApiProperty({ description: 'Unique ID', example: 'uuid' })
