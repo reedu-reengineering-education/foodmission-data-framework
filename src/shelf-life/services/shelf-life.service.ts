@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { FoodShelfLife } from '@prisma/client';
 import { ShelfLifeRepository } from '../repositories/shelf-life.repository';
 
@@ -17,48 +17,23 @@ export class ShelfLifeService {
 
   constructor(private readonly shelfLifeRepository: ShelfLifeRepository) {}
 
-  /**
-   * Calculate expiry date for a food item based on FoodKeeper data.
-   * Storage type is inferred from the food's category.
-   */
   async calculateExpiryDate(
     foodName: string,
     purchaseDate: Date = new Date(),
   ): Promise<ExpiryCalculationResult> {
     const shelfLife = await this.shelfLifeRepository.findBestMatch(foodName);
-
     if (!shelfLife) {
-      this.logger.debug(`No shelf life data found for: ${foodName}`);
-      return {
-        expiryDate: null,
-        source: 'none',
-        shelfLifeDays: null,
-        storageType: null,
-      };
+      throw new NotFoundException(`No shelf life data found for: ${foodName}`);
     }
-
     const storageType = this.inferStorageType(shelfLife);
     const days = this.getDaysForStorageType(shelfLife, storageType);
-
     if (days === null) {
-      this.logger.debug(
+      throw new NotFoundException(
         `No shelf life days for ${foodName} with storage type ${storageType}`,
       );
-      return {
-        expiryDate: null,
-        source: 'none',
-        shelfLifeDays: null,
-        storageType,
-      };
     }
-
     const expiryDate = new Date(purchaseDate);
     expiryDate.setDate(expiryDate.getDate() + days);
-
-    this.logger.debug(
-      `Calculated expiry for ${foodName}: ${days} days (${storageType}) -> ${expiryDate.toISOString()}`,
-    );
-
     return {
       expiryDate,
       source: 'auto_foodkeeper',
@@ -67,11 +42,7 @@ export class ShelfLifeService {
     };
   }
 
-  /**
-   * Infer storage type from FoodKeeper category.
-   */
   inferStorageType(shelfLife: FoodShelfLife): StorageType {
-    // Use the defaultStorageType from the data if available
     if (shelfLife.defaultStorageType) {
       const storageType = shelfLife.defaultStorageType.toLowerCase();
       if (
@@ -82,11 +53,7 @@ export class ShelfLifeService {
         return storageType;
       }
     }
-
-    // Fallback: category-based inference
     const category = shelfLife.categoryName?.toLowerCase() ?? '';
-
-    // Refrigerator categories
     if (
       category.includes('dairy') ||
       category.includes('egg') ||
@@ -98,21 +65,12 @@ export class ShelfLifeService {
     ) {
       return 'refrigerator';
     }
-
-    // Freezer categories
     if (category.includes('frozen')) {
       return 'freezer';
     }
-
-    // Pantry by default
     return 'pantry';
   }
 
-  /**
-   * Get shelf life days for a specific storage type.
-   * Prefers maxDays over minDays — an optimistic estimate that sets the expiry date
-   * further in the future. Use minDays if earlier warnings are preferred.
-   */
   getDaysForStorageType(
     shelfLife: FoodShelfLife,
     storageType: StorageType,
@@ -131,16 +89,10 @@ export class ShelfLifeService {
     }
   }
 
-  /**
-   * Search for shelf life data by food name.
-   */
   async searchByFoodName(foodName: string): Promise<FoodShelfLife | null> {
     return this.shelfLifeRepository.findBestMatch(foodName);
   }
 
-  /**
-   * Get all shelf life records with pagination.
-   */
   async findAll(options?: {
     skip?: number;
     take?: number;

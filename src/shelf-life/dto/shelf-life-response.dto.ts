@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
-export class FoodShelfLifeResponseDto {
+export class ShelfLifeResponseDto {
   @ApiProperty({ description: 'Unique ID', example: 'uuid' })
   @Expose()
   id: string;
@@ -75,10 +75,10 @@ export class FoodShelfLifeResponseDto {
 }
 
 export class MultipleFoodShelfLifeResponseDto {
-  @ApiProperty({ type: [FoodShelfLifeResponseDto] })
+  @ApiProperty({ type: [ShelfLifeResponseDto] })
   @Expose()
-  @Type(() => FoodShelfLifeResponseDto)
-  data: FoodShelfLifeResponseDto[];
+  @Type(() => ShelfLifeResponseDto)
+  data: ShelfLifeResponseDto[];
 
   @ApiProperty({ description: 'Total count', example: 95 })
   @Expose()

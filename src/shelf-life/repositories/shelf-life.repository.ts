@@ -26,42 +26,26 @@ export class ShelfLifeRepository {
 
   async findBestMatch(foodName: string): Promise<FoodShelfLife | null> {
     const normalizedName = foodName.toLowerCase().trim();
-
-    // Try exact name match first
     const exactMatch = await this.prisma.foodShelfLife.findFirst({
       where: {
         name: { equals: normalizedName, mode: 'insensitive' },
       },
     });
     if (exactMatch) return exactMatch;
-
-    // Tokenize and search by keywords (normalizedName is already lowercased)
     const tokens = normalizedName.split(/[\s,]+/).filter((t) => t.length > 2);
-
     if (tokens.length === 0) return null;
-
     const candidates = await this.prisma.foodShelfLife.findMany({
       where: {
         keywords: { hasSome: tokens },
       },
     });
-
     if (candidates.length === 0) return null;
-
-    // Score by keyword overlap
     const scored = candidates.map((candidate) => {
-      const candidateKeywords = new Set(
-        candidate.keywords.map((k) => k.toLowerCase()),
-      );
-      const overlapCount = tokens.filter((t) =>
-        candidateKeywords.has(t),
-      ).length;
+      const candidateKeywords = new Set(candidate.keywords.map((k) => k.toLowerCase()));
+      const overlapCount = tokens.filter((t) => candidateKeywords.has(t)).length;
       return { candidate, score: overlapCount };
     });
-
-    // Sort by score descending
     scored.sort((a, b) => b.score - a.score);
-
     return scored[0]?.candidate ?? null;
   }
 
