@@ -41,8 +41,12 @@ export class ShelfLifeRepository {
     });
     if (candidates.length === 0) return null;
     const scored = candidates.map((candidate) => {
-      const candidateKeywords = new Set(candidate.keywords.map((k) => k.toLowerCase()));
-      const overlapCount = tokens.filter((t) => candidateKeywords.has(t)).length;
+      const candidateKeywords = new Set(
+        candidate.keywords.map((k) => k.toLowerCase()),
+      );
+      const overlapCount = tokens.filter((t) =>
+        candidateKeywords.has(t),
+      ).length;
       return { candidate, score: overlapCount };
     });
     scored.sort((a, b) => b.score - a.score);
