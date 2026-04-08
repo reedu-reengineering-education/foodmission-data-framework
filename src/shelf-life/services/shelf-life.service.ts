@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FoodShelfLife } from '@prisma/client';
-import { FoodShelfLifeRepository } from '../repositories/food-shelf-life.repository';
+import { ShelfLifeRepository } from '../repositories/shelf-life.repository';
 
 export type StorageType = 'pantry' | 'refrigerator' | 'freezer';
 
@@ -15,7 +15,7 @@ export interface ExpiryCalculationResult {
 export class ShelfLifeService {
   private readonly logger = new Logger(ShelfLifeService.name);
 
-  constructor(private readonly shelfLifeRepository: FoodShelfLifeRepository) {}
+  constructor(private readonly shelfLifeRepository: ShelfLifeRepository) {}
 
   /**
    * Calculate expiry date for a food item based on FoodKeeper data.

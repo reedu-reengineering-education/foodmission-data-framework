@@ -3,7 +3,7 @@ import { FoodShelfLife, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
-export class FoodShelfLifeRepository {
+export class ShelfLifeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByProductId(
