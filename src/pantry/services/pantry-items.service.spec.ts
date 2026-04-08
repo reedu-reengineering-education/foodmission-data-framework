@@ -672,7 +672,7 @@ describe('PantryItemService', () => {
 
       expect(result.data).toHaveLength(1);
       const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
-      expect(filterCall).not.toHaveProperty('expiryDate');
+      expect(filterCall.expiryDate).toBeUndefined();
     });
   });
 
@@ -718,7 +718,9 @@ describe('PantryItemService', () => {
     const itemId = TEST_IDS.PANTRY_ITEM;
 
     it('should update pantry item when it exists and belongs to user', async () => {
-      const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto();
+      const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto({
+        foodId: 'food-1',
+      });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
       mockPantryItemRepository.update.mockResolvedValue({
@@ -790,9 +792,11 @@ describe('PantryItemService', () => {
     it('should transform expiryDate string to Date object when updating', async () => {
       const updateDtoWithStringDate: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
+        foodId: string;
       } = {
         quantity: 10,
         expiryDate: '2027-02-02',
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
@@ -819,6 +823,7 @@ describe('PantryItemService', () => {
       const updateDtoWithoutDate = {
         quantity: 10,
         expiryDate: undefined,
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
@@ -837,11 +842,13 @@ describe('PantryItemService', () => {
     it('should update with all fields including date string', async () => {
       const updateDtoWithAllFields: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
+        foodId: string;
       } = {
         quantity: 100,
         unit: Unit.G,
         notes: 'Buy organic if available',
         expiryDate: '2027-03-15',
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);

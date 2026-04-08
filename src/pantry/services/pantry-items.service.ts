@@ -75,34 +75,6 @@ export class PantryItemService {
       const { foodId, foodCategoryId } = createDto;
       this.validateFoodOrCategoryInput(foodId, foodCategoryId);
 
-      if (createDto.expiryDate) {
-        await this.ensureUniqueAndExists(
-          resolvedPantryId,
-          foodId,
-          foodCategoryId,
-          tx,
-        );
-        const item = await this.pantryItemRepository.create(
-          {
-            quantity: createDto.quantity,
-            unit: createDto.unit ?? Unit.PIECES,
-            notes: createDto.notes,
-            location: createDto.location,
-            expiryDate:
-              createDto.expiryDate instanceof Date
-                ? createDto.expiryDate
-                : new Date(createDto.expiryDate),
-            expiryDateSource: 'manual',
-            pantryId: resolvedPantryId,
-            foodId: foodId || null,
-            foodCategoryId: foodCategoryId || null,
-            itemType: foodId ? 'food' : 'food_category',
-          },
-          tx,
-        );
-        return this.transformToResponseDto(item);
-      }
-
       await this.ensureUniqueAndExists(
         resolvedPantryId,
         foodId,
@@ -151,6 +123,14 @@ export class PantryItemService {
         }
       }
 
+      // Manual expiry date always takes precedence
+      if (createDto.expiryDate) {
+        expiryDate = createDto.expiryDate instanceof Date
+          ? createDto.expiryDate
+          : new Date(createDto.expiryDate);
+        expiryDateSource = 'manual';
+      }
+
       const item = await this.pantryItemRepository.create(
         {
           quantity: createDto.quantity,
@@ -168,6 +148,13 @@ export class PantryItemService {
       );
       return this.transformToResponseDto(item);
     } catch (err) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to create pantry item: ' +
           (err instanceof Error ? err.message : err),
@@ -239,23 +226,34 @@ export class PantryItemService {
         userId,
         pantryId,
       );
-      this.validateFoodOrCategoryInput(foodId, foodCategoryId);
-      await this.ensureUniqueAndExists(
-        resolvedPantryId,
-        foodId,
-        foodCategoryId,
-      );
-      const items = await this.pantryItemRepository.findMany({
-        pantryId: resolvedPantryId,
-        foodId,
-        foodCategoryId,
-      });
+      // Only validate if either filter is provided
+      if (foodId || foodCategoryId) {
+        this.validateFoodOrCategoryInput(foodId, foodCategoryId);
+        await this.ensureUniqueAndExists(
+          resolvedPantryId,
+          foodId,
+          foodCategoryId,
+        );
+      }
+      const filter: any = { pantryId: resolvedPantryId };
+      if (foodId !== undefined) filter.foodId = foodId;
+      if (foodCategoryId !== undefined) filter.foodCategoryId = foodCategoryId;
+      if (query.expiryDate !== undefined) {
+        filter.expiryDate =
+          query.expiryDate instanceof Date
+            ? query.expiryDate
+            : new Date(query.expiryDate);
+      }
+      const items = await this.pantryItemRepository.findMany(filter);
       return {
         data: plainToInstance(PantryItemResponseDto, items, {
           excludeExtraneousValues: true,
         }),
       };
     } catch (err) {
+      if (err instanceof NotFoundException || err instanceof ConflictException) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to fetch pantry items: ' +
           (err instanceof Error ? err.message : err),
@@ -299,6 +297,12 @@ export class PantryItemService {
       }
       return this.transformToResponseDto(item);
     } catch (err) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to fetch pantry item: ' +
           (err instanceof Error ? err.message : err),
@@ -369,6 +373,18 @@ export class PantryItemService {
       );
       return this.transformToResponseDto(updatedItem);
     } catch (err) {
+      // Map Prisma unique constraint errors to ConflictException
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
+      // Prisma error code for unique constraint
+      if (err?.code === 'P2002' || err?.code === 'P2003' || (err?.meta && err?.meta.target && (err?.meta.target.includes('pantryId') || err?.meta.target.includes('foodId') || err?.meta.target.includes('foodCategoryId')))) {
+        throw new ConflictException(err.message || 'Unique constraint failed');
+      }
       throw new BadRequestException(
         'Failed to update pantry item: ' +
           (err instanceof Error ? err.message : err),
@@ -381,6 +397,12 @@ export class PantryItemService {
       await this.findById(id, userId);
       await this.pantryItemRepository.delete(id);
     } catch (err) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to delete pantry item: ' +
           (err instanceof Error ? err.message : err),
