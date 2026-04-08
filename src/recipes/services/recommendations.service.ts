@@ -40,106 +40,121 @@ export class RecommendationsService {
   ): Promise<MultipleRecommendationResponseDto> {
     const { expiringWithinDays = 7, limit = 10, offset = 0 } = options;
 
-    // Step 1: Get or create user's pantry
-    const pantryId = await this.pantryService.validatePantryExists(userId);
+    try {
+      const pantryId = await this.pantryService.validatePantryExists(userId);
 
-    // Step 2: Get all pantry items
-    const allPantryItems = await this.pantryItemRepository.findMany({
-      pantryId,
-    });
+      const allPantryItems = await this.pantryItemRepository.findMany({
+        pantryId,
+      });
 
-    if (allPantryItems.length === 0) {
+      if (allPantryItems.length === 0) {
+        return this.emptyRecommendationResponse(limit, offset);
+      }
+
+      const expiringItems = this.getExpiringItems(
+        allPantryItems,
+        expiringWithinDays,
+      );
+
+      const pantryFoodIds = this.buildIdSet(allPantryItems, 'foodId');
+      const pantryCategoryIds = this.buildIdSet(
+        allPantryItems,
+        'foodCategoryId',
+      );
+      const expiringFoodIds = this.buildIdSet(expiringItems, 'foodId');
+      const expiringCategoryIds = this.buildIdSet(
+        expiringItems,
+        'foodCategoryId',
+      );
+
+      const candidateRecipes = await this.findCandidateRecipes(
+        pantryFoodIds,
+        pantryCategoryIds,
+        userId,
+        { skip: offset, take: limit },
+      );
+
+      if (candidateRecipes.length === 0) {
+        return this.emptyRecommendationResponse(
+          limit,
+          offset,
+          allPantryItems.length,
+          expiringItems.length,
+        );
+      }
+
+      const scoredRecipes = this.scoreRecipes(
+        candidateRecipes,
+        allPantryItems,
+        pantryFoodIds,
+        pantryCategoryIds,
+        expiringFoodIds,
+        expiringCategoryIds,
+      );
+
+      const sortedRecipes = scoredRecipes.sort(
+        (a, b) =>
+          b.expiringMatchCount - a.expiringMatchCount ||
+          b.matchCount - a.matchCount,
+      );
+
+      const data = sortedRecipes.map((scored) =>
+        this.toRecommendationResponse(scored),
+      );
+
       return {
-        data: [],
-        expiringItemsCount: 0,
-        totalPantryItems: 0,
-        total: 0,
+        data,
+        expiringItemsCount: expiringItems.length,
+        totalPantryItems: allPantryItems.length,
+        total: sortedRecipes.length,
         offset,
         limit,
-        page: 1,
-        totalPages: 1,
+        totalPages: Math.ceil(sortedRecipes.length / limit),
+        page: Math.floor(offset / limit) + 1,
       };
+    } catch (err) {
+      this.logger.error(
+        `Failed to generate recommendations for user ${userId}: ${err?.message || err}`,
+      );
+      throw err;
     }
+  }
 
-    // Step 3: Derive expiring items in memory — avoids a second DB round-trip
+  private emptyRecommendationResponse(
+    limit: number,
+    offset: number,
+    totalPantryItems = 0,
+    expiringItemsCount = 0,
+  ): MultipleRecommendationResponseDto {
+    return {
+      data: [],
+      expiringItemsCount,
+      totalPantryItems,
+      total: 0,
+      offset,
+      limit,
+      page: 1,
+      totalPages: 1,
+    };
+  }
+
+  private getExpiringItems(
+    items: PantryItemWithRelations[],
+    expiringWithinDays: number,
+  ): PantryItemWithRelations[] {
     const now = new Date();
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() + expiringWithinDays);
-    const expiringItems = allPantryItems.filter(
+    return items.filter(
       (i) => i.expiryDate && i.expiryDate >= now && i.expiryDate <= cutoffDate,
     );
+  }
 
-    // Step 4: Build lookup sets
-    const pantryFoodIds = new Set(
-      allPantryItems.filter((i) => i.foodId).map((i) => i.foodId!),
-    );
-    const pantryCategoryIds = new Set(
-      allPantryItems
-        .filter((i) => i.foodCategoryId)
-        .map((i) => i.foodCategoryId!),
-    );
-    const expiringFoodIds = new Set(
-      expiringItems.filter((i) => i.foodId).map((i) => i.foodId!),
-    );
-    const expiringCategoryIds = new Set(
-      expiringItems
-        .filter((i) => i.foodCategoryId)
-        .map((i) => i.foodCategoryId!),
-    );
-
-    // Step 5: Find candidate recipes with DB-level pagination
-    const candidateRecipes = await this.findCandidateRecipes(
-      pantryFoodIds,
-      pantryCategoryIds,
-      userId,
-      { skip: offset, take: limit },
-    );
-
-    if (candidateRecipes.length === 0) {
-      return {
-        data: [],
-        expiringItemsCount: expiringItems.length,
-        totalPantryItems: allPantryItems.length,
-        total: 0,
-        offset,
-        limit,
-        page: 1,
-        totalPages: 1,
-      };
-    }
-
-    // Step 6: Score recipes
-    const scoredRecipes = this.scoreRecipes(
-      candidateRecipes,
-      allPantryItems,
-      pantryFoodIds,
-      pantryCategoryIds,
-      expiringFoodIds,
-      expiringCategoryIds,
-    );
-
-    // Step 7: Sort in-memory by match counts (DB sort not possible for these fields)
-    const sortedRecipes = scoredRecipes.sort(
-      (a, b) =>
-        b.expiringMatchCount - a.expiringMatchCount ||
-        b.matchCount - a.matchCount,
-    );
-
-    // Step 8: Transform to response DTOs
-    const data = sortedRecipes.map((scored) =>
-      this.toRecommendationResponse(scored),
-    );
-
-    return {
-      data,
-      expiringItemsCount: expiringItems.length,
-      totalPantryItems: allPantryItems.length,
-      total: sortedRecipes.length,
-      offset,
-      limit,
-      totalPages: Math.ceil(sortedRecipes.length / limit),
-      page: Math.floor(offset / limit) + 1,
-    };
+  private buildIdSet(
+    items: PantryItemWithRelations[],
+    key: 'foodId' | 'foodCategoryId',
+  ): Set<string> {
+    return new Set(items.filter((i) => i[key]).map((i) => i[key]!));
   }
 
   private async findCandidateRecipes(

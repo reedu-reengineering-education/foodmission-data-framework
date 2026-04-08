@@ -10,8 +10,8 @@ export class QueryRecommendationsDto {
   })
   @IsOptional()
   @IsInt()
-  @Min(1)
-  @Max(365)
+  @Min(0)
+  @Max(60)
   @Type(() => Number)
   expiringWithinDays?: number;
 
@@ -23,7 +23,7 @@ export class QueryRecommendationsDto {
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(100)
   @Type(() => Number)
   limit?: number;
 
