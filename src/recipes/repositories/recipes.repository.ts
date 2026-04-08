@@ -206,6 +206,11 @@ export class RecipesRepository implements BaseRepository<
     foodIds: string[],
     categoryIds: string[],
     userId: string,
+    options: {
+      skip?: number;
+      take?: number;
+      orderBy?: Prisma.RecipeOrderByWithRelationInput;
+    } = {},
   ): Promise<RecipeWithIngredients[]> {
     if (foodIds.length === 0 && categoryIds.length === 0) {
       return [];
@@ -219,7 +224,11 @@ export class RecipesRepository implements BaseRepository<
       orConditions.push({ foodCategoryId: { in: categoryIds } });
     }
 
+    const { skip = 0, take = 10, orderBy = { createdAt: 'desc' } } = options;
+
     return this.prisma.recipe.findMany({
+      skip,
+      take,
       where: {
         OR: [{ isPublic: true }, { userId }],
         ingredients: {
@@ -228,6 +237,7 @@ export class RecipesRepository implements BaseRepository<
           },
         },
       },
+      orderBy,
       include: {
         ingredients: {
           orderBy: { order: 'asc' },

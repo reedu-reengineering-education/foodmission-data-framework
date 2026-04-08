@@ -87,11 +87,12 @@ export class RecommendationsService {
         .map((i) => i.foodCategoryId!),
     );
 
-    // Step 5: Find candidate recipes
+    // Step 5: Find candidate recipes with DB-level pagination
     const candidateRecipes = await this.findCandidateRecipes(
       pantryFoodIds,
       pantryCategoryIds,
       userId,
+      { skip: offset, take: limit },
     );
 
     if (candidateRecipes.length === 0) {
@@ -117,16 +118,15 @@ export class RecommendationsService {
       expiringCategoryIds,
     );
 
-    // Step 7: Sort — most expiring pantry matches first, then most total matches
+    // Step 7: Sort in-memory by match counts (DB sort not possible for these fields)
     const sortedRecipes = scoredRecipes.sort(
       (a, b) =>
         b.expiringMatchCount - a.expiringMatchCount ||
         b.matchCount - a.matchCount,
     );
-    const rankedRecipes = sortedRecipes.slice(offset, offset + limit);
 
     // Step 8: Transform to response DTOs
-    const data = rankedRecipes.map((scored) =>
+    const data = sortedRecipes.map((scored) =>
       this.toRecommendationResponse(scored),
     );
 
@@ -146,11 +146,13 @@ export class RecommendationsService {
     pantryFoodIds: Set<string>,
     pantryCategoryIds: Set<string>,
     userId: string,
+    options: { skip?: number; take?: number; orderBy?: any } = {},
   ): Promise<RecipeWithIngredients[]> {
     return this.recipesRepository.findCandidatesForRecommendation(
       Array.from(pantryFoodIds),
       Array.from(pantryCategoryIds),
       userId,
+      options,
     );
   }
 
