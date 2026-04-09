@@ -32,6 +32,7 @@ describe('PantryItemsController', () => {
 
   describe('create', () => {
     const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
     const body = PantryItemsTestBuilder.createCreatePantryItemDto({
       pantryId: undefined,
     } as any);
@@ -41,12 +42,14 @@ describe('PantryItemsController', () => {
     it('should call service and return result', async () => {
       mockPantryItemsService.create.mockResolvedValue(mockResponse);
 
-      const result = await controller.create(body as any, userId);
+      const result = await controller.create(pantryId, body as any, userId);
 
       expect(result).toEqual(mockResponse);
       expect(service.create).toHaveBeenCalledWith(
         expect.objectContaining(body),
         userId,
+        undefined,
+        pantryId,
       );
       expect(service.create).toHaveBeenCalledTimes(1);
     });
@@ -54,6 +57,7 @@ describe('PantryItemsController', () => {
 
   describe('findAll', () => {
     const userId = TEST_IDS.USER;
+    const pantryId = TEST_IDS.PANTRY;
     const mockResponse = { data: [] };
 
     it('should call service with query and return result', async () => {
@@ -62,10 +66,10 @@ describe('PantryItemsController', () => {
 
       mockPantryItemsService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll(query as any, userId);
+      const result = await controller.findAll(pantryId, query as any, userId);
 
       expect(result).toEqual(mockResponse);
-      expect(service.findAll).toHaveBeenCalledWith(query, userId);
+      expect(service.findAll).toHaveBeenCalledWith(query, userId, pantryId);
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
   });
