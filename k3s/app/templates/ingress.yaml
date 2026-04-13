@@ -13,11 +13,10 @@ metadata:
     meta.helm.sh/release-name: {{ .Release.Name }}
     meta.helm.sh/release-namespace: {{ .Release.Namespace }}
     description: "Ingress routing for FoodMission API and Keycloak"
-    kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
+  ingressClassName: traefik 
   tls:
   - hosts:
     {{- range .Values.ingress.hosts }}

@@ -15,7 +15,7 @@ helm upgrade --install observability ./k3s/observability \
 
 After deployment, configure DNS:
 - Point `grafana.foodmission.eu` to your k3s cluster IP
-- cert-manager will automatically provision TLS certificate (using nginx ingress)
+- cert-manager will automatically provision TLS certificate (using traefik ingress)
 
 ## Access Grafana
 

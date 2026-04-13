@@ -18,6 +18,8 @@ networking:
 addons:
   metrics_server:
     enabled: true
+  traefik:
+    enabled: true
 
 # The Control Plane
 masters_pool:
@@ -35,11 +37,18 @@ worker_node_pools:
   location: fsn1
   autoscaling:
     enabled: true
-    min_instances: 2
+    min_instances: 0
     max_instances: 5
 - name: workers-arm64
   instance_type: cax11
   location: nbg1
+  autoscaling:
+    enabled: true
+    min_instances: 2
+    max_instances: 5
+- name: workers-fsn1-arm64
+  instance_type: cax11
+  location: fsn1
   autoscaling:
     enabled: true
     min_instances: 2
