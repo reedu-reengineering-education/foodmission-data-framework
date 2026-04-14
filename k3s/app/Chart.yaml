@@ -1,0 +1,5 @@
+apiVersion: v2
+name: app
+version: 0.1.0
+description: Application layer - FoodMission API and Keycloak
+appVersion: "1.0.0"
