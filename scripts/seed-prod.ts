@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { seedNevo } from './seed-nevo';
 import { seedOpenFoodFactsFromJson } from '../prisma/seeds/openfoodfacts';
 import { seedRecipes } from '../prisma/seeds/themealdb';
+import { seedFoodKeeper } from '../prisma/seeds/foodkeeper';
+import { linkShelfLife } from '../prisma/seeds/link-shelf-life';
 
 async function main() {
   const prisma = new PrismaClient();
@@ -36,6 +38,23 @@ async function main() {
         `   ✅ Recipes: ${result?.created ?? 0} created, ${result?.skipped ?? 0} skipped`,
       );
     }
+
+    const shelfLifeRes = await seedFoodKeeper(prisma, { skipExisting: true });
+    if (shelfLifeRes.errors > 0) {
+      console.error(
+        `   ❌ ShelfLife seeding completed with ${shelfLifeRes.errors} errors`,
+      );
+      process.exitCode = 1;
+    } else {
+      console.log(
+        `   ✅ ShelfLife: ${shelfLifeRes.created} created, ${shelfLifeRes.skipped} skipped`,
+      );
+    }
+
+    const shelfLifeLinks = await linkShelfLife(prisma);
+    console.log(
+      `   ✅ ShelfLife links: ${shelfLifeLinks.foods} foods, ${shelfLifeLinks.categories} categories`,
+    );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);
     process.exitCode = 1;
