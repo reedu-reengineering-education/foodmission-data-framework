@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseFilters } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import {
@@ -7,13 +7,19 @@ import {
   HealthCheckResult,
 } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from './database.health';
+import { KeycloakHealthIndicator } from './keycloak.health';
+import { RedisHealthIndicator } from './redis.health';
+import { HealthExceptionFilter } from './health-exception.filter';
 
 @ApiTags('Health')
 @Controller('health')
+@UseFilters(HealthExceptionFilter)
 export class HealthController {
   constructor(
     private health: HealthCheckService,
     private db: DatabaseHealthIndicator,
+    private keycloak: KeycloakHealthIndicator,
+    private redis: RedisHealthIndicator,
   ) {}
 
   @Get('ready')
@@ -28,8 +34,17 @@ export class HealthController {
     description: 'Application is not ready',
   })
   @HealthCheck()
-  readiness(): Promise<HealthCheckResult> {
-    return this.health.check([() => this.db.isHealthy('database')]);
+  async readiness(): Promise<Omit<HealthCheckResult, 'details'>> {
+    const checks: (() => Promise<any>)[] = [
+      () => this.db.isHealthy('database'),
+      () => this.keycloak.isHealthy('keycloak'),
+    ];
+    if (this.redis.isConfigured) {
+      checks.push(() => this.redis.isHealthy('redis'));
+    }
+    const result = await this.health.check(checks);
+    delete (result as any).details;
+    return result;
   }
 
   @Get('live')
@@ -40,7 +55,9 @@ export class HealthController {
     description: 'Application is alive',
   })
   @HealthCheck()
-  liveness(): Promise<HealthCheckResult> {
-    return this.health.check([]);
+  async liveness(): Promise<Omit<HealthCheckResult, 'details'>> {
+    const result = await this.health.check([]);
+    delete (result as any).details;
+    return result;
   }
 }
