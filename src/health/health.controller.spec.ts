@@ -55,11 +55,11 @@ describe('HealthController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('check', () => {
-    it('should return health check result', async () => {
+  describe('readiness', () => {
+    it('should return readiness check result', async () => {
       healthCheckService.check.mockResolvedValue(mockHealthResult);
 
-      const result = await controller.check();
+      const result = await controller.readiness();
 
       expect(result).toEqual(mockHealthResult);
       expect(healthCheckService.check).toHaveBeenCalledWith([
@@ -69,7 +69,6 @@ describe('HealthController', () => {
 
     it('should call database health indicator', async () => {
       healthCheckService.check.mockImplementation(async (checks) => {
-        // Execute the health check functions
         for (const check of checks) {
           await check();
         }
@@ -80,29 +79,9 @@ describe('HealthController', () => {
         database: { status: 'up' },
       });
 
-      await controller.check();
+      await controller.readiness();
 
       expect(databaseHealth.isHealthy).toHaveBeenCalledWith('database');
-    });
-  });
-
-  describe('readiness', () => {
-    it('should return readiness check result', async () => {
-      const readinessResult: HealthCheckResult = {
-        status: 'ok' as HealthCheckStatus,
-        info: { database: { status: 'up' } },
-        error: {},
-        details: { database: { status: 'up' } },
-      };
-
-      healthCheckService.check.mockResolvedValue(readinessResult);
-
-      const result = await controller.readiness();
-
-      expect(result).toEqual(readinessResult);
-      expect(healthCheckService.check).toHaveBeenCalledWith([
-        expect.any(Function),
-      ]);
     });
   });
 

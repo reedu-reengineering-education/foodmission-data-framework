@@ -16,57 +16,12 @@ export class HealthController {
     private db: DatabaseHealthIndicator,
   ) {}
 
-  @Get()
-  @Public()
-  @ApiOperation({ summary: 'Get application health status' })
-  @ApiResponse({
-    status: 200,
-    description: 'Health check passed',
-    schema: {
-      type: 'object',
-      properties: {
-        status: { type: 'string', example: 'ok' },
-        info: {
-          type: 'object',
-          properties: {
-            database: {
-              type: 'object',
-              properties: {
-                status: { type: 'string', example: 'up' },
-              },
-            },
-          },
-        },
-        error: { type: 'object' },
-        details: {
-          type: 'object',
-          properties: {
-            database: {
-              type: 'object',
-              properties: {
-                status: { type: 'string', example: 'up' },
-              },
-            },
-          },
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 503,
-    description: 'Health check failed',
-  })
-  @HealthCheck()
-  check(): Promise<HealthCheckResult> {
-    return this.health.check([() => this.db.isHealthy('database')]);
-  }
-
   @Get('ready')
   @Public()
   @ApiOperation({ summary: 'Get readiness probe status' })
   @ApiResponse({
     status: 200,
-    description: 'Application is ready',
+    description: 'Application is ready to serve traffic',
   })
   @ApiResponse({
     status: 503,
