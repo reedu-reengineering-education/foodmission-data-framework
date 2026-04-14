@@ -77,7 +77,7 @@ spec:
             value: "true"
         envFrom:
           - secretRef:
-              name: keycloak-secret
+              name: {{ .Release.Name }}-keycloak-secret
         ports:
         - containerPort: 8080
           name: http
