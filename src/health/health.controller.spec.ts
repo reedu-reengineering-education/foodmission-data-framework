@@ -6,6 +6,8 @@ import {
 } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
+import { KeycloakHealthIndicator } from './keycloak.health';
+import { RedisHealthIndicator } from './redis.health';
 
 describe('HealthController', () => {
   let controller: HealthController;
@@ -32,6 +34,15 @@ describe('HealthController', () => {
       isHealthy: jest.fn(),
     };
 
+    const mockKeycloakHealth = {
+      isHealthy: jest.fn(),
+    };
+
+    const mockRedisHealth = {
+      isHealthy: jest.fn(),
+      isConfigured: false,
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [HealthController],
       providers: [
@@ -42,6 +53,14 @@ describe('HealthController', () => {
         {
           provide: DatabaseHealthIndicator,
           useValue: mockDatabaseHealth,
+        },
+        {
+          provide: KeycloakHealthIndicator,
+          useValue: mockKeycloakHealth,
+        },
+        {
+          provide: RedisHealthIndicator,
+          useValue: mockRedisHealth,
         },
       ],
     }).compile();
@@ -63,6 +82,7 @@ describe('HealthController', () => {
 
       expect(result).toEqual(mockHealthResult);
       expect(healthCheckService.check).toHaveBeenCalledWith([
+        expect.any(Function),
         expect.any(Function),
       ]);
     });
