@@ -67,6 +67,7 @@
     "db:migrate:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
+    "db:seed:prod": "ts-node scripts/seed-prod.ts",
     "db:seed:dev": "ts-node scripts/seed-dev.ts",
     "db:seed:test": "ts-node scripts/seed-test.ts",
     "db:seed:foods": "ts-node scripts/seed-foods-only.ts",
