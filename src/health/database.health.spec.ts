@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckError } from '@nestjs/terminus';
+import { HealthIndicatorService } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from './database.health';
 import { PrismaService } from '../database/prisma.service';
+
+const mockCheck = (key: string) => ({
+  up: (details?: object) => ({ [key]: { status: 'up', ...details } }),
+  down: (details?: object) => ({ [key]: { status: 'down', ...details } }),
+});
 
 describe('DatabaseHealthIndicator', () => {
   let indicator: DatabaseHealthIndicator;
@@ -18,6 +23,10 @@ describe('DatabaseHealthIndicator', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: HealthIndicatorService,
+          useValue: { check: mockCheck },
         },
       ],
     }).compile();
@@ -45,42 +54,26 @@ describe('DatabaseHealthIndicator', () => {
       expect(prismaService.$queryRaw).toHaveBeenCalledWith(expect.anything());
     });
 
-    it('should throw HealthCheckError when database is not accessible', async () => {
-      const dbError = new Error('Connection failed');
-      prismaService.$queryRaw.mockRejectedValue(dbError);
+    it('should return down status when database is not accessible', async () => {
+      prismaService.$queryRaw.mockRejectedValue(new Error('Connection failed'));
 
-      await expect(indicator.isHealthy('database')).rejects.toThrow(
-        HealthCheckError,
-      );
+      const result = await indicator.isHealthy('database');
 
-      try {
-        await indicator.isHealthy('database');
-      } catch (error) {
-        expect(error).toBeInstanceOf(HealthCheckError);
-        expect(error.message).toBe('Database check failed');
-        expect(error.causes).toEqual({
-          database: {
-            status: 'down',
-            message: 'Database connection failed',
-            error: 'Connection failed',
-          },
-        });
-      }
+      expect(result).toEqual({
+        database: {
+          status: 'down',
+          message: 'Database connection failed',
+          error: 'Connection failed',
+        },
+      });
     });
 
-    it('should handle different database error types', async () => {
-      const dbError = new Error('Timeout');
-      prismaService.$queryRaw.mockRejectedValue(dbError);
+    it('should include the error message in the down status', async () => {
+      prismaService.$queryRaw.mockRejectedValue(new Error('Timeout'));
 
-      await expect(indicator.isHealthy('database')).rejects.toThrow(
-        HealthCheckError,
-      );
+      const result = await indicator.isHealthy('database');
 
-      try {
-        await indicator.isHealthy('database');
-      } catch (error) {
-        expect(error.causes.database.error).toBe('Timeout');
-      }
+      expect(result.database.error).toBe('Timeout');
     });
   });
 });

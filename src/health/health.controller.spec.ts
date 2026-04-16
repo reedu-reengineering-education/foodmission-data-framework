@@ -6,24 +6,22 @@ import {
 } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
-import { OpenFoodFactsHealthIndicator } from './openfoodfacts.health';
+import { KeycloakHealthIndicator } from './keycloak.health';
+import { RedisHealthIndicator } from './redis.health';
 
 describe('HealthController', () => {
   let controller: HealthController;
   let healthCheckService: jest.Mocked<HealthCheckService>;
   let databaseHealth: jest.Mocked<DatabaseHealthIndicator>;
-  let openFoodFactsHealth: jest.Mocked<OpenFoodFactsHealthIndicator>;
 
   const mockHealthResult: HealthCheckResult = {
     status: 'ok' as HealthCheckStatus,
     info: {
       database: { status: 'up' },
-      openfoodfacts: { status: 'up' },
     },
     error: {},
     details: {
       database: { status: 'up' },
-      openfoodfacts: { status: 'up' },
     },
   };
 
@@ -36,8 +34,13 @@ describe('HealthController', () => {
       isHealthy: jest.fn(),
     };
 
-    const mockOpenFoodFactsHealth = {
+    const mockKeycloakHealth = {
       isHealthy: jest.fn(),
+    };
+
+    const mockRedisHealth = {
+      isHealthy: jest.fn(),
+      isConfigured: false,
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -52,8 +55,12 @@ describe('HealthController', () => {
           useValue: mockDatabaseHealth,
         },
         {
-          provide: OpenFoodFactsHealthIndicator,
-          useValue: mockOpenFoodFactsHealth,
+          provide: KeycloakHealthIndicator,
+          useValue: mockKeycloakHealth,
+        },
+        {
+          provide: RedisHealthIndicator,
+          useValue: mockRedisHealth,
         },
       ],
     }).compile();
@@ -61,18 +68,17 @@ describe('HealthController', () => {
     controller = module.get<HealthController>(HealthController);
     healthCheckService = module.get(HealthCheckService);
     databaseHealth = module.get(DatabaseHealthIndicator);
-    openFoodFactsHealth = module.get(OpenFoodFactsHealthIndicator);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('check', () => {
-    it('should return health check result', async () => {
+  describe('readiness', () => {
+    it('should return readiness check result', async () => {
       healthCheckService.check.mockResolvedValue(mockHealthResult);
 
-      const result = await controller.check();
+      const result = await controller.readiness();
 
       expect(result).toEqual(mockHealthResult);
       expect(healthCheckService.check).toHaveBeenCalledWith([
@@ -81,9 +87,8 @@ describe('HealthController', () => {
       ]);
     });
 
-    it('should call database and openfoodfacts health indicators', async () => {
+    it('should call database health indicator', async () => {
       healthCheckService.check.mockImplementation(async (checks) => {
-        // Execute the health check functions
         for (const check of checks) {
           await check();
         }
@@ -93,36 +98,10 @@ describe('HealthController', () => {
       databaseHealth.isHealthy.mockResolvedValue({
         database: { status: 'up' },
       });
-      openFoodFactsHealth.isHealthy.mockResolvedValue({
-        openfoodfacts: { status: 'up' },
-      });
 
-      await controller.check();
+      await controller.readiness();
 
       expect(databaseHealth.isHealthy).toHaveBeenCalledWith('database');
-      expect(openFoodFactsHealth.isHealthy).toHaveBeenCalledWith(
-        'openfoodfacts',
-      );
-    });
-  });
-
-  describe('readiness', () => {
-    it('should return readiness check result', async () => {
-      const readinessResult: HealthCheckResult = {
-        status: 'ok' as HealthCheckStatus,
-        info: { database: { status: 'up' } },
-        error: {},
-        details: { database: { status: 'up' } },
-      };
-
-      healthCheckService.check.mockResolvedValue(readinessResult);
-
-      const result = await controller.readiness();
-
-      expect(result).toEqual(readinessResult);
-      expect(healthCheckService.check).toHaveBeenCalledWith([
-        expect.any(Function),
-      ]);
     });
   });
 
