@@ -73,8 +73,7 @@ describe('Stateless Authentication', () => {
 
       userProfileService.getOrCreateProfile.mockResolvedValue(mockProfile);
 
-      const req = { user: mockUser };
-      const result = await controller.getProfile(req);
+      const result = await controller.getProfile(mockUser);
 
       expect(userProfileService.getOrCreateProfile).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -88,9 +87,7 @@ describe('Stateless Authentication', () => {
     });
 
     it('should throw UnauthorizedException if user not authenticated', async () => {
-      const req = { user: null } as any;
-
-      await expect(controller.getProfile(req)).rejects.toThrow(
+      await expect(controller.getProfile(null)).rejects.toThrow(
         'User not authenticated',
       );
     });
