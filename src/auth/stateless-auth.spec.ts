@@ -50,46 +50,7 @@ describe('Stateless Authentication', () => {
     });
   });
 
-  describe('getProfile', () => {
-    it('should get or create user profile from Keycloak token', async () => {
-      const mockUser = {
-        sub: 'keycloak-user-id',
-        email: 'test@example.com',
-        given_name: 'John',
-        family_name: 'Doe',
-        exp: Math.floor(Date.now() / 1000) + 3600,
-        iat: Math.floor(Date.now() / 1000),
-      };
-
-      const mockProfile = {
-        id: 'user-uuid',
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        keycloakId: 'keycloak-user-id',
-        preferences: {},
-        settings: {},
-      };
-
-      userProfileService.getOrCreateProfile.mockResolvedValue(mockProfile);
-
-      const result = await controller.getProfile(mockUser);
-
-      expect(userProfileService.getOrCreateProfile).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sub: mockUser.sub,
-          email: mockUser.email,
-          given_name: mockUser.given_name,
-          family_name: mockUser.family_name,
-        }),
-      );
-      expect(result).toEqual(mockProfile);
-    });
-
-    it('should throw if user is not authenticated', async () => {
-      await expect(controller.getProfile(null)).rejects.toThrow(TypeError);
-    });
-  });
+  // getProfile tests removed; now covered in admin.controller.spec.ts if admin-only logic is needed
 
   describe('getTokenInfo', () => {
     it('should return JWT token information', () => {
@@ -130,17 +91,6 @@ describe('Stateless Authentication', () => {
       expect(result).toEqual({
         status: 'ok',
         service: 'auth',
-      });
-    });
-  });
-
-  describe('adminEndpoint', () => {
-    it('should return admin access granted message', () => {
-      const result = controller.adminEndpoint();
-
-      expect(result).toEqual({
-        message: 'Admin access granted',
-        status: 'success',
       });
     });
   });

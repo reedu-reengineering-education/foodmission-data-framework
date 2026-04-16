@@ -8,6 +8,7 @@ import {
   AuthGuard,
 } from 'nest-keycloak-connect';
 import { AuthController } from './auth.controller';
+import { AdminController } from './admin.controller';
 import { AuthService } from './auth.service';
 import { UserContextService } from './user-context.service';
 import { DatabaseModule } from '../database/database.module';
@@ -31,7 +32,7 @@ import { KeycloakAdminModule } from '../keycloak-admin/keycloak-admin.module';
       verifyTokenAudience: false,
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AdminController],
   providers: [
     AuthService,
     UserContextService,
