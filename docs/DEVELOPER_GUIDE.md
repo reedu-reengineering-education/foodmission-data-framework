@@ -220,6 +220,13 @@ src/module-name/
    export async function seedNewEntity(prisma: PrismaClient) {
      // Seed logic
    }
+
+### Production seed
+
+- What runs: `npm run db:seed:prod` executes the production seed runner and, by default, seeds NEVO categories, OpenFoodFacts products (from a JSON dump if present), and recipes (TheMealDB).
+- How to add more data: add a new seeder module under `prisma/seeds/` (implement an idempotent seeder, e.g. using `upsert`), place any source files under `prisma/seeds/data/` if needed, and import/invoke your seeder from `scripts/seed-prod.ts` so it runs as part of the production seed.
+- Keep it safe: test new seeders in staging or locally before running in production, and ensure seeders are idempotent and log summary counts.
+
    ```
 
 ## Architecture Overview
@@ -414,6 +421,39 @@ npm run db:seed:test
 # Seed production database (be careful!)
 npm run db:seed
 ```
+
+#### FoodKeeper Shelf Life Data
+
+Pantry item expiration dates can be auto-calculated using USDA FoodKeeper data. This data is sourced from:
+
+**Source:** [USDA FSIS FoodKeeper Data](https://catalog.data.gov/dataset/fsis-foodkeeper-data)
+
+The transformed data is stored in `prisma/seeds/data/foodkeeper-data.json` and seeded into the `FoodShelfLife` table. The `ShelfLifeService` uses this data to:
+
+1. Match food names to FoodKeeper products using keyword-based lookup
+2. Determine default storage type (pantry/refrigerator/freezer) based on food category
+3. Calculate expiration dates based on shelf life duration from the database
+
+When a pantry item is created without an explicit `expiryDate`, the system automatically calculates one based on the matching FoodKeeper product. The `expiryDateSource` field indicates whether the date was set manually (`"manual"`) or auto-calculated (`"auto_foodkeeper"`).
+
+**Storage Type Inference:**
+
+| FoodKeeper Category | Default Storage |
+|---------------------|-----------------|
+| Dairy Products & Eggs | refrigerator |
+| Meat | refrigerator |
+| Poultry | refrigerator |
+| Seafood | refrigerator |
+| Deli & Prepared Foods | refrigerator |
+| Fruits & Vegetables | refrigerator |
+| Baked Goods | pantry |
+| Grains, Beans & Pasta | pantry |
+| Canned Goods | pantry |
+| Condiments, Sauces & Oils | pantry |
+| Beverages | pantry |
+| Snacks & Sweets | pantry |
+| Baby Food | pantry |
+| Frozen Foods | freezer |
 
 ## Testing Strategy
 
