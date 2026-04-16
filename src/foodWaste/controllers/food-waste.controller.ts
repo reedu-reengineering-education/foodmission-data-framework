@@ -175,14 +175,14 @@ export class FoodWasteController {
   @ApiBody({ type: BatchCreateFoodWasteDto })
   @ApiResponse({
     status: 201,
-    description: 'Waste entries created successfully',
-    type: [FoodWasteResponseDto],
+    description: 'Batch operation completed with success and error details',
+    type: 'BatchCreateFoodWasteResultDto',
   })
   @ApiCrudErrorResponses()
   batchCreateFromExpired(
     @Body() dto: BatchCreateFoodWasteDto,
     @CurrentUser('id') userId: string,
-  ): Promise<FoodWasteResponseDto[]> {
+  ) {
     return this.foodWasteService.batchCreateFromExpired(dto, userId);
   }
 

@@ -151,3 +151,58 @@ export class MultipleFoodWasteResponseDto {
   @Expose()
   totalPages: number;
 }
+
+export class BatchCreateErrorDto {
+  @ApiProperty({
+    description: 'The pantry item ID that failed',
+    example: 'uuid-pantry-item-id',
+  })
+  @Expose()
+  pantryItemId: string;
+
+  @ApiProperty({
+    description: 'Error message',
+    example: 'Pantry item not found',
+  })
+  @Expose()
+  error: string;
+}
+
+export class BatchCreateFoodWasteResultDto {
+  @ApiProperty({
+    description: 'Successfully created waste entries',
+    type: [FoodWasteResponseDto],
+  })
+  @Expose()
+  @Type(() => FoodWasteResponseDto)
+  successes: FoodWasteResponseDto[];
+
+  @ApiProperty({
+    description: 'Failed items with error messages',
+    type: [BatchCreateErrorDto],
+  })
+  @Expose()
+  @Type(() => BatchCreateErrorDto)
+  errors: BatchCreateErrorDto[];
+
+  @ApiProperty({
+    description: 'Total number of items processed',
+    example: 10,
+  })
+  @Expose()
+  total: number;
+
+  @ApiProperty({
+    description: 'Number of successful operations',
+    example: 8,
+  })
+  @Expose()
+  successCount: number;
+
+  @ApiProperty({
+    description: 'Number of failed operations',
+    example: 2,
+  })
+  @Expose()
+  errorCount: number;
+}

@@ -13,6 +13,8 @@ import { BatchCreateFoodWasteDto } from '../dto/batch-create-food-waste.dto';
 import {
   FoodWasteResponseDto,
   MultipleFoodWasteResponseDto,
+  BatchCreateFoodWasteResultDto,
+  BatchCreateErrorDto,
 } from '../dto/food-waste-response.dto';
 import {
   FoodWasteStatisticsDto,
@@ -193,7 +195,7 @@ export class FoodWasteService {
         if (!pantryItem) {
           throw new NotFoundException('Pantry item not found');
         }
-        
+
         // Validate pantry ownership - security check
         if (pantryItem.pantry.userId !== userId) {
           throw new ForbiddenException(
@@ -406,13 +408,14 @@ export class FoodWasteService {
   /**
    * Batch create food waste entries from expired pantry items
    * User selects which expired items to record as waste
+   * Deletes pantry items after successful waste creation
    */
   async batchCreateFromExpired(
     dto: BatchCreateFoodWasteDto,
     userId: string,
-  ): Promise<FoodWasteResponseDto[]> {
+  ): Promise<BatchCreateFoodWasteResultDto> {
     const results: FoodWasteResponseDto[] = [];
-    const errors: Array<{ pantryItemId: string; error: string }> = [];
+    const errors: BatchCreateErrorDto[] = [];
 
     for (const item of dto.items) {
       try {
@@ -460,6 +463,9 @@ export class FoodWasteService {
           wastedAt: new Date(),
         });
 
+        // Delete the pantry item after successful waste creation
+        await this.pantryItemRepository.delete(item.pantryItemId);
+
         results.push(this.toResponse(waste));
       } catch (error) {
         this.logger.error(
@@ -482,7 +488,17 @@ export class FoodWasteService {
       this.logger.warn('Failed items:', errors);
     }
 
-    return results;
+    return plainToInstance(
+      BatchCreateFoodWasteResultDto,
+      {
+        successes: results,
+        errors,
+        total: dto.items.length,
+        successCount: results.length,
+        errorCount: errors.length,
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 
   /**
