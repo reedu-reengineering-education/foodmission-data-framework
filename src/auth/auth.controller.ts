@@ -16,7 +16,8 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
+import { ApiCrudErrorResponses } from '../common/decorators/api-error-responses.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { defaultThrottlerConfig } from '../throttler.config';
@@ -28,29 +29,12 @@ import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
-interface KeycloakUser {
-  sub: string;
-  email: string;
-  name?: string;
-  given_name?: string;
-  family_name?: string;
-  preferred_username?: string;
-  resource_access?: {
-    [key: string]: {
-      roles: string[];
-    };
-  };
-  exp: number;
-  iat: number;
-}
-
-interface AuthenticatedRequest {
-  user: KeycloakUser;
-}
-
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
+@Throttle(defaultThrottlerConfig)
 export class AuthController {
   constructor(
     private readonly userProfileService: UserProfilesService,
@@ -58,18 +42,18 @@ export class AuthController {
   ) {}
 
   @Post('reset-password')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
-  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Trigger password reset email (self or admin)' })
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({
     status: 200,
     description: 'Reset email triggered (if user exists)',
   })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
-  async resetPassword(@Request() req: any, @Body() dto: ResetPasswordDto) {
-    const user = req.user;
+  @ApiCrudErrorResponses()
+  async resetPassword(
+    @CurrentUser() user: any,
+    @Request() req: any,
+    @Body() dto: ResetPasswordDto,
+  ) {
     if (!user) throw new UnauthorizedException('User not authenticated');
     // Extract roles from token (Keycloak roles)
     let roles: string[] = [];
@@ -118,9 +102,6 @@ export class AuthController {
   }
 
   @Get('profile')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
-  @Throttle(defaultThrottlerConfig)
   @ApiOperation({
     summary:
       'Get and create authenticated user profile (deprecated possibly depending on registration flow)',
@@ -143,13 +124,11 @@ export class AuthController {
       },
     },
   })
-  @ApiAuthenticatedErrorResponses()
-  async getProfile(@Request() req: AuthenticatedRequest) {
-    const user = req.user;
+  @ApiCrudErrorResponses()
+  async getProfile(@CurrentUser() user: any) {
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
     }
-
     return await this.userProfileService.getOrCreateProfile({
       sub: user.sub,
       email: user.email,
@@ -220,8 +199,6 @@ export class AuthController {
   }
 
   @Get('token-info')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Get JWT token information',
     description:
@@ -272,13 +249,11 @@ export class AuthController {
       },
     },
   })
-  @ApiAuthenticatedErrorResponses()
-  getTokenInfo(@Request() req: AuthenticatedRequest) {
-    const user = req.user;
+  @ApiCrudErrorResponses()
+  getTokenInfo(@CurrentUser() user: any) {
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
     }
-
     return {
       sub: user.sub,
       email: user.email,
@@ -296,8 +271,6 @@ export class AuthController {
 
   @Get('admin-only')
   @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Admin-only test endpoint',
     description:
@@ -319,7 +292,7 @@ export class AuthController {
       },
     },
   })
-  @ApiAuthenticatedErrorResponses()
+  @ApiCrudErrorResponses()
   adminEndpoint() {
     return {
       message: 'Admin access granted',

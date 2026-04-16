@@ -1,4 +1,12 @@
 import { HttpException } from '@nestjs/common';
+import { AuthService } from '../src/auth/auth.service';
+import { HttpService } from '@nestjs/axios';
+import { UsersRepository } from '../src/users/repositories/users.repository';
+import { UserProfilesService } from '../src/users/services/user-profiles.service';
+import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
+import { of } from 'rxjs';
+import { Test, TestingModule } from '@nestjs/testing';
+
 describe('AuthService.triggerPasswordReset', () => {
   let service: AuthService;
   let usersRepository: any;
@@ -38,25 +46,45 @@ describe('AuthService.triggerPasswordReset', () => {
   });
 
   it('should trigger reset for self', async () => {
-    usersRepository.findByEmail.mockResolvedValue({ keycloakId: 'kc-1', email: 'user@x.com' });
+    usersRepository.findByEmail.mockResolvedValue({
+      keycloakId: 'kc-1',
+      email: 'user@x.com',
+    });
     keycloakAdminService.sendResetPasswordEmail.mockResolvedValue(undefined);
     await expect(
       service.triggerPasswordReset('kc-1', 'user@x.com', ['user'], undefined),
     ).resolves.toBeUndefined();
-    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith('kc-1', undefined);
+    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith(
+      'kc-1',
+      undefined,
+    );
   });
 
   it('should trigger reset for admin', async () => {
-    usersRepository.findByEmail.mockResolvedValue({ keycloakId: 'kc-2', email: 'other@x.com' });
+    usersRepository.findByEmail.mockResolvedValue({
+      keycloakId: 'kc-2',
+      email: 'other@x.com',
+    });
     keycloakAdminService.sendResetPasswordEmail.mockResolvedValue(undefined);
     await expect(
-      service.triggerPasswordReset('kc-1', 'other@x.com', ['admin'], 'http://redirect'),
+      service.triggerPasswordReset(
+        'kc-1',
+        'other@x.com',
+        ['admin'],
+        'http://redirect',
+      ),
     ).resolves.toBeUndefined();
-    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith('kc-2', 'http://redirect');
+    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith(
+      'kc-2',
+      'http://redirect',
+    );
   });
 
   it('should throw Forbidden if not self or admin', async () => {
-    usersRepository.findByEmail.mockResolvedValue({ keycloakId: 'kc-2', email: 'other@x.com' });
+    usersRepository.findByEmail.mockResolvedValue({
+      keycloakId: 'kc-2',
+      email: 'other@x.com',
+    });
     await expect(
       service.triggerPasswordReset('kc-1', 'other@x.com', ['user'], undefined),
     ).rejects.toThrow(HttpException);
@@ -65,25 +93,15 @@ describe('AuthService.triggerPasswordReset', () => {
   it('should not throw if user not found (no leak)', async () => {
     usersRepository.findByEmail.mockResolvedValue(undefined);
     await expect(
-      service.triggerPasswordReset('kc-1', 'notfound@x.com', ['admin'], undefined),
+      service.triggerPasswordReset(
+        'kc-1',
+        'notfound@x.com',
+        ['admin'],
+        undefined,
+      ),
     ).resolves.toBeUndefined();
   });
 });
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../src/auth/auth.service';
-import { HttpService } from '@nestjs/axios';
-import { UsersRepository } from '../src/users/repositories/users.repository';
-import { UserProfilesService } from '../src/users/services/user-profiles.service';
-import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
-import { of } from 'rxjs';
-
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../src/auth/auth.service';
-import { HttpService } from '@nestjs/axios';
-import { UsersRepository } from '../src/users/repositories/users.repository';
-import { UserProfilesService } from '../src/users/services/user-profiles.service';
-import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
-import { of } from 'rxjs';
 
 describe('AuthService.login', () => {
   let service: AuthService;
@@ -158,3 +176,5 @@ describe('AuthService.login', () => {
     expect(result).toEqual(tokens);
   });
 });
+
+// Remove duplicate test suite below
