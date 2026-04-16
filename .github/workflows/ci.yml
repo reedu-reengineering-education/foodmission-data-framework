@@ -227,7 +227,7 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           file: ./coverage/lcov.info
           flags: unittests
@@ -362,7 +362,7 @@ jobs:
 
       - name: Update PR description with image info
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
