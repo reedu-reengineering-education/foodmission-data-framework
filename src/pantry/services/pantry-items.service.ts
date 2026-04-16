@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -27,6 +29,9 @@ import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { FoodWasteService } from '../../foodWaste/services/food-waste.service';
+import { BatchCreateFoodWasteDto } from '../../foodWaste/dto/batch-create-food-waste.dto';
+import { BatchCreateFoodWasteResultDto } from '../../foodWaste/dto/food-waste-response.dto';
 
 @Injectable()
 export class PantryItemService {
@@ -36,6 +41,8 @@ export class PantryItemService {
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
+    @Inject(forwardRef(() => FoodWasteService))
+    private readonly foodWasteService: FoodWasteService,
     private readonly foodCategoryRepository: FoodCategoriesRepository,
     private readonly foodRepository: FoodRepository,
     private readonly shelfLifeService: ShelfLifeService,
@@ -471,6 +478,24 @@ export class PantryItemService {
       this.logger.error('Error detecting expired items', error);
       throw handlePrismaError(error, 'detect expired items', 'PantryItem');
     }
+  }
+
+  /**
+   * Batch create food waste entries from pantry items
+   * Delegates to FoodWasteService but validates pantry access first
+   */
+  async batchCreateWaste(
+    dto: BatchCreateFoodWasteDto,
+    userId: string,
+    pantryId?: string,
+  ): Promise<BatchCreateFoodWasteResultDto> {
+    // Validate pantry exists and user has access
+    if (pantryId) {
+      await this.pantryService.validatePantryExists(userId, pantryId);
+    }
+
+    // Delegate to FoodWasteService for the actual waste creation
+    return this.foodWasteService.batchCreateFromExpired(dto, userId);
   }
 
   private transformToResponseDto(

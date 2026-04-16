@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { FoodWasteController } from './controllers/food-waste.controller';
 import { FoodWasteService } from './services/food-waste.service';
 import { FoodWasteRepository } from './repositories/food-waste.repository';
@@ -9,7 +9,7 @@ import { FoodsModule } from '../foods/foods.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, PantryModule, FoodsModule],
+  imports: [DatabaseModule, CommonModule, forwardRef(() => PantryModule), FoodsModule],
   controllers: [FoodWasteController],
   providers: [
     FoodWasteService,
