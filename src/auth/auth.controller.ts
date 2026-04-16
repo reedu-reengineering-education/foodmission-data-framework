@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Request,
-  UnauthorizedException,
   UseGuards,
   Body,
   Post,
@@ -18,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { extractKeycloakRoles } from '../common/utils/keycloak-roles.util';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { defaultThrottlerConfig } from '../throttler.config';
@@ -27,7 +27,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
+import { AdminResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -42,34 +42,47 @@ export class AuthController {
   ) {}
 
   @Post('reset-password')
-  @ApiOperation({ summary: 'Trigger password reset email (self or admin)' })
-  @ApiBody({ type: ResetPasswordDto })
+  @ApiOperation({ summary: 'Trigger password reset email (self-service)' })
   @ApiResponse({
     status: 200,
     description: 'Reset email triggered (if user exists)',
   })
   @ApiCrudErrorResponses()
   async resetPassword(
-    @CurrentUser() user: any,
-    @Request() req: any,
-    @Body() dto: ResetPasswordDto,
+    @CurrentUser()
+    user: {
+      sub: string;
+      email: string;
+      resource_access?: Record<string, { roles?: string[] }>;
+    },
+    @Request() req: { headers?: Record<string, string> },
   ) {
-    if (!user) throw new UnauthorizedException('User not authenticated');
-    // Extract roles from token (Keycloak roles)
-    let roles: string[] = [];
-    const clientId = process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api';
-    if (user.resource_access && user.resource_access[clientId]) {
-      roles = user.resource_access[clientId].roles;
-    }
-    // Optionally, allow frontend to pass redirectUri
-    const redirectUri = req.headers?.['x-redirect-uri'] || undefined;
-    await this.authService.triggerPasswordReset(
-      user.sub,
-      dto.email,
-      roles,
-      redirectUri,
-    );
-    // Always return 200
+    const roles = extractKeycloakRoles(user);
+    await this.authService.triggerPasswordReset(user.sub, user.email, roles);
+    return { status: 'ok' };
+  }
+
+  @Post('admin/reset-password')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Admin: trigger password reset email for any user' })
+  @ApiBody({ type: AdminResetPasswordDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Reset email triggered (if user exists)',
+  })
+  @ApiCrudErrorResponses()
+  async adminResetPassword(
+    @CurrentUser()
+    user: {
+      sub: string;
+      email: string;
+      resource_access?: Record<string, { roles?: string[] }>;
+    },
+    @Request() req: { headers?: Record<string, string> },
+    @Body() dto: AdminResetPasswordDto,
+  ) {
+    const roles = extractKeycloakRoles(user);
+    await this.authService.triggerPasswordReset(user.sub, dto.email, roles);
     return { status: 'ok' };
   }
 
@@ -126,9 +139,6 @@ export class AuthController {
   })
   @ApiCrudErrorResponses()
   async getProfile(@CurrentUser() user: any) {
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
     return await this.userProfileService.getOrCreateProfile({
       sub: user.sub,
       email: user.email,
@@ -250,20 +260,26 @@ export class AuthController {
     },
   })
   @ApiCrudErrorResponses()
-  getTokenInfo(@CurrentUser() user: any) {
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
+  getTokenInfo(
+    @CurrentUser()
+    user: {
+      sub: string;
+      email: string;
+      name: string;
+      given_name: string;
+      family_name: string;
+      resource_access?: Record<string, { roles?: string[] }>;
+      exp: number;
+      iat: number;
+    },
+  ) {
     return {
       sub: user.sub,
       email: user.email,
       name: user.name,
       given_name: user.given_name,
       family_name: user.family_name,
-      roles:
-        user.resource_access?.[
-          process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api'
-        ]?.roles || [],
+      roles: extractKeycloakRoles(user),
       exp: user.exp,
       iat: user.iat,
     };
