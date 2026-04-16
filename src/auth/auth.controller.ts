@@ -55,7 +55,6 @@ export class AuthController {
       email: string;
       resource_access?: Record<string, { roles?: string[] }>;
     },
-    @Request() req: { headers?: Record<string, string> },
   ) {
     const roles = extractKeycloakRoles(user);
     await this.authService.triggerPasswordReset(user.sub, user.email, roles);
