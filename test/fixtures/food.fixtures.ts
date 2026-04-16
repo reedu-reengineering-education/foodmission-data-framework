@@ -59,6 +59,7 @@ export const TEST_FOOD = {
   packagingRecycling: ['recyclable'],
   packagingText: 'Plastic wrap',
   completeness: 95,
+  shelfLifeId: null,
 };
 
 export const TEST_FOOD_CATEGORY = {
@@ -80,4 +81,5 @@ export const TEST_FOOD_CATEGORY = {
   fiber: 1.2,
   createdAt: new Date('2025-01-01'),
   updatedAt: new Date('2025-01-01'),
+  shelfLifeId: null,
 };

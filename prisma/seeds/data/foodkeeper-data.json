@@ -1,0 +1,2225 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Dairy Products & Eggs",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 2,
+      "name": "Meat",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 3,
+      "name": "Poultry",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 4,
+      "name": "Seafood",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 5,
+      "name": "Deli & Prepared Foods",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 6,
+      "name": "Fruits & Vegetables",
+      "defaultStorageType": "refrigerator"
+    },
+    {
+      "id": 7,
+      "name": "Baked Goods",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 8,
+      "name": "Grains, Beans & Pasta",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 9,
+      "name": "Canned Goods",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 10,
+      "name": "Condiments, Sauces & Oils",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 11,
+      "name": "Beverages",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 12,
+      "name": "Snacks & Sweets",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 13,
+      "name": "Baby Food",
+      "defaultStorageType": "pantry"
+    },
+    {
+      "id": 14,
+      "name": "Frozen Foods",
+      "defaultStorageType": "freezer"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "categoryId": 1,
+      "name": "Milk, whole",
+      "keywords": [
+        "milk",
+        "whole milk",
+        "dairy",
+        "cow milk"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 2,
+      "categoryId": 1,
+      "name": "Milk, skim or reduced fat",
+      "keywords": [
+        "milk",
+        "skim milk",
+        "low fat milk",
+        "2% milk",
+        "1% milk"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 3,
+      "categoryId": 1,
+      "name": "Butter",
+      "keywords": [
+        "butter",
+        "unsalted butter",
+        "salted butter"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 30,
+      "refrigeratorMaxDays": 90,
+      "refrigeratorAfterOpeningDays": 30,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 270
+    },
+    {
+      "id": 4,
+      "categoryId": 1,
+      "name": "Cheese, hard (Parmesan, Romano)",
+      "keywords": [
+        "parmesan",
+        "romano",
+        "hard cheese",
+        "aged cheese"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": 30,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 240
+    },
+    {
+      "id": 5,
+      "categoryId": 1,
+      "name": "Cheese, soft (Brie, Camembert)",
+      "keywords": [
+        "brie",
+        "camembert",
+        "soft cheese",
+        "cream cheese",
+        "fromage frais",
+        "carre frais",
+        "quark",
+        "fresh cheese",
+        "petit suisse",
+        "white cheese"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 6,
+      "categoryId": 1,
+      "name": "Cheese, shredded",
+      "keywords": [
+        "shredded cheese",
+        "grated cheese",
+        "mozzarella",
+        "cheddar",
+        "kaas",
+        "cheese slices",
+        "sliced cheese",
+        "cheese block",
+        "jonge kaas"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 30,
+      "refrigeratorMaxDays": 45,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 7,
+      "categoryId": 1,
+      "name": "Eggs, fresh in shell",
+      "keywords": [
+        "eggs",
+        "chicken eggs",
+        "fresh eggs"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 21,
+      "refrigeratorMaxDays": 35,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 8,
+      "categoryId": 1,
+      "name": "Yogurt",
+      "keywords": [
+        "yogurt",
+        "greek yogurt",
+        "plain yogurt",
+        "flavored yogurt",
+        "yoghurt",
+        "yoghurt drink",
+        "drinking yoghurt",
+        "kefir",
+        "drinking yogurt",
+        "blancmange",
+        "custard",
+        "vla",
+        "vlaflip",
+        "lactose free yoghurt",
+        "tzatziki",
+        "raita",
+        "buttermilk",
+        "pudding dairy",
+        "dessert dairy"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 9,
+      "categoryId": 1,
+      "name": "Cream, heavy",
+      "keywords": [
+        "cream",
+        "heavy cream",
+        "whipping cream",
+        "double cream"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 30,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 10,
+      "categoryId": 1,
+      "name": "Sour cream",
+      "keywords": [
+        "sour cream",
+        "cultured cream",
+        "creme fraiche",
+        "creme fresh",
+        "smetana",
+        "fermented cream"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 21,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 11,
+      "categoryId": 2,
+      "name": "Beef, ground",
+      "keywords": [
+        "ground beef",
+        "minced beef",
+        "hamburger meat",
+        "beef mince"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 12,
+      "categoryId": 2,
+      "name": "Beef, steaks",
+      "keywords": [
+        "steak",
+        "beef steak",
+        "ribeye",
+        "sirloin",
+        "filet mignon",
+        "t-bone"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 13,
+      "categoryId": 2,
+      "name": "Beef, roasts",
+      "keywords": [
+        "beef roast",
+        "pot roast",
+        "chuck roast",
+        "rump roast"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 14,
+      "categoryId": 2,
+      "name": "Pork, chops",
+      "keywords": [
+        "pork chops",
+        "pork cutlets",
+        "pork loin chops"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 120,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 15,
+      "categoryId": 2,
+      "name": "Pork, ground",
+      "keywords": [
+        "ground pork",
+        "minced pork",
+        "pork mince"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 16,
+      "categoryId": 2,
+      "name": "Bacon",
+      "keywords": [
+        "bacon",
+        "smoked bacon",
+        "streaky bacon",
+        "back bacon"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 17,
+      "categoryId": 2,
+      "name": "Ham, cooked",
+      "keywords": [
+        "cooked ham",
+        "deli ham",
+        "sliced ham",
+        "baked ham"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 18,
+      "categoryId": 2,
+      "name": "Sausage, fresh",
+      "keywords": [
+        "sausage",
+        "fresh sausage",
+        "breakfast sausage",
+        "italian sausage"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 19,
+      "categoryId": 2,
+      "name": "Lamb, chops",
+      "keywords": [
+        "lamb chops",
+        "lamb cutlets",
+        "lamb"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 270
+    },
+    {
+      "id": 20,
+      "categoryId": 3,
+      "name": "Chicken, whole",
+      "keywords": [
+        "chicken",
+        "whole chicken",
+        "roasting chicken"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 270,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 21,
+      "categoryId": 3,
+      "name": "Chicken, pieces",
+      "keywords": [
+        "chicken breast",
+        "chicken thigh",
+        "chicken leg",
+        "chicken wing",
+        "chicken drumstick"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 270,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 22,
+      "categoryId": 3,
+      "name": "Chicken, ground",
+      "keywords": [
+        "ground chicken",
+        "minced chicken",
+        "chicken mince"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 23,
+      "categoryId": 3,
+      "name": "Turkey, whole",
+      "keywords": [
+        "turkey",
+        "whole turkey",
+        "thanksgiving turkey"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 270,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 24,
+      "categoryId": 3,
+      "name": "Turkey, ground",
+      "keywords": [
+        "ground turkey",
+        "minced turkey",
+        "turkey mince"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 25,
+      "categoryId": 3,
+      "name": "Duck",
+      "keywords": [
+        "duck",
+        "whole duck",
+        "duck breast"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 270
+    },
+    {
+      "id": 26,
+      "categoryId": 4,
+      "name": "Fish, lean (cod, tilapia)",
+      "keywords": [
+        "fish",
+        "cod",
+        "tilapia",
+        "haddock",
+        "bass",
+        "white fish",
+        "pollock",
+        "plaice",
+        "gurnard",
+        "bloater",
+        "pike",
+        "perch",
+        "white fish fillet",
+        "surimi",
+        "sole",
+        "whiting",
+        "crab",
+        "caviar",
+        "smoked fish",
+        "fish fillet",
+        "pollack",
+        "dab",
+        "sea bass",
+        "sea bream",
+        "anchovy",
+        "anchovies",
+        "eel",
+        "kipper",
+        "kippers",
+        "paling",
+        "pangasius",
+        "stockfish",
+        "smoked eel",
+        "schar",
+        "tongschar"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 240
+    },
+    {
+      "id": 27,
+      "categoryId": 4,
+      "name": "Fish, fatty (salmon, mackerel)",
+      "keywords": [
+        "salmon",
+        "mackerel",
+        "sardines",
+        "herring",
+        "tuna",
+        "fatty fish"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 28,
+      "categoryId": 4,
+      "name": "Shrimp, raw",
+      "keywords": [
+        "shrimp",
+        "prawns",
+        "raw shrimp",
+        "fresh shrimp",
+        "mussels",
+        "shellfish",
+        "clams",
+        "oysters",
+        "scallop",
+        "lobster",
+        "squid",
+        "octopus",
+        "crayfish",
+        "langoustine",
+        "scampi",
+        "snails",
+        "escargot",
+        "whelks",
+        "periwinkle",
+        "slakken"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 29,
+      "categoryId": 4,
+      "name": "Crab, fresh",
+      "keywords": [
+        "crab",
+        "fresh crab",
+        "crab meat",
+        "crab legs"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 30,
+      "categoryId": 4,
+      "name": "Scallops",
+      "keywords": [
+        "scallops",
+        "sea scallops",
+        "bay scallops"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 1,
+      "refrigeratorMaxDays": 2,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 31,
+      "categoryId": 5,
+      "name": "Deli meat, sliced",
+      "keywords": [
+        "deli meat",
+        "lunch meat",
+        "cold cuts",
+        "sliced turkey",
+        "sliced ham",
+        "salami"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 32,
+      "categoryId": 5,
+      "name": "Hot dogs",
+      "keywords": [
+        "hot dogs",
+        "frankfurters",
+        "sausages",
+        "wieners"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 33,
+      "categoryId": 5,
+      "name": "Cooked leftovers",
+      "keywords": [
+        "leftovers",
+        "cooked meat",
+        "leftover chicken",
+        "leftover beef"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 4,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 34,
+      "categoryId": 6,
+      "name": "Apples",
+      "keywords": [
+        "apple",
+        "apples",
+        "fresh apples"
+      ],
+      "pantryMinDays": 5,
+      "pantryMaxDays": 7,
+      "refrigeratorMinDays": 21,
+      "refrigeratorMaxDays": 28,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 35,
+      "categoryId": 6,
+      "name": "Bananas",
+      "keywords": [
+        "banana",
+        "bananas"
+      ],
+      "pantryMinDays": 2,
+      "pantryMaxDays": 5,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 36,
+      "categoryId": 6,
+      "name": "Berries",
+      "keywords": [
+        "berries",
+        "strawberries",
+        "blueberries",
+        "raspberries",
+        "blackberries"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 37,
+      "categoryId": 6,
+      "name": "Grapes",
+      "keywords": [
+        "grapes",
+        "fresh grapes",
+        "table grapes"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 38,
+      "categoryId": 6,
+      "name": "Oranges, citrus",
+      "keywords": [
+        "orange",
+        "oranges",
+        "citrus",
+        "lemon",
+        "lime",
+        "grapefruit"
+      ],
+      "pantryMinDays": 7,
+      "pantryMaxDays": 10,
+      "refrigeratorMinDays": 21,
+      "refrigeratorMaxDays": 30,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 120
+    },
+    {
+      "id": 39,
+      "categoryId": 6,
+      "name": "Tomatoes",
+      "keywords": [
+        "tomato",
+        "tomatoes",
+        "fresh tomatoes"
+      ],
+      "pantryMinDays": 3,
+      "pantryMaxDays": 5,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 40,
+      "categoryId": 6,
+      "name": "Lettuce, leafy greens",
+      "keywords": [
+        "lettuce",
+        "salad",
+        "spinach",
+        "kale",
+        "arugula",
+        "mixed greens"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 41,
+      "categoryId": 6,
+      "name": "Carrots",
+      "keywords": [
+        "carrot",
+        "carrots",
+        "baby carrots"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 14,
+      "refrigeratorMaxDays": 21,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 42,
+      "categoryId": 6,
+      "name": "Broccoli",
+      "keywords": [
+        "broccoli",
+        "fresh broccoli",
+        "broccoli florets"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 43,
+      "categoryId": 6,
+      "name": "Bell peppers",
+      "keywords": [
+        "pepper",
+        "bell pepper",
+        "capsicum",
+        "sweet pepper"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 44,
+      "categoryId": 6,
+      "name": "Onions",
+      "keywords": [
+        "onion",
+        "onions",
+        "yellow onion",
+        "white onion",
+        "red onion"
+      ],
+      "pantryMinDays": 30,
+      "pantryMaxDays": 60,
+      "refrigeratorMinDays": 60,
+      "refrigeratorMaxDays": 90,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 240
+    },
+    {
+      "id": 45,
+      "categoryId": 6,
+      "name": "Garlic",
+      "keywords": [
+        "garlic",
+        "garlic cloves",
+        "fresh garlic"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 46,
+      "categoryId": 6,
+      "name": "Potatoes",
+      "keywords": [
+        "potato",
+        "potatoes",
+        "russet",
+        "yukon gold",
+        "yautia",
+        "malanga",
+        "taro",
+        "root vegetable",
+        "yam",
+        "cassava",
+        "gnocchi",
+        "rosti",
+        "jerusalem artichoke",
+        "tannia",
+        "yam boiled"
+      ],
+      "pantryMinDays": 14,
+      "pantryMaxDays": 28,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 47,
+      "categoryId": 6,
+      "name": "Mushrooms",
+      "keywords": [
+        "mushroom",
+        "mushrooms",
+        "button mushrooms",
+        "cremini"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 4,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 48,
+      "categoryId": 6,
+      "name": "Avocado",
+      "keywords": [
+        "avocado",
+        "avocados"
+      ],
+      "pantryMinDays": 3,
+      "pantryMaxDays": 5,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 2,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 49,
+      "categoryId": 6,
+      "name": "Herbs, fresh",
+      "keywords": [
+        "herbs",
+        "fresh herbs",
+        "parsley",
+        "cilantro",
+        "basil",
+        "mint",
+        "dill"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 10,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 50,
+      "categoryId": 6,
+      "name": "Celery",
+      "keywords": [
+        "celery",
+        "celery stalks"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 51,
+      "categoryId": 7,
+      "name": "Bread, sliced",
+      "keywords": [
+        "bread",
+        "sliced bread",
+        "sandwich bread",
+        "white bread",
+        "wheat bread",
+        "bun",
+        "burger buns",
+        "rolls",
+        "dinner rolls",
+        "hot dog bun",
+        "breadstick",
+        "crispbread",
+        "crispbake",
+        "melba toast",
+        "rye crispbread",
+        "focaccia",
+        "rye bread",
+        "cracker",
+        "flatbread",
+        "crisp bread",
+        "croutons",
+        "breadsticks",
+        "crispbakes"
+      ],
+      "pantryMinDays": 5,
+      "pantryMaxDays": 7,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 14,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 52,
+      "categoryId": 7,
+      "name": "Bread, artisan",
+      "keywords": [
+        "baguette",
+        "sourdough",
+        "artisan bread",
+        "french bread",
+        "crusty bread"
+      ],
+      "pantryMinDays": 1,
+      "pantryMaxDays": 3,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 53,
+      "categoryId": 7,
+      "name": "Tortillas, flour",
+      "keywords": [
+        "tortilla",
+        "flour tortilla",
+        "wraps"
+      ],
+      "pantryMinDays": 7,
+      "pantryMaxDays": 14,
+      "refrigeratorMinDays": 21,
+      "refrigeratorMaxDays": 30,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 240
+    },
+    {
+      "id": 54,
+      "categoryId": 7,
+      "name": "Muffins",
+      "keywords": [
+        "muffin",
+        "muffins",
+        "bakery muffins"
+      ],
+      "pantryMinDays": 2,
+      "pantryMaxDays": 4,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 55,
+      "categoryId": 7,
+      "name": "Cookies",
+      "keywords": [
+        "cookies",
+        "biscuits",
+        "homemade cookies",
+        "pastry",
+        "cake",
+        "waffle",
+        "tart",
+        "muffin mix",
+        "cookie",
+        "biscuit",
+        "stroopwafel",
+        "speculaas",
+        "shortbread",
+        "digestive biscuit",
+        "flan",
+        "kletskop",
+        "jodekoek",
+        "brownie",
+        "cheesecake",
+        "doughnut",
+        "donut",
+        "eclair",
+        "sponge",
+        "gateau",
+        "macaroon",
+        "coconut macaroon",
+        "croissant",
+        "brioche",
+        "meringue",
+        "tiramisu",
+        "pudding airy",
+        "galette",
+        "crumble",
+        "pavlova"
+      ],
+      "pantryMinDays": 14,
+      "pantryMaxDays": 21,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 240
+    },
+    {
+      "id": 56,
+      "categoryId": 8,
+      "name": "Rice, white",
+      "keywords": [
+        "rice",
+        "white rice",
+        "jasmine rice",
+        "basmati rice"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 1825,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 57,
+      "categoryId": 8,
+      "name": "Rice, brown",
+      "keywords": [
+        "brown rice",
+        "whole grain rice"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 545
+    },
+    {
+      "id": 58,
+      "categoryId": 8,
+      "name": "Pasta, dried",
+      "keywords": [
+        "pasta",
+        "spaghetti",
+        "penne",
+        "macaroni",
+        "noodles",
+        "dried pasta"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 59,
+      "categoryId": 8,
+      "name": "Pasta, fresh",
+      "keywords": [
+        "fresh pasta",
+        "homemade pasta",
+        "fresh noodles",
+        "wonton",
+        "wonton skins",
+        "dumpling wrappers",
+        "rice noodles",
+        "egg noodles",
+        "tortellini",
+        "couscous",
+        "tapioca",
+        "filo pastry",
+        "filo",
+        "gnocchi pasta",
+        "semolina",
+        "roti"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 2,
+      "refrigeratorMaxDays": 3,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 60,
+      "categoryId": 8,
+      "name": "Oats, rolled",
+      "keywords": [
+        "oats",
+        "rolled oats",
+        "oatmeal",
+        "porridge oats"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 61,
+      "categoryId": 8,
+      "name": "Flour, all-purpose",
+      "keywords": [
+        "flour",
+        "all purpose flour",
+        "plain flour",
+        "white flour"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": 365,
+      "refrigeratorMaxDays": 730,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 730,
+      "freezerMaxDays": 1095
+    },
+    {
+      "id": 62,
+      "categoryId": 8,
+      "name": "Flour, whole wheat",
+      "keywords": [
+        "whole wheat flour",
+        "wholemeal flour",
+        "whole grain flour"
+      ],
+      "pantryMinDays": 30,
+      "pantryMaxDays": 90,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 730
+    },
+    {
+      "id": 63,
+      "categoryId": 8,
+      "name": "Beans, dried",
+      "keywords": [
+        "beans",
+        "dried beans",
+        "black beans",
+        "kidney beans",
+        "pinto beans",
+        "lentils",
+        "gigantes",
+        "giant beans",
+        "lima beans",
+        "fava beans",
+        "broad beans",
+        "edamame",
+        "barley",
+        "buckwheat",
+        "millet",
+        "oat bran",
+        "groats",
+        "pearl barley",
+        "grain",
+        "binding agent",
+        "starch",
+        "thickener",
+        "gelatin",
+        "gelatine"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 64,
+      "categoryId": 8,
+      "name": "Quinoa",
+      "keywords": [
+        "quinoa"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 65,
+      "categoryId": 8,
+      "name": "Cereal, breakfast",
+      "keywords": [
+        "cereal",
+        "breakfast cereal",
+        "corn flakes",
+        "granola"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 66,
+      "categoryId": 9,
+      "name": "Canned vegetables",
+      "keywords": [
+        "canned vegetables",
+        "canned corn",
+        "canned peas",
+        "canned beans",
+        "canned tomatoes"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 1825,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 4,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 67,
+      "categoryId": 9,
+      "name": "Canned fruits",
+      "keywords": [
+        "canned fruit",
+        "canned peaches",
+        "canned pineapple",
+        "fruit cocktail"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 545,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 68,
+      "categoryId": 9,
+      "name": "Canned soup",
+      "keywords": [
+        "canned soup",
+        "soup",
+        "broth",
+        "stock"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 1825,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 4,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 69,
+      "categoryId": 9,
+      "name": "Canned tuna",
+      "keywords": [
+        "canned tuna",
+        "tuna",
+        "canned fish"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 1825,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 4,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 70,
+      "categoryId": 9,
+      "name": "Tomato paste/sauce",
+      "keywords": [
+        "tomato paste",
+        "tomato sauce",
+        "marinara",
+        "pasta sauce"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 545,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 5,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 71,
+      "categoryId": 10,
+      "name": "Ketchup",
+      "keywords": [
+        "ketchup",
+        "catsup",
+        "tomato ketchup"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": 180,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 72,
+      "categoryId": 10,
+      "name": "Mustard",
+      "keywords": [
+        "mustard",
+        "yellow mustard",
+        "dijon mustard"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": 365,
+      "refrigeratorMaxDays": 730,
+      "refrigeratorAfterOpeningDays": 365,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 73,
+      "categoryId": 10,
+      "name": "Mayonnaise",
+      "keywords": [
+        "mayonnaise",
+        "mayo",
+        "aioli",
+        "garlic mayo",
+        "guacamole",
+        "avocado dip",
+        "saus"
+      ],
+      "pantryMinDays": 60,
+      "pantryMaxDays": 90,
+      "refrigeratorMinDays": 60,
+      "refrigeratorMaxDays": 90,
+      "refrigeratorAfterOpeningDays": 60,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 74,
+      "categoryId": 10,
+      "name": "Soy sauce",
+      "keywords": [
+        "soy sauce",
+        "shoyu",
+        "tamari"
+      ],
+      "pantryMinDays": 1095,
+      "pantryMaxDays": 1825,
+      "refrigeratorMinDays": 1095,
+      "refrigeratorMaxDays": 1825,
+      "refrigeratorAfterOpeningDays": 365,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 75,
+      "categoryId": 10,
+      "name": "Olive oil",
+      "keywords": [
+        "olive oil",
+        "extra virgin olive oil",
+        "evoo"
+      ],
+      "pantryMinDays": 545,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 76,
+      "categoryId": 10,
+      "name": "Vegetable oil",
+      "keywords": [
+        "vegetable oil",
+        "canola oil",
+        "sunflower oil",
+        "cooking oil",
+        "lard",
+        "dripping",
+        "animal fat",
+        "shortening",
+        "margarine",
+        "butter blend",
+        "spread fat"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 77,
+      "categoryId": 10,
+      "name": "Vinegar",
+      "keywords": [
+        "vinegar",
+        "white vinegar",
+        "apple cider vinegar",
+        "balsamic vinegar",
+        "piccalilly",
+        "pickle",
+        "relish",
+        "chutney",
+        "pickled"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 3650,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 78,
+      "categoryId": 10,
+      "name": "Honey",
+      "keywords": [
+        "honey",
+        "raw honey",
+        "pure honey"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 3650,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 79,
+      "categoryId": 10,
+      "name": "Peanut butter",
+      "keywords": [
+        "peanut butter",
+        "nut butter",
+        "almond butter",
+        "hummus",
+        "tahini",
+        "chickpea dip",
+        "tzatziki spread",
+        "sesame paste"
+      ],
+      "pantryMinDays": 60,
+      "pantryMaxDays": 90,
+      "refrigeratorMinDays": 90,
+      "refrigeratorMaxDays": 180,
+      "refrigeratorAfterOpeningDays": 90,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 80,
+      "categoryId": 10,
+      "name": "Jam, jelly",
+      "keywords": [
+        "jam",
+        "jelly",
+        "preserves",
+        "marmalade",
+        "fruit spread"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 730,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": 180,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 81,
+      "categoryId": 11,
+      "name": "Coffee, ground",
+      "keywords": [
+        "coffee",
+        "ground coffee",
+        "coffee beans"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 180,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 82,
+      "categoryId": 11,
+      "name": "Tea, dried",
+      "keywords": [
+        "tea",
+        "tea bags",
+        "loose tea",
+        "green tea",
+        "black tea"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 83,
+      "categoryId": 11,
+      "name": "Juice, bottled",
+      "keywords": [
+        "juice",
+        "orange juice",
+        "apple juice",
+        "fruit juice"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": 7,
+      "refrigeratorMaxDays": 10,
+      "refrigeratorAfterOpeningDays": 7,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 84,
+      "categoryId": 12,
+      "name": "Chocolate",
+      "keywords": [
+        "chocolate",
+        "chocolate bar",
+        "dark chocolate",
+        "milk chocolate"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": 365,
+      "refrigeratorMaxDays": 545,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 730
+    },
+    {
+      "id": 85,
+      "categoryId": 12,
+      "name": "Chips, potato",
+      "keywords": [
+        "chips",
+        "potato chips",
+        "crisps"
+      ],
+      "pantryMinDays": 30,
+      "pantryMaxDays": 60,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 86,
+      "categoryId": 12,
+      "name": "Crackers",
+      "keywords": [
+        "crackers",
+        "saltines",
+        "graham crackers"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 270,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 87,
+      "categoryId": 12,
+      "name": "Nuts, raw",
+      "keywords": [
+        "nuts",
+        "almonds",
+        "walnuts",
+        "cashews",
+        "pecans",
+        "hazelnuts"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 270,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 730
+    },
+    {
+      "id": 88,
+      "categoryId": 12,
+      "name": "Dried fruits",
+      "keywords": [
+        "dried fruit",
+        "raisins",
+        "dried apricots",
+        "dried cranberries",
+        "prunes"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 730
+    },
+    {
+      "id": 89,
+      "categoryId": 12,
+      "name": "Sugar, granulated",
+      "keywords": [
+        "sugar",
+        "white sugar",
+        "granulated sugar",
+        "molasses",
+        "treacle",
+        "cane syrup",
+        "fancy molasses",
+        "brown sugar syrup",
+        "candy",
+        "sweets",
+        "boiled sweets",
+        "fudge",
+        "toffee",
+        "turkish delight",
+        "wine gum",
+        "liquorice",
+        "licorice",
+        "confectionery",
+        "caramel",
+        "sweetener",
+        "dextrose",
+        "sweetener tablets",
+        "artificial sweetener",
+        "sorbitol",
+        "fructose",
+        "intensive sweetener",
+        "demerara"
+      ],
+      "pantryMinDays": 730,
+      "pantryMaxDays": 3650,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 90,
+      "categoryId": 12,
+      "name": "Salt",
+      "keywords": [
+        "salt",
+        "table salt",
+        "sea salt",
+        "kosher salt"
+      ],
+      "pantryMinDays": 3650,
+      "pantryMaxDays": 3650,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 91,
+      "categoryId": 12,
+      "name": "Spices, dried",
+      "keywords": [
+        "spices",
+        "cinnamon",
+        "cumin",
+        "paprika",
+        "oregano",
+        "basil",
+        "thyme",
+        "nutritional yeast",
+        "yeast flakes",
+        "dried yeast",
+        "chives",
+        "chervil",
+        "tamarind",
+        "seasoning",
+        "monosodium glutamate",
+        "msg",
+        "curry powder",
+        "fresh herb",
+        "horseradish",
+        "horse-radish",
+        "raifort"
+      ],
+      "pantryMinDays": 365,
+      "pantryMaxDays": 1095,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 92,
+      "categoryId": 14,
+      "name": "Ice cream",
+      "keywords": [
+        "ice cream",
+        "gelato",
+        "frozen dessert",
+        "sorbet",
+        "sherbet",
+        "frozen yogurt",
+        "frozen yoghurt",
+        "semifreddo",
+        "ice lolly"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 93,
+      "categoryId": 14,
+      "name": "Frozen vegetables",
+      "keywords": [
+        "frozen vegetables",
+        "frozen peas",
+        "frozen corn",
+        "frozen broccoli"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 94,
+      "categoryId": 14,
+      "name": "Frozen pizza",
+      "keywords": [
+        "frozen pizza",
+        "pizza"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 30,
+      "freezerMaxDays": 60
+    },
+    {
+      "id": 95,
+      "categoryId": 14,
+      "name": "Frozen fruit",
+      "keywords": [
+        "frozen fruit",
+        "frozen berries",
+        "frozen mango",
+        "smoothie mix"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": 240,
+      "freezerMaxDays": 365
+    },
+    {
+      "id": 96,
+      "categoryId": 8,
+      "name": "Tofu",
+      "keywords": [
+        "tofu",
+        "firm tofu",
+        "silken tofu",
+        "soft tofu",
+        "bean curd",
+        "tempeh"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 5,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 97,
+      "categoryId": 11,
+      "name": "Beer",
+      "keywords": [
+        "beer",
+        "ale",
+        "lager",
+        "stout",
+        "pilsner",
+        "craft beer",
+        "pale ale"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 98,
+      "categoryId": 11,
+      "name": "Soft drinks",
+      "keywords": [
+        "soda",
+        "soft drink",
+        "cola",
+        "coca cola",
+        "pepsi",
+        "carbonated",
+        "lemonade",
+        "sparkling water",
+        "energy drink",
+        "juice drink"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 99,
+      "categoryId": 6,
+      "name": "Tropical fruit",
+      "keywords": [
+        "ackee",
+        "jackfruit",
+        "durian",
+        "lychee",
+        "rambutan",
+        "guava",
+        "papaya",
+        "mango",
+        "passion fruit",
+        "starfruit",
+        "tamarillo",
+        "dragon fruit",
+        "plantain"
+      ],
+      "pantryMinDays": 2,
+      "pantryMaxDays": 7,
+      "refrigeratorMinDays": 5,
+      "refrigeratorMaxDays": 7,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 90,
+      "freezerMaxDays": 180
+    },
+    {
+      "id": 100,
+      "categoryId": 12,
+      "name": "Candy and confectionery",
+      "keywords": [
+        "candy bar",
+        "chocolate bar",
+        "snickers",
+        "kitkat",
+        "mars",
+        "twix",
+        "milky way",
+        "bounty",
+        "haribo",
+        "gummy",
+        "mints",
+        "gum",
+        "chewing gum",
+        "lollipop",
+        "praline",
+        "aniseed",
+        "comfits",
+        "peppermint candy",
+        "peppermint",
+        "nougat",
+        "marzipan",
+        "marshmallow",
+        "mentos",
+        "maltesers",
+        "malteser",
+        "dragee",
+        "candybar",
+        "aniseed comfit",
+        "marshmallows",
+        "toffees"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": null,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    },
+    {
+      "id": 101,
+      "categoryId": 8,
+      "name": "Nuts and seeds",
+      "keywords": [
+        "nuts",
+        "peanuts",
+        "almonds",
+        "walnuts",
+        "cashews",
+        "pecans",
+        "pistachios",
+        "hazelnuts",
+        "linseeds",
+        "flaxseeds",
+        "pumpkin seeds",
+        "sunflower seeds",
+        "sesame seeds",
+        "hemp seed",
+        "chia seeds",
+        "mixed nuts",
+        "roasted peanuts",
+        "coated peanuts",
+        "chestnuts"
+      ],
+      "pantryMinDays": 90,
+      "pantryMaxDays": 180,
+      "refrigeratorMinDays": 180,
+      "refrigeratorMaxDays": 365,
+      "refrigeratorAfterOpeningDays": 30,
+      "freezerMinDays": 365,
+      "freezerMaxDays": 730
+    },
+    {
+      "id": 102,
+      "categoryId": 5,
+      "name": "Cooked dishes and leftovers",
+      "keywords": [
+        "risotto",
+        "quiche",
+        "lasagna",
+        "lasagne",
+        "chilli",
+        "chili",
+        "casserole",
+        "stew",
+        "soup prepared",
+        "curry prepared",
+        "mixed dish",
+        "ready meal",
+        "prepared meal",
+        "leftover",
+        "infant food meal",
+        "baby food meal",
+        "goulash"
+      ],
+      "pantryMinDays": null,
+      "pantryMaxDays": null,
+      "refrigeratorMinDays": 3,
+      "refrigeratorMaxDays": 4,
+      "refrigeratorAfterOpeningDays": 3,
+      "freezerMinDays": 60,
+      "freezerMaxDays": 90
+    },
+    {
+      "id": 103,
+      "categoryId": 11,
+      "name": "Meal replacement drinks",
+      "keywords": [
+        "meal replacement",
+        "protein shake",
+        "nutritional drink",
+        "complete meal",
+        "meal shake",
+        "huel",
+        "soylent",
+        "ensure",
+        "fortisip",
+        "nutridrink"
+      ],
+      "pantryMinDays": 180,
+      "pantryMaxDays": 365,
+      "refrigeratorMinDays": null,
+      "refrigeratorMaxDays": null,
+      "refrigeratorAfterOpeningDays": 1,
+      "freezerMinDays": null,
+      "freezerMaxDays": null
+    }
+  ]
+}

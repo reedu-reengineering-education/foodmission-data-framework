@@ -86,6 +86,10 @@ model Food {
   // --- Data quality ---
   completeness Float? // 0.0 - 1.0
 
+  // --- Shelf life link ---
+  shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
+  shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
+
   // --- Relations ---
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
@@ -97,6 +101,7 @@ model Food {
   @@index([createdAt])
   @@index([nutriscoreGrade])
   @@index([novaGroup])
+  @@index([shelfLifeId])
   @@map("foods")
 }
 
@@ -274,6 +279,10 @@ model FoodCategory {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  // --- Shelf life link ---
+  shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
+  shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
+
   // --- Relations ---
   shoppingListItems ShoppingListItem[]
   pantryItems       PantryItem[]
@@ -283,7 +292,34 @@ model FoodCategory {
   @@index([foodGroup])
   @@index([foodName])
   @@index([nevoCode])
+  @@index([shelfLifeId])
   @@map("food_categories")
+}
+
+model FoodShelfLife {
+  id                           String   @id @default(uuid())
+  foodKeeperProductId          Int      @unique
+  name                         String
+  keywords                     String[]
+  categoryName                 String?
+  defaultStorageType           String? // "pantry" | "refrigerator" | "freezer"
+  pantryMinDays                Int?
+  pantryMaxDays                Int?
+  pantryAfterOpeningDays       Int?
+  refrigeratorMinDays          Int?
+  refrigeratorMaxDays          Int?
+  refrigeratorAfterOpeningDays Int?
+  freezerMinDays               Int?
+  freezerMaxDays               Int?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+
+  foods          Food[]
+  foodCategories FoodCategory[]
+
+  @@index([name])
+  @@index([categoryName])
+  @@map("food_shelf_life")
 }
 
 model User {
@@ -389,15 +425,16 @@ model Pantry {
 }
 
 model PantryItem {
-  id         String    @id @default(uuid())
-  quantity   Int       @default(1)
-  unit       Unit      @default(PIECES)
-  notes      String?
-  location   String?
-  expiryDate DateTime?
-  pantryId   String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  quantity         Int       @default(1)
+  unit             Unit      @default(PIECES)
+  notes            String?
+  location         String?
+  expiryDate       DateTime?
+  expiryDateSource String? // "manual" | "auto_foodkeeper"
+  pantryId         String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   // Polymorphic reference
   itemType       String  @default("food") // "food" | "food_category"
