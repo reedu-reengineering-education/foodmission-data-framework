@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     // Persist local user record; if this fails, attempt to clean up the Keycloak user
-
+    let localUser;
     try {
       const {
         username,
@@ -73,8 +73,7 @@ export class AuthService {
       if (region) userCreatePayload.region = region;
       if (zip) userCreatePayload.zip = zip;
 
-      // Actually persist user (uncomment and implement as needed)
-      // await this.userRepository.create(userCreatePayload);
+      localUser = await this.userRepository.create(userCreatePayload);
     } catch (repoErr: any) {
       this.logger.error(
         'Local user persistence error',
@@ -128,6 +127,7 @@ export class AuthService {
         details,
       });
     }
+    return { createdUser, localUser };
   }
 
   /**

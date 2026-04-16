@@ -113,8 +113,7 @@ describe('Stateless Authentication', () => {
         iat: 1640991600,
       };
 
-      const req = { user: mockUser };
-      const result = controller.getTokenInfo(req);
+      const result = controller.getTokenInfo(mockUser);
 
       expect(result).toEqual({
         sub: mockUser.sub,

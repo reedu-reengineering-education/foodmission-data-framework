@@ -77,7 +77,6 @@ export class AuthController {
       email: string;
       resource_access?: Record<string, { roles?: string[] }>;
     },
-    @Request() req: { headers?: Record<string, string> },
     @Body() dto: AdminResetPasswordDto,
   ) {
     const roles = extractKeycloakRoles(user);
