@@ -462,7 +462,7 @@ export class PantryItemService {
         foodId: item.foodId,
         quantity: item.quantity,
         unit: item.unit,
-        expiryDate: item.expiryDate,
+        expiryDate: item.expiryDate as Date, // Query guarantees non-null via lt filter
         food: item.food,
         suggestedWasteReason: WasteReason.EXPIRED,
         suggestedDetectionMethod: DetectionMethod.AUTOMATIC,
