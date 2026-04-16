@@ -2,8 +2,9 @@ import {
   Controller,
   Get,
   Request,
-  UnauthorizedException,
   UseGuards,
+  Body,
+  Post,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -11,46 +12,52 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
+  ApiResponse,
 } from '@nestjs/swagger';
-import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { ApiCrudErrorResponses } from '../common/decorators/api-error-responses.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { extractKeycloakRoles } from '../common/utils/keycloak-roles.util';
+import { Public } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { defaultThrottlerConfig } from '../throttler.config';
 import { UserProfilesService } from '../users/services/user-profiles.service';
-import { Body, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 
-interface KeycloakUser {
-  sub: string;
-  email: string;
-  name?: string;
-  given_name?: string;
-  family_name?: string;
-  preferred_username?: string;
-  resource_access?: {
-    [key: string]: {
-      roles: string[];
-    };
-  };
-  exp: number;
-  iat: number;
-}
-
-interface AuthenticatedRequest {
-  user: KeycloakUser;
-}
-
 @ApiTags('auth')
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
+@ApiBearerAuth('JWT-auth')
+@ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
+@Throttle(defaultThrottlerConfig)
 export class AuthController {
   constructor(
     private readonly userProfileService: UserProfilesService,
     private readonly authService: AuthService,
   ) {}
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Trigger password reset email (self-service)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Reset email triggered (if user exists)',
+  })
+  @ApiCrudErrorResponses()
+  async resetPassword(
+    @CurrentUser()
+    user: {
+      sub: string;
+      email: string;
+      resource_access?: Record<string, { roles?: string[] }>;
+    },
+  ) {
+    const roles = extractKeycloakRoles(user);
+    await this.authService.triggerPasswordReset(user.sub, user.email, roles);
+    return { status: 'ok' };
+  }
 
   @Get('info')
   @Public()
@@ -81,9 +88,6 @@ export class AuthController {
   }
 
   @Get('profile')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
-  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @ApiOperation({
     summary:
       'Get and create authenticated user profile (deprecated possibly depending on registration flow)',
@@ -106,13 +110,8 @@ export class AuthController {
       },
     },
   })
-  @ApiAuthenticatedErrorResponses()
-  async getProfile(@Request() req: AuthenticatedRequest) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
+  @ApiCrudErrorResponses()
+  async getProfile(@CurrentUser() user: any) {
     return await this.userProfileService.getOrCreateProfile({
       sub: user.sub,
       email: user.email,
@@ -150,41 +149,39 @@ export class AuthController {
 
   @Post('register')
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({
     summary: 'Register a new user in Keycloak and create local user',
   })
   async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+    return await this.authService.register(dto);
   }
 
   @Post('login')
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
   async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+    return await this.authService.login(dto);
   }
 
   @Post('logout')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
   async logout(@Body() dto: LogoutDto) {
-    return this.authService.logout(dto.token, dto.tokenTypeHint);
+    return await this.authService.logout(dto.token, dto.tokenTypeHint);
   }
 
   @Post('refresh')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Exchange refresh token for new tokens' })
   async refresh(@Body() dto: RefreshDto) {
-    return this.authService.refresh(dto.token);
+    return await this.authService.refresh(dto.token);
   }
 
   @Get('token-info')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
   @ApiOperation({
     summary: 'Get JWT token information',
     description:
@@ -235,58 +232,29 @@ export class AuthController {
       },
     },
   })
-  @ApiAuthenticatedErrorResponses()
-  getTokenInfo(@Request() req: AuthenticatedRequest) {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
+  @ApiCrudErrorResponses()
+  getTokenInfo(
+    @CurrentUser()
+    user: {
+      sub: string;
+      email: string;
+      name: string;
+      given_name: string;
+      family_name: string;
+      resource_access?: Record<string, { roles?: string[] }>;
+      exp: number;
+      iat: number;
+    },
+  ) {
     return {
       sub: user.sub,
       email: user.email,
       name: user.name,
       given_name: user.given_name,
       family_name: user.family_name,
-      roles:
-        user.resource_access?.[
-          process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api'
-        ]?.roles || [],
+      roles: extractKeycloakRoles(user),
       exp: user.exp,
       iat: user.iat,
-    };
-  }
-
-  @Get('admin-only')
-  @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({
-    summary: 'Admin-only test endpoint',
-    description:
-      'Test endpoint that requires admin role. Used for testing role-based access control.',
-  })
-  @ApiOkResponse({
-    description: 'Admin access confirmed',
-    schema: {
-      type: 'object',
-      properties: {
-        message: {
-          type: 'string',
-          example: 'Admin access granted',
-        },
-        status: {
-          type: 'string',
-          example: 'success',
-        },
-      },
-    },
-  })
-  @ApiAuthenticatedErrorResponses()
-  adminEndpoint() {
-    return {
-      message: 'Admin access granted',
-      status: 'success',
     };
   }
 }

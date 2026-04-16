@@ -44,6 +44,7 @@ export class AuthService {
     }
 
     // Persist local user record; if this fails, attempt to clean up the Keycloak user
+    let localUser;
     try {
       const {
         username,
@@ -72,9 +73,7 @@ export class AuthService {
       if (region) userCreatePayload.region = region;
       if (zip) userCreatePayload.zip = zip;
 
-      const localUser = await this.userRepository.create(userCreatePayload);
-
-      return { createdUser, localUser };
+      localUser = await this.userRepository.create(userCreatePayload);
     } catch (repoErr: any) {
       this.logger.error(
         'Local user persistence error',
@@ -128,6 +127,39 @@ export class AuthService {
         details,
       });
     }
+    return { createdUser, localUser };
+  }
+
+  /**
+   * Triggers a password reset email for the user (self or admin for others).
+   * @param requesterKeycloakId - The Keycloak ID of the requester
+   * @param targetEmail - The email of the user to reset
+   * @param requesterRoles - The roles of the requester
+   */
+  async triggerPasswordReset(
+    requesterKeycloakId: string,
+    targetEmail: string,
+    requesterRoles: string[],
+    redirectUri?: string,
+  ): Promise<void> {
+    // Find user by email
+    const user = await this.userRepository.findByEmail(targetEmail);
+    if (!user) {
+      // Do not leak existence
+      return;
+    }
+    // Only allow if requester is admin or is requesting for self
+
+    const isAdmin =
+      Array.isArray(requesterRoles) && requesterRoles.includes('admin');
+
+    if (!isAdmin && user.keycloakId !== requesterKeycloakId) {
+      throw new HttpException('Forbidden', 403);
+    }
+    await this.keycloakAdminService.sendResetPasswordEmail(
+      user.keycloakId,
+      redirectUri,
+    );
   }
 
   /**
