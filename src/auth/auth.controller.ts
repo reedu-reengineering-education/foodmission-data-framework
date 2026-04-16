@@ -19,6 +19,7 @@ import {
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { defaultThrottlerConfig } from '../throttler.config';
 import { UserProfilesService } from '../users/services/user-profiles.service';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -59,7 +60,7 @@ export class AuthController {
   @Post('reset-password')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
-  @Throttle({ default: { limit: 5, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Trigger password reset email (self or admin)' })
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({
@@ -119,7 +120,7 @@ export class AuthController {
   @Get('profile')
   @ApiBearerAuth('JWT-auth')
   @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
-  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({
     summary:
       'Get and create authenticated user profile (deprecated possibly depending on registration flow)',
@@ -186,7 +187,7 @@ export class AuthController {
 
   @Post('register')
   @Public()
-  @Throttle({ default: { limit: 5, ttl: 3600000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({
     summary: 'Register a new user in Keycloak and create local user',
   })
@@ -196,7 +197,7 @@ export class AuthController {
 
   @Post('login')
   @Public()
-  @Throttle({ default: { limit: 10, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
   async login(@Body() dto: LoginDto) {
     return await this.authService.login(dto);
@@ -204,7 +205,7 @@ export class AuthController {
 
   @Post('logout')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
   async logout(@Body() dto: LogoutDto) {
     return await this.authService.logout(dto.token, dto.tokenTypeHint);
@@ -212,7 +213,7 @@ export class AuthController {
 
   @Post('refresh')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 900000 } })
+  @Throttle(defaultThrottlerConfig)
   @ApiOperation({ summary: 'Exchange refresh token for new tokens' })
   async refresh(@Body() dto: RefreshDto) {
     return await this.authService.refresh(dto.token);
