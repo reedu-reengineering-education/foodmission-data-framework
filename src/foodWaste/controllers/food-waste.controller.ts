@@ -130,39 +130,6 @@ export class FoodWasteController {
     return this.foodWasteService.findAll(userId, query);
   }
 
-  @Get('detect-expired')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Detect expired pantry items',
-    description:
-      "Find all expired items in the user's pantry that could be recorded as food waste. Returns suggested waste entries.",
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Expired items detected',
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          pantryItemId: { type: 'string', format: 'uuid' },
-          foodId: { type: 'string', format: 'uuid' },
-          quantity: { type: 'number' },
-          unit: { type: 'string' },
-          expiryDate: { type: 'string', format: 'date-time' },
-          food: { type: 'object' },
-          suggestedWasteReason: { type: 'string' },
-          suggestedDetectionMethod: { type: 'string' },
-        },
-      },
-    },
-  })
-  @ApiCrudErrorResponses()
-  detectExpired(@CurrentUser('id') userId: string): Promise<any[]> {
-    return this.foodWasteService.detectExpiredItems(userId);
-  }
-
   @Post('batch-create-from-expired')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -170,7 +137,7 @@ export class FoodWasteController {
   @ApiOperation({
     summary: 'Batch create waste entries from expired items',
     description:
-      'Create multiple food waste entries from selected expired pantry items in one request. User can choose which items to record and provide individual cost estimates.',
+      'Create multiple food waste entries from selected expired pantry items in one request. User can choose which items to record and provide individual cost estimates. Use GET /pantry/:pantryId/items/expired to find expired items first.',
   })
   @ApiBody({ type: BatchCreateFoodWasteDto })
   @ApiResponse({

@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -22,11 +23,15 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
-import { Prisma, Unit } from '@prisma/client';
+import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
+import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
+import { handlePrismaError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class PantryItemService {
+  private readonly logger = new Logger(PantryItemService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
@@ -419,6 +424,52 @@ export class PantryItemService {
         'Failed to delete pantry item: ' +
           (err instanceof Error ? err.message : err),
       );
+    }
+  }
+
+  /**
+   * Detect expired items from pantry for the authenticated user
+   * Returns suggested food waste entries for expired pantry items
+   */
+  async detectExpiredItems(
+    userId: string,
+    pantryId?: string,
+  ): Promise<ExpiredPantryItemDto[]> {
+    try {
+      const resolvedPantryId = await this.pantryService.validatePantryExists(
+        userId,
+        pantryId,
+      );
+      const now = new Date();
+
+      // Query expired items with proper userId filtering through pantry relation
+      const expiredItems = await this.pantryItemRepository.findExpiredByUser(
+        userId,
+        now,
+      );
+
+      // Filter by pantryId if provided
+      const filteredItems = pantryId
+        ? expiredItems.filter((item) => item.pantryId === resolvedPantryId)
+        : expiredItems;
+
+      this.logger.debug(
+        `Found ${filteredItems.length} expired items for user ${userId}${pantryId ? ` in pantry ${resolvedPantryId}` : ''}`,
+      );
+
+      return filteredItems.map((item) => ({
+        pantryItemId: item.id,
+        foodId: item.foodId,
+        quantity: item.quantity,
+        unit: item.unit,
+        expiryDate: item.expiryDate,
+        food: item.food,
+        suggestedWasteReason: WasteReason.EXPIRED,
+        suggestedDetectionMethod: DetectionMethod.AUTOMATIC,
+      }));
+    } catch (error) {
+      this.logger.error('Error detecting expired items', error);
+      throw handlePrismaError(error, 'detect expired items', 'PantryItem');
     }
   }
 

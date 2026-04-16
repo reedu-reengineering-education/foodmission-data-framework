@@ -36,6 +36,7 @@ import {
 import { QueryPantryItemsFilterDto } from '../dto/query-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { Unit } from '@prisma/client';
+import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 
 @ApiTags('pantry')
 @Controller('pantry/:pantryId/items')
@@ -180,6 +181,32 @@ export class PantryItemsController {
     @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
     return this.pantryItemService.findAll(query, userId, pantryId);
+  }
+
+  @Get('expired')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Detect expired pantry items',
+    description:
+      "Find all expired items in the user's pantry. Returns suggested waste entries that can be used with the food waste batch creation endpoint.",
+  })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Expired items detected',
+    type: [ExpiredPantryItemDto],
+  })
+  @ApiCrudErrorResponses()
+  async findExpired(
+    @Param('pantryId', ParseUUIDPipe) pantryId: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<ExpiredPantryItemDto[]> {
+    return this.pantryItemService.detectExpiredItems(userId, pantryId);
   }
 
   @Get(':itemId')

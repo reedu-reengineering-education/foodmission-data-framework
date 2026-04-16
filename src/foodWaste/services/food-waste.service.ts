@@ -372,40 +372,6 @@ export class FoodWasteService {
   }
 
   /**
-   * Detect expired items from pantry for the authenticated user
-   * Filters by userId through pantry relation for security and performance
-   */
-  async detectExpiredItems(userId: string): Promise<any[]> {
-    try {
-      const now = new Date();
-
-      // Query expired items with proper userId filtering through pantry relation
-      const expiredItems = await this.pantryItemRepository.findExpiredByUser(
-        userId,
-        now,
-      );
-
-      this.logger.debug(
-        `Found ${expiredItems.length} expired items for user ${userId}`,
-      );
-
-      return expiredItems.map((item) => ({
-        pantryItemId: item.id,
-        foodId: item.foodId,
-        quantity: item.quantity,
-        unit: item.unit,
-        expiryDate: item.expiryDate,
-        food: item.food,
-        suggestedWasteReason: WasteReason.EXPIRED,
-        suggestedDetectionMethod: DetectionMethod.AUTOMATIC,
-      }));
-    } catch (error) {
-      this.logger.error('Error detecting expired items', error);
-      throw handlePrismaError(error, 'detect expired items', 'PantryItem');
-    }
-  }
-
-  /**
    * Batch create food waste entries from expired pantry items
    * User selects which expired items to record as waste
    * Deletes pantry items after successful waste creation
