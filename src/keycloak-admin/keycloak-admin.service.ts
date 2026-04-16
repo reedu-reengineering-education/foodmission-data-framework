@@ -22,6 +22,48 @@ export class KeycloakAdminService {
   }
 
   /**
+   * Send a password reset email to a user by Keycloak ID.
+   * @param keycloakId - The Keycloak user ID (sub claim)
+   * @param redirectUri - Optional redirect URI for the reset link
+   */
+  async sendResetPasswordEmail(
+    keycloakId: string,
+    redirectUri?: string,
+  ): Promise<void> {
+    const accessToken = await this.getAdminToken();
+    const executeActionsUrl = `${this.adminUsersEndpoint()}/${keycloakId}/execute-actions-email`;
+    const actions = ['UPDATE_PASSWORD'];
+    const params: any = { lifespan: 43200 }; // 12 hours
+    if (redirectUri) params.redirect_uri = redirectUri;
+
+    try {
+      await firstValueFrom(
+        this.httpService.put(executeActionsUrl, actions, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          params,
+        }),
+      );
+      this.logger.log(
+        `Sent reset password email to Keycloak user: ${keycloakId}`,
+      );
+    } catch (err: any) {
+      const status = err?.response?.status || 500;
+      const data = err?.response?.data || {
+        error: 'reset_email_error',
+        error_description: 'Failed to send reset password email',
+      };
+      this.logger.error(
+        `Failed to send reset password email to Keycloak user ${keycloakId}`,
+        JSON.stringify(data),
+      );
+      throw new HttpException(data, status);
+    }
+  }
+
+  /**
    * Get an admin access token using service account credentials.
    */
   private async getAdminToken(): Promise<string> {

@@ -4,6 +4,8 @@ import {
   Request,
   UnauthorizedException,
   UseGuards,
+  Body,
+  Post,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -11,17 +13,19 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOkResponse,
+  ApiBody,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { ApiAuthenticatedErrorResponses } from '../common/decorators/api-error-responses.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { UserProfilesService } from '../users/services/user-profiles.service';
-import { Body, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 interface KeycloakUser {
   sub: string;
@@ -51,6 +55,38 @@ export class AuthController {
     private readonly userProfileService: UserProfilesService,
     private readonly authService: AuthService,
   ) {}
+
+  @Post('reset-password')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOAuth2(['openid', 'profile', 'email'], 'keycloak-oauth2')
+  @Throttle({ default: { limit: 5, ttl: 900000 } })
+  @ApiOperation({ summary: 'Trigger password reset email (self or admin)' })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Reset email triggered (if user exists)',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  async resetPassword(@Request() req: any, @Body() dto: ResetPasswordDto) {
+    const user = req.user;
+    if (!user) throw new UnauthorizedException('User not authenticated');
+    // Extract roles from token (Keycloak roles)
+    let roles: string[] = [];
+    const clientId = process.env.KEYCLOAK_CLIENT_ID || 'foodmission-api';
+    if (user.resource_access && user.resource_access[clientId]) {
+      roles = user.resource_access[clientId].roles;
+    }
+    // Optionally, allow frontend to pass redirectUri
+    const redirectUri = req.headers?.['x-redirect-uri'] || undefined;
+    await this.authService.triggerPasswordReset(
+      user.sub,
+      dto.email,
+      roles,
+      redirectUri,
+    );
+    // Always return 200
+    return { status: 'ok' };
+  }
 
   @Get('info')
   @Public()
@@ -155,7 +191,7 @@ export class AuthController {
     summary: 'Register a new user in Keycloak and create local user',
   })
   async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+    return await this.authService.register(dto);
   }
 
   @Post('login')
@@ -163,7 +199,7 @@ export class AuthController {
   @Throttle({ default: { limit: 10, ttl: 900000 } })
   @ApiOperation({ summary: 'Login user via Keycloak and return tokens' })
   async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+    return await this.authService.login(dto);
   }
 
   @Post('logout')
@@ -171,7 +207,7 @@ export class AuthController {
   @Throttle({ default: { limit: 20, ttl: 900000 } })
   @ApiOperation({ summary: 'Logout by revoking token at Keycloak' })
   async logout(@Body() dto: LogoutDto) {
-    return this.authService.logout(dto.token, dto.tokenTypeHint);
+    return await this.authService.logout(dto.token, dto.tokenTypeHint);
   }
 
   @Post('refresh')
@@ -179,7 +215,7 @@ export class AuthController {
   @Throttle({ default: { limit: 20, ttl: 900000 } })
   @ApiOperation({ summary: 'Exchange refresh token for new tokens' })
   async refresh(@Body() dto: RefreshDto) {
-    return this.authService.refresh(dto.token);
+    return await this.authService.refresh(dto.token);
   }
 
   @Get('token-info')
