@@ -51,7 +51,7 @@ infra:
   clusterIssuer:
     enabled: false  # Set to true only if ClusterIssuer doesn't exist yet
     email: CHANGEME@foodmission.eu  # Email for Let's Encrypt notifications
-  
+    server: CHANGEME  # e.g., https://acme-staging-v02.api.letsencrypt.org/directory or the Let's Encrypt prod URL
   # CNPG configuration
   cnpg:
     enabled: true
