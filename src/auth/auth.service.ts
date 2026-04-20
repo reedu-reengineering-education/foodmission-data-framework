@@ -4,6 +4,7 @@ import {
   HttpException,
   InternalServerErrorException,
   ConflictException,
+  NotFoundException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -145,8 +146,7 @@ export class AuthService {
     // Find user by email
     const user = await this.userRepository.findByEmail(targetEmail);
     if (!user) {
-      // Do not leak existence
-      return;
+      throw new NotFoundException('User not found');
     }
     // Only allow if requester is admin or is requesting for self
 

@@ -99,7 +99,7 @@ describe('AuthService.triggerPasswordReset', () => {
         ['admin'],
         undefined,
       ),
-    ).resolves.toBeUndefined();
+    ).rejects.toThrow('User not found');
   });
 });
 
