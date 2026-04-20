@@ -85,30 +85,23 @@ export class WebhooksController {
     @Body() event: KeycloakUserEventDto | KeycloakAdminEventDto,
     @Headers('X-Keycloak-Signature') signature?: string,
   ): Promise<{ status: string; timestamp: string }> {
-    this.logger.log('Received Keycloak webhook event');
-
     // Verify webhook signature if secret is configured
     const webhookSecret = process.env.KEYCLOAK_WEBHOOK_SECRET;
     if (webhookSecret) {
       if (!signature) {
-        this.logger.warn('Webhook signature missing but secret is configured');
         throw new UnauthorizedException('Missing webhook signature');
       }
 
       const rawBody = req.rawBody;
       if (!rawBody) {
-        this.logger.error('Raw body not available for signature verification');
         throw new InternalServerErrorException(
           'Unable to verify webhook signature',
         );
       }
 
       if (!this.verifySignature(rawBody, signature, webhookSecret)) {
-        this.logger.warn('Invalid webhook signature');
         throw new UnauthorizedException('Invalid webhook signature');
       }
-
-      this.logger.debug('Webhook signature verified successfully');
     }
 
     // Route to appropriate handler - errors will return 5xx to allow Keycloak retries

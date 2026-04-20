@@ -26,12 +26,7 @@ export class WebhooksService {
    * Currently only handles DELETE_ACCOUNT events
    */
   async handleKeycloakUserEvent(event: KeycloakUserEventDto): Promise<void> {
-    const keycloakUserId = event.authDetails?.userId;
     const action = this.extractEventAction(event.type);
-
-    this.logger.log(
-      `Received Keycloak user event: ${event.type} for user ${keycloakUserId || 'unknown'}`,
-    );
 
     switch (action) {
       case 'DELETE_ACCOUNT':
@@ -51,7 +46,8 @@ export class WebhooksService {
       //   await this.handleUserProfileUpdate(event);
       //   break;
       default:
-        this.logger.debug(`Unhandled user event type: ${event.type}`);
+        // Unhandled events are silently ignored
+        break;
     }
   }
 
@@ -61,10 +57,6 @@ export class WebhooksService {
    */
   async handleKeycloakAdminEvent(event: KeycloakAdminEventDto): Promise<void> {
     const action = this.extractEventAction(event.type);
-
-    this.logger.log(
-      `Received Keycloak admin event: ${event.type} (${event.operationType} on ${event.resourceType})`,
-    );
 
     // Handle USER-DELETE by type action or operationType
     if (
@@ -85,7 +77,7 @@ export class WebhooksService {
     //   return;
     // }
 
-    this.logger.debug(`Unhandled admin event: ${event.type}`);
+    // Unhandled events are silently ignored
   }
 
   /**
@@ -94,22 +86,13 @@ export class WebhooksService {
    */
   private async handleUserDelete(event: KeycloakUserEventDto): Promise<void> {
     const keycloakUserId = event.authDetails?.userId;
-    const username = event.details?.username;
 
     if (!keycloakUserId) {
       this.logger.warn('DELETE_ACCOUNT event missing userId in authDetails');
       return;
     }
 
-    this.logger.log(
-      `Processing user account deletion: ${keycloakUserId} (username: ${username})`,
-    );
-
     await this.userProfilesService.deleteUserByKeycloakId(keycloakUserId);
-
-    this.logger.log(
-      `Successfully deleted local data for user: ${keycloakUserId}`,
-    );
   }
 
   /**
@@ -137,15 +120,7 @@ export class WebhooksService {
       return;
     }
 
-    this.logger.log(
-      `Processing admin user deletion: ${keycloakUserId} (admin: ${event.authDetails?.username})`,
-    );
-
     await this.userProfilesService.deleteUserByKeycloakId(keycloakUserId);
-
-    this.logger.log(
-      `Successfully deleted local data for user: ${keycloakUserId}`,
-    );
   }
 
   // =====================================================================
