@@ -1,98 +1,152 @@
-# FoodMission Helm Chart
+# FoodMission K3s Deployment
 
-This folder is now a Helm chart for deploying FoodMission services.
+Simple Helm-based deployment for FoodMission on k3s with CloudNativePG.
+
+## Quick Deploy
+
+```bash
+# Deploy to production
+helm upgrade --install foodmission ./k3s \
+  -f ./k3s/environments/prod/values.yaml \
+  --namespace foodmission-prod --create-namespace
+
+# Deploy to staging
+helm upgrade --install foodmission ./k3s \
+  -f ./k3s/environments/staging/values.yaml \
+  --namespace foodmission-staging --create-namespace
+```
 
 ## Structure
-- `Chart.yaml`: Helm chart metadata
-- `values.yaml`: Central config for all services and secrets
-- `templates/`: All Kubernetes manifests as Helm templates
 
-## Notes
-- Do NOT store real secrets in `values.yaml` if checked into git. Use CI/CD or Helm secrets for production.
-- Example secrets and config are provided in `values.yaml`.
-
-## Ingress-NGINX and Cert-Manager Setup (Only Needed on a Fresh Cluster)
-
-If your cluster does not already have ingress-nginx and cert-manager installed, run:
-
-```sh
-helm upgrade --install ingress-nginx ingress-nginx \
-  --repo https://kubernetes.github.io/ingress-nginx \
-  --namespace ingress-nginx --create-namespace \
-  -f nginx-values.yaml
-
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
+```
+k3s/
+├── infra/          # Database (CNPG), backups, certificates
+├── app/            # API, Keycloak, ingress
+├── observability/  # Standalone chart - deploy once per cluster
+└── environments/   # Environment configs (test, staging, prod)
 ```
 
-Example `nginx-values.yaml` for Hetzner Cloud load balancer:
+Observability is NOT part of the main deployment. It's a separate chart deployed once to monitor all environments.
 
-```yaml
-controller:
-  service:
-    annotations:
-      # Tell Hetzner where to create the LB
-      load-balancer.hetzner.cloud/location: fsn1
-      # Use the private network for communication between LB and nodes
-      load-balancer.hetzner.cloud/use-private-ip: "true"
-      # Optional: Name your LB in the Hetzner console
-      load-balancer.hetzner.cloud/name: "k3s-nginx-lb"
+## Prerequisites
+
+1. **CNPG operator** (required for database):
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.0.yaml
+   ```
+
+2. **CNPG kubectl plugin** (optional, for easier management):
+   ```bash
+   # Install via krew
+   kubectl krew install cnpg
+   
+   # Or download directly
+   curl -sSfL https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | sh -s -- -b /usr/local/bin
+   ```
+
+3. **cert-manager** (optional, for TLS):
+   ```bash
+   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
+   ```
+
+## Deploy Observability (Once Per Cluster)
+
+Observability runs in its own namespace and monitors all environments:
+
+```bash
+helm dependency update ./k3s/observability
+helm upgrade --install observability ./k3s/observability \
+  --namespace observability --create-namespace
 ```
 
-## Environment-Specific Configuration
-
-For different environments (test, staging, prod), use separate values files:
-
-- `values.test.yaml`
-- `values.staging.yaml`
-- `values.prod.yaml`
-
-Each file should contain the configuration and secrets for its environment. Do NOT commit real secrets to git—use example or placeholder values in files you share.
-
-To deploy with a specific environment file:
-
-```sh
-helm upgrade --install foodmission . -f values.staging.yaml
+Access Grafana:
+```bash
+kubectl port-forward -n observability svc/observability-grafana 3000:80
+# Open http://localhost:3000 (admin/prom-operator)
 ```
 
-This approach keeps your environments isolated, reproducible, and easy to manage.
+## Common Commands
 
-## Environment Isolation with Namespaces
+```bash
+# Preview changes before deploying
+helm template foodmission ./k3s -f ./k3s/environments/prod/values.yaml
 
-For strong isolation between test, staging, and production, use a separate Kubernetes namespace for each environment. Set the `namespace` value in each environment's values file:
+# Check deployment status
+kubectl get pods -n foodmission-prod
 
-- `values.test.yaml`: `namespace: foodmission-test`
-- `values.staging.yaml`: `namespace: foodmission-staging`
-- `values.prod.yaml`: `namespace: foodmission-prod`
+# Check database status (with plugin)
+kubectl cnpg status foodmission-pg -n foodmission-prod
 
-Deploy with:
+# Check database status (without plugin)
+kubectl get cluster -n foodmission-prod
+kubectl get pods -n foodmission-prod -l cnpg.io/cluster=foodmission-pg
 
-```sh
-helm upgrade --install foodmission-test . -f values.test.yaml
-helm upgrade --install foodmission-staging . -f values.staging.yaml
-helm upgrade --install foodmission-prod . -f values.prod.yaml
+# Create manual backup (with plugin)
+kubectl cnpg backup foodmission-pg -n foodmission-prod
+
+# Create manual backup (without plugin)
+kubectl create -f - <<EOF
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: backup-$(date +%Y%m%d-%H%M%S)
+  namespace: foodmission-prod
+spec:
+  cluster:
+    name: foodmission-pg
+EOF
+
+# View logs
+kubectl logs -n foodmission-prod -l app=api --tail=100 -f
+
+# Uninstall
+helm uninstall foodmission -n foodmission-prod
 ```
 
-This ensures resources for each environment are fully separated and managed independently.
+## Configuration
 
-### Namespace Creation
+Edit environment-specific values in `environments/{test,staging,prod}/values.yaml`:
 
-By default, the chart assumes the namespace already exists. There are two ways to handle namespace creation:
+- Database passwords and credentials
+- Domain names and TLS settings
+- Resource limits and replica counts
+- Backup configuration (S3 credentials)
 
-**Option 1: Use `--create-namespace` flag (recommended for new deployments)**
+## Backup & Restore
 
-```sh
-helm upgrade --install foodmission-prod . -f values.prod.yaml --create-namespace --namespace foodmission-prod
+Backups are configured in `infra/values.yaml` and use S3-compatible storage:
+
+```bash
+# List backups
+kubectl get backup -n foodmission-prod
+
+# Restore from backup (see infra/templates/cnpg-cluster.yaml)
+# Set bootstrap.recovery.source in values file
 ```
 
-This tells Helm to create the namespace before running any hooks or deploying resources.
+## Troubleshooting
 
-**Option 2: Enable namespace creation in values**
+```bash
+# Check all resources
+kubectl get all -n foodmission-prod
 
-Set `createNamespace: true` in your values file to have the chart create the namespace:
+# Database issues
+kubectl get cluster -n foodmission-prod
+kubectl describe cluster foodmission-pg -n foodmission-prod
+kubectl logs -n foodmission-prod foodmission-pg-1
 
-```yaml
-createNamespace: true
-namespace: foodmission-prod
+# API issues
+kubectl describe pod -n foodmission-prod -l app=api
+kubectl logs -n foodmission-prod -l app=api
+
+# Ingress issues
+kubectl describe ingress -n foodmission-prod
 ```
 
-> **Note:** If the namespace already exists and wasn't created by Helm, you'll get an ownership error. In that case, either delete the namespace first, add the required Helm labels manually, or use the default behavior (don't create the namespace in the chart).
+## Security
+
+- Never commit real secrets to git
+- Use `CHANGEME` placeholders in example files
+- Store production secrets in CI/CD or external secret management
+- Enable TLS for production
+- Rotate database passwords regularly
