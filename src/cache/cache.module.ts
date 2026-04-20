@@ -6,6 +6,7 @@ import { CacheInterceptor } from './cache.interceptor';
 import { CacheEvictInterceptor } from './cache-evict.interceptor';
 import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
+import { CacheableMemory } from '@cacheable/memory';
 
 @Global()
 @Module({
@@ -13,14 +14,19 @@ import KeyvRedis from '@keyv/redis';
     NestCacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const redisUrl = configService.get<string>(
-          'REDIS_URL',
-          'redis://localhost:6379',
+        const redisUrl = configService.get<string>('REDIS_URL');
+
+        const stores: Keyv[] = [];
+        if (redisUrl) {
+          stores.push(new Keyv(new KeyvRedis(redisUrl)));
+        }
+        stores.push(
+          new Keyv({
+            store: new CacheableMemory({ ttl: 60000, lruSize: 5000 }),
+          }),
         );
 
-        return {
-          stores: [new Keyv(new KeyvRedis(redisUrl))],
-        };
+        return { stores };
       },
       inject: [ConfigService],
       isGlobal: true,

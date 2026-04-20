@@ -38,7 +38,7 @@ import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { Unit } from '@prisma/client';
 
 @ApiTags('pantry')
-@Controller('pantry/items')
+@Controller('pantry/:pantryId/items')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class PantryItemsController {
   constructor(private readonly pantryItemService: PantryItemService) {}
@@ -51,6 +51,11 @@ export class PantryItemsController {
     summary: 'Add a new item to a pantry',
     description:
       'Creates a new Pantry Item and adds it to your dedicated pantry. The unit field is optional and defaults to PIECES if not provided. Requires user or admin role.',
+  })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
   })
   @ApiBody({
     schema: {
@@ -113,11 +118,17 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async create(
+    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Body() body: CreatePantryItemBodyDto,
     @CurrentUser('id') userId: string,
   ) {
     const createPantryItemDto = Object.assign(new CreatePantryItemDto(), body);
-    return this.pantryItemService.create(createPantryItemDto, userId);
+    return this.pantryItemService.create(
+      createPantryItemDto,
+      userId,
+      undefined,
+      pantryId,
+    );
   }
 
   @Get()
@@ -152,6 +163,11 @@ export class PantryItemsController {
     description: 'Filter by expiry date (ISO date string)',
     type: String,
   })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
+  })
   @ApiResponse({
     status: 200,
     description: 'Pantry items retrieved successfully',
@@ -159,10 +175,11 @@ export class PantryItemsController {
   })
   @ApiCrudErrorResponses()
   async findAll(
+    @Param('pantryId', ParseUUIDPipe) pantryId: string,
     @Query() query: QueryPantryItemsFilterDto,
     @CurrentUser('id') userId: string,
   ): Promise<MultiplePantryItemResponseDto> {
-    return this.pantryItemService.findAll(query, userId);
+    return this.pantryItemService.findAll(query, userId, pantryId);
   }
 
   @Get(':itemId')
@@ -170,6 +187,11 @@ export class PantryItemsController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get specific pantry item by ID',
+  })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
   })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiResponse({
@@ -193,6 +215,11 @@ export class PantryItemsController {
     description:
       'Update quantity, unit, notes, or expiry date of a pantry item. All fields are optional.',
   })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
+  })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiBody({ type: UpdatePantryItemDto })
   @ApiResponse({
@@ -215,6 +242,11 @@ export class PantryItemsController {
   @ApiOperation({
     summary: 'Remove item from pantry',
     description: 'Delete a specific pantry item by ID',
+  })
+  @ApiParam({
+    name: 'pantryId',
+    description: 'UUID of the pantry',
+    format: 'uuid',
   })
   @ApiParam({ name: 'itemId', format: 'uuid' })
   @ApiResponse({

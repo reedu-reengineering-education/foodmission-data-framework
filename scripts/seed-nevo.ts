@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { seedRecipes } from '../prisma/seeds/themealdb';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -160,7 +159,6 @@ const COL = {
   FAMSTXR: 146,
   FAUN: 147,
 } as const;
-const REQUIRED_COLUMN_COUNT = COL.FAUN + 1;
 
 function parseFloat_(raw: string): number | null {
   const cleaned = raw.replace(/"/g, '').trim();
@@ -184,18 +182,17 @@ function parseInt_(raw: string): number {
   return parseInt(cleaned, 10);
 }
 
-async function main() {
-  const prisma = new PrismaClient();
+export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
+  const pathToUse = csvPath || CSV_PATH;
 
-  console.log('🔒 Running production NEVO create-only seed (no updates)');
+  console.log('🔒 Running NEVO create-only seed (no updates)');
 
-  if (!fs.existsSync(CSV_PATH)) {
-    console.warn(`⚠️  NEVO CSV not found at ${CSV_PATH}, nothing to do.`);
-    await prisma.$disconnect();
-    return;
+  if (!fs.existsSync(pathToUse)) {
+    console.warn(`⚠️  NEVO CSV not found at ${pathToUse}, nothing to do.`);
+    return { count: 0, skipped: true };
   }
 
-  const content = fs.readFileSync(CSV_PATH, 'utf-8');
+  const content = fs.readFileSync(pathToUse, 'utf-8');
   const lines = content.split('\n').filter((line) => line.trim() !== '');
   const dataLines = lines.slice(1);
   console.log(`   Found ${dataLines.length} entries in NEVO CSV`);
@@ -203,7 +200,7 @@ async function main() {
   let created = 0;
   for (const line of dataLines) {
     const cols = line.split('|');
-    if (cols.length < REQUIRED_COLUMN_COUNT) continue;
+    if (cols.length < 12) continue;
     const nevoCode = parseInt_(cols[COL.NEVO_CODE]);
     if (isNaN(nevoCode)) continue;
 
@@ -376,27 +373,24 @@ async function main() {
   }
 
   console.log(`   ✅ Created ${created} new NEVO food categories`);
-
-  try {
-    console.log(
-      '\n🍽️  Seeding recipes linked to NEVO categories (skip existing)...',
-    );
-    const result = await seedRecipes(prisma, { skipExisting: true });
-    if (result.errors && result.errors > 0) {
-      console.error(
-        `   ❌ Recipe seeding completed with ${result.errors} errors`,
-      );
-      process.exitCode = 1;
-    }
-  } catch (err) {
-    console.error('   ❌ Failed to seed recipes:', err);
-    process.exitCode = 1;
-  } finally {
-    await prisma.$disconnect();
-  }
+  return { count: created, skipped: false };
 }
 
-main().catch((err) => {
-  console.error('Seed failed', err);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  void (async () => {
+    const prisma = new PrismaClient();
+    try {
+      const res = await seedNevo(prisma);
+      if (res.skipped) {
+        console.log('   ⏭️  NEVO CSV not found; nothing imported');
+      } else {
+        console.log(`   ✅ NEVO: ${res.count} categories created`);
+      }
+    } catch (err) {
+      console.error('NEVO seed failed', err);
+      process.exitCode = 1;
+    } finally {
+      await prisma.$disconnect();
+    }
+  })();
+}
