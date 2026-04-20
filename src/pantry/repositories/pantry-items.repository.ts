@@ -28,6 +28,7 @@ export interface CreatePantryItemData {
   notes?: string;
   location?: string;
   expiryDate?: Date;
+  expiryDateSource?: 'manual' | 'auto_foodkeeper';
 }
 
 @Injectable()
@@ -50,6 +51,7 @@ export class PantryItemRepository {
         notes: data.notes,
         location: data.location,
         expiryDate: data.expiryDate,
+        expiryDateSource: data.expiryDateSource,
       },
       include: {
         pantry: true,

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Allergens, Prisma, Recipe } from '@prisma/client';
+import { RecipeWithIngredients } from '../interfaces/recommendation-score.interface';
 import {
   BaseRepository,
   FindAllOptions,
@@ -199,5 +200,53 @@ export class RecipesRepository implements BaseRepository<
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {
     return this.prisma.recipe.count({ where });
+  }
+
+  async findCandidatesForRecommendation(
+    foodIds: string[],
+    categoryIds: string[],
+    userId: string,
+    options: {
+      skip?: number;
+      take?: number;
+      orderBy?: Prisma.RecipeOrderByWithRelationInput;
+    } = {},
+  ): Promise<RecipeWithIngredients[]> {
+    if (foodIds.length === 0 && categoryIds.length === 0) {
+      return [];
+    }
+
+    const orConditions: Prisma.RecipeIngredientWhereInput[] = [];
+    if (foodIds.length > 0) {
+      orConditions.push({ foodId: { in: foodIds } });
+    }
+    if (categoryIds.length > 0) {
+      orConditions.push({ foodCategoryId: { in: categoryIds } });
+    }
+
+    const { skip = 0, take = 10, orderBy = { createdAt: 'desc' } } = options;
+
+    return this.prisma.recipe.findMany({
+      skip,
+      take,
+      where: {
+        OR: [{ isPublic: true }, { userId }],
+        ingredients: {
+          some: {
+            OR: orConditions,
+          },
+        },
+      },
+      orderBy,
+      include: {
+        ingredients: {
+          orderBy: { order: 'asc' },
+          include: {
+            food: true,
+            foodCategory: true,
+          },
+        },
+      },
+    });
   }
 }

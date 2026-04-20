@@ -17,6 +17,8 @@ import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
+import { FoodRepository } from '../../foods/repositories/food.repository';
+import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import {
   TEST_IDS,
   TEST_DATA,
@@ -26,7 +28,6 @@ import {
 describe('PantryItemService', () => {
   let service: PantryItemService;
   let repository: PantryItemRepository;
-  let prisma: PrismaService;
   let pantryService: PantryService;
 
   const mockPrismaService = {
@@ -34,6 +35,9 @@ describe('PantryItemService', () => {
       create: jest.fn(),
     },
     food: {
+      findUnique: jest.fn(),
+    },
+    foodShelfLife: {
       findUnique: jest.fn(),
     },
   };
@@ -54,6 +58,19 @@ describe('PantryItemService', () => {
 
   const mockFoodCategoriesRepository = {
     findById: jest.fn(),
+  };
+
+  const mockFoodRepository = {
+    findById: jest.fn(),
+  };
+
+  const mockShelfLifeService = {
+    calculateExpiryDate: jest.fn().mockResolvedValue({
+      expiryDate: null,
+      source: null,
+    }),
+    inferStorageType: jest.fn().mockReturnValue('refrigerator'),
+    getDaysForStorageType: jest.fn().mockReturnValue(7),
   };
 
   function createMockPantryItemWithRelations() {
@@ -86,7 +103,7 @@ describe('PantryItemService', () => {
 
   function setupSuccessfulCreateMocks() {
     mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
-    mockPrismaService.food.findUnique.mockResolvedValue({
+    mockFoodRepository.findById.mockResolvedValue({
       id: TEST_IDS.FOOD,
       name: 'Tomatoes',
     });
@@ -113,12 +130,19 @@ describe('PantryItemService', () => {
           provide: FoodCategoriesRepository,
           useValue: mockFoodCategoriesRepository,
         },
+        {
+          provide: FoodRepository,
+          useValue: mockFoodRepository,
+        },
+        {
+          provide: ShelfLifeService,
+          useValue: mockShelfLifeService,
+        },
       ],
     }).compile();
 
     service = module.get<PantryItemService>(PantryItemService);
     repository = module.get<PantryItemRepository>(PantryItemRepository);
-    prisma = module.get<PrismaService>(PrismaService);
     pantryService = module.get<PantryService>(PantryService);
   });
 
@@ -141,7 +165,7 @@ describe('PantryItemService', () => {
       expect(result.quantity).toBe(TEST_DATA.QUANTITY);
       expect(result.pantryId).toBe(TEST_IDS.PANTRY);
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(prisma.food.findUnique).toHaveBeenCalled();
+      expect(mockFoodRepository.findById).toHaveBeenCalled();
       expect(repository.findFoodInPantry).toHaveBeenCalled();
       expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
@@ -149,7 +173,7 @@ describe('PantryItemService', () => {
     it('should throw NotFoundException when food does not exist', async () => {
       const createDto = PantryItemsTestBuilder.createCreatePantryItemDto();
       mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
-      mockPrismaService.food.findUnique.mockResolvedValue(null);
+      mockFoodRepository.findById.mockResolvedValue(null);
 
       await expect(service.create(createDto, userId)).rejects.toThrow(
         NotFoundException,
@@ -160,7 +184,7 @@ describe('PantryItemService', () => {
       const createDto = PantryItemsTestBuilder.createCreatePantryItemDto();
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: TEST_IDS.FOOD,
         name: 'Tomatoes',
       });
@@ -239,6 +263,230 @@ describe('PantryItemService', () => {
 
       expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
+
+    describe('expiry date priority chain', () => {
+      const SHELF_LIFE_ID = 'shelf-life-id-1';
+      const mockShelfLife = {
+        id: SHELF_LIFE_ID,
+        name: 'Milk, whole',
+        categoryName: 'Dairy Products & Eggs',
+        defaultStorageType: 'refrigerator',
+        refrigeratorMinDays: 5,
+        refrigeratorMaxDays: 7,
+        pantryMinDays: null,
+        pantryMaxDays: null,
+        freezerMinDays: 30,
+        freezerMaxDays: 60,
+        keywords: ['milk'],
+        foodKeeperProductId: 1,
+      };
+
+      function setupFoodWithShelfLife(
+        shelfLifeId: string | null = SHELF_LIFE_ID,
+      ) {
+        mockPantryService.validatePantryExists.mockResolvedValue(
+          TEST_IDS.PANTRY,
+        );
+        mockFoodRepository.findById.mockResolvedValue({
+          id: TEST_IDS.FOOD,
+          name: 'Milk',
+          shelfLifeId,
+        });
+        mockPantryItemRepository.findFoodInPantry.mockResolvedValue(null);
+        mockPrismaService.foodShelfLife.findUnique.mockResolvedValue(
+          mockShelfLife,
+        );
+        mockShelfLifeService.inferStorageType.mockReturnValue('refrigerator');
+        mockShelfLifeService.getDaysForStorageType.mockReturnValue(7);
+      }
+
+      it('should use FK-linked shelf life when food has shelfLifeId', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        expect(mockPrismaService.foodShelfLife.findUnique).toHaveBeenCalledWith(
+          {
+            where: { id: SHELF_LIFE_ID },
+          },
+        );
+        expect(mockShelfLifeService.inferStorageType).toHaveBeenCalledWith(
+          mockShelfLife,
+        );
+        expect(mockShelfLifeService.getDaysForStorageType).toHaveBeenCalledWith(
+          mockShelfLife,
+          'refrigerator',
+        );
+        expect(mockShelfLifeService.calculateExpiryDate).not.toHaveBeenCalled();
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toBeInstanceOf(Date);
+        expect(createCall.expiryDateSource).toBe('auto_foodkeeper');
+      });
+
+      it('should set expiry date ~7 days from now when FK shelf life returns 7 days', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockShelfLifeService.getDaysForStorageType.mockReturnValue(7);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+        const before = new Date();
+
+        await service.create(createDto, userId);
+
+        const after = new Date();
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        const expiryDate: Date = createCall.expiryDate;
+        const expectedMin = new Date(before);
+        expectedMin.setDate(expectedMin.getDate() + 7);
+        const expectedMax = new Date(after);
+        expectedMax.setDate(expectedMax.getDate() + 7);
+        expect(expiryDate.getTime()).toBeGreaterThanOrEqual(
+          expectedMin.getTime(),
+        );
+        expect(expiryDate.getTime()).toBeLessThanOrEqual(expectedMax.getTime());
+      });
+
+      it('should fall back to fuzzy calculateExpiryDate when food has no shelfLifeId', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(null); // no FK link
+        const fuzzyExpiry = new Date('2026-05-01');
+        mockShelfLifeService.calculateExpiryDate.mockResolvedValue({
+          expiryDate: fuzzyExpiry,
+          source: 'auto_foodkeeper',
+        });
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        expect(
+          mockPrismaService.foodShelfLife.findUnique,
+        ).not.toHaveBeenCalled();
+        expect(mockShelfLifeService.calculateExpiryDate).toHaveBeenCalledWith(
+          'Milk',
+        );
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toEqual(fuzzyExpiry);
+        expect(createCall.expiryDateSource).toBe('auto_foodkeeper');
+      });
+
+      it('should override auto-calculated expiry with manual date when provided', async () => {
+        const manualExpiry = new Date('2026-12-31');
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: manualExpiry,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        // FK lookup still runs (auto-calc happens first)
+        expect(mockPrismaService.foodShelfLife.findUnique).toHaveBeenCalled();
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toEqual(manualExpiry);
+        expect(createCall.expiryDateSource).toBe('manual');
+      });
+
+      it('should set manual source and override even when FK link exists', async () => {
+        const manualExpiry = new Date('2026-06-01');
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: manualExpiry,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockShelfLifeService.getDaysForStorageType.mockReturnValue(3);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        // Manual date wins over the 3-day auto-calc
+        expect(createCall.expiryDate).toEqual(manualExpiry);
+        expect(createCall.expiryDateSource).toBe('manual');
+      });
+
+      it('should leave expiryDate undefined when FK shelf life returns no days', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockShelfLifeService.getDaysForStorageType.mockReturnValue(null);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toBeUndefined();
+        expect(createCall.expiryDateSource).toBeUndefined();
+      });
+
+      it('should leave expiryDate undefined when FK lookup returns null', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(SHELF_LIFE_ID);
+        mockPrismaService.foodShelfLife.findUnique.mockResolvedValue(null);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toBeUndefined();
+        expect(createCall.expiryDateSource).toBeUndefined();
+      });
+
+      it('should use FK shelf life for foodCategory when shelfLifeId is set', async () => {
+        const FOOD_CAT_ID = 'food-cat-id-1';
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          foodId: undefined,
+          foodCategoryId: FOOD_CAT_ID,
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        mockPantryService.validatePantryExists.mockResolvedValue(
+          TEST_IDS.PANTRY,
+        );
+        mockFoodCategoriesRepository.findById.mockResolvedValue({
+          id: FOOD_CAT_ID,
+          foodName: 'Whole milk',
+          foodGroup: 'Milk and milk products',
+          shelfLifeId: SHELF_LIFE_ID,
+        });
+        mockPantryItemRepository.findFoodCategoryInPantry.mockResolvedValue(
+          null,
+        );
+        mockPrismaService.foodShelfLife.findUnique.mockResolvedValue(
+          mockShelfLife,
+        );
+        mockShelfLifeService.inferStorageType.mockReturnValue('refrigerator');
+        mockShelfLifeService.getDaysForStorageType.mockReturnValue(7);
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        expect(mockPrismaService.foodShelfLife.findUnique).toHaveBeenCalledWith(
+          {
+            where: { id: SHELF_LIFE_ID },
+          },
+        );
+        expect(mockShelfLifeService.calculateExpiryDate).not.toHaveBeenCalled();
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toBeInstanceOf(Date);
+        expect(createCall.expiryDateSource).toBe('auto_foodkeeper');
+      });
+    });
   });
 
   describe('findAll', () => {
@@ -263,7 +511,7 @@ describe('PantryItemService', () => {
       const mockPantryItem = createMockPantryItemWithRelations();
       const mockItems = [mockPantryItem];
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: TEST_IDS.FOOD,
         name: 'Tomatoes',
       });
@@ -277,13 +525,13 @@ describe('PantryItemService', () => {
 
       expect(result.data).toHaveLength(1);
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(prisma.food.findUnique).toHaveBeenCalled();
+      expect(mockFoodRepository.findById).toHaveBeenCalled();
       expect(repository.findMany).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when foodId is provided but food does not exist', async () => {
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockPrismaService.food.findUnique.mockResolvedValue(null);
+      mockFoodRepository.findById.mockResolvedValue(null);
 
       const query = PantryItemsTestBuilder.createQueryPantryItemDto({
         foodId: 'non-existent-food',
@@ -293,7 +541,7 @@ describe('PantryItemService', () => {
         NotFoundException,
       );
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(prisma.food.findUnique).toHaveBeenCalled();
+      expect(mockFoodRepository.findById).toHaveBeenCalled();
       expect(repository.findMany).not.toHaveBeenCalled();
     });
 
@@ -339,7 +587,7 @@ describe('PantryItemService', () => {
       const mockPantryItem = createMockPantryItemWithRelations();
       const mockItems = [mockPantryItem];
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: TEST_IDS.FOOD,
         name: 'Tomatoes',
       });
@@ -394,7 +642,7 @@ describe('PantryItemService', () => {
       const mockPantryItem = createMockPantryItemWithRelations();
       const mockItems = [mockPantryItem];
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: TEST_IDS.FOOD,
         name: 'Tomatoes',
       });
@@ -424,7 +672,7 @@ describe('PantryItemService', () => {
 
       expect(result.data).toHaveLength(1);
       const filterCall = (repository.findMany as jest.Mock).mock.calls[0][0];
-      expect(filterCall).not.toHaveProperty('expiryDate');
+      expect(filterCall.expiryDate).toBeUndefined();
     });
   });
 
@@ -470,7 +718,9 @@ describe('PantryItemService', () => {
     const itemId = TEST_IDS.PANTRY_ITEM;
 
     it('should update pantry item when it exists and belongs to user', async () => {
-      const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto();
+      const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto({
+        foodId: 'food-1',
+      });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
       mockPantryItemRepository.update.mockResolvedValue({
@@ -490,7 +740,7 @@ describe('PantryItemService', () => {
       });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: 'food-2',
         name: 'Carrots',
       });
@@ -501,7 +751,7 @@ describe('PantryItemService', () => {
 
       await service.update(itemId, updateDto, userId);
 
-      expect(prisma.food.findUnique).toHaveBeenCalled();
+      expect(mockFoodRepository.findById).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException when new food does not exist', async () => {
@@ -510,7 +760,7 @@ describe('PantryItemService', () => {
       });
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
-      mockPrismaService.food.findUnique.mockResolvedValue(null);
+      mockFoodRepository.findById.mockResolvedValue(null);
 
       await expect(service.update(itemId, updateDto, userId)).rejects.toThrow(
         NotFoundException,
@@ -520,7 +770,7 @@ describe('PantryItemService', () => {
     it('should throw ConflictException when food already exists in pantry', async () => {
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
-      mockPrismaService.food.findUnique.mockResolvedValue({
+      mockFoodRepository.findById.mockResolvedValue({
         id: 'food-2',
         name: 'Carrots',
       });
@@ -542,9 +792,11 @@ describe('PantryItemService', () => {
     it('should transform expiryDate string to Date object when updating', async () => {
       const updateDtoWithStringDate: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
+        foodId: string;
       } = {
         quantity: 10,
         expiryDate: '2027-02-02',
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
@@ -571,6 +823,7 @@ describe('PantryItemService', () => {
       const updateDtoWithoutDate = {
         quantity: 10,
         expiryDate: undefined,
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
@@ -589,11 +842,13 @@ describe('PantryItemService', () => {
     it('should update with all fields including date string', async () => {
       const updateDtoWithAllFields: Omit<UpdatePantryItemDto, 'expiryDate'> & {
         expiryDate: string;
+        foodId: string;
       } = {
         quantity: 100,
         unit: Unit.G,
         notes: 'Buy organic if available',
         expiryDate: '2027-03-15',
+        foodId: 'food-1',
       };
       const mockPantryItem = createMockPantryItemWithRelations();
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
