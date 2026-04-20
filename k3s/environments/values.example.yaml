@@ -113,6 +113,8 @@ app:
       redirectUri: https://CHANGEME.api.foodmission.eu/auth/callback
       serviceClientId: foodmission-service
       serviceClientSecret: CHANGEME  # Get from Keycloak admin console
+      webhookUri: http://CHANGEME.api.foodmission.eu/api/v1/webhooks/keycloak/events  # Webhook endpoint for Keycloak events
+      webhookSecret: CHANGEME  # Generate a random secret for webhook authentication
     
     logging:
       level: info  # debug, info, warn, error

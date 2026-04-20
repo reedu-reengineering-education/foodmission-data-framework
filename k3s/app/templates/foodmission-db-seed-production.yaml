@@ -51,7 +51,7 @@ spec:
             capabilities:
               drop:
                 - ALL
-          command: ['sh', '-c', 'npm run db:seed:prod']
+          command: ['sh', '-c', 'npm run db:seed']
           envFrom:
             - secretRef:
                 name: foodmission-api-secret

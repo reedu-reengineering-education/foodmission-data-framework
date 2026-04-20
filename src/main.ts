@@ -9,7 +9,9 @@ import { ValidationExceptionFilter } from './common/filters/validation-exception
 import { LoggingService } from './common/logging/logging.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true, // Enable raw body for webhook signature verification
+  });
 
   // Get security service for configuration
   const securityService = app.get(SecurityService);

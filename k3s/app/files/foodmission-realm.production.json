@@ -82,7 +82,8 @@
             ],
             "account": [
               "view-profile",
-              "manage-account"
+              "manage-account",
+              "delete-account"
             ]
           }
         },
@@ -1712,7 +1713,8 @@
   "eventsEnabled": true,
   "eventsListeners": [
     "jboss-logging",
-    "email"
+    "email",
+    "ext-event-webhook"
   ],
   "enabledEventTypes": [
     "UPDATE_CONSENT_ERROR",
@@ -2711,7 +2713,7 @@
       "alias": "delete_account",
       "name": "Delete Account",
       "providerId": "delete_account",
-      "enabled": false,
+      "enabled": true,
       "defaultAction": false,
       "priority": 60,
       "config": {}
