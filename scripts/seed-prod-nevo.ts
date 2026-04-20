@@ -160,6 +160,7 @@ const COL = {
   FAMSTXR: 146,
   FAUN: 147,
 } as const;
+const REQUIRED_COLUMN_COUNT = COL.FAUN + 1;
 
 function parseFloat_(raw: string): number | null {
   const cleaned = raw.replace(/"/g, '').trim();
@@ -202,7 +203,7 @@ async function main() {
   let created = 0;
   for (const line of dataLines) {
     const cols = line.split('|');
-    if (cols.length < 12) continue;
+    if (cols.length < REQUIRED_COLUMN_COUNT) continue;
     const nevoCode = parseInt_(cols[COL.NEVO_CODE]);
     if (isNaN(nevoCode)) continue;
 
