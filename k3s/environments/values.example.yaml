@@ -135,7 +135,6 @@ app:
   
   # Ingress configuration
   ingress:
-    tlsSecret: foodmission-tls-cert-CHANGEME
     hosts:
       - CHANGEME.auth.foodmission.eu
       - CHANGEME.api.foodmission.eu
