@@ -75,6 +75,10 @@ spec:
             value: "true"
           - name: KC_HEALTH_ENABLED
             value: "true"
+          - name: WEBHOOK_URI
+            value: "{{ .Values.keycloak.webhookUri }}"
+          - name: WEBHOOK_SECRET
+            value: "{{ .Values.keycloak.webhookSecret }}"
         envFrom:
           - secretRef:
               name: {{ .Release.Name }}-keycloak-secret

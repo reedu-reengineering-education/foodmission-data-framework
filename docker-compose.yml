@@ -42,6 +42,8 @@ services:
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: password
       KC_LOG_LEVEL: DEBUG
+      WEBHOOK_URI: http://host.docker.internal:3000/api/v1/webhooks/keycloak/events
+      WEBHOOK_SECRET: test-webhook-secret
     ports:
       - '127.0.0.1:8080:8080'
     depends_on:
