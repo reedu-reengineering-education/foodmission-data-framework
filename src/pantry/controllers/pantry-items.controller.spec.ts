@@ -17,8 +17,6 @@ import {
 describe('PantryItemsController', () => {
   let controller: PantryItemsController;
   let service: PantryItemService;
-  let foodWasteService: FoodWasteService;
-  let pantryService: PantryService;
   let mockPantryItemsService: ReturnType<typeof createMockPantryItemsService>;
 
   beforeEach(async () => {
