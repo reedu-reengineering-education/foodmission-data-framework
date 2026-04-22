@@ -13,6 +13,7 @@ import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { SecurityMiddleware } from './security/middleware/security.middleware';
 import { SecurityModule } from './security/security.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SecurityModule } from './security/security.module';
     ShoppingPantryModule,
     MealRecipeModule,
     EngagementModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

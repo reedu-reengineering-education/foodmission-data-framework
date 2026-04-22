@@ -48,6 +48,8 @@ services:
       KC_MAIL_SSL: "false"
       KC_MAIL_STARTTLS: "false"
       KC_MAIL_AUTH: "false"
+      WEBHOOK_URI: http://host.docker.internal:3000/api/v1/webhooks/keycloak/events
+      WEBHOOK_SECRET: test-webhook-secret
     ports:
       - '127.0.0.1:8080:8080'
     depends_on:
