@@ -44,6 +44,7 @@ spec:
         - name: seed
           image: {{ .Values.api.image }}
           imagePullPolicy: Always
+          command: ['sh', '-c', 'npm run db:seed']
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
@@ -51,7 +52,6 @@ spec:
             capabilities:
               drop:
                 - ALL
-            command: ['sh', '-c', 'npm run db:seed:prod']
           envFrom:
             - secretRef:
                 name: foodmission-api-secret
