@@ -66,8 +66,6 @@ describe('PantryItemsController', () => {
 
     controller = module.get<PantryItemsController>(PantryItemsController);
     service = module.get<PantryItemService>(PantryItemService);
-    foodWasteService = module.get<FoodWasteService>(FoodWasteService);
-    pantryService = module.get<PantryService>(PantryService);
   });
 
   afterEach(() => {
