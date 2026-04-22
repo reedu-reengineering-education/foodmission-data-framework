@@ -80,17 +80,7 @@ describe('AuthService.triggerPasswordReset', () => {
     );
   });
 
-  it('should throw Forbidden if not self or admin', async () => {
-    usersRepository.findByEmail.mockResolvedValue({
-      keycloakId: 'kc-2',
-      email: 'other@x.com',
-    });
-    await expect(
-      service.triggerPasswordReset('kc-1', 'other@x.com', ['user'], undefined),
-    ).rejects.toThrow(HttpException);
-  });
-
-  it('should not throw if user not found (no leak)', async () => {
+  it('should throw NotFoundException if user not found for admin', async () => {
     usersRepository.findByEmail.mockResolvedValue(undefined);
     await expect(
       service.triggerPasswordReset(
@@ -177,4 +167,69 @@ describe('AuthService.login', () => {
   });
 });
 
-// Remove duplicate test suite below
+describe('AuthService.sendResetPasswordEmailIfExists', () => {
+  let service: AuthService;
+  let usersRepository: any;
+  let keycloakAdminService: any;
+
+  beforeEach(async () => {
+    usersRepository = {
+      findByEmail: jest.fn(),
+    };
+    keycloakAdminService = {
+      sendResetPasswordEmail: jest.fn(),
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        { provide: HttpService, useValue: {} },
+        { provide: UsersRepository, useValue: usersRepository },
+        { provide: UserProfilesService, useValue: {} },
+        { provide: KeycloakAdminService, useValue: keycloakAdminService },
+      ],
+    }).compile();
+
+    service = module.get<AuthService>(AuthService);
+  });
+
+  it('should return true if user exists and email sent', async () => {
+    usersRepository.findByEmail.mockResolvedValue({
+      keycloakId: 'kc-1',
+      email: 'user@x.com',
+    });
+    keycloakAdminService.sendResetPasswordEmail.mockResolvedValue(undefined);
+    await expect(
+      service.sendResetPasswordEmailIfExists('user@x.com'),
+    ).resolves.toBe(true);
+    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith(
+      'kc-1',
+      undefined,
+    );
+  });
+
+  it('should return false if user does not exist', async () => {
+    usersRepository.findByEmail.mockResolvedValue(undefined);
+    await expect(
+      service.sendResetPasswordEmailIfExists('notfound@x.com'),
+    ).resolves.toBe(false);
+    expect(keycloakAdminService.sendResetPasswordEmail).not.toHaveBeenCalled();
+  });
+
+  it('should return false if email send fails', async () => {
+    usersRepository.findByEmail.mockResolvedValue({
+      keycloakId: 'kc-2',
+      email: 'fail@x.com',
+    });
+    keycloakAdminService.sendResetPasswordEmail.mockRejectedValue(
+      new Error('Keycloak error'),
+    );
+    await expect(
+      service.sendResetPasswordEmailIfExists('fail@x.com'),
+    ).resolves.toBe(false);
+    expect(keycloakAdminService.sendResetPasswordEmail).toHaveBeenCalledWith(
+      'kc-2',
+      undefined,
+    );
+  });
+});

@@ -136,30 +136,69 @@ export class AuthService {
    * @param requesterKeycloakId - The Keycloak ID of the requester
    * @param targetEmail - The email of the user to reset
    * @param requesterRoles - The roles of the requester
+
+  /**
+   * Utility for sending a reset password email if the user exists. Used by both admin and public flows, but does not handle access control or error propagation.
+   * Returns true if email sent, false if user not found or sending failed.
    */
+  async sendResetPasswordEmailIfExists(
+    email: string,
+    redirectUri?: string,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findByEmail(email);
+    if (user) {
+      try {
+        await this.keycloakAdminService.sendResetPasswordEmail(
+          user.keycloakId,
+          redirectUri,
+        );
+        return true;
+      } catch (error) {
+        this.logger.warn(`Failed to send reset email for ${email}: `, error);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Finds a user by email and optionally checks if the keycloakId matches.
+   * If keycloakId is provided, returns user only if keycloakId matches, else undefined.
+   * Used for both public and admin reset flows.
+   */
+  async findUserByEmailAndKeycloakId(email: string, keycloakId?: string) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) return undefined;
+    if (keycloakId && user.keycloakId !== keycloakId) return undefined;
+    return user;
+  }
+
   async triggerPasswordReset(
     requesterKeycloakId: string,
     targetEmail: string,
     requesterRoles: string[],
     redirectUri?: string,
   ): Promise<void> {
-    // Find user by email
-    const user = await this.userRepository.findByEmail(targetEmail);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    // Only allow if requester is admin or is requesting for self
-
     const isAdmin =
       Array.isArray(requesterRoles) && requesterRoles.includes('admin');
-
+    const user = isAdmin
+      ? await this.userRepository.findByEmail(targetEmail)
+      : await this.findUserByEmailAndKeycloakId(
+          targetEmail,
+          requesterKeycloakId || undefined,
+        );
+    if (!user) {
+      if (isAdmin) {
+        throw new NotFoundException('User not found');
+      }
+      // For public, do not leak existence
+      await this.sendResetPasswordEmailIfExists(targetEmail, redirectUri);
+      return;
+    }
     if (!isAdmin && user.keycloakId !== requesterKeycloakId) {
       throw new HttpException('Forbidden', 403);
     }
-    await this.keycloakAdminService.sendResetPasswordEmail(
-      user.keycloakId,
-      redirectUri,
-    );
+    await this.sendResetPasswordEmailIfExists(targetEmail, redirectUri);
   }
 
   /**
@@ -238,6 +277,7 @@ export class AuthService {
     const params = new URLSearchParams();
     params.append('grant_type', 'password');
     params.append('client_id', process.env.KEYCLOAK_CLIENT_ID || '');
+
     if (process.env.KEYCLOAK_CLIENT_SECRET)
       params.append('client_secret', process.env.KEYCLOAK_CLIENT_SECRET);
     params.append('username', dto.username);

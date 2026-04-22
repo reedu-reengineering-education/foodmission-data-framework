@@ -26,6 +26,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { AdminResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -39,23 +40,21 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @Post('reset-password')
-  @ApiOperation({ summary: 'Trigger password reset email (self-service)' })
+  @Post('password-reset')
+  @Public()
+  @ApiOperation({
+    summary: 'Trigger password reset email (self-service, public)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Reset email triggered (if user exists)',
   })
-  @ApiCrudErrorResponses()
-  async resetPassword(
-    @CurrentUser()
-    user: {
-      sub: string;
-      email: string;
-      resource_access?: Record<string, { roles?: string[] }>;
-    },
-  ) {
-    const roles = extractKeycloakRoles(user);
-    await this.authService.triggerPasswordReset(user.sub, user.email, roles);
+  async publicPasswordReset(@Body() dto: AdminResetPasswordDto) {
+    // Use the public reset logic (no user existence leak, no auth required)
+    await this.authService.sendResetPasswordEmailIfExists(
+      dto.email.trim(),
+      undefined,
+    );
     return { status: 'ok' };
   }
 
