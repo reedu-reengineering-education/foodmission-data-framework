@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import { AuthService } from '../src/auth/auth.service';
 import { HttpService } from '@nestjs/axios';
 import { UsersRepository } from '../src/users/repositories/users.repository';
