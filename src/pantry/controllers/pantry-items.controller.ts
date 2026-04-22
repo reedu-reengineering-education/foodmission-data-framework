@@ -41,12 +41,18 @@ import { Unit } from '@prisma/client';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 import { BatchCreateFoodWasteDto } from '../../foodWaste/dto/batch-create-food-waste.dto';
 import { BatchCreateFoodWasteResultDto } from '../../foodWaste/dto/food-waste-response.dto';
+import { FoodWasteService } from '../../foodWaste/services/food-waste.service';
+import { PantryService } from '../services/pantry.service';
 
 @ApiTags('pantry')
 @Controller('pantry/:pantryId/items')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class PantryItemsController {
-  constructor(private readonly pantryItemService: PantryItemService) {}
+  constructor(
+    private readonly pantryItemService: PantryItemService,
+    private readonly foodWasteService: FoodWasteService,
+    private readonly pantryService: PantryService,
+  ) {}
 
   @Post()
   @Roles('user', 'admin')
@@ -240,7 +246,11 @@ export class PantryItemsController {
     @Body() dto: BatchCreateFoodWasteDto,
     @CurrentUser('id') userId: string,
   ): Promise<BatchCreateFoodWasteResultDto> {
-    return this.pantryItemService.batchCreateWaste(dto, userId, pantryId);
+    // Validate pantry access
+    await this.pantryService.validatePantryExists(userId, pantryId);
+
+    // Delegate to FoodWasteService
+    return this.foodWasteService.batchCreateFromExpired(dto, userId);
   }
 
   @Get(':itemId')

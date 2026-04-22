@@ -19,7 +19,6 @@ import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
-import { FoodWasteService } from '../../foodWaste/services/food-waste.service';
 import {
   TEST_IDS,
   TEST_DATA,
@@ -74,10 +73,6 @@ describe('PantryItemService', () => {
     getDaysForStorageType: jest.fn().mockReturnValue(7),
   };
 
-  const mockFoodWasteService = {
-    batchCreateFromExpired: jest.fn(),
-  };
-
   function createMockPantryItemWithRelations() {
     return {
       id: TEST_IDS.PANTRY_ITEM,
@@ -130,10 +125,6 @@ describe('PantryItemService', () => {
         {
           provide: PantryService,
           useValue: mockPantryService,
-        },
-        {
-          provide: FoodWasteService,
-          useValue: mockFoodWasteService,
         },
         {
           provide: FoodCategoriesRepository,

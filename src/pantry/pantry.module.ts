@@ -22,7 +22,7 @@ import { PantryItemRepository } from './repositories/pantry-items.repository';
     FoodCategoriesModule,
     FoodsModule,
     ShelfLifeModule,
-    forwardRef(() => FoodWasteModule),
+    FoodWasteModule,
   ],
   controllers: [PantryController, PantryItemsController],
   providers: [

@@ -10,6 +10,5 @@ export function createMockPantryItemsService(): MockService<PantryItemService> {
     remove: jest.fn(),
     createFromShoppingList: jest.fn(),
     detectExpiredItems: jest.fn(),
-    batchCreateWaste: jest.fn(),
   } as MockService<PantryItemService>;
 }
