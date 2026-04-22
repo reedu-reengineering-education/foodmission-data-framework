@@ -8,8 +8,8 @@ import {
   MealItemWithRelations,
 } from '../repositories/meal-items.repository';
 import { MealsRepository } from '../../repositories/meals.repository';
-import { FoodRepository } from '../../../foods/repositories/food.repository';
-import { FoodCategoriesRepository } from '../../../food-category/repositories/food-categories.repository';
+import { FoodProductRepository } from '../../../food-products/repositories/food-product.repository';
+import { GenericFoodRepository } from '../../../generic-foods/repositories/generic-food.repository';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { handlePrismaError } from '../../../common/utils/error.utils';
@@ -19,8 +19,8 @@ export class MealItemService {
   constructor(
     private readonly mealItemRepository: MealItemRepository,
     private readonly mealRepository: MealsRepository,
-    private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodProductRepository: FoodProductRepository,
+    private readonly genericFoodRepository: GenericFoodRepository,
   ) {}
 
   async create(
@@ -42,7 +42,7 @@ export class MealItemService {
 
       // Validate either food or foodCategory exists
       if (foodId) {
-        const food = await this.foodRepository.findById(foodId);
+        const food = await this.foodProductRepository.findById(foodId);
         if (!food) {
           throw new NotFoundException(`Food with ID '${foodId}' not found`);
         }

@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemService } from './meal-items.service';
 import { MealItemRepository } from '../repositories/meal-items.repository';
 import { MealsRepository } from '../../repositories/meals.repository';
-import { FoodRepository } from '../../../foods/repositories/food.repository';
-import { FoodCategoriesRepository } from '../../../food-category/repositories/food-categories.repository';
+import { FoodProductRepository } from '../../../food-products/repositories/food-product.repository';
+import { GenericFoodRepository } from '../../../generic-foods/repositories/generic-food.repository';
 import { Unit } from '@prisma/client';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
@@ -13,8 +13,8 @@ describe('MealItemService', () => {
   let service: MealItemService;
   let mealItemRepository: MealItemRepository;
   let mealRepository: MealsRepository;
-  let foodRepository: FoodRepository;
-  let foodCategoriesRepository: FoodCategoriesRepository;
+  let foodProductRepository: FoodProductRepository;
+  let genericFoodRepository: GenericFoodRepository;
 
   const TEST_IDS = {
     USER: 'user-uuid-123',
@@ -117,11 +117,11 @@ describe('MealItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockFoodRepository = {
+  const mockFoodProductRepository = {
     findById: jest.fn(),
   };
 
-  const mockFoodCategoriesRepository = {
+  const mockGenericFoodRepository = {
     findById: jest.fn(),
   };
 
@@ -138,12 +138,12 @@ describe('MealItemService', () => {
           useValue: mockMealRepository,
         },
         {
-          provide: FoodRepository,
-          useValue: mockFoodRepository,
+          provide: FoodProductRepository,
+          useValue: mockFoodProductRepository,
         },
         {
-          provide: FoodCategoriesRepository,
-          useValue: mockFoodCategoriesRepository,
+          provide: GenericFoodRepository,
+          useValue: mockGenericFoodRepository,
         },
       ],
     }).compile();
@@ -151,10 +151,8 @@ describe('MealItemService', () => {
     service = module.get<MealItemService>(MealItemService);
     mealItemRepository = module.get<MealItemRepository>(MealItemRepository);
     mealRepository = module.get<MealsRepository>(MealsRepository);
-    foodRepository = module.get<FoodRepository>(FoodRepository);
-    foodCategoriesRepository = module.get<FoodCategoriesRepository>(
-      FoodCategoriesRepository,
-    );
+    foodProductRepository = module.get<FoodProductRepository>(FoodProductRepository);
+    genericFoodRepository = module.get<GenericFoodRepository>(GenericFoodRepository);
 
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -171,7 +169,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodRepository.findById.mockResolvedValue(mockFood);
+      mockFoodProductRepository.findById.mockResolvedValue(mockFood);
       mockMealItemRepository.findByMealAndFood.mockResolvedValue(null);
       mockMealItemRepository.create.mockResolvedValue(mockMealItemWithFood);
 
@@ -179,7 +177,7 @@ describe('MealItemService', () => {
 
       expect(result).toEqual(mockMealItemWithFood);
       expect(mealRepository.findById).toHaveBeenCalledWith(TEST_IDS.MEAL);
-      expect(foodRepository.findById).toHaveBeenCalledWith(TEST_IDS.FOOD);
+      expect(foodProductRepository.findById).toHaveBeenCalledWith(TEST_IDS.FOOD);
       expect(mealItemRepository.findByMealAndFood).toHaveBeenCalledWith(
         TEST_IDS.MEAL,
         TEST_IDS.FOOD,
@@ -204,14 +202,14 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoriesRepository.findById.mockResolvedValue(mockFoodCategory);
+      mockGenericFoodRepository.findById.mockResolvedValue(mockFoodCategory);
       mockMealItemRepository.findByMealAndFoodCategory.mockResolvedValue(null);
       mockMealItemRepository.create.mockResolvedValue(mockMealItemWithCategory);
 
       const result = await service.create(createDto, TEST_IDS.USER);
 
       expect(result).toEqual(mockMealItemWithCategory);
-      expect(foodCategoriesRepository.findById).toHaveBeenCalledWith(
+      expect(genericFoodRepository.findById).toHaveBeenCalledWith(
         TEST_IDS.FOOD_CATEGORY,
       );
       expect(mealItemRepository.findByMealAndFoodCategory).toHaveBeenCalledWith(
@@ -269,7 +267,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodRepository.findById.mockResolvedValue(null);
+      mockFoodProductRepository.findById.mockResolvedValue(null);
 
       await expect(service.create(createDto, TEST_IDS.USER)).rejects.toThrow(
         DatabaseOperationException,
@@ -285,7 +283,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoriesRepository.findById.mockResolvedValue(null);
+      mockGenericFoodRepository.findById.mockResolvedValue(null);
 
       await expect(service.create(createDto, TEST_IDS.USER)).rejects.toThrow(
         DatabaseOperationException,
@@ -301,7 +299,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodRepository.findById.mockResolvedValue(mockFood);
+      mockFoodProductRepository.findById.mockResolvedValue(mockFood);
       mockMealItemRepository.findByMealAndFood.mockResolvedValue(
         mockMealItemWithFood,
       );
@@ -320,7 +318,7 @@ describe('MealItemService', () => {
       });
 
       mockMealRepository.findById.mockResolvedValue(mockMeal);
-      mockFoodCategoriesRepository.findById.mockResolvedValue(mockFoodCategory);
+      mockGenericFoodRepository.findById.mockResolvedValue(mockFoodCategory);
       mockMealItemRepository.findByMealAndFoodCategory.mockResolvedValue(
         mockMealItemWithCategory,
       );

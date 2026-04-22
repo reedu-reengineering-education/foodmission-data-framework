@@ -16,8 +16,8 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
-import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
+import { FoodCategoriesRepository } from '../../generic-foods/repositories/food-categories.repository';
+import { FoodRepository } from '../../food-products/repositories/food.repository';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import {
   TEST_IDS,

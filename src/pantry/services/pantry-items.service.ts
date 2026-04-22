@@ -20,8 +20,8 @@ import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryService } from './pantry.service';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopping-list-item.dto';
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
-import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { Prisma, Unit } from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 
@@ -31,8 +31,8 @@ export class PantryItemService {
     private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
-    private readonly foodRepository: FoodRepository,
+    private readonly genericFoodRepository: GenericFoodRepository,
+    private readonly foodProductRepository: FoodProductRepository,
     private readonly shelfLifeService: ShelfLifeService,
   ) {}
 

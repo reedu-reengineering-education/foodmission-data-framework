@@ -1,0 +1,1 @@
+// ...existing code from food-category-query.dto.ts will be moved and updated here

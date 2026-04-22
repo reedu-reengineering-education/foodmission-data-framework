@@ -28,8 +28,8 @@ import {
   ShoppingListItemWithRelations,
 } from '../repositories/shopping-list-items.repository';
 import { PantryItemService } from '../../pantry/services/pantry-items.service';
-import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 import { UsersRepository } from '../../users/repositories/users.repository';
@@ -52,8 +52,8 @@ export class ShoppingListItemService {
   constructor(
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly pantryItemService: PantryItemService,
-    private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodProductRepository: FoodProductRepository,
+    private readonly genericFoodRepository: GenericFoodRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
     private readonly usersRepository: UsersRepository,
   ) {}
@@ -445,7 +445,7 @@ export class ShoppingListItemService {
   }
 
   private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.foodRepository.findById(foodId);
+    const food = await this.foodProductRepository.findById(foodId);
 
     if (!food) {
       throw new NotFoundException(
