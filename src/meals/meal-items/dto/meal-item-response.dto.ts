@@ -1,5 +1,5 @@
 import { FoodProductResponseDto } from '../../food-products/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../generic-foods/dto/food-category-response.dto';
+import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 
@@ -63,14 +63,14 @@ export class MealItemResponseDto {
     type: () => FoodProductResponseDto,
     nullable: true,
   })
-  food?: FoodProductResponseDto | null;
+  food?: FoodProductResponseDto;
 
   @ApiPropertyOptional({
     description: 'Food category details (if itemType is "food_category")',
-    type: () => FoodCategoryResponseDto,
+    type: () => GenericFoodResponseDto,
     nullable: true,
   })
-  foodCategory?: FoodCategoryResponseDto | null;
+  foodCategory?: GenericFoodResponseDto;
 
   @ApiProperty({
     description: 'Timestamp when the meal item was created',

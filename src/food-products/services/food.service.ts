@@ -24,7 +24,7 @@ export class FoodProductService {
   async create(
     createFoodDto: CreateFoodDto,
     userId: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
 
     // Check if barcode already exists
@@ -44,7 +44,7 @@ export class FoodProductService {
     return this.transformToResponseDto(food);
   }
 
-  async findAll(query: FoodQueryDto): Promise<PaginatedFoodResponseDto> {
+  async findAll(query: FoodQueryDto): Promise<PaginatedFoodProductResponseDto> {
     this.logger.log(`Finding foods with query:`, query);
 
     const {
@@ -96,7 +96,7 @@ export class FoodProductService {
       }),
     );
 
-    return plainToClass(PaginatedFoodResponseDto, {
+    return plainToClass(PaginatedFoodProductResponseDto, {
       data: transformedData,
       total: result.total,
       page: result.page,
@@ -108,7 +108,7 @@ export class FoodProductService {
   async findOne(
     id: string,
     includeOpenFoodFacts: boolean = false,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by id: ${id}`);
 
     const food = await this.foodRepository.findById(id);
@@ -135,7 +135,7 @@ export class FoodProductService {
   async findByBarcode(
     barcode: string,
     includeOpenFoodFacts: boolean = false,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by barcode: ${barcode}`);
 
     const food = await this.foodRepository.findByBarcode(barcode);
@@ -158,7 +158,7 @@ export class FoodProductService {
   async update(
     id: string,
     updateFoodDto: UpdateFoodDto,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Updating food: ${id}`);
 
     // Check if food exists
@@ -212,7 +212,7 @@ export class FoodProductService {
   async importFromOpenFoodFacts(
     barcode: string,
     createdBy: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
 
     // Check if food already exists
@@ -306,8 +306,8 @@ export class FoodProductService {
     }
   }
 
-  private transformToResponseDto(food: any): FoodResponseDto {
-    return plainToClass(FoodResponseDto, food, {
+  private transformToResponseDto(food: any): FoodProductResponseDto {
+    return plainToClass(FoodProductResponseDto, food, {
       excludeExtraneousValues: true,
     });
   }

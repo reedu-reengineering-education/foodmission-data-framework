@@ -1,5 +1,5 @@
 import { FoodProductResponseDto } from '../../food-products/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../generic-foods/dto/food-category-response.dto';
+import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { Unit } from '@prisma/client';
@@ -86,20 +86,19 @@ export class ShoppingListItemResponseDto {
 
   @ApiPropertyOptional({
     description: 'Associated food item (if itemType is food)',
-    type: () => FoodResponseDto,
     type: () => FoodProductResponseDto,
   })
   @Expose()
-  @Type(() => FoodResponseDto)
+  @Type(() => FoodProductResponseDto)
   food: FoodProductResponseDto | null;
 
   @ApiPropertyOptional({
     description: 'Associated food category (if itemType is food_category)',
-    type: () => FoodCategoryResponseDto,
+    type: () => GenericFoodResponseDto,
   })
   @Expose()
-  @Type(() => FoodCategoryResponseDto)
-  foodCategory: FoodCategoryResponseDto | null;
+  @Type(() => GenericFoodResponseDto)
+  foodCategory: GenericFoodResponseDto | null;
 }
 
 export class MultipleShoppingListItemResponseDto {
