@@ -71,14 +71,14 @@ export class ShoppingListItemService {
 
       // Validate the referenced item exists
       if (itemType === 'food') {
-        await this.validateFoodExists(foodId!);
+        await this.validateFoodExists(foodId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           foodId,
           undefined,
         );
       } else {
-        await this.validateFoodCategoryExists(foodCategoryId!);
+        await this.validateFoodCategoryExists(foodCategoryId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           undefined,

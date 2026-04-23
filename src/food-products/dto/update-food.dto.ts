@@ -3,9 +3,9 @@ import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateFoodDto } from './create-food.dto';
 
-export class UpdateFoodDto extends PartialType(CreateFoodDto) {
+export class UpdateFoodProductDto extends PartialType(CreateFoodDto) {
   @ApiProperty({
-    description: 'The name of the food item',
+    description: 'The name of the food product',
     example: 'Organic Whole Milk',
     maxLength: 255,
     required: false,
@@ -16,13 +16,12 @@ export class UpdateFoodDto extends PartialType(CreateFoodDto) {
   name?: string;
 
   @ApiProperty({
-    description: 'Detailed description of the food item',
+    description: 'Detailed description of the food product',
     example: 'Fresh organic whole milk from grass-fed cows',
     maxLength: 1000,
     required: false,
   })
   @IsOptional()
-  export class UpdateFoodProductDto extends PartialType(CreateFoodDto) {
   @MaxLength(1000)
   description?: string;
 

@@ -42,13 +42,13 @@ export class PantryItemService {
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemResponseDto> {
     try {
-      this.validateFoodOrCategoryInput(
-        createShoppingListItemDto.foodId,
-        createShoppingListItemDto.foodCategoryId,
+      this.validateFoodRefInput(
+        createShoppingListItemDto.foodProductId,
+        createShoppingListItemDto.genericFoodId,
       );
       const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
-        foodId: createShoppingListItemDto.foodId ?? undefined,
-        foodCategoryId: createShoppingListItemDto.foodCategoryId ?? undefined,
+        foodProductId: createShoppingListItemDto.foodProductId ?? undefined,
+        genericFoodId: createShoppingListItemDto.genericFoodId ?? undefined,
         quantity: createShoppingListItemDto.quantity,
         unit: createShoppingListItemDto.unit,
       });
@@ -72,27 +72,27 @@ export class PantryItemService {
         userId,
         pantryId,
       );
-      const { foodId, foodCategoryId } = createDto;
-      this.validateFoodOrCategoryInput(foodId, foodCategoryId);
+      const { foodProductId, genericFoodId } = createDto;
+      this.validateFoodRefInput(foodProductId, genericFoodId);
 
       await this.ensureUniqueAndExists(
         resolvedPantryId,
-        foodId,
-        foodCategoryId,
+        foodProductId,
+        genericFoodId,
         tx,
       );
 
       let resolvedFoodName: string | null = null;
       let linkedShelfLifeId: string | null = null;
-      if (foodId) {
-        const food = await this.foodRepository.findById(foodId);
+      if (foodProductId) {
+        const food = await this.foodProductRepository.findById(foodProductId);
         resolvedFoodName = food?.name ?? null;
         linkedShelfLifeId = food?.shelfLifeId ?? null;
-      } else if (foodCategoryId) {
-        const foodCategory =
-          await this.foodCategoryRepository.findById(foodCategoryId);
-        resolvedFoodName = foodCategory?.foodName ?? null;
-        linkedShelfLifeId = foodCategory?.shelfLifeId ?? null;
+      } else if (genericFoodId) {
+        const genericFood =
+          await this.genericFoodRepository.findById(genericFoodId);
+        resolvedFoodName = genericFood?.foodName ?? null;
+        linkedShelfLifeId = genericFood?.shelfLifeId ?? null;
       }
 
       let expiryDate: Date | undefined;
@@ -141,9 +141,9 @@ export class PantryItemService {
           expiryDate: expiryDate,
           expiryDateSource: expiryDateSource,
           pantryId: resolvedPantryId,
-          foodId: foodId || null,
-          foodCategoryId: foodCategoryId || null,
-          itemType: foodId ? 'food' : 'food_category',
+          foodProductId: foodProductId || null,
+          genericFoodId: genericFoodId || null,
+          itemType: foodProductId ? 'food_product' : 'generic_food',
         },
         tx,
       );
@@ -162,57 +162,56 @@ export class PantryItemService {
       );
     }
   }
-  private validateFoodOrCategoryInput(
-    foodId?: string,
-    foodCategoryId?: string,
-  ) {
-    if (!foodId && !foodCategoryId) {
+  private validateFoodRefInput(foodProductId?: string, genericFoodId?: string) {
+    if (!foodProductId && !genericFoodId) {
       throw new BadRequestException(
-        'Either foodId or foodCategoryId is required.',
+        'Either foodProductId or genericFoodId is required.',
       );
     }
-    if (foodId && foodCategoryId) {
+    if (foodProductId && genericFoodId) {
       throw new BadRequestException(
-        'Provide either foodId or foodCategoryId, not both.',
+        'Provide either foodProductId or genericFoodId, not both.',
       );
     }
   }
 
   private async ensureUniqueAndExists(
     pantryId: string,
-    foodId?: string,
-    foodCategoryId?: string,
+    foodProductId?: string,
+    genericFoodId?: string,
     tx?: Prisma.TransactionClient,
   ) {
-    if (foodId) {
-      const food = await this.validateFoodExists(foodId);
-      const existingItem = await this.pantryItemRepository.findFoodInPantry(
-        pantryId,
-        foodId,
-        tx,
-      );
-      if (existingItem) {
-        throw new ConflictException('This food item is already in your pantry');
-      }
-      return food;
-    } else if (foodCategoryId) {
-      const foodCategory =
-        await this.validateFoodCategoryExists(foodCategoryId);
+    if (foodProductId) {
+      const food = await this.validateFoodProductExists(foodProductId);
       const existingItem =
-        await this.pantryItemRepository.findFoodCategoryInPantry(
+        await this.pantryItemRepository.findFoodProductInPantry(
           pantryId,
-          foodCategoryId,
+          foodProductId,
           tx,
         );
       if (existingItem) {
         throw new ConflictException(
-          'This food category is already in your pantry',
+          'This food product is already in your pantry',
         );
       }
-      return foodCategory;
+      return food;
+    } else if (genericFoodId) {
+      const genericFood = await this.validateGenericFoodExists(genericFoodId);
+      const existingItem =
+        await this.pantryItemRepository.findGenericFoodInPantry(
+          pantryId,
+          genericFoodId,
+          tx,
+        );
+      if (existingItem) {
+        throw new ConflictException(
+          'This generic food is already in your pantry',
+        );
+      }
+      return genericFood;
     }
     throw new BadRequestException(
-      'Either foodId or foodCategoryId is required.',
+      'Either foodProductId or genericFoodId is required.',
     );
   }
 
@@ -222,23 +221,23 @@ export class PantryItemService {
     pantryId?: string,
   ): Promise<MultiplePantryItemResponseDto> {
     try {
-      const { foodId, foodCategoryId } = query;
+      const { foodProductId, genericFoodId } = query;
       const resolvedPantryId = await this.pantryService.validatePantryExists(
         userId,
         pantryId,
       );
       // Only validate if either filter is provided
-      if (foodId || foodCategoryId) {
-        this.validateFoodOrCategoryInput(foodId, foodCategoryId);
+      if (foodProductId || genericFoodId) {
+        this.validateFoodRefInput(foodProductId, genericFoodId);
         await this.ensureUniqueAndExists(
           resolvedPantryId,
-          foodId,
-          foodCategoryId,
+          foodProductId,
+          genericFoodId,
         );
       }
       const filter: any = { pantryId: resolvedPantryId };
-      if (foodId !== undefined) filter.foodId = foodId;
-      if (foodCategoryId !== undefined) filter.foodCategoryId = foodCategoryId;
+      if (foodProductId !== undefined) filter.foodProductId = foodProductId;
+      if (genericFoodId !== undefined) filter.genericFoodId = genericFoodId;
       if (query.expiryDate !== undefined) {
         filter.expiryDate =
           query.expiryDate instanceof Date
@@ -265,27 +264,27 @@ export class PantryItemService {
     }
   }
 
-  private async validateFoodExists(foodId: string) {
-    const food = await this.foodRepository.findById(foodId);
+  private async validateFoodProductExists(foodProductId: string) {
+    const food = await this.foodProductRepository.findById(foodProductId);
 
     if (!food) {
-      throw new NotFoundException('Food item not found');
+      throw new NotFoundException('Food product not found');
     }
 
     return food;
   }
 
-  private async validateFoodCategoryExists(foodCategoryId: string) {
-    const foodCategory =
-      await this.foodCategoryRepository.findById(foodCategoryId);
+  private async validateGenericFoodExists(genericFoodId: string) {
+    const genericFood =
+      await this.genericFoodRepository.findById(genericFoodId);
 
-    if (!foodCategory) {
+    if (!genericFood) {
       throw new NotFoundException(
-        `Food category with ID '${foodCategoryId}' not found`,
+        `Generic food with ID '${genericFoodId}' not found`,
       );
     }
 
-    return foodCategory;
+    return genericFood;
   }
 
   async findById(id: string, userId: string): Promise<PantryItemResponseDto> {
@@ -330,14 +329,14 @@ export class PantryItemService {
           'You do not have access to this pantry item',
         );
       }
-      this.validateFoodOrCategoryInput(
-        updateDto.foodId,
-        updateDto.foodCategoryId,
+      this.validateFoodRefInput(
+        updateDto.foodProductId,
+        updateDto.genericFoodId,
       );
       await this.ensureUniqueAndExists(
         item.pantryId,
-        updateDto.foodId,
-        updateDto.foodCategoryId,
+        updateDto.foodProductId,
+        updateDto.genericFoodId,
       );
       let expiryDate: Date | undefined;
       if (updateDto.expiryDate !== undefined) {
@@ -362,14 +361,14 @@ export class PantryItemService {
           expiryDateSource: 'manual',
         }),
       };
-      if (updateDto.foodId !== undefined) {
-        updateData.foodId = updateDto.foodId;
-        updateData.foodCategoryId = null;
-        updateData.itemType = 'food';
-      } else if (updateDto.foodCategoryId !== undefined) {
-        updateData.foodCategoryId = updateDto.foodCategoryId;
-        updateData.foodId = null;
-        updateData.itemType = 'food_category';
+      if (updateDto.foodProductId !== undefined) {
+        updateData.foodProductId = updateDto.foodProductId;
+        updateData.genericFoodId = null;
+        updateData.itemType = 'food_product';
+      } else if (updateDto.genericFoodId !== undefined) {
+        updateData.genericFoodId = updateDto.genericFoodId;
+        updateData.foodProductId = null;
+        updateData.itemType = 'generic_food';
       }
       const updatedItem = await this.pantryItemRepository.update(
         id,
@@ -436,12 +435,12 @@ export class PantryItemService {
         expiryDate: item.expiryDate,
         expiryDateSource: item.expiryDateSource,
         pantryId: item.pantryId,
-        foodId: item.foodId,
-        foodCategoryId: item.foodCategoryId,
+        foodProductId: item.foodProductId,
+        genericFoodId: item.genericFoodId,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
-        food: item.food,
-        foodCategory: item.foodCategory,
+        foodProduct: item.foodProduct,
+        genericFood: item.genericFood,
       },
       { excludeExtraneousValues: true },
     );

@@ -1,4 +1,6 @@
-import { Recipe, RecipeIngredient, Food, FoodCategory } from '@prisma/client';
+import { FoodProductResponseDto } from '../../food-products/dto/food-response.dto';
+import { FoodCategoryResponseDto } from '../../generic-foods/dto/food-category-response.dto';
+import { Recipe, RecipeIngredient } from '@prisma/client';
 
 export interface IngredientMatch {
   recipeIngredientId: string;
@@ -12,8 +14,9 @@ export interface IngredientMatch {
 
 export type RecipeWithIngredients = Recipe & {
   ingredients: (RecipeIngredient & {
-    food: Food | null;
-    foodCategory: FoodCategory | null;
+    food: FoodResponseDto | null;
+    food: FoodProductResponseDto | null;
+    foodCategory: FoodCategoryResponseDto | null;
   })[];
 };
 

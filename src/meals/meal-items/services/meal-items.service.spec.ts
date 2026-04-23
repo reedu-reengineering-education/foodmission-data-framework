@@ -151,8 +151,12 @@ describe('MealItemService', () => {
     service = module.get<MealItemService>(MealItemService);
     mealItemRepository = module.get<MealItemRepository>(MealItemRepository);
     mealRepository = module.get<MealsRepository>(MealsRepository);
-    foodProductRepository = module.get<FoodProductRepository>(FoodProductRepository);
-    genericFoodRepository = module.get<GenericFoodRepository>(GenericFoodRepository);
+    foodProductRepository = module.get<FoodProductRepository>(
+      FoodProductRepository,
+    );
+    genericFoodRepository = module.get<GenericFoodRepository>(
+      GenericFoodRepository,
+    );
 
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -177,7 +181,9 @@ describe('MealItemService', () => {
 
       expect(result).toEqual(mockMealItemWithFood);
       expect(mealRepository.findById).toHaveBeenCalledWith(TEST_IDS.MEAL);
-      expect(foodProductRepository.findById).toHaveBeenCalledWith(TEST_IDS.FOOD);
+      expect(foodProductRepository.findById).toHaveBeenCalledWith(
+        TEST_IDS.FOOD,
+      );
       expect(mealItemRepository.findByMealAndFood).toHaveBeenCalledWith(
         TEST_IDS.MEAL,
         TEST_IDS.FOOD,

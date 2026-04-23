@@ -30,8 +30,11 @@ import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FoodProductService } from '../services/food-product.service';
 import { CreateFoodProductDto } from '../dto/create-food-product.dto';
-import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
-import { FoodProductQueryDto, FoodProductSearchDto } from '../dto/food-product-query.dto';
+
+import {
+  FoodProductQueryDto,
+  FoodProductSearchDto,
+} from '../dto/food-product-query.dto';
 import {
   FoodProductResponseDto,
   PaginatedFoodProductResponseDto,
@@ -76,7 +79,7 @@ export class FoodProductController {
     forbidden: true,
     conflict: true,
   })
-  async create(
+  create(
     @Body() createFoodProductDto: CreateFoodProductDto,
     @CurrentUser('id') userId: string,
   ): Promise<FoodProductResponseDto> {
@@ -100,7 +103,7 @@ export class FoodProductController {
     badRequest: true,
     unauthorized: false,
   })
-  async findAll(
+  findAll(
     @Query() query: FoodProductQueryDto,
   ): Promise<PaginatedFoodProductResponseDto> {
     return this.foodProductService.findAll(query);
@@ -142,7 +145,7 @@ export class FoodProductController {
       },
     ],
   })
-  async searchOpenFoodFacts(@Query() searchDto: FoodProductSearchDto) {
+  searchOpenFoodFacts(@Query() searchDto: FoodProductSearchDto) {
     return this.foodProductService.searchOpenFoodFacts(searchDto);
   }
 
@@ -178,7 +181,7 @@ export class FoodProductController {
       },
     ],
   })
-  async importFromOpenFoodFacts(
+  importFromOpenFoodFacts(
     @Param('barcode') barcode: string,
     @CurrentUser('id') userId: string,
   ): Promise<FoodProductResponseDto> {
@@ -210,7 +213,7 @@ export class FoodProductController {
     notFound: true,
     unauthorized: false,
   })
-  async findByBarcode(
+  findByBarcode(
     @Param('barcode') barcode: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
   ): Promise<FoodResponseDto> {
@@ -247,7 +250,7 @@ export class FoodProductController {
     notFound: true,
     unauthorized: false,
   })
-  async findOne(
+  findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
   ): Promise<FoodResponseDto> {
@@ -280,7 +283,7 @@ export class FoodProductController {
     forbidden: true,
     notFound: true,
   })
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateFoodDto: UpdateFoodDto,
   ): Promise<FoodResponseDto> {
@@ -310,7 +313,7 @@ export class FoodProductController {
     forbidden: true,
     notFound: true,
   })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.foodService.remove(id);
   }
 

@@ -6,21 +6,21 @@ import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto
 export class ChallengeProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByUserIdAndChallengeId(userId: string, challengeId: string) {
+  findByUserIdAndChallengeId(userId: string, challengeId: string) {
     return this.prisma.challengeProgress.findUnique({
       where: { userId_challengeId: { userId, challengeId } },
       include: { challenge: true },
     });
   }
 
-  async findAllByUserId(userId: string) {
+  findAllByUserId(userId: string) {
     return this.prisma.challengeProgress.findMany({
       where: { userId },
       include: { challenge: true },
     });
   }
 
-  async update(
+  update(
     userId: string,
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,

@@ -20,11 +20,11 @@ export type RecipeIngredientFixture = {
   name: string;
   measure: string | null;
   order: number;
-  itemType: 'food' | 'food_category';
-  foodId?: string | null;
-  foodCategoryId?: string | null;
-  food?: unknown;
-  foodCategory?: unknown;
+  itemType: 'food_product' | 'generic_food';
+  foodProductId?: string | null;
+  genericFoodId?: string | null;
+  foodProduct?: unknown;
+  genericFood?: unknown;
 };
 
 export function buildRecipe(
@@ -55,9 +55,9 @@ export function buildRecipeIngredient(
     name: 'Ingredient',
     measure: '100g',
     order: 0,
-    itemType: 'food_category',
-    foodId: null,
-    foodCategoryId: null,
+    itemType: 'generic_food',
+    foodProductId: null,
+    genericFoodId: null,
     ...overrides,
   };
 }

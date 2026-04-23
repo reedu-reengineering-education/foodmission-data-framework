@@ -5,9 +5,6 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GenericFoodController } from './generic-foods.controller';
 import { GenericFoodService } from '../services/generic-food.service';
 import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
-import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
-import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
-import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 
 describe('GenericFoodController', () => {
   let controller: GenericFoodController;

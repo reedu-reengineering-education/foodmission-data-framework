@@ -3,7 +3,6 @@ import { FoodCategoriesRepository } from '../repositories/food-categories.reposi
 import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
 import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
 import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
-import { FoodCategoryResponseDto } from '../dto/food-category-response.dto';
 
 @Injectable()
 export class GenericFoodService {
@@ -18,7 +17,7 @@ export class GenericFoodService {
     return category;
   }
 
-  async findAll(query: FoodCategoryQueryDto) {
+  findAll(query: FoodCategoryQueryDto) {
     return this.foodCategoryRepository.findAll(query);
   }
 
@@ -50,7 +49,7 @@ export class GenericFoodService {
     await this.foodCategoryRepository.delete(id);
   }
 
-  async getAllFoodGroups(search?: string): Promise<string[]> {
+  getAllFoodGroups(search?: string): Promise<string[]> {
     return this.foodCategoryRepository.getAllFoodGroups(search);
   }
 }

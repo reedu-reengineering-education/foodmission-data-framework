@@ -40,7 +40,7 @@ describe('Pantry Items Auto Expiry', () => {
     const pantryItem = await prisma.pantryItem.create({
       data: {
         pantryId: fixtures.pantryId,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 5,
         unit: 'PIECES',
         expiryDate: manualExpiryDate,
@@ -61,7 +61,7 @@ describe('Pantry Items Auto Expiry', () => {
     const pantryItem = await prisma.pantryItem.create({
       data: {
         pantryId: fixtures.pantryId,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 1,
         unit: 'L',
         expiryDate: autoExpiryDate,
@@ -94,7 +94,7 @@ describe('Pantry Items Auto Expiry', () => {
     const pantryItem = await prisma.pantryItem.create({
       data: {
         pantryId: fixtures.pantryId,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 2,
         unit: 'L',
       },

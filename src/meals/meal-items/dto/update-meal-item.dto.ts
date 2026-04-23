@@ -8,10 +8,10 @@ export class UpdateMealItemDto extends PartialType(CreateMealItemDto) {
   mealId?: string;
 
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
 
   @IsOptional()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @IsOptional()
   quantity?: number;

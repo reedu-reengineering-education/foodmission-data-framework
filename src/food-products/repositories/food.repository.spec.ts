@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { FoodProductRepository, UpdateFoodDto } from './food-product.repository';
+import {
+  FoodProductRepository,
+  UpdateFoodDto,
+} from './food-product.repository';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { PrismaService } from '../../database/prisma.service';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';

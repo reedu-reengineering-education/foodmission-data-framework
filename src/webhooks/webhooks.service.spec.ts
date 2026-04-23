@@ -68,9 +68,9 @@ describe('WebhooksService', () => {
         expect(userProfilesService.deleteUserByKeycloakId).toHaveBeenCalledWith(
           'c6196fd4-ec5c-4298-a853-af16faf4adb4',
         );
-        expect(userProfilesService.deleteUserByKeycloakId).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          userProfilesService.deleteUserByKeycloakId,
+        ).toHaveBeenCalledTimes(1);
       });
 
       it('should not call deleteUserByKeycloakId if userId is missing', async () => {
@@ -226,9 +226,9 @@ describe('WebhooksService', () => {
         expect(userProfilesService.deleteUserByKeycloakId).toHaveBeenCalledWith(
           '5742e900-998d-456a-84bd-6e9ac3b66d08',
         );
-        expect(userProfilesService.deleteUserByKeycloakId).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          userProfilesService.deleteUserByKeycloakId,
+        ).toHaveBeenCalledTimes(1);
       });
 
       it('should extract userId from resourcePath if details.userId is missing', async () => {

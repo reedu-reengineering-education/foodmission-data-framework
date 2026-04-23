@@ -8,7 +8,7 @@ import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
 export class GenericFoodRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateFoodCategoryDto) {
+  create(data: CreateFoodCategoryDto) {
     return this.prisma.foodCategory.create({
       data,
     });
@@ -65,26 +65,26 @@ export class GenericFoodRepository {
     };
   }
 
-  async findById(id: string) {
+  findById(id: string) {
     return this.prisma.foodCategory.findUnique({
       where: { id },
     });
   }
 
-  async update(id: string, data: UpdateFoodCategoryDto) {
+  update(id: string, data: UpdateFoodCategoryDto) {
     return this.prisma.foodCategory.update({
       where: { id },
       data,
     });
   }
 
-  async delete(id: string) {
+  delete(id: string) {
     return this.prisma.foodCategory.delete({
       where: { id },
     });
   }
 
-  async findByNevoCode(nevoCode: number) {
+  findByNevoCode(nevoCode: number) {
     return this.prisma.foodCategory.findUnique({
       where: { nevoCode },
     });

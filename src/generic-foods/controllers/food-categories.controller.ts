@@ -20,10 +20,6 @@ import {
 } from '@nestjs/swagger';
 import { Roles, Public } from 'nest-keycloak-connect';
 import { GenericFoodService } from '../services/generic-food.service';
-import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
-import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
-import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
-import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 @ApiTags('food-categories')
@@ -47,7 +43,7 @@ export class GenericFoodController {
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  async create(
+  create(
     @Body() createDto: CreateFoodCategoryDto,
   ): Promise<FoodCategoryResponseDto> {
     return this.foodCategoryService.create(createDto);
@@ -72,7 +68,7 @@ export class GenericFoodController {
     status: 200,
     description: 'Food categories retrieved successfully',
   })
-  async findAll(@Query() query: FoodCategoryQueryDto) {
+  findAll(@Query() query: FoodCategoryQueryDto) {
     return this.foodCategoryService.findAll(query);
   }
 
@@ -93,7 +89,7 @@ export class GenericFoodController {
     description: 'Food groups retrieved successfully',
     type: [String],
   })
-  async getAllFoodGroups(@Query('search') search?: string): Promise<string[]> {
+  getAllFoodGroups(@Query('search') search?: string): Promise<string[]> {
     return this.foodCategoryService.getAllFoodGroups(search);
   }
 
@@ -109,7 +105,7 @@ export class GenericFoodController {
     type: FoodCategoryResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Food category not found' })
-  async findById(@Param('id') id: string): Promise<FoodCategoryResponseDto> {
+  findById(@Param('id') id: string): Promise<FoodCategoryResponseDto> {
     return this.foodCategoryService.findById(id);
   }
 
@@ -128,7 +124,7 @@ export class GenericFoodController {
   @ApiResponse({ status: 404, description: 'Food category not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  async update(
+  update(
     @Param('id') id: string,
     @Body() updateDto: UpdateFoodCategoryDto,
   ): Promise<FoodCategoryResponseDto> {
@@ -149,7 +145,7 @@ export class GenericFoodController {
   @ApiResponse({ status: 404, description: 'Food category not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
-  async delete(@Param('id') id: string): Promise<void> {
+  delete(@Param('id') id: string): Promise<void> {
     return this.foodCategoryService.delete(id);
   }
 }

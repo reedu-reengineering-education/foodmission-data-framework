@@ -16,17 +16,17 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 
-@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
-class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'ExclusiveFoodRef', async: false })
+class ExclusiveFoodRefConstraint implements ValidatorConstraintInterface {
   validate(_: unknown, args: ValidationArguments): boolean {
     const obj = args.object as CreateMealItemDto;
-    const hasFood = !!obj.foodId;
-    const hasCategory = !!obj.foodCategoryId;
-    return hasFood !== hasCategory; // exactly one must be true (XOR)
+    const hasProduct = !!obj.foodProductId;
+    const hasGeneric = !!obj.genericFoodId;
+    return hasProduct !== hasGeneric; // exactly one must be true (XOR)
   }
 
   defaultMessage(): string {
-    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+    return 'Exactly one of foodProductId or genericFoodId must be provided, not both or neither';
   }
 }
 
@@ -38,24 +38,24 @@ export class CreateMealItemDto {
 
   @ApiPropertyOptional({
     description:
-      'UUID of the specific food product (OpenFoodFacts). Either foodId or foodCategoryId must be provided.',
+      'UUID of the specific food product (OpenFoodFacts). Either foodProductId or genericFoodId must be provided.',
     example: '550e8400-e29b-41d4-a716-446655440001',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodCategoryId)
+  @ValidateIf((o) => !o.genericFoodId)
   @IsNotEmpty()
-  @Validate(ExclusiveFoodReferenceConstraint)
-  foodId?: string;
+  @Validate(ExclusiveFoodRefConstraint)
+  foodProductId?: string;
 
   @ApiPropertyOptional({
     description:
-      'UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.',
+      'UUID of the generic food (NEVO generic). Either foodProductId or genericFoodId must be provided.',
     example: '550e8400-e29b-41d4-a716-446655440002',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodId)
+  @ValidateIf((o) => !o.foodProductId)
   @IsNotEmpty()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiProperty({
     description: 'Quantity of the item',

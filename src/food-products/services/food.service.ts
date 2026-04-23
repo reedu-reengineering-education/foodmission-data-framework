@@ -9,11 +9,7 @@ import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
 import { FoodQueryDto, FoodSearchDto } from '../dto/food-query.dto';
-import {
-  FoodResponseDto,
-  PaginatedFoodResponseDto,
-  OpenFoodFactsInfoDto,
-} from '../dto/food-response.dto';
+import { OpenFoodFactsInfoDto } from '../dto/food-response.dto';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()

@@ -1,44 +1,42 @@
 import { BadRequestException } from '@nestjs/common';
 
-export interface PolymorphicItemDto {
-  foodId?: string;
-  foodCategoryId?: string;
+export interface FoodRefDto {
+  foodProductId?: string;
+  genericFoodId?: string;
 }
 
-export interface PolymorphicItemData {
-  itemType: 'food' | 'food_category';
-  foodId?: string;
-  foodCategoryId?: string;
+export interface FoodRefData {
+  itemType: 'food_product' | 'generic_food';
+  foodProductId?: string;
+  genericFoodId?: string;
 }
 
 /**
- * Validates that exactly one of foodId or foodCategoryId is provided
- * @param dto - DTO containing foodId and/or foodCategoryId
- * @returns Validated polymorphic item data with itemType
+ * Validates that exactly one of foodProductId or genericFoodId is provided
+ * @param dto - DTO containing foodProductId and/or genericFoodId
+ * @returns Validated FoodRef data with itemType
  * @throws BadRequestException if validation fails
  */
-export function validatePolymorphicItem(
-  dto: PolymorphicItemDto,
-): PolymorphicItemData {
-  const hasFoodId = !!dto.foodId;
-  const hasCategoryId = !!dto.foodCategoryId;
+export function validateFoodRef(dto: FoodRefDto): FoodRefData {
+  const hasFoodProductId = !!dto.foodProductId;
+  const hasGenericFoodId = !!dto.genericFoodId;
 
-  if (hasFoodId && hasCategoryId) {
+  if (hasFoodProductId && hasGenericFoodId) {
     throw new BadRequestException(
-      'Cannot provide both foodId and foodCategoryId. Please provide only one.',
+      'Cannot provide both foodProductId and genericFoodId. Please provide only one.',
     );
   }
 
-  if (!hasFoodId && !hasCategoryId) {
+  if (!hasFoodProductId && !hasGenericFoodId) {
     throw new BadRequestException(
-      'Must provide either foodId or foodCategoryId.',
+      'Must provide either foodProductId or genericFoodId.',
     );
   }
 
   return {
-    itemType: hasFoodId ? 'food' : 'food_category',
-    foodId: dto.foodId,
-    foodCategoryId: dto.foodCategoryId,
+    itemType: hasFoodProductId ? 'food_product' : 'generic_food',
+    foodProductId: dto.foodProductId,
+    genericFoodId: dto.genericFoodId,
   };
 }
 
@@ -56,43 +54,43 @@ export interface NutritionData {
 }
 
 /**
- * Extracts nutrition data from either a Food or FoodCategory item
- * @param item - Item with itemType and either food or foodCategory relation loaded
+ * Extracts nutrition data from either a FoodProduct or GenericFood item
+ * @param item - Item with itemType and either foodProduct or genericFood relation loaded
  * @returns Normalized nutrition data
  * @throws Error if item type is invalid or related data is missing
  */
 export function extractNutritionData(item: {
   itemType: string;
-  food?: any;
-  foodCategory?: any;
+  foodProduct?: any;
+  genericFood?: any;
 }): NutritionData {
-  if (item.itemType === 'food' && item.food) {
+  if (item.itemType === 'food_product' && item.foodProduct) {
     return {
-      name: item.food.name,
-      energyKcal: item.food.energyKcal ?? undefined,
-      energyKj: item.food.energyKj ?? undefined,
-      protein: item.food.proteins ?? undefined,
-      fat: item.food.fat ?? undefined,
-      carbohydrates: item.food.carbohydrates ?? undefined,
-      fiber: item.food.fiber ?? undefined,
-      sugars: item.food.sugars ?? undefined,
-      salt: item.food.salt ?? undefined,
-      sodium: item.food.sodium ?? undefined,
+      name: item.foodProduct.name,
+      energyKcal: item.foodProduct.energyKcal ?? undefined,
+      energyKj: item.foodProduct.energyKj ?? undefined,
+      protein: item.foodProduct.proteins ?? undefined,
+      fat: item.foodProduct.fat ?? undefined,
+      carbohydrates: item.foodProduct.carbohydrates ?? undefined,
+      fiber: item.foodProduct.fiber ?? undefined,
+      sugars: item.foodProduct.sugars ?? undefined,
+      salt: item.foodProduct.salt ?? undefined,
+      sodium: item.foodProduct.sodium ?? undefined,
     };
   }
 
-  if (item.itemType === 'food_category' && item.foodCategory) {
+  if (item.itemType === 'generic_food' && item.genericFood) {
     return {
-      name: item.foodCategory.foodName,
-      energyKcal: item.foodCategory.energyKcal ?? undefined,
-      energyKj: item.foodCategory.energyKj ?? undefined,
-      protein: item.foodCategory.proteins ?? undefined,
-      fat: item.foodCategory.fat ?? undefined,
-      carbohydrates: item.foodCategory.carbohydrates ?? undefined,
-      fiber: item.foodCategory.fiber ?? undefined,
-      sugars: item.foodCategory.sugars ?? undefined,
-      salt: undefined, // FoodCategory doesn't have salt
-      sodium: item.foodCategory.sodium ?? undefined,
+      name: item.genericFood.foodName,
+      energyKcal: item.genericFood.energyKcal ?? undefined,
+      energyKj: item.genericFood.energyKj ?? undefined,
+      protein: item.genericFood.proteins ?? undefined,
+      fat: item.genericFood.fat ?? undefined,
+      carbohydrates: item.genericFood.carbohydrates ?? undefined,
+      fiber: item.genericFood.fiber ?? undefined,
+      sugars: item.genericFood.sugars ?? undefined,
+      salt: undefined, // GenericFood doesn't have salt
+      sodium: item.genericFood.sodium ?? undefined,
     };
   }
 
@@ -102,21 +100,21 @@ export function extractNutritionData(item: {
 }
 
 /**
- * Gets the display name from either a Food or FoodCategory item
- * @param item - Item with itemType and either food or foodCategory relation loaded
+ * Gets the display name from either a FoodProduct or GenericFood item
+ * @param item - Item with itemType and either foodProduct or genericFood relation loaded
  * @returns Display name
  */
-export function getItemName(item: {
+export function getFoodRefName(item: {
   itemType: string;
-  food?: any;
-  foodCategory?: any;
+  foodProduct?: any;
+  genericFood?: any;
 }): string {
-  if (item.itemType === 'food' && item.food) {
-    return item.food.name;
+  if (item.itemType === 'food_product' && item.foodProduct) {
+    return item.foodProduct.name;
   }
 
-  if (item.itemType === 'food_category' && item.foodCategory) {
-    return item.foodCategory.foodName;
+  if (item.itemType === 'generic_food' && item.genericFood) {
+    return item.genericFood.foodName;
   }
 
   return 'Unknown Item';
