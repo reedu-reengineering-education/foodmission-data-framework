@@ -11,7 +11,7 @@ import {
   handleServiceError,
   formatErrorForLogging,
 } from '../../common/utils/error.utils';
-import { validatePolymorphicItem } from '../../common/utils/polymorphic-item.util';
+import { validateFoodRef } from '../../common/utils/food-ref.util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
@@ -65,9 +65,9 @@ export class ShoppingListItemService {
     try {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
 
-      // Validate polymorphic reference
-      const { itemType, foodId, foodCategoryId } =
-        validatePolymorphicItem(createDto);
+      // Validate food reference
+      const { itemType, foodProductId, genericFoodId } =
+        validateFoodRef(createDto);
 
       // Validate the referenced item exists
       if (itemType === 'food') {

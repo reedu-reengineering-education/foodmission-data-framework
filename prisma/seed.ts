@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { seedFoodCategories } from './seeds/foodCategories';
+import { seedGenericFoods } from './seeds/genericFoods';
 import { seedOpenFoodFactsFromJson } from './seeds/openfoodfacts';
 import { seedUsers } from './seeds/users';
 import { seedShoppingLists } from './seeds/shoppingList';
@@ -30,7 +30,7 @@ async function main() {
       );
     }
 
-    const foodCategories = await seedFoodCategories(prisma);
+    const genericFoods = await seedGenericFoods(prisma);
     const users = await seedUsers(prisma);
     const shoppingList = await seedShoppingLists(prisma);
     const shoppingListItem = await seedShoppingListItems(prisma);
@@ -53,7 +53,7 @@ async function main() {
     console.log('📊 Summary:');
     const summaryRows: { label: string; value: string | number }[] = [
       { label: 'users', value: users.length },
-      { label: 'foodCategories', value: foodCategories.length },
+      { label: 'genericFoods', value: genericFoods.length },
       { label: 'shoppingList', value: shoppingList.length },
       { label: 'shoppingListItem', value: shoppingListItem.length },
       { label: 'pantry', value: pantry.length },

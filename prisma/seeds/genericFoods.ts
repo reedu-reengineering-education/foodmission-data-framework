@@ -185,12 +185,12 @@ function parseInt_(raw: string): number {
   return parseInt(cleaned, 10);
 }
 
-export async function seedFoodCategories(prisma: PrismaClient) {
-  console.log('🥗 Seeding food categories from NEVO2025...');
+export async function seedGenericFoods(prisma: PrismaClient) {
+  console.log('🥗 Seeding generic foods from NEVO2025...');
 
   if (!fs.existsSync(CSV_PATH)) {
     console.warn(
-      `⚠️  NEVO CSV not found at ${CSV_PATH}, skipping food categories seed.`,
+      `⚠️  NEVO CSV not found at ${CSV_PATH}, skipping generic foods seed.`,
     );
     return [];
   }
@@ -389,6 +389,6 @@ export async function seedFoodCategories(prisma: PrismaClient) {
     }
   }
 
-  console.log(`   ✅ Processed ${results.length} food categories`);
+  console.log(`   ✅ Processed ${results.length} generic foods`);
   return results;
 }

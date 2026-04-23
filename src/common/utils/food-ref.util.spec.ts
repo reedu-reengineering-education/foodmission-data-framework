@@ -1,38 +1,34 @@
+
 import { BadRequestException } from '@nestjs/common';
-import {
-  validatePolymorphicItem,
-  extractNutritionData,
-  getItemName,
-  PolymorphicItemDto,
-} from './polymorphic-item.util';
+import { validateFoodRef, FoodRefDto } from './food-ref.util';
 
-describe('validatePolymorphicItem', () => {
-  it('should return itemType food when only foodId is provided', () => {
-    const dto: PolymorphicItemDto = { foodId: 'f1' };
-    expect(validatePolymorphicItem(dto)).toEqual({
-      itemType: 'food',
-      foodId: 'f1',
-      foodCategoryId: undefined,
+describe('validateFoodRef', () => {
+  it('should return itemType food_product when only foodProductId is provided', () => {
+    const dto: FoodRefDto = { foodProductId: 'f1' };
+    expect(validateFoodRef(dto)).toEqual({
+      itemType: 'food_product',
+      foodProductId: 'f1',
+      genericFoodId: undefined,
     });
   });
 
-  it('should return itemType food_category when only foodCategoryId is provided', () => {
-    const dto: PolymorphicItemDto = { foodCategoryId: 'c1' };
-    expect(validatePolymorphicItem(dto)).toEqual({
-      itemType: 'food_category',
-      foodId: undefined,
-      foodCategoryId: 'c1',
+  it('should return itemType generic_food when only genericFoodId is provided', () => {
+    const dto: FoodRefDto = { genericFoodId: 'c1' };
+    expect(validateFoodRef(dto)).toEqual({
+      itemType: 'generic_food',
+      foodProductId: undefined,
+      genericFoodId: 'c1',
     });
   });
 
-  it('should throw if both foodId and foodCategoryId are provided', () => {
-    const dto: PolymorphicItemDto = { foodId: 'f1', foodCategoryId: 'c1' };
-    expect(() => validatePolymorphicItem(dto)).toThrow(BadRequestException);
+  it('should throw if both foodProductId and genericFoodId are provided', () => {
+    const dto: FoodRefDto = { foodProductId: 'f1', genericFoodId: 'c1' };
+    expect(() => validateFoodRef(dto)).toThrow(BadRequestException);
   });
 
-  it('should throw if neither foodId nor foodCategoryId is provided', () => {
-    const dto: PolymorphicItemDto = {};
-    expect(() => validatePolymorphicItem(dto)).toThrow(BadRequestException);
+  it('should throw if neither foodProductId nor genericFoodId is provided', () => {
+    const dto: FoodRefDto = {};
+    expect(() => validateFoodRef(dto)).toThrow(BadRequestException);
   });
 });
 

@@ -4,6 +4,6 @@ import { FoodsModule } from '../food-products/foods.module';
 import { GenericFoodsModule } from '../generic-foods/generic-foods.module';
 
 @Module({
-  imports: [FoodsModule, FoodCategoriesModule, AppCatalogModule],
+  imports: [FoodsModule, GenericFoodsModule, AppCatalogModule],
 })
 export class CatalogFeatureModule {}
