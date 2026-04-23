@@ -71,7 +71,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 201,
     description: 'Food item created successfully',
-    type: FoodProductResponseDto,
+    type: FoodResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -97,7 +97,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'List of food items retrieved successfully',
-    type: PaginatedFoodProductResponseDto,
+    type: PaginatedFoodResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -167,7 +167,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 201,
     description: 'Food imported successfully',
-    type: FoodProductResponseDto,
+    type: FoodResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -207,7 +207,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'Food item found',
-    type: FoodProductResponseDto,
+    type: FoodResponseDto,
   })
   @ApiCommonErrorResponses({
     notFound: true,
@@ -244,7 +244,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'Food item found',
-    type: FoodProductResponseDto,
+    type: FoodResponseDto,
   })
   @ApiCommonErrorResponses({
     notFound: true,
@@ -275,7 +275,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'Food item updated successfully',
-    type: FoodProductResponseDto,
+    type: FoodResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,

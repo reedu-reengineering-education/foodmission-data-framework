@@ -1,5 +1,5 @@
 import { FoodProductResponseDto } from '../../food-products/dto/food-response.dto';
-import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
+import { FoodCategoryResponseDto } from '../../generic-foods/dto/food-category-response.dto';
 import { Recipe, RecipeIngredient } from '@prisma/client';
 
 export interface IngredientMatch {
@@ -14,9 +14,9 @@ export interface IngredientMatch {
 
 export type RecipeWithIngredients = Recipe & {
   ingredients: (RecipeIngredient & {
+    food: FoodResponseDto | null;
     food: FoodProductResponseDto | null;
-    food: FoodProductResponseDto | null;
-    foodCategory: GenericFoodResponseDto | null;
+    foodCategory: FoodCategoryResponseDto | null;
   })[];
 };
 

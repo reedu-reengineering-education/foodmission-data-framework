@@ -1,4 +1,1 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateGenericFoodDto } from './create-generic-food.dto';
-
-export class UpdateGenericFoodDto extends PartialType(CreateGenericFoodDto) {}
+// ...existing code from update-food-category.dto.ts will be moved and updated here

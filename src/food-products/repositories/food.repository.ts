@@ -39,6 +39,9 @@ export interface CreateFoodDto {
   energyKj?: number;
   fat?: number;
   saturatedFat?: number;
+  where?: object;
+  orderBy?: object;
+  include?: object;
   sugars?: number;
   addedSugars?: number;
   fiber?: number;
@@ -159,9 +162,11 @@ export class FoodProductRepository implements BaseRepository<
     return await this.prisma.food.findMany({
       skip: options.skip,
       take: options.take,
-      where: options.where ?? {},
-      orderBy: options.orderBy || { createdAt: 'desc' },
-      include: options.include,
+      where: options.where as Prisma.FoodWhereInput,
+      orderBy: (options.orderBy as Prisma.FoodOrderByWithRelationInput) || {
+        createdAt: 'desc',
+      },
+      include: options.include as Prisma.FoodInclude,
     });
   }
 
