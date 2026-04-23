@@ -378,7 +378,7 @@ export async function seedFoodCategories(prisma: PrismaClient) {
       fattyAcidsUnidentified: parseFloat_(cols[COL.FAUN]),
     };
 
-    const record = await prisma.foodCategory.upsert({
+    const record = await prisma.genericFood.upsert({
       where: { nevoCode },
       update: data,
       create: { nevoCode, ...data },

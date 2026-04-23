@@ -104,11 +104,15 @@ export async function seedOpenFoodFactsFromJson(
   const rows = JSON.parse(content) as OffRow[];
 
   if (!Array.isArray(rows)) {
-    console.log(`   ⏭️  ${JSON_PATH} is not a JSON array; skipping OFF import.`);
+    console.log(
+      `   ⏭️  ${JSON_PATH} is not a JSON array; skipping OFF import.`,
+    );
     return { count: 0, skipped: true };
   }
 
-  console.log(`🍎 Seeding Food from OpenFoodFacts JSON (${rows.length} rows)...`);
+  console.log(
+    `🍎 Seeding Food from OpenFoodFacts JSON (${rows.length} rows)...`,
+  );
 
   for (const row of rows) {
     const barcode = toOptionalString(row.barcode) ?? '';
@@ -116,7 +120,7 @@ export async function seedOpenFoodFactsFromJson(
 
     const data = toFoodUpsertData(row, barcode);
 
-    await prisma.food.upsert({
+    await prisma.foodProduct.upsert({
       where: { barcode },
       create: { barcode, ...data },
       update: data,

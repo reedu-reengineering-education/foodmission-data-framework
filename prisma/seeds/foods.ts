@@ -106,20 +106,21 @@ export async function seedFoods(
   for (const barcode of barcodesToUse) {
     try {
       // Check if food already exists
-      const existingFood = await prisma.food.findUnique({
+
+      const existingFoodProduct = await prisma.foodProduct.findUnique({
         where: { barcode },
       });
 
-      if (existingFood) {
+      if (existingFoodProduct) {
         console.log(`⏭️  Skipping ${barcode} - already exists`);
-        if (existingFood.createdBy !== 'system-seed-openfoodfacts') {
-          const normalizedFood = await prisma.food.update({
-            where: { id: existingFood.id },
+        if (existingFoodProduct.createdBy !== 'system-seed-openfoodfacts') {
+          const normalizedFoodProduct = await prisma.foodProduct.update({
+            where: { id: existingFoodProduct.id },
             data: { createdBy: 'system-seed-openfoodfacts' },
           });
-          foods.push(normalizedFood);
+          foods.push(normalizedFoodProduct);
         } else {
-          foods.push(existingFood);
+          foods.push(existingFoodProduct);
         }
         skipCount++;
         continue;
@@ -143,7 +144,7 @@ export async function seedFoods(
       const nutriments = p.nutriments || {};
       const dietFlags = parseDietFlags(p.ingredients_analysis_tags);
 
-      const food = await prisma.food.create({
+      const food = await prisma.foodProduct.create({
         data: {
           name:
             p.product_name ||

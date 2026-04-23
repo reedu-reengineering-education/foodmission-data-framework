@@ -46,7 +46,7 @@ async function main() {
     const meals = await seedMeals(prisma);
     const shelfLife = await seedFoodKeeper(prisma);
     const shelfLifeLinks = await linkShelfLife(prisma);
-    const foodCount = await prisma.food.count();
+    const foodCount = await prisma.foodProduct.count();
 
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');

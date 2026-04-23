@@ -269,25 +269,26 @@ export async function seedShoppingListItems(prisma: PrismaClient) {
       continue;
     }
 
-    let food = await prisma.food.findFirst({
+
+    let foodProduct = await prisma.foodProduct.findFirst({
       where: { name: { equals: itemData.foodName, mode: 'insensitive' } },
     });
 
-    if (!food) {
-      food = await prisma.food.create({
+    if (!foodProduct) {
+      foodProduct = await prisma.foodProduct.create({
         data: {
           name: itemData.foodName,
           createdBy: 'system', // or user.id if you prefer
         },
       });
-      console.log(`📦 Created missing food: ${itemData.foodName}`);
+      console.log(`📦 Created missing food product: ${itemData.foodName}`);
     }
 
     const shoppingListItem = await prisma.shoppingListItem.upsert({
       where: {
-        shoppingListId_foodId: {
+        shoppingListId_foodProductId: {
           shoppingListId: shoppingList.id,
-          foodId: food.id,
+          foodProductId: foodProduct.id,
         },
       },
       update: {
@@ -298,7 +299,7 @@ export async function seedShoppingListItems(prisma: PrismaClient) {
       },
       create: {
         shoppingListId: shoppingList.id,
-        foodId: food.id,
+        foodProductId: foodProduct.id,
         quantity: itemData.quantity,
         unit: itemData.unit,
         notes: itemData.notes,

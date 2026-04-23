@@ -21,10 +21,12 @@ async function main() {
     const offRes = await seedOpenFoodFactsFromJson(prisma);
     if (offRes && offRes.skipped) {
       console.log(
-        '   ⏭️  OpenFoodFacts JSON not found; Food table will have no OFF products.',
+        '   ⏭️  OpenFoodFacts JSON not found; FoodProduct table will have no OFF products.',
       );
     } else if (offRes && typeof offRes.count === 'number') {
-      console.log(`   ✅ OpenFoodFacts JSON: ${offRes.count} foods upserted`);
+      console.log(
+        `   ✅ OpenFoodFacts JSON: ${offRes.count} foodProducts upserted`,
+      );
     }
 
     const result = await seedRecipes(prisma, { skipExisting: true });
@@ -53,7 +55,7 @@ async function main() {
 
     const shelfLifeLinks = await linkShelfLife(prisma);
     console.log(
-      `   ✅ ShelfLife links: ${shelfLifeLinks.foods} foods, ${shelfLifeLinks.categories} categories`,
+      `   ✅ ShelfLife links: ${shelfLifeLinks.foods} foodProducts, ${shelfLifeLinks.categories} genericFoods`,
     );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);

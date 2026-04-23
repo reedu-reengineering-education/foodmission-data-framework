@@ -61,7 +61,7 @@ export async function upsertSeedFoodByBarcode(
   input: { name: string; description: string; barcode: string },
   createdBy: string,
 ) {
-  return prisma.food.upsert({
+  return prisma.foodProduct.upsert({
     where: { barcode: input.barcode },
     update: {
       name: input.name,
@@ -87,7 +87,7 @@ export async function upsertDevFood(
   const barcode =
     foodInfo.barcode ||
     `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`;
-  return prisma.food.upsert({
+  return prisma.foodProduct.upsert({
     where: { barcode },
     update: {
       name: foodInfo.name,
