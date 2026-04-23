@@ -1,19 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FoodCategoriesRepository } from './food-categories.repository';
-import { PrismaService } from '../../database/prisma.service';
-import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
-import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
-import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
-import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
-
 describe('FoodCategoriesRepository', () => {
-  let repository: FoodCategoriesRepository;
+import { GenericFoodRepository } from './generic-foods.repository';
+import { PrismaService } from '../../database/prisma.service';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
+
+describe('GenericFoodRepository', () => {
+  let repository: GenericFoodRepository;
   let prisma: any;
 
-  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
+  const mockCategory: any = { ...TEST_GENERIC_FOOD, id: 'cat-123' };
 
   const mockPrismaService: any = {
-    foodCategory: {
+    genericFood: {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
@@ -26,7 +27,7 @@ describe('FoodCategoriesRepository', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FoodCategoriesRepository,
+        GenericFoodRepository,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -34,7 +35,7 @@ describe('FoodCategoriesRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<FoodCategoriesRepository>(FoodCategoriesRepository);
+    repository = module.get<GenericFoodRepository>(GenericFoodRepository);
     prisma = module.get(PrismaService);
   });
 

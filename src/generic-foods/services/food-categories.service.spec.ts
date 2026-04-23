@@ -1,18 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
-import { FoodCategoriesService } from './food-categories.service';
-import { FoodCategoriesRepository } from '../repositories/food-categories.repository';
-import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
-import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
-import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
-import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
+import { GenericFoodService } from './generic-foods.service';
+import { GenericFoodRepository } from '../repositories/generic-foods.repository';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
 
-describe('FoodCategoriesService', () => {
-  let service: FoodCategoriesService;
-  let repository: jest.Mocked<FoodCategoriesRepository>;
+describe('GenericFoodService', () => {
+  let service: GenericFoodService;
+  let repository: jest.Mocked<GenericFoodRepository>;
 
-  // Simplified mock - cast as any to avoid listing all 100+ Prisma fields
-  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'cat-123' };
+  const mockCategory: any = { ...TEST_GENERIC_FOOD, id: 'cat-123' };
 
   const mockRepositoryMethods = {
     create: jest.fn(),
@@ -27,16 +26,16 @@ describe('FoodCategoriesService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FoodCategoriesService,
+        GenericFoodService,
         {
-          provide: FoodCategoriesRepository,
+          provide: GenericFoodRepository,
           useValue: mockRepositoryMethods,
         },
       ],
     }).compile();
 
-    service = module.get<FoodCategoriesService>(FoodCategoriesService);
-    repository = module.get(FoodCategoriesRepository);
+    service = module.get<GenericFoodService>(GenericFoodService);
+    repository = module.get(GenericFoodRepository);
   });
 
   afterEach(() => {

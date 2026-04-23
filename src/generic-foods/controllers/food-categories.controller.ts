@@ -22,11 +22,11 @@ import { Roles, Public } from 'nest-keycloak-connect';
 import { GenericFoodService } from '../services/generic-food.service';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
-@ApiTags('food-categories')
-@Controller('food-categories')
+@ApiTags('generic-foods')
+@Controller('generic-foods')
 @UseGuards(DataBaseAuthGuard)
 @ApiBearerAuth('JWT-auth')
-export class GenericFoodController {
+export class GenericFoodsController {
   constructor(private readonly genericFoodService: GenericFoodService) {}
 
   @Post()
@@ -37,24 +37,24 @@ export class GenericFoodController {
   })
   @ApiResponse({
     status: 201,
-    description: 'Food category created successfully',
-    type: FoodCategoryResponseDto,
+    description: 'Generic food created successfully',
+    type: GenericFoodResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
   create(
-    @Body() createDto: CreateFoodCategoryDto,
-  ): Promise<FoodCategoryResponseDto> {
-    return this.foodCategoryService.create(createDto);
+    @Body() createDto: CreateGenericFoodDto,
+  ): Promise<GenericFoodResponseDto> {
+    return this.genericFoodService.create(createDto);
   }
 
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get all food categories',
+    summary: 'Get all generic foods',
     description:
-      'Get a paginated list of food categories with optional filtering',
+      'Get a paginated list of generic foods with optional filtering',
   })
   @ApiQuery({ name: 'search', required: false, description: 'Search term' })
   @ApiQuery({

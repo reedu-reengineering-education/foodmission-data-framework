@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
-import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
-import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 
 @Injectable()
 export class GenericFoodRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: CreateFoodCategoryDto) {
-    return this.prisma.foodCategory.create({
+  create(data: CreateGenericFoodDto) {
+    return this.prisma.genericFood.create({
       data,
     });
   }
 
-  async findAll(query: FoodCategoryQueryDto) {
+  async findAll(query: GenericFoodQueryDto) {
     const { search, foodGroup, page = 1, limit = 20 } = query;
     const skip = (page - 1) * limit;
 
@@ -47,13 +47,13 @@ export class GenericFoodRepository {
     }
 
     const [items, total] = await Promise.all([
-      this.prisma.foodCategory.findMany({
+      this.prisma.genericFood.findMany({
         where,
         skip,
         take: limit,
         orderBy: { foodName: 'asc' },
       }),
-      this.prisma.foodCategory.count({ where }),
+      this.prisma.genericFood.count({ where }),
     ]);
 
     return {

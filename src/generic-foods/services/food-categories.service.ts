@@ -1,31 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FoodCategoriesRepository } from '../repositories/food-categories.repository';
-import { CreateFoodCategoryDto } from '../dto/create-food-category.dto';
-import { UpdateFoodCategoryDto } from '../dto/update-food-category.dto';
-import { FoodCategoryQueryDto } from '../dto/food-category-query.dto';
+import { GenericFoodRepository } from '../repositories/generic-foods.repository';
+import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 
 @Injectable()
 export class GenericFoodService {
-  constructor(
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
-  ) {}
+  constructor(private readonly genericFoodRepository: GenericFoodRepository) {}
 
   async create(
-    createDto: CreateFoodCategoryDto,
-  ): Promise<FoodCategoryResponseDto> {
-    const category = await this.foodCategoryRepository.create(createDto);
+    createDto: CreateGenericFoodDto,
+  ): Promise<GenericFoodResponseDto> {
+    const category = await this.genericFoodRepository.create(createDto);
     return category;
   }
 
-  findAll(query: FoodCategoryQueryDto) {
-    return this.foodCategoryRepository.findAll(query);
+  findAll(query: GenericFoodQueryDto) {
+    return this.genericFoodRepository.findAll(query);
   }
 
-  async findById(id: string): Promise<FoodCategoryResponseDto> {
-    const category = await this.foodCategoryRepository.findById(id);
+  async findById(id: string): Promise<GenericFoodResponseDto> {
+    const category = await this.genericFoodRepository.findById(id);
 
     if (!category) {
-      throw new NotFoundException(`Food category with ID '${id}' not found`);
+      throw new NotFoundException(`Generic food with ID '${id}' not found`);
     }
 
     return category;
@@ -33,12 +32,12 @@ export class GenericFoodService {
 
   async update(
     id: string,
-    updateDto: UpdateFoodCategoryDto,
-  ): Promise<FoodCategoryResponseDto> {
+    updateDto: UpdateGenericFoodDto,
+  ): Promise<GenericFoodResponseDto> {
     // Check if exists
     await this.findById(id);
 
-    const updated = await this.foodCategoryRepository.update(id, updateDto);
+    const updated = await this.genericFoodRepository.update(id, updateDto);
     return updated;
   }
 
@@ -46,10 +45,10 @@ export class GenericFoodService {
     // Check if exists
     await this.findById(id);
 
-    await this.foodCategoryRepository.delete(id);
+    await this.genericFoodRepository.delete(id);
   }
 
   getAllFoodGroups(search?: string): Promise<string[]> {
-    return this.foodCategoryRepository.getAllFoodGroups(search);
+    return this.genericFoodRepository.getAllFoodGroups(search);
   }
 }

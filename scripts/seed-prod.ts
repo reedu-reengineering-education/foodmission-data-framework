@@ -55,7 +55,7 @@ async function main() {
 
     const shelfLifeLinks = await linkShelfLife(prisma);
     console.log(
-      `   ✅ ShelfLife links: ${shelfLifeLinks.foods} foodProducts, ${shelfLifeLinks.categories} genericFoods`,
+      `   ✅ ShelfLife links: ${shelfLifeLinks.foodProducts} foodProducts, ${shelfLifeLinks.genericFoods} genericFoods`,
     );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);

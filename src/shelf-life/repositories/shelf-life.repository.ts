@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FoodShelfLife, Prisma } from '@prisma/client';
+import { FoodProductShelfLife, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
@@ -8,15 +8,15 @@ export class ShelfLifeRepository {
 
   async findByProductId(
     foodKeeperProductId: number,
-  ): Promise<FoodShelfLife | null> {
-    return this.prisma.foodShelfLife.findUnique({
+  ): Promise<FoodProductShelfLife | null> {
+    return this.prisma.foodProductShelfLife.findUnique({
       where: { foodKeeperProductId },
     });
   }
 
-  async findByKeywords(keywords: string[]): Promise<FoodShelfLife[]> {
+  async findByKeywords(keywords: string[]): Promise<FoodProductShelfLife[]> {
     const normalizedKeywords = keywords.map((k) => k.toLowerCase().trim());
-    return this.prisma.foodShelfLife.findMany({
+    return this.prisma.foodProductShelfLife.findMany({
       where: {
         keywords: { hasSome: normalizedKeywords },
       },
@@ -24,9 +24,9 @@ export class ShelfLifeRepository {
     });
   }
 
-  async findBestMatch(foodName: string): Promise<FoodShelfLife | null> {
+  async findBestMatch(foodName: string): Promise<FoodProductShelfLife | null> {
     const normalizedName = foodName.toLowerCase().trim();
-    const exactMatch = await this.prisma.foodShelfLife.findFirst({
+    const exactMatch = await this.prisma.foodProductShelfLife.findFirst({
       where: {
         name: { equals: normalizedName, mode: 'insensitive' },
       },
@@ -34,7 +34,7 @@ export class ShelfLifeRepository {
     if (exactMatch) return exactMatch;
     const tokens = normalizedName.split(/[\s,]+/).filter((t) => t.length > 2);
     if (tokens.length === 0) return null;
-    const candidates = await this.prisma.foodShelfLife.findMany({
+    const candidates = await this.prisma.foodProductShelfLife.findMany({
       where: {
         keywords: { hasSome: tokens },
       },
@@ -56,11 +56,11 @@ export class ShelfLifeRepository {
   async findAll(options?: {
     skip?: number;
     take?: number;
-    where?: Prisma.FoodShelfLifeWhereInput;
-    orderBy?: Prisma.FoodShelfLifeOrderByWithRelationInput;
-  }): Promise<FoodShelfLife[]> {
+    where?: Prisma.FoodProductShelfLifeWhereInput;
+    orderBy?: Prisma.FoodProductShelfLifeOrderByWithRelationInput;
+  }): Promise<FoodProductShelfLife[]> {
     const { skip = 0, take = 50, where, orderBy } = options ?? {};
-    return this.prisma.foodShelfLife.findMany({
+    return this.prisma.foodProductShelfLife.findMany({
       skip,
       take,
       where,
@@ -68,7 +68,7 @@ export class ShelfLifeRepository {
     });
   }
 
-  async count(where?: Prisma.FoodShelfLifeWhereInput): Promise<number> {
-    return this.prisma.foodShelfLife.count({ where });
+  async count(where?: Prisma.FoodProductShelfLifeWhereInput): Promise<number> {
+    return this.prisma.foodProductShelfLife.count({ where });
   }
 }

@@ -130,8 +130,8 @@ export function findBestMatch(
 // ─── link step ───────────────────────────────────────────────────────────────
 
 export interface LinkShelfLifeResult {
-  foods: number;
-  categories: number;
+  foodProducts: number;
+  genericFoods: number;
 }
 
 export async function linkShelfLife(
@@ -141,7 +141,7 @@ export async function linkShelfLife(
   const entries = await prisma.foodShelfLife.findMany();
   if (entries.length === 0) {
     console.log('   ⏭️  No FoodShelfLife entries found; skipping link step.');
-    return { foods: 0, categories: 0 };
+    return { foodProducts: 0, genericFoods: 0 };
   }
 
   // ── Foods ─────────────────────────────────────────────────────────────────
@@ -221,5 +221,5 @@ export async function linkShelfLife(
     );
   }
 
-  return { foods: foodLinked, categories: catLinked };
+  return { foodProducts: foodLinked, genericFoods: catLinked };
 }

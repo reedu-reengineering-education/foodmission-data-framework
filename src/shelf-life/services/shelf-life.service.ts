@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { FoodShelfLife } from '@prisma/client';
+import { FoodProductShelfLife } from '@prisma/client';
 import { ShelfLifeRepository } from '../repositories/shelf-life.repository';
 
 export type StorageType = 'pantry' | 'refrigerator' | 'freezer';
@@ -42,7 +42,7 @@ export class ShelfLifeService {
     };
   }
 
-  inferStorageType(shelfLife: FoodShelfLife): StorageType {
+  inferStorageType(shelfLife: FoodProductShelfLife): StorageType {
     if (shelfLife.defaultStorageType) {
       const storageType = shelfLife.defaultStorageType.toLowerCase();
       if (
@@ -72,7 +72,7 @@ export class ShelfLifeService {
   }
 
   getDaysForStorageType(
-    shelfLife: FoodShelfLife,
+    shelfLife: FoodProductShelfLife,
     storageType: StorageType,
   ): number | null {
     switch (storageType) {
@@ -89,7 +89,9 @@ export class ShelfLifeService {
     }
   }
 
-  async searchByFoodName(foodName: string): Promise<FoodShelfLife | null> {
+  async searchByFoodName(
+    foodName: string,
+  ): Promise<FoodProductShelfLife | null> {
     return this.shelfLifeRepository.findBestMatch(foodName);
   }
 
@@ -97,7 +99,7 @@ export class ShelfLifeService {
     skip?: number;
     take?: number;
     categoryName?: string;
-  }): Promise<{ data: FoodShelfLife[]; total: number }> {
+  }): Promise<{ data: FoodProductShelfLife[]; total: number }> {
     const where = options?.categoryName
       ? {
           categoryName: {
