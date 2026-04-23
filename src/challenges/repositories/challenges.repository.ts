@@ -25,27 +25,27 @@ export class ChallengesRepository {
     });
   }
 
-  findAll() {
+  async findAll() {
     return this.prisma.challenge.findMany({
       include: { challengeProgresses: true },
     });
   }
 
-  findById(id: string) {
+  async findById(id: string) {
     return this.prisma.challenge.findUnique({
       where: { id },
       include: { challengeProgresses: true },
     });
   }
 
-  update(id: string, updateChallengeDto: UpdateChallengeDto) {
+  async update(id: string, updateChallengeDto: UpdateChallengeDto) {
     return this.prisma.challenge.update({
       where: { id },
       data: { ...updateChallengeDto },
     });
   }
 
-  delete(id: string) {
+  async delete(id: string) {
     return this.prisma.challenge.delete({ where: { id } });
   }
 }
