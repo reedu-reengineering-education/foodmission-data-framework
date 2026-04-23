@@ -15,7 +15,7 @@ import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto'
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { PantryItemService } from '../../pantry/services/pantry-items.service';
 import { PantryService } from '../../pantry/services/pantry.service';
-import { FoodRepository } from '../../food-products/repositories/food.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { FoodCategoriesRepository } from '../../generic-foods/repositories/food-categories.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { UsersRepository } from '../../users/repositories/users.repository';

@@ -14,7 +14,6 @@ export interface IngredientMatch {
 
 export type RecipeWithIngredients = Recipe & {
   ingredients: (RecipeIngredient & {
-    food: FoodResponseDto | null;
     food: FoodProductResponseDto | null;
     foodCategory: FoodCategoryResponseDto | null;
   })[];

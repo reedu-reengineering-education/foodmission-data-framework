@@ -103,7 +103,7 @@ describe('PantryItemService', () => {
 
   function setupSuccessfulCreateMocks() {
     mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
-    mockFoodRepository.findById.mockResolvedValue({
+    mockFoodProductRepository.findById.mockResolvedValue({
       id: TEST_IDS.FOOD,
       name: 'Tomatoes',
     });
@@ -131,8 +131,8 @@ describe('PantryItemService', () => {
           useValue: mockFoodCategoriesRepository,
         },
         {
-          provide: FoodRepository,
-          useValue: mockFoodRepository,
+          provide: FoodProductRepository,
+          useValue: mockFoodProductRepository,
         },
         {
           provide: ShelfLifeService,

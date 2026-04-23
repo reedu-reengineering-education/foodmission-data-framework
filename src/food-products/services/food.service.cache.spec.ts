@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FoodProductService } from './food-product.service';
-import { FoodRepository } from '../repositories/food.repository';
+import { FoodProductRepository } from '../repositories/food-product.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
@@ -13,13 +13,13 @@ import { createMockLoggingService } from '../../common/testing';
 
 describe('FoodProductService - Caching Integration', () => {
   let service: FoodProductService;
-  let foodRepository: jest.Mocked<FoodRepository>;
+  let foodProductRepository: jest.Mocked<FoodProductRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
   const mockFood = { ...TEST_FOOD };
 
   beforeEach(async () => {
-    const mockFoodRepository = {
+    const mockFoodProductRepository = {
       findById: jest.fn(),
       findByBarcode: jest.fn(),
       create: jest.fn(),
@@ -44,8 +44,8 @@ describe('FoodProductService - Caching Integration', () => {
       providers: [
         FoodService,
         {
-          provide: FoodRepository,
-          useValue: mockFoodRepository,
+          provide: FoodProductRepository,
+          useValue: mockFoodProductRepository,
         },
         {
           provide: OpenFoodFactsService,
@@ -69,18 +69,18 @@ describe('FoodProductService - Caching Integration', () => {
     }).compile();
 
     service = module.get<FoodService>(FoodService);
-    foodRepository = module.get(FoodRepository);
+    foodProductRepository = module.get(FoodProductRepository);
     openFoodFactsService = module.get(OpenFoodFactsService);
     // cacheManager = module.get(CACHE_MANAGER);
   });
 
   describe('findOne with @Cacheable', () => {
     it('should call repository when cache miss occurs', async () => {
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
 
       const result = await service.findOne('123');
 
-      expect(foodRepository.findById).toHaveBeenCalledWith('123');
+      expect(foodProductRepository.findById).toHaveBeenCalledWith('123');
       expect(result).toMatchObject({
         id: mockFood.id,
         name: mockFood.name,
@@ -93,10 +93,10 @@ describe('FoodProductService - Caching Integration', () => {
     });
 
     it('should throw NotFoundException when food not found', async () => {
-      foodRepository.findById.mockResolvedValue(null);
+      foodProductRepository.findById.mockResolvedValue(null);
 
       await expect(service.findOne('123')).rejects.toThrow(NotFoundException);
-      expect(foodRepository.findById).toHaveBeenCalledWith('123');
+      expect(foodProductRepository.findById).toHaveBeenCalledWith('123');
     });
 
     it('should include OpenFoodFacts data when requested', async () => {
@@ -115,7 +115,7 @@ describe('FoodProductService - Caching Integration', () => {
         completeness: 0.8,
       };
 
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
       openFoodFactsService.getProductByBarcode.mockResolvedValue(
         mockProductInfo,
       );
@@ -132,16 +132,16 @@ describe('FoodProductService - Caching Integration', () => {
 
   describe('findByBarcode with @Cacheable', () => {
     it('should call repository when cache miss occurs', async () => {
-      foodRepository.findByBarcode.mockResolvedValue(mockFood);
+      foodProductRepository.findByBarcode.mockResolvedValue(mockFood);
 
       const result = await service.findByBarcode('1234567890');
 
-      expect(foodRepository.findByBarcode).toHaveBeenCalledWith('1234567890');
+      expect(foodProductRepository.findByBarcode).toHaveBeenCalledWith('1234567890');
       expect(result.barcode).toBe('1234567890');
     });
 
     it('should throw NotFoundException when food not found', async () => {
-      foodRepository.findByBarcode.mockResolvedValue(null);
+      foodProductRepository.findByBarcode.mockResolvedValue(null);
 
       await expect(service.findByBarcode('1234567890')).rejects.toThrow(
         NotFoundException,
@@ -158,15 +158,15 @@ describe('FoodProductService - Caching Integration', () => {
     const userId = 'user123';
 
     it('should create food successfully', async () => {
-      foodRepository.findByBarcode.mockResolvedValue(null);
-      foodRepository.create.mockResolvedValue({
+      foodProductRepository.findByBarcode.mockResolvedValue(null);
+      foodProductRepository.create.mockResolvedValue({
         ...mockFood,
         ...createFoodDto,
       });
 
       const result = await service.create(createFoodDto, userId);
 
-      expect(foodRepository.create).toHaveBeenCalledWith({
+      expect(foodProductRepository.create).toHaveBeenCalledWith({
         ...createFoodDto,
         createdBy: userId,
       });
@@ -174,12 +174,12 @@ describe('FoodProductService - Caching Integration', () => {
     });
 
     it('should throw BadRequestException when barcode already exists', async () => {
-      foodRepository.findByBarcode.mockResolvedValue(mockFood);
+      foodProductRepository.findByBarcode.mockResolvedValue(mockFood);
 
       await expect(service.create(createFoodDto, userId)).rejects.toThrow(
         BadRequestException,
       );
-      expect(foodRepository.create).not.toHaveBeenCalled();
+      expect(foodProductRepository.create).not.toHaveBeenCalled();
     });
   });
 

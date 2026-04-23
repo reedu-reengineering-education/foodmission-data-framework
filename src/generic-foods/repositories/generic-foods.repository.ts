@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
-import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 
 @Injectable()

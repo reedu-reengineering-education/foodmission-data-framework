@@ -65,32 +65,40 @@ export class ShoppingListItemService {
     try {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
 
-      // Validate food reference
+      // Map CreateShoppingListItemDto to FoodRefDto
+      const foodRefDto = {
+        foodProductId: createDto.foodId,
+        genericFoodId: createDto.foodCategoryId,
+      };
       const { itemType, foodProductId, genericFoodId } =
-        validateFoodRef(createDto);
+        validateFoodRef(foodRefDto);
 
       // Validate the referenced item exists
-      if (itemType === 'food') {
-        await this.validateFoodExists(foodId);
+      if (itemType === 'food_product') {
+        if (!foodProductId)
+          throw new BadRequestException('foodProductId is required');
+        await this.validateFoodExists(foodProductId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
-          foodId,
+          foodProductId,
           undefined,
         );
       } else {
-        await this.validateFoodCategoryExists(foodCategoryId);
+        if (!genericFoodId)
+          throw new BadRequestException('genericFoodId is required');
+        await this.validateFoodCategoryExists(genericFoodId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           undefined,
-          foodCategoryId,
+          genericFoodId,
         );
       }
 
       const item = await this.shoppingListItemRepository.create({
         ...createDto,
         itemType,
-        foodId,
-        foodCategoryId,
+        foodProductId,
+        genericFoodId,
       });
 
       return this.transformToResponseDto(item);
@@ -356,7 +364,7 @@ export class ShoppingListItemService {
               } catch (error) {
                 if (error instanceof ConflictException) {
                   this.logger.debug(
-                    `Item ${item.foodId || item.foodCategoryId} already in pantry, skipping`,
+                    `Item ${item.foodProductId || item.genericFoodId} already in pantry, skipping`,
                   );
                 } else {
                   this.logger.warn(

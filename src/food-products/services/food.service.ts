@@ -4,7 +4,7 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
-import { FoodRepository } from '../repositories/food.repository';
+import { FoodProductRepository } from '../repositories/food-product.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
@@ -17,7 +17,7 @@ export class FoodProductService {
   private readonly logger = new Logger(FoodService.name);
 
   constructor(
-    private readonly foodRepository: FoodRepository,
+    private readonly foodProductRepository: FoodProductRepository,
     private readonly openFoodFactsService: OpenFoodFactsService,
   ) {}
 
@@ -29,7 +29,7 @@ export class FoodProductService {
 
     // Check if barcode already exists
     if (createFoodDto.barcode) {
-      const existingFood = await this.foodRepository.findByBarcode(
+      const existingFood = await this.foodProductRepository.findByBarcode(
         createFoodDto.barcode,
       );
       if (existingFood) {
@@ -37,7 +37,7 @@ export class FoodProductService {
       }
     }
 
-    const food = await this.foodRepository.create({
+    const food = await this.foodProductRepository.create({
       ...createFoodDto,
       createdBy: userId,
     });
@@ -75,7 +75,7 @@ export class FoodProductService {
     const orderBy: any = {};
     orderBy[sortBy] = sortOrder;
 
-    const result = await this.foodRepository.findWithPagination({
+    const result = await this.foodProductRepository.findWithPagination({
       skip,
       take: limit,
       where,
@@ -111,7 +111,7 @@ export class FoodProductService {
   ): Promise<FoodResponseDto> {
     this.logger.log(`Finding food by id: ${id}`);
 
-    const food = await this.foodRepository.findById(id);
+    const food = await this.foodProductRepository.findById(id);
     if (!food) {
       throw new NotFoundException('Food not found');
     }
@@ -138,7 +138,7 @@ export class FoodProductService {
   ): Promise<FoodResponseDto> {
     this.logger.log(`Finding food by barcode: ${barcode}`);
 
-    const food = await this.foodRepository.findByBarcode(barcode);
+    const food = await this.foodProductRepository.findByBarcode(barcode);
     if (!food) {
       throw new NotFoundException('Food not found');
     }
@@ -162,7 +162,7 @@ export class FoodProductService {
     this.logger.log(`Updating food: ${id}`);
 
     // Check if food exists
-    const existingFood = await this.foodRepository.findById(id);
+    const existingFood = await this.foodProductRepository.findById(id);
     if (!existingFood) {
       throw new NotFoundException('Food not found');
     }
@@ -172,7 +172,7 @@ export class FoodProductService {
       updateFoodDto.barcode &&
       updateFoodDto.barcode !== existingFood.barcode
     ) {
-      const existingFoodWithBarcode = await this.foodRepository.findByBarcode(
+      const existingFoodWithBarcode = await this.foodProductRepository.findByBarcode(
         updateFoodDto.barcode,
       );
       if (existingFoodWithBarcode && existingFoodWithBarcode.id !== id) {
@@ -180,19 +180,19 @@ export class FoodProductService {
       }
     }
 
-    const updatedFood = await this.foodRepository.update(id, updateFoodDto);
+    const updatedFood = await this.foodProductRepository.update(id, updateFoodDto);
     return this.transformToResponseDto(updatedFood);
   }
 
   async remove(id: string): Promise<void> {
     this.logger.log(`Removing food: ${id}`);
 
-    const food = await this.foodRepository.findById(id);
+    const food = await this.foodProductRepository.findById(id);
     if (!food) {
       throw new NotFoundException('Food not found');
     }
 
-    await this.foodRepository.delete(id);
+    await this.foodProductRepository.delete(id);
   }
 
   async searchOpenFoodFacts(searchDto: FoodSearchDto): Promise<any> {
@@ -216,7 +216,7 @@ export class FoodProductService {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
 
     // Check if food already exists
-    const existingFood = await this.foodRepository.findByBarcode(barcode);
+    const existingFood = await this.foodProductRepository.findByBarcode(barcode);
     if (existingFood) {
       throw new BadRequestException('Food with this barcode already exists');
     }
@@ -229,7 +229,7 @@ export class FoodProductService {
     }
 
     // Create food from OpenFoodFacts data with all enriched fields
-    const food = await this.foodRepository.create({
+    const food = await this.foodProductRepository.create({
       name: productInfo.name,
       description: productInfo.genericName,
       barcode: productInfo.barcode,

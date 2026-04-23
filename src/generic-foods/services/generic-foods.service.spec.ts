@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { GenericFoodService } from './generic-foods.service';
 import { GenericFoodRepository } from '../repositories/generic-foods.repository';
-import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
-import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
-import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+
+
+
 import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('GenericFoodService', () => {
