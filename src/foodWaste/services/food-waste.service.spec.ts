@@ -139,8 +139,8 @@ describe('FoodWasteService', () => {
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
 
       // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback({}),
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
       );
 
       const result = await service.create(dtoWithPantryItem as any, userId);
@@ -165,8 +165,8 @@ describe('FoodWasteService', () => {
       pantryItemRepository.delete.mockResolvedValue(undefined);
 
       // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback({}),
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
       );
 
       const result = await service.create(dtoWithPantryItem as any, userId);
@@ -193,8 +193,8 @@ describe('FoodWasteService', () => {
       pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
 
       // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback({}),
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
       );
 
       const result = await service.create(dtoWithPantryItem as any, userId);
@@ -222,8 +222,8 @@ describe('FoodWasteService', () => {
       pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
 
       // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback({}),
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
       );
 
       const result = await service.create(dtoWithPantryItem as any, userId);
@@ -250,8 +250,8 @@ describe('FoodWasteService', () => {
       pantryItemRepository.delete.mockResolvedValue(undefined);
 
       // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback({}),
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
       );
 
       const result = await service.create(dtoWithPantryItem as any, userId);

@@ -279,23 +279,24 @@ export class FoodWasteService {
           const wastedQuantityInPantryUnit = this.convertQuantity(
             createDto.quantity,
             createDto.unit,
-            pantryItem!.unit,
+            pantryItem.unit,
           );
 
           if (wastedQuantityInPantryUnit === null) {
             // Incompatible units - delete entire pantry item (conservative approach)
             this.logger.warn(
-              `Incompatible units: waste ${createDto.unit}, pantry ${pantryItem!.unit}. Deleting pantry item.`,
+              `Incompatible units: waste ${createDto.unit}, pantry ${pantryItem.unit}. Deleting pantry item.`,
             );
-            await this.pantryItemRepository.delete(pantryItem!.id, tx);
-          } else if (wastedQuantityInPantryUnit >= pantryItem!.quantity) {
+            await this.pantryItemRepository.delete(pantryItem.id, tx);
+          } else if (wastedQuantityInPantryUnit >= pantryItem.quantity) {
             // Full waste - delete pantry item
-            await this.pantryItemRepository.delete(pantryItem!.id, tx);
+            await this.pantryItemRepository.delete(pantryItem.id, tx);
           } else {
             // Partial waste - reduce pantry item quantity
-            const newQuantity = pantryItem!.quantity - wastedQuantityInPantryUnit;
+            const newQuantity =
+              pantryItem.quantity - wastedQuantityInPantryUnit;
             await this.pantryItemRepository.update(
-              pantryItem!.id,
+              pantryItem.id,
               { quantity: newQuantity },
               tx,
             );
