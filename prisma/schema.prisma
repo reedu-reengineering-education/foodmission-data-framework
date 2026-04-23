@@ -96,7 +96,6 @@ model FoodProduct {
   pantryItems       PantryItem[]
   mealItems         MealItem[]
   recipeIngredients RecipeIngredient[]
-  foodWastes        FoodWaste[]
 
   @@index([name])
   @@index([createdAt])
@@ -358,10 +357,9 @@ model User {
   mealLogs          MealLog[]
   knowledge         Knowledge[]
   knowledgeProgress UserKnowledgeProgress[]
-  // challengeProgress removed: model ChallengeProgress does not exist
+  challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]
   groupMemberships  GroupMembership[]
-  foodWastes        FoodWaste[]
 
   @@index([email])
   @@index([createdAt])
@@ -448,7 +446,6 @@ model PantryItem {
   pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
   foodProduct  FoodProduct?  @relation(fields: [foodProductId], references: [id], onDelete: SetNull)
   genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
-  foodWastes   FoodWaste[]
 
   @@unique([pantryId, foodProductId])
   @@unique([pantryId, genericFoodId])
@@ -629,45 +626,33 @@ model MissionProgress {
   @@map("mission_progress")
 }
 
-model FoodWaste {
-  id              String          @id @default(uuid())
-  userId          String
-  pantryItemId    String?
-  foodProductId   String
-  quantity        Float
-  unit            Unit
-  wasteReason     WasteReason
-  detectionMethod DetectionMethod
-  notes           String?
-  costEstimate    Float?
-  carbonFootprint Float?
-  wastedAt        DateTime
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+model Challenge {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  available   Boolean  @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  content     Json     @default("{}") // Flexible JSON for challenge-specific content
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
-  foodProduct  FoodProduct  @relation(fields: [foodProductId], references: [id], onDelete: Restrict)
-  pantryItem   PantryItem?  @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+  // Relations
+  challengeProgresses ChallengeProgress[]
 
-  @@index([userId, wastedAt])
-  @@index([foodProductId])
-
-  @@map("food_waste")
+  @@map("challenges")
 }
 
-enum WasteReason {
-  EXPIRED
-  SPOILED
-  OVERCOOKED
-  LEFTOVERS
-  OTHER
-}
+model ChallengeProgress {
+  userId      String
+  challengeId String
+  completed   Boolean @default(false)
+  progress    Float
 
-enum DetectionMethod {
-  MANUAL
-  SMART_SENSOR
-  IMAGE_RECOGNITION
-  OTHER
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, challengeId])
+  @@map("challenge_progress")
 }
 
 enum Gender {

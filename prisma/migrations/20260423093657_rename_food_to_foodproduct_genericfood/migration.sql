@@ -9,8 +9,6 @@
   - You are about to drop the column `foodId` on the `recipe_ingredients` table. All the data in the column will be lost.
   - You are about to drop the column `foodCategoryId` on the `shopping_list_items` table. All the data in the column will be lost.
   - You are about to drop the column `foodId` on the `shopping_list_items` table. All the data in the column will be lost.
-  - You are about to drop the `challenge_progress` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `challenges` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `food_categories` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `foods` table. If the table is not empty, all the data it contains will be lost.
   - A unique constraint covering the columns `[mealId,foodProductId]` on the table `meal_items` will be added. If there are existing duplicate values, this will fail.
@@ -21,18 +19,6 @@
   - A unique constraint covering the columns `[shoppingListId,genericFoodId]` on the table `shopping_list_items` will be added. If there are existing duplicate values, this will fail.
 
 */
--- CreateEnum
-CREATE TYPE "WasteReason" AS ENUM ('EXPIRED', 'SPOILED', 'OVERCOOKED', 'LEFTOVERS', 'OTHER');
-
--- CreateEnum
-CREATE TYPE "DetectionMethod" AS ENUM ('MANUAL', 'SMART_SENSOR', 'IMAGE_RECOGNITION', 'OTHER');
-
--- DropForeignKey
-ALTER TABLE "challenge_progress" DROP CONSTRAINT "challenge_progress_challengeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "challenge_progress" DROP CONSTRAINT "challenge_progress_userId_fkey";
-
 -- DropForeignKey
 ALTER TABLE "food_categories" DROP CONSTRAINT "food_categories_shelfLifeId_fkey";
 
@@ -133,12 +119,6 @@ DROP COLUMN "foodId",
 ADD COLUMN     "foodProductId" TEXT,
 ADD COLUMN     "genericFoodId" TEXT,
 ALTER COLUMN "itemType" SET DEFAULT 'food_product';
-
--- DropTable
-DROP TABLE "challenge_progress";
-
--- DropTable
-DROP TABLE "challenges";
 
 -- DropTable
 DROP TABLE "food_categories";
@@ -368,26 +348,6 @@ CREATE TABLE "generic_foods" (
     CONSTRAINT "generic_foods_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "food_waste" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "pantryItemId" TEXT,
-    "foodProductId" TEXT NOT NULL,
-    "quantity" DOUBLE PRECISION NOT NULL,
-    "unit" "Unit" NOT NULL,
-    "wasteReason" "WasteReason" NOT NULL,
-    "detectionMethod" "DetectionMethod" NOT NULL,
-    "notes" TEXT,
-    "costEstimate" DOUBLE PRECISION,
-    "carbonFootprint" DOUBLE PRECISION,
-    "wastedAt" TIMESTAMP(3) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "food_waste_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "food_products_barcode_key" ON "food_products"("barcode");
 
@@ -420,12 +380,6 @@ CREATE INDEX "generic_foods_nevoCode_idx" ON "generic_foods"("nevoCode");
 
 -- CreateIndex
 CREATE INDEX "generic_foods_shelfLifeId_idx" ON "generic_foods"("shelfLifeId");
-
--- CreateIndex
-CREATE INDEX "food_waste_userId_wastedAt_idx" ON "food_waste"("userId", "wastedAt");
-
--- CreateIndex
-CREATE INDEX "food_waste_foodProductId_idx" ON "food_waste"("foodProductId");
 
 -- CreateIndex
 CREATE INDEX "meal_items_foodProductId_idx" ON "meal_items"("foodProductId");
@@ -498,12 +452,3 @@ ALTER TABLE "recipe_ingredients" ADD CONSTRAINT "recipe_ingredients_foodProductI
 
 -- AddForeignKey
 ALTER TABLE "recipe_ingredients" ADD CONSTRAINT "recipe_ingredients_genericFoodId_fkey" FOREIGN KEY ("genericFoodId") REFERENCES "generic_foods"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_foodProductId_fkey" FOREIGN KEY ("foodProductId") REFERENCES "food_products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_pantryItemId_fkey" FOREIGN KEY ("pantryItemId") REFERENCES "pantry_items"("id") ON DELETE SET NULL ON UPDATE CASCADE;
