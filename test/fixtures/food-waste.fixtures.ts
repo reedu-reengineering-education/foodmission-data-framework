@@ -76,8 +76,20 @@ export const TEST_FOOD_WASTE_STATISTICS = {
 
 export const TEST_FOOD_WASTE_TRENDS = {
   data: [
-    { date: '2026-02-13', totalWaste: 1.5, totalCost: 5.99, totalCarbon: 1.25, count: 1 },
-    { date: '2026-02-14', totalWaste: 0.5, totalCost: 2.5, totalCarbon: 0.75, count: 1 },
+    {
+      date: '2026-02-13',
+      totalWaste: 1.5,
+      totalCost: 5.99,
+      totalCarbon: 1.25,
+      count: 1,
+    },
+    {
+      date: '2026-02-14',
+      totalWaste: 0.5,
+      totalCost: 2.5,
+      totalCarbon: 0.75,
+      count: 1,
+    },
   ],
   dateFrom: '2026-02-13',
   dateTo: '2026-02-14',

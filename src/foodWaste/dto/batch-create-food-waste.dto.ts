@@ -55,7 +55,7 @@ export class BatchCreateFoodWasteDto {
       },
       {
         pantryItemId: 'def-456-ghi-789',
-        costEstimate: 2.50,
+        costEstimate: 2.5,
       },
     ],
   })

@@ -111,7 +111,10 @@ describe('FoodWasteController', () => {
 
   describe('update', () => {
     it('should call service.update and return result', async () => {
-      const updatedWaste = { ...TEST_FOOD_WASTE, ...TEST_UPDATE_FOOD_WASTE_DTO };
+      const updatedWaste = {
+        ...TEST_FOOD_WASTE,
+        ...TEST_UPDATE_FOOD_WASTE_DTO,
+      };
       mockFoodWasteService.update.mockResolvedValue(updatedWaste);
 
       const result = await controller.update(

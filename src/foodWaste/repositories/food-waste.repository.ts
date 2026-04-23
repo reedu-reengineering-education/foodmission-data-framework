@@ -47,15 +47,12 @@ export interface FoodWasteStatistics {
 }
 
 @Injectable()
-export class FoodWasteRepository
-  implements
-    BaseRepository<
-      FoodWaste,
-      CreateFoodWasteData,
-      UpdateFoodWasteData,
-      Prisma.FoodWasteWhereInput
-    >
-{
+export class FoodWasteRepository implements BaseRepository<
+  FoodWaste,
+  CreateFoodWasteData,
+  UpdateFoodWasteData,
+  Prisma.FoodWasteWhereInput
+> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(

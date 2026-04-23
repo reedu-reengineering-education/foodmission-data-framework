@@ -5,6 +5,11 @@ import { ShoppingListsModule } from '../shopping-lists/shopping-lists.module';
 import { FoodWasteModule } from '../foodWaste/food-waste.module';
 
 @Module({
-  imports: [ShoppingListsModule, PantryModule, ShelfLifeModule,FoodWasteModule],
+  imports: [
+    ShoppingListsModule,
+    PantryModule,
+    ShelfLifeModule,
+    FoodWasteModule,
+  ],
 })
 export class ShoppingPantryModule {}

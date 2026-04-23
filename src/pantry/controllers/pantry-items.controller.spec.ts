@@ -23,11 +23,11 @@ describe('PantryItemsController', () => {
     mockPantryItemsService = createMockPantryItemsService();
     const mockAuthGuard = createMockAuthGuard();
     const mockThrottlerGuard = createMockThrottlerGuard();
-    
+
     const mockFoodWasteService = {
       batchCreateFromExpired: jest.fn(),
     };
-    
+
     const mockPantryService = {
       validatePantryExists: jest.fn(),
     };
