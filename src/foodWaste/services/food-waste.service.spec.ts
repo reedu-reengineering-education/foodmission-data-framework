@@ -9,6 +9,7 @@ import {
 import { FoodWasteRepository } from '../repositories/food-waste.repository';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
+import { PrismaService } from '../../database/prisma.service';
 import {
   TEST_FOOD_WASTE,
   TEST_FOOD_WASTE_2,
@@ -23,6 +24,7 @@ describe('FoodWasteService', () => {
   let foodWasteRepository: jest.Mocked<FoodWasteRepository>;
   let pantryItemRepository: jest.Mocked<PantryItemRepository>;
   let foodRepository: jest.Mocked<FoodRepository>;
+  let prismaService: { $transaction: jest.Mock };
 
   const mockFoodWaste = { ...TEST_FOOD_WASTE };
   const mockFood = { ...TEST_FOOD };
@@ -52,7 +54,12 @@ describe('FoodWasteService', () => {
 
   const mockPantryItemRepositoryMethods = {
     findById: jest.fn(),
+    update: jest.fn(),
     delete: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    $transaction: jest.fn(),
   };
 
   const mockFoodRepositoryMethods = {
@@ -75,6 +82,10 @@ describe('FoodWasteService', () => {
           provide: FoodRepository,
           useValue: mockFoodRepositoryMethods,
         },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
       ],
     }).compile();
 
@@ -82,6 +93,7 @@ describe('FoodWasteService', () => {
     foodWasteRepository = module.get(FoodWasteRepository);
     pantryItemRepository = module.get(PantryItemRepository);
     foodRepository = module.get(FoodRepository);
+    prismaService = module.get(PrismaService);
   });
 
   afterEach(() => {
@@ -126,11 +138,128 @@ describe('FoodWasteService', () => {
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
 
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(async (callback) =>
+        callback({}),
+      );
+
       const result = await service.create(dtoWithPantryItem as any, userId);
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.findById).toHaveBeenCalledWith(
         'pantry-item-1',
+      );
+    });
+
+    it('should delete pantry item when wasting full quantity', async () => {
+      const dtoWithPantryItem = {
+        ...TEST_CREATE_FOOD_WASTE_DTO,
+        pantryItemId: 'pantry-item-1',
+        quantity: 1.5, // Same as pantry item quantity
+        unit: Unit.KG,
+      };
+
+      foodRepository.findById.mockResolvedValue(mockFood);
+      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
+      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
+      pantryItemRepository.delete.mockResolvedValue(undefined);
+
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(async (callback) =>
+        callback({}),
+      );
+
+      const result = await service.create(dtoWithPantryItem as any, userId);
+
+      expect(result).toBeDefined();
+      expect(pantryItemRepository.delete).toHaveBeenCalledWith(
+        'pantry-item-1',
+        expect.anything(),
+      );
+      expect(pantryItemRepository.update).not.toHaveBeenCalled();
+    });
+
+    it('should reduce pantry item quantity when wasting partial quantity', async () => {
+      const dtoWithPantryItem = {
+        ...TEST_CREATE_FOOD_WASTE_DTO,
+        pantryItemId: 'pantry-item-1',
+        quantity: 0.5, // Less than pantry item quantity (1.5 KG)
+        unit: Unit.KG,
+      };
+
+      foodRepository.findById.mockResolvedValue(mockFood);
+      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
+      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
+      pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
+
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(async (callback) =>
+        callback({}),
+      );
+
+      const result = await service.create(dtoWithPantryItem as any, userId);
+
+      expect(result).toBeDefined();
+      expect(pantryItemRepository.update).toHaveBeenCalledWith(
+        'pantry-item-1',
+        { quantity: 1.0 }, // 1.5 - 0.5 = 1.0
+        expect.anything(),
+      );
+      expect(pantryItemRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should handle unit conversion when reducing pantry item (G to KG)', async () => {
+      const dtoWithPantryItem = {
+        ...TEST_CREATE_FOOD_WASTE_DTO,
+        pantryItemId: 'pantry-item-1',
+        quantity: 500, // 500g = 0.5kg
+        unit: Unit.G,
+      };
+
+      foodRepository.findById.mockResolvedValue(mockFood);
+      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any); // 1.5 KG
+      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
+      pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
+
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(async (callback) =>
+        callback({}),
+      );
+
+      const result = await service.create(dtoWithPantryItem as any, userId);
+
+      expect(result).toBeDefined();
+      expect(pantryItemRepository.update).toHaveBeenCalledWith(
+        'pantry-item-1',
+        { quantity: 1.0 }, // 1.5 - 0.5 = 1.0 KG
+        expect.anything(),
+      );
+    });
+
+    it('should delete pantry item when units are incompatible', async () => {
+      const dtoWithPantryItem = {
+        ...TEST_CREATE_FOOD_WASTE_DTO,
+        pantryItemId: 'pantry-item-1',
+        quantity: 2,
+        unit: Unit.PIECES, // Incompatible with pantry item's KG
+      };
+
+      foodRepository.findById.mockResolvedValue(mockFood);
+      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
+      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
+      pantryItemRepository.delete.mockResolvedValue(undefined);
+
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(async (callback) =>
+        callback({}),
+      );
+
+      const result = await service.create(dtoWithPantryItem as any, userId);
+
+      expect(result).toBeDefined();
+      expect(pantryItemRepository.delete).toHaveBeenCalledWith(
+        'pantry-item-1',
+        expect.anything(),
       );
     });
 

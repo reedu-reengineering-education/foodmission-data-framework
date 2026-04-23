@@ -26,6 +26,7 @@ import {
 } from '../dto/food-waste-statistics.dto';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
+import { PrismaService } from '../../database/prisma.service';
 import { Prisma, WasteReason, DetectionMethod, Unit } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
@@ -81,6 +82,7 @@ export class FoodWasteService {
     private readonly foodWasteRepository: FoodWasteRepository,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly foodRepository: FoodRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -174,7 +176,40 @@ export class FoodWasteService {
   }
 
   /**
+   * Convert quantity from one unit to another (for compatible units)
+   * Returns quantity in target unit, or null if units are incompatible
+   */
+  private convertQuantity(
+    quantity: number,
+    fromUnit: Unit,
+    toUnit: Unit,
+  ): number | null {
+    // Same unit - no conversion needed
+    if (fromUnit === toUnit) {
+      return quantity;
+    }
+
+    // Mass units (KG, G)
+    const massUnits: Unit[] = [Unit.KG, Unit.G];
+    if (massUnits.includes(fromUnit) && massUnits.includes(toUnit)) {
+      const inKg = quantity * UNIT_TO_KG_CONVERSION[fromUnit];
+      return inKg / UNIT_TO_KG_CONVERSION[toUnit];
+    }
+
+    // Volume units (L, ML)
+    const volumeUnits: Unit[] = [Unit.L, Unit.ML];
+    if (volumeUnits.includes(fromUnit) && volumeUnits.includes(toUnit)) {
+      const inL = quantity * UNIT_TO_KG_CONVERSION[fromUnit]; // Uses same conversion factor
+      return inL / UNIT_TO_KG_CONVERSION[toUnit];
+    }
+
+    // Incompatible units (e.g., KG to PIECES)
+    return null;
+  }
+
+  /**
    * Create a food waste entry
+   * If pantryItemId is provided, automatically removes or reduces the pantry item quantity
    */
   async create(
     createDto: CreateFoodWasteDto,
@@ -187,9 +222,12 @@ export class FoodWasteService {
         throw new NotFoundException('Food not found');
       }
 
-      // If pantryItemId provided, validate ownership
+      // If pantryItemId provided, validate ownership and prepare for auto-removal
+      let pantryItem: Awaited<
+        ReturnType<typeof this.pantryItemRepository.findById>
+      > | null = null;
       if (createDto.pantryItemId) {
-        const pantryItem = await this.pantryItemRepository.findById(
+        pantryItem = await this.pantryItemRepository.findById(
           createDto.pantryItemId,
         );
         if (!pantryItem) {
@@ -216,6 +254,60 @@ export class FoodWasteService {
 
       const wastedAt = new Date(createDto.wastedAt);
 
+      // Use transaction if pantry item needs to be updated/deleted
+      if (pantryItem) {
+        const waste = await this.prisma.$transaction(async (tx) => {
+          // Create the waste entry
+          const createdWaste = await this.foodWasteRepository.create(
+            {
+              userId,
+              pantryItemId: createDto.pantryItemId,
+              foodId: createDto.foodId,
+              quantity: createDto.quantity,
+              unit: createDto.unit,
+              wasteReason: createDto.wasteReason,
+              detectionMethod: createDto.detectionMethod,
+              notes: createDto.notes,
+              costEstimate: createDto.costEstimate,
+              carbonFootprint,
+              wastedAt,
+            },
+            tx,
+          );
+
+          // Determine if we should delete or reduce the pantry item
+          const wastedQuantityInPantryUnit = this.convertQuantity(
+            createDto.quantity,
+            createDto.unit,
+            pantryItem!.unit,
+          );
+
+          if (wastedQuantityInPantryUnit === null) {
+            // Incompatible units - delete entire pantry item (conservative approach)
+            this.logger.warn(
+              `Incompatible units: waste ${createDto.unit}, pantry ${pantryItem!.unit}. Deleting pantry item.`,
+            );
+            await this.pantryItemRepository.delete(pantryItem!.id, tx);
+          } else if (wastedQuantityInPantryUnit >= pantryItem!.quantity) {
+            // Full waste - delete pantry item
+            await this.pantryItemRepository.delete(pantryItem!.id, tx);
+          } else {
+            // Partial waste - reduce pantry item quantity
+            const newQuantity = pantryItem!.quantity - wastedQuantityInPantryUnit;
+            await this.pantryItemRepository.update(
+              pantryItem!.id,
+              { quantity: newQuantity },
+              tx,
+            );
+          }
+
+          return createdWaste;
+        });
+
+        return this.toResponse(waste);
+      }
+
+      // No pantry item - simple create without transaction
       const waste = await this.foodWasteRepository.create({
         userId,
         pantryItemId: createDto.pantryItemId,
@@ -233,6 +325,9 @@ export class FoodWasteService {
       return this.toResponse(waste);
     } catch (error) {
       if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof ForbiddenException) {
         throw error;
       }
       throw handlePrismaError(error, 'create food waste', 'FoodWaste');

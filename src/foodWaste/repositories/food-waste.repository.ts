@@ -114,8 +114,12 @@ export class FoodWasteRepository implements BaseRepository<
     });
   }
 
-  async create(data: CreateFoodWasteData): Promise<FoodWaste> {
-    return await this.prisma.foodWaste.create({
+  async create(
+    data: CreateFoodWasteData,
+    tx?: Prisma.TransactionClient,
+  ): Promise<FoodWaste> {
+    const client = tx ?? this.prisma;
+    return await client.foodWaste.create({
       data: data as Prisma.FoodWasteUncheckedCreateInput,
       include: {
         food: true,

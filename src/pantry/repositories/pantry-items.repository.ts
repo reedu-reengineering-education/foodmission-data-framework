@@ -129,8 +129,10 @@ export class PantryItemRepository {
   async update(
     id: string,
     data: Prisma.PantryItemUpdateInput,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
-    return this.prisma.pantryItem.update({
+    const client = tx ?? this.prisma;
+    return client.pantryItem.update({
       where: { id },
       data,
       include: {
@@ -141,8 +143,9 @@ export class PantryItemRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
-    await this.prisma.pantryItem.delete({
+  async delete(id: string, tx?: Prisma.TransactionClient): Promise<void> {
+    const client = tx ?? this.prisma;
+    await client.pantryItem.delete({
       where: { id },
     });
   }
