@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { PrismaService } from '../../../database/prisma.service';
 import { TypeOfMeal } from '@prisma/client';
 
 /** k-anonymity threshold: suppress groups with fewer than K unique users */
@@ -363,8 +363,8 @@ export interface AggregationResult {
 }
 
 @Injectable()
-export class AnalyticsAggregator {
-  private readonly logger = new Logger(AnalyticsAggregator.name);
+export class MealLogAnalyticsAggregator {
+  private readonly logger = new Logger(MealLogAnalyticsAggregator.name);
 
   constructor(private readonly prisma: PrismaService) {}
 

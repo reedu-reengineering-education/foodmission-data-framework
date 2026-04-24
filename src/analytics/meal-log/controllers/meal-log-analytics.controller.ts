@@ -20,16 +20,16 @@ import {
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { AnalyticsService } from '../services/analytics.service';
-import { AnalyticsBatchStatus } from '@prisma/client';
-import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { MealLogAnalyticsService } from '../services/meal-log-analytics.service';
+import { MealLogAnalyticsBatchStatus } from '@prisma/client';
+import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
-@ApiTags('Analytics')
-@Controller('analytics')
-export class AnalyticsController {
-  constructor(private readonly analyticsService: AnalyticsService) {}
+@ApiTags('Analytics - Meal Log')
+@Controller('analytics/meallog')
+export class MealLogAnalyticsController {
+  constructor(private readonly analyticsService: MealLogAnalyticsService) {}
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -536,9 +536,9 @@ export class AnalyticsController {
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
   @ApiOperation({ summary: 'List all analytics batches' })
-  @ApiQuery({ name: 'status', required: false, enum: AnalyticsBatchStatus })
+  @ApiQuery({ name: 'status', required: false, enum: MealLogAnalyticsBatchStatus })
   @ApiResponse({ status: 200, description: 'List of batches' })
-  async listBatches(@Query('status') status?: AnalyticsBatchStatus) {
+  async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
     return this.analyticsService.listBatches(status);
   }
 

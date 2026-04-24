@@ -5,17 +5,17 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AnalyticsRepository } from '../repositories/analytics.repository';
-import { AnalyticsAggregator, DemographicDimension } from './analytics-aggregator.service';
-import { AnalyticsBatchStatus, Prisma } from '@prisma/client';
+import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
+import { MealLogAnalyticsAggregator, DemographicDimension } from './meal-log-analytics-aggregator.service';
+import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
 
 @Injectable()
-export class AnalyticsService {
-  private readonly logger = new Logger(AnalyticsService.name);
+export class MealLogAnalyticsService {
+  private readonly logger = new Logger(MealLogAnalyticsService.name);
 
   constructor(
-    private readonly repository: AnalyticsRepository,
-    private readonly aggregator: AnalyticsAggregator,
+    private readonly repository: MealLogAnalyticsRepository,
+    private readonly aggregator: MealLogAnalyticsAggregator,
   ) {}
 
   /**
@@ -350,7 +350,7 @@ export class AnalyticsService {
   // Admin — batch management
   // ============================================================
 
-  async listBatches(status?: AnalyticsBatchStatus) {
+  async listBatches(status?: MealLogAnalyticsBatchStatus) {
     return this.repository.findBatches(status);
   }
 
@@ -364,42 +364,42 @@ export class AnalyticsService {
 
   async approveBatch(batchId: string, adminUserId: string) {
     const batch = await this.getBatch(batchId);
-    if (batch.status !== AnalyticsBatchStatus.STAGING) {
+    if (batch.status !== MealLogAnalyticsBatchStatus.STAGING) {
       throw new BadRequestException(
         `Batch is ${batch.status}, can only approve STAGING batches`,
       );
     }
     return this.repository.updateBatchStatus(
       batchId,
-      AnalyticsBatchStatus.APPROVED,
+      MealLogAnalyticsBatchStatus.APPROVED,
       adminUserId,
     );
   }
 
   async publishBatch(batchId: string, adminUserId: string) {
     const batch = await this.getBatch(batchId);
-    if (batch.status !== AnalyticsBatchStatus.APPROVED) {
+    if (batch.status !== MealLogAnalyticsBatchStatus.APPROVED) {
       throw new BadRequestException(
         `Batch is ${batch.status}, can only publish APPROVED batches`,
       );
     }
     return this.repository.updateBatchStatus(
       batchId,
-      AnalyticsBatchStatus.PUBLISHED,
+      MealLogAnalyticsBatchStatus.PUBLISHED,
       adminUserId,
     );
   }
 
   async rejectBatch(batchId: string, adminUserId: string, reason: string) {
     const batch = await this.getBatch(batchId);
-    if (batch.status !== AnalyticsBatchStatus.STAGING) {
+    if (batch.status !== MealLogAnalyticsBatchStatus.STAGING) {
       throw new BadRequestException(
         `Batch is ${batch.status}, can only reject STAGING batches`,
       );
     }
     return this.repository.updateBatchStatus(
       batchId,
-      AnalyticsBatchStatus.REJECTED,
+      MealLogAnalyticsBatchStatus.REJECTED,
       adminUserId,
       reason,
     );
@@ -408,8 +408,8 @@ export class AnalyticsService {
   async deleteBatch(batchId: string) {
     const batch = await this.getBatch(batchId);
     if (
-      batch.status === AnalyticsBatchStatus.PUBLISHED ||
-      batch.status === AnalyticsBatchStatus.APPROVED
+      batch.status === MealLogAnalyticsBatchStatus.PUBLISHED ||
+      batch.status === MealLogAnalyticsBatchStatus.APPROVED
     ) {
       throw new BadRequestException(
         `Cannot delete ${batch.status} batch. Reject it first.`,

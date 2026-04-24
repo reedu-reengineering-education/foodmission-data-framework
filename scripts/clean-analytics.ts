@@ -21,19 +21,19 @@ async function cleanAnalytics() {
     crossDimClassification,
     crossDimPatterns,
   ] = await Promise.all([
-    prisma.analyticsBatch.count(),
-    prisma.analyticsDailyNutrition.count(),
-    prisma.analyticsFoodPopularity.count(),
-    prisma.analyticsMealPatterns.count(),
-    prisma.analyticsSustainability.count(),
-    prisma.analyticsMealClassification.count(),
-    prisma.analyticsMealRecord.count(),
-    prisma.analyticsDemographicNutrition.count(),
-    prisma.analyticsDemographicClassification.count(),
-    prisma.analyticsDemographicPatterns.count(),
-    prisma.analyticsCrossDimNutrition.count(),
-    prisma.analyticsCrossDimClassification.count(),
-    prisma.analyticsCrossDimPatterns.count(),
+    prisma.mealLogAnalyticsBatch.count(),
+    prisma.mealLogAnalyticsDailyNutrition.count(),
+    prisma.mealLogAnalyticsFoodPopularity.count(),
+    prisma.mealLogAnalyticsMealPatterns.count(),
+    prisma.mealLogAnalyticsSustainability.count(),
+    prisma.mealLogAnalyticsMealClassification.count(),
+    prisma.mealLogAnalyticsMealRecord.count(),
+    prisma.mealLogAnalyticsDemographicNutrition.count(),
+    prisma.mealLogAnalyticsDemographicClassification.count(),
+    prisma.mealLogAnalyticsDemographicPatterns.count(),
+    prisma.mealLogAnalyticsCrossDimNutrition.count(),
+    prisma.mealLogAnalyticsCrossDimClassification.count(),
+    prisma.mealLogAnalyticsCrossDimPatterns.count(),
   ]);
 
   console.log('Current analytics data:');
@@ -73,7 +73,7 @@ async function cleanAnalytics() {
 
   // Deleting batches cascades to all child tables via FK onDelete: Cascade
   console.log('Deleting all batches (cascades to all analytics tables)...');
-  const deleted = await prisma.analyticsBatch.deleteMany({});
+  const deleted = await prisma.mealLogAnalyticsBatch.deleteMany({});
   console.log(`✓ Deleted ${deleted.count} batches and all associated records`);
 
   console.log('\n✅ Analytics cleanup completed!');

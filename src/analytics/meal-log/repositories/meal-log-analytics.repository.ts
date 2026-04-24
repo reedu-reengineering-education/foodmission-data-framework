@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { PrismaService } from '../../../database/prisma.service';
 import {
-  AnalyticsBatch,
-  AnalyticsBatchStatus,
+  MealLogAnalyticsBatch,
+  MealLogAnalyticsBatchStatus,
   Prisma,
 } from '@prisma/client';
-import { DemographicDimension } from '../services/analytics-aggregator.service';
+import { DemographicDimension } from '../services/meal-log-analytics-aggregator.service';
 
 @Injectable()
-export class AnalyticsRepository {
+export class MealLogAnalyticsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async createBatch(data: {
@@ -16,12 +16,12 @@ export class AnalyticsRepository {
     periodEnd: Date;
     recordCount: number;
     metadata?: Prisma.InputJsonValue;
-  }): Promise<AnalyticsBatch> {
-    return this.prisma.analyticsBatch.create({ data });
+  }): Promise<MealLogAnalyticsBatch> {
+    return this.prisma.mealLogAnalyticsBatch.create({ data });
   }
 
   async findBatchById(id: string) {
-    return this.prisma.analyticsBatch.findUnique({
+    return this.prisma.mealLogAnalyticsBatch.findUnique({
       where: { id },
       include: {
         dailyNutrition: true,
@@ -36,8 +36,8 @@ export class AnalyticsRepository {
     });
   }
 
-  async findBatches(status?: AnalyticsBatchStatus) {
-    return this.prisma.analyticsBatch.findMany({
+  async findBatches(status?: MealLogAnalyticsBatchStatus) {
+    return this.prisma.mealLogAnalyticsBatch.findMany({
       where: status ? { status } : undefined,
       orderBy: { generatedAt: 'desc' },
     });
@@ -45,26 +45,26 @@ export class AnalyticsRepository {
 
   async updateBatchStatus(
     id: string,
-    status: AnalyticsBatchStatus,
+    status: MealLogAnalyticsBatchStatus,
     userId?: string,
     reason?: string,
-  ): Promise<AnalyticsBatch> {
-    const data: Prisma.AnalyticsBatchUpdateInput = { status };
+  ): Promise<MealLogAnalyticsBatch> {
+    const data: Prisma.MealLogAnalyticsBatchUpdateInput = { status };
 
-    if (status === AnalyticsBatchStatus.PUBLISHED) {
+    if (status === MealLogAnalyticsBatchStatus.PUBLISHED) {
       data.publishedAt = new Date();
       data.publishedBy = userId;
-    } else if (status === AnalyticsBatchStatus.REJECTED) {
+    } else if (status === MealLogAnalyticsBatchStatus.REJECTED) {
       data.rejectedAt = new Date();
       data.rejectedBy = userId;
       data.rejectionReason = reason;
     }
 
-    return this.prisma.analyticsBatch.update({ where: { id }, data });
+    return this.prisma.mealLogAnalyticsBatch.update({ where: { id }, data });
   }
 
   async deleteBatch(id: string): Promise<void> {
-    await this.prisma.analyticsBatch.delete({ where: { id } });
+    await this.prisma.mealLogAnalyticsBatch.delete({ where: { id } });
   }
 
   // ============================================================
@@ -72,39 +72,39 @@ export class AnalyticsRepository {
   // ============================================================
 
   async insertDailyNutrition(
-    data: Prisma.AnalyticsDailyNutritionCreateManyInput[],
+    data: Prisma.MealLogAnalyticsDailyNutritionCreateManyInput[],
   ) {
-    return this.prisma.analyticsDailyNutrition.createMany({ data });
+    return this.prisma.mealLogAnalyticsDailyNutrition.createMany({ data });
   }
 
   async insertFoodPopularity(
-    data: Prisma.AnalyticsFoodPopularityCreateManyInput[],
+    data: Prisma.MealLogAnalyticsFoodPopularityCreateManyInput[],
   ) {
-    return this.prisma.analyticsFoodPopularity.createMany({ data });
+    return this.prisma.mealLogAnalyticsFoodPopularity.createMany({ data });
   }
 
   async insertMealPatterns(
-    data: Prisma.AnalyticsMealPatternsCreateManyInput[],
+    data: Prisma.MealLogAnalyticsMealPatternsCreateManyInput[],
   ) {
-    return this.prisma.analyticsMealPatterns.createMany({ data });
+    return this.prisma.mealLogAnalyticsMealPatterns.createMany({ data });
   }
 
   async insertSustainability(
-    data: Prisma.AnalyticsSustainabilityCreateManyInput[],
+    data: Prisma.MealLogAnalyticsSustainabilityCreateManyInput[],
   ) {
-    return this.prisma.analyticsSustainability.createMany({ data });
+    return this.prisma.mealLogAnalyticsSustainability.createMany({ data });
   }
 
   async insertMealClassification(
-    data: Prisma.AnalyticsMealClassificationCreateManyInput[],
+    data: Prisma.MealLogAnalyticsMealClassificationCreateManyInput[],
   ) {
-    return this.prisma.analyticsMealClassification.createMany({ data });
+    return this.prisma.mealLogAnalyticsMealClassification.createMany({ data });
   }
 
   async insertMealRecords(
-    data: Prisma.AnalyticsMealRecordCreateManyInput[],
+    data: Prisma.MealLogAnalyticsMealRecordCreateManyInput[],
   ) {
-    return this.prisma.analyticsMealRecord.createMany({ data });
+    return this.prisma.mealLogAnalyticsMealRecord.createMany({ data });
   }
 
   // ============================================================
@@ -114,9 +114,9 @@ export class AnalyticsRepository {
   private publishedBatchFilter(
     from?: Date,
     to?: Date,
-  ): Prisma.AnalyticsBatchWhereInput {
-    const filter: Prisma.AnalyticsBatchWhereInput = {
-      status: AnalyticsBatchStatus.PUBLISHED,
+  ): Prisma.MealLogAnalyticsBatchWhereInput {
+    const filter: Prisma.MealLogAnalyticsBatchWhereInput = {
+      status: MealLogAnalyticsBatchStatus.PUBLISHED,
     };
     if (from) {
       filter.periodStart = { gte: from };
@@ -134,7 +134,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsDailyNutrition.findMany({
+    return this.prisma.mealLogAnalyticsDailyNutrition.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -165,7 +165,7 @@ export class AnalyticsRepository {
   async getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsFoodPopularity.findMany({
+    return this.prisma.mealLogAnalyticsFoodPopularity.findMany({
       where: { batch: batchFilter },
       orderBy: { frequency: 'desc' },
       take: limit,
@@ -189,7 +189,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsMealPatterns.findMany({
+    return this.prisma.mealLogAnalyticsMealPatterns.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -220,7 +220,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsSustainability.findMany({
+    return this.prisma.mealLogAnalyticsSustainability.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -247,7 +247,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsMealClassification.findMany({
+    return this.prisma.mealLogAnalyticsMealClassification.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -280,7 +280,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsMealRecord.findMany({
+    return this.prisma.mealLogAnalyticsMealRecord.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -317,21 +317,21 @@ export class AnalyticsRepository {
   // ============================================================
 
   async insertDemographicNutrition(
-    data: Prisma.AnalyticsDemographicNutritionCreateManyInput[],
+    data: Prisma.MealLogAnalyticsDemographicNutritionCreateManyInput[],
   ) {
-    return this.prisma.analyticsDemographicNutrition.createMany({ data });
+    return this.prisma.mealLogAnalyticsDemographicNutrition.createMany({ data });
   }
 
   async insertDemographicClassification(
-    data: Prisma.AnalyticsDemographicClassificationCreateManyInput[],
+    data: Prisma.MealLogAnalyticsDemographicClassificationCreateManyInput[],
   ) {
-    return this.prisma.analyticsDemographicClassification.createMany({ data });
+    return this.prisma.mealLogAnalyticsDemographicClassification.createMany({ data });
   }
 
   async insertDemographicPatterns(
-    data: Prisma.AnalyticsDemographicPatternsCreateManyInput[],
+    data: Prisma.MealLogAnalyticsDemographicPatternsCreateManyInput[],
   ) {
-    return this.prisma.analyticsDemographicPatterns.createMany({ data });
+    return this.prisma.mealLogAnalyticsDemographicPatterns.createMany({ data });
   }
 
   // ============================================================
@@ -339,21 +339,21 @@ export class AnalyticsRepository {
   // ============================================================
 
   async insertCrossDimNutrition(
-    data: Prisma.AnalyticsCrossDimNutritionCreateManyInput[],
+    data: Prisma.MealLogAnalyticsCrossDimNutritionCreateManyInput[],
   ) {
-    return this.prisma.analyticsCrossDimNutrition.createMany({ data });
+    return this.prisma.mealLogAnalyticsCrossDimNutrition.createMany({ data });
   }
 
   async insertCrossDimClassification(
-    data: Prisma.AnalyticsCrossDimClassificationCreateManyInput[],
+    data: Prisma.MealLogAnalyticsCrossDimClassificationCreateManyInput[],
   ) {
-    return this.prisma.analyticsCrossDimClassification.createMany({ data });
+    return this.prisma.mealLogAnalyticsCrossDimClassification.createMany({ data });
   }
 
   async insertCrossDimPatterns(
-    data: Prisma.AnalyticsCrossDimPatternsCreateManyInput[],
+    data: Prisma.MealLogAnalyticsCrossDimPatternsCreateManyInput[],
   ) {
-    return this.prisma.analyticsCrossDimPatterns.createMany({ data });
+    return this.prisma.mealLogAnalyticsCrossDimPatterns.createMany({ data });
   }
 
   // ============================================================
@@ -369,7 +369,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsCrossDimNutrition.findMany({
+    return this.prisma.mealLogAnalyticsCrossDimNutrition.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -412,7 +412,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsCrossDimClassification.findMany({
+    return this.prisma.mealLogAnalyticsCrossDimClassification.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -453,7 +453,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsCrossDimPatterns.findMany({
+    return this.prisma.mealLogAnalyticsCrossDimPatterns.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -495,7 +495,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsDemographicNutrition.findMany({
+    return this.prisma.mealLogAnalyticsDemographicNutrition.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -537,7 +537,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsDemographicClassification.findMany({
+    return this.prisma.mealLogAnalyticsDemographicClassification.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal
@@ -577,7 +577,7 @@ export class AnalyticsRepository {
   ) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
-    return this.prisma.analyticsDemographicPatterns.findMany({
+    return this.prisma.mealLogAnalyticsDemographicPatterns.findMany({
       where: {
         batch: batchFilter,
         ...(typeOfMeal

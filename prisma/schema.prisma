@@ -559,11 +559,11 @@ enum MealType {
 // Analytics — Aggregated & Anonymized Data
 // ============================================================
 
-model AnalyticsBatch {
+model MealLogAnalyticsBatch {
   id              String               @id @default(uuid())
   periodStart     DateTime
   periodEnd       DateTime
-  status          AnalyticsBatchStatus @default(STAGING)
+  status          MealLogAnalyticsBatchStatus @default(STAGING)
   generatedAt     DateTime             @default(now())
   publishedAt     DateTime?
   publishedBy     String?
@@ -573,38 +573,38 @@ model AnalyticsBatch {
   recordCount     Int                  @default(0)
   metadata        Json?
 
-  dailyNutrition           AnalyticsDailyNutrition[]
-  foodPopularity           AnalyticsFoodPopularity[]
-  mealPatterns             AnalyticsMealPatterns[]
-  sustainability           AnalyticsSustainability[]
-  mealClassification       AnalyticsMealClassification[]
-  mealRecords              AnalyticsMealRecord[]
-  demographicNutrition      AnalyticsDemographicNutrition[]
-  demographicClassification AnalyticsDemographicClassification[]
-  demographicPatterns       AnalyticsDemographicPatterns[]
-  crossDimNutrition         AnalyticsCrossDimNutrition[]
-  crossDimClassification    AnalyticsCrossDimClassification[]
-  crossDimPatterns          AnalyticsCrossDimPatterns[]
+  dailyNutrition           MealLogAnalyticsDailyNutrition[]
+  foodPopularity           MealLogAnalyticsFoodPopularity[]
+  mealPatterns             MealLogAnalyticsMealPatterns[]
+  sustainability           MealLogAnalyticsSustainability[]
+  mealClassification       MealLogAnalyticsMealClassification[]
+  mealRecords              MealLogAnalyticsMealRecord[]
+  demographicNutrition      MealLogAnalyticsDemographicNutrition[]
+  demographicClassification MealLogAnalyticsDemographicClassification[]
+  demographicPatterns       MealLogAnalyticsDemographicPatterns[]
+  crossDimNutrition         MealLogAnalyticsCrossDimNutrition[]
+  crossDimClassification    MealLogAnalyticsCrossDimClassification[]
+  crossDimPatterns          MealLogAnalyticsCrossDimPatterns[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([periodStart, periodEnd])
-  @@map("analytics_batches")
+  @@map("meal_log_analytics_batches")
 }
 
-enum AnalyticsBatchStatus {
+enum MealLogAnalyticsBatchStatus {
   STAGING
   APPROVED
   PUBLISHED
   REJECTED
 }
 
-model AnalyticsDailyNutrition {
+model MealLogAnalyticsDailyNutrition {
   id              String         @id @default(uuid())
   batchId         String
-  batch           AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch           MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date            DateTime       @db.Date
   typeOfMeal      TypeOfMeal
   userCount       Int
@@ -625,13 +625,13 @@ model AnalyticsDailyNutrition {
 
   @@unique([batchId, date, typeOfMeal])
   @@index([date])
-  @@map("analytics_daily_nutrition")
+  @@map("meal_log_analytics_daily_nutrition")
 }
 
-model AnalyticsFoodPopularity {
+model MealLogAnalyticsFoodPopularity {
   id               String         @id @default(uuid())
   batchId          String
-  batch            AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch            MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date             DateTime       @db.Date
   foodName         String
   foodGroup        String?
@@ -646,13 +646,13 @@ model AnalyticsFoodPopularity {
   @@unique([batchId, date, foodName, itemType])
   @@index([date])
   @@index([frequency])
-  @@map("analytics_food_popularity")
+  @@map("meal_log_analytics_food_popularity")
 }
 
-model AnalyticsMealPatterns {
+model MealLogAnalyticsMealPatterns {
   id                   String         @id @default(uuid())
   batchId              String
-  batch                AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch                MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date                 DateTime       @db.Date
   typeOfMeal           TypeOfMeal
   userCount            Int
@@ -669,13 +669,13 @@ model AnalyticsMealPatterns {
 
   @@unique([batchId, date, typeOfMeal])
   @@index([date])
-  @@map("analytics_meal_patterns")
+  @@map("meal_log_analytics_meal_patterns")
 }
 
-model AnalyticsSustainability {
+model MealLogAnalyticsSustainability {
   id                     String         @id @default(uuid())
   batchId                String
-  batch                  AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch                  MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date                   DateTime       @db.Date
   typeOfMeal             TypeOfMeal
   userCount              Int
@@ -688,13 +688,13 @@ model AnalyticsSustainability {
 
   @@unique([batchId, date, typeOfMeal])
   @@index([date])
-  @@map("analytics_sustainability")
+  @@map("meal_log_analytics_sustainability")
 }
 
-model AnalyticsMealClassification {
+model MealLogAnalyticsMealClassification {
   id                   String         @id @default(uuid())
   batchId              String
-  batch                AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch                MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date                 DateTime       @db.Date
   typeOfMeal           TypeOfMeal
   userCount            Int
@@ -713,15 +713,15 @@ model AnalyticsMealClassification {
 
   @@unique([batchId, date, typeOfMeal])
   @@index([date])
-  @@map("analytics_meal_classification")
+  @@map("meal_log_analytics_meal_classification")
 }
 
 // One row per individual meal log — no userId, no mealId, date-only timestamp.
 // Enables microdata analysis while preserving anonymity (k-anonymity enforced at batch level).
-model AnalyticsMealRecord {
+model MealLogAnalyticsMealRecord {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
 
   // Temporal — weeks elapsed since the user registered when this meal was logged.
   // Never stores absolute dates, preserving anonymity.
@@ -761,7 +761,7 @@ model AnalyticsMealRecord {
 
   @@index([batchId, weeksSinceRegistration])
   @@index([weeksSinceRegistration, typeOfMeal])
-  @@map("analytics_meal_records")
+  @@map("meal_log_analytics_meal_records")
 }
 
 // ============================================================
@@ -780,10 +780,10 @@ model AnalyticsMealRecord {
 // ============================================================
 
 // Demographic breakdown of daily nutrition averages
-model AnalyticsDemographicNutrition {
+model MealLogAnalyticsDemographicNutrition {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -817,14 +817,14 @@ model AnalyticsDemographicNutrition {
   @@index([educationLevel])
   @@index([region])
   @@index([country])
-  @@map("analytics_demographic_nutrition")
+  @@map("meal_log_analytics_demographic_nutrition")
 }
 
 // Demographic breakdown of meal classification (vegetarian/vegan/NOVA/ultra-processed)
-model AnalyticsDemographicClassification {
+model MealLogAnalyticsDemographicClassification {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -856,14 +856,14 @@ model AnalyticsDemographicClassification {
   @@index([educationLevel])
   @@index([region])
   @@index([country])
-  @@map("analytics_demographic_classification")
+  @@map("meal_log_analytics_demographic_classification")
 }
 
 // Demographic breakdown of meal patterns (pantry usage, eaten out, timing)
-model AnalyticsDemographicPatterns {
+model MealLogAnalyticsDemographicPatterns {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -893,7 +893,7 @@ model AnalyticsDemographicPatterns {
   @@index([educationLevel])
   @@index([region])
   @@index([country])
-  @@map("analytics_demographic_patterns")
+  @@map("meal_log_analytics_demographic_patterns")
 }
 
 // ============================================================
@@ -918,10 +918,10 @@ model AnalyticsDemographicPatterns {
 //   country+region, educationLevel+gender, educationLevel+region, gender+region
 // ============================================================
 
-model AnalyticsCrossDimNutrition {
+model MealLogAnalyticsCrossDimNutrition {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -950,13 +950,13 @@ model AnalyticsCrossDimNutrition {
   @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
   @@index([dim1Name, dim2Name])
   @@index([date])
-  @@map("analytics_cross_dim_nutrition")
+  @@map("meal_log_analytics_cross_dim_nutrition")
 }
 
-model AnalyticsCrossDimClassification {
+model MealLogAnalyticsCrossDimClassification {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -983,13 +983,13 @@ model AnalyticsCrossDimClassification {
   @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
   @@index([dim1Name, dim2Name])
   @@index([date])
-  @@map("analytics_cross_dim_classification")
+  @@map("meal_log_analytics_cross_dim_classification")
 }
 
-model AnalyticsCrossDimPatterns {
+model MealLogAnalyticsCrossDimPatterns {
   id         String         @id @default(uuid())
   batchId    String
-  batch      AnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batch      MealLogAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
@@ -1014,5 +1014,5 @@ model AnalyticsCrossDimPatterns {
   @@unique([batchId, date, typeOfMeal, dim1Name, dim1Value, dim2Name, dim2Value])
   @@index([dim1Name, dim2Name])
   @@index([date])
-  @@map("analytics_cross_dim_patterns")
+  @@map("meal_log_analytics_cross_dim_patterns")
 }

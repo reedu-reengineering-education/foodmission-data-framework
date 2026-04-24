@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AnalyticsController } from './controllers/analytics.controller';
-import { AnalyticsService } from './services/analytics.service';
-import { AnalyticsAggregator } from './services/analytics-aggregator.service';
-import { AnalyticsRepository } from './repositories/analytics.repository';
+import { MealLogAnalyticsController } from './meal-log/controllers/meal-log-analytics.controller';
+import { MealLogAnalyticsService } from './meal-log/services/meal-log-analytics.service';
+import { MealLogAnalyticsAggregator } from './meal-log/services/meal-log-analytics-aggregator.service';
+import { MealLogAnalyticsRepository } from './meal-log/repositories/meal-log-analytics.repository';
 import { UserRepository } from '../user/repositories/user.repository';
 
 @Module({
   imports: [ScheduleModule.forRoot()],
-  controllers: [AnalyticsController],
-  providers: [AnalyticsService, AnalyticsAggregator, AnalyticsRepository, UserRepository],
-  exports: [AnalyticsService],
+  controllers: [MealLogAnalyticsController],
+  providers: [MealLogAnalyticsService, MealLogAnalyticsAggregator, MealLogAnalyticsRepository, UserRepository],
+  exports: [MealLogAnalyticsService],
 })
 export class AnalyticsModule {}

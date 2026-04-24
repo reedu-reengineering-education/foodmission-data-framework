@@ -3647,7 +3647,7 @@ paths:
         - JWT-auth: []
       summary: Delete meal log
       tags: *ref_18
-  /api/v1/analytics/public/nutrition:
+  /api/v1/analytics/meallog/public/nutrition:
     get:
       description: >-
         Aggregated daily nutrition data with percentiles. Anonymized with
@@ -3682,8 +3682,8 @@ paths:
           description: Daily nutrition aggregates
       summary: Daily nutrition averages (calories, protein, fat, etc.)
       tags: &ref_19
-        - Analytics
-  /api/v1/analytics/public/food-popularity:
+        - Analytics - Meal Log
+  /api/v1/analytics/meallog/public/food-popularity:
     get:
       description: Ranked by frequency. Only foods consumed by ≥5 unique users.
       operationId: getPublicFoodPopularity
@@ -3709,7 +3709,7 @@ paths:
           description: Food popularity rankings
       summary: Most consumed foods and food categories
       tags: *ref_19
-  /api/v1/analytics/public/meal-patterns:
+  /api/v1/analytics/meallog/public/meal-patterns:
     get:
       operationId: getPublicMealPatterns
       parameters:
@@ -3739,7 +3739,7 @@ paths:
           description: Meal pattern aggregates
       summary: Meal behavior patterns (timing, pantry usage, items per meal)
       tags: *ref_19
-  /api/v1/analytics/public/sustainability:
+  /api/v1/analytics/meallog/public/sustainability:
     get:
       operationId: getPublicSustainability
       parameters:
@@ -3769,7 +3769,7 @@ paths:
           description: Sustainability aggregates
       summary: Sustainability, carbon footprint & nutri/eco-score distributions
       tags: *ref_19
-  /api/v1/analytics/public/meal-classification:
+  /api/v1/analytics/meallog/public/meal-classification:
     get:
       operationId: getPublicMealClassification
       parameters:
@@ -3799,7 +3799,7 @@ paths:
           description: Meal classification aggregates
       summary: Vegetarian/vegan rates, ultra-processed %, NOVA distribution
       tags: *ref_19
-  /api/v1/analytics/public/meal-records:
+  /api/v1/analytics/meallog/public/meal-records:
     get:
       operationId: getPublicMealRecords
       parameters:
@@ -3829,7 +3829,7 @@ paths:
           description: Anonymized meal-level records
       summary: Individual meal records — anonymized microdata (one row per meal log)
       tags: *ref_19
-  /api/v1/analytics/public/demographic/nutrition:
+  /api/v1/analytics/meallog/public/demographic/nutrition:
     get:
       description: >-
         Nutrition averages segmented by one demographic dimension (ageGroup,
@@ -3877,7 +3877,7 @@ paths:
           description: Demographic nutrition aggregates
       summary: Demographic breakdown of daily nutrition averages
       tags: *ref_19
-  /api/v1/analytics/public/demographic/classification:
+  /api/v1/analytics/meallog/public/demographic/classification:
     get:
       description: >-
         Classification metrics segmented by one demographic dimension.
@@ -3923,7 +3923,7 @@ paths:
         Demographic breakdown of meal classification
         (vegetarian/vegan/NOVA/ultra-processed)
       tags: *ref_19
-  /api/v1/analytics/public/demographic/patterns:
+  /api/v1/analytics/meallog/public/demographic/patterns:
     get:
       description: >-
         Meal behavior patterns segmented by one demographic dimension.
@@ -3969,7 +3969,7 @@ paths:
         Demographic breakdown of meal patterns (pantry usage, timing, items per
         meal)
       tags: *ref_19
-  /api/v1/analytics/public/cross-dim/nutrition:
+  /api/v1/analytics/meallog/public/cross-dim/nutrition:
     get:
       description: >-
         Nutrition averages where two demographic dimensions are active
@@ -4033,7 +4033,7 @@ paths:
         Cross-dimensional nutrition averages (two demographic dimensions
         combined)
       tags: *ref_19
-  /api/v1/analytics/public/cross-dim/classification:
+  /api/v1/analytics/meallog/public/cross-dim/classification:
     get:
       description: >-
         Vegetarian/vegan rates, ultra-processed % and NOVA distribution for two
@@ -4091,7 +4091,7 @@ paths:
         Cross-dimensional meal classification (two demographic dimensions
         combined)
       tags: *ref_19
-  /api/v1/analytics/public/cross-dim/patterns:
+  /api/v1/analytics/meallog/public/cross-dim/patterns:
     get:
       description: >-
         Meal behavior patterns (pantry usage, eaten out, timing, items per meal)
@@ -4147,7 +4147,7 @@ paths:
           description: Cross-dimensional meal pattern aggregates (k≥20)
       summary: Cross-dimensional meal patterns (two demographic dimensions combined)
       tags: *ref_19
-  /api/v1/analytics/public/summary:
+  /api/v1/analytics/meallog/public/summary:
     get:
       operationId: getPublicSummary
       parameters:
@@ -4166,7 +4166,7 @@ paths:
           description: Summary across all dimensions
       summary: High-level summary across all dimensions
       tags: *ref_19
-  /api/v1/analytics/batches/generate:
+  /api/v1/analytics/meallog/batches/generate:
     post:
       operationId: generateBatch
       parameters:
@@ -4189,7 +4189,7 @@ paths:
         - JWT-auth: []
       summary: Manually trigger analytics aggregation
       tags: *ref_19
-  /api/v1/analytics/batches/run-daily:
+  /api/v1/analytics/meallog/batches/run-daily:
     post:
       operationId: runDaily
       parameters: []
@@ -4200,7 +4200,7 @@ paths:
         - JWT-auth: []
       summary: Manually trigger the daily aggregation job
       tags: *ref_19
-  /api/v1/analytics/batches:
+  /api/v1/analytics/meallog/batches:
     get:
       operationId: listBatches
       parameters:
@@ -4221,7 +4221,7 @@ paths:
         - JWT-auth: []
       summary: List all analytics batches
       tags: *ref_19
-  /api/v1/analytics/batches/{id}:
+  /api/v1/analytics/meallog/batches/{id}:
     get:
       operationId: getBatch
       parameters:
@@ -4254,7 +4254,7 @@ paths:
         - JWT-auth: []
       summary: Delete a staging or rejected batch
       tags: *ref_19
-  /api/v1/analytics/batches/{id}/approve:
+  /api/v1/analytics/meallog/batches/{id}/approve:
     patch:
       operationId: approveBatch
       parameters:
@@ -4271,7 +4271,7 @@ paths:
         - JWT-auth: []
       summary: Approve a staging batch for publication
       tags: *ref_19
-  /api/v1/analytics/batches/{id}/publish:
+  /api/v1/analytics/meallog/batches/{id}/publish:
     patch:
       operationId: publishBatch
       parameters:
@@ -4288,7 +4288,7 @@ paths:
         - JWT-auth: []
       summary: Publish an approved batch (makes data public)
       tags: *ref_19
-  /api/v1/analytics/batches/{id}/reject:
+  /api/v1/analytics/meallog/batches/{id}/reject:
     patch:
       operationId: rejectBatch
       parameters:
