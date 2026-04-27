@@ -76,7 +76,7 @@ async function main() {
       },
       {
         label: 'shelfLife links',
-        value: `${shelfLifeLinks.foods} foods, ${shelfLifeLinks.categories} categories`,
+        value: `${shelfLifeLinks.foodProducts} food products, ${shelfLifeLinks.genericFoods} generic foods`,
       },
     ];
     for (const row of summaryRows) {
