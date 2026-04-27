@@ -66,7 +66,7 @@ export class ShoppingListItemService {
       if (itemType === 'food_product') {
         if (!foodProductId)
           throw new BadRequestException('foodProductId is required');
-        await this.validateFoodExists(foodProductId);
+        await this.validateFoodProductExists(foodProductId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           foodProductId,
@@ -75,7 +75,7 @@ export class ShoppingListItemService {
       } else {
         if (!genericFoodId)
           throw new BadRequestException('genericFoodId is required');
-        await this.validateFoodCategoryExists(genericFoodId);
+        await this.validateGenericFoodExists(genericFoodId);
         await this.checkForDuplicateItem(
           createDto.shoppingListId,
           undefined,
@@ -191,7 +191,7 @@ export class ShoppingListItemService {
     await this.findById(id, userId, shoppingListId);
 
     if (updateDto.foodProductId) {
-      await this.validateFoodExists(updateDto.foodProductId);
+      await this.validateFoodProductExists(updateDto.foodProductId);
     }
 
     if (updateDto.shoppingListId) {
@@ -320,8 +320,10 @@ export class ShoppingListItemService {
     }
   }
 
-  private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.foodProductRepository.findById(foodId);
+  private async validateFoodProductExists(
+    foodProductId: string,
+  ): Promise<void> {
+    const food = await this.foodProductRepository.findById(foodProductId);
 
     if (!food) {
       throw new NotFoundException(
@@ -330,7 +332,7 @@ export class ShoppingListItemService {
     }
   }
 
-  private async validateFoodCategoryExists(
+  private async validateGenericFoodExists(
     genericFoodId: string,
   ): Promise<void> {
     const genericFood =

@@ -31,7 +31,7 @@ export function runMigrations(): boolean {
 export interface TestFixtures {
   userId: string;
   pantryId: string;
-  foodId: string;
+  foodProductId: string;
   shoppingListId?: string;
 }
 
@@ -58,7 +58,7 @@ export async function createTestFixtures(
   const fixtures: TestFixtures = {
     userId: user.id,
     pantryId: pantry.id,
-    foodId: food.id,
+    foodProductId: food.id,
   };
 
   if (options.withShoppingList) {
@@ -87,7 +87,7 @@ export async function cleanupTestFixtures(
     where: { pantryId: fixtures.pantryId },
   });
   await prisma.pantry.delete({ where: { id: fixtures.pantryId } });
-  await prisma.foodProduct.delete({ where: { id: fixtures.foodId } });
+  await prisma.foodProduct.delete({ where: { id: fixtures.foodProductId } });
   await prisma.user.delete({ where: { id: fixtures.userId } });
 }
 
