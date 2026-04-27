@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, MealItem } from '@prisma/client';
+import { MealItem } from '@prisma/client';
+import {
+  MealItemWithRelations,
+  MEAL_ITEM_WITH_RELATIONS_INCLUDE,
+} from '../../../common/types/prisma-relations';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../database/prisma.service';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { BaseRepository } from '../../../common/interfaces/base-repository.interface';
-
-export type MealItemWithRelations = Prisma.MealItemGetPayload<{
-  include: {
-    meal: true;
-    food: true;
-    foodCategory: true;
-  };
-}>;
 
 @Injectable()
 export class MealItemRepository implements BaseRepository<
@@ -26,21 +23,13 @@ export class MealItemRepository implements BaseRepository<
   ): Promise<MealItemWithRelations> {
     return this.prisma.mealItem.create({
       data,
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   findAll(): Promise<MealItemWithRelations[]> {
     return this.prisma.mealItem.findMany({
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -51,11 +40,7 @@ export class MealItemRepository implements BaseRepository<
   findByMealId(mealId: string): Promise<MealItemWithRelations[]> {
     return this.prisma.mealItem.findMany({
       where: { mealId },
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
       orderBy: { createdAt: 'asc' },
     });
   }
@@ -63,57 +48,45 @@ export class MealItemRepository implements BaseRepository<
   findById(id: string): Promise<MealItemWithRelations | null> {
     return this.prisma.mealItem.findUnique({
       where: { id },
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
-  findByMealAndFood(
+  findByMealAndFoodProduct(
     mealId: string,
-    foodId: string,
+    foodProductId: string,
   ): Promise<MealItemWithRelations | null> {
     return this.prisma.mealItem.findFirst({
       where: {
         mealId,
-        foodId,
+        foodProductId,
       },
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
-  findByMealAndFoodCategory(
+  findByMealAndGenericFood(
     mealId: string,
-    foodCategoryId: string,
+    genericFoodId: string,
   ): Promise<MealItemWithRelations | null> {
     return this.prisma.mealItem.findFirst({
       where: {
         mealId,
-        foodCategoryId,
+        genericFoodId,
       },
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async checkForDuplicateItem(
     mealId: string,
-    foodId?: string,
-    foodCategoryId?: string,
+    opts: { foodProductId?: string; genericFoodId?: string },
   ): Promise<MealItemWithRelations | null> {
-    if (foodId) {
-      return this.findByMealAndFood(mealId, foodId);
-    } else if (foodCategoryId) {
-      return this.findByMealAndFoodCategory(mealId, foodCategoryId);
+    const { foodProductId, genericFoodId } = opts;
+    if (foodProductId) {
+      return this.findByMealAndFoodProduct(mealId, foodProductId);
+    } else if (genericFoodId) {
+      return this.findByMealAndGenericFood(mealId, genericFoodId);
     }
     return null;
   }
@@ -125,11 +98,7 @@ export class MealItemRepository implements BaseRepository<
     return this.prisma.mealItem.update({
       where: { id },
       data,
-      include: {
-        meal: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 

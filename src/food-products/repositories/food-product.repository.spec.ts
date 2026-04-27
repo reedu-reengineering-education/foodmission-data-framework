@@ -1,24 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import {
-  FoodProductRepository,
-  UpdateFoodDto,
-} from './food-product.repository';
-import { CreateFoodDto } from '../dto/create-food.dto';
+import { FoodProductRepository } from './food-product.repository';
+import { CreateFoodProductDto } from '../dto/create-food-product.dto';
+import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
 import { PrismaService } from '../../database/prisma.service';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('FoodProductRepository', () => {
   let repository: FoodProductRepository;
-
   const mockFood = { ...TEST_FOOD };
-
   let mockPrismaService: any;
-
   beforeAll(() => {
     mockPrismaService = {
-      food: {
+      foodProduct: {
         findMany: jest.fn(),
         findUnique: jest.fn(),
         create: jest.fn(),
@@ -32,15 +27,14 @@ describe('FoodProductRepository', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FoodRepository,
+        FoodProductRepository,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
       ],
     }).compile();
-
-    repository = module.get<FoodRepository>(FoodRepository);
+    repository = module.get<FoodProductRepository>(FoodProductRepository);
   });
 
   afterEach(() => {
@@ -49,12 +43,12 @@ describe('FoodProductRepository', () => {
 
   describe('findAll', () => {
     it('should return all foods with default options', async () => {
-      mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
+      mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
 
       const result = await repository.findAll();
 
       expect(result).toEqual([mockFood]);
-      expect(mockPrismaService.food.findMany).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.findMany).toHaveBeenCalledWith({
         skip: undefined,
         take: undefined,
         where: undefined,
@@ -75,12 +69,12 @@ describe('FoodProductRepository', () => {
         where: { name: 'test' },
         orderBy: { name: 'asc' },
       };
-      mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
+      mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
 
       const result = await repository.findAll(options);
 
       expect(result).toEqual([mockFood]);
-      expect(mockPrismaService.food.findMany).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.findMany).toHaveBeenCalledWith({
         skip: 10,
         take: 5,
         where: { name: 'test' },
@@ -91,7 +85,7 @@ describe('FoodProductRepository', () => {
 
     it('should throw error when database fails', async () => {
       const dbError = new Error('Database error');
-      mockPrismaService.food.findMany.mockRejectedValueOnce(dbError);
+      mockPrismaService.foodProduct.findMany.mockRejectedValueOnce(dbError);
 
       await expect(repository.findAll()).rejects.toThrow(dbError);
     });
@@ -99,18 +93,18 @@ describe('FoodProductRepository', () => {
 
   describe('findById', () => {
     it('should return food by id', async () => {
-      mockPrismaService.food.findUnique.mockResolvedValueOnce(mockFood);
+      mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(mockFood);
 
       const result = await repository.findById('food-1');
 
       expect(result).toEqual(mockFood);
-      expect(mockPrismaService.food.findUnique).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.findUnique).toHaveBeenCalledWith({
         where: { id: 'food-1' },
       });
     });
 
     it('should return null when food not found', async () => {
-      mockPrismaService.food.findUnique.mockResolvedValueOnce(null);
+      mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(null);
 
       const result = await repository.findById('nonexistent');
 
@@ -119,7 +113,7 @@ describe('FoodProductRepository', () => {
 
     it('should throw error when database fails', async () => {
       const dbError = new Error('Database error');
-      mockPrismaService.food.findUnique.mockRejectedValueOnce(dbError);
+      mockPrismaService.foodProduct.findUnique.mockRejectedValueOnce(dbError);
 
       await expect(repository.findById('food-1')).rejects.toThrow(dbError);
     });
@@ -127,19 +121,19 @@ describe('FoodProductRepository', () => {
 
   describe('findByBarcode', () => {
     it('should return food by barcode', async () => {
-      mockPrismaService.food.findUnique.mockResolvedValueOnce(mockFood);
+      mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(mockFood);
 
       const result = await repository.findByBarcode('1234567890');
 
       expect(result).toEqual(mockFood);
-      expect(mockPrismaService.food.findUnique).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.findUnique).toHaveBeenCalledWith({
         where: { barcode: '1234567890' },
       });
     });
 
     it('should throw error when database fails', async () => {
       const dbError = new Error('Database error');
-      mockPrismaService.food.findUnique.mockRejectedValueOnce(dbError);
+      mockPrismaService.foodProduct.findUnique.mockRejectedValueOnce(dbError);
 
       await expect(repository.findByBarcode('1234567890')).rejects.toThrow(
         dbError,
@@ -149,13 +143,13 @@ describe('FoodProductRepository', () => {
 
   describe('create', () => {
     it('should create new food', async () => {
-      const createDto: CreateFoodDto = {
+      const createDto: CreateFoodProductDto = {
         name: 'New Food',
         description: 'New Description',
         barcode: '9876543210',
       };
       const userId = 'user-1';
-      mockPrismaService.food.create.mockResolvedValueOnce(mockFood);
+      mockPrismaService.foodProduct.create.mockResolvedValueOnce(mockFood);
 
       const result = await repository.create({
         ...createDto,
@@ -163,13 +157,13 @@ describe('FoodProductRepository', () => {
       });
 
       expect(result).toEqual(mockFood);
-      expect(mockPrismaService.food.create).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.create).toHaveBeenCalledWith({
         data: { ...createDto, createdBy: userId },
       });
     });
 
     it('should throw error for duplicate barcode', async () => {
-      const createDto: CreateFoodDto = {
+      const createDto: CreateFoodProductDto = {
         name: 'New Food',
       };
       const userId = 'user-1';
@@ -177,7 +171,7 @@ describe('FoodProductRepository', () => {
         'Unique constraint failed',
         { code: 'P2002', clientVersion: '4.0.0' },
       );
-      mockPrismaService.food.create.mockRejectedValueOnce(prismaError);
+      mockPrismaService.foodProduct.create.mockRejectedValueOnce(prismaError);
 
       await expect(
         repository.create({ ...createDto, createdBy: userId }),
@@ -189,11 +183,11 @@ describe('FoodProductRepository', () => {
 
   describe('update', () => {
     it('should update food', async () => {
-      const updateDto: UpdateFoodDto = {
+      const updateDto: UpdateFoodProductDto = {
         name: 'Updated Food',
         description: 'Updated Description',
       };
-      mockPrismaService.food.update.mockResolvedValueOnce({
+      mockPrismaService.foodProduct.update.mockResolvedValueOnce({
         ...mockFood,
         ...updateDto,
       });
@@ -201,19 +195,19 @@ describe('FoodProductRepository', () => {
       const result = await repository.update('food-1', updateDto);
 
       expect(result).toEqual({ ...mockFood, ...updateDto });
-      expect(mockPrismaService.food.update).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.update).toHaveBeenCalledWith({
         where: { id: 'food-1' },
         data: updateDto,
       });
     });
 
     it('should throw error when food not found', async () => {
-      const updateDto: UpdateFoodDto = { name: 'Updated Food' };
+      const updateDto: UpdateFoodProductDto = { name: 'Updated Food' };
       const prismaError = new PrismaClientKnownRequestError(
         'Record not found',
         { code: 'P2025', clientVersion: '4.0.0' },
       );
-      mockPrismaService.food.update.mockRejectedValueOnce(prismaError);
+      mockPrismaService.foodProduct.update.mockRejectedValueOnce(prismaError);
 
       await expect(repository.update('nonexistent', updateDto)).rejects.toThrow(
         'Food not found',
@@ -223,11 +217,11 @@ describe('FoodProductRepository', () => {
 
   describe('delete', () => {
     it('should delete food', async () => {
-      mockPrismaService.food.delete.mockResolvedValueOnce(mockFood);
+      mockPrismaService.foodProduct.delete.mockResolvedValueOnce(mockFood);
 
       await repository.delete('food-1');
 
-      expect(mockPrismaService.food.delete).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.delete).toHaveBeenCalledWith({
         where: { id: 'food-1' },
       });
     });
@@ -237,7 +231,7 @@ describe('FoodProductRepository', () => {
         'Record not found',
         { code: 'P2025', clientVersion: '4.0.0' },
       );
-      mockPrismaService.food.delete.mockRejectedValueOnce(prismaError);
+      mockPrismaService.foodProduct.delete.mockRejectedValueOnce(prismaError);
 
       await expect(repository.delete('nonexistent')).rejects.toThrow(
         prismaError,
@@ -247,12 +241,12 @@ describe('FoodProductRepository', () => {
 
   describe('searchByName', () => {
     it('should search foods by name', async () => {
-      mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
+      mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
 
       const result = await repository.searchByName('test');
 
       expect(result).toEqual([mockFood]);
-      expect(mockPrismaService.food.findMany).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.findMany).toHaveBeenCalledWith({
         where: {
           name: {
             contains: 'test',
@@ -269,31 +263,33 @@ describe('FoodProductRepository', () => {
 
   describe('count', () => {
     it('should count foods', async () => {
-      mockPrismaService.food.count.mockResolvedValueOnce(5);
+      mockPrismaService.foodProduct.count.mockResolvedValueOnce(5);
 
       const result = await repository.count();
 
       expect(result).toBe(5);
-      expect(mockPrismaService.food.count).toHaveBeenCalledWith({
+      expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({
         where: undefined,
       });
     });
 
     it('should count foods with filter', async () => {
       const where = { name: 'test' };
-      mockPrismaService.food.count.mockResolvedValueOnce(3);
+      mockPrismaService.foodProduct.count.mockResolvedValueOnce(3);
 
       const result = await repository.count(where);
 
       expect(result).toBe(3);
-      expect(mockPrismaService.food.count).toHaveBeenCalledWith({ where });
+      expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({
+        where,
+      });
     });
   });
 
   describe('findWithPagination', () => {
     it('should return paginated foods with default options', async () => {
-      mockPrismaService.food.findMany.mockResolvedValueOnce([mockFood]);
-      mockPrismaService.food.count.mockResolvedValueOnce(1);
+      mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
+      mockPrismaService.foodProduct.count.mockResolvedValueOnce(1);
 
       const result = await repository.findWithPagination({});
 

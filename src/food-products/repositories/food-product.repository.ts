@@ -4,199 +4,81 @@ import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { normalizePagination } from '../../common/utils/pagination';
+import { deepCloneJson } from '../../common/utils/json.utils';
 import { FoodProduct } from '@prisma/client';
+import {
+  FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+  FoodProductWithRelations,
+} from '../../common/types/prisma-relations';
+import { CreateFoodProductDto } from '../dto/create-food-product.dto';
+import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
 import {
   BaseRepository,
   FindAllOptions,
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 
-export interface CreateFoodDto {
-  name: string;
-  description?: string;
-  barcode?: string;
-  createdBy: string;
-
-  // Product metadata
-  brands?: string;
-  categories?: string[];
-  labels?: string[];
-  quantity?: string;
-  servingSize?: string;
-  ingredientsText?: string;
-  allergens?: string[];
-  traces?: string[];
-  countries?: string[];
-  origins?: string;
-  manufacturingPlaces?: string;
-  imageUrl?: string;
-  imageFrontUrl?: string;
-
-  // Nutriments per 100g
-  nutritionDataPer?: string;
-  energyKcal?: number;
-  energyKj?: number;
-  fat?: number;
-  saturatedFat?: number;
-  where?: object;
-  orderBy?: object;
-  include?: object;
-  sugars?: number;
-  addedSugars?: number;
-  fiber?: number;
-  proteins?: number;
-  salt?: number;
-  sodium?: number;
-  vitaminA?: number;
-  vitaminC?: number;
-  calcium?: number;
-  iron?: number;
-  potassium?: number;
-  magnesium?: number;
-  zinc?: number;
-  nutrimentsRaw?: Record<string, unknown>;
-
-  // Scores
-  nutriscoreGrade?: string;
-  nutriscoreScore?: number;
-  novaGroup?: number;
-  ecoscoreGrade?: string;
-  carbonFootprint?: number;
-  nutrientLevels?: Record<string, unknown>;
-
-  // Diet analysis
-  isVegan?: boolean;
-  isVegetarian?: boolean;
-  isPalmOilFree?: boolean;
-  ingredientsAnalysisTags?: string[];
-
-  // Packaging
-  packagingTags?: string[];
-  packagingMaterials?: string[];
-  packagingRecycling?: string[];
-  packagingText?: string;
-
-  // Data quality
-  completeness?: number;
-}
-
-export interface UpdateFoodDto {
-  name?: string;
-  description?: string;
-  barcode?: string;
-
-  brands?: string;
-  categories?: string[];
-  labels?: string[];
-  quantity?: string;
-  servingSize?: string;
-  ingredientsText?: string;
-  allergens?: string[];
-  traces?: string[];
-  countries?: string[];
-  origins?: string;
-  manufacturingPlaces?: string;
-  imageUrl?: string;
-  imageFrontUrl?: string;
-
-  nutritionDataPer?: string;
-  energyKcal?: number;
-  energyKj?: number;
-  fat?: number;
-  saturatedFat?: number;
-  transFat?: number;
-  cholesterol?: number;
-  carbohydrates?: number;
-  sugars?: number;
-  addedSugars?: number;
-  fiber?: number;
-  proteins?: number;
-  salt?: number;
-  sodium?: number;
-  vitaminA?: number;
-  vitaminC?: number;
-  calcium?: number;
-  iron?: number;
-  potassium?: number;
-  magnesium?: number;
-  zinc?: number;
-  nutrimentsRaw?: Record<string, unknown>;
-
-  nutriscoreGrade?: string;
-  nutriscoreScore?: number;
-  novaGroup?: number;
-  ecoscoreGrade?: string;
-  carbonFootprint?: number;
-  nutrientLevels?: Record<string, unknown>;
-
-  isVegan?: boolean;
-  isVegetarian?: boolean;
-  isPalmOilFree?: boolean;
-  ingredientsAnalysisTags?: string[];
-
-  packagingTags?: string[];
-  packagingMaterials?: string[];
-  packagingRecycling?: string[];
-  packagingText?: string;
-
-  completeness?: number;
-}
-
 @Injectable()
+export class FoodProductRepository implements BaseRepository<
   FoodProduct,
-  CreateFoodDto,
-  UpdateFoodDto,
-  Prisma.FoodWhereInput
+  CreateFoodProductDto,
+  UpdateFoodProductDto,
+  Prisma.FoodProductWhereInput
 > {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(
     options: FindAllOptions<
-      Prisma.FoodWhereInput,
-      Prisma.FoodOrderByWithRelationInput,
-      Prisma.FoodInclude
+      Prisma.FoodProductWhereInput,
+      Prisma.FoodProductOrderByWithRelationInput,
+      Prisma.FoodProductInclude
     > = {},
   ): Promise<FoodProduct[]> {
-    return await this.prisma.food.findMany({
+    return await this.prisma.foodProduct.findMany({
       skip: options.skip,
       take: options.take,
-      where: options.where as Prisma.FoodWhereInput,
-      orderBy: (options.orderBy as Prisma.FoodOrderByWithRelationInput) || {
-        createdAt: 'desc',
-      },
-      include: options.include as Prisma.FoodInclude,
+      where: options.where as Prisma.FoodProductWhereInput,
+      orderBy:
+        (options.orderBy as Prisma.FoodProductOrderByWithRelationInput) || {
+          createdAt: 'desc',
+        },
+      include: options.include as Prisma.FoodProductInclude,
     });
   }
 
-  async findById(id: string): Promise<FoodProduct | null> {
-    return await this.prisma.food.findUnique({
+  async findById(id: string): Promise<FoodProductWithRelations | null> {
+    return await this.prisma.foodProduct.findUnique({
       where: { id },
+      include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
     });
   }
 
-  async findByBarcode(barcode: string): Promise<FoodProduct | null> {
-    return await this.prisma.food.findUnique({
+  async findByBarcode(
+    barcode: string,
+  ): Promise<FoodProductWithRelations | null> {
+    return await this.prisma.foodProduct.findUnique({
       where: { barcode },
+      include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findWithPagination(
     options: FindAllOptions<
-      Prisma.FoodWhereInput,
-      Prisma.FoodOrderByWithRelationInput,
-      Prisma.FoodInclude
+      Prisma.FoodProductWhereInput,
+      Prisma.FoodProductOrderByWithRelationInput,
+      Prisma.FoodProductInclude
     > = {},
-  ): Promise<PaginatedResult<FoodProduct>> {
+  ): Promise<PaginatedResult<FoodProductWithRelations>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
     const [data, total] = await Promise.all([
-      this.prisma.food.findMany({
+      this.prisma.foodProduct.findMany({
         skip: safeSkip,
         take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
-        include,
+        include: include || FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
       }),
       this.count(where),
     ]);
@@ -215,9 +97,9 @@ export interface UpdateFoodDto {
 
   async searchByName(
     name: string,
-    options: FindAllOptions<Prisma.FoodWhereInput> = {},
-  ): Promise<Food[]> {
-    return await this.prisma.food.findMany({
+    options: FindAllOptions<Prisma.FoodProductWhereInput> = {},
+  ): Promise<FoodProduct[]> {
+    return await this.prisma.foodProduct.findMany({
       where: {
         name: {
           contains: name,
@@ -231,16 +113,25 @@ export interface UpdateFoodDto {
     });
   }
 
-  async create(data: CreateFoodDto): Promise<FoodProduct> {
+  async create(data: CreateFoodProductDto): Promise<FoodProduct> {
     try {
-      return await this.prisma.food.create({
-        data,
+      const { nutrimentsRaw, nutrientLevels, ...rest } = data;
+      return await this.prisma.foodProduct.create({
+        data: {
+          ...rest,
+          nutrimentsRaw: nutrimentsRaw
+            ? (deepCloneJson(nutrimentsRaw) as Prisma.InputJsonValue)
+            : undefined,
+          nutrientLevels: nutrientLevels
+            ? (deepCloneJson(nutrientLevels) as Prisma.InputJsonValue)
+            : undefined,
+        },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT) {
           throw new Error(
-            'Food with this barcode or OpenFoodFacts ID already exists',
+            'FoodProduct with this barcode or OpenFoodFacts ID already exists',
           );
         }
       }
@@ -248,20 +139,25 @@ export interface UpdateFoodDto {
     }
   }
 
-  async update(id: string, data: UpdateFoodDto): Promise<FoodProduct> {
+  async update(id: string, data: UpdateFoodProductDto): Promise<FoodProduct> {
     try {
-      return await this.prisma.food.update({
+      const { nutrimentsRaw, nutrientLevels, ...rest } = data;
+      return await this.prisma.foodProduct.update({
         where: { id },
-        data,
+        data: {
+          ...rest,
+          nutrimentsRaw: deepCloneJson(nutrimentsRaw),
+          nutrientLevels: deepCloneJson(nutrientLevels),
+        },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === ERROR_CODES.PRISMA_RECORD_NOT_FOUND) {
-          throw new Error('Food not found');
+          throw new Error('FoodProduct not found');
         }
         if (error.code === ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT) {
           throw new Error(
-            'Food with this barcode or OpenFoodFacts ID already exists',
+            'FoodProduct with this barcode or OpenFoodFacts ID already exists',
           );
         }
       }
@@ -270,12 +166,12 @@ export interface UpdateFoodDto {
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.food.delete({
+    await this.prisma.foodProduct.delete({
       where: { id },
     });
   }
 
-  async count(where?: Prisma.FoodWhereInput): Promise<number> {
-    return await this.prisma.food.count({ where });
+  async count(where?: Prisma.FoodProductWhereInput): Promise<number> {
+    return await this.prisma.foodProduct.count({ where });
   }
 }

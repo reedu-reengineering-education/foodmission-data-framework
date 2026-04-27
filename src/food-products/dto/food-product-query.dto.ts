@@ -37,37 +37,3 @@ export class FoodProductQueryDto {
   @Transform(({ value }) => value === 'true')
   includeOpenFoodFacts?: boolean = false;
 }
-
-export class FoodProductSearchDto {
-  @IsOptional()
-  @IsString()
-  query?: string;
-
-  @IsOptional()
-  @IsString()
-  category?: string;
-
-  @IsOptional()
-  @IsString()
-  brand?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(50)
-  limit?: number = 10;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page?: number = 1;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  @Max(50)
-  pageSize?: number;
-}
