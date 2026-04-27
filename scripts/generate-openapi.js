@@ -30,7 +30,7 @@ async function generateOpenApiSpec() {
         
         ## Features
         - **Authentication**: Secure JWT-based authentication via Keycloak
-        - **Food Management**: CRUD operations for food items with categorization
+        - **Food products**: CRUD for catalog items (barcoded products, OpenFoodFacts)
         - **OpenFoodFacts Integration**: Automatic nutritional data retrieval
         - **User Management**: User profiles and dietary preferences
         - **Health Monitoring**: Comprehensive health checks and metrics
@@ -75,7 +75,7 @@ async function generateOpenApiSpec() {
       )
       .addTag(
         'foods',
-        'Food item management with OpenFoodFacts integration for nutritional data',
+        'Food product catalog with OpenFoodFacts integration for nutritional data',
       )
       .addTag(
         'users',

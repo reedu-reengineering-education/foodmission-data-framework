@@ -15,7 +15,7 @@ async function main() {
     if (nevoRes && nevoRes.skipped) {
       console.log('   ⏭️  NEVO CSV not found; skipping NEVO import.');
     } else if (nevoRes && typeof nevoRes.count === 'number') {
-      console.log(`   ✅ NEVO: ${nevoRes.count} categories created`);
+      console.log(`   ✅ NEVO: ${nevoRes.count} generic foods created`);
     }
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);

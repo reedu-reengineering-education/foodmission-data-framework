@@ -6,12 +6,16 @@ This directory contains database management scripts for the FOODMISSION Data Fra
 
 ### Seeding Scripts
 
-- **`seed-dev.ts`** - Enhanced seeding for development environment with comprehensive test data
-- **`seed-test.ts`** - Minimal, predictable seeding for automated testing
+- **`seed-dev.ts`** — OFF JSON + core users + extra dev users / food products from fixtures
+- **`seed-test.ts`** — Minimal deterministic users + barcode food products for CI (`npm run db:seed:test`)
+- **`seed-prod.ts`** — Production-oriented pipeline: NEVO (create-only) → OFF JSON → recipes → FoodKeeper → shelf-life links (`npm run db:seed:prod`)
+- **`seed-nevo.ts`** — Standalone NEVO CSV → `generic_foods` (create-only); also runnable as CLI
+- **`seed-prod-nevo.ts`** — NEVO import then recipe seeding (subset prod workflow)
+- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:food-products`); destructive — use only when you intend to replace the catalog
 
 ### Migration Scripts
 
-- **`migration-utils.ts`** - Data migration utilities for schema changes and data transformations
+- **`migration-utils.ts`** — Custom data migrations (separate from `prisma migrate`); CLI via `npm run migrate`
 
 ### Backup & Restore Scripts
 

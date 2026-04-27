@@ -6,26 +6,24 @@ import { seedOpenFoodFactsFromJson } from '../prisma/seeds/openfoodfacts';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding foods only from OpenFoodFacts...');
+  console.log('🌱 Seeding food_products only from OpenFoodFacts JSON...');
   console.log('=====================================');
 
   try {
-    // Clear existing foods
-    console.log('🗑️  Clearing existing food data...');
+    console.log('🗑️  Clearing existing food_products rows...');
     await prisma.foodProduct.deleteMany({});
-    console.log('✅ Existing food data cleared');
+    console.log('✅ Existing food_products cleared');
 
-    // Seed new foods from OpenFoodFacts
     await seedOpenFoodFactsFromJson(prisma);
 
     console.log('=====================================');
-    console.log('✅ Food seeding completed successfully!');
+    console.log('✅ Food product seeding completed successfully!');
   } catch (error) {
-    console.error('❌ Error during food seeding:', error);
+    console.error('❌ Error during food product seeding:', error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
   }
 }
 
-main();
+void main();

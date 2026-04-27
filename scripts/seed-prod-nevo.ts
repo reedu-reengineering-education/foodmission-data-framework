@@ -375,11 +375,11 @@ async function main() {
     }
   }
 
-  console.log(`   ✅ Created ${created} new NEVO food categories`);
+  console.log(`   ✅ Created ${created} new NEVO generic foods`);
 
   try {
     console.log(
-      '\n🍽️  Seeding recipes linked to NEVO categories (skip existing)...',
+      '\n🍽️  Seeding recipes linked to generic foods / NEVO (skip existing)...',
     );
     const result = await seedRecipes(prisma, { skipExisting: true });
     if (result.errors && result.errors > 0) {

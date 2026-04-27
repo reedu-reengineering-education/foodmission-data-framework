@@ -372,7 +372,7 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     }
   }
 
-  console.log(`   ✅ Created ${created} new NEVO food categories`);
+  console.log(`   ✅ Created ${created} new NEVO generic foods`);
   return { count: created, skipped: false };
 }
 
@@ -384,7 +384,7 @@ if (require.main === module) {
       if (res.skipped) {
         console.log('   ⏭️  NEVO CSV not found; nothing imported');
       } else {
-        console.log(`   ✅ NEVO: ${res.count} categories created`);
+        console.log(`   ✅ NEVO: ${res.count} generic foods created`);
       }
     } catch (err) {
       console.error('NEVO seed failed', err);
