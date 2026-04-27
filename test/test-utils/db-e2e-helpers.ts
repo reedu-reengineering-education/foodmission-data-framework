@@ -51,7 +51,7 @@ export async function createTestFixtures(
 
   const pantry = await prisma.pantry.create({ data: { userId: user.id } });
 
-  const food = await prisma.food.create({
+  const food = await prisma.foodProduct.create({
     data: { name: 'Milk', createdBy: 'test' },
   });
 
@@ -87,7 +87,7 @@ export async function cleanupTestFixtures(
     where: { pantryId: fixtures.pantryId },
   });
   await prisma.pantry.delete({ where: { id: fixtures.pantryId } });
-  await prisma.food.delete({ where: { id: fixtures.foodId } });
+  await prisma.foodProduct.delete({ where: { id: fixtures.foodId } });
   await prisma.user.delete({ where: { id: fixtures.userId } });
 }
 

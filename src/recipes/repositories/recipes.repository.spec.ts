@@ -19,9 +19,9 @@ describe('RecipesRepository', () => {
       name: 'Chicken',
       measure: '500g',
       order: 0,
-      itemType: 'food_category',
-      foodId: null,
-      foodCategoryId: 'fc-1',
+      itemType: 'generic_food',
+      foodProductId: null,
+      genericFoodId: 'fc-1',
     }),
     buildRecipeIngredient({
       id: 'ing-2',
@@ -29,9 +29,9 @@ describe('RecipesRepository', () => {
       name: 'Salt',
       measure: '1 tsp',
       order: 1,
-      itemType: 'food_category',
-      foodId: null,
-      foodCategoryId: null,
+      itemType: 'generic_food',
+      foodProductId: null,
+      genericFoodId: null,
     }),
   ];
 
@@ -39,8 +39,8 @@ describe('RecipesRepository', () => {
     ingredients: {
       orderBy: { order: 'asc' },
       include: {
-        food: { select: { id: true, name: true, imageUrl: true } },
-        foodCategory: {
+        foodProduct: { select: { id: true, name: true, imageUrl: true } },
+        genericFood: {
           select: {
             id: true,
             foodName: true,
@@ -184,7 +184,7 @@ describe('RecipesRepository', () => {
         userId: 'user-1',
         title: 'Test Recipe',
         ingredients: [
-          { name: 'Chicken', measure: '500g', foodCategoryId: 'fc-1' },
+          { name: 'Chicken', measure: '500g', genericFoodId: 'fc-1' },
           { name: 'Salt', measure: '1 tsp' },
         ],
       });
@@ -199,17 +199,17 @@ describe('RecipesRepository', () => {
                 name: 'Chicken',
                 measure: '500g',
                 order: 0,
-                itemType: 'food_category',
-                foodId: null,
-                foodCategoryId: 'fc-1',
+                itemType: 'generic_food',
+                foodProductId: null,
+                genericFoodId: 'fc-1',
               },
               {
                 name: 'Salt',
                 measure: '1 tsp',
                 order: 1,
-                itemType: 'food_category',
-                foodId: null,
-                foodCategoryId: null,
+                itemType: 'generic_food',
+                foodProductId: null,
+                genericFoodId: null,
               },
             ],
           },
@@ -221,18 +221,24 @@ describe('RecipesRepository', () => {
       );
     });
 
-    it('should set itemType to food when foodId is provided', async () => {
+    it('should set itemType to food_product when foodProductId is provided', async () => {
       mockPrismaService.recipe.create.mockResolvedValueOnce({
         ...mockRecipe,
         ingredients: [
-          { ...mockIngredients[0], itemType: 'food', foodId: 'food-1' },
+          {
+            ...mockIngredients[0],
+            itemType: 'food_product',
+            foodProductId: 'food-1',
+          },
         ],
       });
 
       await repository.create({
         userId: 'user-1',
         title: 'Test Recipe',
-        ingredients: [{ name: 'Product X', measure: '100g', foodId: 'food-1' }],
+        ingredients: [
+          { name: 'Product X', measure: '100g', foodProductId: 'food-1' },
+        ],
       });
 
       expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
@@ -240,9 +246,9 @@ describe('RecipesRepository', () => {
           ingredients: {
             create: [
               expect.objectContaining({
-                itemType: 'food',
-                foodId: 'food-1',
-                foodCategoryId: null,
+                itemType: 'food_product',
+                foodProductId: 'food-1',
+                genericFoodId: null,
               }),
             ],
           },
@@ -332,9 +338,9 @@ describe('RecipesRepository', () => {
                 name: 'New Ingredient',
                 measure: '200g',
                 order: 0,
-                itemType: 'food_category',
-                foodId: null,
-                foodCategoryId: null,
+                itemType: 'generic_food',
+                foodProductId: null,
+                genericFoodId: null,
               },
             ],
           },

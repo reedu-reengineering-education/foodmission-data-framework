@@ -143,7 +143,8 @@ describe('ShoppingListRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -234,7 +235,8 @@ describe('ShoppingListRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },

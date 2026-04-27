@@ -6,9 +6,7 @@ import { PrismaService } from '../../database/prisma.service';
 export class ShelfLifeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findByProductId(
-    foodKeeperProductId: number,
-  ): Promise<FoodShelfLife | null> {
+  findByProductId(foodKeeperProductId: number): Promise<FoodShelfLife | null> {
     return this.prisma.foodShelfLife.findUnique({
       where: { foodKeeperProductId },
     });

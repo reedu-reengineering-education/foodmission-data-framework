@@ -89,9 +89,7 @@ export class ShelfLifeService {
     }
   }
 
-  async searchByFoodName(
-    foodName: string,
-  ): Promise<FoodShelfLife | null> {
+  async searchByFoodName(foodName: string): Promise<FoodShelfLife | null> {
     return this.shelfLifeRepository.findBestMatch(foodName);
   }
 

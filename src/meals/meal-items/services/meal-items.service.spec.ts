@@ -49,7 +49,9 @@ describe('MealItemService', () => {
 
   it('creates meal item with foodProductId', async () => {
     mealRepository.findById.mockResolvedValue(meal);
-    foodProductRepository.findById.mockResolvedValue({ id: TEST_IDS.FOOD_PRODUCT });
+    foodProductRepository.findById.mockResolvedValue({
+      id: TEST_IDS.FOOD_PRODUCT,
+    });
     mealItemRepository.findByMealAndFoodProduct.mockResolvedValue(null);
     mealItemRepository.create.mockResolvedValue(existingItem);
 
@@ -73,8 +75,12 @@ describe('MealItemService', () => {
 
   it('wraps duplicate genericFood conflict as database operation error', async () => {
     mealRepository.findById.mockResolvedValue(meal);
-    genericFoodRepository.findById.mockResolvedValue({ id: TEST_IDS.GENERIC_FOOD });
-    mealItemRepository.findByMealAndGenericFood.mockResolvedValue({ id: 'dup' });
+    genericFoodRepository.findById.mockResolvedValue({
+      id: TEST_IDS.GENERIC_FOOD,
+    });
+    mealItemRepository.findByMealAndGenericFood.mockResolvedValue({
+      id: 'dup',
+    });
 
     await expect(
       service.create(
@@ -92,7 +98,10 @@ describe('MealItemService', () => {
   it('updates an existing item', async () => {
     mealItemRepository.findById.mockResolvedValue(existingItem);
     mealRepository.findById.mockResolvedValue(meal);
-    mealItemRepository.update.mockResolvedValue({ ...existingItem, quantity: 3 });
+    mealItemRepository.update.mockResolvedValue({
+      ...existingItem,
+      quantity: 3,
+    });
 
     const result = await service.update(
       TEST_IDS.MEAL_ITEM,

@@ -45,7 +45,7 @@ describe('Shopping List Items to Pantry', () => {
     const item = await prisma.shoppingListItem.create({
       data: {
         shoppingListId: fixtures.shoppingListId!,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 2,
         unit: 'L',
         checked: false,
@@ -68,7 +68,7 @@ describe('Shopping List Items to Pantry', () => {
     const shoppingListItem = await prisma.shoppingListItem.create({
       data: {
         shoppingListId: fixtures.shoppingListId!,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 2,
         unit: 'L',
         checked: false,
@@ -86,7 +86,7 @@ describe('Shopping List Items to Pantry', () => {
     const pantryItem = await prisma.pantryItem.create({
       data: {
         pantryId: fixtures.pantryId,
-        foodId: shoppingListItem.foodId!,
+        foodProductId: shoppingListItem.foodProductId!,
         quantity: shoppingListItem.quantity,
         unit: shoppingListItem.unit,
         expiryDate: autoExpiryDate,
@@ -94,7 +94,7 @@ describe('Shopping List Items to Pantry', () => {
       },
     });
 
-    expect(pantryItem.foodId).toBe(fixtures.foodId);
+    expect(pantryItem.foodProductId).toBe(fixtures.foodId);
     expect(pantryItem.quantity).toBe(shoppingListItem.quantity);
     expect(pantryItem.expiryDate).toBeDefined();
     expect(pantryItem.expiryDateSource).toBe('auto_foodkeeper');
@@ -116,7 +116,7 @@ describe('Shopping List Items to Pantry', () => {
     const pantryItem = await prisma.pantryItem.create({
       data: {
         pantryId: fixtures.pantryId,
-        foodId: fixtures.foodId,
+        foodProductId: fixtures.foodId,
         quantity: 1,
         unit: 'L',
         expiryDate,

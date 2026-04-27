@@ -52,7 +52,7 @@ describe('RecipeNutritionService', () => {
       expect(result.missingIngredients).toEqual([]);
     });
 
-    it('should aggregate nutrition from FoodCategory', async () => {
+    it('should aggregate nutrition from GenericFood', async () => {
       mockPrismaService.recipe.findUnique.mockResolvedValue({
         id: 'recipe-1',
         servings: 2,
@@ -60,8 +60,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Chicken Breast',
             measure: '200g',
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-1',
               foodName: 'Chicken breast, raw',
               energyKcal: 120,
@@ -96,7 +96,7 @@ describe('RecipeNutritionService', () => {
       expect(result.perServing?.energyKcal).toBe(120);
     });
 
-    it('should aggregate nutrition from Food', async () => {
+    it('should aggregate nutrition from FoodProduct', async () => {
       mockPrismaService.recipe.findUnique.mockResolvedValue({
         id: 'recipe-1',
         servings: 4,
@@ -104,7 +104,7 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Olive Oil',
             measure: '2 tablespoons',
-            food: {
+            foodProduct: {
               id: 'f-1',
               name: 'Olive Oil',
               energyKcal: 884,
@@ -124,7 +124,7 @@ describe('RecipeNutritionService', () => {
               iron: 0,
               potassium: 0,
             },
-            foodCategory: null,
+            genericFood: null,
           },
         ],
       });
@@ -145,8 +145,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Rice',
             measure: '100g',
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-1',
               foodName: 'White rice',
               energyKcal: 130,
@@ -170,8 +170,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Egg',
             measure: '2',
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-2',
               foodName: 'Egg, whole',
               energyKcal: 155,
@@ -214,7 +214,7 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Chicken',
             measure: '100g',
-            food: {
+            foodProduct: {
               id: 'f-1',
               name: 'Chicken',
               energyKcal: 165,
@@ -222,13 +222,13 @@ describe('RecipeNutritionService', () => {
               fat: 3.6,
               carbohydrates: 0,
             },
-            foodCategory: null,
+            genericFood: null,
           },
           {
             name: 'Secret Spice',
             measure: '1 tsp',
-            food: null,
-            foodCategory: null,
+            foodProduct: null,
+            genericFood: null,
           },
         ],
       });
@@ -247,7 +247,7 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Salt',
             measure: 'To taste',
-            food: {
+            foodProduct: {
               id: 'f-1',
               name: 'Salt',
               energyKcal: 0,
@@ -256,12 +256,12 @@ describe('RecipeNutritionService', () => {
               carbohydrates: 0,
               sodium: 38758,
             },
-            foodCategory: null,
+            genericFood: null,
           },
           {
             name: 'Chicken',
             measure: '100g',
-            food: {
+            foodProduct: {
               id: 'f-2',
               name: 'Chicken',
               energyKcal: 165,
@@ -270,7 +270,7 @@ describe('RecipeNutritionService', () => {
               carbohydrates: 0,
               sodium: 74,
             },
-            foodCategory: null,
+            genericFood: null,
           },
         ],
       });
@@ -290,8 +290,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Pasta',
             measure: '200g',
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-1',
               foodName: 'Pasta',
               energyKcal: 350,
@@ -320,8 +320,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Apple',
             measure: null,
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-1',
               foodName: 'Apple',
               energyKcal: 52,
@@ -352,8 +352,8 @@ describe('RecipeNutritionService', () => {
           {
             name: 'Beef',
             measure: '500g',
-            food: null,
-            foodCategory: {
+            foodProduct: null,
+            genericFood: {
               id: 'fc-1',
               foodName: 'Beef',
               energyKcal: 250,

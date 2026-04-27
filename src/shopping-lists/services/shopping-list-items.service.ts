@@ -139,13 +139,8 @@ export class ShoppingListItemService {
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
 
-
-    const {
-      foodProductId,
-      genericFoodId,
-      checked,
-      unit,
-    } = sanitizeShoppingListItemFilters(query);
+    const { foodProductId, genericFoodId, checked, unit } =
+      sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
@@ -194,7 +189,6 @@ export class ShoppingListItemService {
     shoppingListId?: string,
   ): Promise<ShoppingListItemResponseDto> {
     await this.findById(id, userId, shoppingListId);
-
 
     if (updateDto.foodProductId) {
       await this.validateFoodExists(updateDto.foodProductId);
@@ -353,21 +347,11 @@ export class ShoppingListItemService {
     foodProductId?: string,
     genericFoodId?: string,
   ): Promise<void> {
-    let existingItem;
-
-    if (foodProductId) {
-      existingItem =
-        await this.shoppingListItemRepository.findByShoppingListAndFood(
-          shoppingListId,
-          foodProductId,
-        );
-    } else if (genericFoodId) {
-      existingItem =
-        await this.shoppingListItemRepository.findByShoppingListAndFoodCategory(
-          shoppingListId,
-          genericFoodId,
-        );
-    }
+    const existingItem =
+      await this.shoppingListItemRepository.findByShoppingListAndFoodRef(
+        shoppingListId,
+        { foodProductId, genericFoodId },
+      );
 
     if (existingItem) {
       throw new ConflictException(
@@ -402,5 +386,4 @@ export class ShoppingListItemService {
       Object.entries(updateDto).filter(([, value]) => value !== undefined),
     ) as Partial<UpdateShoppingListItemDto>;
   }
-
 }

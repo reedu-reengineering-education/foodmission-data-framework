@@ -19,7 +19,7 @@ describe('PantryItemRepository', () => {
     notes: TEST_DATA.NOTES,
     expiryDate: TEST_DATES.EXPIRY,
     pantryId: TEST_IDS.PANTRY,
-    foodId: TEST_IDS.FOOD,
+    foodProductId: TEST_IDS.FOOD,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
     pantry: {
@@ -29,7 +29,7 @@ describe('PantryItemRepository', () => {
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },
-    food: {
+    foodProduct: {
       id: TEST_IDS.FOOD,
       name: 'Tomatoes',
       category: 'Vegetables',
@@ -72,9 +72,9 @@ describe('PantryItemRepository', () => {
     it('should create a new pantry item when valid data is provided', async () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
-        itemType: 'food',
+        foodProductId: TEST_IDS.FOOD,
+        genericFoodId: null,
+        itemType: 'food_product',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
         notes: TEST_DATA.NOTES,
@@ -89,8 +89,8 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.create).toHaveBeenCalledWith({
         data: {
           pantryId: createData.pantryId,
-          foodId: createData.foodId,
-          foodCategoryId: createData.foodCategoryId,
+          foodProductId: createData.foodProductId,
+          genericFoodId: createData.genericFoodId,
           itemType: createData.itemType,
           quantity: createData.quantity,
           unit: createData.unit,
@@ -99,8 +99,8 @@ describe('PantryItemRepository', () => {
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -108,9 +108,9 @@ describe('PantryItemRepository', () => {
     it('should create pantry item without optional fields', async () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
-        itemType: 'food',
+        foodProductId: TEST_IDS.FOOD,
+        genericFoodId: null,
+        itemType: 'food_product',
         quantity: 3,
         unit: Unit.PIECES,
       };
@@ -134,9 +134,9 @@ describe('PantryItemRepository', () => {
     it('should throw Prisma unique constraint error when food already exists in pantry', async () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
-        itemType: 'food',
+        foodProductId: TEST_IDS.FOOD,
+        genericFoodId: null,
+        itemType: 'food_product',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
       };
@@ -146,7 +146,7 @@ describe('PantryItemRepository', () => {
         {
           code: 'P2002',
           clientVersion: '4.0.0',
-          meta: { target: ['pantryId', 'foodId'] },
+          meta: { target: ['pantryId', 'foodProductId'] },
         },
       );
       mockPrismaService.pantryItem.create.mockRejectedValue(prismaError);
@@ -157,9 +157,9 @@ describe('PantryItemRepository', () => {
     it('should throw error when creation fails', async () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
-        itemType: 'food',
+        foodProductId: TEST_IDS.FOOD,
+        genericFoodId: null,
+        itemType: 'food_product',
         quantity: TEST_DATA.QUANTITY,
         unit: Unit.KG,
       };
@@ -186,8 +186,8 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -213,8 +213,8 @@ describe('PantryItemRepository', () => {
         where: { id: TEST_IDS.PANTRY_ITEM },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -239,37 +239,39 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           pantryId: undefined,
-          foodId: undefined,
-          foodCategoryId: undefined,
+          foodProductId: undefined,
+          genericFoodId: undefined,
           expiryDate: undefined,
           unit: undefined,
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
 
-    it('should filter items by foodId', async () => {
+    it('should filter items by foodProductId', async () => {
       mockPrismaService.pantryItem.findMany.mockResolvedValue([mockPantryItem]);
 
-      const result = await repository.findMany({ foodId: TEST_IDS.FOOD });
+      const result = await repository.findMany({
+        foodProductId: TEST_IDS.FOOD,
+      });
 
       expect(result).toEqual([mockPantryItem]);
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           pantryId: undefined,
-          foodId: TEST_IDS.FOOD,
-          foodCategoryId: undefined,
+          foodProductId: TEST_IDS.FOOD,
+          genericFoodId: undefined,
           expiryDate: undefined,
           unit: undefined,
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -283,22 +285,22 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           pantryId: undefined,
-          foodId: undefined,
-          foodCategoryId: undefined,
+          foodProductId: undefined,
+          genericFoodId: undefined,
           expiryDate: undefined,
           unit: Unit.KG,
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
 
     it('should filter items by multiple criteria', async () => {
       const filter = {
-        foodId: TEST_IDS.FOOD,
+        foodProductId: TEST_IDS.FOOD,
         unit: Unit.KG,
       };
 
@@ -310,15 +312,15 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findMany).toHaveBeenCalledWith({
         where: {
           pantryId: undefined,
-          foodId: TEST_IDS.FOOD,
-          foodCategoryId: undefined,
+          foodProductId: TEST_IDS.FOOD,
+          genericFoodId: undefined,
           expiryDate: undefined,
           unit: Unit.KG,
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -347,8 +349,8 @@ describe('PantryItemRepository', () => {
         data: updateData,
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -370,7 +372,7 @@ describe('PantryItemRepository', () => {
 
     it('should throw Prisma unique constraint error when updating to duplicate food', async () => {
       const updateData: Prisma.PantryItemUpdateInput = {
-        food: {
+        foodProduct: {
           connect: { id: 'duplicate-food-id' },
         },
       };
@@ -379,7 +381,7 @@ describe('PantryItemRepository', () => {
         {
           code: 'P2002',
           clientVersion: '4.0.0',
-          meta: { target: ['pantryId', 'foodId'] },
+          meta: { target: ['pantryId', 'foodProductId'] },
         },
       );
       mockPrismaService.pantryItem.update.mockRejectedValue(prismaError);
@@ -436,11 +438,11 @@ describe('PantryItemRepository', () => {
     });
   });
 
-  describe('findFoodInPantry', () => {
-    it('should find a specific food item in a pantry', async () => {
+  describe('findFoodProductInPantry', () => {
+    it('should find a specific food product item in a pantry', async () => {
       mockPrismaService.pantryItem.findFirst.mockResolvedValue(mockPantryItem);
 
-      const result = await repository.findFoodInPantry(
+      const result = await repository.findFoodProductInPantry(
         TEST_IDS.PANTRY,
         TEST_IDS.FOOD,
       );
@@ -449,20 +451,20 @@ describe('PantryItemRepository', () => {
       expect(prisma.pantryItem.findFirst).toHaveBeenCalledWith({
         where: {
           pantryId: TEST_IDS.PANTRY,
-          foodId: TEST_IDS.FOOD,
+          foodProductId: TEST_IDS.FOOD,
         },
         include: {
           pantry: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
 
-    it('should return null if food not found in pantry', async () => {
+    it('should return null if food product not found in pantry', async () => {
       mockPrismaService.pantryItem.findFirst.mockResolvedValue(null);
 
-      const result = await repository.findFoodInPantry(
+      const result = await repository.findFoodProductInPantry(
         TEST_IDS.PANTRY,
         'food-999',
       );

@@ -96,29 +96,24 @@ export class ShoppingListItemRepository implements BaseRepository<
 
   async findByShoppingListAndFood(
     shoppingListId: string,
-    foodId: string,
+    foodProductId: string,
   ): Promise<ShoppingListItemWithRelations | null> {
-    return this.prisma.shoppingListItem.findUnique({
-      where: {
-        shoppingListId_foodProductId: {
-          shoppingListId,
-          foodProductId: foodId,
-        },
-      },
-      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
-    });
+    return this.findByShoppingListAndFoodRef(shoppingListId, { foodProductId });
   }
 
-  async findByShoppingListAndFoodCategory(
+  async findByShoppingListAndFoodRef(
     shoppingListId: string,
-    foodCategoryId: string,
+    foodRef: {
+      foodProductId?: string;
+      genericFoodId?: string;
+    },
   ): Promise<ShoppingListItemWithRelations | null> {
-    return this.prisma.shoppingListItem.findUnique({
+    const { foodProductId, genericFoodId } = foodRef;
+    return this.prisma.shoppingListItem.findFirst({
       where: {
-        shoppingListId_genericFoodId: {
-          shoppingListId,
-          genericFoodId: foodCategoryId,
-        },
+        shoppingListId,
+        foodProductId,
+        genericFoodId,
       },
       include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
@@ -289,13 +284,6 @@ export class ShoppingListItemRepository implements BaseRepository<
         id: shoppingListId,
         userId: userId,
       },
-    });
-    return count > 0;
-  }
-
-  async validateFoodExists(foodId: string): Promise<boolean> {
-    const count = await this.prisma.foodProduct.count({
-      where: { id: foodId },
     });
     return count > 0;
   }

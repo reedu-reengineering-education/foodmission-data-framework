@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { seedFoods } from '../prisma/seeds/foods';
+import { seedFoods } from '../prisma/seeds/foodProducts';
 import { seedUsers } from '../prisma/seeds/users';
 import { seedRecipes } from '../prisma/seeds/themealdb';
 
@@ -202,7 +202,7 @@ describe('Database Seeding (e2e)', () => {
       expect(foods.length).toBeGreaterThan(0);
 
       // Verify foods were created in database
-      const dbFoods = await prisma.food.findMany();
+      const dbFoods = await prisma.foodProduct.findMany();
       expect(dbFoods.length).toBe(foods.length);
 
       // Check for expected foods from OpenFoodFacts
@@ -227,7 +227,7 @@ describe('Database Seeding (e2e)', () => {
       expect(firstRun.length).toBe(secondRun.length);
 
       // Verify no duplicates were created
-      const dbFoods = await prisma.food.findMany();
+      const dbFoods = await prisma.foodProduct.findMany();
       expect(dbFoods.length).toBe(firstRun.length);
     }, 300000); // 5 minutes timeout
 
@@ -235,7 +235,7 @@ describe('Database Seeding (e2e)', () => {
       if (skipSuite || !hasCoreTables) return;
       await seedFoods(prisma, true); // Use test data
 
-      const foods = await prisma.food.findMany();
+      const foods = await prisma.foodProduct.findMany();
 
       foods.forEach((food) => {
         expect(food.id).toBeDefined();
@@ -326,7 +326,7 @@ describe('Database Seeding (e2e)', () => {
       expect(users.length).toBeGreaterThan(0);
 
       // Verify all data exists
-      const dbFoods = await prisma.food.findMany();
+      const dbFoods = await prisma.foodProduct.findMany();
       const dbUsers = await prisma.user.findMany();
 
       expect(dbFoods.length).toBe(foods.length);
@@ -339,7 +339,7 @@ describe('Database Seeding (e2e)', () => {
       await seedUsers(prisma);
 
       // Check that all foods have valid creators
-      const foods = await prisma.food.findMany();
+      const foods = await prisma.foodProduct.findMany();
       foods.forEach((food) => {
         expect(food.createdBy).toBeDefined();
         expect(food.createdBy.length).toBeGreaterThan(0);
@@ -441,7 +441,7 @@ describe('Database Seeding (e2e)', () => {
         include: {
           ingredients: {
             include: {
-              foodCategory: true,
+              genericFood: true,
             },
           },
         },
@@ -455,11 +455,11 @@ describe('Database Seeding (e2e)', () => {
         expect(ing.measure).toBeDefined();
         expect(typeof ing.order).toBe('number');
         expect(ing.recipeId).toBe(recipe!.id);
-        expect(['food', 'food_category']).toContain(ing.itemType);
+        expect(['food_product', 'generic_food']).toContain(ing.itemType);
 
         // Some ingredients should have food category mappings
-        if (ing.foodCategoryId) {
-          expect(ing.foodCategory).toBeDefined();
+        if (ing.genericFoodId) {
+          expect(ing.genericFood).toBeDefined();
         }
       });
     });
@@ -597,7 +597,7 @@ describe('Database Seeding (e2e)', () => {
         include: {
           ingredients: {
             include: {
-              foodCategory: true,
+              genericFood: true,
             },
           },
         },
@@ -611,11 +611,11 @@ describe('Database Seeding (e2e)', () => {
         expect(ing.measure).toBeDefined();
         expect(typeof ing.order).toBe('number');
         expect(ing.recipeId).toBe(recipe!.id);
-        expect(['food', 'food_category']).toContain(ing.itemType);
+        expect(['food_product', 'generic_food']).toContain(ing.itemType);
 
         // Some ingredients should have food category mappings
-        if (ing.foodCategoryId) {
-          expect(ing.foodCategory).toBeDefined();
+        if (ing.genericFoodId) {
+          expect(ing.genericFood).toBeDefined();
         }
       });
     });

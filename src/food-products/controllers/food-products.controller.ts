@@ -291,7 +291,11 @@ export class FoodProductController {
     description: 'Food item ID',
   })
   @ApiResponse({ status: 204, description: 'Food item deleted successfully' })
-  @ApiCommonErrorResponses({ unauthorized: true, forbidden: true, notFound: true })
+  @ApiCommonErrorResponses({
+    unauthorized: true,
+    forbidden: true,
+    notFound: true,
+  })
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.foodProductService.remove(id);
   }

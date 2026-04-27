@@ -9,6 +9,7 @@ describe('ShoppingListItemRepository', () => {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      findFirst: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
       deleteMany: jest.fn(),
@@ -48,16 +49,17 @@ describe('ShoppingListItemRepository', () => {
     );
   });
 
-  it('findByShoppingListAndFood uses shoppingListId_foodProductId key', async () => {
-    mockPrismaService.shoppingListItem.findUnique.mockResolvedValue(null);
-    await repository.findByShoppingListAndFood('list-1', 'food-1');
-    expect(mockPrismaService.shoppingListItem.findUnique).toHaveBeenCalledWith(
+  it('findByShoppingListAndFoodRef handles food product refs', async () => {
+    mockPrismaService.shoppingListItem.findFirst.mockResolvedValue(null);
+    await repository.findByShoppingListAndFoodRef('list-1', {
+      foodProductId: 'food-1',
+    });
+    expect(mockPrismaService.shoppingListItem.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
-          shoppingListId_foodProductId: {
-            shoppingListId: 'list-1',
-            foodProductId: 'food-1',
-          },
+          shoppingListId: 'list-1',
+          foodProductId: 'food-1',
+          genericFoodId: undefined,
         },
       }),
     );

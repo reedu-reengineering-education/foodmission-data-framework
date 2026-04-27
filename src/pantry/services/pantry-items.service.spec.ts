@@ -17,6 +17,7 @@ import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import { TEST_IDS, TEST_DATA } from '../../common/test-utils/test-constants';
 import {
@@ -71,6 +72,10 @@ describe('PantryItemService', () => {
         {
           provide: GenericFoodRepository,
           useValue: mockGenericFoodRepository,
+        },
+        {
+          provide: FoodProductRepository,
+          useValue: mockFoodRepository,
         },
         {
           provide: ShelfLifeService,
@@ -405,7 +410,7 @@ describe('PantryItemService', () => {
         expect(createCall.expiryDateSource).toBeUndefined();
       });
 
-      it('should use FK shelf life for foodCategory when shelfLifeId is set', async () => {
+      it('should use FK shelf life for genericFood when shelfLifeId is set', async () => {
         const FOOD_CAT_ID = 'food-cat-id-1';
         const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
           foodProductId: undefined,

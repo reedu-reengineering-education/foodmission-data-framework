@@ -1,4 +1,3 @@
-
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { Unit } from '@prisma/client';
 
@@ -19,7 +18,12 @@ export function sanitizeShoppingListItemFilters(
   query?: QueryShoppingListItemDto,
 ): SanitizedShoppingListItemFilters {
   if (!query) {
-    return { foodProductId: undefined, genericFoodId: undefined, checked: undefined, unit: undefined };
+    return {
+      foodProductId: undefined,
+      genericFoodId: undefined,
+      checked: undefined,
+      unit: undefined,
+    };
   }
 
   const trimmedFoodProductId = query.foodProductId?.trim();

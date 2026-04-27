@@ -15,7 +15,6 @@ export class QueryShoppingListItemDto {
   @IsOptional()
   shoppingListId?: string;
 
-
   @ApiPropertyOptional({
     description: 'Filter by food product ID',
     example: 'uuid-food-product-id',

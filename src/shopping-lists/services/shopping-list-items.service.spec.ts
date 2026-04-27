@@ -22,7 +22,9 @@ describe('ShoppingListItemService', () => {
 
   beforeEach(async () => {
     const mockRepository = {
-      prisma: { $transaction: jest.fn().mockImplementation(async (cb) => cb({})) },
+      prisma: {
+        $transaction: jest.fn().mockImplementation((cb) => cb({})),
+      },
       findById: jest.fn(),
       update: jest.fn(),
       clearCheckedItems: jest.fn(),
@@ -58,7 +60,10 @@ describe('ShoppingListItemService', () => {
   });
 
   it('clearCheckedItems validates list ownership and clears items', async () => {
-    shoppingListRepository.findById.mockResolvedValue({ id: 'list-1', userId: 'user-1' } as any);
+    shoppingListRepository.findById.mockResolvedValue({
+      id: 'list-1',
+      userId: 'user-1',
+    } as any);
     repository.clearCheckedItems.mockResolvedValue(undefined as any);
 
     await service.clearCheckedItems('list-1', 'user-1');
@@ -67,7 +72,10 @@ describe('ShoppingListItemService', () => {
   });
 
   it('clearCheckedItems throws when list does not belong to user', async () => {
-    shoppingListRepository.findById.mockResolvedValue({ id: 'list-1', userId: 'other-user' } as any);
+    shoppingListRepository.findById.mockResolvedValue({
+      id: 'list-1',
+      userId: 'other-user',
+    } as any);
 
     await expect(service.clearCheckedItems('list-1', 'user-1')).rejects.toThrow(
       ForbiddenException,
@@ -77,8 +85,8 @@ describe('ShoppingListItemService', () => {
   it('update throws when item not found', async () => {
     repository.findById.mockResolvedValue(null);
 
-    await expect(service.update('item-1', { checked: true }, 'user-1')).rejects.toThrow(
-      NotFoundException,
-    );
+    await expect(
+      service.update('item-1', { checked: true }, 'user-1'),
+    ).rejects.toThrow(NotFoundException);
   });
 });

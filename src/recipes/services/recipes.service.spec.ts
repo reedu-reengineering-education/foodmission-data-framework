@@ -347,9 +347,9 @@ describe('RecipesService', () => {
         name: 'Chicken Breast',
         measure: '500g',
         order: 0,
-        itemType: 'food_category',
-        foodCategoryId: 'fc-1',
-        foodCategory: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
+        itemType: 'generic_food',
+        genericFoodId: 'fc-1',
+        genericFood: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
       }),
       buildRecipeIngredient({
         id: 'ing-2',
@@ -357,8 +357,8 @@ describe('RecipesService', () => {
         name: 'Olive Oil',
         measure: '2 tbsp',
         order: 1,
-        itemType: 'food_category',
-        foodCategoryId: null,
+        itemType: 'generic_food',
+        genericFoodId: null,
       }),
     ];
 
@@ -374,7 +374,7 @@ describe('RecipesService', () => {
       const createDto = {
         title: 'Chicken Dinner',
         ingredients: [
-          { name: 'Chicken Breast', measure: '500g', foodCategoryId: 'fc-1' },
+          { name: 'Chicken Breast', measure: '500g', genericFoodId: 'fc-1' },
           { name: 'Olive Oil', measure: '2 tbsp' },
         ],
       };
@@ -425,7 +425,7 @@ describe('RecipesService', () => {
             name: 'New Ingredient',
             measure: '100g',
             order: 0,
-            itemType: 'food_category',
+            itemType: 'generic_food',
           }),
         ],
       });
@@ -464,7 +464,7 @@ describe('RecipesService', () => {
       const result = await service.findAll(userId, { page: 1, limit: 10 });
 
       expect(result.data[0].ingredients).toBeDefined();
-      expect(result.data[0].ingredients![0].foodCategory).toBeDefined();
+      expect(result.data[0].ingredients![0].genericFood).toBeDefined();
     });
 
     it('should create recipe with ingredients linked to Food', async () => {
@@ -479,9 +479,9 @@ describe('RecipesService', () => {
             name: 'Branded Product',
             measure: '1 pack',
             order: 0,
-            itemType: 'food',
-            foodId: 'food-1',
-            food: {
+            itemType: 'food_product',
+            foodProductId: 'food-1',
+            foodProduct: {
               id: 'food-1',
               name: 'Branded Product',
               imageUrl: 'http://...',
@@ -495,14 +495,18 @@ describe('RecipesService', () => {
         {
           title: 'Product Recipe',
           ingredients: [
-            { name: 'Branded Product', measure: '1 pack', foodId: 'food-1' },
+            {
+              name: 'Branded Product',
+              measure: '1 pack',
+              foodProductId: 'food-1',
+            },
           ],
         } as any,
         userId,
       );
 
-      expect(result.ingredients![0].foodId).toBe('food-1');
-      expect(result.ingredients![0].food).toBeDefined();
+      expect(result.ingredients![0].foodProductId).toBe('food-1');
+      expect(result.ingredients![0].foodProduct).toBeDefined();
     });
   });
 });

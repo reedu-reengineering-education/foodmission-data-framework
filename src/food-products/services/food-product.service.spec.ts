@@ -50,7 +50,10 @@ describe('FoodProductService', () => {
     repository.findByBarcode.mockResolvedValue(null);
     repository.create.mockResolvedValue(mockFood);
 
-    const result = await service.create({ name: 'Apple', barcode: '123' } as any, 'user-1');
+    const result = await service.create(
+      { name: 'Apple', barcode: '123' } as any,
+      'user-1',
+    );
 
     expect(result.name).toBe('Apple');
     expect(repository.create).toHaveBeenCalled();

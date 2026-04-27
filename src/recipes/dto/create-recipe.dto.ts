@@ -169,7 +169,7 @@ export class CreateRecipeDto {
         name: 'Olive Oil',
         measure: '2 tbsp',
         order: 2,
-        foodCategoryId: 'uuid',
+        genericFoodId: 'uuid',
       },
     ],
   })

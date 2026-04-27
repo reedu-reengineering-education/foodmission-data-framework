@@ -213,10 +213,9 @@ describe('MealItemRepository', () => {
         mockMealItemWithFood,
       );
 
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        { foodProductId: TEST_IDS.FOOD_PRODUCT },
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
+      });
 
       expect(result).toEqual(mockMealItemWithFood);
     });
@@ -224,19 +223,15 @@ describe('MealItemRepository', () => {
     it('should check for duplicate by generic food', async () => {
       mockPrismaService.mealItem.findFirst.mockResolvedValue(null);
 
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        { genericFoodId: TEST_IDS.GENERIC_FOOD },
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {
+        genericFoodId: TEST_IDS.GENERIC_FOOD,
+      });
 
       expect(result).toBeNull();
     });
 
     it('should return null if neither food nor category provided', async () => {
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        {},
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {});
 
       expect(result).toBeNull();
     });
