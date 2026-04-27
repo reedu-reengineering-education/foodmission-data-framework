@@ -23,10 +23,8 @@ import {
 } from '../dto/response-shopping-list-item.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { plainToInstance } from 'class-transformer';
-import {
-  ShoppingListItemRepository,
-  ShoppingListItemWithRelations,
-} from '../repositories/shopping-list-items.repository';
+import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
+import { ShoppingListItemWithRelations } from '../../common/types/prisma-relations';
 import { PantryItemService } from '../../pantry/services/pantry-items.service';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
@@ -66,9 +64,10 @@ export class ShoppingListItemService {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
 
       // Map CreateShoppingListItemDto to FoodRefDto
+
       const foodRefDto = {
-        foodProductId: createDto.foodId,
-        genericFoodId: createDto.foodCategoryId,
+        foodProductId: createDto.foodProductId,
+        genericFoodId: createDto.genericFoodId,
       };
       const { itemType, foodProductId, genericFoodId } =
         validateFoodRef(foodRefDto);
@@ -129,11 +128,13 @@ export class ShoppingListItemService {
   async findAll(
     query: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
-    const { shoppingListId, foodId, checked, unit } = query;
+    const { shoppingListId, foodProductId, genericFoodId, checked, unit } =
+    } = query;
 
     const items = await this.shoppingListItemRepository.findMany({
       shoppingListId,
-      foodId,
+      foodProductId,
+      genericFoodId,
       checked,
       unit,
     });
@@ -148,12 +149,18 @@ export class ShoppingListItemService {
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
 
-    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
+
+    const {
+      foodProductId,
+      genericFoodId,
+      checked,
+      unit,
+    } = sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
       userId,
-      { foodId, checked, unit },
+      { foodProductId, genericFoodId, checked, unit },
     );
 
     return this.transformMultipleToResponseDto(items);
@@ -198,8 +205,9 @@ export class ShoppingListItemService {
   ): Promise<ShoppingListItemResponseDto> {
     await this.findById(id, userId, shoppingListId);
 
-    if (updateDto.foodId) {
-      await this.validateFoodExists(updateDto.foodId);
+
+    if (updateDto.foodProductId) {
+      await this.validateFoodExists(updateDto.foodProductId);
     }
 
     if (updateDto.shoppingListId) {
@@ -275,19 +283,19 @@ export class ShoppingListItemService {
 
       if (autoAdd === true) {
         try {
-          if (existing.foodId) {
+          if (existing.foodProductId) {
             const dto = Object.assign(new CreateShoppingListItemDto(), {
-              foodId: existing.foodId,
+              foodProductId: existing.foodProductId,
               quantity: existing.quantity,
               unit: existing.unit,
             });
             await this.pantryItemService.createFromShoppingList(dto, userId);
-          } else if (existing.foodCategoryId) {
+          } else if (existing.genericFoodId) {
             // PantryItemService.createFromShoppingList only supports foods,
-            // so directly create a pantry item from the food category reference.
+            // so directly create a pantry item from the generic food reference.
             await this.pantryItemService.create(
               {
-                foodCategoryId: existing.foodCategoryId,
+                genericFoodId: existing.genericFoodId,
                 quantity: existing.quantity,
                 unit: existing.unit,
               } as any,
@@ -348,11 +356,11 @@ export class ShoppingListItemService {
             );
 
           for (const item of checkedItems) {
-            if (item.foodId || item.foodCategoryId) {
+            if (item.foodProductId || item.genericFoodId) {
               try {
                 const dto = Object.assign(new CreateShoppingListItemDto(), {
-                  foodId: item.foodId || undefined,
-                  foodCategoryId: item.foodCategoryId || undefined,
+                  foodProductId: item.foodProductId || undefined,
+                  genericFoodId: item.genericFoodId || undefined,
                   quantity: item.quantity,
                   unit: item.unit,
                 });
@@ -463,35 +471,35 @@ export class ShoppingListItemService {
   }
 
   private async validateFoodCategoryExists(
-    foodCategoryId: string,
+    genericFoodId: string,
   ): Promise<void> {
-    const foodCategory =
-      await this.foodCategoryRepository.findById(foodCategoryId);
-    if (!foodCategory) {
+    const genericFood =
+      await this.genericFoodRepository.findById(genericFoodId);
+    if (!genericFood) {
       throw new NotFoundException(
-        `Food category with ID '${foodCategoryId}' not found`,
+        `Generic food with ID '${genericFoodId}' not found`,
       );
     }
   }
 
   private async checkForDuplicateItem(
     shoppingListId: string,
-    foodId?: string,
-    foodCategoryId?: string,
+    foodProductId?: string,
+    genericFoodId?: string,
   ): Promise<void> {
     let existingItem;
 
-    if (foodId) {
+    if (foodProductId) {
       existingItem =
         await this.shoppingListItemRepository.findByShoppingListAndFood(
           shoppingListId,
-          foodId,
+          foodProductId,
         );
-    } else if (foodCategoryId) {
+    } else if (genericFoodId) {
       existingItem =
         await this.shoppingListItemRepository.findByShoppingListAndFoodCategory(
           shoppingListId,
-          foodCategoryId,
+          genericFoodId,
         );
     }
 

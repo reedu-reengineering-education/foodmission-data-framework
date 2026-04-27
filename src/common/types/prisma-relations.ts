@@ -1,3 +1,12 @@
+export const SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE = {
+  shoppingList: true,
+  foodProduct: true,
+  genericFood: true,
+} as const;
+
+export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
+  include: typeof SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE;
+}>;
 export const PANTRY_ITEM_WITH_RELATIONS_INCLUDE = {
   pantry: true,
   foodProduct: true,
@@ -31,14 +40,6 @@ export const PANTRY_WITH_RELATIONS_INCLUDE = {
 
 export type PantryWithRelations = Prisma.PantryGetPayload<{
   include: typeof PANTRY_WITH_RELATIONS_INCLUDE;
-}>;
-
-export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
-  include: {
-    shoppingList: true;
-    foodProduct: true;
-    genericFood: true;
-  };
 }>;
 
 export const MEAL_ITEM_WITH_RELATIONS_INCLUDE = {

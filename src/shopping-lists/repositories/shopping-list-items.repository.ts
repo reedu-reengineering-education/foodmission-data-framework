@@ -1,25 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, ShoppingListItem, Unit } from '@prisma/client';
+import { ShoppingListItem, Prisma } from '@prisma/client';
+import {
+  ShoppingListItemWithRelations,
+  SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
+} from '../../common/types/prisma-relations';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { BaseRepository } from '../../common/interfaces/base-repository.interface';
-
-export type ShoppingListItemWithRelations = Prisma.ShoppingListItemGetPayload<{
-  include: {
-    shoppingList: true;
-    food: true;
-    foodCategory: true;
-  };
-}>;
-
-export interface ShoppingListItemFilter {
-  shoppingListId?: string;
-  foodId?: string;
-  checked?: boolean;
-  unit?: Unit;
-  userId?: string;
-}
+import { ShoppingListItemFilter } from '../dto/shopping-list-item-filter.dto';
 
 @Injectable()
 export class ShoppingListItemRepository implements BaseRepository<
@@ -34,21 +23,13 @@ export class ShoppingListItemRepository implements BaseRepository<
   ): Promise<ShoppingListItemWithRelations> {
     return this.prisma.shoppingListItem.create({
       data,
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findAll(): Promise<ShoppingListItemWithRelations[]> {
     return await this.prisma.shoppingListItem.findMany({
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
       orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
     });
   }
@@ -62,17 +43,13 @@ export class ShoppingListItemRepository implements BaseRepository<
     return this.prisma.shoppingListItem.findMany({
       where: {
         shoppingListId: filter.shoppingListId,
-        foodId: filter.foodId,
+        foodProductId: filter.foodProductId,
+        genericFoodId: filter.genericFoodId,
         checked: filter.checked,
         unit: filter.unit,
-
         shoppingList: filter.userId ? { userId: filter.userId } : undefined,
       },
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
       orderBy: [{ checked: 'asc' }, { createdAt: 'desc' }],
     });
   }
@@ -80,16 +57,19 @@ export class ShoppingListItemRepository implements BaseRepository<
   async findByShoppingListId(
     shoppingListId: string,
     userId?: string,
-    filter?: Pick<ShoppingListItemFilter, 'foodId' | 'checked' | 'unit'>,
+    filter?: Pick<
+      ShoppingListItemFilter,
+      'foodProductId' | 'genericFoodId' | 'checked' | 'unit'
+    >,
     tx?: Prisma.TransactionClient,
   ): Promise<ShoppingListItemWithRelations[]> {
     const whereConditions: Prisma.ShoppingListItemWhereInput = {
       shoppingListId,
-      foodId: filter?.foodId,
+      foodProductId: filter?.foodProductId,
+      genericFoodId: filter?.genericFoodId,
       checked: filter?.checked,
       unit: filter?.unit,
     };
-
     if (userId) {
       whereConditions.shoppingList = {
         userId,
@@ -99,11 +79,7 @@ export class ShoppingListItemRepository implements BaseRepository<
     const client = tx ?? this.prisma;
     return client.shoppingListItem.findMany({
       where: whereConditions,
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
       orderBy: [
         { checked: 'asc' }, // Unchecked items first
         { createdAt: 'desc' },
@@ -114,11 +90,7 @@ export class ShoppingListItemRepository implements BaseRepository<
   async findById(id: string): Promise<ShoppingListItemWithRelations | null> {
     return this.prisma.shoppingListItem.findUnique({
       where: { id },
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -128,16 +100,12 @@ export class ShoppingListItemRepository implements BaseRepository<
   ): Promise<ShoppingListItemWithRelations | null> {
     return this.prisma.shoppingListItem.findUnique({
       where: {
-        shoppingListId_foodId: {
+        shoppingListId_foodProductId: {
           shoppingListId,
-          foodId,
+          foodProductId: foodId,
         },
       },
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -147,16 +115,12 @@ export class ShoppingListItemRepository implements BaseRepository<
   ): Promise<ShoppingListItemWithRelations | null> {
     return this.prisma.shoppingListItem.findUnique({
       where: {
-        shoppingListId_foodCategoryId: {
+        shoppingListId_genericFoodId: {
           shoppingListId,
-          foodCategoryId,
+          genericFoodId: foodCategoryId,
         },
       },
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -167,11 +131,7 @@ export class ShoppingListItemRepository implements BaseRepository<
     return this.prisma.shoppingListItem.update({
       where: { id },
       data,
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -210,8 +170,11 @@ export class ShoppingListItemRepository implements BaseRepository<
       whereConditions.shoppingListId = filter.shoppingListId;
     }
 
-    if (filter.foodId) {
-      whereConditions.foodId = filter.foodId;
+    if (filter.foodProductId) {
+      whereConditions.foodProductId = filter.foodProductId;
+    }
+    if (filter.genericFoodId) {
+      whereConditions.genericFoodId = filter.genericFoodId;
     }
 
     if (filter.checked !== undefined) {
@@ -245,11 +208,7 @@ export class ShoppingListItemRepository implements BaseRepository<
       data: {
         checked: !currentItem.checked,
       },
-      include: {
-        shoppingList: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: SHOPPING_LIST_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -335,7 +294,7 @@ export class ShoppingListItemRepository implements BaseRepository<
   }
 
   async validateFoodExists(foodId: string): Promise<boolean> {
-    const count = await this.prisma.food.count({
+    const count = await this.prisma.foodProduct.count({
       where: { id: foodId },
     });
     return count > 0;

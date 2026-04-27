@@ -25,7 +25,7 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
-import { UserGroupWithRelations } from '../repositories/user-groups.repository';
+import { UserGroupWithRelations } from '../../common/types/prisma-relations';
 
 @Injectable()
 export class UserGroupService {

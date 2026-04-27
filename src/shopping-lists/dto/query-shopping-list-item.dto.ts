@@ -15,14 +15,24 @@ export class QueryShoppingListItemDto {
   @IsOptional()
   shoppingListId?: string;
 
+
   @ApiPropertyOptional({
-    description: 'Filter by food ID',
-    example: 'uuid-food-id',
+    description: 'Filter by food product ID',
+    example: 'uuid-food-product-id',
   })
   @TransformTrimToUndefined()
   @IsString()
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter by generic food ID',
+    example: 'uuid-generic-food-id',
+  })
+  @TransformTrimToUndefined()
+  @IsString()
+  @IsOptional()
+  genericFoodId?: string;
 
   @ApiPropertyOptional({
     description: 'Filter by checked status',

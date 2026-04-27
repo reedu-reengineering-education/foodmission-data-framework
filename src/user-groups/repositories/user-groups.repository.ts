@@ -2,13 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateUserGroupDto } from '../dto/create-user-group.dto';
 import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
-import { GroupRole, Prisma } from '@prisma/client';
+import { GroupRole } from '@prisma/client';
+import { UserGroupWithRelations } from '../../common/types/prisma-relations';
 import { GroupNotFoundException } from '../../common/exceptions/business.exception';
 import { generateInviteCode } from '../../common/utils/invite-code';
-
-export type UserGroupWithRelations = NonNullable<
-  Awaited<ReturnType<PrismaService['userGroup']['findUnique']>>
->;
 
 @Injectable()
 export class UserGroupRepository {
