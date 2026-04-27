@@ -7,18 +7,11 @@ import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { Unit } from '@prisma/client';
 import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
 import { createMockMealItemService } from '../../../common/testing/mock-meal-item-service';
+import { MEAL_ITEM_TEST_IDS as TEST_IDS } from '../test-utils/meal-item-test-ids';
 
 describe('MealItemController', () => {
   let controller: MealItemController;
   let service: MealItemService;
-
-  const TEST_IDS = {
-    USER: 'user-uuid-123',
-    MEAL: 'meal-uuid-123',
-    MEAL_ITEM: 'meal-item-uuid-123',
-    FOOD: 'food-uuid-123',
-    FOOD_CATEGORY: 'food-category-uuid-123',
-  };
 
   const mockMealItemWithFood = TEST_MEAL_ITEM_WITH_FOOD;
 
@@ -47,7 +40,7 @@ describe('MealItemController', () => {
   describe('create', () => {
     it('should create a meal item', async () => {
       const createDto = Object.assign(new CreateMealItemDto(), {
-        foodId: TEST_IDS.FOOD,
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
         quantity: 2,
         unit: Unit.PIECES,
         notes: 'Test notes',

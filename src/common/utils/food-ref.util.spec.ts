@@ -1,5 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
-import { validateFoodRef, FoodRefDto } from './food-ref.util';
+import {
+  validateFoodRef,
+  extractNutritionData,
+  getFoodRefName,
+  FoodRefDto,
+} from './food-ref.util';
 
 describe('validateFoodRef', () => {
   it('should return itemType food_product when only foodProductId is provided', () => {
@@ -32,10 +37,10 @@ describe('validateFoodRef', () => {
 });
 
 describe('extractNutritionData', () => {
-  it('should extract nutrition data from food', () => {
+  it('should extract nutrition data from foodProduct', () => {
     const item = {
-      itemType: 'food',
-      food: {
+      itemType: 'food_product',
+      foodProduct: {
         name: 'Apple',
         energyKcal: 52,
         energyKj: 218,
@@ -62,10 +67,10 @@ describe('extractNutritionData', () => {
     });
   });
 
-  it('should extract nutrition data from foodCategory', () => {
+  it('should extract nutrition data from genericFood', () => {
     const item = {
-      itemType: 'food_category',
-      foodCategory: {
+      itemType: 'generic_food',
+      genericFood: {
         foodName: 'Fruit',
         energyKcal: 50,
         energyKj: 210,
@@ -97,22 +102,22 @@ describe('extractNutritionData', () => {
   });
 });
 
-describe('getItemName', () => {
-  it('should return food name for food item', () => {
-    const item = { itemType: 'food', food: { name: 'Banana' } };
-    expect(getItemName(item)).toBe('Banana');
+describe('getFoodRefName', () => {
+  it('should return food name for food_product item', () => {
+    const item = { itemType: 'food_product', foodProduct: { name: 'Banana' } };
+    expect(getFoodRefName(item)).toBe('Banana');
   });
 
-  it('should return foodCategory name for food_category item', () => {
+  it('should return genericFood name for generic_food item', () => {
     const item = {
-      itemType: 'food_category',
-      foodCategory: { foodName: 'Vegetable' },
+      itemType: 'generic_food',
+      genericFood: { foodName: 'Vegetable' },
     };
-    expect(getItemName(item)).toBe('Vegetable');
+    expect(getFoodRefName(item)).toBe('Vegetable');
   });
 
   it('should return Unknown Item if no name found', () => {
-    const item = { itemType: 'food' };
-    expect(getItemName(item)).toBe('Unknown Item');
+    const item = { itemType: 'food_product' };
+    expect(getFoodRefName(item)).toBe('Unknown Item');
   });
 });
