@@ -10,7 +10,6 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
-  Request,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -28,10 +27,9 @@ import { ApiCommonErrorResponses } from '../../common/decorators/api-error-respo
 import { ApiOpenFoodFactsSearchQuery } from '../../common/decorators/api-query-params.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { FoodProductService } from '../services/food.service';
+import { FoodProductService } from '../services/food-product.service';
 import { CreateFoodProductDto } from '../dto/create-food-product.dto';
 import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
-
 import {
   FoodProductQueryDto,
   FoodProductSearchDto,
@@ -62,7 +60,7 @@ export class FoodProductController {
   @Post()
   @CacheEvict(['foods:list', 'foods:count'])
   @Roles('admin')
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute for creating foods
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new food item',
     description:
@@ -84,7 +82,6 @@ export class FoodProductController {
     @Body() createFoodProductDto: CreateFoodProductDto,
     @CurrentUser('id') userId: string,
   ): Promise<FoodProductResponseDto> {
-    // Get the internal userId for database operations
     return this.foodProductService.create(createFoodProductDto, userId);
   }
 
@@ -112,7 +109,7 @@ export class FoodProductController {
 
   @Get('search/openfoodfacts')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 searches per minute
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiOperation({
     summary: 'Search OpenFoodFacts database',
     description:
@@ -152,19 +149,14 @@ export class FoodProductController {
 
   @Post('import/openfoodfacts/:barcode')
   @Roles('user', 'admin')
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 imports per minute
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Import food from OpenFoodFacts',
     description:
       'Imports a food item from OpenFoodFacts database using barcode.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {},
-    },
-  })
+  @ApiBody({ schema: { type: 'object', properties: {} } })
   @ApiResponse({
     status: 201,
     description: 'Food imported successfully',
@@ -186,12 +178,11 @@ export class FoodProductController {
     @Param('barcode') barcode: string,
     @CurrentUser('id') userId: string,
   ): Promise<FoodProductResponseDto> {
-    // Get the internal userId for database operations
     return this.foodProductService.importFromOpenFoodFacts(barcode, userId);
   }
 
   @Get('barcode/:barcode')
-  @Cacheable('food_barcode', 300) // Cache for 5 minutes
+  @Cacheable('food_barcode', 300)
   @Public()
   @ApiOperation({
     summary: 'Find food by barcode',
@@ -210,10 +201,7 @@ export class FoodProductController {
     description: 'Food item found',
     type: FoodProductResponseDto,
   })
-  @ApiCommonErrorResponses({
-    notFound: true,
-    unauthorized: false,
-  })
+  @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
   findByBarcode(
     @Param('barcode') barcode: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
@@ -223,7 +211,7 @@ export class FoodProductController {
   }
 
   @Get(':id')
-  @Cacheable('food', 300) // Cache for 5 minutes
+  @Cacheable('food', 300)
   @Public()
   @ApiOperation({
     summary: 'Find food by ID',
@@ -247,10 +235,7 @@ export class FoodProductController {
     description: 'Food item found',
     type: FoodProductResponseDto,
   })
-  @ApiCommonErrorResponses({
-    notFound: true,
-    unauthorized: false,
-  })
+  @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
@@ -305,21 +290,14 @@ export class FoodProductController {
     format: 'uuid',
     description: 'Food item ID',
   })
-  @ApiResponse({
-    status: 204,
-    description: 'Food item deleted successfully',
-  })
-  @ApiCommonErrorResponses({
-    unauthorized: true,
-    forbidden: true,
-    notFound: true,
-  })
+  @ApiResponse({ status: 204, description: 'Food item deleted successfully' })
+  @ApiCommonErrorResponses({ unauthorized: true, forbidden: true, notFound: true })
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.foodProductService.remove(id);
   }
 
   @Get(':id/openfoodfacts')
-  @Cacheable('openfoodfacts', 3600) // Cache for 1 hour
+  @Cacheable('openfoodfacts', 3600)
   @Public()
   @ApiOperation({
     summary: 'Get OpenFoodFacts information for food item',
@@ -345,12 +323,7 @@ export class FoodProductController {
   @ApiCommonErrorResponses({
     notFound: true,
     unauthorized: false,
-    custom: [
-      {
-        status: 503,
-        description: 'OpenFoodFacts service unavailable',
-      },
-    ],
+    custom: [{ status: 503, description: 'OpenFoodFacts service unavailable' }],
   })
   async getOpenFoodFactsInfo(@Param('id', ParseUUIDPipe) id: string) {
     const food = await this.foodProductService.findOne(id);

@@ -34,7 +34,6 @@ export class FoodProductService {
   ): Promise<FoodProductResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
 
-    // Check if barcode already exists
     if (createFoodDto.barcode) {
       const existingFood = await this.foodProductRepository.findByBarcode(
         createFoodDto.barcode,
@@ -66,7 +65,6 @@ export class FoodProductService {
     } = query;
     const skip = (page - 1) * limit;
 
-    // Build where clause
     const where: any = {};
 
     if (search) {
@@ -80,7 +78,6 @@ export class FoodProductService {
       where.barcode = barcode;
     }
 
-    // Build order by clause
     const orderBy: any = {};
     orderBy[sortBy] = sortOrder;
 
@@ -95,7 +92,6 @@ export class FoodProductService {
       result.data.map(async (food) => {
         const responseDto = this.transformToResponseDto(food);
 
-        // Include OpenFoodFacts data if requested
         if (query.includeOpenFoodFacts && food.barcode) {
           const offInfo = await this.getOpenFoodFactsInfo(food.barcode);
           responseDto.openFoodFactsInfo = offInfo || undefined;
@@ -129,7 +125,6 @@ export class FoodProductService {
 
     this.logger.debug(`includeOpenFoodFacts: ${includeOpenFoodFacts}`);
 
-    // Include OpenFoodFacts data if requested
     if (includeOpenFoodFacts && food.barcode) {
       this.logger.debug(
         `Fetching OpenFoodFacts info for barcode: ${food.barcode}`,
@@ -154,9 +149,7 @@ export class FoodProductService {
 
     const responseDto = this.transformToResponseDto(food);
 
-    // Include OpenFoodFacts data if requested
     if (includeOpenFoodFacts) {
-      console.log('Fetching OpenFoodFacts info for barcode:', barcode);
       const offInfo = await this.getOpenFoodFactsInfo(barcode);
       responseDto.openFoodFactsInfo = offInfo || undefined;
     }
@@ -170,13 +163,11 @@ export class FoodProductService {
   ): Promise<FoodProductResponseDto> {
     this.logger.log(`Updating food: ${id}`);
 
-    // Check if food exists
     const existingFood = await this.foodProductRepository.findById(id);
     if (!existingFood) {
       throw new NotFoundException('Food not found');
     }
 
-    // Check if barcode already exists (excluding current food)
     if (
       updateFoodDto.barcode &&
       updateFoodDto.barcode !== existingFood.barcode
@@ -226,21 +217,18 @@ export class FoodProductService {
   ): Promise<FoodProductResponseDto> {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
 
-    // Check if food already exists
     const existingFood =
       await this.foodProductRepository.findByBarcode(barcode);
     if (existingFood) {
       throw new BadRequestException('Food with this barcode already exists');
     }
 
-    // Get product info from OpenFoodFacts
     const productInfo =
       await this.openFoodFactsService.getProductByBarcode(barcode);
     if (!productInfo) {
       throw new NotFoundException('Product not found in OpenFoodFacts');
     }
 
-    // Create food from OpenFoodFacts data with all enriched fields
     const food = await this.foodProductRepository.create({
       name: productInfo.name,
       description: productInfo.genericName,

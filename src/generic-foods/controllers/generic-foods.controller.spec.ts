@@ -2,15 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { GenericFoodController } from './generic-foods.controller';
+import { GenericFoodsController } from './generic-foods.controller';
 import { GenericFoodService } from '../services/generic-food.service';
-import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
-describe('GenericFoodController', () => {
-  let controller: GenericFoodController;
+describe('GenericFoodsController', () => {
+  let controller: GenericFoodsController;
   let service: jest.Mocked<GenericFoodService>;
 
-  const mockCategory: any = { ...TEST_GENERIC_FOOD, id: 'cat-123' };
+  const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'generic-123' };
 
   const mockServiceMethods = {
     create: jest.fn(),
@@ -23,7 +26,7 @@ describe('GenericFoodController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [GenericFoodController],
+      controllers: [GenericFoodsController],
       providers: [
         {
           provide: GenericFoodService,
@@ -37,8 +40,8 @@ describe('GenericFoodController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<FoodCategoryController>(FoodCategoryController);
-    service = module.get(FoodCategoriesService);
+    controller = module.get(GenericFoodsController);
+    service = module.get(GenericFoodService);
   });
 
   afterEach(() => {
@@ -46,8 +49,8 @@ describe('GenericFoodController', () => {
   });
 
   describe('create', () => {
-    it('should create a food category', async () => {
-      const createDto: CreateFoodCategoryDto = {
+    it('should create a generic food', async () => {
+      const createDto: CreateGenericFoodDto = {
         nevoVersion: '2025',
         foodGroup: 'Vegetables',
         nevoCode: 1234,
@@ -64,8 +67,8 @@ describe('GenericFoodController', () => {
       expect(result).toEqual(mockCategory);
     });
 
-    it('should create a category with nutritional data', async () => {
-      const createDto: CreateFoodCategoryDto = {
+    it('should create with nutritional data', async () => {
+      const createDto: CreateGenericFoodDto = {
         nevoVersion: '2025',
         foodGroup: 'Vegetables',
         nevoCode: 1234,
@@ -84,8 +87,8 @@ describe('GenericFoodController', () => {
   });
 
   describe('findAll', () => {
-    it('should return paginated food categories', async () => {
-      const query: FoodCategoryQueryDto = {
+    it('should return paginated generic foods', async () => {
+      const query: GenericFoodQueryDto = {
         page: 1,
         limit: 20,
       };
@@ -108,7 +111,7 @@ describe('GenericFoodController', () => {
     });
 
     it('should handle search query', async () => {
-      const query: FoodCategoryQueryDto = {
+      const query: GenericFoodQueryDto = {
         search: 'tomato',
         page: 1,
         limit: 20,
@@ -131,7 +134,7 @@ describe('GenericFoodController', () => {
     });
 
     it('should filter by food group', async () => {
-      const query: FoodCategoryQueryDto = {
+      const query: GenericFoodQueryDto = {
         foodGroup: 'Vegetables',
         page: 1,
         limit: 20,
@@ -152,7 +155,7 @@ describe('GenericFoodController', () => {
     });
 
     it('should use default pagination values', async () => {
-      const query: FoodCategoryQueryDto = {};
+      const query: GenericFoodQueryDto = {};
 
       service.findAll.mockResolvedValue({
         items: [],
@@ -190,7 +193,7 @@ describe('GenericFoodController', () => {
       expect(result).toEqual(foodGroups);
     });
 
-    it('should return empty array when no categories exist', async () => {
+    it('should return empty array when no generic foods exist', async () => {
       service.getAllFoodGroups.mockResolvedValue([]);
 
       const result = await controller.getAllFoodGroups();
@@ -200,14 +203,14 @@ describe('GenericFoodController', () => {
   });
 
   describe('findById', () => {
-    it('should return a food category by id', async () => {
+    it('should return a generic food by id', async () => {
       service.findById.mockResolvedValue(mockCategory);
 
-      const result = await controller.findById('cat-123');
+      const result = await controller.findById('generic-123');
 
-      expect(service.findById).toHaveBeenCalledWith('cat-123');
+      expect(service.findById).toHaveBeenCalledWith('generic-123');
       expect(result).toEqual(mockCategory);
-      expect(result.id).toBe('cat-123');
+      expect(result.id).toBe('generic-123');
     });
 
     it('should throw NotFoundException when category not found', async () => {
@@ -222,8 +225,8 @@ describe('GenericFoodController', () => {
   });
 
   describe('update', () => {
-    it('should update a food category', async () => {
-      const updateDto: UpdateFoodCategoryDto = {
+    it('should update a generic food', async () => {
+      const updateDto: UpdateGenericFoodDto = {
         foodName: 'Tomato, cooked',
         energyKcal: 20,
       };
@@ -236,15 +239,15 @@ describe('GenericFoodController', () => {
 
       service.update.mockResolvedValue(updatedCategory);
 
-      const result = await controller.update('cat-123', updateDto);
+      const result = await controller.update('generic-123', updateDto);
 
-      expect(service.update).toHaveBeenCalledWith('cat-123', updateDto);
+      expect(service.update).toHaveBeenCalledWith('generic-123', updateDto);
       expect(result.foodName).toBe('Tomato, cooked');
       expect(result.energyKcal).toBe(20);
     });
 
     it('should update partial fields', async () => {
-      const updateDto: UpdateFoodCategoryDto = {
+      const updateDto: UpdateGenericFoodDto = {
         energyKcal: 25,
       };
 
@@ -255,15 +258,15 @@ describe('GenericFoodController', () => {
 
       service.update.mockResolvedValue(updatedCategory);
 
-      const result = await controller.update('cat-123', updateDto);
+      const result = await controller.update('generic-123', updateDto);
 
-      expect(service.update).toHaveBeenCalledWith('cat-123', updateDto);
+      expect(service.update).toHaveBeenCalledWith('generic-123', updateDto);
       expect(result.energyKcal).toBe(25);
       expect(result.foodName).toBe(mockCategory.foodName);
     });
 
-    it('should throw NotFoundException when category does not exist', async () => {
-      const updateDto: UpdateFoodCategoryDto = {
+    it('should throw NotFoundException when generic food does not exist', async () => {
+      const updateDto: UpdateGenericFoodDto = {
         foodName: 'New name',
       };
 
@@ -278,12 +281,12 @@ describe('GenericFoodController', () => {
   });
 
   describe('delete', () => {
-    it('should delete a food category', async () => {
+    it('should delete a generic food', async () => {
       service.delete.mockResolvedValue(undefined);
 
-      await controller.delete('cat-123');
+      await controller.delete('generic-123');
 
-      expect(service.delete).toHaveBeenCalledWith('cat-123');
+      expect(service.delete).toHaveBeenCalledWith('generic-123');
     });
 
     it('should throw NotFoundException when category does not exist', async () => {
@@ -299,7 +302,7 @@ describe('GenericFoodController', () => {
     it('should return void on successful deletion', async () => {
       service.delete.mockResolvedValue(undefined);
 
-      const result = await controller.delete('cat-123');
+      const result = await controller.delete('generic-123');
 
       expect(result).toBeUndefined();
     });
