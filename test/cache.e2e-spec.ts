@@ -127,22 +127,26 @@ describe('Cache E2E', () => {
     });
 
     it('should generate cache keys correctly', () => {
-      const key1 = cacheService.generateKey('food', '123');
-      expect(key1).toBe('food:123');
+      const key1 = cacheService.generateKey('food-products', '123');
+      expect(key1).toBe('food-products:123');
 
       const key2 = cacheService.generateKey('user', 'abc', 'profile');
       expect(key2).toBe('user:abc:profile');
 
-      const key3 = cacheService.generateKey('list', 'foods', 1, 10);
-      expect(key3).toBe('list:foods:1:10');
+      const key3 = cacheService.generateKey('list', 'food-products', 1, 10);
+      expect(key3).toBe('list:food-products:1:10');
     });
 
     it('should generate invalidation keys correctly', () => {
-      const keys1 = cacheService.generateInvalidationKeys('food');
-      expect(keys1).toEqual(['food:list', 'food:count']);
+      const keys1 = cacheService.generateInvalidationKeys('food-products');
+      expect(keys1).toEqual(['food-products:list', 'food-products:count']);
 
-      const keys2 = cacheService.generateInvalidationKeys('food', '123');
-      expect(keys2).toEqual(['food:list', 'food:count', 'food:123']);
+      const keys2 = cacheService.generateInvalidationKeys('food-products', '123');
+      expect(keys2).toEqual([
+        'food-products:list',
+        'food-products:count',
+        'food-products:123',
+      ]);
     });
 
     it('should wrap functions with caching', async () => {

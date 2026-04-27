@@ -58,7 +58,7 @@ export class FoodProductController {
   ) {}
 
   @Post()
-  @CacheEvict(['foods:list', 'foods:count'])
+  @CacheEvict(['food-products:list', 'food-products:count'])
   @Roles('admin')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
@@ -182,7 +182,7 @@ export class FoodProductController {
   }
 
   @Get('barcode/:barcode')
-  @Cacheable('food_barcode', 300)
+  @Cacheable('food-products:barcode', 300)
   @Public()
   @ApiOperation({
     summary: 'Find food product by barcode',
@@ -211,7 +211,7 @@ export class FoodProductController {
   }
 
   @Get(':id')
-  @Cacheable('food', 300)
+  @Cacheable('food-products:detail', 300)
   @Public()
   @ApiOperation({
     summary: 'Find food product by ID',
@@ -245,7 +245,11 @@ export class FoodProductController {
   }
 
   @Patch(':id')
-  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
+  @CacheEvict([
+    'food-products:{id}',
+    'food-products:barcode:{barcode}',
+    'food-products:list',
+  ])
   @Roles('admin')
   @ApiOperation({
     summary: 'Update food product',
@@ -277,7 +281,11 @@ export class FoodProductController {
   }
 
   @Delete(':id')
-  @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
+  @CacheEvict([
+    'food-products:{id}',
+    'food-products:barcode:{barcode}',
+    'food-products:list',
+  ])
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
@@ -301,7 +309,7 @@ export class FoodProductController {
   }
 
   @Get(':id/openfoodfacts')
-  @Cacheable('openfoodfacts', 3600)
+  @Cacheable('food-products:openfoodfacts', 3600)
   @Public()
   @ApiOperation({
     summary: 'Get OpenFoodFacts information for food product',

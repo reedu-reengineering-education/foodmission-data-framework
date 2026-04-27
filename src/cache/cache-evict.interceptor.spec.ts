@@ -105,27 +105,29 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('success-result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
-        'food_barcode:{barcode}',
-        'foods:list',
+        'food-products:{id}',
+        'food-products:barcode:{barcode}',
+        'food-products:list',
       ]);
 
       const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('success-result');
-      expect(cacheManager.del).toHaveBeenCalledWith('food:123');
-      expect(cacheManager.del).toHaveBeenCalledWith('food_barcode:1234567890');
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:list');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:barcode:1234567890',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:list');
 
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: food:123',
+        'Evicted cache key: food-products:123',
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: food_barcode:1234567890',
+        'Evicted cache key: food-products:barcode:1234567890',
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: foods:list',
+        'Evicted cache key: food-products:list',
       );
     });
 
@@ -135,7 +137,7 @@ describe('CacheEvictInterceptor', () => {
         handle: () => throwError(() => new Error('Method failed')),
       };
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
 
       try {
         const result = interceptor.intercept(context, next);
@@ -151,7 +153,7 @@ describe('CacheEvictInterceptor', () => {
       const context = createMockExecutionContext({ id: '123' });
       const next = createMockCallHandler({ error: 'Something went wrong' });
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
 
       const result = interceptor.intercept(context, next);
       await result.toPromise();
@@ -167,7 +169,7 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
+        'food-products:{id}',
         'user_profile:{keycloakId}',
         'user_data:{userId}',
         'barcode:{barcode}',
@@ -176,7 +178,7 @@ describe('CacheEvictInterceptor', () => {
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('food:123');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
       expect(cacheManager.del).toHaveBeenCalledWith('user_profile:keycloak789');
       expect(cacheManager.del).toHaveBeenCalledWith('user_data:user456');
       expect(cacheManager.del).toHaveBeenCalledWith('barcode:1234567890');
@@ -187,7 +189,7 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
+        'food-products:{id}',
         'user_profile:{keycloakId}',
         'user_data:{userId}',
         'barcode:{barcode}',
@@ -196,7 +198,7 @@ describe('CacheEvictInterceptor', () => {
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('food:');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:');
       expect(cacheManager.del).toHaveBeenCalledWith('user_profile:');
       expect(cacheManager.del).toHaveBeenCalledWith('user_data:anonymous');
       expect(cacheManager.del).toHaveBeenCalledWith('barcode:');
@@ -206,7 +208,7 @@ describe('CacheEvictInterceptor', () => {
       const context = createMockExecutionContext({ id: '123' });
       const next = createMockCallHandler('result');
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
       cacheManager.del.mockRejectedValue(new Error('Cache deletion failed'));
 
       const result = interceptor.intercept(context, next);
@@ -214,7 +216,7 @@ describe('CacheEvictInterceptor', () => {
 
       expect(observableResult).toBe('result');
       expect(loggingService.error).toHaveBeenCalledWith(
-        'Error evicting cache key food:{id}:',
+        'Error evicting cache key food-products:{id}:',
         expect.any(Error),
       );
     });
@@ -224,16 +226,16 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'foods:list',
-        'foods:count',
+        'food-products:list',
+        'food-products:count',
         'static:key',
       ]);
 
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:list');
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:count');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:list');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:count');
       expect(cacheManager.del).toHaveBeenCalledWith('static:key');
     });
   });
