@@ -388,11 +388,6 @@ build-storybook.log
 
 # SvelteKit
 .svelte-kit
-docs/foodmision*
-docs/FOODMISSION*
-FOODMISSION*
-local*
-
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 docs/FOODMISSION Data Framework API/*
