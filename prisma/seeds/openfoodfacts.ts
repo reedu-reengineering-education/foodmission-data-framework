@@ -111,7 +111,7 @@ export async function seedOpenFoodFactsFromJson(
   }
 
   console.log(
-    `🍎 Seeding Food from OpenFoodFacts JSON (${rows.length} rows)...`,
+    `🍎 Seeding food_products from OpenFoodFacts JSON (${rows.length} rows)...`,
   );
 
   for (const row of rows) {
@@ -127,6 +127,8 @@ export async function seedOpenFoodFactsFromJson(
     });
   }
 
-  console.log(`   ✅ OpenFoodFacts JSON: ${rows.length} foods upserted`);
+  console.log(
+    `   ✅ OpenFoodFacts JSON: ${rows.length} food products upserted`,
+  );
   return { count: rows.length, skipped: false };
 }

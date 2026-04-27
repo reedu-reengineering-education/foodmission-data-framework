@@ -1,5 +1,5 @@
 /**
- * Idempotent seed step: links Food and FoodCategory records to their best-matching
+ * Idempotent seed step: links FoodProduct and GenericFood records to their best-matching
  * FoodShelfLife entry using 3-tier scoring:
  *   Tier 1: exact name match        (+10)
  *   Tier 2: keyword token overlap   (+N, one point per matching token)
@@ -144,7 +144,7 @@ export async function linkShelfLife(
     return { foodProducts: 0, genericFoods: 0 };
   }
 
-  // ── Foods ─────────────────────────────────────────────────────────────────
+  // ── Food products ─────────────────────────────────────────────────────────
 
   const foodIdsByShelfLife = new Map<string, string[]>();
   const foodTotal = await prisma.foodProduct.count();

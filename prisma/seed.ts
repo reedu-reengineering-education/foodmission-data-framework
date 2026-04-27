@@ -23,37 +23,53 @@ async function main() {
   console.log('=====================================');
 
   try {
+    // --- Catalog (needed for recipe ingredient linking & shelf-life matching) ---
     const offResult = await seedOpenFoodFactsFromJson(prisma);
     if (offResult.skipped) {
       console.log(
-        '   ⏭️  OFF JSON not found; Food table will have no OFF products. Run npx ts-node scripts/pull-openfoodfacts-foods.ts to generate it.',
+        '   ⏭️  OFF JSON not found; no OpenFoodFacts rows will be loaded into food_products. Run npx ts-node scripts/pull-openfoodfacts-foods.ts to generate it.',
       );
     }
 
     const genericFoods = await seedGenericFoods(prisma);
+
+    // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
     const users = await seedUsers(prisma);
     const shoppingList = await seedShoppingLists(prisma);
     const shoppingListItem = await seedShoppingListItems(prisma);
     const pantry = await seedPantries(prisma);
     const pantryItem = await seedPantryItems(prisma);
+
+    // --- Groups & gamification (missions/challenges do not depend on recipes here) ---
     const userGroups = await seedUserGroups(prisma);
     const virtualMembers = await seedVirtualMembers(prisma);
     const knowledge = await seedKnowledge(prisma);
     const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
     const challenges = await seedChallenges(prisma);
     const missions = await seedMissions(prisma);
+
+    // --- Recipes then meals (meals attach to seeded recipes) ---
     const recipes = await seedRecipes(prisma);
     const meals = await seedMeals(prisma);
+
+    // --- Shelf-life reference data, then link rows onto FoodProduct / GenericFood ---
     const shelfLife = await seedFoodKeeper(prisma);
     const shelfLifeLinks = await linkShelfLife(prisma);
+
     const foodCount = await prisma.foodProduct.count();
 
     console.log('=====================================');
     console.log('✅ Database seeding completed successfully!');
     console.log('📊 Summary:');
     const summaryRows: { label: string; value: string | number }[] = [
-      { label: 'users', value: users.length },
+      {
+        label: 'openFoodFactsJson',
+        value: offResult.skipped
+          ? 'skipped'
+          : `${offResult.count} rows upserted`,
+      },
       { label: 'genericFoods', value: genericFoods.length },
+      { label: 'users', value: users.length },
       { label: 'shoppingList', value: shoppingList.length },
       { label: 'shoppingListItem', value: shoppingListItem.length },
       { label: 'pantry', value: pantry.length },
@@ -64,7 +80,6 @@ async function main() {
       { label: 'knowledgeProgress', value: knowledgeProgress.length },
       { label: 'challenges', value: challenges.length },
       { label: 'missions', value: missions.length },
-      { label: 'foods (total)', value: foodCount },
       {
         label: 'recipes',
         value: `${recipes.created} created, ${recipes.skipped} skipped`,
@@ -78,6 +93,7 @@ async function main() {
         label: 'shelfLife links',
         value: `${shelfLifeLinks.foodProducts} food products, ${shelfLifeLinks.genericFoods} generic foods`,
       },
+      { label: 'foodProducts (total in DB)', value: foodCount },
     ];
     for (const row of summaryRows) {
       console.log(`   - ${row.label}: ${row.value}`);
