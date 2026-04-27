@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ShoppingListItem, Prisma } from '@prisma/client';
 import {
   ShoppingListItemWithRelations,
@@ -109,6 +109,11 @@ export class ShoppingListItemRepository implements BaseRepository<
     },
   ): Promise<ShoppingListItemWithRelations | null> {
     const { foodProductId, genericFoodId } = foodRef;
+    if (!foodProductId && !genericFoodId) {
+      throw new BadRequestException(
+        'Either foodProductId or genericFoodId must be provided',
+      );
+    }
     return this.prisma.shoppingListItem.findFirst({
       where: {
         shoppingListId,

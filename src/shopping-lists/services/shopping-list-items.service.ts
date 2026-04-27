@@ -62,26 +62,12 @@ export class ShoppingListItemService {
       const { itemType, foodProductId, genericFoodId } =
         validateFoodRef(foodRefDto);
 
-      // Validate the referenced item exists
-      if (itemType === 'food_product') {
-        if (!foodProductId)
-          throw new BadRequestException('foodProductId is required');
-        await this.validateFoodProductExists(foodProductId);
-        await this.checkForDuplicateItem(
-          createDto.shoppingListId,
-          foodProductId,
-          undefined,
-        );
-      } else {
-        if (!genericFoodId)
-          throw new BadRequestException('genericFoodId is required');
-        await this.validateGenericFoodExists(genericFoodId);
-        await this.checkForDuplicateItem(
-          createDto.shoppingListId,
-          undefined,
-          genericFoodId,
-        );
-      }
+      await this.validateAndEnsureUniqueFoodRef(
+        createDto.shoppingListId,
+        itemType,
+        foodProductId,
+        genericFoodId,
+      );
 
       const item = await this.shoppingListItemRepository.create({
         ...createDto,
@@ -360,6 +346,28 @@ export class ShoppingListItemService {
         ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
       );
     }
+  }
+
+  private async validateAndEnsureUniqueFoodRef(
+    shoppingListId: string,
+    itemType: 'food_product' | 'generic_food',
+    foodProductId?: string,
+    genericFoodId?: string,
+  ): Promise<void> {
+    if (itemType === 'food_product') {
+      if (!foodProductId) {
+        throw new BadRequestException('foodProductId is required');
+      }
+      await this.validateFoodProductExists(foodProductId);
+      await this.checkForDuplicateItem(shoppingListId, foodProductId, undefined);
+      return;
+    }
+
+    if (!genericFoodId) {
+      throw new BadRequestException('genericFoodId is required');
+    }
+    await this.validateGenericFoodExists(genericFoodId);
+    await this.checkForDuplicateItem(shoppingListId, undefined, genericFoodId);
   }
 
   private transformToResponseDto(

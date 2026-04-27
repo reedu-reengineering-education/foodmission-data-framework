@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { ShoppingListItemRepository } from './shopping-list-items.repository';
 
@@ -71,5 +72,12 @@ describe('ShoppingListItemRepository', () => {
     expect(mockPrismaService.shoppingListItem.count).toHaveBeenCalledWith({
       where: { foodProductId: 'food-1' },
     });
+  });
+
+  it('findByShoppingListAndFoodRef throws when no food ref is provided', async () => {
+    await expect(
+      repository.findByShoppingListAndFoodRef('list-1', {}),
+    ).rejects.toThrow(BadRequestException);
+    expect(mockPrismaService.shoppingListItem.findFirst).not.toHaveBeenCalled();
   });
 });
