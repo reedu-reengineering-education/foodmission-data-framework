@@ -62,14 +62,14 @@ export class FoodProductController {
   @Roles('admin')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
-    summary: 'Create a new food item',
+    summary: 'Create a new food product',
     description:
-      'Creates a new food item in the database. Requires user or admin role.',
+      'Creates a new food product in the database. Requires admin role.',
   })
   @ApiBody({ type: CreateFoodProductDto })
   @ApiResponse({
     status: 201,
-    description: 'Food item created successfully',
+    description: 'Food product created successfully',
     type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
@@ -88,13 +88,13 @@ export class FoodProductController {
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get all food items',
+    summary: 'Get all food products',
     description:
-      'Retrieves a paginated list of food items with optional filtering and sorting.',
+      'Retrieves a paginated list of food products with optional filtering and sorting.',
   })
   @ApiResponse({
     status: 200,
-    description: 'List of food items retrieved successfully',
+    description: 'List of food products retrieved successfully',
     type: PaginatedFoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
@@ -151,15 +151,15 @@ export class FoodProductController {
   @Roles('user', 'admin')
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
-    summary: 'Import food from OpenFoodFacts',
+    summary: 'Import food product from OpenFoodFacts',
     description:
-      'Imports a food item from OpenFoodFacts database using barcode.',
+      'Imports a food product from the OpenFoodFacts database using a barcode.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
   @ApiBody({ schema: { type: 'object', properties: {} } })
   @ApiResponse({
     status: 201,
-    description: 'Food imported successfully',
+    description: 'Food product imported successfully',
     type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
@@ -185,9 +185,9 @@ export class FoodProductController {
   @Cacheable('food_barcode', 300)
   @Public()
   @ApiOperation({
-    summary: 'Find food by barcode',
+    summary: 'Find food product by barcode',
     description:
-      'Retrieves a food item by its barcode. Optionally includes OpenFoodFacts information.',
+      'Retrieves a food product by its barcode. Optionally includes OpenFoodFacts information.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
   @ApiQuery({
@@ -198,7 +198,7 @@ export class FoodProductController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Food item found',
+    description: 'Food product found',
     type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
@@ -214,15 +214,15 @@ export class FoodProductController {
   @Cacheable('food', 300)
   @Public()
   @ApiOperation({
-    summary: 'Find food by ID',
+    summary: 'Find food product by ID',
     description:
-      'Retrieves a food item by its ID. Optionally includes OpenFoodFacts information.',
+      'Retrieves a food product by its ID. Optionally includes OpenFoodFacts information.',
   })
   @ApiParam({
     name: 'id',
     type: 'string',
     format: 'uuid',
-    description: 'Food item ID',
+    description: 'Food product ID',
   })
   @ApiQuery({
     name: 'includeOpenFoodFacts',
@@ -232,7 +232,7 @@ export class FoodProductController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Food item found',
+    description: 'Food product found',
     type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
@@ -248,19 +248,19 @@ export class FoodProductController {
   @CacheEvict(['food:{id}', 'food_barcode:{barcode}', 'foods:list'])
   @Roles('admin')
   @ApiOperation({
-    summary: 'Update food item',
-    description: 'Updates a food item by its ID. Requires user or admin role.',
+    summary: 'Update food product',
+    description: 'Updates a food product by its ID. Requires admin role.',
   })
   @ApiParam({
     name: 'id',
     type: 'string',
     format: 'uuid',
-    description: 'Food item ID',
+    description: 'Food product ID',
   })
   @ApiBody({ type: UpdateFoodProductDto })
   @ApiResponse({
     status: 200,
-    description: 'Food item updated successfully',
+    description: 'Food product updated successfully',
     type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
@@ -281,16 +281,16 @@ export class FoodProductController {
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Delete food item',
-    description: 'Deletes a food item by its ID. Requires admin role.',
+    summary: 'Delete food product',
+    description: 'Deletes a food product by its ID. Requires admin role.',
   })
   @ApiParam({
     name: 'id',
     type: 'string',
     format: 'uuid',
-    description: 'Food item ID',
+    description: 'Food product ID',
   })
-  @ApiResponse({ status: 204, description: 'Food item deleted successfully' })
+  @ApiResponse({ status: 204, description: 'Food product deleted successfully' })
   @ApiCommonErrorResponses({
     unauthorized: true,
     forbidden: true,
@@ -304,15 +304,15 @@ export class FoodProductController {
   @Cacheable('openfoodfacts', 3600)
   @Public()
   @ApiOperation({
-    summary: 'Get OpenFoodFacts information for food item',
+    summary: 'Get OpenFoodFacts information for food product',
     description:
-      'Retrieves OpenFoodFacts information for a food item by its ID, if the food has a barcode.',
+      'Retrieves OpenFoodFacts information for a food product by its ID when the product has a barcode.',
   })
   @ApiParam({
     name: 'id',
     type: 'string',
     format: 'uuid',
-    description: 'Food item ID',
+    description: 'Food product ID',
   })
   @ApiResponse({
     status: 200,
