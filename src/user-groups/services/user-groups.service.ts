@@ -25,7 +25,11 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
-import { UserGroupWithRelations } from '../../common/types/prisma-relations';
+import { Prisma } from '@prisma/client';
+
+type UserGroupWithRelations = Prisma.UserGroupGetPayload<{
+  include: Prisma.UserGroupInclude;
+}>;
 
 @Injectable()
 export class UserGroupService {

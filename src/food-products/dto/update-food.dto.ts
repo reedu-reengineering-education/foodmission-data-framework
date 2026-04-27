@@ -1,9 +1,9 @@
 import { PartialType } from '@nestjs/swagger';
 import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateFoodDto } from './create-food.dto';
+import { CreateFoodProductDto } from './create-food-product.dto';
 
-export class UpdateFoodProductDto extends PartialType(CreateFoodDto) {
+export class UpdateFoodProductDto extends PartialType(CreateFoodProductDto) {
   @ApiProperty({
     description: 'The name of the food product',
     example: 'Organic Whole Milk',

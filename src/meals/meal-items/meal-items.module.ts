@@ -5,6 +5,7 @@ import { MealItemRepository } from './repositories/meal-items.repository';
 import { DatabaseModule } from '../../database/database.module';
 import { MealsModule } from '../meals.module';
 import { FoodsModule } from '../../food-products/foods.module';
+import { GenericFoodsModule } from '../../generic-foods/generic-foods.module';
 
 import { AuthModule } from '../../auth/auth.module';
 import { CommonModule } from '../../common/common.module';
@@ -15,7 +16,7 @@ import { UsersModule } from '../../users/users.module';
     DatabaseModule,
     MealsModule,
     FoodsModule,
-    FoodCategoriesModule,
+    GenericFoodsModule,
     AuthModule,
     CommonModule,
     UsersModule,

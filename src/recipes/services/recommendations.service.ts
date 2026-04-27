@@ -56,15 +56,15 @@ export class RecommendationsService {
         expiringWithinDays,
       );
 
-      const pantryFoodIds = this.buildIdSet(allPantryItems, 'foodId');
+      const pantryFoodIds = this.buildIdSet(allPantryItems, 'foodProductId');
       const pantryCategoryIds = this.buildIdSet(
         allPantryItems,
-        'foodCategoryId',
+        'genericFoodId',
       );
-      const expiringFoodIds = this.buildIdSet(expiringItems, 'foodId');
+      const expiringFoodIds = this.buildIdSet(expiringItems, 'foodProductId');
       const expiringCategoryIds = this.buildIdSet(
         expiringItems,
-        'foodCategoryId',
+        'genericFoodId',
       );
 
       const candidateRecipes = await this.findCandidateRecipes(
@@ -152,7 +152,7 @@ export class RecommendationsService {
 
   private buildIdSet(
     items: PantryItemWithRelations[],
-    key: 'foodId' | 'foodCategoryId',
+    key: 'foodProductId' | 'genericFoodId',
   ): Set<string> {
     return new Set(items.filter((i) => i[key]).map((i) => i[key]!));
   }
@@ -183,9 +183,9 @@ export class RecommendationsService {
     const pantryItemByFoodId = new Map<string, PantryItemWithRelations>();
     const pantryItemByCategoryId = new Map<string, PantryItemWithRelations>();
     for (const item of pantryItems) {
-      if (item.foodId) pantryItemByFoodId.set(item.foodId, item);
-      if (item.foodCategoryId)
-        pantryItemByCategoryId.set(item.foodCategoryId, item);
+      if (item.foodProductId) pantryItemByFoodId.set(item.foodProductId, item);
+      if (item.genericFoodId)
+        pantryItemByCategoryId.set(item.genericFoodId, item);
     }
 
     return recipes.map((recipe) => {
@@ -193,22 +193,24 @@ export class RecommendationsService {
 
       for (const ingredient of recipe.ingredients) {
         const foodMatch =
-          ingredient.foodId && pantryFoodIds.has(ingredient.foodId);
+          ingredient.foodProductId &&
+          pantryFoodIds.has(ingredient.foodProductId);
         const categoryMatch =
-          ingredient.foodCategoryId &&
-          pantryCategoryIds.has(ingredient.foodCategoryId);
+          ingredient.genericFoodId &&
+          pantryCategoryIds.has(ingredient.genericFoodId);
 
         if (foodMatch || categoryMatch) {
           const isExpiring = Boolean(
-            (ingredient.foodId && expiringFoodIds.has(ingredient.foodId)) ||
-            (ingredient.foodCategoryId &&
-              expiringCategoryIds.has(ingredient.foodCategoryId)),
+            (ingredient.foodProductId &&
+              expiringFoodIds.has(ingredient.foodProductId)) ||
+            (ingredient.genericFoodId &&
+              expiringCategoryIds.has(ingredient.genericFoodId)),
           );
 
-          const pantryItem = ingredient.foodId
-            ? pantryItemByFoodId.get(ingredient.foodId)
-            : ingredient.foodCategoryId
-              ? pantryItemByCategoryId.get(ingredient.foodCategoryId)
+          const pantryItem = ingredient.foodProductId
+            ? pantryItemByFoodId.get(ingredient.foodProductId)
+            : ingredient.genericFoodId
+              ? pantryItemByCategoryId.get(ingredient.genericFoodId)
               : undefined;
 
           const daysUntilExpiry = this.calculateDaysUntilExpiry(pantryItem);
@@ -253,8 +255,8 @@ export class RecommendationsService {
 
   private getPantryItemName(pantryItem?: PantryItemWithRelations): string {
     if (!pantryItem) return 'Unknown';
-    if (pantryItem.food) return pantryItem.food.name;
-    if (pantryItem.foodCategory) return pantryItem.foodCategory.foodName;
+    if (pantryItem.foodProduct) return pantryItem.foodProduct.name;
+    if (pantryItem.genericFood) return pantryItem.genericFood.foodName;
     return 'Unknown';
   }
 

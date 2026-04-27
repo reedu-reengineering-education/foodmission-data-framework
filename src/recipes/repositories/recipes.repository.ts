@@ -13,8 +13,8 @@ export interface CreateRecipeIngredientData {
   name: string;
   measure?: string;
   order?: number;
-  foodId?: string;
-  foodCategoryId?: string;
+  foodProductId?: string;
+  genericFoodId?: string;
 }
 
 export interface CreateRecipeData {
@@ -63,8 +63,8 @@ export class RecipesRepository implements BaseRepository<
     ingredients: {
       orderBy: { order: 'asc' },
       include: {
-        food: { select: { id: true, name: true, imageUrl: true } },
-        foodCategory: {
+        foodProduct: { select: { id: true, name: true, imageUrl: true } },
+        genericFood: {
           select: {
             id: true,
             foodName: true,
@@ -144,9 +144,9 @@ export class RecipesRepository implements BaseRepository<
                 name: ing.name,
                 measure: ing.measure ?? null,
                 order: ing.order ?? index,
-                itemType: ing.foodId ? 'food' : 'food_category',
-                foodId: ing.foodId ?? null,
-                foodCategoryId: ing.foodCategoryId ?? null,
+                itemType: ing.foodProductId ? 'food_product' : 'generic_food',
+                foodProductId: ing.foodProductId ?? null,
+                genericFoodId: ing.genericFoodId ?? null,
               })),
             }
           : undefined,
@@ -175,9 +175,11 @@ export class RecipesRepository implements BaseRepository<
                     name: ing.name,
                     measure: ing.measure ?? null,
                     order: ing.order ?? index,
-                    itemType: ing.foodId ? 'food' : 'food_category',
-                    foodId: ing.foodId ?? null,
-                    foodCategoryId: ing.foodCategoryId ?? null,
+                    itemType: ing.foodProductId
+                      ? 'food_product'
+                      : 'generic_food',
+                    foodProductId: ing.foodProductId ?? null,
+                    genericFoodId: ing.genericFoodId ?? null,
                   })),
                 }
               : undefined,
@@ -203,8 +205,8 @@ export class RecipesRepository implements BaseRepository<
   }
 
   async findCandidatesForRecommendation(
-    foodIds: string[],
-    categoryIds: string[],
+    foodProductIds: string[],
+    genericFoodIds: string[],
     userId: string,
     options: {
       skip?: number;
@@ -212,16 +214,16 @@ export class RecipesRepository implements BaseRepository<
       orderBy?: Prisma.RecipeOrderByWithRelationInput;
     } = {},
   ): Promise<RecipeWithIngredients[]> {
-    if (foodIds.length === 0 && categoryIds.length === 0) {
+    if (foodProductIds.length === 0 && genericFoodIds.length === 0) {
       return [];
     }
 
     const orConditions: Prisma.RecipeIngredientWhereInput[] = [];
-    if (foodIds.length > 0) {
-      orConditions.push({ foodId: { in: foodIds } });
+    if (foodProductIds.length > 0) {
+      orConditions.push({ foodProductId: { in: foodProductIds } });
     }
-    if (categoryIds.length > 0) {
-      orConditions.push({ foodCategoryId: { in: categoryIds } });
+    if (genericFoodIds.length > 0) {
+      orConditions.push({ genericFoodId: { in: genericFoodIds } });
     }
 
     const { skip = 0, take = 10, orderBy = { createdAt: 'desc' } } = options;
@@ -242,8 +244,8 @@ export class RecipesRepository implements BaseRepository<
         ingredients: {
           orderBy: { order: 'asc' },
           include: {
-            food: true,
-            foodCategory: true,
+            foodProduct: true,
+            genericFood: true,
           },
         },
       },

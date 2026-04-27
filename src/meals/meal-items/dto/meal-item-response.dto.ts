@@ -1,5 +1,5 @@
-import { FoodProductResponseDto } from '../../food-products/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../generic-foods/dto/food-category-response.dto';
+import { FoodProductResponseDto } from '../../../food-products/dto/food-product-response.dto';
+import { GenericFoodResponseDto } from '../../../generic-foods/dto/generic-food-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
 
@@ -19,24 +19,24 @@ export class MealItemResponseDto {
   @ApiProperty({
     description:
       'Type of item - either a specific food product or a generic food category',
-    enum: ['food', 'food_category'],
-    example: 'food',
+    enum: ['food_product', 'generic_food'],
+    example: 'food_product',
   })
-  itemType: 'food' | 'food_category';
+  itemType: 'food_product' | 'generic_food';
 
   @ApiPropertyOptional({
     description: 'UUID of the specific food product (if itemType is "food")',
     example: '550e8400-e29b-41d4-a716-446655440002',
     nullable: true,
   })
-  foodId: string | null;
+  foodProductId: string | null;
 
   @ApiPropertyOptional({
     description: 'UUID of the food category (if itemType is "food_category")',
     example: '550e8400-e29b-41d4-a716-446655440003',
     nullable: true,
   })
-  foodCategoryId: string | null;
+  genericFoodId: string | null;
 
   @ApiProperty({
     description: 'Quantity of the item',
@@ -63,14 +63,14 @@ export class MealItemResponseDto {
     type: () => FoodProductResponseDto,
     nullable: true,
   })
-  food?: FoodProductResponseDto | null;
+  foodProduct?: FoodProductResponseDto | null;
 
   @ApiPropertyOptional({
     description: 'Food category details (if itemType is "food_category")',
-    type: () => FoodCategoryResponseDto,
+    type: () => GenericFoodResponseDto,
     nullable: true,
   })
-  foodCategory?: FoodCategoryResponseDto | null;
+  genericFood?: GenericFoodResponseDto | null;
 
   @ApiProperty({
     description: 'Timestamp when the meal item was created',

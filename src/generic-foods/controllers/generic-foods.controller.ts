@@ -21,6 +21,10 @@ import {
 import { Roles, Public } from 'nest-keycloak-connect';
 import { GenericFoodService } from '../services/generic-food.service';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
+import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
 
 @ApiTags('generic-foods')
 @Controller('generic-foods')
@@ -68,8 +72,8 @@ export class GenericFoodsController {
     status: 200,
     description: 'Food categories retrieved successfully',
   })
-  findAll(@Query() query: FoodCategoryQueryDto) {
-    return this.foodCategoryService.findAll(query);
+  findAll(@Query() query: GenericFoodQueryDto) {
+    return this.genericFoodService.findAll(query);
   }
 
   @Get('food-groups')
@@ -90,7 +94,7 @@ export class GenericFoodsController {
     type: [String],
   })
   getAllFoodGroups(@Query('search') search?: string): Promise<string[]> {
-    return this.foodCategoryService.getAllFoodGroups(search);
+    return this.genericFoodService.getAllFoodGroups(search);
   }
 
   @Get(':id')
@@ -102,11 +106,11 @@ export class GenericFoodsController {
   @ApiResponse({
     status: 200,
     description: 'Food category found',
-    type: FoodCategoryResponseDto,
+    type: GenericFoodResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Food category not found' })
-  findById(@Param('id') id: string): Promise<FoodCategoryResponseDto> {
-    return this.foodCategoryService.findById(id);
+  findById(@Param('id') id: string): Promise<GenericFoodResponseDto> {
+    return this.genericFoodService.findById(id);
   }
 
   @Patch(':id')
@@ -118,7 +122,7 @@ export class GenericFoodsController {
   @ApiResponse({
     status: 200,
     description: 'Food category updated successfully',
-    type: FoodCategoryResponseDto,
+    type: GenericFoodResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @ApiResponse({ status: 404, description: 'Food category not found' })
@@ -126,9 +130,9 @@ export class GenericFoodsController {
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
   update(
     @Param('id') id: string,
-    @Body() updateDto: UpdateFoodCategoryDto,
-  ): Promise<FoodCategoryResponseDto> {
-    return this.foodCategoryService.update(id, updateDto);
+    @Body() updateDto: UpdateGenericFoodDto,
+  ): Promise<GenericFoodResponseDto> {
+    return this.genericFoodService.update(id, updateDto);
   }
 
   @Delete(':id')
@@ -146,6 +150,6 @@ export class GenericFoodsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
   delete(@Param('id') id: string): Promise<void> {
-    return this.foodCategoryService.delete(id);
+    return this.genericFoodService.delete(id);
   }
 }

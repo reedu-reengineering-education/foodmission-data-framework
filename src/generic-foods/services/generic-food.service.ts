@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GenericFoodRepository } from '../repositories/generic-foods.repository';
+import { GenericFoodRepository } from '../repositories/generic-food.repository';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';

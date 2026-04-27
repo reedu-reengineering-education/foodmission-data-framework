@@ -11,7 +11,7 @@
 import { PrismaClient } from '@prisma/client';
 import { DEV_EXTRA_FOODS, DEV_EXTRA_USERS } from '../prisma/seeds/seed-fixtures';
 import { upsertDevFood, upsertSeedUser } from '../prisma/seeds/seed-helpers';
-import { seedFoods } from '../prisma/seeds/foods';
+import { seedOpenFoodFactsFromJson } from '../prisma/seeds/openfoodfacts';
 import { seedUsers } from '../prisma/seeds/users';
 
 const prisma = new PrismaClient();
@@ -21,7 +21,7 @@ async function seedDevelopmentData() {
   console.log('=====================================');
 
   try {
-    await seedFoods(prisma);
+    await seedOpenFoodFactsFromJson(prisma);
     await seedUsers(prisma);
 
     console.log('🔧 Adding development-specific data...');

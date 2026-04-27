@@ -6,15 +6,22 @@ import {
 } from '@nestjs/common';
 import { FoodProductRepository } from '../repositories/food-product.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
-import { CreateFoodDto } from '../dto/create-food.dto';
-import { UpdateFoodDto } from '../dto/update-food.dto';
-import { FoodQueryDto, FoodSearchDto } from '../dto/food-query.dto';
-import { OpenFoodFactsInfoDto } from '../dto/food-response.dto';
+import { CreateFoodProductDto } from '../dto/create-food-product.dto';
+import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
+import {
+  FoodProductQueryDto,
+  FoodProductSearchDto,
+} from '../dto/food-product-query.dto';
+import {
+  FoodProductResponseDto,
+  OpenFoodFactsInfoDto,
+  PaginatedFoodProductResponseDto,
+} from '../dto/food-product-response.dto';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class FoodProductService {
-  private readonly logger = new Logger(FoodService.name);
+  private readonly logger = new Logger(FoodProductService.name);
 
   constructor(
     private readonly foodProductRepository: FoodProductRepository,
@@ -22,9 +29,9 @@ export class FoodProductService {
   ) {}
 
   async create(
-    createFoodDto: CreateFoodDto,
+    createFoodDto: CreateFoodProductDto,
     userId: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Creating food: ${createFoodDto.name}`);
 
     // Check if barcode already exists
@@ -44,7 +51,9 @@ export class FoodProductService {
     return this.transformToResponseDto(food);
   }
 
-  async findAll(query: FoodQueryDto): Promise<PaginatedFoodResponseDto> {
+  async findAll(
+    query: FoodProductQueryDto,
+  ): Promise<PaginatedFoodProductResponseDto> {
     this.logger.log(`Finding foods with query:`, query);
 
     const {
@@ -96,7 +105,7 @@ export class FoodProductService {
       }),
     );
 
-    return plainToClass(PaginatedFoodResponseDto, {
+    return plainToClass(PaginatedFoodProductResponseDto, {
       data: transformedData,
       total: result.total,
       page: result.page,
@@ -108,7 +117,7 @@ export class FoodProductService {
   async findOne(
     id: string,
     includeOpenFoodFacts: boolean = false,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by id: ${id}`);
 
     const food = await this.foodProductRepository.findById(id);
@@ -135,7 +144,7 @@ export class FoodProductService {
   async findByBarcode(
     barcode: string,
     includeOpenFoodFacts: boolean = false,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by barcode: ${barcode}`);
 
     const food = await this.foodProductRepository.findByBarcode(barcode);
@@ -157,8 +166,8 @@ export class FoodProductService {
 
   async update(
     id: string,
-    updateFoodDto: UpdateFoodDto,
-  ): Promise<FoodResponseDto> {
+    updateFoodDto: UpdateFoodProductDto,
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Updating food: ${id}`);
 
     // Check if food exists
@@ -197,7 +206,7 @@ export class FoodProductService {
     await this.foodProductRepository.delete(id);
   }
 
-  async searchOpenFoodFacts(searchDto: FoodSearchDto): Promise<any> {
+  async searchOpenFoodFacts(searchDto: FoodProductSearchDto): Promise<any> {
     this.logger.log(`Searching OpenFoodFacts with:`, searchDto);
 
     const searchOptions = {
@@ -214,7 +223,7 @@ export class FoodProductService {
   async importFromOpenFoodFacts(
     barcode: string,
     createdBy: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
 
     // Check if food already exists
@@ -237,41 +246,6 @@ export class FoodProductService {
       description: productInfo.genericName,
       barcode: productInfo.barcode,
       createdBy,
-      brands: productInfo.brands?.join(', '),
-      categories: productInfo.categories || [],
-      labels: productInfo.labels || [],
-      quantity: productInfo.quantity,
-      servingSize: productInfo.servingSize,
-      ingredientsText: productInfo.ingredients,
-      allergens: productInfo.allergens || [],
-      traces: productInfo.traces || [],
-      countries: productInfo.countries || [],
-      origins: productInfo.origins,
-      manufacturingPlaces: productInfo.manufacturingPlaces,
-      imageUrl: productInfo.imageUrl,
-      imageFrontUrl: productInfo.imageFrontUrl,
-      nutritionDataPer: productInfo.nutritionDataPer,
-      energyKcal: productInfo.nutritionalInfo?.energyKcal,
-      energyKj: productInfo.nutritionalInfo?.energyKj,
-      fat: productInfo.nutritionalInfo?.fat,
-      saturatedFat: productInfo.nutritionalInfo?.saturatedFat,
-      transFat: productInfo.nutritionalInfo?.transFat,
-      cholesterol: productInfo.nutritionalInfo?.cholesterol,
-      carbohydrates: productInfo.nutritionalInfo?.carbohydrates,
-      sugars: productInfo.nutritionalInfo?.sugars,
-      fiber: productInfo.nutritionalInfo?.fiber,
-      proteins: productInfo.nutritionalInfo?.proteins,
-      salt: productInfo.nutritionalInfo?.salt,
-      sodium: productInfo.nutritionalInfo?.sodium,
-      vitaminA: productInfo.nutritionalInfo?.vitaminA,
-      vitaminC: productInfo.nutritionalInfo?.vitaminC,
-      calcium: productInfo.nutritionalInfo?.calcium,
-      iron: productInfo.nutritionalInfo?.iron,
-      nutriscoreGrade: productInfo.nutritionGrade,
-      novaGroup: productInfo.novaGroup,
-      ecoscoreGrade: productInfo.ecoscoreGrade,
-      carbonFootprint: productInfo.carbonFootprint,
-      completeness: productInfo.completeness,
     });
 
     return this.transformToResponseDto(food);
@@ -309,8 +283,8 @@ export class FoodProductService {
     }
   }
 
-  private transformToResponseDto(food: any): FoodResponseDto {
-    return plainToClass(FoodResponseDto, food, {
+  private transformToResponseDto(food: any): FoodProductResponseDto {
+    return plainToClass(FoodProductResponseDto, food, {
       excludeExtraneousValues: true,
     });
   }

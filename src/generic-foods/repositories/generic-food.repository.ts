@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
+import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 
@@ -66,26 +67,26 @@ export class GenericFoodRepository {
   }
 
   findById(id: string) {
-    return this.prisma.foodCategory.findUnique({
+    return this.prisma.genericFood.findUnique({
       where: { id },
     });
   }
 
-  update(id: string, data: UpdateFoodCategoryDto) {
-    return this.prisma.foodCategory.update({
+  update(id: string, data: UpdateGenericFoodDto) {
+    return this.prisma.genericFood.update({
       where: { id },
       data,
     });
   }
 
   delete(id: string) {
-    return this.prisma.foodCategory.delete({
+    return this.prisma.genericFood.delete({
       where: { id },
     });
   }
 
   findByNevoCode(nevoCode: number) {
-    return this.prisma.foodCategory.findUnique({
+    return this.prisma.genericFood.findUnique({
       where: { nevoCode },
     });
   }
@@ -97,7 +98,7 @@ export class GenericFoodRepository {
       where.foodGroup = { contains: search, mode: 'insensitive' };
     }
 
-    const result = await this.prisma.foodCategory.findMany({
+    const result = await this.prisma.genericFood.findMany({
       where,
       select: { foodGroup: true },
       distinct: ['foodGroup'],

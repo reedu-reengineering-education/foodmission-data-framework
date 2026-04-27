@@ -204,7 +204,7 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     const nevoCode = parseInt_(cols[COL.NEVO_CODE]);
     if (isNaN(nevoCode)) continue;
 
-    const exists = await prisma.foodCategory.findUnique({
+    const exists = await prisma.genericFood.findUnique({
       where: { nevoCode },
     });
     if (exists) continue; // skip existing — create-only
@@ -357,7 +357,7 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     } as any;
 
     try {
-      await prisma.foodCategory.create({ data: { nevoCode, ...data } });
+      await prisma.genericFood.create({ data: { nevoCode, ...data } });
       created += 1;
     } catch (err: any) {
       // If a concurrent process created the same nevoCode, skip

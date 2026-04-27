@@ -58,9 +58,15 @@ export class ShoppingListItemsController {
   })
   @ApiParam({ name: 'shoppingListId', format: 'uuid' })
   @ApiQuery({
-    name: 'foodId',
+    name: 'foodProductId',
     required: false,
-    description: 'Filter by food ID',
+    description: 'Filter by food product ID',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'genericFoodId',
+    required: false,
+    description: 'Filter by generic food ID',
     type: String,
   })
   @ApiQuery({
@@ -198,33 +204,6 @@ export class ShoppingListItemsController {
     return this.shoppingListItemService.update(
       itemId,
       updateShoppingListItemDto,
-      userId,
-      shoppingListId,
-    );
-  }
-
-  @Patch(':itemId/toggle-checked')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Toggle checked status of shopping list item',
-    description: 'Quick endpoint to toggle the checked status of an item',
-  })
-  @ApiParam({ name: 'shoppingListId', format: 'uuid' })
-  @ApiParam({ name: 'itemId', format: 'uuid' })
-  @ApiResponse({
-    status: 200,
-    description: 'Item checked status toggled successfully',
-    type: ShoppingListItemResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  async toggleChecked(
-    @Param('shoppingListId', ParseUUIDPipe) shoppingListId: string,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
-    @CurrentUser('id') userId: string,
-  ): Promise<ShoppingListItemResponseDto> {
-    return this.shoppingListItemService.toggleChecked(
-      itemId,
       userId,
       shoppingListId,
     );

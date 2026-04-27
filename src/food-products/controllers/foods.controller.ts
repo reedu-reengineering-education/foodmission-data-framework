@@ -28,8 +28,9 @@ import { ApiCommonErrorResponses } from '../../common/decorators/api-error-respo
 import { ApiOpenFoodFactsSearchQuery } from '../../common/decorators/api-query-params.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { FoodProductService } from '../services/food-product.service';
+import { FoodProductService } from '../services/food.service';
 import { CreateFoodProductDto } from '../dto/create-food-product.dto';
+import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
 
 import {
   FoodProductQueryDto,
@@ -67,11 +68,11 @@ export class FoodProductController {
     description:
       'Creates a new food item in the database. Requires user or admin role.',
   })
-  @ApiBody({ type: CreateFoodDto })
+  @ApiBody({ type: CreateFoodProductDto })
   @ApiResponse({
     status: 201,
     description: 'Food item created successfully',
-    type: FoodResponseDto,
+    type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -97,7 +98,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'List of food items retrieved successfully',
-    type: PaginatedFoodResponseDto,
+    type: PaginatedFoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -167,7 +168,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 201,
     description: 'Food imported successfully',
-    type: FoodResponseDto,
+    type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -207,7 +208,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'Food item found',
-    type: FoodResponseDto,
+    type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     notFound: true,
@@ -216,9 +217,9 @@ export class FoodProductController {
   findByBarcode(
     @Param('barcode') barcode: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     const includeOff = includeOpenFoodFacts === 'true';
-    return this.foodService.findByBarcode(barcode, includeOff);
+    return this.foodProductService.findByBarcode(barcode, includeOff);
   }
 
   @Get(':id')
@@ -244,7 +245,7 @@ export class FoodProductController {
   @ApiResponse({
     status: 200,
     description: 'Food item found',
-    type: FoodResponseDto,
+    type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     notFound: true,
@@ -253,9 +254,9 @@ export class FoodProductController {
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
-  ): Promise<FoodResponseDto> {
+  ): Promise<FoodProductResponseDto> {
     const includeOff = includeOpenFoodFacts === 'true';
-    return this.foodService.findOne(id, includeOff);
+    return this.foodProductService.findOne(id, includeOff);
   }
 
   @Patch(':id')
@@ -271,11 +272,11 @@ export class FoodProductController {
     format: 'uuid',
     description: 'Food item ID',
   })
-  @ApiBody({ type: UpdateFoodDto })
+  @ApiBody({ type: UpdateFoodProductDto })
   @ApiResponse({
     status: 200,
     description: 'Food item updated successfully',
-    type: FoodResponseDto,
+    type: FoodProductResponseDto,
   })
   @ApiCommonErrorResponses({
     badRequest: true,
@@ -285,9 +286,9 @@ export class FoodProductController {
   })
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateFoodDto: UpdateFoodDto,
-  ): Promise<FoodResponseDto> {
-    return this.foodService.update(id, updateFoodDto);
+    @Body() updateFoodDto: UpdateFoodProductDto,
+  ): Promise<FoodProductResponseDto> {
+    return this.foodProductService.update(id, updateFoodDto);
   }
 
   @Delete(':id')
@@ -314,7 +315,7 @@ export class FoodProductController {
     notFound: true,
   })
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.foodService.remove(id);
+    return this.foodProductService.remove(id);
   }
 
   @Get(':id/openfoodfacts')
@@ -352,10 +353,10 @@ export class FoodProductController {
     ],
   })
   async getOpenFoodFactsInfo(@Param('id', ParseUUIDPipe) id: string) {
-    const food = await this.foodService.findOne(id);
+    const food = await this.foodProductService.findOne(id);
     if (!food.barcode) {
       return null;
     }
-    return this.foodService.getOpenFoodFactsInfo(food.barcode);
+    return this.foodProductService.getOpenFoodFactsInfo(food.barcode);
   }
 }

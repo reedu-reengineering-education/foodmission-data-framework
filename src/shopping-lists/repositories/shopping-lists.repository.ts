@@ -38,7 +38,8 @@ export class ShoppingListRepository implements BaseRepository<
       include: {
         items: {
           include: {
-            food: true,
+            foodProduct: true,
+            genericFood: true,
           },
         },
       },
@@ -58,7 +59,8 @@ export class ShoppingListRepository implements BaseRepository<
       include: {
         items: {
           include: {
-            food: true,
+            foodProduct: true,
+            genericFood: true,
           },
         },
       },

@@ -114,8 +114,8 @@ export class RecipeNutritionService {
         ingredients: {
           orderBy: { order: 'asc' },
           include: {
-            food: { select: FOOD_NUTRITION_SELECT },
-            foodCategory: { select: FOOD_CATEGORY_NUTRITION_SELECT },
+            foodProduct: { select: FOOD_NUTRITION_SELECT },
+            genericFood: { select: FOOD_CATEGORY_NUTRITION_SELECT },
           },
         },
       },
@@ -137,7 +137,7 @@ export class RecipeNutritionService {
 
     for (const ingredient of recipe.ingredients) {
       // Get nutrient source (prefer Food over FoodCategory)
-      const nutrientSource = ingredient.food || ingredient.foodCategory;
+      const nutrientSource = ingredient.foodProduct || ingredient.genericFood;
 
       if (!nutrientSource) {
         missingIngredients.push(ingredient.name);

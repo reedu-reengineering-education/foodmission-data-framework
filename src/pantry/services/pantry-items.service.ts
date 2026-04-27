@@ -47,12 +47,12 @@ export class PantryItemService {
   ): Promise<PantryItemResponseDto> {
     try {
       this.validateFoodRefInput(
-        createShoppingListItemDto.foodId,
-        createShoppingListItemDto.foodCategoryId,
+        createShoppingListItemDto.foodProductId,
+        createShoppingListItemDto.genericFoodId,
       );
       const createPantryItemDto = plainToInstance(CreatePantryItemDto, {
-        foodProductId: createShoppingListItemDto.foodId ?? undefined,
-        genericFoodId: createShoppingListItemDto.foodCategoryId ?? undefined,
+        foodProductId: createShoppingListItemDto.foodProductId ?? undefined,
+        genericFoodId: createShoppingListItemDto.genericFoodId ?? undefined,
         quantity: createShoppingListItemDto.quantity,
         unit: createShoppingListItemDto.unit,
       });
@@ -225,23 +225,23 @@ export class PantryItemService {
     pantryId?: string,
   ): Promise<MultiplePantryItemResponseDto> {
     try {
-      const { foodId, foodCategoryId } = query;
+      const { foodProductId, genericFoodId } = query;
       const resolvedPantryId = await this.pantryService.validatePantryExists(
         userId,
         pantryId,
       );
       // Only validate if either filter is provided
-      if (foodId || foodCategoryId) {
-        this.validateFoodRefInput(foodId, foodCategoryId);
+      if (foodProductId || genericFoodId) {
+        this.validateFoodRefInput(foodProductId, genericFoodId);
         await this.ensureUniqueAndExists(
           resolvedPantryId,
-          foodId,
-          foodCategoryId,
+          foodProductId,
+          genericFoodId,
         );
       }
       const filter: any = { pantryId: resolvedPantryId };
-      if (foodId !== undefined) filter.foodProductId = foodId;
-      if (foodCategoryId !== undefined) filter.genericFoodId = foodCategoryId;
+      if (foodProductId !== undefined) filter.foodProductId = foodProductId;
+      if (genericFoodId !== undefined) filter.genericFoodId = genericFoodId;
       if (query.expiryDate !== undefined) {
         filter.expiryDate =
           query.expiryDate instanceof Date

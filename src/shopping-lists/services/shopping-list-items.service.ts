@@ -1,6 +1,5 @@
 import {
   Injectable,
-  Logger,
   NotFoundException,
   ForbiddenException,
   ConflictException,
@@ -9,11 +8,9 @@ import {
 import {
   handlePrismaError,
   handleServiceError,
-  formatErrorForLogging,
 } from '../../common/utils/error.utils';
 import { validateFoodRef } from '../../common/utils/food-ref.util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { User } from '@prisma/client';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
@@ -25,35 +22,28 @@ import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto'
 import { plainToInstance } from 'class-transformer';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
 import { ShoppingListItemWithRelations } from '../../common/types/prisma-relations';
-import { PantryItemService } from '../../pantry/services/pantry-items.service';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
-import { UsersRepository } from '../../users/repositories/users.repository';
 
 @Injectable()
 export class ShoppingListItemService {
-  private readonly logger = new Logger(ShoppingListItemService.name);
-
   private static readonly ERROR_MESSAGES = {
     ITEM_ALREADY_EXISTS: 'This food item is already in the shopping list',
     ITEM_NOT_FOUND: 'Shopping list item not found',
     SHOPPING_LIST_NOT_FOUND: 'Shopping list not found',
     SHOPPING_LIST_ACCESS_DENIED: 'You do not have access to this shopping list',
     FOOD_NOT_FOUND: 'Food item not found',
-    USER_NOT_FOUND: 'User not found',
     CREATE_FAILED: 'Failed to create shopping list item',
     UPDATE_FAILED: 'Failed to update shopping list item',
   } as const;
 
   constructor(
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
-    private readonly pantryItemService: PantryItemService,
     private readonly foodProductRepository: FoodProductRepository,
     private readonly genericFoodRepository: GenericFoodRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
-    private readonly usersRepository: UsersRepository,
   ) {}
 
   async create(
@@ -129,7 +119,7 @@ export class ShoppingListItemService {
     query: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
     const { shoppingListId, foodProductId, genericFoodId, checked, unit } =
-    } = query;
+      query;
 
     const items = await this.shoppingListItemRepository.findMany({
       shoppingListId,
@@ -246,72 +236,6 @@ export class ShoppingListItemService {
     }
   }
 
-  async toggleChecked(
-    id: string,
-    userId: string,
-    shoppingListId?: string,
-  ): Promise<ShoppingListItemResponseDto> {
-    const existing = await this.shoppingListItemRepository.findById(id);
-
-    if (!existing) {
-      throw new NotFoundException(
-        ShoppingListItemService.ERROR_MESSAGES.ITEM_NOT_FOUND,
-      );
-    }
-
-    if (existing.shoppingList.userId !== userId) {
-      throw new ForbiddenException(
-        ShoppingListItemService.ERROR_MESSAGES.SHOPPING_LIST_ACCESS_DENIED,
-      );
-    }
-
-    if (
-      shoppingListId !== undefined &&
-      existing.shoppingListId !== shoppingListId
-    ) {
-      throw new NotFoundException(
-        ShoppingListItemService.ERROR_MESSAGES.ITEM_NOT_FOUND,
-      );
-    }
-
-    const willBeChecked = existing.checked !== true;
-    if (willBeChecked) {
-      const user = await this.validateUserExists(userId);
-      const autoAdd =
-        (user as any).autoAddCheckedItemsToPantry ??
-        (user as any).shouldAutoAddToPantry;
-
-      if (autoAdd === true) {
-        try {
-          if (existing.foodProductId) {
-            const dto = Object.assign(new CreateShoppingListItemDto(), {
-              foodProductId: existing.foodProductId,
-              quantity: existing.quantity,
-              unit: existing.unit,
-            });
-            await this.pantryItemService.createFromShoppingList(dto, userId);
-          } else if (existing.genericFoodId) {
-            // PantryItemService.createFromShoppingList only supports foods,
-            // so directly create a pantry item from the generic food reference.
-            await this.pantryItemService.create(
-              {
-                genericFoodId: existing.genericFoodId,
-                quantity: existing.quantity,
-                unit: existing.unit,
-              } as any,
-              userId,
-            );
-          }
-        } catch (e) {
-          if (!(e instanceof ConflictException)) throw e;
-        }
-      }
-    }
-
-    const updatedItem = await this.shoppingListItemRepository.toggleChecked(id);
-    return this.transformToResponseDto(updatedItem);
-  }
-
   async remove(
     id: string,
     userId: string,
@@ -341,55 +265,7 @@ export class ShoppingListItemService {
     const prisma = this.shoppingListItemRepository['prisma'];
     try {
       await this.validateShoppingListAccess(shoppingListId, userId);
-      const user = await this.validateUserExists(userId);
       await prisma.$transaction(async (tx) => {
-        if (
-          (user as any).autoAddCheckedItemsToPantry ??
-          (user as any).shouldAutoAddToPantry
-        ) {
-          const checkedItems =
-            await this.shoppingListItemRepository.findByShoppingListId(
-              shoppingListId,
-              userId,
-              { checked: true },
-              tx,
-            );
-
-          for (const item of checkedItems) {
-            if (item.foodProductId || item.genericFoodId) {
-              try {
-                const dto = Object.assign(new CreateShoppingListItemDto(), {
-                  foodProductId: item.foodProductId || undefined,
-                  genericFoodId: item.genericFoodId || undefined,
-                  quantity: item.quantity,
-                  unit: item.unit,
-                });
-                await this.pantryItemService.createFromShoppingList(
-                  dto,
-                  userId,
-                  tx,
-                );
-              } catch (error) {
-                if (error instanceof ConflictException) {
-                  this.logger.debug(
-                    `Item ${item.foodProductId || item.genericFoodId} already in pantry, skipping`,
-                  );
-                } else {
-                  this.logger.warn(
-                    formatErrorForLogging(
-                      error,
-                      `Failed to add item ${item.id} to pantry`,
-                    ),
-                    error instanceof Error ? error.stack : undefined,
-                  );
-                  throw error; // fail transaction on unexpected error
-                }
-              }
-            }
-          }
-        }
-
-        // Delete all checked items
         await this.shoppingListItemRepository.clearCheckedItems(
           shoppingListId,
           userId,
@@ -435,16 +311,6 @@ export class ShoppingListItemService {
     }
 
     return shoppingList;
-  }
-
-  private async validateUserExists(userId: string): Promise<User> {
-    const user = await this.usersRepository.findById(userId);
-    if (!user) {
-      throw new NotFoundException(
-        ShoppingListItemService.ERROR_MESSAGES.USER_NOT_FOUND,
-      );
-    }
-    return user as unknown as User;
   }
 
   private validateShoppingListOwnership(
@@ -537,50 +403,4 @@ export class ShoppingListItemService {
     ) as Partial<UpdateShoppingListItemDto>;
   }
 
-  private async createPantryItemIfEnabled(
-    item: ShoppingListItemResponseDto,
-    user: User,
-    userId: string,
-    willBeChecked: boolean,
-  ): Promise<void> {
-    const autoAdd =
-      (user as any).autoAddCheckedItemsToPantry ??
-      (user as any).shouldAutoAddToPantry;
-    if (!willBeChecked || autoAdd !== true) {
-      return;
-    }
-
-    try {
-      const dto = item.foodId
-        ? Object.assign(new CreateShoppingListItemDto(), {
-            foodId: item.foodId,
-            quantity: item.quantity,
-            unit: item.unit,
-          })
-        : Object.assign(new CreateShoppingListItemDto(), {
-            foodCategoryId: item.foodCategoryId!,
-            quantity: item.quantity,
-            unit: item.unit,
-          });
-
-      await this.pantryItemService.createFromShoppingList(dto, userId);
-    } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ForbiddenException ||
-        error instanceof ConflictException ||
-        error instanceof BadRequestException
-      ) {
-        throw error;
-      }
-
-      this.logger.error(
-        formatErrorForLogging(
-          error,
-          `ShoppingListItemService.createPantryItemIfEnabled(itemId: ${item.id}, userId: ${userId})`,
-        ),
-        error instanceof Error ? error.stack : undefined,
-      );
-    }
-  }
 }

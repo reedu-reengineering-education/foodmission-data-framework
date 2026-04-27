@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
 import { PrismaClient } from '@prisma/client';
-import { seedFoods } from '../prisma/seeds/foods';
+import { seedOpenFoodFactsFromJson } from '../prisma/seeds/openfoodfacts';
 
 const prisma = new PrismaClient();
 
@@ -12,11 +12,11 @@ async function main() {
   try {
     // Clear existing foods
     console.log('🗑️  Clearing existing food data...');
-    await prisma.food.deleteMany({});
+    await prisma.foodProduct.deleteMany({});
     console.log('✅ Existing food data cleared');
 
     // Seed new foods from OpenFoodFacts
-    await seedFoods(prisma);
+    await seedOpenFoodFactsFromJson(prisma);
 
     console.log('=====================================');
     console.log('✅ Food seeding completed successfully!');
