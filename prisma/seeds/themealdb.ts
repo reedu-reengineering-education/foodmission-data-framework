@@ -81,7 +81,7 @@ interface RecipeIngredientData {
   order: number;
   foodProductId?: string;
   genericFoodId?: string;
-  itemType: 'foodProduct' | 'genericFood';
+  itemType: 'food_product' | 'generic_food';
 }
 
 interface SeedOptions {
@@ -125,7 +125,7 @@ function resolveIngredient(
     name: ing.name,
     measure: ing.measure,
     order: ing.order,
-    itemType: 'genericFood',
+    itemType: 'generic_food',
   };
 
   if (!mapping) return ingredient;
@@ -136,7 +136,7 @@ function resolveIngredient(
       const gfId = maps.genericFoodByNevoCode.get(nevoCode);
       if (gfId) {
         ingredient.genericFoodId = gfId;
-        ingredient.itemType = 'genericFood';
+        ingredient.itemType = 'generic_food';
       }
     }
   } else if (
@@ -150,7 +150,7 @@ function resolveIngredient(
         : undefined);
     if (foodProductId) {
       ingredient.foodProductId = foodProductId;
-      ingredient.itemType = 'foodProduct';
+      ingredient.itemType = 'food_product';
     }
   }
 

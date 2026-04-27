@@ -6,6 +6,27 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 
+/** Narrows client after `prisma generate` (FoodProduct → `food_products`). */
+type PrismaWithFoodProduct = PrismaClient & {
+  foodProduct: {
+    deleteMany: (args?: object) => Promise<{ count: number }>;
+    create: (args: {
+      data: {
+        name: string;
+        description?: string | null;
+        barcode?: string | null;
+        createdBy: string;
+      };
+    }) => Promise<{ id: string }>;
+  };
+};
+
+function foodProducts(
+  prismaClient: PrismaClient,
+): PrismaWithFoodProduct['foodProduct'] {
+  return (prismaClient as PrismaWithFoodProduct).foodProduct;
+}
+
 let prisma: PrismaClient | undefined;
 
 beforeAll(() => {
@@ -56,7 +77,7 @@ beforeEach(async () => {
 
   // Clean up data between tests but keep schema and seed data
   await prisma.user.deleteMany();
-  await prisma.food.deleteMany();
+  await foodProducts(prisma).deleteMany();
 
   // Re-seed basic test data
   await seedBasicTestData();
@@ -71,8 +92,8 @@ afterAll(async () => {
 async function seedBasicTestData() {
   if (!prisma) return;
 
-  // Create test food
-  await prisma.food.create({
+  // Create test food product
+  await foodProducts(prisma).create({
     data: {
       name: 'Test Food',
       description: 'Test food for integration tests',

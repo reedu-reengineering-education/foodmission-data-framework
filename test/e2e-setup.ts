@@ -88,9 +88,9 @@ beforeAll(async () => {
 
     // Helper to get test data
     getTestData: async () => {
-      if (!prisma) return { foods: [], users: [] };
+      if (!prisma) return { foodProducts: [], users: [] };
 
-      const foods = await prisma.food.findMany({
+      const foodProducts = await prisma.foodProduct.findMany({
         select: {
           id: true,
           name: true,
@@ -103,7 +103,7 @@ beforeAll(async () => {
       });
       const users = await prisma.user.findMany();
 
-      return { foods, users };
+      return { foodProducts, users };
     },
   };
 });
@@ -113,7 +113,7 @@ beforeEach(async () => {
 
   // Clean database between tests
   await prisma.user.deleteMany();
-  await prisma.food.deleteMany();
+  await prisma.foodProduct.deleteMany();
 
   // Seed basic test data
   await seedE2ETestData();
@@ -131,8 +131,8 @@ afterAll(async () => {
 async function seedE2ETestData() {
   if (!prisma) return;
 
-  // Create test foods
-  await prisma.food.createMany({
+  // Create test food products
+  await prisma.foodProduct.createMany({
     data: [
       {
         name: 'Apple',
