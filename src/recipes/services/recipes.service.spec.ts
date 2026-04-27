@@ -1,4 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import {
+  buildMinimalRecipeIngredientFoodProduct,
+  STUB_GENERIC_FOOD_CHICKEN_NEVO,
+} from '../../../test/fixtures/food-ref.fixtures';
 import { RecipesService } from './recipes.service';
 import { RecipesRepository } from '../repositories/recipes.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
@@ -349,7 +353,7 @@ describe('RecipesService', () => {
         order: 0,
         itemType: 'generic_food',
         genericFoodId: 'fc-1',
-        genericFood: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
+        genericFood: STUB_GENERIC_FOOD_CHICKEN_NEVO,
       }),
       buildRecipeIngredient({
         id: 'ing-2',
@@ -481,11 +485,9 @@ describe('RecipesService', () => {
             order: 0,
             itemType: 'food_product',
             foodProductId: 'food-1',
-            foodProduct: {
-              id: 'food-1',
+            foodProduct: buildMinimalRecipeIngredientFoodProduct({
               name: 'Branded Product',
-              imageUrl: 'http://...',
-            },
+            }),
           }),
         ],
       });

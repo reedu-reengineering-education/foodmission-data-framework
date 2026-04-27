@@ -5,6 +5,12 @@ import {
   getFoodRefName,
   FoodRefDto,
 } from './food-ref.util';
+import {
+  buildFoodRefItemFoodProduct,
+  buildFoodRefItemGenericFood,
+  TEST_ITEM_FOOD_PRODUCT_APPLE,
+  TEST_ITEM_GENERIC_FOOD_FRUIT,
+} from '../../../test/fixtures/food-ref.fixtures';
 
 describe('validateFoodRef', () => {
   it('should return itemType food_product when only foodProductId is provided', () => {
@@ -38,21 +44,7 @@ describe('validateFoodRef', () => {
 
 describe('extractNutritionData', () => {
   it('should extract nutrition data from foodProduct', () => {
-    const item = {
-      itemType: 'food_product',
-      foodProduct: {
-        name: 'Apple',
-        energyKcal: 52,
-        energyKj: 218,
-        proteins: 0.3,
-        fat: 0.2,
-        carbohydrates: 14,
-        fiber: 2.4,
-        sugars: 10,
-        salt: 0.01,
-        sodium: 1,
-      },
-    };
+    const item = TEST_ITEM_FOOD_PRODUCT_APPLE;
     expect(extractNutritionData(item)).toEqual({
       name: 'Apple',
       energyKcal: 52,
@@ -68,20 +60,7 @@ describe('extractNutritionData', () => {
   });
 
   it('should extract nutrition data from genericFood', () => {
-    const item = {
-      itemType: 'generic_food',
-      genericFood: {
-        foodName: 'Fruit',
-        energyKcal: 50,
-        energyKj: 210,
-        proteins: 0.2,
-        fat: 0.1,
-        carbohydrates: 13,
-        fiber: 2.1,
-        sugars: 9,
-        sodium: 2,
-      },
-    };
+    const item = TEST_ITEM_GENERIC_FOOD_FRUIT;
     expect(extractNutritionData(item)).toEqual({
       name: 'Fruit',
       energyKcal: 50,
@@ -104,15 +83,12 @@ describe('extractNutritionData', () => {
 
 describe('getFoodRefName', () => {
   it('should return food name for food_product item', () => {
-    const item = { itemType: 'food_product', foodProduct: { name: 'Banana' } };
+    const item = buildFoodRefItemFoodProduct('Banana');
     expect(getFoodRefName(item)).toBe('Banana');
   });
 
   it('should return genericFood name for generic_food item', () => {
-    const item = {
-      itemType: 'generic_food',
-      genericFood: { foodName: 'Vegetable' },
-    };
+    const item = buildFoodRefItemGenericFood('Vegetable');
     expect(getFoodRefName(item)).toBe('Vegetable');
   });
 

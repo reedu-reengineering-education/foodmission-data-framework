@@ -1,6 +1,10 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import {
+  buildMinimalRecipeIngredientFoodProduct,
+  STUB_GENERIC_FOOD_CHICKEN_NEVO,
+} from '../../../test/fixtures/food-ref.fixtures';
+import {
   CreateRecipeIngredientDto,
   UpdateRecipeIngredientDto,
   RecipeIngredientResponseDto,
@@ -196,11 +200,7 @@ describe('RecipeIngredient DTOs', () => {
         name: 'Product X',
         itemType: 'food_product',
         foodProductId: 'food-1',
-        foodProduct: {
-          id: 'food-1',
-          name: 'Product X',
-          imageUrl: 'http://...',
-        },
+        foodProduct: buildMinimalRecipeIngredientFoodProduct(),
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -220,7 +220,7 @@ describe('RecipeIngredient DTOs', () => {
         name: 'Chicken',
         itemType: 'generic_food',
         genericFoodId: 'fc-1',
-        genericFood: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
+        genericFood: STUB_GENERIC_FOOD_CHICKEN_NEVO,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

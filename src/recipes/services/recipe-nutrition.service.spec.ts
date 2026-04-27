@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipeNutritionService } from './recipe-nutrition.service';
 import { PrismaService } from '../../database/prisma.service';
+import { RECIPE_INGREDIENT_APPLE_GENERIC_FOOD } from '../../../test/fixtures/food-ref.fixtures';
 
 describe('RecipeNutritionService', () => {
   let service: RecipeNutritionService;
@@ -321,17 +322,7 @@ describe('RecipeNutritionService', () => {
             name: 'Apple',
             measure: null,
             foodProduct: null,
-            genericFood: {
-              id: 'fc-1',
-              foodName: 'Apple',
-              energyKcal: 52,
-              proteins: 0.3,
-              fat: 0.2,
-              carbohydrates: 14,
-              sugars: 10,
-              fiber: 2.4,
-              sodium: 1,
-            },
+            genericFood: RECIPE_INGREDIENT_APPLE_GENERIC_FOOD,
           },
         ],
       });
