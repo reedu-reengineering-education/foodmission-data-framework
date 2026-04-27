@@ -90,11 +90,7 @@ export class PantryItemRepository {
         pantryId: pantryId,
         foodProductId: foodProductId,
       },
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -109,11 +105,7 @@ export class PantryItemRepository {
         pantryId: pantryId,
         genericFoodId: genericFoodId,
       },
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 }

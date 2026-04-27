@@ -5,6 +5,7 @@ import {
   BaseRepository,
   FindAllOptions,
 } from '../../common/interfaces/base-repository.interface';
+import { SHOPPING_LIST_WITH_RELATIONS_INCLUDE } from '../../common/types/prisma-relations';
 
 export interface CreateShoppingListDto {
   userId: string;
@@ -35,14 +36,7 @@ export class ShoppingListRepository implements BaseRepository<
   async findById(id: string): Promise<ShoppingList | null> {
     return await this.prisma.shoppingList.findUnique({
       where: { id },
-      include: {
-        items: {
-          include: {
-            foodProduct: true,
-            genericFood: true,
-          },
-        },
-      },
+      include: SHOPPING_LIST_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -56,14 +50,7 @@ export class ShoppingListRepository implements BaseRepository<
     return await this.prisma.shoppingList.update({
       where: { id },
       data,
-      include: {
-        items: {
-          include: {
-            foodProduct: true,
-            genericFood: true,
-          },
-        },
-      },
+      include: SHOPPING_LIST_WITH_RELATIONS_INCLUDE,
     });
   }
 

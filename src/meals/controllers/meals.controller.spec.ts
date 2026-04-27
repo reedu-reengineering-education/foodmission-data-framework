@@ -3,6 +3,7 @@ import { MealsController } from './meals.controller';
 import { MealsService } from '../services/meals.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { createMockMealsService } from '../../../test/mocks/mock-meals-service';
 
 describe('MealsController', () => {
   let controller: MealsController;
@@ -17,13 +18,7 @@ describe('MealsController', () => {
   };
 
   beforeEach(async () => {
-    const mockMealService = {
-      create: jest.fn(),
-      findAll: jest.fn(),
-      findOne: jest.fn(),
-      update: jest.fn(),
-      remove: jest.fn(),
-    };
+    const mockMealService = createMockMealsService();
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MealsController],

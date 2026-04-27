@@ -1,3 +1,4 @@
+/** Reusable Jest stub for `MealItemService` — import from any `*.spec.ts` under `src/` or `test/`. */
 export function createMockMealItemService(overrides = {}) {
   return {
     create: jest.fn(),

@@ -6,7 +6,7 @@ import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { Unit } from '@prisma/client';
 import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
-import { createMockMealItemService } from '../../../common/testing/mock-meal-item-service';
+import { createMockMealItemService } from '../../../../test/mocks/mock-meal-item-service';
 import { MEAL_ITEM_TEST_IDS as TEST_IDS } from '../test-utils/meal-item-test-ids';
 
 describe('MealItemController', () => {

@@ -5,6 +5,10 @@ import {
   buildRecipe,
   buildRecipeIngredient,
 } from '../../../test/fixtures/recipe.fixtures';
+import {
+  RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
+  RECIPE_WITH_INGREDIENTS_INCLUDE,
+} from '../../common/types/prisma-relations';
 
 describe('RecipesRepository', () => {
   let repository: RecipesRepository;
@@ -35,22 +39,7 @@ describe('RecipesRepository', () => {
     }),
   ];
 
-  const expectedInclude = {
-    ingredients: {
-      orderBy: { order: 'asc' },
-      include: {
-        foodProduct: { select: { id: true, name: true, imageUrl: true } },
-        genericFood: {
-          select: {
-            id: true,
-            foodName: true,
-            nevoCode: true,
-            energyKcal: true,
-          },
-        },
-      },
-    },
-  };
+  const expectedInclude = RECIPE_WITH_INGREDIENTS_INCLUDE;
 
   beforeEach(async () => {
     mockPrismaService = {
@@ -134,7 +123,7 @@ describe('RecipesRepository', () => {
 
       expect(mockPrismaService.recipe.findUnique).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
       expect(result).toEqual(recipeWithIngredients);
       expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(
@@ -166,7 +155,7 @@ describe('RecipesRepository', () => {
           title: 'Test Recipe',
           ingredients: undefined,
         },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
       expect(result.title).toBe('Test Recipe');
     });
@@ -214,7 +203,7 @@ describe('RecipesRepository', () => {
             ],
           },
         },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
       expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(
         2,
@@ -300,7 +289,7 @@ describe('RecipesRepository', () => {
       expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
         data: { title: 'Updated Title' },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
       expect(result.title).toBe('Updated Title');
     });
@@ -345,7 +334,7 @@ describe('RecipesRepository', () => {
             ],
           },
         },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
       expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(
         1,
@@ -371,7 +360,7 @@ describe('RecipesRepository', () => {
       expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
         data: { ingredients: undefined },
-        include: { ...expectedInclude, meals: true },
+        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
       });
     });
   });
