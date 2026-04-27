@@ -1,3 +1,12 @@
+export const PANTRY_ITEM_WITH_RELATIONS_INCLUDE = {
+  pantry: true,
+  foodProduct: true,
+  genericFood: true,
+} as const;
+
+export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
+  include: typeof PANTRY_ITEM_WITH_RELATIONS_INCLUDE;
+}>;
 export const FOOD_PRODUCT_WITH_RELATIONS_INCLUDE = {
   shelfLife: true,
   shoppingListItems: true,

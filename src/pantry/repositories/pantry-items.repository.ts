@@ -1,41 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Unit } from '@prisma/client';
+import {
+  PantryItemWithRelations,
+  PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
+} from '../../common/types/prisma-relations';
 import { PrismaService } from '../../database/prisma.service';
-
-export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
-  include: {
-    pantry: true;
-    foodProduct: true;
-    genericFood: true;
-  };
-}>;
-
-export interface PantryItemFilter {
-  pantryId?: string;
-  foodProductId?: string;
-  genericFoodId?: string;
-  unit?: Unit;
-  expiryDate?: Date;
-}
-
-export interface CreatePantryItemData {
-  pantryId: string;
-  foodProductId?: string | null;
-  genericFoodId?: string | null;
-  itemType: string;
-  quantity: number;
-  unit: Unit;
-  notes?: string;
-  location?: string;
-  expiryDate?: Date;
-  expiryDateSource?: 'manual' | 'auto_foodkeeper';
-}
+import { Prisma } from '@prisma/client';
+import { CreatePantryItemData } from '../dto/create-pantry-item-data.dto';
+import { PantryItemFilter } from '../dto/pantry-item-filter.dto';
 
 @Injectable()
 export class PantryItemRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
+  create(
     data: CreatePantryItemData,
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
@@ -53,32 +30,20 @@ export class PantryItemRepository {
         expiryDate: data.expiryDate,
         expiryDateSource: data.expiryDateSource,
       },
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findAll(): Promise<PantryItemWithRelations[]> {
     return await this.prisma.pantryItem.findMany({
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findById(id: string): Promise<PantryItemWithRelations | null> {
     return this.prisma.pantryItem.findUnique({
       where: { id },
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -93,11 +58,7 @@ export class PantryItemRepository {
         expiryDate: filter.expiryDate,
         unit: filter.unit,
       },
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -108,11 +69,7 @@ export class PantryItemRepository {
     return this.prisma.pantryItem.update({
       where: { id },
       data,
-      include: {
-        pantry: true,
-        foodProduct: true,
-        genericFood: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -160,3 +117,4 @@ export class PantryItemRepository {
     });
   }
 }
+export { PantryItemWithRelations };

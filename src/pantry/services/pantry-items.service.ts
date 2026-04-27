@@ -6,6 +6,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
+  handlePrismaError,
+  handleServiceError,
+} from '../../common/utils/error.utils';
+import {
   PantryItemRepository,
   PantryItemWithRelations,
 } from '../repositories/pantry-items.repository';
@@ -43,12 +47,12 @@ export class PantryItemService {
   ): Promise<PantryItemResponseDto> {
     try {
       this.validateFoodRefInput(
-        createShoppingListItemDto.foodProductId,
-        createShoppingListItemDto.genericFoodId,
+        createShoppingListItemDto.foodId,
+        createShoppingListItemDto.foodCategoryId,
       );
-      const createPantryItemDto = Object.assign(new CreatePantryItemDto(), {
-        foodProductId: createShoppingListItemDto.foodProductId ?? undefined,
-        genericFoodId: createShoppingListItemDto.genericFoodId ?? undefined,
+      const createPantryItemDto = plainToInstance(CreatePantryItemDto, {
+        foodProductId: createShoppingListItemDto.foodId ?? undefined,
+        genericFoodId: createShoppingListItemDto.foodCategoryId ?? undefined,
         quantity: createShoppingListItemDto.quantity,
         unit: createShoppingListItemDto.unit,
       });
@@ -221,23 +225,23 @@ export class PantryItemService {
     pantryId?: string,
   ): Promise<MultiplePantryItemResponseDto> {
     try {
-      const { foodProductId, genericFoodId } = query;
+      const { foodId, foodCategoryId } = query;
       const resolvedPantryId = await this.pantryService.validatePantryExists(
         userId,
         pantryId,
       );
       // Only validate if either filter is provided
-      if (foodProductId || genericFoodId) {
-        this.validateFoodRefInput(foodProductId, genericFoodId);
+      if (foodId || foodCategoryId) {
+        this.validateFoodRefInput(foodId, foodCategoryId);
         await this.ensureUniqueAndExists(
           resolvedPantryId,
-          foodProductId,
-          genericFoodId,
+          foodId,
+          foodCategoryId,
         );
       }
       const filter: any = { pantryId: resolvedPantryId };
-      if (foodProductId !== undefined) filter.foodProductId = foodProductId;
-      if (genericFoodId !== undefined) filter.genericFoodId = genericFoodId;
+      if (foodId !== undefined) filter.foodProductId = foodId;
+      if (foodCategoryId !== undefined) filter.genericFoodId = foodCategoryId;
       if (query.expiryDate !== undefined) {
         filter.expiryDate =
           query.expiryDate instanceof Date
@@ -376,7 +380,6 @@ export class PantryItemService {
       );
       return this.transformToResponseDto(updatedItem);
     } catch (err) {
-      // Map Prisma unique constraint errors to ConflictException
       if (
         err instanceof NotFoundException ||
         err instanceof ConflictException ||
@@ -384,22 +387,11 @@ export class PantryItemService {
       ) {
         throw err;
       }
-      // Prisma error code for unique constraint
-      if (
-        err?.code === 'P2002' ||
-        err?.code === 'P2003' ||
-        (err?.meta &&
-          err?.meta.target &&
-          (err?.meta.target.includes('pantryId') ||
-            err?.meta.target.includes('foodId') ||
-            err?.meta.target.includes('foodCategoryId')))
-      ) {
-        throw new ConflictException(err.message || 'Unique constraint failed');
+      const businessException = handlePrismaError(err, 'update', 'pantry_item');
+      if (businessException.name === 'ResourceAlreadyExistsException') {
+        throw new ConflictException('This pantry item already exists');
       }
-      throw new BadRequestException(
-        'Failed to update pantry item: ' +
-          (err instanceof Error ? err.message : err),
-      );
+      handleServiceError(businessException, 'Failed to update pantry item');
     }
   }
 

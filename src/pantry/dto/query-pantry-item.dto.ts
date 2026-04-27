@@ -4,20 +4,20 @@ import { IsOptional, IsUUID, IsEnum, IsDateString } from 'class-validator';
 
 export class QueryPantryItemDto {
   @ApiPropertyOptional({
-    description: 'Filter by food ID',
-    example: 'uuid-food-id',
+    description: 'Filter by food product ID',
+    example: 'uuid-food-product-id',
   })
   @IsUUID()
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by food category ID',
-    example: 'uuid-food-category-id',
+    description: 'Filter by generic food ID',
+    example: 'uuid-generic-food-id',
   })
   @IsUUID()
   @IsOptional()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiPropertyOptional({
     description: 'The unit of measurement',
