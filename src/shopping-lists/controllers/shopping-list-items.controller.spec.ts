@@ -30,7 +30,6 @@ describe('ShoppingListItemsController', () => {
       findByShoppingList: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
-      toggleChecked: jest.fn(),
       remove: jest.fn(),
       clearCheckedItems: jest.fn(),
     };
@@ -113,23 +112,23 @@ describe('ShoppingListItemsController', () => {
         shoppingListId,
       );
     });
-  });
 
-  describe('toggleChecked', () => {
-    it('should call service with id, userId, and shoppingListId', async () => {
-      service.toggleChecked = jest
-        .fn()
-        .mockResolvedValue(mockItemResponse as any);
+    it('should pass checked attribute through patch update', async () => {
+      const updateDto = { checked: true };
+      const checkedResponse = { ...mockItemResponse, checked: true };
+      service.update = jest.fn().mockResolvedValue(checkedResponse as any);
 
-      const result = await controller.toggleChecked(
+      const result = await controller.update(
         shoppingListId,
         itemId,
+        updateDto as any,
         'user-1',
       );
 
-      expect(result).toEqual(mockItemResponse);
-      expect(service.toggleChecked).toHaveBeenCalledWith(
+      expect(result.checked).toBe(true);
+      expect(service.update).toHaveBeenCalledWith(
         itemId,
+        { checked: true },
         'user-1',
         shoppingListId,
       );
