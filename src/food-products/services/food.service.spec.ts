@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { FoodProductService } from './food-product.service';
 import { FoodRepository } from '../repositories/food.repository';
+import { FoodProduct } from '@prisma/client';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CreateFoodDto } from '../dto/create-food.dto';
 import { UpdateFoodDto } from '../dto/update-food.dto';
@@ -13,7 +14,7 @@ describe('FoodProductService', () => {
   let foodRepository: jest.Mocked<FoodRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
-  const mockFood = { ...TEST_FOOD };
+  const mockFood: FoodProduct = { ...TEST_FOOD };
 
   const mockOpenFoodFactsProduct = {
     id: 'off-product-1',

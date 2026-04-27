@@ -5,6 +5,8 @@ import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { Unit } from '@prisma/client';
+import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
+import { createMockMealItemService } from '../../../common/testing/mock-meal-item-service';
 
 describe('MealItemController', () => {
   let controller: MealItemController;
@@ -18,57 +20,9 @@ describe('MealItemController', () => {
     FOOD_CATEGORY: 'food-category-uuid-123',
   };
 
-  const mockMealItemWithFood = {
-    id: TEST_IDS.MEAL_ITEM,
-    mealId: TEST_IDS.MEAL,
-    itemType: 'food',
-    foodId: TEST_IDS.FOOD,
-    foodCategoryId: null,
-    quantity: 2,
-    unit: Unit.PIECES,
-    notes: 'Test notes',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    meal: {
-      id: TEST_IDS.MEAL,
-      name: 'Breakfast',
-      userId: TEST_IDS.USER,
-      calories: 500,
-      proteins: 20,
-      nutritionalInfo: {},
-      sustainabilityScore: null,
-      price: null,
-      barcode: null,
-      recipeId: null,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    food: {
-      id: TEST_IDS.FOOD,
-      name: 'Banana',
-      barcode: '1234567890',
-      quantity: '100g',
-      description: 'Fresh banana',
-      allergens: [],
-      proteins: 1.1,
-      carbohydrates: 23,
-      fats: 0.3,
-      calories: 89,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    foodCategory: null,
-  };
+  const mockMealItemWithFood = TEST_MEAL_ITEM_WITH_FOOD;
 
-  const mockMealItemService = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findByMealId: jest.fn(),
-    findById: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    deleteByMealId: jest.fn(),
-  };
+  const mockMealItemService = createMockMealItemService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

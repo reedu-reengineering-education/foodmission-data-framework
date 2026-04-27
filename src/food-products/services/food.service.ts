@@ -172,15 +172,17 @@ export class FoodProductService {
       updateFoodDto.barcode &&
       updateFoodDto.barcode !== existingFood.barcode
     ) {
-      const existingFoodWithBarcode = await this.foodProductRepository.findByBarcode(
-        updateFoodDto.barcode,
-      );
+      const existingFoodWithBarcode =
+        await this.foodProductRepository.findByBarcode(updateFoodDto.barcode);
       if (existingFoodWithBarcode && existingFoodWithBarcode.id !== id) {
         throw new BadRequestException('Food with this barcode already exists');
       }
     }
 
-    const updatedFood = await this.foodProductRepository.update(id, updateFoodDto);
+    const updatedFood = await this.foodProductRepository.update(
+      id,
+      updateFoodDto,
+    );
     return this.transformToResponseDto(updatedFood);
   }
 
@@ -216,7 +218,8 @@ export class FoodProductService {
     this.logger.log(`Importing food from OpenFoodFacts: ${barcode}`);
 
     // Check if food already exists
-    const existingFood = await this.foodProductRepository.findByBarcode(barcode);
+    const existingFood =
+      await this.foodProductRepository.findByBarcode(barcode);
     if (existingFood) {
       throw new BadRequestException('Food with this barcode already exists');
     }

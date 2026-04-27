@@ -3,8 +3,6 @@ import { NotFoundException } from '@nestjs/common';
 import { GenericFoodService } from './generic-foods.service';
 import { GenericFoodRepository } from '../repositories/generic-foods.repository';
 
-
-
 import { TEST_GENERIC_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('GenericFoodService', () => {

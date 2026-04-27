@@ -4,8 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { normalizePagination } from '../../common/utils/pagination';
-
-type Food = Awaited<ReturnType<PrismaService['food']['create']>>;
+import { FoodProduct } from '@prisma/client';
 import {
   BaseRepository,
   FindAllOptions,
@@ -144,8 +143,7 @@ export interface UpdateFoodDto {
 }
 
 @Injectable()
-export class FoodProductRepository implements BaseRepository<
-  Food,
+  FoodProduct,
   CreateFoodDto,
   UpdateFoodDto,
   Prisma.FoodWhereInput
@@ -158,7 +156,7 @@ export class FoodProductRepository implements BaseRepository<
       Prisma.FoodOrderByWithRelationInput,
       Prisma.FoodInclude
     > = {},
-  ): Promise<Food[]> {
+  ): Promise<FoodProduct[]> {
     return await this.prisma.food.findMany({
       skip: options.skip,
       take: options.take,
@@ -170,13 +168,13 @@ export class FoodProductRepository implements BaseRepository<
     });
   }
 
-  async findById(id: string): Promise<Food | null> {
+  async findById(id: string): Promise<FoodProduct | null> {
     return await this.prisma.food.findUnique({
       where: { id },
     });
   }
 
-  async findByBarcode(barcode: string): Promise<Food | null> {
+  async findByBarcode(barcode: string): Promise<FoodProduct | null> {
     return await this.prisma.food.findUnique({
       where: { barcode },
     });
@@ -188,7 +186,7 @@ export class FoodProductRepository implements BaseRepository<
       Prisma.FoodOrderByWithRelationInput,
       Prisma.FoodInclude
     > = {},
-  ): Promise<PaginatedResult<Food>> {
+  ): Promise<PaginatedResult<FoodProduct>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
@@ -233,7 +231,7 @@ export class FoodProductRepository implements BaseRepository<
     });
   }
 
-  async create(data: CreateFoodDto): Promise<Food> {
+  async create(data: CreateFoodDto): Promise<FoodProduct> {
     try {
       return await this.prisma.food.create({
         data,
@@ -250,7 +248,7 @@ export class FoodProductRepository implements BaseRepository<
     }
   }
 
-  async update(id: string, data: UpdateFoodDto): Promise<Food> {
+  async update(id: string, data: UpdateFoodDto): Promise<FoodProduct> {
     try {
       return await this.prisma.food.update({
         where: { id },

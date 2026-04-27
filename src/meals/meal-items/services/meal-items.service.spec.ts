@@ -5,9 +5,11 @@ import { MealsRepository } from '../../repositories/meals.repository';
 import { FoodProductRepository } from '../../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../../generic-foods/repositories/generic-food.repository';
 import { Unit } from '@prisma/client';
+import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { DatabaseOperationException } from '../../../common/exceptions/business.exception';
+import { createMockMealItemService } from '../../../common/testing/mock-meal-item-service';
 
 describe('MealItemService', () => {
   let service: MealItemService;
@@ -67,21 +69,7 @@ describe('MealItemService', () => {
     updatedAt: new Date('2024-01-01'),
   };
 
-  const mockMealItemWithFood = {
-    id: TEST_IDS.MEAL_ITEM,
-    mealId: TEST_IDS.MEAL,
-    itemType: 'food',
-    foodId: TEST_IDS.FOOD,
-    foodCategoryId: null,
-    quantity: 2,
-    unit: Unit.PIECES,
-    notes: 'Test notes',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    meal: mockMeal,
-    food: mockFood,
-    foodCategory: null,
-  };
+  const mockMealItemWithFood = TEST_MEAL_ITEM_WITH_FOOD;
 
   const mockMealItemWithCategory = {
     id: TEST_IDS.MEAL_ITEM_2,
@@ -113,6 +101,9 @@ describe('MealItemService', () => {
     count: jest.fn(),
   };
 
+  // Use the shared mock factory for the service
+  const mockMealItemService = createMockMealItemService();
+
   const mockMealRepository = {
     findById: jest.fn(),
   };
@@ -128,7 +119,10 @@ describe('MealItemService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MealItemService,
+        {
+          provide: MealItemService,
+          useValue: mockMealItemService,
+        },
         {
           provide: MealItemRepository,
           useValue: mockMealItemRepository,

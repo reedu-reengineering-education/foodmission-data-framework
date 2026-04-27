@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FoodProductService } from './food-product.service';
 import { FoodProductRepository } from '../repositories/food-product.repository';
+import { FoodProduct } from '@prisma/client';
 import { OpenFoodFactsService } from './openfoodfacts.service';
 import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
@@ -16,7 +17,7 @@ describe('FoodProductService - Caching Integration', () => {
   let foodProductRepository: jest.Mocked<FoodProductRepository>;
   let openFoodFactsService: jest.Mocked<OpenFoodFactsService>;
 
-  const mockFood = { ...TEST_FOOD };
+  const mockFood: FoodProduct = { ...TEST_FOOD };
 
   beforeEach(async () => {
     const mockFoodProductRepository = {
@@ -136,7 +137,9 @@ describe('FoodProductService - Caching Integration', () => {
 
       const result = await service.findByBarcode('1234567890');
 
-      expect(foodProductRepository.findByBarcode).toHaveBeenCalledWith('1234567890');
+      expect(foodProductRepository.findByBarcode).toHaveBeenCalledWith(
+        '1234567890',
+      );
       expect(result.barcode).toBe('1234567890');
     });
 
