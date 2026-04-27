@@ -327,7 +327,9 @@ describe('FoodProductRepository', () => {
       'should calculate page correctly for skip %i and take %i (expected page: %i)',
       async (skip, take, expectedPage) => {
         const total = 100;
-        mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
+        mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([
+          mockFood,
+        ]);
         mockPrismaService.foodProduct.count.mockResolvedValueOnce(total);
 
         const result = await repository.findWithPagination({ skip, take });
@@ -364,7 +366,9 @@ describe('FoodProductRepository', () => {
     });
 
     it('should handle pagination with where clause', async () => {
-      const where: Prisma.FoodProductWhereInput = { name: { contains: 'test' } };
+      const where: Prisma.FoodProductWhereInput = {
+        name: { contains: 'test' },
+      };
       mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
       mockPrismaService.foodProduct.count.mockResolvedValueOnce(5);
 
@@ -382,11 +386,15 @@ describe('FoodProductRepository', () => {
         orderBy: { createdAt: 'desc' },
         include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
       });
-      expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({ where });
+      expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({
+        where,
+      });
     });
 
     it('should handle pagination with custom orderBy', async () => {
-      const orderBy: Prisma.FoodProductOrderByWithRelationInput = { name: 'asc' };
+      const orderBy: Prisma.FoodProductOrderByWithRelationInput = {
+        name: 'asc',
+      };
       mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
       mockPrismaService.foodProduct.count.mockResolvedValueOnce(10);
 
