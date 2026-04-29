@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { CacheService } from '../src/cache/cache.service';
-import { CacheModule } from '../src/cache/cache.module';
-import { CommonModule } from '../src/common/common.module';
+import { CacheService } from '../../src/cache/cache.service';
+import { CacheModule } from '../../src/cache/cache.module';
+import { CommonModule } from '../../src/common/common.module';
 
 describe('Cache E2E', () => {
   let cacheService: CacheService;

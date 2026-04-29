@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { DataBaseAuthGuard } from '../src/common/guards/database-auth.guards';
-import { createTestApp, closeTestApp } from './test-utils/e2e-helpers';
-import { RecommendationsController } from '../src/recipes/controllers/recommendations.controller';
-import { RecommendationsService } from '../src/recipes/services/recommendations.service';
+import { DataBaseAuthGuard } from '../../src/common/guards/database-auth.guards';
+import { createTestApp, closeTestApp } from '../test-utils/e2e-helpers';
+import { RecommendationsController } from '../../src/recipes/controllers/recommendations.controller';
+import { RecommendationsService } from '../../src/recipes/services/recommendations.service';
 
 describe('Recipe Recommendations (e2e)', () => {
   let app: INestApplication;

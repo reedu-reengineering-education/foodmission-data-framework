@@ -5,7 +5,7 @@ import {
   cleanupTestFixtures,
   setupDbSuite,
   TestFixtures,
-} from './test-utils/db-e2e-helpers';
+} from '../test-utils/db-e2e-helpers';
 
 jest.setTimeout(60000);
 
