@@ -106,7 +106,7 @@ describe('Database Seeding (e2e)', () => {
         `SELECT to_regclass('public.users') IS NOT NULL AS exists`,
       );
       const foodsRowsRaw: unknown = await prisma.$queryRawUnsafe(
-        `SELECT to_regclass('public.foods') IS NOT NULL AS exists`,
+        `SELECT to_regclass('public.food_products') IS NOT NULL AS exists`,
       );
       const recipesRowsRaw: unknown = await prisma.$queryRawUnsafe(
         `SELECT to_regclass('public.recipes') IS NOT NULL AS exists`,
