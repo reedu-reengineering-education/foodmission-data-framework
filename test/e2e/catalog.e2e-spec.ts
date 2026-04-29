@@ -96,6 +96,18 @@ describe('Catalog (e2e)', () => {
     expect(String(res.body.limit)).toBe('5');
   });
 
+
+  it('GET /catalog/regions (paginated without filters)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/catalog/regions?page=1&limit=10')
+      .expect(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(Number(res.body.total)).toBeGreaterThan(0);
+    expect(Number(res.body.totalPages)).toBeGreaterThan(0);
+    expect(String(res.body.page)).toBe('1');
+    expect(String(res.body.limit)).toBe('10');
+  });
+
   it('GET /catalog/regions (happy path with countryCode)', async () => {
     const res = await request(app.getHttpServer())
       .get('/catalog/regions?page=1&limit=5&countryCode=DE')

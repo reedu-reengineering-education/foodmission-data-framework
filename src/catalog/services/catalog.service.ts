@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   ActivityLevel,
   AnnualIncomeLevel,
@@ -254,11 +254,6 @@ export class CatalogService {
     const q = normalizeSearch(input.search);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
 
-    if (!countryCode && !q) {
-      throw new BadRequestException(
-        'Either countryCode or search must be provided for regions',
-      );
-    }
 
     const allRegions = this.getAllRegions();
     const all = countryCode
