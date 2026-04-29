@@ -333,15 +333,21 @@ export class PantryItemService {
           'You do not have access to this pantry item',
         );
       }
-      this.validateFoodRefInput(
-        updateDto.foodProductId,
-        updateDto.genericFoodId,
-      );
-      await this.ensureUniqueAndExists(
-        item.pantryId,
-        updateDto.foodProductId,
-        updateDto.genericFoodId,
-      );
+      const isChangingFoodReference =
+        updateDto.foodProductId !== undefined ||
+        updateDto.genericFoodId !== undefined;
+
+      if (isChangingFoodReference) {
+        this.validateFoodRefInput(
+          updateDto.foodProductId,
+          updateDto.genericFoodId,
+        );
+        await this.ensureUniqueAndExists(
+          item.pantryId,
+          updateDto.foodProductId,
+          updateDto.genericFoodId,
+        );
+      }
       let expiryDate: Date | undefined;
       if (updateDto.expiryDate !== undefined) {
         expiryDate =
@@ -383,7 +389,8 @@ export class PantryItemService {
       if (
         err instanceof NotFoundException ||
         err instanceof ConflictException ||
-        err instanceof ForbiddenException
+        err instanceof ForbiddenException ||
+        err instanceof BadRequestException
       ) {
         throw err;
       }
@@ -391,7 +398,10 @@ export class PantryItemService {
       if (businessException.name === 'ResourceAlreadyExistsException') {
         throw new ConflictException('This pantry item already exists');
       }
-      handleServiceError(businessException, 'Failed to update pantry item');
+      handleServiceError(
+        businessException,
+        'Invalid pantry item update payload or value.',
+      );
     }
   }
 

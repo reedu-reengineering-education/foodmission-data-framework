@@ -697,6 +697,28 @@ describe('PantryItemService', () => {
       expect(result.notes).toBe(updateDto.notes);
     });
 
+    it('should update pantry item without requiring food reference fields', async () => {
+      const updateDto: UpdatePantryItemDto = {
+        quantity: 3,
+        unit: Unit.KG,
+        notes: 'Buy organic if available',
+        expiryDate: '2026-03-15' as unknown as Date,
+      };
+      const mockPantryItem = createMockPantryItemWithRelations();
+      mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.update.mockResolvedValue({
+        ...mockPantryItem,
+        ...updateDto,
+      });
+
+      const result = await service.update(itemId, updateDto, userId);
+
+      expect(result.quantity).toBe(3);
+      expect(result.unit).toBe(Unit.KG);
+      expect(mockFoodRepository.findById).not.toHaveBeenCalled();
+      expect(mockGenericFoodRepository.findById).not.toHaveBeenCalled();
+    });
+
     it('should validate new food when foodProductId is provided in update', async () => {
       const updateDto = PantryItemsTestBuilder.createUpdatePantryItemDto({
         foodProductId: 'food-2',
