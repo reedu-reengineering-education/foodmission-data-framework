@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { seedFoodKeeper } from '../../prisma/seeds/foodkeeper';
 import {
   createTestPrismaClient,
   createTestFixtures,
@@ -12,6 +13,7 @@ describe('Pantry Items Auto Expiry', () => {
 
   beforeAll(async () => {
     prisma = createTestPrismaClient();
+    await seedFoodKeeper(prisma);
     fixtures = await createTestFixtures(prisma, 'e2e-auto-expiry-user');
   });
 

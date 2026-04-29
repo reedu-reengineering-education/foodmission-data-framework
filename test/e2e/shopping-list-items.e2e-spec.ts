@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { seedFoodKeeper } from '../../prisma/seeds/foodkeeper';
 import {
   createTestPrismaClient,
   createTestFixtures,
@@ -14,6 +15,7 @@ describe('Shopping List Items to Pantry', () => {
 
   beforeAll(async () => {
     prisma = createTestPrismaClient();
+    await seedFoodKeeper(prisma);
     fixtures = await createTestFixtures(prisma, 'e2e-shopping-to-pantry-user', {
       withShoppingList: true,
     });
