@@ -7,7 +7,7 @@ export interface IngredientMatch {
   ingredientName: string;
   pantryItemId: string;
   pantryItemName: string;
-  matchType: 'exact_food' | 'exact_category';
+  matchType: 'food_product' | 'generic_food' | 'food_name';
   isExpiringSoon: boolean;
   daysUntilExpiry: number | null;
 }

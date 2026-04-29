@@ -74,7 +74,17 @@ export class RecommendationsService {
         { skip: offset, take: limit },
       );
 
-      if (candidateRecipes.length === 0) {
+      const fallbackRecipes =
+        candidateRecipes.length === 0
+          ? await this.findNameBasedCandidateRecipes(allPantryItems, userId, {
+              skip: offset,
+              take: limit,
+            })
+          : [];
+      const recipesToScore =
+        candidateRecipes.length > 0 ? candidateRecipes : fallbackRecipes;
+
+      if (recipesToScore.length === 0) {
         return this.emptyRecommendationResponse(
           limit,
           offset,
@@ -84,7 +94,7 @@ export class RecommendationsService {
       }
 
       const scoredRecipes = this.scoreRecipes(
-        candidateRecipes,
+        recipesToScore,
         allPantryItems,
         pantryFoodIds,
         pantryCategoryIds,
@@ -171,6 +181,43 @@ export class RecommendationsService {
     );
   }
 
+  private async findNameBasedCandidateRecipes(
+    pantryItems: PantryItemWithRelations[],
+    userId: string,
+    options: { skip?: number; take?: number } = {},
+  ): Promise<RecipeWithIngredients[]> {
+    const pantryNames = Array.from(
+      new Set(
+        pantryItems
+          .map((item) => this.getPantryItemName(item))
+          .map((name) => name.trim())
+          .filter((name) => name.length > 0 && name !== 'Unknown'),
+      ),
+    ).slice(0, 20);
+
+    if (pantryNames.length === 0) {
+      return [];
+    }
+
+    const result = await this.recipesRepository.findWithPagination({
+      skip: options.skip,
+      take: Math.max(options.take ?? 10, 50),
+      where: {
+        OR: [{ userId }, { isPublic: true }],
+        ingredients: {
+          some: {
+            OR: pantryNames.map((name) => ({
+              name: { contains: name, mode: 'insensitive' },
+            })),
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return result.data as RecipeWithIngredients[];
+  }
+
   private scoreRecipes(
     recipes: RecipeWithIngredients[],
     pantryItems: PantryItemWithRelations[],
@@ -182,10 +229,15 @@ export class RecommendationsService {
     // Build lookup maps for pantry item names
     const pantryItemByFoodId = new Map<string, PantryItemWithRelations>();
     const pantryItemByCategoryId = new Map<string, PantryItemWithRelations>();
+    const pantryItemByNormalizedName = new Map<string, PantryItemWithRelations>();
     for (const item of pantryItems) {
       if (item.foodProductId) pantryItemByFoodId.set(item.foodProductId, item);
       if (item.genericFoodId)
         pantryItemByCategoryId.set(item.genericFoodId, item);
+      const normalizedName = this.normalizeText(this.getPantryItemName(item));
+      if (normalizedName) {
+        pantryItemByNormalizedName.set(normalizedName, item);
+      }
     }
 
     return recipes.map((recipe) => {
@@ -198,20 +250,29 @@ export class RecommendationsService {
         const categoryMatch =
           ingredient.genericFoodId &&
           pantryCategoryIds.has(ingredient.genericFoodId);
+        const ingredientNormalizedName = this.normalizeText(ingredient.name);
+        const nameMatchedPantryItem = ingredientNormalizedName
+          ? pantryItemByNormalizedName.get(ingredientNormalizedName)
+          : undefined;
+        const nameMatch = Boolean(nameMatchedPantryItem);
 
-        if (foodMatch || categoryMatch) {
+        if (foodMatch || categoryMatch || nameMatch) {
           const isExpiring = Boolean(
             (ingredient.foodProductId &&
               expiringFoodIds.has(ingredient.foodProductId)) ||
             (ingredient.genericFoodId &&
-              expiringCategoryIds.has(ingredient.genericFoodId)),
+              expiringCategoryIds.has(ingredient.genericFoodId)) ||
+              (nameMatchedPantryItem?.foodProductId &&
+                expiringFoodIds.has(nameMatchedPantryItem.foodProductId)) ||
+              (nameMatchedPantryItem?.genericFoodId &&
+                expiringCategoryIds.has(nameMatchedPantryItem.genericFoodId)),
           );
 
           const pantryItem = ingredient.foodProductId
             ? pantryItemByFoodId.get(ingredient.foodProductId)
             : ingredient.genericFoodId
               ? pantryItemByCategoryId.get(ingredient.genericFoodId)
-              : undefined;
+              : nameMatchedPantryItem;
 
           const daysUntilExpiry = this.calculateDaysUntilExpiry(pantryItem);
           const pantryItemName = this.getPantryItemName(pantryItem);
@@ -221,7 +282,11 @@ export class RecommendationsService {
             ingredientName: ingredient.name,
             pantryItemId: pantryItem?.id ?? '',
             pantryItemName,
-            matchType: foodMatch ? 'exact_food' : 'exact_category',
+            matchType: foodMatch
+              ? 'food_product'
+              : categoryMatch
+                ? 'generic_food'
+                : 'food_name',
             isExpiringSoon: isExpiring,
             daysUntilExpiry,
           });
@@ -241,6 +306,33 @@ export class RecommendationsService {
         expiringMatchCount,
       };
     });
+  }
+
+  private normalizeText(value?: string | null): string {
+    if (!value) return '';
+
+    let normalized = value.toLowerCase().trim();
+    normalized = normalized.replace(/[^\w\s]/g, ' ');
+    normalized = normalized.replace(/\s+/g, ' ');
+
+    const tokens = normalized
+      .split(' ')
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .map((token) => {
+        if (token.endsWith('ies') && token.length > 3) {
+          return `${token.slice(0, -3)}y`;
+        }
+        if (token.endsWith('es') && token.length > 3) {
+          return token.slice(0, -2);
+        }
+        if (token.endsWith('s') && token.length > 3) {
+          return token.slice(0, -1);
+        }
+        return token;
+      });
+
+    return tokens.join(' ');
   }
 
   private calculateDaysUntilExpiry(
