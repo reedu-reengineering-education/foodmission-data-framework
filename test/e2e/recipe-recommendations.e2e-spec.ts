@@ -110,7 +110,7 @@ describe('Recipe Recommendations (e2e)', () => {
       await request(app.getHttpServer())
         .get('/recipes/me/recommendations')
         .query({
-          expiringWithinDays: 14,
+          expiringWithinDays: 60,
           limit: 5,
         })
         .expect(200);
@@ -120,7 +120,7 @@ describe('Recipe Recommendations (e2e)', () => {
       ).toHaveBeenCalledWith(
         'test-user-id',
         expect.objectContaining({
-          expiringWithinDays: 14,
+          expiringWithinDays: 60,
           limit: 5,
         }),
       );
