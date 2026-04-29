@@ -94,6 +94,7 @@ describe('FoodProducts endpoints (e2e)', () => {
       .get('/food-products?page=1&limit=10')
       .expect(200);
     expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data[0]).toEqual(expect.objectContaining({ id: expect.any(String) }));
     expect(res.body.total).toBeGreaterThanOrEqual(2);
     expect(res.body.page).toBe(1);
     expect(res.body.limit).toBe(10);
@@ -146,6 +147,7 @@ describe('FoodProducts endpoints (e2e)', () => {
       })
       .expect(201);
 
+    expect(res.body.id).toEqual(expect.any(String));
     expect(res.body.name).toBe('Orange');
     expect(res.body.barcode).toBe('3333333333333');
   });

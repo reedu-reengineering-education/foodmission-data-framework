@@ -48,6 +48,10 @@ export class OpenFoodFactsInfoDto {
 }
 
 export class FoodProductResponseDto {
+  @ApiProperty({ description: 'Food product identifier' })
+  @Expose()
+  id!: string;
+
   @ApiProperty({ description: 'The name of the food product' })
   @Expose()
   name!: string;
