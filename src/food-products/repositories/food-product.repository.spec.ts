@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { FoodProductRepository } from './food-product.repository';
-import { CreateFoodProductDto } from '../dto/create-food-product.dto';
+import {
+  FoodProductCreateInput,
+  FoodProductRepository,
+} from './food-product.repository';
 import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
 import { PrismaService } from '../../database/prisma.service';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
@@ -146,7 +148,7 @@ describe('FoodProductRepository', () => {
 
   describe('create', () => {
     it('should create new food product', async () => {
-      const createDto: CreateFoodProductDto = {
+      const createDto: FoodProductCreateInput = {
         name: 'New Food',
         description: 'New Description',
         barcode: '9876543210',
@@ -170,7 +172,7 @@ describe('FoodProductRepository', () => {
     });
 
     it('should throw error for duplicate barcode', async () => {
-      const createDto: CreateFoodProductDto = {
+      const createDto: FoodProductCreateInput = {
         name: 'New Food',
         createdBy: 'user-1',
       };

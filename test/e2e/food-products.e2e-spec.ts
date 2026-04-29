@@ -141,7 +141,6 @@ describe('FoodProducts endpoints (e2e)', () => {
     const res = await request(app.getHttpServer())
       .post('/food-products')
       .send({
-        createdBy: 'will-be-overridden',
         name: 'Orange',
         barcode: '3333333333333',
       })

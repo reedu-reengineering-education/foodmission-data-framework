@@ -4,7 +4,6 @@ import { PrismaService } from '../../database/prisma.service';
 import { ERROR_CODES } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { normalizePagination } from '../../common/utils/pagination';
-import { deepCloneJson } from '../../common/utils/json.utils';
 import { FoodProduct } from '@prisma/client';
 import {
   FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
@@ -18,10 +17,14 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 
+export type FoodProductCreateInput = CreateFoodProductDto & {
+  createdBy: string;
+};
+
 @Injectable()
 export class FoodProductRepository implements BaseRepository<
   FoodProduct,
-  CreateFoodProductDto,
+  FoodProductCreateInput,
   UpdateFoodProductDto,
   Prisma.FoodProductWhereInput
 > {
@@ -113,19 +116,10 @@ export class FoodProductRepository implements BaseRepository<
     });
   }
 
-  async create(data: CreateFoodProductDto): Promise<FoodProduct> {
+  async create(data: FoodProductCreateInput): Promise<FoodProduct> {
     try {
-      const { nutrimentsRaw, nutrientLevels, ...rest } = data;
       return await this.prisma.foodProduct.create({
-        data: {
-          ...rest,
-          nutrimentsRaw: nutrimentsRaw
-            ? (deepCloneJson(nutrimentsRaw) as Prisma.InputJsonValue)
-            : undefined,
-          nutrientLevels: nutrientLevels
-            ? (deepCloneJson(nutrientLevels) as Prisma.InputJsonValue)
-            : undefined,
-        },
+        data,
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -141,14 +135,9 @@ export class FoodProductRepository implements BaseRepository<
 
   async update(id: string, data: UpdateFoodProductDto): Promise<FoodProduct> {
     try {
-      const { nutrimentsRaw, nutrientLevels, ...rest } = data;
       return await this.prisma.foodProduct.update({
         where: { id },
-        data: {
-          ...rest,
-          nutrimentsRaw: deepCloneJson(nutrimentsRaw),
-          nutrientLevels: deepCloneJson(nutrientLevels),
-        },
+        data,
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
