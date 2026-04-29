@@ -19,9 +19,9 @@ export const DEFAULT_CATALOG_AUTH_USER: E2EAuthUser = {
   email: 'e2e-food-admin@test.com',
 };
 
-export async function setupCatalogDb(): Promise<{
+export function setupCatalogDb(): {
   prisma: PrismaClient;
-}> {
+} {
   return { prisma: createTestPrismaClient() };
 }
 

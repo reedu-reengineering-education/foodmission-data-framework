@@ -48,7 +48,7 @@ describe('FoodProducts endpoints (e2e)', () => {
   }
 
   beforeAll(async () => {
-    const db = await setupCatalogDb();
+    const db = setupCatalogDb();
     prisma = db.prisma;
 
     const appSetup = await createControllerE2eTestApp({
