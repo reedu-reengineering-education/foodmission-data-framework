@@ -118,7 +118,7 @@ export class FoodProductService {
 
     const food = await this.foodProductRepository.findById(id);
     if (!food) {
-      throw new NotFoundException('Food not found');
+      throw new NotFoundException('Food product not found');
     }
 
     const responseDto = this.transformToResponseDto(food);
@@ -144,7 +144,7 @@ export class FoodProductService {
 
     const food = await this.foodProductRepository.findByBarcode(barcode);
     if (!food) {
-      throw new NotFoundException('Food not found');
+      throw new NotFoundException('Food product not found');
     }
 
     const responseDto = this.transformToResponseDto(food);
@@ -165,7 +165,7 @@ export class FoodProductService {
 
     const existingFood = await this.foodProductRepository.findById(id);
     if (!existingFood) {
-      throw new NotFoundException('Food not found');
+      throw new NotFoundException('Food product not found');
     }
 
     if (
@@ -191,7 +191,7 @@ export class FoodProductService {
 
     const food = await this.foodProductRepository.findById(id);
     if (!food) {
-      throw new NotFoundException('Food not found');
+      throw new NotFoundException('Food product not found');
     }
 
     await this.foodProductRepository.delete(id);

@@ -62,7 +62,9 @@ describe('FoodProductController', () => {
     });
 
     it('propagates NotFoundException from service', async () => {
-      service.findOne.mockRejectedValue(new NotFoundException('Food not found'));
+      service.findOne.mockRejectedValue(
+        new NotFoundException('Food product not found'),
+      );
       await expect(controller.findOne(TEST_FOOD.id, undefined)).rejects.toThrow(
         NotFoundException,
       );
