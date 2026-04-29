@@ -176,9 +176,10 @@ describe('FoodProducts endpoints (e2e)', () => {
   itIfDb('PATCH /food-products/:id updates product', async () => {
     const res = await request(app.getHttpServer())
       .patch('/food-products/00000000-0000-0000-0000-000000000201')
-      .send({ name: 'Apple Updated' })
+      .send({ name: 'Apple Updated', brands: 'Test Brand' })
       .expect(200);
     expect(res.body.name).toBe('Apple Updated');
+    expect(res.body.brands).toBe('Test Brand');
   });
 
   itIfDb('DELETE /food-products/:id deletes product', async () => {
