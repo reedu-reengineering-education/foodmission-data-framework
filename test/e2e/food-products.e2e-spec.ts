@@ -13,7 +13,7 @@ import {
   DEFAULT_CATALOG_AUTH_USER,
   seedAuthUser,
   setupCatalogDb,
-} from './helpers/food-catalog-e2e-helpers';
+} from './helpers/controller-e2e-helpers';
 
 describe('FoodProducts endpoints (e2e)', () => {
   let app: INestApplication;

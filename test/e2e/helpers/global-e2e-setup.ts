@@ -1,5 +1,8 @@
-import { createTestPrismaClient, runMigrations } from './test-utils/db-e2e-helpers';
-import { seedFoodKeeper } from '../prisma/seeds/foodkeeper';
+import { seedFoodKeeper } from '../../../prisma/seeds/foodkeeper';
+import {
+  createTestPrismaClient,
+  runMigrations,
+} from './prisma-e2e-helpers';
 
 export default async function globalE2eSetup(): Promise<void> {
   if (!runMigrations()) {
@@ -13,3 +16,4 @@ export default async function globalE2eSetup(): Promise<void> {
     await prisma.$disconnect();
   }
 }
+

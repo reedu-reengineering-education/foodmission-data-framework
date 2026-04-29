@@ -5,7 +5,7 @@ import {
   createTestFixtures,
   cleanupTestFixtures,
   TestFixtures,
-} from '../test-utils/db-e2e-helpers';
+} from './helpers/prisma-e2e-helpers';
 
 jest.setTimeout(60000);
 

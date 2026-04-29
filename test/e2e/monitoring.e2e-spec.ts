@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { MetricsController } from '../../src/monitoring/metrics.controller';
 import { MetricsService } from '../../src/monitoring/metrics.service';
-import { closeTestApp, createTestApp } from '../test-utils/e2e-helpers';
+import { closeTestApp, createTestApp } from './helpers/app-e2e-helpers';
 
 describe('Monitoring (e2e)', () => {
   let app: INestApplication;

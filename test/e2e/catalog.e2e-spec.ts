@@ -5,7 +5,7 @@ import { CatalogController } from '../../src/catalog/controllers/catalog.control
 import { CatalogService } from '../../src/catalog/services/catalog.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../src/common/guards/database-auth.guards';
-import { createTestApp, closeTestApp } from '../test-utils/e2e-helpers';
+import { createTestApp, closeTestApp } from './helpers/app-e2e-helpers';
 
 describe('Catalog (e2e)', () => {
   let app: INestApplication;

@@ -9,8 +9,8 @@ import { UserGroupController } from '../../src/user-groups/controllers/user-grou
 import { GroupMembershipRepository } from '../../src/user-groups/repositories/group-memberships.repository';
 import { UserGroupRepository } from '../../src/user-groups/repositories/user-groups.repository';
 import { UserGroupService } from '../../src/user-groups/services/user-groups.service';
-import { closeTestApp, createTestApp } from '../test-utils/e2e-helpers';
-import { createTestPrismaClient } from '../test-utils/db-e2e-helpers';
+import { closeTestApp, createTestApp } from './helpers/app-e2e-helpers';
+import { createTestPrismaClient } from './helpers/prisma-e2e-helpers';
 
 describe('User Groups (e2e)', () => {
   let app: INestApplication;

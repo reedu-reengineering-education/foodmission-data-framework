@@ -5,7 +5,7 @@ import {
   createTestFixtures,
   cleanupTestFixtures,
   TestFixtures,
-} from '../test-utils/db-e2e-helpers';
+} from './helpers/prisma-e2e-helpers';
 
 describe('Pantry Items Auto Expiry', () => {
   let prisma: PrismaClient;

@@ -13,8 +13,8 @@ import { ShoppingListItemRepository } from '../../src/shopping-lists/repositorie
 import { ShoppingListRepository } from '../../src/shopping-lists/repositories/shopping-lists.repository';
 import { ShoppingListItemService } from '../../src/shopping-lists/services/shopping-list-items.service';
 import { ShoppingListService } from '../../src/shopping-lists/services/shopping-lists.service';
-import { closeTestApp, createTestApp } from '../test-utils/e2e-helpers';
-import { createTestPrismaClient } from '../test-utils/db-e2e-helpers';
+import { closeTestApp, createTestApp } from './helpers/app-e2e-helpers';
+import { createTestPrismaClient } from './helpers/prisma-e2e-helpers';
 
 describe('Shopping Lists (e2e)', () => {
   let app: INestApplication;

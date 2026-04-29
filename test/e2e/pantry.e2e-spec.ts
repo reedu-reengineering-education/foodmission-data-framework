@@ -15,8 +15,8 @@ import { PantryItemService } from '../../src/pantry/services/pantry-items.servic
 import { PantryService } from '../../src/pantry/services/pantry.service';
 import { ShelfLifeRepository } from '../../src/shelf-life/repositories/shelf-life.repository';
 import { ShelfLifeService } from '../../src/shelf-life/services/shelf-life.service';
-import { closeTestApp, createTestApp } from '../test-utils/e2e-helpers';
-import { createTestPrismaClient } from '../test-utils/db-e2e-helpers';
+import { closeTestApp, createTestApp } from './helpers/app-e2e-helpers';
+import { createTestPrismaClient } from './helpers/prisma-e2e-helpers';
 
 describe('Pantry (e2e)', () => {
   let app: INestApplication;

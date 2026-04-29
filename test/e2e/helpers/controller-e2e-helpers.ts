@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { CacheEvictInterceptor } from '../../../src/cache/cache-evict.interceptor';
 import { CacheInterceptor } from '../../../src/cache/cache.interceptor';
 import { DataBaseAuthGuard } from '../../../src/common/guards/database-auth.guards';
-import { createTestPrismaClient } from '../../test-utils/db-e2e-helpers';
+import { createTestPrismaClient } from './prisma-e2e-helpers';
 
 export type E2EAuthUser = {
   id: string;
@@ -79,3 +79,4 @@ export async function seedAuthUser(prisma: PrismaClient, authUser: E2EAuthUser) 
     },
   });
 }
+
