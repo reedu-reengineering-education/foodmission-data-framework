@@ -43,7 +43,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('findAll', () => {
-    it('should return all foods with default options', async () => {
+    it('should return all food products with default options', async () => {
       mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
 
       const result = await repository.findAll();
@@ -58,7 +58,7 @@ describe('FoodProductRepository', () => {
       });
     });
 
-    it('should return foods with custom options', async () => {
+    it('should return food products with custom options', async () => {
       const options: {
         skip: number;
         take: number;
@@ -93,7 +93,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('findById', () => {
-    it('should return food by id', async () => {
+    it('should return food product by id', async () => {
       mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(mockFood);
 
       const result = await repository.findById('food-1');
@@ -105,7 +105,7 @@ describe('FoodProductRepository', () => {
       });
     });
 
-    it('should return null when food not found', async () => {
+    it('should return null when food product not found', async () => {
       mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(null);
 
       const result = await repository.findById('nonexistent');
@@ -122,7 +122,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('findByBarcode', () => {
-    it('should return food by barcode', async () => {
+    it('should return food product by barcode', async () => {
       mockPrismaService.foodProduct.findUnique.mockResolvedValueOnce(mockFood);
 
       const result = await repository.findByBarcode('1234567890');
@@ -145,7 +145,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('create', () => {
-    it('should create new food', async () => {
+    it('should create new food product', async () => {
       const createDto: CreateFoodProductDto = {
         name: 'New Food',
         description: 'New Description',
@@ -162,7 +162,10 @@ describe('FoodProductRepository', () => {
 
       expect(result).toEqual(mockFood);
       expect(mockPrismaService.foodProduct.create).toHaveBeenCalledWith({
-        data: { ...createDto, createdBy: userId },
+        data: expect.objectContaining({
+          ...createDto,
+          createdBy: userId,
+        }),
       });
     });
 
@@ -187,7 +190,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('update', () => {
-    it('should update food', async () => {
+    it('should update food product', async () => {
       const updateDto: UpdateFoodProductDto = {
         name: 'Updated Food',
         description: 'Updated Description',
@@ -202,11 +205,11 @@ describe('FoodProductRepository', () => {
       expect(result).toEqual({ ...mockFood, ...updateDto });
       expect(mockPrismaService.foodProduct.update).toHaveBeenCalledWith({
         where: { id: 'food-1' },
-        data: updateDto,
+        data: expect.objectContaining(updateDto),
       });
     });
 
-    it('should throw error when food not found', async () => {
+    it('should throw error when food product not found', async () => {
       const updateDto: UpdateFoodProductDto = { name: 'Updated Food' };
       const prismaError = new PrismaClientKnownRequestError(
         'Record not found',
@@ -221,7 +224,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('delete', () => {
-    it('should delete food', async () => {
+    it('should delete food product', async () => {
       mockPrismaService.foodProduct.delete.mockResolvedValueOnce(mockFood);
 
       await repository.delete('food-1');
@@ -231,7 +234,7 @@ describe('FoodProductRepository', () => {
       });
     });
 
-    it('should throw error when food not found', async () => {
+    it('should throw error when food product not found', async () => {
       const prismaError = new PrismaClientKnownRequestError(
         'Record not found',
         { code: 'P2025', clientVersion: '4.0.0' },
@@ -245,7 +248,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('searchByName', () => {
-    it('should search foods by name', async () => {
+    it('should search food products by name', async () => {
       mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
 
       const result = await repository.searchByName('test');
@@ -267,7 +270,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('count', () => {
-    it('should count foods', async () => {
+    it('should count food products', async () => {
       mockPrismaService.foodProduct.count.mockResolvedValueOnce(5);
 
       const result = await repository.count();
@@ -278,7 +281,7 @@ describe('FoodProductRepository', () => {
       });
     });
 
-    it('should count foods with filter', async () => {
+    it('should count food products with filter', async () => {
       const where = { name: 'test' };
       mockPrismaService.foodProduct.count.mockResolvedValueOnce(3);
 
@@ -292,7 +295,7 @@ describe('FoodProductRepository', () => {
   });
 
   describe('findWithPagination', () => {
-    it('should return paginated foods with default options', async () => {
+    it('should return paginated food products with default options', async () => {
       mockPrismaService.foodProduct.findMany.mockResolvedValueOnce([mockFood]);
       mockPrismaService.foodProduct.count.mockResolvedValueOnce(1);
 

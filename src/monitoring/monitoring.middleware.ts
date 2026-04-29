@@ -60,7 +60,7 @@ export class MonitoringMiddleware implements NestMiddleware {
 
   /**
    * Extract route pattern from request for consistent metrics
-   * Converts /api/foods/123 to /api/foods/:id
+   * Converts /api/food-products/123 to /api/food-products/:id
    */
   private extractRoutePattern(req: Request): string {
     // If route is available from NestJS routing

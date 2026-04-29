@@ -1,39 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { FoodProductService } from './food-product.service';
 import { FoodProductRepository } from '../repositories/food-product.repository';
-import { OpenFoodFactsService } from './openfoodfacts.service';
+import { compileFoodProductServiceTestingModule } from '../../../test/test-utils/food-product-service-testing';
 
 describe('FoodProductService cache behavior', () => {
   let service: FoodProductService;
   let repository: jest.Mocked<FoodProductRepository>;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FoodProductService,
-        {
-          provide: FoodProductRepository,
-          useValue: {
-            findById: jest.fn(),
-            findByBarcode: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-            findWithPagination: jest.fn(),
-          },
-        },
-        {
-          provide: OpenFoodFactsService,
-          useValue: {
-            getProductByBarcode: jest.fn(),
-            searchProducts: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    service = module.get(FoodProductService);
-    repository = module.get(FoodProductRepository);
+    const setup = await compileFoodProductServiceTestingModule();
+    service = setup.service;
+    repository = setup.repository as unknown as jest.Mocked<FoodProductRepository>;
   });
 
   it('findOne reads from repository', async () => {

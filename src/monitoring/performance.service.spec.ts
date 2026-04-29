@@ -30,24 +30,24 @@ describe('PerformanceService', () => {
 
   describe('recordQueryPerformance', () => {
     it('should record query performance metrics', () => {
-      service.recordQueryPerformance('findMany', 'foods', 0.05, 'success');
+      service.recordQueryPerformance('findMany', 'food-products', 0.05, 'success');
 
       // Verify that metrics are recorded (in a real test, you'd check the metrics registry)
       expect(loggingService.warn).not.toHaveBeenCalled();
     });
 
     it('should log warning for slow queries', () => {
-      service.recordQueryPerformance('findMany', 'foods', 1.5, 'success');
+      service.recordQueryPerformance('findMany', 'food-products', 1.5, 'success');
 
       expect(loggingService.warn).toHaveBeenCalledWith(
-        'Slow query detected: findMany on foods took 1.5s',
+        'Slow query detected: findMany on food-products took 1.5s',
       );
     });
   });
 
   describe('recordCacheHit', () => {
     it('should record cache hit metrics', () => {
-      service.recordCacheHit('foods');
+      service.recordCacheHit('food-products');
 
       // In a real test, you'd verify the metric was incremented
       expect(true).toBe(true);
@@ -56,7 +56,7 @@ describe('PerformanceService', () => {
 
   describe('recordCacheMiss', () => {
     it('should record cache miss metrics', () => {
-      service.recordCacheMiss('foods');
+      service.recordCacheMiss('food-products');
 
       // In a real test, you'd verify the metric was incremented
       expect(true).toBe(true);
@@ -83,7 +83,7 @@ describe('PerformanceService', () => {
 
       const result = await service.measureQuery(
         'findUnique',
-        'foods',
+        'food-products',
         mockQuery,
       );
 
@@ -97,7 +97,7 @@ describe('PerformanceService', () => {
         .mockRejectedValue(new Error('Database error'));
 
       await expect(
-        service.measureQuery('findUnique', 'foods', mockQuery),
+        service.measureQuery('findUnique', 'food-products', mockQuery),
       ).rejects.toThrow('Database error');
 
       expect(mockQuery).toHaveBeenCalled();

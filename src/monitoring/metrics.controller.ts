@@ -23,16 +23,16 @@ export class MetricsController {
       'text/plain': {
         example: `# HELP http_requests_total Total number of HTTP requests
 # TYPE http_requests_total counter
-http_requests_total{method="GET",route="/api/foods",status_code="200"} 42
+http_requests_total{method="GET",route="/api/food-products",status_code="200"} 42
 
 # HELP http_request_duration_seconds Duration of HTTP requests in seconds
 # TYPE http_request_duration_seconds histogram
-http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.1"} 10
-http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.3"} 25
-http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="0.5"} 35
-http_request_duration_seconds_bucket{method="GET",route="/api/foods",status_code="200",le="+Inf"} 42
-http_request_duration_seconds_sum{method="GET",route="/api/foods",status_code="200"} 8.2
-http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"} 42`,
+http_request_duration_seconds_bucket{method="GET",route="/api/food-products",status_code="200",le="0.1"} 10
+http_request_duration_seconds_bucket{method="GET",route="/api/food-products",status_code="200",le="0.3"} 25
+http_request_duration_seconds_bucket{method="GET",route="/api/food-products",status_code="200",le="0.5"} 35
+http_request_duration_seconds_bucket{method="GET",route="/api/food-products",status_code="200",le="+Inf"} 42
+http_request_duration_seconds_sum{method="GET",route="/api/food-products",status_code="200"} 8.2
+http_request_duration_seconds_count{method="GET",route="/api/food-products",status_code="200"} 42`,
       },
     },
   })

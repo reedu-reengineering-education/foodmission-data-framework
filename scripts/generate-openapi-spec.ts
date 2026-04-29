@@ -109,7 +109,7 @@ async function generateOpenApiSpec() {
         "message": "Validation failed",
         "error": "VALIDATION_ERROR",
         "timestamp": "2024-01-15T10:30:00.000Z",
-        "path": "/api/v1/foods",
+        "path": "/api/v1/food-products",
         "traceId": "abc123def456",
         "details": {
           "errors": [
@@ -147,7 +147,7 @@ async function generateOpenApiSpec() {
         'Authentication and authorization endpoints for Keycloak integration',
       )
       .addTag(
-        'foods',
+        'food-products',
         'Food product catalog with OpenFoodFacts integration for nutritional data',
       )
       .addTag(

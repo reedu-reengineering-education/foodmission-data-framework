@@ -1,8 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { FoodProductService } from './food-product.service';
 import { FoodProductRepository } from '../repositories/food-product.repository';
-import { OpenFoodFactsService } from './openfoodfacts.service';
+import { compileFoodProductServiceTestingModule } from '../../../test/test-utils/food-product-service-testing';
 
 describe('FoodProductService', () => {
   let service: FoodProductService;
@@ -16,32 +15,9 @@ describe('FoodProductService', () => {
   } as any;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FoodProductService,
-        {
-          provide: FoodProductRepository,
-          useValue: {
-            create: jest.fn(),
-            findById: jest.fn(),
-            findByBarcode: jest.fn(),
-            findWithPagination: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn(),
-          },
-        },
-        {
-          provide: OpenFoodFactsService,
-          useValue: {
-            getProductByBarcode: jest.fn(),
-            searchProducts: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
-
-    service = module.get(FoodProductService);
-    repository = module.get(FoodProductRepository);
+    const setup = await compileFoodProductServiceTestingModule();
+    service = setup.service;
+    repository = setup.repository as unknown as jest.Mocked<FoodProductRepository>;
   });
 
   afterEach(() => jest.clearAllMocks());

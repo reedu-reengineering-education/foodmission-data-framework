@@ -36,7 +36,7 @@ export class ApiErrorResponseDto {
 
   @ApiProperty({
     description: 'API path where the error occurred',
-    example: '/api/v1/foods',
+    example: '/api/v1/food-products',
   })
   path: string;
 
