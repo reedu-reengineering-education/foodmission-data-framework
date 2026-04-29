@@ -3,7 +3,6 @@ import {
   createTestPrismaClient,
   createTestFixtures,
   cleanupTestFixtures,
-  setupDbSuite,
   TestFixtures,
 } from '../test-utils/db-e2e-helpers';
 
@@ -11,26 +10,21 @@ jest.setTimeout(60000);
 
 describe('Shopping List Items to Pantry', () => {
   let prisma: PrismaClient;
-  let skipSuite = false;
   let fixtures: TestFixtures;
 
   beforeAll(async () => {
     prisma = createTestPrismaClient();
-    skipSuite = !(await setupDbSuite(prisma));
-    if (skipSuite) return;
-
     fixtures = await createTestFixtures(prisma, 'e2e-shopping-to-pantry-user', {
       withShoppingList: true,
     });
   });
 
   afterAll(async () => {
-    if (!skipSuite) await cleanupTestFixtures(prisma, fixtures);
+    await cleanupTestFixtures(prisma, fixtures);
     await prisma.$disconnect();
   });
 
   afterEach(async () => {
-    if (skipSuite) return;
     await prisma.shoppingListItem.deleteMany({
       where: { shoppingListId: fixtures.shoppingListId },
     });
@@ -40,8 +34,6 @@ describe('Shopping List Items to Pantry', () => {
   });
 
   it('should create and toggle a shopping list item', async () => {
-    if (skipSuite) return;
-
     const item = await prisma.shoppingListItem.create({
       data: {
         shoppingListId: fixtures.shoppingListId!,
@@ -63,8 +55,6 @@ describe('Shopping List Items to Pantry', () => {
   });
 
   it('should create pantry item from checked shopping list item with auto expiry', async () => {
-    if (skipSuite) return;
-
     const shoppingListItem = await prisma.shoppingListItem.create({
       data: {
         shoppingListId: fixtures.shoppingListId!,
@@ -101,15 +91,11 @@ describe('Shopping List Items to Pantry', () => {
   });
 
   it('should have FoodShelfLife entries available for expiry calculation on move to pantry', async () => {
-    if (skipSuite) return;
-
     const shelfLifeCount = await prisma.foodShelfLife.count();
     expect(shelfLifeCount).toBeGreaterThan(0);
   });
 
   it('should persist pantry item expiry data correctly after move from shopping list', async () => {
-    if (skipSuite) return;
-
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 14);
 

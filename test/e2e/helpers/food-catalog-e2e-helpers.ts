@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { CacheEvictInterceptor } from '../../../src/cache/cache-evict.interceptor';
 import { CacheInterceptor } from '../../../src/cache/cache.interceptor';
 import { DataBaseAuthGuard } from '../../../src/common/guards/database-auth.guards';
-import { createTestPrismaClient, setupDbSuite } from '../../test-utils/db-e2e-helpers';
+import { createTestPrismaClient } from '../../test-utils/db-e2e-helpers';
 
 export type E2EAuthUser = {
   id: string;
@@ -13,13 +13,16 @@ export type E2EAuthUser = {
   email: string;
 };
 
+export const DEFAULT_CATALOG_AUTH_USER: E2EAuthUser = {
+  id: '00000000-0000-0000-0000-000000000099',
+  sub: 'e2e-food-admin',
+  email: 'e2e-food-admin@test.com',
+};
+
 export async function setupCatalogDb(): Promise<{
   prisma: PrismaClient;
-  skipSuite: boolean;
 }> {
-  const prisma = createTestPrismaClient();
-  const dbReady = await setupDbSuite(prisma);
-  return { prisma, skipSuite: !dbReady };
+  return { prisma: createTestPrismaClient() };
 }
 
 export function createAuthGuardMock(authUser: E2EAuthUser) {
@@ -32,7 +35,7 @@ export function createAuthGuardMock(authUser: E2EAuthUser) {
   };
 }
 
-export async function createCatalogFeatureApp(params: {
+export async function createControllerE2eTestApp(params: {
   controllers: any[];
   providers: any[];
   authGuardMock: any;

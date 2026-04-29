@@ -7,7 +7,8 @@ import { GenericFoodRepository } from '../../src/generic-foods/repositories/gene
 import { GenericFoodService } from '../../src/generic-foods/services/generic-food.service';
 import {
   createAuthGuardMock,
-  createCatalogFeatureApp,
+  createControllerE2eTestApp,
+  DEFAULT_CATALOG_AUTH_USER,
   seedAuthUser,
   setupCatalogDb,
 } from './helpers/food-catalog-e2e-helpers';
@@ -15,13 +16,8 @@ import {
 describe('GenericFoods endpoints (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let skipSuite = false;
 
-  const authUser = {
-    id: '00000000-0000-0000-0000-000000000099',
-    sub: 'e2e-food-admin',
-    email: 'e2e-food-admin@test.com',
-  };
+  const authUser = DEFAULT_CATALOG_AUTH_USER;
 
   async function seedBaseData() {
     await seedAuthUser(prisma, authUser);
@@ -49,10 +45,8 @@ describe('GenericFoods endpoints (e2e)', () => {
   beforeAll(async () => {
     const db = await setupCatalogDb();
     prisma = db.prisma;
-    skipSuite = db.skipSuite;
-    if (skipSuite) return;
 
-    const appSetup = await createCatalogFeatureApp({
+    const appSetup = await createControllerE2eTestApp({
       controllers: [GenericFoodsController],
       providers: [
         GenericFoodService,
@@ -66,7 +60,6 @@ describe('GenericFoods endpoints (e2e)', () => {
   });
 
   beforeEach(async () => {
-    if (skipSuite) return;
     await prisma.genericFood.deleteMany();
     await prisma.user.deleteMany({ where: { id: authUser.id } });
     await seedBaseData();
@@ -79,7 +72,6 @@ describe('GenericFoods endpoints (e2e)', () => {
 
   const itIfDb = (name: string, fn: () => Promise<void>) =>
     it(name, async () => {
-      if (skipSuite) return;
       await fn();
     });
 

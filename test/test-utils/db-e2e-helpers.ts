@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { seedFoodKeeper } from '../../prisma/seeds/foodkeeper';
 
 export const TEST_DB_URL =
   process.env.DATABASE_URL || process.env.TEST_DATABASE_URL;
@@ -91,8 +90,3 @@ export async function cleanupTestFixtures(
   await prisma.user.delete({ where: { id: fixtures.userId } });
 }
 
-export async function setupDbSuite(prisma: PrismaClient): Promise<boolean> {
-  if (!runMigrations()) return false;
-  await seedFoodKeeper(prisma);
-  return true;
-}

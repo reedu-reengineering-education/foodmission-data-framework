@@ -9,7 +9,8 @@ import { FoodProductService } from '../../src/food-products/services/food-produc
 import { OpenFoodFactsService } from '../../src/food-products/services/openfoodfacts.service';
 import {
   createAuthGuardMock,
-  createCatalogFeatureApp,
+  createControllerE2eTestApp,
+  DEFAULT_CATALOG_AUTH_USER,
   seedAuthUser,
   setupCatalogDb,
 } from './helpers/food-catalog-e2e-helpers';
@@ -17,13 +18,8 @@ import {
 describe('FoodProducts endpoints (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let skipSuite = false;
 
-  const authUser = {
-    id: '00000000-0000-0000-0000-000000000099',
-    sub: 'e2e-food-admin',
-    email: 'e2e-food-admin@test.com',
-  };
+  const authUser = DEFAULT_CATALOG_AUTH_USER;
 
   const openFoodFactsMock = {
     searchProducts: jest.fn(),
@@ -54,10 +50,8 @@ describe('FoodProducts endpoints (e2e)', () => {
   beforeAll(async () => {
     const db = await setupCatalogDb();
     prisma = db.prisma;
-    skipSuite = db.skipSuite;
-    if (skipSuite) return;
 
-    const appSetup = await createCatalogFeatureApp({
+    const appSetup = await createControllerE2eTestApp({
       controllers: [FoodProductController],
       providers: [
         FoodProductService,
@@ -73,7 +67,6 @@ describe('FoodProducts endpoints (e2e)', () => {
   });
 
   beforeEach(async () => {
-    if (skipSuite) return;
     openFoodFactsMock.searchProducts.mockReset();
     openFoodFactsMock.getProductByBarcode.mockReset();
 
@@ -93,7 +86,6 @@ describe('FoodProducts endpoints (e2e)', () => {
 
   const itIfDb = (name: string, fn: () => Promise<void>) =>
     it(name, async () => {
-      if (skipSuite) return;
       await fn();
     });
 
