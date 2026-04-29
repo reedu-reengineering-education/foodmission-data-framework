@@ -23,4 +23,3 @@ echo "📝 Resetting Prisma migrations..."
 npx prisma migrate reset --force
 
 echo "✅ Database reset complete!"
-echo "🎯 Database is now ready with fresh seed data."
