@@ -144,6 +144,19 @@ export class ShoppingListService {
       ) {
         throw error;
       }
+      if (error instanceof PrismaClientKnownRequestError) {
+        const businessException = handlePrismaError(
+          error,
+          'update',
+          'shopping_list',
+        );
+
+        if (businessException instanceof ResourceAlreadyExistsException) {
+          throw new ConflictException(
+            'Shopping list with this title already exists',
+          );
+        }
+      }
       throw new BadRequestException('Failed to update shopping list');
     }
   }
