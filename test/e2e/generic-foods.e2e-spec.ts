@@ -91,6 +91,15 @@ describe('GenericFoods endpoints (e2e)', () => {
     expect(res.body.items[0].foodName).toContain('Apple');
   });
 
+  itIfDb('GET /generic-foods supports paginated search', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?search=milk&page=1&limit=20')
+      .expect(200);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(String(res.body.page)).toBe('1');
+    expect(String(res.body.limit)).toBe('20');
+  });
+
   itIfDb('GET /generic-foods/food-groups returns group list', async () => {
     const res = await request(app.getHttpServer())
       .get('/generic-foods/food-groups')

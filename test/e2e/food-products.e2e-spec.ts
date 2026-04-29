@@ -131,7 +131,7 @@ describe('FoodProducts endpoints (e2e)', () => {
     });
 
     const res = await request(app.getHttpServer())
-      .get('/food-products/search/openfoodfacts?query=product&page=1&pageSize=10')
+      .get('/food-products/search/openfoodfacts?query=food&page=1&pageSize=10')
       .expect(200);
 
     expect(openFoodFactsMock.searchProducts).toHaveBeenCalled();
