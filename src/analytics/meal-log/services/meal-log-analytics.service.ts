@@ -296,8 +296,11 @@ export class MealLogAnalyticsService {
         this.repository.getPublishedMealClassification(from, to),
       ]);
 
+    const derivedFrom = from ?? nutrition.at(0)?.date ?? null;
+    const derivedTo = to ?? nutrition.at(-1)?.date ?? null;
+
     return {
-      period: { from: from ?? null, to: to ?? null },
+      period: { from: derivedFrom, to: derivedTo },
       nutrition: {
         dataPoints: nutrition.length,
         latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,

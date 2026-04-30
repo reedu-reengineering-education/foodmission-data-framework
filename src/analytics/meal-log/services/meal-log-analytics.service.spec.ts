@@ -24,12 +24,14 @@ describe('MealLogAnalyticsService', () => {
   it('getPublishedSummary computes derived values and handles nulls', async () => {
     repository.getPublishedNutrition.mockResolvedValueOnce([
       {
+        date: new Date('2026-04-01T00:00:00.000Z'),
         avgCalories: 100,
         avgProteins: 10,
         avgFat: 4,
         avgCarbs: 12,
       },
       {
+        date: new Date('2026-04-21T00:00:00.000Z'),
         avgCalories: 120,
         avgProteins: 15,
         avgFat: 5,
@@ -54,6 +56,8 @@ describe('MealLogAnalyticsService', () => {
 
     const result = await service.getPublishedSummary();
 
+    expect(result.period.from).toEqual(new Date('2026-04-01T00:00:00.000Z'));
+    expect(result.period.to).toEqual(new Date('2026-04-21T00:00:00.000Z'));
     expect(result.nutrition.latestAvgCalories).toBe(120);
     expect(result.nutrition.latestAvgProteins).toBe(15);
     expect(result.topFoods).toEqual([
