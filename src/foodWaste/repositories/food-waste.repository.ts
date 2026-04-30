@@ -17,7 +17,8 @@ import { normalizePagination } from '../../common/utils/pagination';
 export interface CreateFoodWasteData {
   userId: string;
   pantryItemId?: string;
-  foodId: string;
+  foodId?: string;
+  foodCategoryId?: string;
   quantity: number;
   unit: Unit;
   wasteReason: WasteReason;
@@ -109,6 +110,7 @@ export class FoodWasteRepository implements BaseRepository<
       where: { id },
       include: {
         food: true,
+        foodCategory: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });
@@ -123,6 +125,7 @@ export class FoodWasteRepository implements BaseRepository<
       data: data as Prisma.FoodWasteUncheckedCreateInput,
       include: {
         food: true,
+        foodCategory: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });
@@ -134,6 +137,7 @@ export class FoodWasteRepository implements BaseRepository<
       data: data as Prisma.FoodWasteUncheckedUpdateInput,
       include: {
         food: true,
+        foodCategory: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });

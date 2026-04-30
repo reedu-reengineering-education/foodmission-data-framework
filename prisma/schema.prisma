@@ -288,6 +288,7 @@ model FoodCategory {
   pantryItems       PantryItem[]
   mealItems         MealItem[]
   recipeIngredients RecipeIngredient[]
+  foodWaste         FoodWaste[]
 
   @@index([foodGroup])
   @@index([foodName])
@@ -613,7 +614,8 @@ model FoodWaste {
   id              String          @id @default(uuid())
   userId          String
   pantryItemId    String?
-  foodId          String
+  foodId          String?
+  foodCategoryId  String?
   quantity        Float
   unit            Unit
   wasteReason     WasteReason
@@ -625,12 +627,14 @@ model FoodWaste {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Restrict)
-  food       Food        @relation(fields: [foodId], references: [id], onDelete: Restrict)
-  pantryItem PantryItem? @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  food         Food?         @relation(fields: [foodId], references: [id], onDelete: Restrict)
+  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: Restrict)
+  pantryItem   PantryItem?   @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
 
   @@index([userId, wastedAt])
   @@index([foodId])
+  @@index([foodCategoryId])
   @@index([detectionMethod])
   @@index([wasteReason])
   @@map("food_waste")

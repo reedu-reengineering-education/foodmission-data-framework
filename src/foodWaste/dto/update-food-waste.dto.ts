@@ -30,6 +30,14 @@ export class UpdateFoodWasteDto {
   foodId?: string;
 
   @ApiPropertyOptional({
+    description: 'The ID of the food category that was wasted',
+    example: 'uuid-food-category-id',
+  })
+  @IsOptional()
+  @IsUUID()
+  foodCategoryId?: string;
+
+  @ApiPropertyOptional({
     description: 'The quantity of food wasted',
     example: 2.5,
     minimum: 0.01,

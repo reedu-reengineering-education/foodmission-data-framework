@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,6 +12,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Unit } from '@prisma/client';
 
 export class ExpiredItemToWasteDto {
   @ApiProperty({
@@ -20,6 +22,28 @@ export class ExpiredItemToWasteDto {
   @IsNotEmpty()
   @IsUUID()
   pantryItemId: string;
+
+  @ApiPropertyOptional({
+    description:
+      'The quantity that was wasted. If not provided, assumes the entire pantry item was wasted.',
+    example: 2.5,
+    minimum: 0.01,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0.01)
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description:
+      'The unit for the wasted quantity. If not provided, uses the pantry item unit.',
+    example: 'KG',
+    enum: Unit,
+  })
+  @IsOptional()
+  @IsEnum(Unit)
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Optional cost estimate for this specific item',

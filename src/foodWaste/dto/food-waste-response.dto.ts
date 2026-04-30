@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { WasteReason, DetectionMethod, Unit } from '@prisma/client';
 import { FoodResponseDto } from '../../foods/dto/food-response.dto';
+import { FoodCategoryResponseDto } from '../../food-category/dto/food-category-response.dto';
 
 export class FoodWasteResponseDto {
   @ApiProperty({
@@ -25,12 +26,19 @@ export class FoodWasteResponseDto {
   @Expose()
   pantryItemId?: string;
 
-  @ApiProperty({
-    description: 'The food ID',
+  @ApiPropertyOptional({
+    description: 'The food ID (if waste is linked to a specific food)',
     example: 'uuid-food-id',
   })
   @Expose()
-  foodId: string;
+  foodId?: string;
+
+  @ApiPropertyOptional({
+    description: 'The food category ID (if waste is linked to a food category)',
+    example: 'uuid-food-category-id',
+  })
+  @Expose()
+  foodCategoryId?: string;
 
   @ApiProperty({
     description: 'The quantity of food wasted',
@@ -106,12 +114,20 @@ export class FoodWasteResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'The food item details',
+    description: 'The food item details (if linked to a food)',
     type: () => FoodResponseDto,
   })
   @Expose()
   @Type(() => FoodResponseDto)
   food?: FoodResponseDto;
+
+  @ApiPropertyOptional({
+    description: 'The food category details (if linked to a food category)',
+    type: () => FoodCategoryResponseDto,
+  })
+  @Expose()
+  @Type(() => FoodCategoryResponseDto)
+  foodCategory?: FoodCategoryResponseDto;
 }
 
 export class MultipleFoodWasteResponseDto {

@@ -14,41 +14,36 @@ import { Type } from 'class-transformer';
 import { WasteReason, DetectionMethod, Unit } from '@prisma/client';
 
 export class CreateFoodWasteDto {
-  @ApiPropertyOptional({
-    description: 'The ID of the pantry item that was wasted (if from pantry)',
-    example: 'uuid-pantry-item-id',
-  })
-  @IsOptional()
-  @IsUUID()
-  pantryItemId?: string;
-
   @ApiProperty({
-    description: 'The ID of the food that was wasted',
-    example: 'uuid-food-id',
+    description:
+      'The ID of the pantry item that was wasted. Food info and unit are automatically derived from the pantry item.',
+    example: 'uuid-pantry-item-id',
   })
   @IsNotEmpty()
   @IsUUID()
-  foodId: string;
+  pantryItemId: string;
 
-  @ApiProperty({
-    description: 'The quantity of food wasted',
+  @ApiPropertyOptional({
+    description:
+      'The quantity of the item that was wasted. If not provided, assumes the entire pantry item was wasted. If provided and less than the full quantity, the pantry item quantity will be reduced.',
     example: 2.5,
     minimum: 0.01,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0.01)
-  quantity: number;
+  quantity?: number;
 
-  @ApiProperty({
-    description: 'The unit of measurement',
+  @ApiPropertyOptional({
+    description:
+      'The unit for the wasted quantity. If not provided, uses the pantry item unit. Must be compatible with the pantry item unit (e.g., KG/G or L/ML).',
     example: 'KG',
     enum: Unit,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Unit)
-  unit: Unit;
+  unit?: Unit;
 
   @ApiProperty({
     description: 'The reason for the waste',
@@ -100,11 +95,12 @@ export class CreateFoodWasteDto {
   @Min(0)
   carbonFootprint?: number;
 
-  @ApiProperty({
-    description: 'When the food was wasted (ISO date string)',
+  @ApiPropertyOptional({
+    description:
+      'When the food was wasted (ISO date string). Defaults to current time.',
     example: '2026-02-13T10:30:00.000Z',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  wastedAt: string;
+  wastedAt?: string;
 }

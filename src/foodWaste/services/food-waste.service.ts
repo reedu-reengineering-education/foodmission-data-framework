@@ -98,81 +98,89 @@ export class FoodWasteService {
     );
   }
 
+
   /**
-   * Calculate carbon footprint for wasted food
+   * Calculate carbon footprint from a pantry item
+   * Handles both food and food category cases
    */
-  async calculateCarbonFootprint(
-    foodId: string,
+  calculateCarbonFootprintForPantryItem(
+    pantryItem: Awaited<ReturnType<typeof this.pantryItemRepository.findById>>,
     quantity: number,
     unit: Unit,
-  ): Promise<number> {
-    try {
-      const food = await this.foodRepository.findById(foodId);
-      if (!food) {
-        this.logger.warn(`Food not found for carbon calculation: ${foodId}`);
-        return this.getDefaultCarbonEstimate(quantity, unit);
-      }
-
-      // Convert quantity to kg
-      const quantityInKg = quantity * UNIT_TO_KG_CONVERSION[unit];
-
-      // Try to get carbon estimate from OpenFoodFacts ecoscore
-      // Note: This would require fetching OpenFoodFacts data if available
-      // For now, use category-based estimates
-
-      // Determine food category from name/description (simplified)
-      const foodName = food.name.toLowerCase();
-      const foodDesc = (food.description || '').toLowerCase();
-      const combinedText = `${foodName} ${foodDesc}`;
-
-      let carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.default;
-
-      // Simple keyword matching for category detection
-      if (/(beef|pork|lamb|meat)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.meat;
-      } else if (/(chicken|turkey|poultry)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.poultry;
-      } else if (/(fish|salmon|tuna|seafood)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.fish;
-      } else if (/(milk|cheese|dairy|yogurt|butter)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.dairy;
-      } else if (/(egg)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.eggs;
-      } else if (
-        /(vegetable|lettuce|tomato|carrot|broccoli|spinach)/i.test(combinedText)
-      ) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.vegetables;
-      } else if (/(fruit|apple|banana|orange|berry)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.fruits;
-      } else if (/(rice|bread|pasta|grain|wheat|oat)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.grains;
-      } else if (/(bean|lentil|pea|legume)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.legumes;
-      } else if (/(oil|fat)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.oils;
-      } else if (/(processed|packaged|frozen|canned)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.processed;
-      } else if (/(drink|juice|soda|beverage)/i.test(combinedText)) {
-        carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.beverages;
-      }
-
-      const carbonFootprint = quantityInKg * carbonPerKg;
-      return Math.round(carbonFootprint * 100) / 100; // Round to 2 decimals
-    } catch (error) {
-      this.logger.error('Error calculating carbon footprint', error);
-      return this.getDefaultCarbonEstimate(quantity, unit);
+  ): number {
+    // If pantry item has a food, use the food-based calculation
+    if (pantryItem?.food) {
+      return this.calculateCarbonFootprintFromFoodData(
+        pantryItem.food.name,
+        pantryItem.food.description,
+        quantity,
+        unit,
+      );
     }
+
+    // If pantry item has a food category, use category name for estimation
+    if (pantryItem?.foodCategory) {
+      return this.calculateCarbonFootprintFromFoodData(
+        pantryItem.foodCategory.foodName,
+        pantryItem.foodCategory.foodGroup,
+        quantity,
+        unit,
+      );
+    }
+
+    // Fallback to default estimate
+    return this.getDefaultCarbonEstimate(quantity, unit);
   }
 
   /**
-   * Get default carbon estimate when food data is unavailable
+   * Calculate carbon footprint from food name and description
    */
-  private getDefaultCarbonEstimate(quantity: number, unit: Unit): number {
+  private calculateCarbonFootprintFromFoodData(
+    name: string,
+    description: string | null | undefined,
+    quantity: number,
+    unit: Unit,
+  ): number {
+    // Convert quantity to kg
     const quantityInKg = quantity * UNIT_TO_KG_CONVERSION[unit];
-    return (
-      Math.round(quantityInKg * CARBON_ESTIMATES_BY_CATEGORY.default * 100) /
-      100
-    );
+
+    const foodName = name.toLowerCase();
+    const foodDesc = (description || '').toLowerCase();
+    const combinedText = `${foodName} ${foodDesc}`;
+
+    let carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.default;
+
+    // Simple keyword matching for category detection
+    if (/(beef|pork|lamb|meat)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.meat;
+    } else if (/(chicken|turkey|poultry)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.poultry;
+    } else if (/(fish|salmon|tuna|seafood)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.fish;
+    } else if (/(milk|cheese|dairy|yogurt|butter)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.dairy;
+    } else if (/(egg)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.eggs;
+    } else if (
+      /(vegetable|lettuce|tomato|carrot|broccoli|spinach)/i.test(combinedText)
+    ) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.vegetables;
+    } else if (/(fruit|apple|banana|orange|berry)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.fruits;
+    } else if (/(rice|bread|pasta|grain|wheat|oat)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.grains;
+    } else if (/(bean|lentil|pea|legume)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.legumes;
+    } else if (/(oil|fat)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.oils;
+    } else if (/(processed|packaged|frozen|canned)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.processed;
+    } else if (/(drink|juice|soda|beverage)/i.test(combinedText)) {
+      carbonPerKg = CARBON_ESTIMATES_BY_CATEGORY.beverages;
+    }
+
+    const carbonFootprint = quantityInKg * carbonPerKg;
+    return Math.round(carbonFootprint * 100) / 100; // Round to 2 decimals
   }
 
   /**
@@ -208,119 +216,104 @@ export class FoodWasteService {
   }
 
   /**
-   * Create a food waste entry
-   * If pantryItemId is provided, automatically removes or reduces the pantry item quantity
+   * Create a food waste entry from a pantry item
+   * Derives food info from the pantry item
+   * Supports partial or full waste - deletes pantry item only if fully wasted
    */
   async create(
     createDto: CreateFoodWasteDto,
     userId: string,
   ): Promise<FoodWasteResponseDto> {
     try {
-      // Validate food exists
-      const food = await this.foodRepository.findById(createDto.foodId);
-      if (!food) {
-        throw new NotFoundException('Food not found');
+      // Load pantry item with relations
+      const pantryItem = await this.pantryItemRepository.findById(
+        createDto.pantryItemId,
+      );
+      if (!pantryItem) {
+        throw new NotFoundException('Pantry item not found');
       }
 
-      // If pantryItemId provided, validate ownership and prepare for auto-removal
-      let pantryItem: Awaited<
-        ReturnType<typeof this.pantryItemRepository.findById>
-      > | null = null;
-      if (createDto.pantryItemId) {
-        pantryItem = await this.pantryItemRepository.findById(
-          createDto.pantryItemId,
+      // Validate pantry ownership - security check
+      if (pantryItem.pantry.userId !== userId) {
+        throw new ForbiddenException(
+          'Cannot create waste entry for pantry item that does not belong to you',
         );
-        if (!pantryItem) {
-          throw new NotFoundException('Pantry item not found');
-        }
-
-        // Validate pantry ownership - security check
-        if (pantryItem.pantry.userId !== userId) {
-          throw new ForbiddenException(
-            'Cannot create waste entry for pantry item that does not belong to you',
-          );
-        }
       }
+
+      // Derive food info from pantry item
+      const foodId = pantryItem.foodId ?? undefined;
+      const foodCategoryId = pantryItem.foodCategoryId ?? undefined;
+
+      // Use provided quantity/unit or default to full pantry item
+      const quantity = createDto.quantity ?? pantryItem.quantity;
+      const unit = createDto.unit ?? pantryItem.unit;
+      const wastedAt = createDto.wastedAt
+        ? new Date(createDto.wastedAt)
+        : new Date();
 
       // Calculate carbon footprint if not provided
       let carbonFootprint = createDto.carbonFootprint;
       if (carbonFootprint === undefined) {
-        carbonFootprint = await this.calculateCarbonFootprint(
-          createDto.foodId,
-          createDto.quantity,
-          createDto.unit,
+        carbonFootprint = this.calculateCarbonFootprintForPantryItem(
+          pantryItem,
+          quantity,
+          unit,
         );
       }
 
-      const wastedAt = new Date(createDto.wastedAt);
+      const waste = await this.prisma.$transaction(async (tx) => {
+        // Create the waste entry
+        const createdWaste = await this.foodWasteRepository.create(
+          {
+            userId,
+            pantryItemId: createDto.pantryItemId,
+            foodId,
+            foodCategoryId,
+            quantity,
+            unit,
+            wasteReason: createDto.wasteReason,
+            detectionMethod: createDto.detectionMethod,
+            notes: createDto.notes,
+            costEstimate: createDto.costEstimate,
+            carbonFootprint,
+            wastedAt,
+          },
+          tx,
+        );
 
-      // Use transaction if pantry item needs to be updated/deleted
-      if (pantryItem) {
-        const waste = await this.prisma.$transaction(async (tx) => {
-          // Create the waste entry
-          const createdWaste = await this.foodWasteRepository.create(
-            {
-              userId,
-              pantryItemId: createDto.pantryItemId,
-              foodId: createDto.foodId,
-              quantity: createDto.quantity,
-              unit: createDto.unit,
-              wasteReason: createDto.wasteReason,
-              detectionMethod: createDto.detectionMethod,
-              notes: createDto.notes,
-              costEstimate: createDto.costEstimate,
-              carbonFootprint,
-              wastedAt,
-            },
+        // Determine if we should delete or reduce the pantry item
+        const wastedQuantityInPantryUnit = this.convertQuantity(
+          quantity,
+          unit,
+          pantryItem.unit,
+        );
+
+        if (wastedQuantityInPantryUnit === null) {
+          // Incompatible units - delete entire pantry item (conservative approach)
+          this.logger.warn(
+            `Incompatible units: waste ${unit}, pantry ${pantryItem.unit}. Deleting pantry item.`,
+          );
+          await this.pantryItemRepository.delete(pantryItem.id, tx);
+        } else if (wastedQuantityInPantryUnit >= pantryItem.quantity) {
+          // Full waste - delete pantry item
+          this.logger.log(
+            `Full waste recorded for pantry item ${pantryItem.id}. Deleting item.`,
+          );
+          await this.pantryItemRepository.delete(pantryItem.id, tx);
+        } else {
+          // Partial waste - reduce pantry item quantity
+          const newQuantity = pantryItem.quantity - wastedQuantityInPantryUnit;
+          this.logger.log(
+            `Partial waste: reducing pantry item ${pantryItem.id} from ${pantryItem.quantity} to ${newQuantity} ${pantryItem.unit}`,
+          );
+          await this.pantryItemRepository.update(
+            pantryItem.id,
+            { quantity: newQuantity },
             tx,
           );
+        }
 
-          // Determine if we should delete or reduce the pantry item
-          const wastedQuantityInPantryUnit = this.convertQuantity(
-            createDto.quantity,
-            createDto.unit,
-            pantryItem.unit,
-          );
-
-          if (wastedQuantityInPantryUnit === null) {
-            // Incompatible units - delete entire pantry item (conservative approach)
-            this.logger.warn(
-              `Incompatible units: waste ${createDto.unit}, pantry ${pantryItem.unit}. Deleting pantry item.`,
-            );
-            await this.pantryItemRepository.delete(pantryItem.id, tx);
-          } else if (wastedQuantityInPantryUnit >= pantryItem.quantity) {
-            // Full waste - delete pantry item
-            await this.pantryItemRepository.delete(pantryItem.id, tx);
-          } else {
-            // Partial waste - reduce pantry item quantity
-            const newQuantity =
-              pantryItem.quantity - wastedQuantityInPantryUnit;
-            await this.pantryItemRepository.update(
-              pantryItem.id,
-              { quantity: newQuantity },
-              tx,
-            );
-          }
-
-          return createdWaste;
-        });
-
-        return this.toResponse(waste);
-      }
-
-      // No pantry item - simple create without transaction
-      const waste = await this.foodWasteRepository.create({
-        userId,
-        pantryItemId: createDto.pantryItemId,
-        foodId: createDto.foodId,
-        quantity: createDto.quantity,
-        unit: createDto.unit,
-        wasteReason: createDto.wasteReason,
-        detectionMethod: createDto.detectionMethod,
-        notes: createDto.notes,
-        costEstimate: createDto.costEstimate,
-        carbonFootprint,
-        wastedAt,
+        return createdWaste;
       });
 
       return this.toResponse(waste);
@@ -430,15 +423,24 @@ export class FoodWasteService {
         updateDto.unit !== undefined ||
         updateDto.foodId !== undefined)
     ) {
-      const finalFoodId = updateDto.foodId || waste.foodId;
+      const finalFoodId = updateDto.foodId ?? waste.foodId;
       const finalQuantity = updateDto.quantity ?? waste.quantity;
-      const finalUnit = updateDto.unit || waste.unit;
+      const finalUnit = updateDto.unit ?? waste.unit;
 
-      carbonFootprint = await this.calculateCarbonFootprint(
-        finalFoodId,
-        finalQuantity,
-        finalUnit,
-      );
+      // Only recalculate if we have a foodId
+      if (finalFoodId) {
+        carbonFootprint = await this.calculateCarbonFootprint(
+          finalFoodId,
+          finalQuantity,
+          finalUnit,
+        );
+      } else {
+        // Fall back to default estimate if no foodId
+        carbonFootprint = this.getDefaultCarbonEstimate(
+          finalQuantity,
+          finalUnit,
+        );
+      }
     }
 
     try {
@@ -470,7 +472,7 @@ export class FoodWasteService {
   /**
    * Batch create food waste entries from expired pantry items
    * User selects which expired items to record as waste
-   * Deletes pantry items after successful waste creation
+   * Supports partial or full waste - deletes pantry items only if fully wasted
    */
   async batchCreateFromExpired(
     dto: BatchCreateFoodWasteDto,
@@ -503,30 +505,64 @@ export class FoodWasteService {
           continue;
         }
 
-        // Calculate carbon footprint
-        const carbonFootprint = await this.calculateCarbonFootprint(
-          pantryItem.foodId!,
-          pantryItem.quantity,
-          pantryItem.unit,
+        // Use provided quantity/unit or default to full pantry item
+        const quantity = item.quantity ?? pantryItem.quantity;
+        const unit = item.unit ?? pantryItem.unit;
+
+        // Calculate carbon footprint using pantry item data
+        const carbonFootprint = this.calculateCarbonFootprintForPantryItem(
+          pantryItem,
+          quantity,
+          unit,
         );
 
-        // Create waste entry
-        const waste = await this.foodWasteRepository.create({
-          userId,
-          pantryItemId: item.pantryItemId,
-          foodId: pantryItem.foodId!,
-          quantity: pantryItem.quantity,
-          unit: pantryItem.unit,
-          wasteReason: WasteReason.EXPIRED,
-          detectionMethod: DetectionMethod.AUTOMATIC,
-          costEstimate: item.costEstimate,
-          notes: item.notes,
-          carbonFootprint,
-          wastedAt: new Date(),
-        });
+        // Use transaction to handle waste creation and pantry update
+        const waste = await this.prisma.$transaction(async (tx) => {
+          // Create waste entry - supports both food and foodCategory
+          const createdWaste = await this.foodWasteRepository.create(
+            {
+              userId,
+              pantryItemId: item.pantryItemId,
+              foodId: pantryItem.foodId ?? undefined,
+              foodCategoryId: pantryItem.foodCategoryId ?? undefined,
+              quantity,
+              unit,
+              wasteReason: WasteReason.EXPIRED,
+              detectionMethod: DetectionMethod.AUTOMATIC,
+              costEstimate: item.costEstimate,
+              notes: item.notes,
+              carbonFootprint,
+              wastedAt: new Date(),
+            },
+            tx,
+          );
 
-        // Delete the pantry item after successful waste creation
-        await this.pantryItemRepository.delete(item.pantryItemId);
+          // Determine if we should delete or reduce the pantry item
+          const wastedQuantityInPantryUnit = this.convertQuantity(
+            quantity,
+            unit,
+            pantryItem.unit,
+          );
+
+          if (wastedQuantityInPantryUnit === null) {
+            // Incompatible units - delete entire pantry item
+            await this.pantryItemRepository.delete(item.pantryItemId, tx);
+          } else if (wastedQuantityInPantryUnit >= pantryItem.quantity) {
+            // Full waste - delete pantry item
+            await this.pantryItemRepository.delete(item.pantryItemId, tx);
+          } else {
+            // Partial waste - reduce pantry item quantity
+            const newQuantity =
+              pantryItem.quantity - wastedQuantityInPantryUnit;
+            await this.pantryItemRepository.update(
+              item.pantryItemId,
+              { quantity: newQuantity },
+              tx,
+            );
+          }
+
+          return createdWaste;
+        });
 
         results.push(this.toResponse(waste));
       } catch (error) {
