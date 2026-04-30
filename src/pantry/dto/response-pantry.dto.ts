@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { PantryItemResponseDto } from '../../pantryItem/dto/response-pantryItem.dto';
+import { PantryItemResponseDto } from './response-pantry-item.dto';
 
 export class PantryResponseDto {
   @ApiProperty({
@@ -16,13 +16,6 @@ export class PantryResponseDto {
   })
   @Expose()
   userId: string;
-
-  @ApiProperty({
-    description: 'The pantry title',
-    example: 'Home or Work',
-  })
-  @Expose()
-  title: string;
 
   @ApiProperty({
     description: 'List of items in the pantry',

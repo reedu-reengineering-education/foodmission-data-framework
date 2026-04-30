@@ -135,7 +135,7 @@ export class SecurityService {
         origin: string,
         callback: (err: Error | null, allow?: boolean) => void,
       ) => {
-        // Allow requests with no origin (mobile apps, Postman, etc.)
+        // Allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
 
         if (allowedOrigins.includes(origin)) {
@@ -152,7 +152,7 @@ export class SecurityService {
         'Content-Type',
         'Accept',
         'Authorization',
-        'X-Correlation-ID',
+        'X-Trace-ID',
       ],
       credentials: true,
       maxAge: 86400, // 24 hours

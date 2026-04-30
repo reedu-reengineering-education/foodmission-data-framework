@@ -9,6 +9,8 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+import { DEV_EXTRA_FOODS, DEV_EXTRA_USERS } from '../prisma/seeds/seed-fixtures';
+import { upsertDevFood, upsertSeedUser } from '../prisma/seeds/seed-helpers';
 import { seedFoods } from '../prisma/seeds/foods';
 import { seedUsers } from '../prisma/seeds/users';
 
@@ -19,97 +21,17 @@ async function seedDevelopmentData() {
   console.log('=====================================');
 
   try {
-    // Run standard seeding
     await seedFoods(prisma);
     await seedUsers(prisma);
 
-    // Add additional development-specific data
     console.log('🔧 Adding development-specific data...');
 
-    // Add more test foods with various states
-    const devFoods = [
-      {
-        name: 'Test Food - No Barcode',
-        description: 'Test food item without barcode for testing',
-      },
-      {
-        name: 'Test Food - With OpenFoodFacts',
-        description: 'Test food with OpenFoodFacts integration',
-        barcode: '9999999999999',
-        openFoodFactsId: 'test-off-id-123',
-      },
-      {
-        name: 'Test Food - Long Description',
-        description:
-          'This is a test food item with a very long description that should test how the system handles longer text content and ensure proper validation and display of extended descriptions in the user interface.',
-        barcode: '8888888888888',
-      },
-    ];
-
-    for (const foodInfo of devFoods) {
-      await prisma.food.upsert({
-        where: {
-          barcode:
-            foodInfo.barcode ||
-            `dev-${foodInfo.name.toLowerCase().replace(/\s+/g, '-')}`,
-        },
-        update: {
-          name: foodInfo.name,
-          description: foodInfo.description,
-        },
-        create: {
-          name: foodInfo.name,
-          description: foodInfo.description,
-          barcode: foodInfo.barcode,
-          createdBy: 'dev-seed',
-        },
-      });
+    for (const food of DEV_EXTRA_FOODS) {
+      await upsertDevFood(prisma, food);
     }
 
-    // Add test users with edge cases
-    const devUsers = [
-      {
-        keycloakId: 'test-user-no-prefs',
-        email: 'test.noprofs@example.com',
-        firstName: 'Test',
-        lastName: 'NoPreferences',
-      },
-      {
-        keycloakId: 'test-user-many-allergies',
-        email: 'test.allergies@example.com',
-        firstName: 'Test',
-        lastName: 'ManyAllergies',
-        preferences: {
-          dietaryRestrictions: ['vegetarian', 'gluten-free', 'low-sodium'],
-          allergies: ['nuts', 'dairy', 'eggs', 'soy', 'shellfish'],
-        },
-      },
-    ];
-
-    for (const userInfo of devUsers) {
-      const user = await prisma.user.upsert({
-        where: { keycloakId: userInfo.keycloakId },
-        update: {
-          email: userInfo.email,
-          firstName: userInfo.firstName,
-          lastName: userInfo.lastName,
-        },
-        create: {
-          keycloakId: userInfo.keycloakId,
-          email: userInfo.email,
-          firstName: userInfo.firstName,
-          lastName: userInfo.lastName,
-        },
-      });
-
-      if ((userInfo as any).preferences) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            preferences: (userInfo as any).preferences,
-          },
-        });
-      }
+    for (const user of DEV_EXTRA_USERS) {
+      await upsertSeedUser(prisma, user);
     }
 
     console.log('✅ Development seeding completed!');

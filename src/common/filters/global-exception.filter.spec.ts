@@ -40,7 +40,7 @@ describe('GlobalExceptionFilter', () => {
       method: 'GET',
       headers: {
         'user-agent': 'test-agent',
-        'x-correlation-id': 'test-correlation-id',
+        'x-trace-id': 'test-trace-id',
       },
       ip: '127.0.0.1',
       connection: { remoteAddress: '127.0.0.1' },
@@ -67,7 +67,7 @@ describe('GlobalExceptionFilter', () => {
         error: 'RESOURCE_NOT_FOUND',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
         details: {
           resource: 'User',
           identifier: '123',
@@ -90,7 +90,7 @@ describe('GlobalExceptionFilter', () => {
         error: 'HttpException',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
       });
     });
 
@@ -124,7 +124,7 @@ describe('GlobalExceptionFilter', () => {
         error: 'VALIDATION_ERROR',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
         details: {
           errors: ['email must be a valid email', 'name should not be empty'],
         },
@@ -145,40 +145,43 @@ describe('GlobalExceptionFilter', () => {
         error: 'Error',
         timestamp: expect.any(String),
         path: '/api/test',
-        correlationId: 'test-correlation-id',
+        traceId: 'test-trace-id',
       });
     });
 
-    it('should generate correlation ID if not present', () => {
+    it('should generate trace ID if not present', () => {
       mockRequest.headers = {};
-      loggingService.getCorrelationId.mockReturnValue(undefined);
+      loggingService.getTraceId.mockReturnValue(undefined);
 
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
-      expect(responseCall.correlationId).toMatch(/^\d+-[a-z0-9]+$/);
+      // UUID v4 format
+      expect(responseCall.traceId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
     });
 
-    it('should use correlation ID from logging service', () => {
+    it('should use trace ID from logging service', () => {
       mockRequest.headers = {};
-      loggingService.getCorrelationId.mockReturnValue('service-correlation-id');
+      loggingService.getTraceId.mockReturnValue('service-trace-id');
 
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
-      expect(responseCall.correlationId).toBe('service-correlation-id');
+      expect(responseCall.traceId).toBe('service-trace-id');
     });
 
-    it('should use x-request-id header as correlation ID', () => {
-      mockRequest.headers = { 'x-request-id': 'request-id-123' };
+    it('should use x-trace-id header as trace ID', () => {
+      mockRequest.headers = { 'x-trace-id': 'trace-id-123' };
 
       const exception = new Error('Test error');
       filter.catch(exception, mockHost);
 
       const responseCall = mockResponse.json.mock.calls[0][0];
-      expect(responseCall.correlationId).toBe('request-id-123');
+      expect(responseCall.traceId).toBe('trace-id-123');
     });
 
     it('should log server errors as errors', () => {
@@ -212,9 +215,7 @@ describe('GlobalExceptionFilter', () => {
 
       filter.catch(exception, mockHost);
 
-      expect(loggingService.setCorrelationId).toHaveBeenCalledWith(
-        'test-correlation-id',
-      );
+      expect(loggingService.setTraceId).toHaveBeenCalledWith('test-trace-id');
       expect(loggingService.setRequestContext).toHaveBeenCalledWith({
         method: 'GET',
         url: '/api/test',
@@ -238,7 +239,7 @@ describe('GlobalExceptionFilter', () => {
           requestMethod: 'GET',
           requestUrl: '/api/test',
           userAgent: 'test-agent',
-          correlationId: 'test-correlation-id',
+          traceId: 'test-trace-id',
         },
       );
     });

@@ -1,293 +1,297 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.2.1">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15" version="29.3.8">
   <diagram name="Seite-1" id="P-28K44m9rkJOr1-GdVs">
-    <mxGraphModel dx="3330" dy="1582" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1436" dy="913" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-4" target="3YWR2yIGFTZH0SBHEzS0-39">
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-14" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="personal-dashboard-body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-15" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="social-body">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2020" y="720" />
-              <mxPoint x="2020" y="360" />
-              <mxPoint x="1545" y="360" />
+              <mxPoint x="2440" y="390" />
+              <mxPoint x="1755" y="390" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-4" target="3YWR2yIGFTZH0SBHEzS0-43">
+        <mxCell id="user" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="User" vertex="1">
+          <mxGeometry height="530" width="260" x="2310" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="user-body" parent="user" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 160%;&quot;&gt;+ id : uuid (PK)&lt;div&gt;+ keycloakId : string (UNIQUE)&lt;/div&gt;&lt;div&gt;+ email : string (UNIQUE)&lt;/div&gt;&lt;div&gt;+ firstName : string&lt;/div&gt;&lt;div&gt;+ lastName : string&lt;/div&gt;&lt;div&gt;+ preferences : Json = {}&lt;/div&gt;&lt;div&gt;+ settings : Json = {}&lt;/div&gt;&lt;div&gt;+ autoAddCheckedItemsToPantry : boolean = true&lt;/div&gt;&lt;div&gt;+ createdAt : datetime&lt;/div&gt;&lt;div&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ shoppingList : ShoppingList[]&lt;/div&gt;&lt;div&gt;+ pantry : Pantry[]&lt;/div&gt;&lt;div&gt;+ recipes : Recipe[]&lt;/div&gt;&lt;div&gt;+ meals : Meal[]&lt;/div&gt;&lt;div&gt;+ mealLogs : MealLog[]&lt;/div&gt;&lt;div&gt;+ challengeProgress : ChallengeProgress[]&lt;/div&gt;&lt;div&gt;+ missionProgress : MissionProgress[]&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="480" width="260" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="user-group" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="User_Group" vertex="1">
+          <mxGeometry height="370" width="250" x="2690" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="user-group-body" parent="user-group" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 160%;&quot;&gt;+ idGroup : uuid (PK)&lt;div&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div&gt;+ groupName : string&lt;/div&gt;&lt;div&gt;+ description : string&lt;/div&gt;&lt;div&gt;+ inviteCode : string&lt;/div&gt;&lt;div&gt;+ groupMember : idProfil[]&lt;/div&gt;&lt;div&gt;+ group : Group[]&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ createNewGroup()&lt;/div&gt;&lt;div&gt;+ updateGroupDetails(id)&lt;/div&gt;&lt;div&gt;+ joinGroup(invite_code)&lt;/div&gt;&lt;div&gt;+ getUserGroups()&lt;/div&gt;&lt;div&gt;+ getGroupMember(idProfil)&lt;/div&gt;&lt;div&gt;+ removeGroupMembers(idGroup, idProfil)&lt;/div&gt;&lt;div&gt;+ leaveGroup(idGroup, idProfil)&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="320" width="250" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="shopping-list" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="ShoppingList" vertex="1">
+          <mxGeometry height="310" width="310" x="3550" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="shopping-list-body" parent="shopping-list" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ items : ShoppingListItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getUserShoppingLists()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createANewList()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpecificShoppingList(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getListAnalysis()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="260" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="meallog" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="MealLog" vertex="1">
+          <mxGeometry height="360" width="310" x="1880" y="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="meallog-body" parent="meallog" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealId : string (FK → Meal)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ typeOfMeal : TypeOfMeal (enum)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ timestamp : datetime = now()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealFromPantry : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ eatenOut : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getMealHistory(timestamp)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ addMeal(mealId)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updateALoggedMeal(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ deleteLoggedMeal(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getMealAnalysis()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="310" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-meallog" edge="1" parent="1" source="user-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="meallog">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2435" y="320" />
-              <mxPoint x="1135" y="320" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-4" target="3YWR2yIGFTZH0SBHEzS0-41">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2435" y="300" />
-              <mxPoint x="715" y="300" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-4" value="User_Profile" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2340" y="480" width="190" height="480" as="geometry">
-            <mxRectangle x="50" y="220" width="120" height="50" as="alternateBounds" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-5" value="&lt;div style=&quot;line-height: 160%;&quot;&gt;+ idProfil : uuid (PK)&lt;div&gt;+ username : string&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ email : string&lt;/div&gt;&lt;div&gt;+ name : string&lt;/div&gt;&lt;div&gt;+ avatar : string&lt;/div&gt;&lt;div&gt;+ age : number&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ country : string&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ region : string&lt;/div&gt;&lt;div&gt;+ gender : string ?&lt;/div&gt;&lt;div&gt;+ weight : number ?&lt;/div&gt;&lt;div&gt;+ height : number ?&lt;/div&gt;&lt;div&gt;+ actvityLevel : string ?&lt;/div&gt;&lt;div&gt;+ allergies : string[]&lt;/div&gt;&lt;div&gt;+ dietaryPreferences : string[]&lt;/div&gt;&lt;div&gt;+ incomeLevel : string ?&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ educationLevel : string ?&lt;/div&gt;&lt;div&gt;+ createdAt : datetime&lt;/div&gt;&lt;div&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ createUser()&lt;/div&gt;&lt;div&gt;+ updateUser(id)&lt;/div&gt;&lt;div&gt;+ getUser(id)&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-4">
-          <mxGeometry y="50" width="190" height="430" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="3YWR2yIGFTZH0SBHEzS0-4">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint y="410" as="sourcePoint" />
-            <mxPoint x="160" y="410" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="3YWR2yIGFTZH0SBHEzS0-4" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-5">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="2894.999999999999" y="494" as="sourcePoint" />
-            <mxPoint x="1545" y="414" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="2895" y="344" />
-              <mxPoint x="1545" y="344" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-9" value="User_Group" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2770" y="490" width="250" height="370" as="geometry">
-            <mxRectangle x="50" y="220" width="120" height="50" as="alternateBounds" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="3YWR2yIGFTZH0SBHEzS0-9">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint y="210" as="sourcePoint" />
-            <mxPoint x="160" y="210" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-11" value="&lt;div style=&quot;line-height: 160%;&quot;&gt;+ idGroup : uuid (PK)&lt;div&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div&gt;+ groupName : string&lt;/div&gt;&lt;div&gt;+ description : string&lt;/div&gt;&lt;div&gt;+ inviteCode : string&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ groupMember : idProfil[]&lt;/div&gt;&lt;div&gt;+ group : Group[]&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ createNewGroup()&lt;/div&gt;&lt;div&gt;+ updateGroupDetails(id)&lt;/div&gt;&lt;div&gt;+ joinGroup(invite_code)&lt;/div&gt;&lt;div&gt;+ getUserGroups()&lt;/div&gt;&lt;div&gt;+ getGroupMember(idProfil)&lt;/div&gt;&lt;div&gt;+ removeGroupMembers(idGroup, idProfil)&lt;/div&gt;&lt;div&gt;+ leaveGroup(idGroup, idProfil)&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-9">
-          <mxGeometry y="50" width="250" height="320" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-12" value="Shopping_List" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="3210" y="1200" width="310" height="360" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-13" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ ldList : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idShoppingListItem : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div&gt;+ shoppingList : shoppingList[]&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ getSpecificShoppingList(idList)&lt;/div&gt;&lt;div&gt;+ getUserAndGroupShoppingList()&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ createANewList()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+ addIngredientToList(idIngredient)&lt;/div&gt;&lt;div&gt;+ updateShoppingListIngredient(idList, IdIngredient)&lt;/div&gt;&lt;div&gt;+ removeIngredientFromList&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(idList, IdIngredient)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ getListAnalysis()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-12">
-          <mxGeometry y="50" width="310" height="310" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-14" value="Food_Dairy" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1880" y="1200" width="310" height="340" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-15" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idFoodDairy : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idMeal : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div&gt;+ meals : Food_Dairy[]&lt;/div&gt;&lt;div&gt;+ timestamp : datetime&lt;/div&gt;&lt;div&gt;+ notes : string ?&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ getMealHistory(timestamp)&lt;/div&gt;&lt;div&gt;+ addMeal(idMeal)&lt;/div&gt;&lt;div&gt;+ updateALoggedMeal(idMeal)&lt;/div&gt;&lt;div&gt;+ deleteLoggedMeal(idMeal)&lt;/div&gt;&lt;div&gt;+ getMealAnalysis()&lt;/div&gt;&lt;div&gt;+ addQuickMeal(barcode : Meal)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-14">
-          <mxGeometry y="50" width="310" height="290" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-17" target="3YWR2yIGFTZH0SBHEzS0-15">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-17" value="Meals" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1880" y="1650" width="310" height="340" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-18" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idMeal : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idIngredients : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealType : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ nutritionalInfo : NuritionalInfo&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ sustainbilityScore : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ timestamp : datetime&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datatime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ barcode : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-17">
-          <mxGeometry y="50" width="310" height="290" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-19" value="Pantry" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2760" y="1200" width="330" height="290" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-20" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idPantry : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup: uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div&gt;+ panrtyIngredients: Pantry[]&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ getAllPantryIngredients()&lt;/div&gt;&lt;div&gt;+ addIngredient(idIngredient, expiryDate)&lt;/div&gt;&lt;div&gt;+ updatePantry&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Ingredients(quantity Ingredient, expiryDate)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+ remove&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;IngredientsFromPantry(id&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Ingredients)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ getExpiringdate()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-19">
-          <mxGeometry y="50" width="330" height="240" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-9">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-19">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2435" y="1030" />
-              <mxPoint x="2925" y="1030" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-23" value="Missions" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="1020" width="310" height="370" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-24" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idMission : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ desciption : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ status : enum&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completed : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : number&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mission : mission[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ points : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ evidence : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableMissions()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startMission(idMission)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completeAMission()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getProgress()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-23">
-          <mxGeometry y="50" width="310" height="320" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-25" value="Daily_Challange" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1020" y="1020" width="310" height="370" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-26" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idChallange : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ desciption : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ status : enum&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completed : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : number&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completeChallanges : challanges[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ points : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ evidence : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableChallange()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startChallange(idChallange)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completeAChallange()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getProgress()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-25">
-          <mxGeometry y="50" width="310" height="320" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-27" value="Knowledge" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="660" y="1020" width="310" height="240" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-28" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idKnowledge : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ desciption : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableKnowledge()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpecificKnowledge()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-27">
-          <mxGeometry y="50" width="310" height="190" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-23">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-25">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-27">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-33" target="3YWR2yIGFTZH0SBHEzS0-41">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-33" value="Social" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="300" y="1020" width="310" height="190" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-34" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idSocial : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGlobalCommunity()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getRegionalCommunity()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-33">
-          <mxGeometry y="50" width="310" height="140" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-33">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-37" target="3YWR2yIGFTZH0SBHEzS0-12">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2475" y="1100" />
-              <mxPoint x="3287" y="1100" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-37" value="Recipe&amp;nbsp;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2320" y="1200" width="310" height="600" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-38" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ ldRecipe : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ idMeal : uuid (FK)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ idList : uuid (FK)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ meal : Meal&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ title : string&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ instructions : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ prepTime : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ cookTime : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ servings : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ difficulty : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ tags : string[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+&amp;nbsp;&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;nutritionalInfo :&amp;nbsp;&lt;/span&gt;NuritionalInfo&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ sustainbilityScore : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div&gt;+ allergens : string[]&lt;/div&gt;&lt;div&gt;+ raiting : number&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ raitingCount : number&lt;/div&gt;&lt;div&gt;+ createdAt : datetime&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ getAllRecipes()&lt;/div&gt;&lt;div&gt;+ createARecipe(idMeal)&lt;/div&gt;&lt;div&gt;+ addMissingsIngredienceToShoppingList(idList, idMeal)&lt;/div&gt;&lt;div&gt;+ getSpesificRecipe(idRecipe)&lt;/div&gt;&lt;div&gt;+ updateRecipe(idRecipe)&lt;/div&gt;&lt;div&gt;+ removeRecipes(idRecipe)&lt;/div&gt;&lt;div&gt;+ addARaiting(idRecipe)&lt;/div&gt;&lt;div&gt;+ getRecipesSuggestions()&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-37">
-          <mxGeometry y="50" width="310" height="550" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-39" value="Personal_Dashboard" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1390" y="410" width="310" height="260" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-40" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idPersonalDash : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodDiary : FoodDiary&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getUserDashboard(idProfil)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGroupDashboard(idGroup)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getStatisticAboutNutrions(foodDairy)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ getStatisticAboutSustainability(&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;foodDairy&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getStatisticAboutActivity(&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;foodDairy&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-39">
-          <mxGeometry y="50" width="310" height="210" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-41" value="Ranking" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="560" y="435" width="310" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-42" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idRanking : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGlobalRanking()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGroupRanking()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-41">
-          <mxGeometry y="50" width="310" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-43" value="Badges" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="980" y="400" width="310" height="240" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-44" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idBadges : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User_Profil (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ badges : Badges[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAllBadges()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpesificBadge()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-43">
-          <mxGeometry y="50" width="310" height="190" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-48" target="3YWR2yIGFTZH0SBHEzS0-52">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3085" y="2290" />
-              <mxPoint x="3475" y="2290" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-48" target="3YWR2yIGFTZH0SBHEzS0-58">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-48" target="3YWR2yIGFTZH0SBHEzS0-62">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3085" y="2220" />
-              <mxPoint x="2515" y="2220" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-48" value="Food" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2930" y="2310" width="310" height="500" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-49" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idFood: uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&amp;nbsp;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ barcode : string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ brand : string ?&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ typeOfPackging: string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ categroies : string[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ nutritionalInfo :&amp;nbsp;&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;NuritionalInfo&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ allergens : string[]&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ enviromentalImpact : Enviromentalimpact&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progressFacilities: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ stores: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ distributionCountries: string&lt;/div&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ souce : string (openfoodfacts)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+shoppinglistItem :&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;shoppinglistItem[]&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+pantryItem:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;pantryItem[]&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealngredients:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;mealngredients[]&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodDiaryEntries: foodDiaryMeal[]&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ searchForIngredients(name)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+search&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;ForIngredientsWithBarcode(barcode)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ createCustomIngredients()&lt;/span&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-48">
-          <mxGeometry y="50" width="310" height="450" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-50" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Open&lt;div&gt;Food&lt;/div&gt;&lt;div&gt;facts&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="3400" y="2600" width="90" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-52" target="3YWR2yIGFTZH0SBHEzS0-13">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3450" y="1735" />
-              <mxPoint x="3365" y="1735" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-52" value="ShoppingListItem" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="3300" y="1910" width="310" height="230" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-53" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idShoppingListItem: uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity: int&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ units: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ checked: boolean @default false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ shoppingListId: uuid&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(FK)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ food: Food&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-52">
-          <mxGeometry y="50" width="310" height="180" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-54" value="" style="group" vertex="1" connectable="0" parent="1">
-          <mxGeometry x="3550" y="2480" width="160" height="230" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-55" value="Attribute" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;align=center;fontSize=14;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-54">
-          <mxGeometry width="160" height="230" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-56" value="&lt;div&gt;+ Barcode&lt;/div&gt;&lt;div&gt;+ Name&lt;/div&gt;&lt;div&gt;+&amp;nbsp;typeOfPackaging&lt;/div&gt;&lt;div&gt;+ brand&lt;/div&gt;&lt;div&gt;+ categories&lt;/div&gt;&lt;div&gt;+ labels&lt;/div&gt;&lt;div&gt;+ certifications&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ awards&lt;/div&gt;&lt;div&gt;+ progress facilities&amp;nbsp;&lt;/div&gt;&lt;div&gt;+ producer code&lt;/div&gt;&lt;div&gt;+ link&lt;/div&gt;&lt;div&gt;+ stores&lt;/div&gt;&lt;div&gt;+ distribution countries&lt;/div&gt;" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;whiteSpace=wrap;html=1;fillColor=default;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-54">
-          <mxGeometry y="26" width="160" height="204" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-58" target="3YWR2yIGFTZH0SBHEzS0-20">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-58" value="PantryItem" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2810" y="1910" width="310" height="270" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-59" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idPantry: uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity: int&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ units: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ location: string&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ expiryDate: DateTime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ PantryId: uuid&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(FK)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ food: Food&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-58">
-          <mxGeometry y="50" width="310" height="220" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-61" target="3YWR2yIGFTZH0SBHEzS0-17">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-61" value="MealIngredient" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="2360" y="1910" width="310" height="230" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-62" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idMealIngredient: uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity: int&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ units: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes: string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ checked: boolean @default false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ IdMeal: Meal&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(FK)&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ IdFood: Food&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(FK)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="3YWR2yIGFTZH0SBHEzS0-61">
-          <mxGeometry y="50" width="310" height="180" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-18" target="3YWR2yIGFTZH0SBHEzS0-37">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-14">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2410" y="990" />
+              <mxPoint x="2310" y="990" />
               <mxPoint x="2035" y="990" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.648;entryY=-0.001;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-9" target="3YWR2yIGFTZH0SBHEzS0-19">
+        <mxCell id="meal" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Meal" vertex="1">
+          <mxGeometry height="400" width="310" x="1880" y="1650" as="geometry" />
+        </mxCell>
+        <mxCell id="meal-body" parent="meal" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealType : MealType (enum)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ calories : int ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ proteins : int ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ nutritionalInfo : Json ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ sustainabilityScore : float ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ price : float ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantryItemId : string ? (FK → PantryItem)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ barcode : string ? (UNIQUE)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantryItem : PantryItem ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ recipes : Recipe[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealLogs : MealLog[]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="350" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="pantry" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Pantry" vertex="1">
+          <mxGeometry height="330" width="310" x="3130" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="pantry-body" parent="pantry" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ items : PantryItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAllPantryIngredients()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ addIngredient(foodId, expiryDate)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatePantryIngredients(quantity, expiryDate)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ removeIngredientsFromPantry(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getExpiringDate()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="280" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mission" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Mission" vertex="1">
+          <mxGeometry height="280" width="310" x="740" y="1340" as="geometry" />
+        </mxCell>
+        <mxCell id="mission-body" parent="mission" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startDate : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ endDate : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ missionProgresses : MissionProgress[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableMissions()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startMission(id)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="230" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-19" edge="1" parent="1" source="mission-progress" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="user">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2895" y="1010" />
-              <mxPoint x="2974" y="1010" />
+              <mxPoint x="1365" y="1120" />
+              <mxPoint x="1915" y="1120" />
+              <mxPoint x="1915" y="770" />
+              <mxPoint x="2310" y="770" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-11" target="3YWR2yIGFTZH0SBHEzS0-12">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2920" y="910" />
-              <mxPoint x="3365" y="910" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="mission-progress" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="MissionProgress" vertex="1">
+          <mxGeometry height="260" width="310" x="1210" y="1160" as="geometry" />
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-5" target="3YWR2yIGFTZH0SBHEzS0-37">
+        <mxCell id="mission-progress-body" parent="mission-progress" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (PK, FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ missionId : string (PK, FK → Mission)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completed : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : float&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mission : Mission&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completeAMission()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getProgress()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="210" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="challenge" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Challenge" vertex="1">
+          <mxGeometry height="280" width="310" x="740" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="challenge-body" parent="challenge" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startDate : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ endDate : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ challengeProgresses : ChallengeProgress[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableChallenges()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ startChallenge(id)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="230" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="challenge-progress" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="ChallengeProgress" vertex="1">
+          <mxGeometry height="260" width="310" x="1210" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="challenge-progress-body" parent="challenge-progress" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (PK, FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ challengeId : string (PK, FK → Challenge)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completed : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : float&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ challenge : Challenge&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ completeAChallenge()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getProgress()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="210" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="knowledge" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Knowledge" vertex="1">
+          <mxGeometry height="240" width="310" x="740" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="knowledge-body" parent="knowledge" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idKnowledge : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ available : boolean&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAvailableKnowledge()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpecificKnowledge()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="190" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="social" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Social" vertex="1">
+          <mxGeometry height="190" width="310" x="1600" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="social-body" parent="social" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idSocial : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGlobalCommunity()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getRegionalCommunity()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="recipe" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Recipe" vertex="1">
+          <mxGeometry height="660" width="310" x="2320" y="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="recipe-body" parent="recipe" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ userId : string (FK → User)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealId : string (FK → Meal)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ title : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ instructions : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ prepTime : int ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ cookTime : int ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ servings : int ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ difficulty : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ tags : string[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ nutritionalInfo : Json ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ sustainabilityScore : float ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ price : float ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ allergens : string[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ rating : float = 0&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ ratingCount : int = 0&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ meal : Meal&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ user : User&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAllRecipes()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createARecipe(mealId)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ addMissingIngredientsToShoppingList()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpecificRecipe(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updateRecipe(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ removeRecipes(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ addARating(id)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getRecipeSuggestions()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="610" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-recipe" edge="1" parent="1" source="user-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="recipe">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2420" y="1080" />
+              <mxPoint x="2310" y="1080" />
               <mxPoint x="2400" y="1080" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-68" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.644;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-50" target="3YWR2yIGFTZH0SBHEzS0-49">
+        <mxCell id="personal-dashboard" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Personal_Dashboard" vertex="1">
+          <mxGeometry height="260" width="310" x="2030" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="personal-dashboard-body" parent="personal-dashboard" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idPersonalDash : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodDiary : MealLog&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getUserDashboard(idProfil)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGroupDashboard(idGroup)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getStatisticAboutNutrions(mealLog)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getStatisticAboutSustainability(mealLog)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getStatisticAboutActivity(mealLog)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="210" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ranking" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Ranking" vertex="1">
+          <mxGeometry height="170" width="310" x="190" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="ranking-body" parent="ranking" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idRanking : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idGroup : uuid (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGlobalRanking()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getGroupRanking()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="badges" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Badges" vertex="1">
+          <mxGeometry height="240" width="310" x="190" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="badges-body" parent="badges" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idBadges : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ idProfil : User (FK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ progress : number&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ badges : Badges[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getAllBadges()&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ getSpecificBadge()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="190" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-4" edge="1" parent="1" source="food" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3675" y="1460" />
+              <mxPoint x="3200" y="1460" />
+            </Array>
+            <mxPoint x="3200" y="1410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-5" edge="1" parent="1" source="food" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="shoppinglistitem-body">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="3YWR2yIGFTZH0SBHEzS0-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3YWR2yIGFTZH0SBHEzS0-56" target="3YWR2yIGFTZH0SBHEzS0-50">
+        <mxCell id="food" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Product" vertex="1">
+          <mxGeometry height="440" width="310" x="3520" y="1630" as="geometry" />
+        </mxCell>
+        <mxCell id="food-body" parent="food" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ barcode : string ? (UNIQUE)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ openFoodFactsId : string ? (UNIQUE)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+&amp;nbsp;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;brands: String categories: Stringl&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;+ imageUrl: String&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;+ energyKcal: Float&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;+ proteins: Float&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;+ fat: Float&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;+ carbonydrates: Float&lt;/span&gt;&lt;/div&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ mutriscoreGrade: String&lt;/p&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ shoppingListItem : ShoppingListItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantryItem : PantryItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealItem : MealItem[]&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ searchForIngredients(name)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ searchForIngredientsWithBarcode(barcode)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createCustomIngredients()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="390" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="openfoodfacts" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;Open&lt;div&gt;Food&lt;/div&gt;&lt;div&gt;facts&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="90" x="3630" y="2110" as="geometry" />
+        </mxCell>
+        <mxCell id="shoppinglistitem" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="ShoppingListItem" vertex="1">
+          <mxGeometry height="290" width="310" x="3520" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="shoppinglistitem-body" parent="shoppinglistitem" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ shoppingListId : string (FK → ShoppingList)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodId : string (FK → Food)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity : int = 1&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ unit : Unit = PIECES&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ checked : boolean = false&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ shoppingList : ShoppingList&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ food : Food&lt;/div&gt;" vertex="1">
+          <mxGeometry height="240" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-pantryitem-pantry" edge="1" parent="1" source="pantryitem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="pantry-body">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pantryitem" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="PantryItem" vertex="1">
+          <mxGeometry height="310" width="310" x="3030" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="pantryitem-body" parent="pantryitem" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantryId : string (FK → Pantry)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodId : string (FK → Food)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity : int = 1&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ unit : Unit = PIECES&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ expiryDate : datetime ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantry : Pantry&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ food : Food&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ meals : Meal[]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="260" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-unit" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=2;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=1;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="&lt;&lt;enum&gt;&gt; Unit" vertex="1">
+          <mxGeometry height="160" width="200" x="3890" y="1100" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-unit-vals" parent="enum-unit" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="PIECES&lt;br&gt;G&lt;br&gt;KG&lt;br&gt;ML&lt;br&gt;L&lt;br&gt;CUPS" vertex="1">
+          <mxGeometry height="110" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-mealtype" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=2;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=1;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="&lt;&lt;enum&gt;&gt; MealType" vertex="1">
+          <mxGeometry height="150" width="200" x="3890" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-mealtype-vals" parent="enum-mealtype" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="SALAD&lt;br&gt;MEAT&lt;br&gt;PASTA&lt;br&gt;RICE&lt;br&gt;VEGAN" vertex="1">
+          <mxGeometry height="100" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-typeofmeal" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=2;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=1;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="&lt;&lt;enum&gt;&gt; TypeOfMeal" vertex="1">
+          <mxGeometry height="170" width="200" x="3890" y="1470" as="geometry" />
+        </mxCell>
+        <mxCell id="enum-typeofmeal-vals" parent="enum-typeofmeal" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="BREAKFAST&lt;br&gt;LUNCH&lt;br&gt;DINNER&lt;br&gt;SNACK&lt;br&gt;SPECIAL_DRINKS" vertex="1">
+          <mxGeometry height="120" width="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-3" edge="1" parent="1" source="shopping-list-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="shoppinglistitem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-6" edge="1" parent="1" source="meal-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2320" y="1800" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-7" edge="1" parent="1" source="meallog-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="meal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-8" edge="1" parent="1" source="user-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="pantry-body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-9" edge="1" parent="1" source="user-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="shopping-list-body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3705" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-23" edge="1" parent="1" source="1BvuQFkVdCIW3Y067bLc-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ranking">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-24" edge="1" parent="1" source="1BvuQFkVdCIW3Y067bLc-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="badges">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-10" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="PointSystem" vertex="1">
+          <mxGeometry height="240" width="310" x="190" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-11" parent="1BvuQFkVdCIW3Y067bLc-10" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;?&lt;/div&gt;" vertex="1">
+          <mxGeometry height="190" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-16" edge="1" parent="1" source="challenge-progress-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="user-body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-20" edge="1" parent="1" source="challenge-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="challenge-progress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-21" edge="1" parent="1" source="mission-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="mission-progress-body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-25" edge="1" parent="1" source="challenge-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1BvuQFkVdCIW3Y067bLc-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-26" edge="1" parent="1" source="mission-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1BvuQFkVdCIW3Y067bLc-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-27" edge="1" parent="1" source="knowledge-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1BvuQFkVdCIW3Y067bLc-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-29" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.001;entryY=0.419;entryDx=0;entryDy=0;entryPerimeter=0;" target="user-group-body">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2440" y="390" />
+              <mxPoint x="2630" y="390" />
+              <mxPoint x="2630" y="244" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-30" edge="1" parent="1" source="user-group-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pantry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-31" edge="1" parent="1" source="user-group-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="shopping-list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-32" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="MealItem" vertex="1">
+          <mxGeometry height="310" width="310" x="2390" y="1940" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-33" parent="1BvuQFkVdCIW3Y067bLc-32" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ Mealld : string (FK → Meal)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ foodId : string (FK → Food)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ quantity : int = 1&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ unit : Unit = PIECES&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ notes : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ expiryDate : datetime ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ createdAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ updatedAt : datetime&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ food : Food&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ meals : Meal[]&lt;/div&gt;" vertex="1">
+          <mxGeometry height="260" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-34" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=0;whiteSpace=wrap;html=1;" value="Food" vertex="1">
+          <mxGeometry height="380" width="310" x="3140" y="1630" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-35" parent="1BvuQFkVdCIW3Y067bLc-34" style="align=left;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ id : uuid (PK)&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ name : string&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ description : string ?&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+&amp;nbsp;&lt;span style=&quot;font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 13px;&quot;&gt;nevoCoder Int (UNIQUE)&lt;/span&gt;&lt;/div&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ nevoVersion: String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ foodGroup: String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ foodName: String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ synonym: String&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ energykcal: Float&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ proteins: Float&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ tat: Float&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ carbohydrates: Float&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; font-size: 13px; line-height: normal; font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&quot;&gt;+ vitamins: Float minerals: Float&lt;/p&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ shoppingListItem : ShoppingListItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ pantryItem : PantryItem[]&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;+ mealItem : MealItem[]&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 19.2px;&quot;&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="330" width="310" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-36" edge="1" parent="1" source="meal-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="1BvuQFkVdCIW3Y067bLc-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-37" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" value="&lt;div&gt;Nevo&lt;/div&gt;" vertex="1">
+          <mxGeometry height="100" width="90" x="3250" y="2080" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-38" edge="1" parent="1" source="food-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="openfoodfacts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-40" edge="1" parent="1" source="1BvuQFkVdCIW3Y067bLc-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="1BvuQFkVdCIW3Y067bLc-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-41" edge="1" parent="1" source="1BvuQFkVdCIW3Y067bLc-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="1BvuQFkVdCIW3Y067bLc-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1BvuQFkVdCIW3Y067bLc-42" edge="1" parent="1" source="food-body" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1BvuQFkVdCIW3Y067bLc-33">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3590" y="2210" />
+              <mxPoint x="3110" y="2210" />
+              <mxPoint x="3110" y="2120" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

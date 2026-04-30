@@ -23,7 +23,7 @@ docker run -p 8080:8080 \
 3. **Import Realm**:
    - Click the dropdown next to "master" (top left)
    - Click "Create Realm"
-   - Click "Browse..." and select `foodmission-realm.json` from this directory
+   - Click "Browse..." and select `foodmission-realm.dev.json` from this directory
    - Click "Create"
 
 ### Step 3: Restart Your Application
@@ -35,21 +35,35 @@ npm run start:dev
 
 ## 🔐 Pre-configured Users
 
-The realm comes with three test users:
+The realm export includes human users with **fixed Keycloak user IDs**. Those IDs are the JWT **`sub`** claim. The Prisma seed stores the same values in `User.keycloakId`, so API calls with a bearer token resolve to the correct row.
 
-### Admin User
+### Seeded users and database
+
+| Keycloak username | Password  | Email                     | JWT `sub` (=`User.keycloakId`)     |
+| ----------------- | --------- | ------------------------- | ----------------------------------- |
+| `developer`       | `dev123`  | dev@foodmission.dev       | `a1000000-0000-4000-8000-000000000001` |
+| `jane`            | `dev123`  | jane.smith@example.com    | `a1000000-0000-4000-8000-000000000002` |
+| `mike`            | `dev123`  | mike.johnson@example.com  | `a1000000-0000-4000-8000-000000000003` |
+| `sarah`           | `dev123`  | sarah.wilson@example.com  | `a1000000-0000-4000-8000-000000000004` |
+| `admin`           | `admin123`| admin@foodmission.dev     | `a1000000-0000-4000-8000-000000000005` |
+
+Constants for seeds live in `prisma/seeds/keycloak-dev-user-ids.ts` and must stay in sync with `foodmission-realm.dev.json`.
+
+If you **re-import** an older realm or create users manually, Keycloak may assign **different** UUIDs — then JWT `sub` will not match seeded rows. Fix by re-importing `foodmission-realm.dev.json` (with **Import** including users) or resetting the DB and re-running `npm run db:seed`.
+
+### Admin User (summary)
 
 - **Username**: `admin`
 - **Password**: `admin123`
 - **Email**: `admin@foodmission.dev`
-- **Roles**: `admin`, `user`
+- **Roles**: `admin`, `user` on client `foodmission-api`
 
-### Developer User
+### Developer User (summary)
 
 - **Username**: `developer`
 - **Password**: `dev123`
 - **Email**: `dev@foodmission.dev`
-- **Roles**: `user`
+- **Roles**: `user` on client `foodmission-api`
 
 ## 🔧 Pre-configured Client
 

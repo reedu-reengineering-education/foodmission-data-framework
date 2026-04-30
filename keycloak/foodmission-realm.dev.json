@@ -75,7 +75,7 @@
           "realm": ["offline_access", "uma_authorization"],
           "client": {
             "foodmission-api": ["user"],
-            "account": ["view-profile", "manage-account"]
+            "account": ["view-profile", "manage-account", "delete-account"]
           }
         },
         "clientRole": false,
@@ -459,6 +459,7 @@
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "users": [
     {
+      "id": "a1000000-0000-4000-8000-000000000005",
       "username": "admin",
       "enabled": true,
       "emailVerified": true,
@@ -475,10 +476,62 @@
       }
     },
     {
+      "id": "a1000000-0000-4000-8000-000000000001",
       "username": "developer",
       "enabled": true,
       "emailVerified": true,
       "email": "dev@foodmission.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "username": "jane",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "jane.smith@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "username": "mike",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "mike.johnson@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "dev123",
+          "temporary": false
+        }
+      ],
+      "clientRoles": {
+        "foodmission-api": ["user"]
+      }
+    },
+    {
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "username": "sarah",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "sarah.wilson@example.com",
       "credentials": [
         {
           "type": "password",
@@ -732,7 +785,8 @@
         "http://127.0.0.1:3000/*",
         "http://localhost:3000/*",
         "http://localhost:3001/*",
-        "http://127.0.0.1:3001/*"
+        "http://127.0.0.1:3001/*",
+        "/realms/foodmission/account/*"
       ],
       "webOrigins": [
         "http://127.0.0.1:3001",
@@ -1676,11 +1730,22 @@
   },
   "smtpServer": {},
   "loginTheme": "keycloakify-foodmission-ui",
-  "eventsEnabled": false,
-  "eventsListeners": ["jboss-logging"],
-  "enabledEventTypes": [],
-  "adminEventsEnabled": false,
-  "adminEventsDetailsEnabled": false,
+  "eventsEnabled": true,
+  "eventsListeners": ["jboss-logging", "ext-event-webhook"],
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "LOGOUT_ERROR",
+    "REGISTER",
+    "REGISTER_ERROR",
+    "DELETE_ACCOUNT",
+    "DELETE_ACCOUNT_ERROR",
+    "UPDATE_PROFILE",
+    "UPDATE_PROFILE_ERROR"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
   "identityProviders": [],
   "identityProviderMappers": [],
   "components": {
@@ -2540,7 +2605,7 @@
       "alias": "delete_account",
       "name": "Delete Account",
       "providerId": "delete_account",
-      "enabled": false,
+      "enabled": true,
       "defaultAction": false,
       "priority": 60,
       "config": {}

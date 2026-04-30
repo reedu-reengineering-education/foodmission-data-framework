@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Script to generate OpenAPI specification file for Postman import
+ * Script to generate OpenAPI specification file
  * Usage: node scripts/generate-openapi.js
  */
 
@@ -108,11 +108,9 @@ async function generateOpenApiSpec() {
     console.log('✅ OpenAPI specification generated successfully!');
     console.log(`📄 File saved to: ${outputPath}`);
     console.log('');
-    console.log('🔗 To import into Postman:');
-    console.log('1. Open Postman');
-    console.log('2. Click Import > Upload Files');
-    console.log(`3. Select: ${outputPath}`);
-    console.log('4. Click Import');
+    console.log('🔗 To use the generated spec:');
+    console.log('1. Import into any OpenAPI-compatible tool');
+    console.log(`2. Or use the file directly: ${outputPath}`);
     console.log('');
     console.log('🌐 Or use the running API:');
     console.log('1. Start your API: npm run start:dev');

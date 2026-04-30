@@ -9,8 +9,8 @@ export const createMockLoggingService = (
   overrides?: Partial<jest.Mocked<LoggingService>>,
 ): jest.Mocked<LoggingService> => {
   const mockLoggingService: jest.Mocked<LoggingService> = {
-    getCorrelationId: jest.fn(),
-    setCorrelationId: jest.fn(),
+    getTraceId: jest.fn(),
+    setTraceId: jest.fn(),
     setUserContext: jest.fn(),
     getUserContext: jest.fn().mockReturnValue({}),
     setRequestContext: jest.fn(),
@@ -24,7 +24,7 @@ export const createMockLoggingService = (
     logAuthEvent: jest.fn(),
     logBusinessEvent: jest.fn(),
     logExternalApiCall: jest.fn(),
-    runWithCorrelationId: jest.fn((_, fn) => fn()),
+    runWithTraceId: jest.fn((_, fn) => fn()),
     runWithUserContext: jest.fn((_, __, fn) => fn()),
     ...overrides,
   } as any;

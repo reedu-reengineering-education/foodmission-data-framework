@@ -11,6 +11,8 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
+import { trace } from '@opentelemetry/api';
+import { v4 as uuidv4 } from 'uuid';
 import {
   BusinessException,
   DatabaseOperationException,
@@ -206,8 +208,16 @@ export function sanitizeErrorForClient(
   return sanitized;
 }
 
-export function generateCorrelationId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+export function generateTraceId(): string {
+  // Try to get trace ID from OpenTelemetry active span
+  const span = trace.getActiveSpan();
+  if (span) {
+    const traceId = span.spanContext().traceId;
+    if (traceId) return traceId;
+  }
+
+  // Fallback: generate UUID if OpenTelemetry is not active
+  return uuidv4();
 }
 
 export function formatErrorForLogging(error: any, context?: string): string {

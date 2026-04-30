@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { HttpService } from '@nestjs/axios';
-import { UserRepository } from '../user/repositories/user.repository';
-import { UserProfileService } from '../user/services/user-profile.service';
+import { UsersRepository } from '../users/repositories/users.repository';
+import { UserProfilesService } from '../users/services/user-profiles.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 import { HttpException } from '@nestjs/common';
 
 describe('AuthService.register', () => {
   let service: AuthService;
   let mockHttpService: jest.Mocked<Partial<HttpService>>;
-  let mockUserRepo: jest.Mocked<Partial<UserRepository>>;
-  let mockProfileService: jest.Mocked<Partial<UserProfileService>>;
+  let mockUserRepo: jest.Mocked<Partial<UsersRepository>>;
+  let mockProfileService: jest.Mocked<Partial<UserProfilesService>>;
   let mockKeycloakAdminService: jest.Mocked<Partial<KeycloakAdminService>>;
 
   beforeEach(async () => {
@@ -37,8 +37,8 @@ describe('AuthService.register', () => {
       providers: [
         AuthService,
         { provide: HttpService, useValue: mockHttpService },
-        { provide: UserRepository, useValue: mockUserRepo },
-        { provide: UserProfileService, useValue: mockProfileService },
+        { provide: UsersRepository, useValue: mockUserRepo },
+        { provide: UserProfilesService, useValue: mockProfileService },
         { provide: KeycloakAdminService, useValue: mockKeycloakAdminService },
       ],
     }).compile();

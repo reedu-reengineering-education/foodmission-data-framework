@@ -1,4 +1,9 @@
 import { PrismaClient, ShoppingListItem, Unit } from '@prisma/client';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import {
+  findUserByKeycloakId,
+  warnSeedSkippedMissingUser,
+} from './seed-helpers';
 
 export interface ShoppingListItemSeedData {
   shoppingListTitle: string;
@@ -13,7 +18,7 @@ export interface ShoppingListItemSeedData {
 export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   {
     shoppingListTitle: 'Weekly Groceries',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Bananas',
     quantity: 6,
     unit: Unit.PIECES,
@@ -21,7 +26,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Weekly Groceries',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Milk',
     quantity: 1,
     unit: Unit.L,
@@ -30,7 +35,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Weekly Groceries',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Bread',
     quantity: 2,
     unit: Unit.PIECES,
@@ -39,14 +44,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Weekly Groceries',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Eggs',
     quantity: 12,
     unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'Weekly Groceries',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Chicken Breast',
     quantity: 500,
     unit: Unit.G,
@@ -55,21 +60,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
 
   {
     shoppingListTitle: 'Party Snacks',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Potato Chips',
     quantity: 3,
     unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'Party Snacks',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Coca Cola',
     quantity: 2,
     unit: Unit.L,
   },
   {
     shoppingListTitle: 'Party Snacks',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Pizza',
     quantity: 4,
     unit: Unit.PIECES,
@@ -77,7 +82,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Party Snacks',
-    userKeycloakId: 'dev-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
     foodName: 'Ice Cream',
     quantity: 1,
     unit: Unit.L,
@@ -86,7 +91,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
 
   {
     shoppingListTitle: 'Vegan Essentials',
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Tofu',
     quantity: 2,
     unit: Unit.PIECES,
@@ -94,21 +99,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Vegan Essentials',
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Oat Milk',
     quantity: 1,
     unit: Unit.L,
   },
   {
     shoppingListTitle: 'Vegan Essentials',
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Quinoa',
     quantity: 500,
     unit: Unit.G,
   },
   {
     shoppingListTitle: 'Vegan Essentials',
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Avocado',
     quantity: 4,
     unit: Unit.PIECES,
@@ -116,7 +121,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Vegan Essentials',
-    userKeycloakId: 'dev-user-2',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
     foodName: 'Nutritional Yeast',
     quantity: 1,
     unit: Unit.PIECES,
@@ -124,7 +129,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
 
   {
     shoppingListTitle: 'BBQ Party List',
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'Beef Steaks',
     quantity: 8,
     unit: Unit.PIECES,
@@ -132,21 +137,21 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'BBQ Party List',
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'Sausages',
     quantity: 12,
     unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'BBQ Party List',
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'Burger Buns',
     quantity: 8,
     unit: Unit.PIECES,
   },
   {
     shoppingListTitle: 'BBQ Party List',
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'Beer',
     quantity: 24,
     unit: Unit.ML,
@@ -154,7 +159,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'BBQ Party List',
-    userKeycloakId: 'dev-user-3',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
     foodName: 'BBQ Sauce',
     quantity: 2,
     unit: Unit.CUPS,
@@ -162,14 +167,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
 
   {
     shoppingListTitle: 'Keto Diet Shopping',
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Salmon',
     quantity: 400,
     unit: Unit.G,
   },
   {
     shoppingListTitle: 'Keto Diet Shopping',
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Cheese',
     quantity: 200,
     unit: Unit.G,
@@ -177,7 +182,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Keto Diet Shopping',
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Spinach',
     quantity: 500,
     unit: Unit.G,
@@ -185,7 +190,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Keto Diet Shopping',
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Olive Oil',
     quantity: 1,
     unit: Unit.CUPS,
@@ -193,7 +198,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Keto Diet Shopping',
-    userKeycloakId: 'dev-user-4',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
     foodName: 'Almonds',
     quantity: 250,
     unit: Unit.G,
@@ -201,7 +206,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
 
   {
     shoppingListTitle: 'Office Supplies',
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Coffee',
     quantity: 2,
     unit: Unit.G,
@@ -209,14 +214,14 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Office Supplies',
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Sugar',
     quantity: 1,
     unit: Unit.G,
   },
   {
     shoppingListTitle: 'Office Supplies',
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Tea',
     quantity: 3,
     unit: Unit.G,
@@ -224,7 +229,7 @@ export const shoppingListItemSeedData: ShoppingListItemSeedData[] = [
   },
   {
     shoppingListTitle: 'Office Supplies',
-    userKeycloakId: 'admin-user-1',
+    userKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     foodName: 'Cookies',
     quantity: 5,
     unit: Unit.PIECES,
@@ -238,13 +243,12 @@ export async function seedShoppingListItems(prisma: PrismaClient) {
   const items: ShoppingListItem[] = [];
 
   for (const itemData of shoppingListItemSeedData) {
-    const user = await prisma.user.findUnique({
-      where: { keycloakId: itemData.userKeycloakId },
-    });
+    const user = await findUserByKeycloakId(prisma, itemData.userKeycloakId);
 
     if (!user) {
-      console.warn(
-        `⚠️ User ${itemData.userKeycloakId} not found, skipping item "${itemData.foodName}"`,
+      warnSeedSkippedMissingUser(
+        itemData.userKeycloakId,
+        `item "${itemData.foodName}"`,
       );
       continue;
     }

@@ -19,13 +19,11 @@ This guide provides comprehensive information for developers working on the FOOD
 
 ### Prerequisites
 
-- **Node.js** 22+ (specified in `.nvmrc`)
-- **npm** 10.x (comes with Node.js 22, see `package.json` engines field)
+- **Node.js** 24+ (specified in `.nvmrc`)
+- **npm** 10+ (comes with Node.js 24)
 - **Docker** and Docker Compose
 - **Git**
 - **VSCode** (recommended) with Dev Containers extension
-
-**Note:** This project requires npm 10.x to match the Docker environment. If you're using a different npm version, use `nvm use` to switch to Node.js 22, which includes npm 10.x.
 
 ### Development Setup
 
@@ -106,13 +104,13 @@ foodmission-data-framework/
 ├── backups/               # Backup files
 ├── docs/                  # Documentation
 ├── keycloak/              # Keycloak configuration
-├── postman/               # Postman collections
 ├── prisma/                # Database schema and migrations
 │   ├── migrations/        # Database migrations
 │   ├── seeds/            # Database seed files
 │   └── schema.prisma     # Prisma schema
 ├── scripts/              # Utility scripts
 ├── src/                  # Application source code
+│   ├── app/              # Barrel modules that group `AppModule` imports (infrastructure, catalog, domains)
 │   ├── auth/             # Authentication module
 │   ├── cache/            # Caching services
 │   ├── common/           # Shared utilities
@@ -222,6 +220,13 @@ src/module-name/
    export async function seedNewEntity(prisma: PrismaClient) {
      // Seed logic
    }
+
+### Production seed
+
+- What runs: `npm run db:seed:prod` executes the production seed runner and, by default, seeds NEVO categories, OpenFoodFacts products (from a JSON dump if present), and recipes (TheMealDB).
+- How to add more data: add a new seeder module under `prisma/seeds/` (implement an idempotent seeder, e.g. using `upsert`), place any source files under `prisma/seeds/data/` if needed, and import/invoke your seeder from `scripts/seed-prod.ts` so it runs as part of the production seed.
+- Keep it safe: test new seeders in staging or locally before running in production, and ensure seeders are idempotent and log summary counts.
+
    ```
 
 ## Architecture Overview
@@ -325,7 +330,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error: errorInfo.error,
       timestamp: new Date().toISOString(),
       path: request.url,
-      correlationId: this.getCorrelationId(request),
+      traceId: this.getTraceId(request),
     });
   }
 }
@@ -376,6 +381,10 @@ npm run db:migrate:reset
 
 ### Seeding
 
+#### Keycloak and dev users
+
+`User.keycloakId` must match the JWT **`sub`** claim. Development seeds use stable UUIDs in `prisma/seeds/keycloak-dev-user-ids.ts`; the same IDs appear as user `id` values in `keycloak/foodmission-realm.dev.json`. Import that realm into Keycloak before relying on seeded pantries, lists, and knowledge progress. Details: [keycloak/README.md](../keycloak/README.md#seeded-users-and-database).
+
 #### Development Seeds
 
 ```typescript
@@ -412,6 +421,39 @@ npm run db:seed:test
 # Seed production database (be careful!)
 npm run db:seed
 ```
+
+#### FoodKeeper Shelf Life Data
+
+Pantry item expiration dates can be auto-calculated using USDA FoodKeeper data. This data is sourced from:
+
+**Source:** [USDA FSIS FoodKeeper Data](https://catalog.data.gov/dataset/fsis-foodkeeper-data)
+
+The transformed data is stored in `prisma/seeds/data/foodkeeper-data.json` and seeded into the `FoodShelfLife` table. The `ShelfLifeService` uses this data to:
+
+1. Match food names to FoodKeeper products using keyword-based lookup
+2. Determine default storage type (pantry/refrigerator/freezer) based on food category
+3. Calculate expiration dates based on shelf life duration from the database
+
+When a pantry item is created without an explicit `expiryDate`, the system automatically calculates one based on the matching FoodKeeper product. The `expiryDateSource` field indicates whether the date was set manually (`"manual"`) or auto-calculated (`"auto_foodkeeper"`).
+
+**Storage Type Inference:**
+
+| FoodKeeper Category | Default Storage |
+|---------------------|-----------------|
+| Dairy Products & Eggs | refrigerator |
+| Meat | refrigerator |
+| Poultry | refrigerator |
+| Seafood | refrigerator |
+| Deli & Prepared Foods | refrigerator |
+| Fruits & Vegetables | refrigerator |
+| Baked Goods | pantry |
+| Grains, Beans & Pasta | pantry |
+| Canned Goods | pantry |
+| Condiments, Sauces & Oils | pantry |
+| Beverages | pantry |
+| Snacks & Sweets | pantry |
+| Baby Food | pantry |
+| Frozen Foods | freezer |
 
 ## Testing Strategy
 
@@ -811,7 +853,7 @@ kubectl logs -f deployment/foodmission-api -n foodmission
 # Search for specific errors
 kubectl logs deployment/foodmission-api -n foodmission | grep "ERROR"
 
-# View logs with correlation ID
+# View logs with trace ID
 kubectl logs deployment/foodmission-api -n foodmission | grep "req-12345"
 ```
 

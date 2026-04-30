@@ -1,20 +1,16 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CommonModule } from './common/common.module';
-import { DatabaseModule } from './database/database.module';
-import { AuthModule } from './auth/auth.module';
-import { FoodModule } from './food/food.module';
-import { FoodCategoryModule } from './foodCategory/food-category.module';
-import { UserModule } from './user/user.module';
-
-import { HealthModule } from './health/health.module';
-import { MonitoringModule } from './monitoring/monitoring.module';
-import { CacheModule } from './cache/cache.module';
-import { SecurityModule } from './security/security.module';
+import { CatalogFeatureModule } from './app/catalog.module';
+import { EngagementModule } from './app/engagement.module';
+import { InfrastructureModule } from './app/infrastructure.module';
+import { MealRecipeModule } from './app/meal-recipe.module';
+import { ShoppingPantryModule } from './app/shopping-pantry.module';
+import { UserCommunityModule } from './app/user-community.module';
 import { LoggingMiddleware } from './common/middleware/logging.middleware';
+import { LoggingModule } from './common/logging/logging.module';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
-
+import { MonitoringModule } from './monitoring/monitoring.module';
 import { SecurityMiddleware } from './security/middleware/security.middleware';
 import { ShoppingListModule } from './shoppingList/shoppingList.module';
 import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
@@ -25,18 +21,13 @@ import { MealItemModule } from './mealItem/meal-item.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { MealLogModule } from './mealLog/meal-log.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { SecurityModule } from './security/security.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
-    CommonModule,
-    DatabaseModule,
-    CacheModule,
-    SecurityModule,
-    AuthModule,
-    UserModule,
-    FoodModule,
-    FoodCategoryModule,
-    HealthModule,
+    InfrastructureModule,
+    LoggingModule,
     MonitoringModule,
     ShoppingListModule,
     ShoppingListItemModule,
@@ -47,6 +38,13 @@ import { AnalyticsModule } from './analytics/analytics.module';
     RecipeModule,
     MealLogModule,
     AnalyticsModule,
+    SecurityModule,
+    UserCommunityModule,
+    CatalogFeatureModule,
+    ShoppingPantryModule,
+    MealRecipeModule,
+    EngagementModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
