@@ -1233,6 +1233,8 @@ model MealLogAnalyticsCrossDimPatterns {
   @@index([dim1Name, dim2Name])
   @@index([date])
   @@map("meal_log_analytics_cross_dim_patterns")
+}
+
 model GroupMembership {
   id            String             @id @default(uuid())
   groupId       String
