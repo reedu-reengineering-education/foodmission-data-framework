@@ -104,62 +104,6 @@ describe('FoodWasteService', () => {
     const userId = 'user-1';
 
     it('should create a food waste entry successfully', async () => {
-      foodRepository.findById.mockResolvedValue(mockFood);
-      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
-
-      const result = await service.create(
-        TEST_CREATE_FOOD_WASTE_DTO as any,
-        userId,
-      );
-
-      expect(result).toBeDefined();
-      expect(result.id).toBe(mockFoodWaste.id);
-      expect(foodRepository.findById).toHaveBeenCalledWith(
-        TEST_CREATE_FOOD_WASTE_DTO.foodId,
-      );
-      expect(foodWasteRepository.create).toHaveBeenCalled();
-    });
-
-    it('should throw NotFoundException if food does not exist', async () => {
-      foodRepository.findById.mockResolvedValue(null);
-
-      await expect(
-        service.create(TEST_CREATE_FOOD_WASTE_DTO as any, userId),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should validate pantry item ownership when pantryItemId provided', async () => {
-      const dtoWithPantryItem = {
-        ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
-      };
-
-      foodRepository.findById.mockResolvedValue(mockFood);
-      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
-      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
-
-      // Configure $transaction to execute the callback
-      prismaService.$transaction.mockImplementation(
-        async (callback) => await callback({}),
-      );
-
-      const result = await service.create(dtoWithPantryItem as any, userId);
-
-      expect(result).toBeDefined();
-      expect(pantryItemRepository.findById).toHaveBeenCalledWith(
-        'pantry-item-1',
-      );
-    });
-
-    it('should delete pantry item when wasting full quantity', async () => {
-      const dtoWithPantryItem = {
-        ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
-        quantity: 1.5, // Same as pantry item quantity
-        unit: Unit.KG,
-      };
-
-      foodRepository.findById.mockResolvedValue(mockFood);
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.delete.mockResolvedValue(undefined);
@@ -169,7 +113,59 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(dtoWithPantryItem as any, userId);
+      const result = await service.create(
+        TEST_CREATE_FOOD_WASTE_DTO as any,
+        userId,
+      );
+
+      expect(result).toBeDefined();
+      expect(result.id).toBe(mockFoodWaste.id);
+      expect(pantryItemRepository.findById).toHaveBeenCalledWith(
+        TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
+      );
+      expect(foodWasteRepository.create).toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException if pantry item does not exist', async () => {
+      pantryItemRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        service.create(TEST_CREATE_FOOD_WASTE_DTO as any, userId),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if pantry item does not belong to user', async () => {
+      const wrongUserPantryItem = {
+        ...mockPantryItem,
+        pantry: {
+          ...mockPantryItem.pantry,
+          userId: 'different-user',
+        },
+      };
+
+      pantryItemRepository.findById.mockResolvedValue(
+        wrongUserPantryItem as any,
+      );
+
+      await expect(
+        service.create(TEST_CREATE_FOOD_WASTE_DTO as any, userId),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should delete pantry item when wasting full quantity', async () => {
+      pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
+      foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
+      pantryItemRepository.delete.mockResolvedValue(undefined);
+
+      // Configure $transaction to execute the callback
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
+      );
+
+      const result = await service.create(
+        TEST_CREATE_FOOD_WASTE_DTO as any,
+        userId,
+      );
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.delete).toHaveBeenCalledWith(
@@ -182,12 +178,10 @@ describe('FoodWasteService', () => {
     it('should reduce pantry item quantity when wasting partial quantity', async () => {
       const dtoWithPantryItem = {
         ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
         quantity: 0.5, // Less than pantry item quantity (1.5 KG)
         unit: Unit.KG,
       };
 
-      foodRepository.findById.mockResolvedValue(mockFood);
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
@@ -211,12 +205,10 @@ describe('FoodWasteService', () => {
     it('should handle unit conversion when reducing pantry item (G to KG)', async () => {
       const dtoWithPantryItem = {
         ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
         quantity: 500, // 500g = 0.5kg
         unit: Unit.G,
       };
 
-      foodRepository.findById.mockResolvedValue(mockFood);
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any); // 1.5 KG
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.update.mockResolvedValue(mockPantryItem as any);
@@ -239,12 +231,10 @@ describe('FoodWasteService', () => {
     it('should delete pantry item when units are incompatible', async () => {
       const dtoWithPantryItem = {
         ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
         quantity: 2,
         unit: Unit.PIECES, // Incompatible with pantry item's KG
       };
 
-      foodRepository.findById.mockResolvedValue(mockFood);
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.delete.mockResolvedValue(undefined);
@@ -260,42 +250,6 @@ describe('FoodWasteService', () => {
       expect(pantryItemRepository.delete).toHaveBeenCalledWith(
         'pantry-item-1',
         expect.anything(),
-      );
-    });
-
-    it('should throw NotFoundException if pantry item does not exist', async () => {
-      const dtoWithPantryItem = {
-        ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'non-existent',
-      };
-
-      foodRepository.findById.mockResolvedValue(mockFood);
-      pantryItemRepository.findById.mockResolvedValue(null);
-
-      await expect(
-        service.create(dtoWithPantryItem as any, userId),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw error if pantry item belongs to another user', async () => {
-      const dtoWithPantryItem = {
-        ...TEST_CREATE_FOOD_WASTE_DTO,
-        pantryItemId: 'pantry-item-1',
-      };
-      const otherUserPantryItem = {
-        ...mockPantryItem,
-        pantry: { ...mockPantryItem.pantry, userId: 'other-user' },
-      };
-
-      foodRepository.findById.mockResolvedValue(mockFood);
-      pantryItemRepository.findById.mockResolvedValue(
-        otherUserPantryItem as any,
-      );
-
-      await expect(
-        service.create(dtoWithPantryItem as any, userId),
-      ).rejects.toThrow(
-        'Cannot create waste entry for pantry item that does not belong to you',
       );
     });
   });

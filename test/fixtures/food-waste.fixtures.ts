@@ -5,6 +5,7 @@ export const TEST_FOOD_WASTE = {
   userId: 'user-1',
   pantryItemId: 'pantry-item-1',
   foodId: 'food-1',
+  foodCategoryId: null,
   quantity: 1.5,
   unit: Unit.KG,
   wasteReason: WasteReason.EXPIRED,
@@ -22,6 +23,7 @@ export const TEST_FOOD_WASTE_2 = {
   userId: 'user-1',
   pantryItemId: null,
   foodId: 'food-2',
+  foodCategoryId: null,
   quantity: 0.5,
   unit: Unit.KG,
   wasteReason: WasteReason.SPOILED,
@@ -35,9 +37,7 @@ export const TEST_FOOD_WASTE_2 = {
 };
 
 export const TEST_CREATE_FOOD_WASTE_DTO = {
-  foodId: 'food-1',
-  quantity: 1.5,
-  unit: Unit.KG,
+  pantryItemId: 'pantry-item-1',
   wasteReason: WasteReason.EXPIRED,
   detectionMethod: DetectionMethod.MANUAL,
   notes: 'Test waste entry',

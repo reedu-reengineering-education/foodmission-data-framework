@@ -178,7 +178,8 @@ export class FoodWasteRepository implements BaseRepository<
       where,
       include: {
         food: true,
-      },
+        foodCategory: true,
+      } as any, // Type assertion until Prisma client is regenerated
     });
 
     // Calculate totals
@@ -215,17 +216,26 @@ export class FoodWasteRepository implements BaseRepository<
 
     // Find most wasted foods
     const foodWasteMap = wasteRecords.reduce(
-      (acc, record) => {
-        if (!acc[record.foodId]) {
-          acc[record.foodId] = {
-            foodId: record.foodId,
-            foodName: record.food.name,
+      (acc, record: any) => {
+        // Skip records without food or foodCategory info
+        if (!record.foodId && !record.foodCategoryId) {
+          return acc;
+        }
+
+        // Use foodId if available, otherwise use foodCategoryId
+        const key = record.foodId || record.foodCategoryId!;
+        const name = record.food?.name || record.foodCategory?.foodName || 'Unknown';
+
+        if (!acc[key]) {
+          acc[key] = {
+            foodId: key,
+            foodName: name,
             totalQuantity: 0,
             count: 0,
           };
         }
-        acc[record.foodId].totalQuantity += record.quantity;
-        acc[record.foodId].count += 1;
+        acc[key].totalQuantity += record.quantity;
+        acc[key].count += 1;
         return acc;
       },
       {} as Record<string, any>,

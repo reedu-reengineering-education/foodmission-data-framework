@@ -98,6 +98,33 @@ export class FoodWasteService {
     );
   }
 
+  /**
+   * Calculate carbon footprint for wasted food by foodId
+   * @deprecated Use calculateCarbonFootprintForPantryItem instead
+   */
+  async calculateCarbonFootprint(
+    foodId: string,
+    quantity: number,
+    unit: Unit,
+  ): Promise<number> {
+    try {
+      const food = await this.foodRepository.findById(foodId);
+      if (!food) {
+        this.logger.warn(`Food not found for carbon calculation: ${foodId}`);
+        return this.getDefaultCarbonEstimate(quantity, unit);
+      }
+
+      return this.calculateCarbonFootprintFromFoodData(
+        food.name,
+        food.description,
+        quantity,
+        unit,
+      );
+    } catch (error) {
+      this.logger.error('Error calculating carbon footprint', error);
+      return this.getDefaultCarbonEstimate(quantity, unit);
+    }
+  }
 
   /**
    * Calculate carbon footprint from a pantry item
@@ -181,6 +208,17 @@ export class FoodWasteService {
 
     const carbonFootprint = quantityInKg * carbonPerKg;
     return Math.round(carbonFootprint * 100) / 100; // Round to 2 decimals
+  }
+
+  /**
+   * Get default carbon estimate when food data is unavailable
+   */
+  private getDefaultCarbonEstimate(quantity: number, unit: Unit): number {
+    const quantityInKg = quantity * UNIT_TO_KG_CONVERSION[unit];
+    return (
+      Math.round(quantityInKg * CARBON_ESTIMATES_BY_CATEGORY.default * 100) /
+      100
+    );
   }
 
   /**
