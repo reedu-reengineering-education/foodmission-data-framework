@@ -631,7 +631,10 @@ describe('FoodWasteService', () => {
       expect(result).toBeDefined();
       expect(result.successCount).toBe(1);
       expect(result.errorCount).toBe(0);
-      expect(pantryItemRepository.delete).toHaveBeenCalledWith('pantry-item-1');
+      expect(pantryItemRepository.delete).toHaveBeenCalledWith(
+        'pantry-item-1',
+        expect.any(Object),
+      );
     });
 
     it('should handle errors for individual items', async () => {
