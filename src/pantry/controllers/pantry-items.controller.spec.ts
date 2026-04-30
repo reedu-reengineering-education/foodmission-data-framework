@@ -1,10 +1,18 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { PantryItemsController } from './pantry-items.controller';
 import { PantryItemService } from '../services/pantry-items.service';
-import { createControllerTestModule } from '../../common/test-utils/controller-test-helpers';
+import { FoodWasteService } from '../../foodWaste/services/food-waste.service';
+import { PantryService } from '../services/pantry.service';
 import { createMockPantryItemsService } from '../test-utils/pantry-items-service.mock';
 import { PantryItemsTestBuilder } from '../test-utils/pantry-items-test-builders';
 import { TEST_IDS } from '../../common/test-utils/test-constants';
+import { Reflector } from '@nestjs/core';
+import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import {
+  createMockAuthGuard,
+  createMockThrottlerGuard,
+} from '../../common/test-utils/mock-factories';
 
 describe('PantryItemsController', () => {
   let controller: PantryItemsController;
@@ -13,14 +21,48 @@ describe('PantryItemsController', () => {
 
   beforeEach(async () => {
     mockPantryItemsService = createMockPantryItemsService();
-    const module: TestingModule = await createControllerTestModule<
-      PantryItemsController,
-      PantryItemService
-    >({
-      ControllerClass: PantryItemsController,
-      ServiceToken: PantryItemService,
-      mockService: mockPantryItemsService,
-    });
+    const mockAuthGuard = createMockAuthGuard();
+    const mockThrottlerGuard = createMockThrottlerGuard();
+
+    const mockFoodWasteService = {
+      batchCreateFromExpired: jest.fn(),
+    };
+
+    const mockPantryService = {
+      validatePantryExists: jest.fn(),
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [PantryItemsController],
+      providers: [
+        {
+          provide: PantryItemService,
+          useValue: mockPantryItemsService,
+        },
+        {
+          provide: FoodWasteService,
+          useValue: mockFoodWasteService,
+        },
+        {
+          provide: PantryService,
+          useValue: mockPantryService,
+        },
+        {
+          provide: DataBaseAuthGuard,
+          useValue: mockAuthGuard,
+        },
+        {
+          provide: ThrottlerGuard,
+          useValue: mockThrottlerGuard,
+        },
+        Reflector,
+      ],
+    })
+      .overrideGuard(DataBaseAuthGuard)
+      .useValue(mockAuthGuard)
+      .overrideGuard(ThrottlerGuard)
+      .useValue(mockThrottlerGuard)
+      .compile();
 
     controller = module.get<PantryItemsController>(PantryItemsController);
     service = module.get<PantryItemService>(PantryItemService);
