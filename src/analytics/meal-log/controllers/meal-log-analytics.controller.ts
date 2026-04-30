@@ -27,7 +27,7 @@ import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
 @ApiTags('Analytics - Meal Log')
-@Controller('analytics/meallog')
+@Controller('analytics/meal-log')
 export class MealLogAnalyticsController {
   constructor(private readonly analyticsService: MealLogAnalyticsService) {}
 
@@ -95,7 +95,7 @@ export class MealLogAnalyticsController {
   }
 
   @Public()
-  @Get('public/meal-patterns')
+  @Get('public/patterns')
   @ApiOperation({
     summary: 'Meal behavior patterns (timing, pantry usage, items per meal)',
   })
@@ -145,7 +145,7 @@ export class MealLogAnalyticsController {
   }
 
   @Public()
-  @Get('public/meal-classification')
+  @Get('public/classification')
   @ApiOperation({
     summary: 'Vegetarian/vegan rates, ultra-processed %, NOVA distribution',
   })
@@ -170,7 +170,7 @@ export class MealLogAnalyticsController {
   }
 
   @Public()
-  @Get('public/meal-records')
+  @Get('public/records')
   @ApiOperation({
     summary:
       'Individual meal records — anonymized microdata (one row per meal log)',

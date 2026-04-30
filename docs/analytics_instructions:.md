@@ -15,7 +15,7 @@ npm run db:seed:meal-logs
 3. Log in as admin and generate a batch:
 
 ```
-{{baseUrl}}/api/v1/analytics/meallog/batches/generate?periodStart=2026-04-18&periodEnd=2026-04-25
+{{baseUrl}}/api/v1/analytics/meal-log/batches/generate?periodStart=2026-04-18&periodEnd=2026-04-25
 ```
 
 Use a date range that matches your seeded meal-log data.
@@ -25,17 +25,17 @@ Use a date range that matches your seeded meal-log data.
 5. Approve the generated batch:
 
 ```
-{{baseUrl}}/api/v1/analytics/meallog/batches/:id/approve
+{{baseUrl}}/api/v1/analytics/meal-log/batches/:id/approve
 ```
 
 6. Publish the approved batch:
 
 ```
-{{baseUrl}}/api/v1/analytics/meallog/batches/:id/publish
+{{baseUrl}}/api/v1/analytics/meal-log/batches/:id/publish
 ```
 
 7. Data is available through public routes only after publish, for example:
 
 ```
-{{baseUrl}}/api/v1/analytics/meallog/public/nutrition
+{{baseUrl}}/api/v1/analytics/meal-log/public/nutrition
 ```

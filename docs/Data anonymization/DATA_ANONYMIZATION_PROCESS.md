@@ -94,8 +94,8 @@ to represent groups of ≥ K users.
   │  │ + dim1 × dim2        │  • Averages, percentiles, percentages        │
   │  │ (e.g. gender×country)│  • Distributions (JSON)                      │
   │  │──────────────────────│                                              │
-  │  │ CrossDimNutrition    │  ❌ NO userId, email, name, or any PII       │
-  │  │ CrossDimClassific.   │  ❌ NO individual meal or food records        │
+│  │ CrossDimNutrition    │  ❌ NO userId, email, name, or any PII       │
+│  │ CrossDimClassific.   │  ❌ NO direct identifiers (userId/email/name) │
   │  │ CrossDimPatterns     │                                              │
   │  └──────────────────────┘                                              │
   └────────────────────────────┬───────────────────────────────────────────┘
@@ -175,25 +175,26 @@ to represent groups of ≥ K users.
   │  Only rows from PUBLISHED batches are served.                          │
   │  All endpoints decorated with @Public() — no JWT needed.               │
   │                                                                        │
-  │  GET /analytics/public/nutrition                                       │
-  │  GET /analytics/public/food-popularity                                 │
-  │  GET /analytics/public/meal-patterns                                   │
-  │  GET /analytics/public/sustainability                                  │
-  │  GET /analytics/public/meal-classification                             │
-  │  GET /analytics/public/meal-records                                    │
-  │  GET /analytics/public/demographic/nutrition?dimension=country         │
-  │  GET /analytics/public/demographic/classification?dimension=gender     │
-  │  GET /analytics/public/demographic/patterns?dimension=ageGroup         │
-  │  GET /analytics/public/cross-dim/nutrition?dim1=gender&dim2=country    │
-  │  GET /analytics/public/cross-dim/classification                        │
-  │  GET /analytics/public/cross-dim/patterns                              │
-  │  GET /analytics/public/summary                                         │
+│  GET /api/v1/analytics/meal-log/public/nutrition                       │
+│  GET /api/v1/analytics/meal-log/public/food-popularity                 │
+│  GET /api/v1/analytics/meal-log/public/patterns                        │
+│  GET /api/v1/analytics/meal-log/public/sustainability                  │
+│  GET /api/v1/analytics/meal-log/public/classification                  │
+│  GET /api/v1/analytics/meal-log/public/records                         │
+│  GET /api/v1/analytics/meal-log/public/demographic/nutrition?dimension=country │
+│  GET /api/v1/analytics/meal-log/public/demographic/classification?dimension=gender │
+│  GET /api/v1/analytics/meal-log/public/demographic/patterns?dimension=ageGroup │
+│  GET /api/v1/analytics/meal-log/public/cross-dim/nutrition?dim1=gender&dim2=country │
+│  GET /api/v1/analytics/meal-log/public/cross-dim/classification        │
+│  GET /api/v1/analytics/meal-log/public/cross-dim/patterns              │
+│  GET /api/v1/analytics/meal-log/public/summary                         │
   │                                                                        │
   │  Every response row contains ONLY:                                     │
   │  ✅ Statistical aggregates (averages, percentiles, counts)             │
   │  ✅ Group labels (date, mealType, demographic category)                │
-  │  ✅ userCount (always ≥ K)                                             │
-  │  ❌ No PII, no userId, no email, no individual records                 │
+│  ✅ userCount (always ≥ K for grouped aggregates)                      │
+│  ✅ Meal-level anonymized rows are exposed via meal-records endpoint   │
+│  ❌ No PII, no userId, no email, no direct identifiers                 │
   │                                                                        │
   └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -204,12 +205,12 @@ to represent groups of ≥ K users.
 
 | Protection Layer          | Mechanism                              | Effect                                                      |
 | ------------------------- | -------------------------------------- | ----------------------------------------------------------- |
-| **No PII in output**      | Only aggregates stored in output       | userId, email, name never leave the private DB tables        |
+| **No PII in output**      | Only anonymized analytics outputs are stored | userId, email, name never leave the private DB tables   |
 | **Age generalization**    | `yearOfBirth` → age bracket            | Exact age never exposed; only categories like `25_34`        |
 | **k-Anonymity (K=5)**     | Groups with < 5 users suppressed       | Cannot narrow to fewer than 5 individuals                   |
 | **k-Anonymity (K=20)**    | Cross-dim groups with < 20 suppressed  | Two-factor intersections have stricter minimum               |
 | **Batch review**          | STAGING → APPROVED → PUBLISHED         | Human admin must approve before any data is publicly visible |
-| **Statistical only**      | Averages, percentiles, distributions   | Individual values hidden behind group statistics             |
+| **Statistical outputs**   | Aggregates + anonymized meal-level rows | No direct identifiers are present in public analytics rows  |
 | **Temporal aggregation**  | Grouped by date (day-level)            | Cannot pinpoint exact meal timestamps                        |
 
 ## k-Anonymity Explained
