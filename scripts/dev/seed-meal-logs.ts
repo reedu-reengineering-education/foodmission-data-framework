@@ -1,8 +1,16 @@
-import { PrismaClient, MealType, TypeOfMeal, Unit } from '@prisma/client';
+import { PrismaClient, MealCategory, TypeOfMeal, Unit } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const MEAL_TYPES = [MealType.SALAD, MealType.MEAT, MealType.PASTA];
+const MEAL_CATEGORIES = [
+  MealCategory.ANIMAL_PROTEIN,
+  MealCategory.PLANT_PROTEIN,
+  MealCategory.STARCH_GRAIN,
+  MealCategory.VEGGIES_FRUIT,
+  MealCategory.SEAFOOD,
+  MealCategory.DAIRY,
+  MealCategory.MIXED_OTHER,
+];
 
 const TYPE_OF_MEALS = [
   TypeOfMeal.BREAKFAST,
@@ -93,8 +101,8 @@ async function seedMealLogs() {
       for (let mealIndex = 0; mealIndex < mealsPerDay; mealIndex++) {
         // Create meal with 1-4 items
         const itemCount = Math.floor(Math.random() * 4) + 1;
-        const mealType =
-          MEAL_TYPES[Math.floor(Math.random() * MEAL_TYPES.length)];
+        const mealCategory =
+          MEAL_CATEGORIES[Math.floor(Math.random() * MEAL_CATEGORIES.length)];
         const typeOfMeal = TYPE_OF_MEALS[mealIndex];
 
         // Track used IDs to prevent duplicates in the same meal
@@ -174,7 +182,7 @@ async function seedMealLogs() {
         const meal = await prisma.meal.create({
           data: {
             name: `${typeOfMeal} ${date.toISOString().split('T')[0]}`,
-            mealType,
+            mealCategories: [mealCategory],
             userId: user.id,
             items: {
               create: mealItems,
