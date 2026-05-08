@@ -18,8 +18,7 @@ COPY .npmrc ./
 COPY prisma ./prisma/
 
 # Install all dependencies (including dev dependencies for development)
-RUN npm ci && npm cache clean --force
-
+RUN npm ci --omit=optional && npm cache clean --force
 # Copy source code
 COPY . .
 
