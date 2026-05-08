@@ -34,7 +34,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm ci
 
       - name: Generate Prisma client
         run: npx prisma generate
@@ -144,7 +144,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm ci
 
       - name: Run npm audit
         if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
@@ -209,7 +209,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm ci
 
       - name: Generate Prisma client
         run: npx prisma generate
