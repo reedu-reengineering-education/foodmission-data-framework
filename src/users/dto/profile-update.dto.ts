@@ -109,4 +109,13 @@ export class ProfileUpdateDto {
   @IsOptional()
   @IsObject()
   preferences?: Record<string, any>;
+
+  @ApiProperty({
+    description: 'User settings (JSON) - app/notification settings, etc.',
+    required: false,
+    example: { notifications: true, theme: 'dark' },
+  })
+  @IsOptional()
+  @IsObject()
+  settings?: Record<string, any>;
 }

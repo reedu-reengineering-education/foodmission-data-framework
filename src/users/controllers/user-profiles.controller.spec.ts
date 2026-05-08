@@ -160,6 +160,21 @@ describe('UserProfilesController', () => {
         zip: '10115',
       });
     });
+
+    it('should update settings', async () => {
+      const updateDto = { settings: { notifications: true, theme: 'dark' } };
+
+      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+      service.updateProfile.mockResolvedValue({
+        ...mockUserProfile,
+        settings: updateDto.settings,
+      });
+
+      const result = await controller.updateProfile('user-1', updateDto as any);
+
+      expect(result.settings).toEqual(updateDto.settings);
+      expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
+    });
   });
 
   describe('deleteMe', () => {
