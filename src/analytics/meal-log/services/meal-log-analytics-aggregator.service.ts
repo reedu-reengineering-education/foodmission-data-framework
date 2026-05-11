@@ -537,7 +537,7 @@ export class MealLogAnalyticsAggregator {
         fc."saturatedFat"    AS "categorySaturatedFat"
 
       FROM meal_logs ml
-      JOIN "Meal" m ON ml."mealId" = m.id
+      JOIN meals m ON ml."mealId" = m.id
       JOIN users u ON ml."userId" = u.id
       LEFT JOIN meal_items mi ON mi."mealId" = m.id
       LEFT JOIN foods f ON mi."foodId" = f.id
