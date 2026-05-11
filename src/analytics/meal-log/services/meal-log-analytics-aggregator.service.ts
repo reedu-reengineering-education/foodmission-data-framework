@@ -659,9 +659,7 @@ export class MealLogAnalyticsAggregator {
   // Dimension aggregators
   // ============================================================
 
-  private aggregateDailyNutrition(
-    meals: MealAggregate[],
-  ): DailyNutritionRow[] {
+  private aggregateDailyNutrition(meals: MealAggregate[]): DailyNutritionRow[] {
     const grouped = this.groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
@@ -692,9 +690,7 @@ export class MealLogAnalyticsAggregator {
     });
   }
 
-  private aggregateFoodPopularity(
-    meals: MealAggregate[],
-  ): FoodPopularityRow[] {
+  private aggregateFoodPopularity(meals: MealAggregate[]): FoodPopularityRow[] {
     const foodMap = new Map<
       string,
       {
@@ -764,14 +760,10 @@ export class MealLogAnalyticsAggregator {
         totalMeals: group.length,
         mealsFromPantryCount: pantryMeals.length,
         mealsFromPantryPct:
-          group.length > 0
-            ? (pantryMeals.length / group.length) * 100
-            : 0,
+          group.length > 0 ? (pantryMeals.length / group.length) * 100 : 0,
         mealsEatenOutCount: eatenOutMeals.length,
         mealsEatenOutPct:
-          group.length > 0
-            ? (eatenOutMeals.length / group.length) * 100
-            : 0,
+          group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
         avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
         avgMealHour: this.avg(hours),
         mealHourStdDev: this.stdDev(hours),
@@ -779,9 +771,7 @@ export class MealLogAnalyticsAggregator {
     });
   }
 
-  private aggregateSustainability(
-    meals: MealAggregate[],
-  ): SustainabilityRow[] {
+  private aggregateSustainability(meals: MealAggregate[]): SustainabilityRow[] {
     const grouped = this.groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
@@ -841,9 +831,7 @@ export class MealLogAnalyticsAggregator {
 
       // NOVA distribution across all items
       const allNova = group.flatMap((m) => m.novaGroups);
-      const novaDistribution = this.distribution(
-        allNova.map((g) => String(g)),
-      );
+      const novaDistribution = this.distribution(allNova.map((g) => String(g)));
 
       return {
         date: new Date(dateStr),
@@ -851,19 +839,15 @@ export class MealLogAnalyticsAggregator {
         userCount: uniqueUsers,
         totalMeals: group.length,
         vegetarianCount: vegCount,
-        vegetarianPct:
-          group.length > 0 ? (vegCount / group.length) * 100 : 0,
+        vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
         veganCount,
-        veganPct:
-          group.length > 0 ? (veganCount / group.length) * 100 : 0,
+        veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
         avgUltraProcessedPct: this.avg(ultraPcts),
         p25UltraProcessedPct: this.percentile(ultraPcts, 25),
         p50UltraProcessedPct: this.percentile(ultraPcts, 50),
         p75UltraProcessedPct: this.percentile(ultraPcts, 75),
         novaDistribution:
-          Object.keys(novaDistribution).length > 0
-            ? novaDistribution
-            : null,
+          Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
       };
     });
   }
@@ -875,14 +859,10 @@ export class MealLogAnalyticsAggregator {
   private aggregateMealRecords(meals: MealAggregate[]): MealRecordRow[] {
     return meals.map((m) => {
       const nutriScoreGrade =
-        m.nutriScoreGrades.length > 0
-          ? this.mode(m.nutriScoreGrades)
-          : null;
+        m.nutriScoreGrades.length > 0 ? this.mode(m.nutriScoreGrades) : null;
 
       const ecoScoreGrade =
-        m.ecoScoreGrades.length > 0
-          ? this.mode(m.ecoScoreGrades)
-          : null;
+        m.ecoScoreGrades.length > 0 ? this.mode(m.ecoScoreGrades) : null;
 
       const novaGroupMode =
         m.novaGroups.length > 0
@@ -954,7 +934,7 @@ export class MealLogAnalyticsAggregator {
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const val = (m[dim] as string | null) ?? '__null__';
+        const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
       });
 
@@ -995,7 +975,7 @@ export class MealLogAnalyticsAggregator {
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const val = (m[dim] as string | null) ?? '__null__';
+        const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
       });
 
@@ -1023,19 +1003,15 @@ export class MealLogAnalyticsAggregator {
           userCount: uniqueUsers,
           totalMeals: group.length,
           vegetarianCount: vegCount,
-          vegetarianPct:
-            group.length > 0 ? (vegCount / group.length) * 100 : 0,
+          vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
           veganCount,
-          veganPct:
-            group.length > 0 ? (veganCount / group.length) * 100 : 0,
+          veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
           avgUltraProcessedPct: this.avg(ultraPcts),
           p25UltraProcessedPct: this.percentile(ultraPcts, 25),
           p50UltraProcessedPct: this.percentile(ultraPcts, 50),
           p75UltraProcessedPct: this.percentile(ultraPcts, 75),
           novaDistribution:
-            Object.keys(novaDistribution).length > 0
-              ? novaDistribution
-              : null,
+            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
         });
       }
     }
@@ -1051,7 +1027,7 @@ export class MealLogAnalyticsAggregator {
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const val = (m[dim] as string | null) ?? '__null__';
+        const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
       });
 
@@ -1072,14 +1048,10 @@ export class MealLogAnalyticsAggregator {
           totalMeals: group.length,
           mealsFromPantryCount: pantryMeals.length,
           mealsFromPantryPct:
-            group.length > 0
-              ? (pantryMeals.length / group.length) * 100
-              : 0,
+            group.length > 0 ? (pantryMeals.length / group.length) * 100 : 0,
           mealsEatenOutCount: eatenOutMeals.length,
           mealsEatenOutPct:
-            group.length > 0
-              ? (eatenOutMeals.length / group.length) * 100
-              : 0,
+            group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
           avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
           avgMealHour: this.avg(hours),
           mealHourStdDev: this.stdDev(hours),
@@ -1120,8 +1092,8 @@ export class MealLogAnalyticsAggregator {
     for (const [dim1, dim2] of this.buildCrossDimPairs()) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const v1 = (m[dim1] as string | null) ?? '__null__';
-        const v2 = (m[dim2] as string | null) ?? '__null__';
+        const v1 = m[dim1] ?? '__null__';
+        const v2 = m[dim2] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${v1}|${v2}`;
       });
 
@@ -1165,8 +1137,8 @@ export class MealLogAnalyticsAggregator {
     for (const [dim1, dim2] of this.buildCrossDimPairs()) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const v1 = (m[dim1] as string | null) ?? '__null__';
-        const v2 = (m[dim2] as string | null) ?? '__null__';
+        const v1 = m[dim1] ?? '__null__';
+        const v2 = m[dim2] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${v1}|${v2}`;
       });
 
@@ -1183,7 +1155,9 @@ export class MealLogAnalyticsAggregator {
         });
 
         const allNova = group.flatMap((m) => m.novaGroups);
-        const novaDistribution = this.distribution(allNova.map((g) => String(g)));
+        const novaDistribution = this.distribution(
+          allNova.map((g) => String(g)),
+        );
 
         rows.push({
           date: new Date(dateStr),
@@ -1202,7 +1176,8 @@ export class MealLogAnalyticsAggregator {
           p25UltraProcessedPct: this.percentile(ultraPcts, 25),
           p50UltraProcessedPct: this.percentile(ultraPcts, 50),
           p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-          novaDistribution: Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+          novaDistribution:
+            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
         });
       }
     }
@@ -1218,8 +1193,8 @@ export class MealLogAnalyticsAggregator {
     for (const [dim1, dim2] of this.buildCrossDimPairs()) {
       const grouped = this.groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
-        const v1 = (m[dim1] as string | null) ?? '__null__';
-        const v2 = (m[dim2] as string | null) ?? '__null__';
+        const v1 = m[dim1] ?? '__null__';
+        const v2 = m[dim2] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${v1}|${v2}`;
       });
 
@@ -1242,9 +1217,11 @@ export class MealLogAnalyticsAggregator {
           userCount: uniqueUsers,
           totalMeals: group.length,
           mealsFromPantryCount: pantryMeals.length,
-          mealsFromPantryPct: group.length > 0 ? (pantryMeals.length / group.length) * 100 : 0,
+          mealsFromPantryPct:
+            group.length > 0 ? (pantryMeals.length / group.length) * 100 : 0,
           mealsEatenOutCount: eatenOutMeals.length,
-          mealsEatenOutPct: group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
+          mealsEatenOutPct:
+            group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
           avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
           avgMealHour: this.avg(hours),
           mealHourStdDev: this.stdDev(hours),
@@ -1255,10 +1232,7 @@ export class MealLogAnalyticsAggregator {
     return rows;
   }
 
-  private groupBy<T>(
-    items: T[],
-    keyFn: (item: T) => string,
-  ): Map<string, T[]> {
+  private groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
     const map = new Map<string, T[]>();
     for (const item of items) {
       const key = keyFn(item);
