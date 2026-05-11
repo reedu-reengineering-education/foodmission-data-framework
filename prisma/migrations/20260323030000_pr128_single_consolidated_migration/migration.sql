@@ -1,8 +1,11 @@
+-- prisma-migrate-disable-transaction
 -- Consolidated migration for PR #128:
 -- recipe system extension + meal taxonomy + dietary preferences + allergens enum + TypeOfMeal alignment.
+-- Note: transaction disabled because this migration contains an explicit BEGIN/COMMIT block
+-- for the TypeOfMeal enum rename, which conflicts with Prisma's auto-wrapping transaction.
 
 -- CreateEnum
-CREATE TYPE "MealCategory" AS ENUM (
+CREATE TYPE IF NOT EXISTS "MealCategory" AS ENUM (
   'ANIMAL_PROTEIN',
   'SEAFOOD',
   'PLANT_PROTEIN',
@@ -13,7 +16,7 @@ CREATE TYPE "MealCategory" AS ENUM (
 );
 
 -- CreateEnum
-CREATE TYPE "MealCourse" AS ENUM (
+CREATE TYPE IF NOT EXISTS "MealCourse" AS ENUM (
   'MAIN_DISH',
   'SIDE_SNACK',
   'DESSERT',
@@ -22,7 +25,7 @@ CREATE TYPE "MealCourse" AS ENUM (
 );
 
 -- CreateEnum
-CREATE TYPE "Allergens" AS ENUM (
+CREATE TYPE IF NOT EXISTS "Allergens" AS ENUM (
   'GLUTEN',
   'DAIRY',
   'PEANUTS',
@@ -39,7 +42,7 @@ CREATE TYPE "Allergens" AS ENUM (
 );
 
 -- CreateEnum
-CREATE TYPE "DietaryLabel" AS ENUM (
+CREATE TYPE IF NOT EXISTS "DietaryLabel" AS ENUM (
   'VEGAN',
   'VEGETARIAN',
   'PESCATARIAN',
@@ -95,10 +98,10 @@ ALTER TABLE "recipes" DROP CONSTRAINT "recipes_mealId_fkey";
 ALTER TABLE "recipes" DROP CONSTRAINT "recipes_userId_fkey";
 
 -- DropIndex
-DROP INDEX "Meal_mealType_idx";
+DROP INDEX IF EXISTS "Meal_mealType_idx";
 
 -- DropIndex
-DROP INDEX "recipes_mealId_idx";
+DROP INDEX IF EXISTS "recipes_mealId_idx";
 
 -- AlterTable
 ALTER TABLE "foods" ADD COLUMN "vitaminD" DOUBLE PRECISION;
@@ -164,7 +167,7 @@ ALTER TABLE "recipes" DROP COLUMN "allergens";
 ALTER TABLE "recipes" RENAME COLUMN "allergens_enum" TO "allergens";
 
 -- DropEnum
-DROP TYPE "MealType";
+DROP TYPE IF EXISTS "MealType";
 
 -- CreateTable
 CREATE TABLE "recipe_ingredients" (
