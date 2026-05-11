@@ -486,6 +486,105 @@ describe('PantryItemService', () => {
         expect(createCall.expiryDate).toBeInstanceOf(Date);
         expect(createCall.expiryDateSource).toBe('auto_foodkeeper');
       });
+
+      it('should create item without expiryDate when food has no shelfLifeId and calculateExpiryDate returns NotFoundException', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(null); // no FK link
+        mockShelfLifeService.calculateExpiryDate.mockRejectedValue(
+          new NotFoundException('No shelf life data found for: Milk'),
+        );
+        mockPantryItemRepository.create.mockResolvedValue({
+          ...mockPantryItem,
+          expiryDate: null,
+        });
+
+        await service.create(createDto, userId);
+
+        expect(mockShelfLifeService.calculateExpiryDate).toHaveBeenCalledWith(
+          'Milk',
+        );
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toBeUndefined();
+        expect(createCall.expiryDateSource).toBeUndefined();
+      });
+
+      it('should use manual expiryDate when food has no shelfLifeId and calculateExpiryDate throws NotFoundException', async () => {
+        const manualExpiry = new Date('2026-06-10');
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: manualExpiry,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        setupFoodWithShelfLife(null); // no FK link
+        mockShelfLifeService.calculateExpiryDate.mockRejectedValue(
+          new NotFoundException('No shelf life data found for: Milk'),
+        );
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        expect(mockShelfLifeService.calculateExpiryDate).toHaveBeenCalledWith(
+          'Milk',
+        );
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toEqual(manualExpiry);
+        expect(createCall.expiryDateSource).toBe('manual');
+      });
+
+      it('should propagate unexpected errors from calculateExpiryDate as BadRequestException', async () => {
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          expiryDate: undefined,
+        });
+        setupFoodWithShelfLife(null); // no FK link
+        mockShelfLifeService.calculateExpiryDate.mockRejectedValue(
+          new Error('Unexpected DB failure'),
+        );
+
+        await expect(service.create(createDto, userId)).rejects.toThrow(
+          BadRequestException,
+        );
+      });
+
+      it('should use manual expiryDate when foodCategory has no shelfLifeId and calculateExpiryDate throws NotFoundException', async () => {
+        const FOOD_CAT_ID = 'food-cat-no-shelf-life';
+        const manualExpiry = new Date('2026-06-10');
+        const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+          foodId: undefined,
+          foodCategoryId: FOOD_CAT_ID,
+          expiryDate: manualExpiry,
+        });
+        const mockPantryItem = createMockPantryItemWithRelations();
+        mockPantryService.validatePantryExists.mockResolvedValue(
+          TEST_IDS.PANTRY,
+        );
+        mockFoodCategoriesRepository.findById.mockResolvedValue({
+          id: FOOD_CAT_ID,
+          foodName: 'Cashew Cookie Fruit & Nut Bar',
+          foodGroup: 'Snacks',
+          shelfLifeId: null, // no FK link
+        });
+        mockPantryItemRepository.findFoodCategoryInPantry.mockResolvedValue(
+          null,
+        );
+        mockShelfLifeService.calculateExpiryDate.mockRejectedValue(
+          new NotFoundException(
+            'No shelf life data found for: Cashew Cookie Fruit & Nut Bar',
+          ),
+        );
+        mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+        await service.create(createDto, userId);
+
+        expect(mockShelfLifeService.calculateExpiryDate).toHaveBeenCalledWith(
+          'Cashew Cookie Fruit & Nut Bar',
+        );
+        expect(mockPrismaService.foodShelfLife.findUnique).not.toHaveBeenCalled();
+        const createCall = mockPantryItemRepository.create.mock.calls[0][0];
+        expect(createCall.expiryDate).toEqual(manualExpiry);
+        expect(createCall.expiryDateSource).toBe('manual');
+      });
     });
   });
 

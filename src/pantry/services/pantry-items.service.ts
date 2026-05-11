@@ -120,11 +120,21 @@ export class PantryItemService {
           }
         }
       } else if (resolvedFoodName) {
-        const calcResult =
-          await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
-        if (calcResult.expiryDate) {
-          expiryDate = calcResult.expiryDate;
-          expiryDateSource = 'auto_foodkeeper';
+        try {
+          const calcResult =
+            await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
+          if (calcResult.expiryDate) {
+            expiryDate = calcResult.expiryDate;
+            expiryDateSource = 'auto_foodkeeper';
+          }
+        } catch (shelfLifeErr) {
+          if (shelfLifeErr instanceof NotFoundException) {
+            this.logger.warn(
+              `No shelf life data for "${resolvedFoodName}"; expiry date will not be auto-calculated.`,
+            );
+          } else {
+            throw shelfLifeErr;
+          }
         }
       }
 
