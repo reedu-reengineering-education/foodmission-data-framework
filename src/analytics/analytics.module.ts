@@ -4,12 +4,17 @@ import { MealLogAnalyticsController } from './meal-log/controllers/meal-log-anal
 import { MealLogAnalyticsService } from './meal-log/services/meal-log-analytics.service';
 import { MealLogAnalyticsAggregator } from './meal-log/services/meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsRepository } from './meal-log/repositories/meal-log-analytics.repository';
-import { UserRepository } from '../user/repositories/user.repository';
+import { UsersRepository } from '../users/repositories/users.repository';
 
 @Module({
   imports: [ScheduleModule.forRoot()],
   controllers: [MealLogAnalyticsController],
-  providers: [MealLogAnalyticsService, MealLogAnalyticsAggregator, MealLogAnalyticsRepository, UserRepository],
+  providers: [
+    MealLogAnalyticsService,
+    MealLogAnalyticsAggregator,
+    MealLogAnalyticsRepository,
+    UsersRepository,
+  ],
   exports: [MealLogAnalyticsService],
 })
 export class AnalyticsModule {}

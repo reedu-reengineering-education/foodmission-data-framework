@@ -12,14 +12,6 @@ import { LoggingModule } from './common/logging/logging.module';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { SecurityMiddleware } from './security/middleware/security.middleware';
-import { ShoppingListModule } from './shoppingList/shoppingList.module';
-import { ShoppingListItemModule } from './shoppingListItem/shoppingListItem.module';
-import { PantryModule } from './pantry/pantry.module';
-import { PantryItemModule } from './pantryItem/pantry.module';
-import { MealModule } from './meal/meal.module';
-import { MealItemModule } from './mealItem/meal-item.module';
-import { RecipeModule } from './recipe/recipe.module';
-import { MealLogModule } from './mealLog/meal-log.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SecurityModule } from './security/security.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
@@ -29,14 +21,6 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     InfrastructureModule,
     LoggingModule,
     MonitoringModule,
-    ShoppingListModule,
-    ShoppingListItemModule,
-    PantryModule,
-    PantryItemModule,
-    MealModule,
-    MealItemModule,
-    RecipeModule,
-    MealLogModule,
     AnalyticsModule,
     SecurityModule,
     UserCommunityModule,
