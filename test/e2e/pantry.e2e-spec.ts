@@ -6,6 +6,8 @@ import request from 'supertest';
 import { DataBaseAuthGuard } from '../../src/common/guards/database-auth.guards';
 import { PrismaService } from '../../src/database/prisma.service';
 import { FoodProductRepository } from '../../src/food-products/repositories/food-product.repository';
+import { FoodWasteRepository } from '../../src/foodWaste/repositories/food-waste.repository';
+import { FoodWasteService } from '../../src/foodWaste/services/food-waste.service';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
 import { PantryController } from '../../src/pantry/controllers/pantry.controller';
 import { PantryItemsController } from '../../src/pantry/controllers/pantry-items.controller';
@@ -41,6 +43,8 @@ describe('Pantry (e2e)', () => {
         GenericFoodRepository,
         ShelfLifeService,
         ShelfLifeRepository,
+        FoodWasteService,
+        FoodWasteRepository,
         { provide: PrismaService, useValue: prisma },
       ],
     })
@@ -115,7 +119,9 @@ describe('Pantry (e2e)', () => {
   });
 
   it('CRUD /pantry/:pantryId/items/:itemId', async () => {
-    const pantryRes = await request(app.getHttpServer()).get('/pantry').expect(200);
+    const pantryRes = await request(app.getHttpServer())
+      .get('/pantry')
+      .expect(200);
     const pantryId = pantryRes.body.id;
 
     await request(app.getHttpServer())
@@ -165,4 +171,3 @@ describe('Pantry (e2e)', () => {
       .expect(200);
   });
 });
-
