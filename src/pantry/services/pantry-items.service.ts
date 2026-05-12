@@ -23,10 +23,7 @@ import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
-import {
-  ResolvedExpiryResult,
-  ShelfLifeService,
-} from '../../shelf-life/services/shelf-life.service';
+import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { buildCategoryHints } from '../../common/utils/food-tag.utils';
@@ -61,6 +58,13 @@ export class PantryItemService {
       });
       return await this.create(createPantryItemDto, userId, tx);
     } catch (err) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to create pantry item from shopping list: ' +
           (err instanceof Error ? err.message : err),
@@ -148,6 +152,7 @@ export class PantryItemService {
       );
     }
   }
+
   private validateFoodOrCategoryInput(
     foodId?: string,
     foodCategoryId?: string,
