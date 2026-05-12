@@ -30,7 +30,6 @@ import { FoodProductRepository } from '../../food-products/repositories/food-pro
 import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
-import { handlePrismaError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class PantryItemService {

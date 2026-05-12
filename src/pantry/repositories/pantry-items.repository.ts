@@ -41,7 +41,7 @@ export class PantryItemRepository {
   }
 
   async findById(id: string): Promise<PantryItemWithRelations | null> {
-    return this.prisma.pantryItem.findUnique({
+    return await this.prisma.pantryItem.findUnique({
       where: { id },
       include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
@@ -50,7 +50,7 @@ export class PantryItemRepository {
   async findMany(
     filter: PantryItemFilter = {},
   ): Promise<PantryItemWithRelations[]> {
-    return this.prisma.pantryItem.findMany({
+    return await this.prisma.pantryItem.findMany({
       where: {
         pantryId: filter.pantryId,
         foodProductId: filter.foodProductId,
@@ -81,8 +81,8 @@ export class PantryItemRepository {
       },
       include: {
         pantry: true,
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
       },
     });
   }
@@ -93,7 +93,7 @@ export class PantryItemRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.update({
+    return await client.pantryItem.update({
       where: { id },
       data,
       include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
@@ -113,7 +113,7 @@ export class PantryItemRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.findFirst({
+    return await client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
         foodProductId: foodProductId,
@@ -128,7 +128,7 @@ export class PantryItemRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.findFirst({
+    return await client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
         genericFoodId: genericFoodId,
