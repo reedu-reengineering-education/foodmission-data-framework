@@ -83,6 +83,50 @@ ALTER TABLE "meal_logs"
   ALTER COLUMN "typeOfMeal"
   TYPE "TypeOfMeal_new"
   USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_daily_nutrition"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_meal_patterns"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_sustainability"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_meal_classification"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_meal_records"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_demographic_nutrition"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_demographic_classification"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_demographic_patterns"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_cross_dim_nutrition"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_cross_dim_classification"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
+ALTER TABLE "analytics_cross_dim_patterns"
+  ALTER COLUMN "typeOfMeal"
+  TYPE "TypeOfMeal_new"
+  USING ("typeOfMeal"::text::"TypeOfMeal_new");
 ALTER TYPE "TypeOfMeal" RENAME TO "TypeOfMeal_old";
 ALTER TYPE "TypeOfMeal_new" RENAME TO "TypeOfMeal";
 DROP TYPE "TypeOfMeal_old";

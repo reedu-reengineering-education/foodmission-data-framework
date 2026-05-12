@@ -57,9 +57,111 @@ describe('ShoppingListItemsController', () => {
     );
   });
 
-  it('has no toggle endpoint in controller api', () => {
-    expect(
-      (controller as unknown as { toggleChecked?: unknown }).toggleChecked,
-    ).toBeUndefined();
+  describe('findByShoppingList', () => {
+    it('should call service with shoppingListId and userId', async () => {
+      service.findByShoppingList.mockResolvedValueOnce({ data: [] } as any);
+
+      await controller.findByShoppingList(shoppingListId, {}, 'user-1');
+
+      expect(service.findByShoppingList).toHaveBeenCalledWith(
+        shoppingListId,
+        'user-1',
+        expect.any(Object),
+      );
+    });
   });
+
+  describe('findById', () => {
+    it('should call service with id, userId, and shoppingListId', async () => {
+      service.findById.mockResolvedValueOnce(mockItemResponse as any);
+
+      const result = await controller.findById(
+        shoppingListId,
+        itemId,
+        'user-1',
+      );
+
+      expect(result).toEqual(mockItemResponse);
+      expect(service.findById).toHaveBeenCalledWith(
+        itemId,
+        'user-1',
+        shoppingListId,
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should call service with id, dto, userId, and shoppingListId', async () => {
+      const updateDto = { quantity: 3 };
+      service.update = jest.fn().mockResolvedValue(mockItemResponse as any);
+
+      const result = await controller.update(
+        shoppingListId,
+        itemId,
+        updateDto as any,
+        'user-1',
+      );
+
+      expect(result).toEqual(mockItemResponse);
+      expect(service.update).toHaveBeenCalledWith(
+        itemId,
+        updateDto,
+        'user-1',
+        shoppingListId,
+      );
+    });
+
+    it('should pass checked attribute through patch update', async () => {
+      const updateDto = { checked: true };
+      const checkedResponse = { ...mockItemResponse, checked: true };
+      service.update = jest.fn().mockResolvedValue(checkedResponse as any);
+
+      const result = await controller.update(
+        shoppingListId,
+        itemId,
+        updateDto as any,
+        'user-1',
+      );
+
+      expect(result.checked).toBe(true);
+      expect(service.update).toHaveBeenCalledWith(
+        itemId,
+        { checked: true },
+        'user-1',
+        shoppingListId,
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should call service with id, userId, and shoppingListId', async () => {
+      service.remove = jest.fn().mockResolvedValue(undefined);
+
+      const result = await controller.remove(shoppingListId, itemId, 'user-1');
+
+      expect(result).toBeUndefined();
+      expect(service.remove).toHaveBeenCalledWith(
+        itemId,
+        'user-1',
+        shoppingListId,
+      );
+    });
+  });
+
+  describe('clearCheckedItems', () => {
+    it('should call service with shoppingListId and userId', async () => {
+      service.clearCheckedItems = jest.fn().mockResolvedValue(undefined);
+
+      const result = await controller.clearCheckedItems(
+        shoppingListId,
+        'user-1',
+      );
+      expect(service.update).toHaveBeenCalledWith(
+      itemId,
+      { checked: true },
+      'user-1',
+      shoppingListId,
+    );
+  });
+  
 });

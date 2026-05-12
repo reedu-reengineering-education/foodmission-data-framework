@@ -7,6 +7,7 @@ import { UsersRepository } from '../users/repositories/users.repository';
 import { FoodProductsModule } from '../food-products/food-products.module';
 import { GenericFoodsModule } from '../generic-foods/generic-foods.module';
 import { ShelfLifeModule } from '../shelf-life/shelf-life.module';
+import { FoodWasteModule } from '../foodWaste/food-waste.module';
 import { PantryController } from './controllers/pantry.controller';
 import { PantryItemsController } from './controllers/pantry-items.controller';
 import { PantryService } from './services/pantry.service';
@@ -22,6 +23,7 @@ import { PantryItemRepository } from './repositories/pantry-items.repository';
     GenericFoodsModule,
     FoodProductsModule,
     ShelfLifeModule,
+    FoodWasteModule,
   ],
   controllers: [PantryController, PantryItemsController],
   providers: [

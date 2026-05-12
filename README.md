@@ -317,6 +317,13 @@ npm run start:dev
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 
+### Analytics Development Docs
+
+For local analytics testing, anonymization details, and batch publish workflow, see:
+
+- `docs/analytics_instructions:.md`
+- `docs/Data anonymization/`
+
 ## 📚 API Documentation
 
 ### Swagger/OpenAPI
