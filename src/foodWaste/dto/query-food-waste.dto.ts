@@ -5,12 +5,12 @@ import { WasteReason, DetectionMethod } from '@prisma/client';
 
 export class QueryFoodWasteDto {
   @ApiPropertyOptional({
-    description: 'Filter by food ID',
-    example: 'uuid-food-id',
+    description: 'Filter by food product ID',
+    example: 'uuid-food-product-id',
   })
   @IsOptional()
   @IsUUID()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
     description: 'Filter by pantry item ID',

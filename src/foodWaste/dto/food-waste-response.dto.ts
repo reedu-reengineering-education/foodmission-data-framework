@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { WasteReason, DetectionMethod, Unit } from '@prisma/client';
-import { FoodResponseDto } from '../../foods/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../food-category/dto/food-category-response.dto';
+import { FoodProductResponseDto } from '../../food-products/dto/food-product-response.dto';
+import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
 
 export class FoodWasteResponseDto {
   @ApiProperty({
@@ -27,18 +27,18 @@ export class FoodWasteResponseDto {
   pantryItemId?: string;
 
   @ApiPropertyOptional({
-    description: 'The food ID (if waste is linked to a specific food)',
-    example: 'uuid-food-id',
+    description: 'The food product ID (if waste is linked to a specific food product)',
+    example: 'uuid-food-product-id',
   })
   @Expose()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'The food category ID (if waste is linked to a food category)',
-    example: 'uuid-food-category-id',
+    description: 'The generic food ID (if waste is linked to a generic food)',
+    example: 'uuid-generic-food-id',
   })
   @Expose()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiProperty({
     description: 'The quantity of food wasted',
@@ -114,20 +114,20 @@ export class FoodWasteResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'The food item details (if linked to a food)',
-    type: () => FoodResponseDto,
+    description: 'The food product details (if linked to a food product)',
+    type: () => FoodProductResponseDto,
   })
   @Expose()
-  @Type(() => FoodResponseDto)
-  food?: FoodResponseDto;
+  @Type(() => FoodProductResponseDto)
+  foodProduct?: FoodProductResponseDto;
 
   @ApiPropertyOptional({
-    description: 'The food category details (if linked to a food category)',
-    type: () => FoodCategoryResponseDto,
+    description: 'The generic food details (if linked to a generic food)',
+    type: () => GenericFoodResponseDto,
   })
   @Expose()
-  @Type(() => FoodCategoryResponseDto)
-  foodCategory?: FoodCategoryResponseDto;
+  @Type(() => GenericFoodResponseDto)
+  genericFood?: GenericFoodResponseDto;
 }
 
 export class MultipleFoodWasteResponseDto {

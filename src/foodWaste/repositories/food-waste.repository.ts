@@ -17,8 +17,8 @@ import { normalizePagination } from '../../common/utils/pagination';
 export interface CreateFoodWasteData {
   userId: string;
   pantryItemId?: string;
-  foodId?: string;
-  foodCategoryId?: string;
+  foodProductId?: string;
+  genericFoodId?: string;
   quantity: number;
   unit: Unit;
   wasteReason: WasteReason;
@@ -109,8 +109,8 @@ export class FoodWasteRepository implements BaseRepository<
     return await this.prisma.foodWaste.findUnique({
       where: { id },
       include: {
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });
@@ -124,8 +124,8 @@ export class FoodWasteRepository implements BaseRepository<
     return await client.foodWaste.create({
       data: data as Prisma.FoodWasteUncheckedCreateInput,
       include: {
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });
@@ -136,8 +136,8 @@ export class FoodWasteRepository implements BaseRepository<
       where: { id },
       data: data as Prisma.FoodWasteUncheckedUpdateInput,
       include: {
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
         pantryItem: true,
       } as Prisma.FoodWasteInclude,
     });
@@ -177,8 +177,8 @@ export class FoodWasteRepository implements BaseRepository<
     const wasteRecords = await this.prisma.foodWaste.findMany({
       where,
       include: {
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
       } as any, // Type assertion until Prisma client is regenerated
     });
 
@@ -217,14 +217,14 @@ export class FoodWasteRepository implements BaseRepository<
     // Find most wasted foods
     const foodWasteMap = wasteRecords.reduce(
       (acc, record: any) => {
-        // Skip records without food or foodCategory info
-        if (!record.foodId && !record.foodCategoryId) {
+        // Skip records without foodProduct or genericFood info
+        if (!record.foodProductId && !record.genericFoodId) {
           return acc;
         }
 
-        // Use foodId if available, otherwise use foodCategoryId
-        const key = record.foodId || record.foodCategoryId!;
-        const name = record.food?.name || record.foodCategory?.foodName || 'Unknown';
+        // Use foodProductId if available, otherwise use genericFoodId
+        const key = record.foodProductId || record.genericFoodId!;
+        const name = record.foodProduct?.name || record.genericFood?.foodName || 'Unknown';
 
         if (!acc[key]) {
           acc[key] = {

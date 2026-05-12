@@ -8,7 +8,7 @@ import {
 } from './food-waste.service';
 import { FoodWasteRepository } from '../repositories/food-waste.repository';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   TEST_FOOD_WASTE,
@@ -23,7 +23,7 @@ describe('FoodWasteService', () => {
   let service: FoodWasteService;
   let foodWasteRepository: jest.Mocked<FoodWasteRepository>;
   let pantryItemRepository: jest.Mocked<PantryItemRepository>;
-  let foodRepository: jest.Mocked<FoodRepository>;
+  let foodProductRepository: jest.Mocked<FoodProductRepository>;
   let prismaService: { $transaction: jest.Mock };
 
   const mockFoodWaste = { ...TEST_FOOD_WASTE };
@@ -31,7 +31,7 @@ describe('FoodWasteService', () => {
 
   const mockPantryItem = {
     id: 'pantry-item-1',
-    foodId: 'food-1',
+    foodProductId: 'food-1',
     quantity: 1.5,
     unit: Unit.KG,
     pantry: {
@@ -62,7 +62,7 @@ describe('FoodWasteService', () => {
     $transaction: jest.fn(),
   };
 
-  const mockFoodRepositoryMethods = {
+  const mockFoodProductRepositoryMethods = {
     findById: jest.fn(),
   };
 
@@ -79,8 +79,8 @@ describe('FoodWasteService', () => {
           useValue: mockPantryItemRepositoryMethods,
         },
         {
-          provide: FoodRepository,
-          useValue: mockFoodRepositoryMethods,
+          provide: FoodProductRepository,
+          useValue: mockFoodProductRepositoryMethods,
         },
         {
           provide: PrismaService,
@@ -92,7 +92,7 @@ describe('FoodWasteService', () => {
     service = module.get<FoodWasteService>(FoodWasteService);
     foodWasteRepository = module.get(FoodWasteRepository);
     pantryItemRepository = module.get(PantryItemRepository);
-    foodRepository = module.get(FoodRepository);
+    foodProductRepository = module.get(FoodProductRepository);
     prismaService = module.get(PrismaService);
   });
 
@@ -294,7 +294,7 @@ describe('FoodWasteService', () => {
       const query = {
         page: 1,
         limit: 10,
-        foodId: 'food-1',
+        foodProductId: 'food-1',
         wasteReason: WasteReason.EXPIRED,
         dateFrom: '2026-02-01',
         dateTo: '2026-02-28',
@@ -306,7 +306,7 @@ describe('FoodWasteService', () => {
         expect.objectContaining({
           where: expect.objectContaining({
             userId: 'user-1',
-            foodId: 'food-1',
+            foodProductId: 'food-1',
             wasteReason: WasteReason.EXPIRED,
           }),
         }),
@@ -389,9 +389,9 @@ describe('FoodWasteService', () => {
     });
 
     it('should validate new food exists when foodId changes', async () => {
-      const updateWithNewFood = { foodId: 'new-food-id' };
+      const updateWithNewFood = { foodProductId: 'new-food-product-id' };
       foodWasteRepository.findById.mockResolvedValue(mockFoodWaste);
-      foodRepository.findById.mockResolvedValue(null);
+      foodProductRepository.findById.mockResolvedValue(null);
 
       await expect(
         service.update('food-waste-1', updateWithNewFood, 'user-1'),
@@ -564,7 +564,7 @@ describe('FoodWasteService', () => {
 
   describe('calculateCarbonFootprint', () => {
     it('should calculate carbon footprint for food', async () => {
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
 
       const result = await service.calculateCarbonFootprint(
         'food-1',
@@ -578,7 +578,7 @@ describe('FoodWasteService', () => {
     });
 
     it('should return default estimate when food not found', async () => {
-      foodRepository.findById.mockResolvedValue(null);
+      foodProductRepository.findById.mockResolvedValue(null);
 
       const result = await service.calculateCarbonFootprint(
         'non-existent',
@@ -594,7 +594,7 @@ describe('FoodWasteService', () => {
     });
 
     it('should convert units correctly', async () => {
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
 
       // 1000g = 1kg, should give same result
       const resultKg = await service.calculateCarbonFootprint(
@@ -621,7 +621,7 @@ describe('FoodWasteService', () => {
       pantryItemRepository.findById.mockResolvedValue(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.delete.mockResolvedValue(undefined);
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
 
       const result = await service.batchCreateFromExpired(
         batchDto as any,
@@ -650,7 +650,7 @@ describe('FoodWasteService', () => {
         .mockResolvedValueOnce(mockPantryItem as any);
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.delete.mockResolvedValue(undefined);
-      foodRepository.findById.mockResolvedValue(mockFood);
+      foodProductRepository.findById.mockResolvedValue(mockFood);
 
       const result = await service.batchCreateFromExpired(
         batchDto as any,

@@ -22,20 +22,20 @@ export class UpdateFoodWasteDto {
   pantryItemId?: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food that was wasted',
-    example: 'uuid-food-id',
+    description: 'The ID of the food product that was wasted',
+    example: 'uuid-food-product-id',
   })
   @IsOptional()
   @IsUUID()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food category that was wasted',
-    example: 'uuid-food-category-id',
+    description: 'The ID of the generic food that was wasted',
+    example: 'uuid-generic-food-id',
   })
   @IsOptional()
   @IsUUID()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiPropertyOptional({
     description: 'The quantity of food wasted',

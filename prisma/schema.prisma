@@ -619,8 +619,8 @@ model FoodWaste {
   id              String          @id @default(uuid())
   userId          String
   pantryItemId    String?
-  foodId          String?
-  foodCategoryId  String?
+  foodProductId   String?
+  genericFoodId   String?
   quantity        Float
   unit            Unit
   wasteReason     WasteReason
@@ -632,14 +632,14 @@ model FoodWaste {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
-  food         Food?         @relation(fields: [foodId], references: [id], onDelete: Restrict)
-  foodCategory FoodCategory? @relation(fields: [foodCategoryId], references: [id], onDelete: Restrict)
-  pantryItem   PantryItem?   @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  foodProduct FoodProduct? @relation(fields: [foodProductId], references: [id], onDelete: Restrict)
+  genericFood GenericFood? @relation(fields: [genericFoodId], references: [id], onDelete: Restrict)
+  pantryItem  PantryItem?  @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
 
   @@index([userId, wastedAt])
-  @@index([foodId])
-  @@index([foodCategoryId])
+  @@index([foodProductId])
+  @@index([genericFoodId])
   @@index([detectionMethod])
   @@index([wasteReason])
   @@map("food_waste")
