@@ -11,7 +11,6 @@ import {
   PantryItemWithRelations,
 } from '../repositories/pantry-items.repository';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { PrismaService } from '../../database/prisma.service';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
@@ -24,16 +23,19 @@ import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
 import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
-import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
+import {
+  ResolvedExpiryResult,
+  ShelfLifeService,
+} from '../../shelf-life/services/shelf-life.service';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { buildCategoryHints } from '../../common/utils/food-tag.utils';
 
 @Injectable()
 export class PantryItemService {
   private readonly logger = new Logger(PantryItemService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
     private readonly foodCategoryRepository: FoodCategoriesRepository,
@@ -87,55 +89,24 @@ export class PantryItemService {
         tx,
       );
 
-      let resolvedFoodName: string | null = null;
-      let linkedShelfLifeId: string | null = null;
-      if (foodId) {
-        const food = await this.foodRepository.findById(foodId);
-        resolvedFoodName = food?.name ?? null;
-        linkedShelfLifeId = food?.shelfLifeId ?? null;
-      } else if (foodCategoryId) {
-        const foodCategory =
-          await this.foodCategoryRepository.findById(foodCategoryId);
-        resolvedFoodName = foodCategory?.foodName ?? null;
-        linkedShelfLifeId = foodCategory?.shelfLifeId ?? null;
-      }
+      const { foodName, shelfLifeId, categoryHints } =
+        await this.resolveItemMetadata(foodId, foodCategoryId);
 
-      let expiryDate: Date | undefined;
-      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
-
-      if (linkedShelfLifeId) {
-        const shelfLife = await this.prisma.foodShelfLife.findUnique({
-          where: { id: linkedShelfLifeId },
+      const { expiryDate: autoExpiry, source: autoSource } =
+        await this.shelfLifeService.resolveExpiryDate({
+          shelfLifeId,
+          foodName,
+          categoryHints,
         });
-        if (shelfLife) {
-          const storageType = this.shelfLifeService.inferStorageType(shelfLife);
-          const days = this.shelfLifeService.getDaysForStorageType(
-            shelfLife,
-            storageType,
-          );
-          if (days !== null) {
-            expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + days);
-            expiryDateSource = 'auto_foodkeeper';
-          }
-        }
-      } else if (resolvedFoodName) {
-        try {
-          const calcResult =
-            await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
-          if (calcResult.expiryDate) {
-            expiryDate = calcResult.expiryDate;
-            expiryDateSource = 'auto_foodkeeper';
-          }
-        } catch (shelfLifeErr) {
-          if (shelfLifeErr instanceof NotFoundException) {
-            this.logger.warn(
-              `No shelf life data for "${resolvedFoodName}"; expiry date will not be auto-calculated.`,
-            );
-          } else {
-            throw shelfLifeErr;
-          }
-        }
+
+      let expiryDate: Date | undefined = autoExpiry;
+      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined =
+        autoSource;
+
+      if (!expiryDate && foodName) {
+        this.logger.warn(
+          `No shelf life data for "${foodName}"; expiry date will not be auto-calculated.`,
+        );
       }
 
       // Manual expiry date always takes precedence
@@ -481,6 +452,36 @@ export class PantryItemService {
       this.logger.error('Error detecting expired items', error);
       throw handlePrismaError(error, 'detect expired items', 'PantryItem');
     }
+  }
+
+  private async resolveItemMetadata(
+    foodId?: string,
+    foodCategoryId?: string,
+  ): Promise<{
+    foodName: string | null;
+    shelfLifeId: string | null;
+    categoryHints: string[];
+  }> {
+    if (foodId) {
+      const food = await this.foodRepository.findById(foodId);
+      return {
+        foodName: food?.name ?? null,
+        shelfLifeId: food?.shelfLifeId ?? null,
+        categoryHints: buildCategoryHints(food?.categories ?? []),
+      };
+    }
+    if (foodCategoryId) {
+      const foodCategory =
+        await this.foodCategoryRepository.findById(foodCategoryId);
+      return {
+        foodName: foodCategory?.foodName ?? null,
+        shelfLifeId: foodCategory?.shelfLifeId ?? null,
+        categoryHints: foodCategory?.foodGroup
+          ? [foodCategory.foodGroup.toLowerCase()]
+          : [],
+      };
+    }
+    return { foodName: null, shelfLifeId: null, categoryHints: [] };
   }
 
   private transformToResponseDto(
