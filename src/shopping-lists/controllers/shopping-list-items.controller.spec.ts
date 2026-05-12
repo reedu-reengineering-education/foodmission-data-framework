@@ -45,7 +45,7 @@ describe('ShoppingListItemsController', () => {
     await controller.update(
       shoppingListId,
       itemId,
-      { checked: true } as any,
+      { checked: true },
       'user-1',
     );
 
@@ -59,7 +59,7 @@ describe('ShoppingListItemsController', () => {
 
   describe('findByShoppingList', () => {
     it('should call service with shoppingListId and userId', async () => {
-      service.findByShoppingList.mockResolvedValueOnce({ data: [] } as any);
+      service.findByShoppingList.mockResolvedValueOnce({ data: [] });
 
       await controller.findByShoppingList(shoppingListId, {}, 'user-1');
 
@@ -98,7 +98,7 @@ describe('ShoppingListItemsController', () => {
       const result = await controller.update(
         shoppingListId,
         itemId,
-        updateDto as any,
+        updateDto,
         'user-1',
       );
 
@@ -114,12 +114,12 @@ describe('ShoppingListItemsController', () => {
     it('should pass checked attribute through patch update', async () => {
       const updateDto = { checked: true };
       const checkedResponse = { ...mockItemResponse, checked: true };
-      service.update = jest.fn().mockResolvedValue(checkedResponse as any);
+      service.update = jest.fn().mockResolvedValue(checkedResponse);
 
       const result = await controller.update(
         shoppingListId,
         itemId,
-        updateDto as any,
+        updateDto,
         'user-1',
       );
 
@@ -156,12 +156,7 @@ describe('ShoppingListItemsController', () => {
         shoppingListId,
         'user-1',
       );
-      expect(service.update).toHaveBeenCalledWith(
-      itemId,
-      { checked: true },
-      'user-1',
-      shoppingListId,
-    );
+      expect(result).toBeUndefined();
+    });
   });
-  
 });

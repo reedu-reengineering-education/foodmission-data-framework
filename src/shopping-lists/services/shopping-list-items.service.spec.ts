@@ -4,7 +4,6 @@ import { ShoppingListItemService } from './shopping-list-items.service';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
-import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
@@ -115,10 +114,6 @@ describe('ShoppingListItemService', () => {
     findById: jest.fn(),
   };
 
-  const mockFoodCategoriesRepository = {
-    findById: jest.fn(),
-  };
-
   const mockShoppingListRepository = {
     findById: jest.fn(),
   };
@@ -173,7 +168,7 @@ describe('ShoppingListItemService', () => {
     await service.clearCheckedItems('list-1', 'user-1');
 
     expect(repository.clearCheckedItems).toHaveBeenCalled();
-    });
+  });
   describe('findAll', () => {
     it('should return all shopping list items with filters', async () => {
       const query: QueryShoppingListItemDto = {
