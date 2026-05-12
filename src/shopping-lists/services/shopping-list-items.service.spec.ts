@@ -10,7 +10,6 @@ import { ShoppingListItemService } from './shopping-list-items.service';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
-import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
