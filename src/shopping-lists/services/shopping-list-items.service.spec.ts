@@ -11,6 +11,7 @@ import { ShoppingListItemRepository } from '../repositories/shopping-list-items.
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
+import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
