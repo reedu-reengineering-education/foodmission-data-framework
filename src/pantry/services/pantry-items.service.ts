@@ -202,8 +202,9 @@ export class PantryItemService {
       }
       return foodCategory;
     }
-    throw new BadRequestException(
-      'Either foodId or foodCategoryId is required.',
+
+    throw new Error(
+      'ensureUniqueAndExists called without foodId or foodCategoryId',
     );
   }
 
