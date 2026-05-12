@@ -11,7 +11,6 @@ import { ShoppingListItemRepository } from '../repositories/shopping-list-items.
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
-import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
@@ -243,11 +242,7 @@ describe('ShoppingListItemService', () => {
         foodProductId: 'new-food-1',
       });
 
-      await service.update(
-        'item-1',
-        { foodProductId: 'new-food-1' } as UpdateShoppingListItemDto,
-        'user-1',
-      );
+      await service.update('item-1', { foodProductId: 'new-food-1' }, 'user-1');
 
       expect(foodProductRepository.findById).toHaveBeenCalledWith('new-food-1');
     });
