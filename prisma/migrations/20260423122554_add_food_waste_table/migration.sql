@@ -9,7 +9,8 @@ CREATE TABLE "food_waste" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "pantryItemId" TEXT,
-    "foodId" TEXT NOT NULL,
+    "foodProductId" TEXT,
+    "genericFoodId" TEXT,
     "quantity" DOUBLE PRECISION NOT NULL,
     "unit" "Unit" NOT NULL,
     "wasteReason" "WasteReason" NOT NULL,
@@ -28,7 +29,10 @@ CREATE TABLE "food_waste" (
 CREATE INDEX "food_waste_userId_wastedAt_idx" ON "food_waste"("userId", "wastedAt");
 
 -- CreateIndex
-CREATE INDEX "food_waste_foodId_idx" ON "food_waste"("foodId");
+CREATE INDEX "food_waste_foodProductId_idx" ON "food_waste"("foodProductId");
+
+-- CreateIndex
+CREATE INDEX "food_waste_genericFoodId_idx" ON "food_waste"("genericFoodId");
 
 -- CreateIndex
 CREATE INDEX "food_waste_detectionMethod_idx" ON "food_waste"("detectionMethod");
@@ -40,7 +44,10 @@ CREATE INDEX "food_waste_wasteReason_idx" ON "food_waste"("wasteReason");
 ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_foodId_fkey" FOREIGN KEY ("foodId") REFERENCES "foods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_foodProductId_fkey" FOREIGN KEY ("foodProductId") REFERENCES "food_products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_genericFoodId_fkey" FOREIGN KEY ("genericFoodId") REFERENCES "generic_foods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_pantryItemId_fkey" FOREIGN KEY ("pantryItemId") REFERENCES "pantry_items"("id") ON DELETE SET NULL ON UPDATE CASCADE;
