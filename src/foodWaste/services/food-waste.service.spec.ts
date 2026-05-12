@@ -447,7 +447,7 @@ describe('FoodWasteService', () => {
         },
         mostWastedFoods: [
           {
-            foodId: 'food-1',
+            itemId: 'food-1',
             foodName: 'Test Food',
             totalQuantity: 5,
             count: 3,

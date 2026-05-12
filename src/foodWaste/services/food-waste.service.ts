@@ -561,8 +561,8 @@ export class FoodWasteService {
             {
               userId,
               pantryItemId: item.pantryItemId,
-              foodId: pantryItem.foodId ?? undefined,
-              foodCategoryId: pantryItem.foodCategoryId ?? undefined,
+              foodProductId: pantryItem.foodProductId ?? undefined,
+              genericFoodId: pantryItem.genericFoodId ?? undefined,
               quantity,
               unit,
               wasteReason: WasteReason.EXPIRED,

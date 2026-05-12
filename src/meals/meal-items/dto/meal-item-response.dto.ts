@@ -25,14 +25,14 @@ export class MealItemResponseDto {
   itemType: 'food_product' | 'generic_food';
 
   @ApiPropertyOptional({
-    description: 'UUID of the specific food product (if itemType is "food")',
+    description: 'UUID of the specific food product (if itemType is "food_product")',
     example: '550e8400-e29b-41d4-a716-446655440002',
     nullable: true,
   })
   foodProductId: string | null;
 
   @ApiPropertyOptional({
-    description: 'UUID of the food category (if itemType is "food_category")',
+    description: 'UUID of the generic food (if itemType is "generic_food")',
     example: '550e8400-e29b-41d4-a716-446655440003',
     nullable: true,
   })
@@ -59,14 +59,14 @@ export class MealItemResponseDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'Food product details (if itemType is "food")',
+    description: 'Food product details (if itemType is "food_product")',
     type: () => FoodProductResponseDto,
     nullable: true,
   })
   foodProduct?: FoodProductResponseDto | null;
 
   @ApiPropertyOptional({
-    description: 'Food category details (if itemType is "food_category")',
+    description: 'Generic food details (if itemType is "generic_food")',
     type: () => GenericFoodResponseDto,
     nullable: true,
   })

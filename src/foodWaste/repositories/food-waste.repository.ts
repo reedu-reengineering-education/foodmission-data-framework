@@ -40,7 +40,7 @@ export interface FoodWasteStatistics {
   wasteByReason: Record<WasteReason, number>;
   wasteByMethod: Record<DetectionMethod, number>;
   mostWastedFoods: Array<{
-    foodId: string;
+    itemId: string;
     foodName: string;
     totalQuantity: number;
     count: number;
@@ -228,7 +228,7 @@ export class FoodWasteRepository implements BaseRepository<
 
         if (!acc[key]) {
           acc[key] = {
-            foodId: key,
+            itemId: key,
             foodName: name,
             totalQuantity: 0,
             count: 0,

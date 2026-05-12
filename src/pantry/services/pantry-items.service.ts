@@ -460,11 +460,11 @@ export class PantryItemService {
 
       return filteredItems.map((item) => ({
         pantryItemId: item.id,
-        foodId: item.foodId,
+        foodProductId: item.foodProductId,
         quantity: item.quantity,
         unit: item.unit,
         expiryDate: item.expiryDate as Date, // Query guarantees non-null via lt filter
-        food: item.food,
+        food: item.foodProduct,
         suggestedWasteReason: WasteReason.EXPIRED,
         suggestedDetectionMethod: DetectionMethod.AUTOMATIC,
       }));

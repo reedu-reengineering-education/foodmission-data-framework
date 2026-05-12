@@ -70,7 +70,7 @@ export const TEST_FOOD_WASTE_STATISTICS = {
     { method: DetectionMethod.AUTOMATIC, count: 4 },
   ],
   mostWastedFoods: [
-    { foodId: 'food-1', foodName: 'Test Food', totalQuantity: 5, count: 3 },
+    { itemId: 'food-1', foodName: 'Test Food', totalQuantity: 5, count: 3 },
   ],
 };
 

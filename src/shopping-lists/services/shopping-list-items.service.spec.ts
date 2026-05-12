@@ -21,9 +21,9 @@ describe('ShoppingListItemService', () => {
     quantity: 1,
     unit: 'KG',
     shoppingList: { id: 'list-1', userId: 'user-1' },
-    itemType: 'food' as const,
-    foodId: 'food-1',
-    foodCategoryId: null,
+    itemType: 'food_product' as const,
+    foodProductId: 'food-1',
+    genericFoodId: null,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
     shoppingList: {
@@ -33,7 +33,7 @@ describe('ShoppingListItemService', () => {
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },
-    food: {
+    foodProduct: {
       id: 'food-1',
       name: 'Test Food',
       description: null,
@@ -98,7 +98,7 @@ describe('ShoppingListItemService', () => {
       // Data quality
       completeness: null,
     },
-    foodCategory: null,
+    genericFood: null,
   } as any; // Type assertion for test mock with polymorphic fields
 
   const mockShoppingList = {
@@ -187,7 +187,7 @@ describe('ShoppingListItemService', () => {
 
       expect(repository.findMany).toHaveBeenCalledWith({
         shoppingListId: 'list-1',
-        foodId: undefined,
+        foodProductId: undefined,
         checked: false,
         unit: undefined,
       });
@@ -207,7 +207,7 @@ describe('ShoppingListItemService', () => {
 
       expect(repository.findMany).toHaveBeenCalledWith({
         shoppingListId: undefined,
-        foodId: undefined,
+        foodProductId: undefined,
         checked: undefined,
         unit: 'KG',
       });
@@ -250,7 +250,7 @@ describe('ShoppingListItemService', () => {
     it('should handle findAll with all filters', async () => {
       const query: QueryShoppingListItemDto = {
         shoppingListId: 'list-1',
-        foodId: 'food-1',
+        foodProductId: 'food-1',
         checked: true,
         unit: 'KG',
       };
@@ -290,7 +290,7 @@ describe('ShoppingListItemService', () => {
       repository.findByShoppingListId.mockResolvedValue([mockShoppingListItem]);
 
       const result = await service.findByShoppingList('list-1', 'user-1', {
-        foodId: '',
+        foodProductId: '',
         checked: '' as any,
         unit: '' as any,
       });
@@ -388,18 +388,18 @@ describe('ShoppingListItemService', () => {
       expect(result.checked).toBe(true);
     });
 
-    it('should validate food exists when foodId is updated', async () => {
+    it('should validate food exists when foodProductId is updated', async () => {
       const itemId = 'item-1';
       const userId = 'user-1';
       const updateDto: UpdateShoppingListItemDto = {
-        foodId: 'new-food-1',
+        foodProductId: 'new-food-1',
       };
 
       repository.findById.mockResolvedValue(mockShoppingListItem);
       mockFoodRepository.findById.mockResolvedValue(mockFood);
       repository.update.mockResolvedValue({
         ...mockShoppingListItem,
-        foodId: 'new-food-1',
+        foodProductId: 'new-food-1',
       });
 
       await service.update(itemId, updateDto, userId);
@@ -520,7 +520,7 @@ describe('ShoppingListItemService', () => {
       expect(result.checked).toBe(true);
     });
 
-    it('should not validate food when foodId is not in updateDto', async () => {
+    it('should not validate food when foodProductId is not in updateDto', async () => {
       const itemId = 'item-1';
       const userId = 'user-1';
       const updateDto: UpdateShoppingListItemDto = {
