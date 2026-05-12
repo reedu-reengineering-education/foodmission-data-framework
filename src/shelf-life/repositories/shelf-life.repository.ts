@@ -79,6 +79,7 @@ export class ShelfLifeRepository {
           categoryName: { contains: hint, mode: 'insensitive' as const },
         })),
       },
+      orderBy: { id: 'asc' },
     });
   }
 

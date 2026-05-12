@@ -22,7 +22,14 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
 import { FoodRepository } from '../../foods/repositories/food.repository';
-import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
+import {
+  Food,
+  FoodCategory,
+  Prisma,
+  Unit,
+  WasteReason,
+  DetectionMethod,
+} from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 import { handlePrismaError } from '../../common/utils/error.utils';
@@ -86,15 +93,28 @@ export class PantryItemService {
       const { foodId, foodCategoryId } = createDto;
       this.validateFoodOrCategoryInput(foodId, foodCategoryId);
 
-      await this.ensureUniqueAndExists(
+      const validatedEntity = await this.ensureUniqueAndExists(
         resolvedPantryId,
         foodId,
         foodCategoryId,
         tx,
       );
 
-      const { foodName, shelfLifeId, categoryHints } =
-        await this.resolveItemMetadata(foodId, foodCategoryId);
+      const { foodName, shelfLifeId, categoryHints } = foodId
+        ? {
+            foodName: (validatedEntity as Food).name ?? null,
+            shelfLifeId: (validatedEntity as Food).shelfLifeId ?? null,
+            categoryHints: buildCategoryHints(
+              (validatedEntity as Food).categories ?? [],
+            ),
+          }
+        : {
+            foodName: (validatedEntity as FoodCategory).foodName ?? null,
+            shelfLifeId: (validatedEntity as FoodCategory).shelfLifeId ?? null,
+            categoryHints: (validatedEntity as FoodCategory).foodGroup
+              ? [(validatedEntity as FoodCategory).foodGroup.toLowerCase()]
+              : [],
+          };
 
       const { expiryDate: autoExpiry, source: autoSource } =
         await this.shelfLifeService.resolveExpiryDate({
@@ -107,7 +127,7 @@ export class PantryItemService {
       let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined =
         autoSource;
 
-      if (!expiryDate && foodName) {
+      if (!expiryDate && foodName && !createDto.expiryDate) {
         this.logger.warn(
           `No shelf life data for "${foodName}"; expiry date will not be auto-calculated.`,
         );
@@ -458,36 +478,6 @@ export class PantryItemService {
       this.logger.error('Error detecting expired items', error);
       throw handlePrismaError(error, 'detect expired items', 'PantryItem');
     }
-  }
-
-  private async resolveItemMetadata(
-    foodId?: string,
-    foodCategoryId?: string,
-  ): Promise<{
-    foodName: string | null;
-    shelfLifeId: string | null;
-    categoryHints: string[];
-  }> {
-    if (foodId) {
-      const food = await this.foodRepository.findById(foodId);
-      return {
-        foodName: food?.name ?? null,
-        shelfLifeId: food?.shelfLifeId ?? null,
-        categoryHints: buildCategoryHints(food?.categories ?? []),
-      };
-    }
-    if (foodCategoryId) {
-      const foodCategory =
-        await this.foodCategoryRepository.findById(foodCategoryId);
-      return {
-        foodName: foodCategory?.foodName ?? null,
-        shelfLifeId: foodCategory?.shelfLifeId ?? null,
-        categoryHints: foodCategory?.foodGroup
-          ? [foodCategory.foodGroup.toLowerCase()]
-          : [],
-      };
-    }
-    return { foodName: null, shelfLifeId: null, categoryHints: [] };
   }
 
   private transformToResponseDto(
