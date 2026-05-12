@@ -1,5 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ShoppingListItemService } from './shopping-list-items.service';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
@@ -7,6 +13,7 @@ import { GenericFoodRepository } from '../../generic-foods/repositories/generic-
 import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { QueryShoppingListItemDto } from '../dto/query-shopping-list-item.dto';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
+import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
 
 describe('ShoppingListItemService', () => {
   let service: ShoppingListItemService;
@@ -19,7 +26,6 @@ describe('ShoppingListItemService', () => {
     checked: false,
     quantity: 1,
     unit: 'KG',
-    shoppingList: { id: 'list-1', userId: 'user-1' },
     itemType: 'food_product' as const,
     foodProductId: 'food-1',
     genericFoodId: null,
@@ -99,6 +105,8 @@ describe('ShoppingListItemService', () => {
     },
     genericFood: null,
   } as any; // Type assertion for test mock with polymorphic fields
+
+  const mockShoppingListItem = mockItem;
 
   const mockShoppingList = {
     id: 'list-1',

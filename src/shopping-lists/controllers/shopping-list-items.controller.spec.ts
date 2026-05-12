@@ -11,6 +11,20 @@ describe('ShoppingListItemsController', () => {
   const shoppingListId = '98e6c344-5fbe-400c-a682-ecca1e5fbfe4';
   const itemId = 'e4e562a0-5e11-4f7f-b951-7fce2d2686d1';
 
+  const mockItemResponse: any = {
+    id: itemId,
+    shoppingListId,
+    checked: false,
+    quantity: 1,
+    unit: 'KG',
+    itemType: 'food_product',
+    foodProductId: 'food-1',
+    genericFoodId: null,
+    notes: null,
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
+  };
+
   beforeEach(async () => {
     const mockService: Partial<jest.Mocked<ShoppingListItemService>> = {
       findById: jest.fn(),

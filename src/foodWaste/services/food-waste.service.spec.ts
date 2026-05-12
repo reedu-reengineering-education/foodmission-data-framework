@@ -27,7 +27,7 @@ describe('FoodWasteService', () => {
   let prismaService: { $transaction: jest.Mock };
 
   const mockFoodWaste = { ...TEST_FOOD_WASTE };
-  const mockFood = { ...TEST_FOOD };
+  const mockFood: any = { ...TEST_FOOD };
 
   const mockPantryItem = {
     id: 'pantry-item-1',
@@ -113,10 +113,7 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(
-        TEST_CREATE_FOOD_WASTE_DTO as any,
-        userId,
-      );
+      const result = await service.create(TEST_CREATE_FOOD_WASTE_DTO, userId);
 
       expect(result).toBeDefined();
       expect(result.id).toBe(mockFoodWaste.id);
@@ -162,10 +159,7 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(
-        TEST_CREATE_FOOD_WASTE_DTO as any,
-        userId,
-      );
+      const result = await service.create(TEST_CREATE_FOOD_WASTE_DTO, userId);
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.delete).toHaveBeenCalledWith(
@@ -191,7 +185,7 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(dtoWithPantryItem as any, userId);
+      const result = await service.create(dtoWithPantryItem, userId);
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.update).toHaveBeenCalledWith(
@@ -218,7 +212,7 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(dtoWithPantryItem as any, userId);
+      const result = await service.create(dtoWithPantryItem, userId);
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.update).toHaveBeenCalledWith(
@@ -244,7 +238,7 @@ describe('FoodWasteService', () => {
         async (callback) => await callback({}),
       );
 
-      const result = await service.create(dtoWithPantryItem as any, userId);
+      const result = await service.create(dtoWithPantryItem, userId);
 
       expect(result).toBeDefined();
       expect(pantryItemRepository.delete).toHaveBeenCalledWith(
@@ -268,10 +262,7 @@ describe('FoodWasteService', () => {
         mockPaginatedResult,
       );
 
-      const result = await service.findAll(
-        'user-1',
-        TEST_QUERY_FOOD_WASTE_DTO as any,
-      );
+      const result = await service.findAll('user-1', TEST_QUERY_FOOD_WASTE_DTO);
 
       expect(result).toBeDefined();
       expect(result.total).toBe(2);
@@ -351,7 +342,7 @@ describe('FoodWasteService', () => {
 
       const result = await service.update(
         'food-waste-1',
-        TEST_UPDATE_FOOD_WASTE_DTO as any,
+        TEST_UPDATE_FOOD_WASTE_DTO,
         'user-1',
       );
 
@@ -623,10 +614,7 @@ describe('FoodWasteService', () => {
       pantryItemRepository.delete.mockResolvedValue(undefined);
       foodProductRepository.findById.mockResolvedValue(mockFood);
 
-      const result = await service.batchCreateFromExpired(
-        batchDto as any,
-        'user-1',
-      );
+      const result = await service.batchCreateFromExpired(batchDto, 'user-1');
 
       expect(result).toBeDefined();
       expect(result.successCount).toBe(1);
@@ -652,10 +640,7 @@ describe('FoodWasteService', () => {
       pantryItemRepository.delete.mockResolvedValue(undefined);
       foodProductRepository.findById.mockResolvedValue(mockFood);
 
-      const result = await service.batchCreateFromExpired(
-        batchDto as any,
-        'user-1',
-      );
+      const result = await service.batchCreateFromExpired(batchDto, 'user-1');
 
       expect(result.successCount).toBe(1);
       expect(result.errorCount).toBe(1);
@@ -675,10 +660,7 @@ describe('FoodWasteService', () => {
         otherUserPantryItem as any,
       );
 
-      const result = await service.batchCreateFromExpired(
-        batchDto as any,
-        'user-1',
-      );
+      const result = await service.batchCreateFromExpired(batchDto, 'user-1');
 
       expect(result.successCount).toBe(0);
       expect(result.errorCount).toBe(1);
