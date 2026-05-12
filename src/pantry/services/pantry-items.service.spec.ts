@@ -580,7 +580,9 @@ describe('PantryItemService', () => {
         expect(mockShelfLifeService.calculateExpiryDate).toHaveBeenCalledWith(
           'Cashew Cookie Fruit & Nut Bar',
         );
-        expect(mockPrismaService.foodShelfLife.findUnique).not.toHaveBeenCalled();
+        expect(
+          mockPrismaService.foodShelfLife.findUnique,
+        ).not.toHaveBeenCalled();
         const createCall = mockPantryItemRepository.create.mock.calls[0][0];
         expect(createCall.expiryDate).toEqual(manualExpiry);
         expect(createCall.expiryDateSource).toBe('manual');
