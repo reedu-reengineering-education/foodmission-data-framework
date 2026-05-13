@@ -95,7 +95,7 @@ describe('getFoodRefName', () => {
   it('should throw if foodProduct relation is not loaded', () => {
     const item = { itemType: 'food_product' };
     expect(() => getFoodRefName(item)).toThrow(
-      'foodProduct relation not loaded for item with itemType \'food_product\'',
+      "foodProduct relation not loaded for item with itemType 'food_product'",
     );
   });
 });
