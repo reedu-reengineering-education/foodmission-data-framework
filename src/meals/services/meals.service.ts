@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealsRepository } from '../repositories/meals.repository';
 import { CreateMealDto } from '../dto/create-meal.dto';
@@ -10,6 +15,8 @@ import {
 import { QueryMealDto } from '../dto/query-meal.dto';
 import { DietaryLabel, MealCategory, MealCourse, Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
+import { handlePrismaError } from '../../common/utils/error.utils';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 type MealDtoSource = {
   id: string;
@@ -60,13 +67,25 @@ export class MealsService {
       }
     }
 
-    const meal = await this.mealRepository.create({
-      name: createMealDto.name,
-      ...this.mapMealWriteInput(createMealDto),
-      userId,
-    });
-
-    return this.toResponseDto(meal);
+    try {
+      const meal = await this.mealRepository.create({
+        name: createMealDto.name,
+        ...this.mapMealWriteInput(createMealDto),
+        userId,
+      });
+      return this.toResponseDto(meal);
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2003' &&
+        createMealDto.recipeId
+      ) {
+        throw new NotFoundException(
+          `Recipe with id '${createMealDto.recipeId}' not found`,
+        );
+      }
+      throw handlePrismaError(error, 'create meal', 'Meal');
+    }
   }
 
   async findAll(
@@ -135,10 +154,23 @@ export class MealsService {
       throw new ConflictException('Meal with this barcode already exists');
     }
 
-    const updated = await this.mealRepository.update(id, {
-      ...this.mapMealWriteInput(updateMealDto),
-    });
-    return this.toResponseDto(updated);
+    try {
+      const updated = await this.mealRepository.update(id, {
+        ...this.mapMealWriteInput(updateMealDto),
+      });
+      return this.toResponseDto(updated);
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2003' &&
+        updateMealDto.recipeId
+      ) {
+        throw new NotFoundException(
+          `Recipe with id '${updateMealDto.recipeId}' not found`,
+        );
+      }
+      throw handlePrismaError(error, 'update meal', 'Meal');
+    }
   }
 
   async remove(id: string, userId: string): Promise<void> {
