@@ -39,8 +39,9 @@ export class FoodProductQueryDto {
 }
 
 export class FoodProductSearchDto {
+  @IsOptional()
   @IsString()
-  query!: string;
+  query?: string;
 
   @IsOptional()
   @IsString()

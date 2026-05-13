@@ -12,8 +12,7 @@ the FOODMISSION Data Framework.
 - **`seed-prod.ts`** — Production-oriented pipeline: NEVO (create-only) → OFF JSON → recipes → FoodKeeper → shelf-life links (`npm run db:seed:prod`)
 - **`seed-nevo.ts`** — Standalone NEVO CSV → `generic_foods` (create-only); also runnable as CLI
 - **`seed-prod-nevo.ts`** — NEVO import then recipe seeding (subset prod workflow)
-- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:food-products`); destructive — use only when you intend to replace the catalog
-- **`seed-foods-only.ts`** - Seed only food-related data
+- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive — use only when you intend to replace the catalog
 - **`migration-utils.ts`** - Migration helper utilities
 - **`db-reset.sh`** - Reset local database state
 - **`init-test-db.sql`** - Test DB bootstrap SQL

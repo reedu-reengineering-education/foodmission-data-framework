@@ -24,7 +24,7 @@ import {
   createMockPantryItemRepository,
   createMockPantryService,
   createMockGenericFoodRepository,
-  createMockFoodRepository,
+  createMockFoodProductRepository,
   createMockShelfLifeService,
   createMockPantryItemWithRelations,
   setupSuccessfulCreateMocks,
@@ -50,7 +50,7 @@ describe('PantryItemService', () => {
   const mockPantryItemRepository = createMockPantryItemRepository();
   const mockPantryService = createMockPantryService();
   const mockGenericFoodRepository = createMockGenericFoodRepository();
-  const mockFoodRepository = createMockFoodRepository();
+  const mockFoodRepository = createMockFoodProductRepository();
   const mockShelfLifeService = createMockShelfLifeService();
 
   beforeEach(async () => {

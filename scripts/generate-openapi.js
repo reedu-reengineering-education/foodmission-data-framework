@@ -74,7 +74,7 @@ async function generateOpenApiSpec() {
         'Authentication and authorization endpoints for Keycloak integration',
       )
       .addTag(
-        'foods',
+        'food-products',
         'Food product catalog with OpenFoodFacts integration for nutritional data',
       )
       .addTag(

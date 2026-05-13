@@ -29,7 +29,7 @@ export function createMockGenericFoodRepository() {
   };
 }
 
-export function createMockFoodRepository() {
+export function createMockFoodProductRepository() {
   return {
     findById: jest.fn(),
   };
@@ -55,7 +55,7 @@ export function createMockPantryItemWithRelations() {
     expiryDate: TEST_DATES.EXPIRY,
     pantryId: TEST_IDS.PANTRY,
     foodProductId: TEST_IDS.FOOD,
-    genericFoodId: undefined,
+    genericFoodId: null,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
     pantry: {
@@ -72,7 +72,7 @@ export function createMockPantryItemWithRelations() {
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     },
-    genericFood: undefined,
+    genericFood: null,
   };
 }
 

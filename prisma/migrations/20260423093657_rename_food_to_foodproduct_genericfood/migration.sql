@@ -120,6 +120,26 @@ ADD COLUMN     "foodProductId" TEXT,
 ADD COLUMN     "genericFoodId" TEXT,
 ALTER COLUMN "itemType" SET DEFAULT 'food_product';
 
+-- Migrate food_waste for existing databases.
+-- On a fresh database food_waste does not exist at this point; it is created
+-- later by migration 20260423122554_add_food_waste_table.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'food_waste' AND column_name = 'foodId'
+  ) THEN
+    ALTER TABLE "food_waste" DROP CONSTRAINT IF EXISTS "food_waste_foodId_fkey";
+    ALTER TABLE "food_waste" DROP CONSTRAINT IF EXISTS "food_waste_foodCategoryId_fkey";
+    DROP INDEX IF EXISTS "food_waste_foodId_idx";
+    DROP INDEX IF EXISTS "food_waste_foodCategoryId_idx";
+    ALTER TABLE "food_waste" ADD COLUMN IF NOT EXISTS "foodProductId" TEXT;
+    ALTER TABLE "food_waste" ADD COLUMN IF NOT EXISTS "genericFoodId" TEXT;
+    ALTER TABLE "food_waste" DROP COLUMN "foodId";
+    ALTER TABLE "food_waste" DROP COLUMN IF EXISTS "foodCategoryId";
+  END IF;
+END $$;
+
 -- DropTable
 DROP TABLE "food_categories";
 
@@ -452,3 +472,20 @@ ALTER TABLE "recipe_ingredients" ADD CONSTRAINT "recipe_ingredients_foodProductI
 
 -- AddForeignKey
 ALTER TABLE "recipe_ingredients" ADD CONSTRAINT "recipe_ingredients_genericFoodId_fkey" FOREIGN KEY ("genericFoodId") REFERENCES "generic_foods"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey and CreateIndex for food_waste (existing databases only).
+-- On a fresh database food_waste is created after this migration runs, so these
+-- statements are skipped; the subsequent migration adds them instead.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'food_waste') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'food_waste_foodProductId_fkey') THEN
+      CREATE INDEX IF NOT EXISTS "food_waste_foodProductId_idx" ON "food_waste"("foodProductId");
+      CREATE INDEX IF NOT EXISTS "food_waste_genericFoodId_idx" ON "food_waste"("genericFoodId");
+      ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_foodProductId_fkey"
+        FOREIGN KEY ("foodProductId") REFERENCES "food_products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+      ALTER TABLE "food_waste" ADD CONSTRAINT "food_waste_genericFoodId_fkey"
+        FOREIGN KEY ("genericFoodId") REFERENCES "generic_foods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    END IF;
+  END IF;
+END $$;

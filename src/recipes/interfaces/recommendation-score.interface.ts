@@ -1,6 +1,6 @@
-import { FoodProductResponseDto } from '../../food-products/dto/food-product-response.dto';
-import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
-import { Recipe, RecipeIngredient } from '@prisma/client';
+import { RecipeWithIngredients } from '../../common/types/prisma-relations';
+
+export { RecipeWithIngredients };
 
 export interface IngredientMatch {
   recipeIngredientId: string;
@@ -11,13 +11,6 @@ export interface IngredientMatch {
   isExpiringSoon: boolean;
   daysUntilExpiry: number | null;
 }
-
-export type RecipeWithIngredients = Recipe & {
-  ingredients: (RecipeIngredient & {
-    foodProduct: FoodProductResponseDto | null;
-    genericFood: GenericFoodResponseDto | null;
-  })[];
-};
 
 export interface RecipeRecommendationScore {
   recipeId: string;
