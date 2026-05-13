@@ -92,8 +92,10 @@ describe('getFoodRefName', () => {
     expect(getFoodRefName(item)).toBe('Vegetable');
   });
 
-  it('should return Unknown Item if no name found', () => {
+  it('should throw if foodProduct relation is not loaded', () => {
     const item = { itemType: 'food_product' };
-    expect(getFoodRefName(item)).toBe('Unknown Item');
+    expect(() => getFoodRefName(item)).toThrow(
+      'foodProduct relation not loaded for item with itemType \'food_product\'',
+    );
   });
 });
