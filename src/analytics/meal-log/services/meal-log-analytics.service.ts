@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
-import { MealLogAnalyticsAggregator, DemographicDimension } from './meal-log-analytics-aggregator.service';
+import {
+  MealLogAnalyticsAggregator,
+  DemographicDimension,
+} from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
 
 @Injectable()
@@ -85,10 +88,8 @@ export class MealLogAnalyticsService {
         result.sustainability.map((r) => ({
           ...r,
           batchId: batch.id,
-          nutriScoreDistribution:
-            r.nutriScoreDistribution ?? Prisma.JsonNull,
-          ecoScoreDistribution:
-            r.ecoScoreDistribution ?? Prisma.JsonNull,
+          nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+          ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
         })),
       );
     }
@@ -156,11 +157,7 @@ export class MealLogAnalyticsService {
   // Public data — per dimension
   // ============================================================
 
-  async getPublishedNutrition(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  async getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
     return this.repository.getPublishedNutrition(from, to, typeOfMeal);
   }
 
@@ -168,11 +165,7 @@ export class MealLogAnalyticsService {
     return this.repository.getPublishedFoodPopularity(from, to, limit);
   }
 
-  async getPublishedMealPatterns(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  async getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
     return this.repository.getPublishedMealPatterns(from, to, typeOfMeal);
   }
 
@@ -368,7 +361,7 @@ export class MealLogAnalyticsService {
   async approveBatch(batchId: string, adminUserId: string) {
     const batch = await this.getBatch(batchId);
     if (batch.status !== MealLogAnalyticsBatchStatus.STAGING) {
-      throw new BadRequestException(
+      throw new Error(
         `Batch is ${batch.status}, can only approve STAGING batches`,
       );
     }
@@ -382,7 +375,7 @@ export class MealLogAnalyticsService {
   async publishBatch(batchId: string, adminUserId: string) {
     const batch = await this.getBatch(batchId);
     if (batch.status !== MealLogAnalyticsBatchStatus.APPROVED) {
-      throw new BadRequestException(
+      throw new Error(
         `Batch is ${batch.status}, can only publish APPROVED batches`,
       );
     }

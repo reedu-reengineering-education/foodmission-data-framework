@@ -1,6 +1,8 @@
 import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
+import { MealLogAnalyticsBatchStatus } from '@prisma/client';
+import { NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
   let service: MealLogAnalyticsService;
@@ -13,6 +15,8 @@ describe('MealLogAnalyticsService', () => {
       getPublishedMealPatterns: jest.fn(),
       getPublishedSustainability: jest.fn(),
       getPublishedMealClassification: jest.fn(),
+      findBatchById: jest.fn(),
+      updateBatchStatus: jest.fn(),
     } as unknown as jest.Mocked<MealLogAnalyticsRepository>;
 
     service = new MealLogAnalyticsService(
@@ -69,5 +73,81 @@ describe('MealLogAnalyticsService', () => {
     expect(result.classification.avgVegetarianPct).toBe(30);
     expect(result.classification.avgVeganPct).toBe(20);
     expect(result.classification.avgUltraProcessedPct).toBe(60);
+  });
+
+  describe('approveBatch', () => {
+    it('should approve a STAGING batch', async () => {
+      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+      const approved = {
+        ...batch,
+        status: MealLogAnalyticsBatchStatus.APPROVED,
+      };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+      repository.updateBatchStatus.mockResolvedValueOnce(approved as any);
+
+      const result = await service.approveBatch('b1', 'admin1');
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'b1',
+        MealLogAnalyticsBatchStatus.APPROVED,
+        'admin1',
+      );
+      expect(result).toEqual(approved);
+    });
+
+    it('should throw Error for non-STAGING batch', async () => {
+      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.PUBLISHED };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+
+      await expect(service.approveBatch('b1', 'admin1')).rejects.toThrow(
+        'Batch is PUBLISHED, can only approve STAGING batches',
+      );
+    });
+
+    it('should throw NotFoundException if batch not found', async () => {
+      repository.findBatchById.mockResolvedValueOnce(null);
+
+      await expect(service.approveBatch('missing', 'admin1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('publishBatch', () => {
+    it('should publish an APPROVED batch', async () => {
+      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.APPROVED };
+      const published = {
+        ...batch,
+        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+      };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+      repository.updateBatchStatus.mockResolvedValueOnce(published as any);
+
+      const result = await service.publishBatch('b1', 'admin1');
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'b1',
+        MealLogAnalyticsBatchStatus.PUBLISHED,
+        'admin1',
+      );
+      expect(result).toEqual(published);
+    });
+
+    it('should throw Error for non-APPROVED batch', async () => {
+      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+
+      await expect(service.publishBatch('b1', 'admin1')).rejects.toThrow(
+        'Batch is STAGING, can only publish APPROVED batches',
+      );
+    });
+
+    it('should throw NotFoundException if batch not found', async () => {
+      repository.findBatchById.mockResolvedValueOnce(null);
+
+      await expect(service.publishBatch('missing', 'admin1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 });
