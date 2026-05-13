@@ -258,9 +258,7 @@ describe('CacheEvictInterceptor', () => {
       );
       const next = createMockCallHandler('result');
 
-      reflector.getAllAndOverride.mockReturnValue([
-        'food-products:detail',
-      ]);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:detail']);
 
       const result = interceptor.intercept(context, next);
       await result.toPromise();
