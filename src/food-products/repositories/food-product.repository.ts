@@ -22,12 +22,15 @@ export type FoodProductCreateInput = CreateFoodProductDto & {
 };
 
 @Injectable()
-export class FoodProductRepository implements BaseRepository<
-  FoodProduct,
-  FoodProductCreateInput,
-  UpdateFoodProductDto,
-  Prisma.FoodProductWhereInput
-> {
+export class FoodProductRepository
+  implements
+    BaseRepository<
+      FoodProduct,
+      FoodProductCreateInput,
+      UpdateFoodProductDto,
+      Prisma.FoodProductWhereInput
+    >
+{
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(
@@ -45,7 +48,7 @@ export class FoodProductRepository implements BaseRepository<
         (options.orderBy as Prisma.FoodProductOrderByWithRelationInput) || {
           createdAt: 'desc',
         },
-      include: options.include as Prisma.FoodProductInclude,
+      include: options.include,
     });
   }
 
@@ -71,7 +74,7 @@ export class FoodProductRepository implements BaseRepository<
       Prisma.FoodProductOrderByWithRelationInput,
       Prisma.FoodProductInclude
     > = {},
-  ): Promise<PaginatedResult<FoodProductWithRelations>> {
+  ): Promise<PaginatedResult<FoodProduct>> {
     const { skip = 0, take = 10, where, orderBy, include } = options;
     const { skip: safeSkip, take: safeTake } = normalizePagination(skip, take);
 
@@ -81,7 +84,7 @@ export class FoodProductRepository implements BaseRepository<
         take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
-        include: include || FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: include,
       }),
       this.count(where),
     ]);

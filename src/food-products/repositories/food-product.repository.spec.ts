@@ -313,7 +313,7 @@ describe('FoodProductRepository', () => {
         take: 10,
         where: undefined,
         orderBy: { createdAt: 'desc' },
-        include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: undefined,
       });
       expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({
         where: undefined,
@@ -346,7 +346,7 @@ describe('FoodProductRepository', () => {
           take,
           where: undefined,
           orderBy: { createdAt: 'desc' },
-          include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+          include: undefined,
         });
       },
     );
@@ -366,7 +366,7 @@ describe('FoodProductRepository', () => {
         take: 10,
         where: undefined,
         orderBy: { createdAt: 'desc' },
-        include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: undefined,
       });
     });
 
@@ -389,7 +389,7 @@ describe('FoodProductRepository', () => {
         take: 10,
         where,
         orderBy: { createdAt: 'desc' },
-        include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: undefined,
       });
       expect(mockPrismaService.foodProduct.count).toHaveBeenCalledWith({
         where,
@@ -415,7 +415,7 @@ describe('FoodProductRepository', () => {
         take: 10,
         where: undefined,
         orderBy,
-        include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: undefined,
       });
     });
 
@@ -465,7 +465,7 @@ describe('FoodProductRepository', () => {
         take: 10,
         where: undefined,
         orderBy: { createdAt: 'desc' },
-        include: FOOD_PRODUCT_WITH_RELATIONS_INCLUDE,
+        include: undefined,
       });
     });
 

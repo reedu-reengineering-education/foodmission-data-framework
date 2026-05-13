@@ -18,13 +18,14 @@ export const PANTRY_ITEM_WITH_RELATIONS_INCLUDE = {
 export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
   include: typeof PANTRY_ITEM_WITH_RELATIONS_INCLUDE;
 }>;
-export const FOOD_PRODUCT_WITH_RELATIONS_INCLUDE = {
-  shelfLife: true,
-  shoppingListItems: true,
-  pantryItems: true,
-  mealItems: true,
-  recipeIngredients: true,
-} as const;
+export const FOOD_PRODUCT_WITH_RELATIONS_INCLUDE =
+  Prisma.validator<Prisma.FoodProductInclude>()({
+    shelfLife: true,
+    shoppingListItems: true,
+    pantryItems: true,
+    mealItems: true,
+    recipeIngredients: true,
+  });
 
 export type FoodProductWithRelations = Prisma.FoodProductGetPayload<{
   include: typeof FOOD_PRODUCT_WITH_RELATIONS_INCLUDE;

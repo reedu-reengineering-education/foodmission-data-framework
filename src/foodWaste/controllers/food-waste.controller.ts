@@ -77,9 +77,14 @@ export class FoodWasteController {
       'Retrieve food waste entries with filtering by food, reason, method, and date range. Supports pagination.',
   })
   @ApiQuery({
-    name: 'foodId',
+    name: 'foodProductId',
     required: false,
-    description: 'Filter by food ID',
+    description: 'Filter by food product ID',
+  })
+  @ApiQuery({
+    name: 'genericFoodId',
+    required: false,
+    description: 'Filter by generic food ID',
   })
   @ApiQuery({
     name: 'pantryItemId',

@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { FoodProduct, GenericFood } from '@prisma/client';
 
 export interface FoodRefDto {
   foodProductId?: string;
@@ -53,6 +54,33 @@ export interface NutritionData {
   sodium?: number;
 }
 
+type NutritionFields = Pick<
+  FoodProduct,
+  | 'name'
+  | 'energyKcal'
+  | 'energyKj'
+  | 'proteins'
+  | 'fat'
+  | 'carbohydrates'
+  | 'fiber'
+  | 'sugars'
+  | 'salt'
+  | 'sodium'
+>;
+
+type GenericFoodNutritionFields = Pick<
+  GenericFood,
+  | 'foodName'
+  | 'energyKcal'
+  | 'energyKj'
+  | 'proteins'
+  | 'fat'
+  | 'carbohydrates'
+  | 'fiber'
+  | 'sugars'
+  | 'sodium'
+>;
+
 /**
  * Extracts nutrition data from either a FoodProduct or GenericFood item
  * @param item - Item with itemType and either foodProduct or genericFood relation loaded
@@ -61,8 +89,8 @@ export interface NutritionData {
  */
 export function extractNutritionData(item: {
   itemType: string;
-  foodProduct?: any;
-  genericFood?: any;
+  foodProduct?: NutritionFields | null;
+  genericFood?: GenericFoodNutritionFields | null;
 }): NutritionData {
   if (item.itemType === 'food_product' && item.foodProduct) {
     return {
@@ -103,19 +131,30 @@ export function extractNutritionData(item: {
  * Gets the display name from either a FoodProduct or GenericFood item
  * @param item - Item with itemType and either foodProduct or genericFood relation loaded
  * @returns Display name
+ * @throws Error if the relation was not loaded or the itemType is invalid
  */
 export function getFoodRefName(item: {
   itemType: string;
-  foodProduct?: any;
-  genericFood?: any;
+  foodProduct?: Pick<FoodProduct, 'name'> | null;
+  genericFood?: Pick<GenericFood, 'foodName'> | null;
 }): string {
-  if (item.itemType === 'food_product' && item.foodProduct) {
+  if (item.itemType === 'food_product') {
+    if (!item.foodProduct) {
+      throw new Error(
+        `foodProduct relation not loaded for item with itemType 'food_product'`,
+      );
+    }
     return item.foodProduct.name;
   }
 
-  if (item.itemType === 'generic_food' && item.genericFood) {
+  if (item.itemType === 'generic_food') {
+    if (!item.genericFood) {
+      throw new Error(
+        `genericFood relation not loaded for item with itemType 'generic_food'`,
+      );
+    }
     return item.genericFood.foodName;
   }
 
-  return 'Unknown Item';
+  throw new Error(`Unknown itemType: '${item.itemType}'`);
 }
