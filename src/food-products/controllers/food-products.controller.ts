@@ -282,8 +282,8 @@ export class FoodProductController {
 
   @Delete(':id')
   @CacheEvict([
-    'food-products:{id}',
-    'food-products:barcode:{barcode}',
+    'food-products:detail',
+    'food-products:barcode',
     'food-products:list',
   ])
   @Roles('admin')
@@ -298,7 +298,10 @@ export class FoodProductController {
     format: 'uuid',
     description: 'Food product ID',
   })
-  @ApiResponse({ status: 204, description: 'Food product deleted successfully' })
+  @ApiResponse({
+    status: 204,
+    description: 'Food product deleted successfully',
+  })
   @ApiCommonErrorResponses({
     unauthorized: true,
     forbidden: true,

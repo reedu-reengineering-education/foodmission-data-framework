@@ -118,7 +118,15 @@ describe('CacheEvictInterceptor', () => {
       expect(cacheManager.del).toHaveBeenCalledWith(
         'food-products:barcode:1234567890',
       );
-      expect(cacheManager.del).toHaveBeenCalledWith('food-products:list');
+      // 'food-products:list' has no placeholders so it is expanded to the full
+      // CacheInterceptor key format: {base}:{userId}:{sortedRouteParams}
+      // AND the anonymous variant (public endpoints may be cached anonymously)
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:user123:barcode:1234567890|id:123',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:anonymous:barcode:1234567890|id:123',
+      );
 
       expect(loggingService.debug).toHaveBeenCalledWith(
         'Evicted cache key: food-products:123',
@@ -127,7 +135,10 @@ describe('CacheEvictInterceptor', () => {
         'Evicted cache key: food-products:barcode:1234567890',
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: food-products:list',
+        'Evicted cache key: food-products:list:user123:barcode:1234567890|id:123',
+      );
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Evicted cache key: food-products:list:anonymous:barcode:1234567890|id:123',
       );
     });
 
@@ -147,6 +158,22 @@ describe('CacheEvictInterceptor', () => {
       }
 
       expect(cacheManager.del).not.toHaveBeenCalled();
+    });
+
+    it('should evict cache keys even when response is void (undefined)', async () => {
+      const context = createMockExecutionContext(
+        { id: '123' },
+        { id: 'user123', sub: 'keycloak123' },
+      );
+      // void methods (e.g. delete) return undefined
+      const next = createMockCallHandler(undefined);
+
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
+
+      const result = interceptor.intercept(context, next);
+      await result.toPromise();
+
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
     });
 
     it('should not evict cache keys when response contains error', async () => {
@@ -221,7 +248,35 @@ describe('CacheEvictInterceptor', () => {
       );
     });
 
-    it('should handle keys without placeholders', async () => {
+    it('should handle base keys without placeholders by building full cache key', async () => {
+      // Base keys (no {} placeholders) are expanded to the same format CacheInterceptor
+      // uses: "{baseKey}:{userId}:{routeParamsString}"
+      // AND also the anonymous variant, so public endpoint caches are always evicted.
+      const context = createMockExecutionContext(
+        { id: 'abc' },
+        { id: 'user99' },
+      );
+      const next = createMockCallHandler('result');
+
+      reflector.getAllAndOverride.mockReturnValue([
+        'food-products:detail',
+      ]);
+
+      const result = interceptor.intercept(context, next);
+      await result.toPromise();
+
+      // Authenticated user variant
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:detail:user99:id:abc',
+      );
+      // Anonymous variant — evicted so public (unauthenticated) caches are cleared too
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:detail:anonymous:id:abc',
+      );
+      expect(cacheManager.del).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle static keys without placeholders (legacy behaviour)', async () => {
       const context = createMockExecutionContext();
       const next = createMockCallHandler('result');
 
@@ -234,9 +289,14 @@ describe('CacheEvictInterceptor', () => {
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('food-products:list');
-      expect(cacheManager.del).toHaveBeenCalledWith('food-products:count');
-      expect(cacheManager.del).toHaveBeenCalledWith('static:key');
+      // No route params, no user → anonymous, no routeParamsString
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:anonymous',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:count:anonymous',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith('static:key:anonymous');
     });
   });
 });

@@ -38,7 +38,11 @@ export class CacheEvictInterceptor implements NestInterceptor {
     // Execute the method first, then evict cache
     return next.handle().pipe(
       mergeMap(async (response) => {
-        if (response && !response.error) {
+        // Evict cache for all successful responses, including void (undefined) ones.
+        // A void delete response is represented as undefined, which is falsy — do
+        // NOT gate eviction on truthiness of the response.
+        const hasError = response != null && response.error;
+        if (!hasError) {
           await this.evictCacheKeys(evictKeys, request);
         }
         return response;
@@ -50,23 +54,52 @@ export class CacheEvictInterceptor implements NestInterceptor {
     for (const keyPattern of keys) {
       try {
         // Replace placeholders in key pattern with actual values
-        const resolvedKey = this.resolveKeyPattern(keyPattern, request);
-        await this.cacheManager.del(resolvedKey);
-        this.logger.debug(`Evicted cache key: ${resolvedKey}`);
+        const resolvedKeys = this.resolveKeyPatterns(keyPattern, request);
+        for (const resolvedKey of resolvedKeys) {
+          await this.cacheManager.del(resolvedKey);
+          this.logger.debug(`Evicted cache key: ${resolvedKey}`);
+        }
       } catch (error) {
         this.logger.error(`Error evicting cache key ${keyPattern}:`, error);
       }
     }
   }
 
-  private resolveKeyPattern(pattern: string, request: any): string {
+  private resolveKeyPatterns(pattern: string, request: any): string[] {
     const userId = request.user?.id || 'anonymous';
 
-    // Replace common placeholders
-    return pattern
-      .replace('{userId}', userId)
-      .replace('{id}', request.params?.id || '')
-      .replace('{barcode}', request.params?.barcode || '')
-      .replace('{keycloakId}', request.user?.sub || '');
+    // Legacy format: pattern contains placeholders like {id}, {userId}, etc.
+    if (pattern.includes('{')) {
+      return [
+        pattern
+          .replace('{userId}', userId)
+          .replace('{id}', request.params?.id || '')
+          .replace('{barcode}', request.params?.barcode || '')
+          .replace('{keycloakId}', request.user?.sub || ''),
+      ];
+    }
+
+    // Base-key format: build the full key the same way CacheInterceptor does.
+    // Public endpoints (e.g. GET /food-products/:id) may be cached under the
+    // anonymous userId even when the caller who triggers eviction is authenticated.
+    // Evict both the authenticated user's variant and the anonymous variant so
+    // deletes always clear the cache regardless of how it was populated.
+    const routeParams = request.params || {};
+    const routeParamsString = Object.keys(routeParams)
+      .sort()
+      .map((key) => `${key}:${routeParams[key]}`)
+      .join('|');
+
+    const buildKey = (uid: string): string => {
+      const parts = [pattern, uid];
+      if (routeParamsString) parts.push(routeParamsString);
+      return parts.join(':');
+    };
+
+    const resolvedKeys = [buildKey(userId)];
+    if (userId !== 'anonymous') {
+      resolvedKeys.push(buildKey('anonymous'));
+    }
+    return resolvedKeys;
   }
 }

@@ -17,7 +17,8 @@ describe('FoodProductService', () => {
   beforeEach(async () => {
     const setup = await compileFoodProductServiceTestingModule();
     service = setup.service;
-    repository = setup.repository as unknown as jest.Mocked<FoodProductRepository>;
+    repository =
+      setup.repository as unknown as jest.Mocked<FoodProductRepository>;
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -27,7 +28,7 @@ describe('FoodProductService', () => {
     repository.create.mockResolvedValue(mockFood);
 
     const result = await service.create(
-      { name: 'Apple', barcode: '123' } as any,
+      { name: 'Apple', barcode: '123' },
       'user-1',
     );
 
@@ -45,5 +46,26 @@ describe('FoodProductService', () => {
   it('throws when finding missing food by id', async () => {
     repository.findById.mockResolvedValue(null);
     await expect(service.findOne('missing')).rejects.toThrow(NotFoundException);
+  });
+
+  describe('remove', () => {
+    it('deletes food product when it exists', async () => {
+      repository.findById.mockResolvedValue(mockFood);
+      repository.delete.mockResolvedValue(undefined);
+
+      await service.remove('food-1');
+
+      expect(repository.findById).toHaveBeenCalledWith('food-1');
+      expect(repository.delete).toHaveBeenCalledWith('food-1');
+    });
+
+    it('throws NotFoundException when food product does not exist', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      await expect(service.remove('missing')).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
   });
 });
