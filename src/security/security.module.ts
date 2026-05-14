@@ -35,11 +35,6 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
               limit: 10, // 10 requests per second
             },
             {
-              name: 'medium',
-              ttl: 60000, // 1 minute
-              limit: 100, // 100 requests per minute
-            },
-            {
               name: 'long',
               ttl: 900000, // 15 minutes
               limit: 1000, // 1000 requests per 15 minutes
