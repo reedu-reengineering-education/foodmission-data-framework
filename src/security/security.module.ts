@@ -12,38 +12,42 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: () => ({
-        throttlers: [
-          {
-            name: 'default',
-            ttl: 60000, // 1 minute
-            limit: 100, // 100 requests per minute
+      useFactory: (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('REDIS_URL');
+        const nodeEnv = configService.get<string>('NODE_ENV');
+        return {
+          throttlers: [
+            {
+              name: 'default',
+              ttl: 60000, // 1 minute
+              limit: 100, // 100 requests per minute
+            },
+            {
+              name: 'short',
+              ttl: 1000, // 1 second
+              limit: 10, // 10 requests per second
+            },
+            {
+              name: 'medium',
+              ttl: 60000, // 1 minute
+              limit: 100, // 100 requests per minute
+            },
+            {
+              name: 'long',
+              ttl: 900000, // 15 minutes
+              limit: 1000, // 1000 requests per 15 minutes
+            },
+          ],
+          skipIf: () => {
+            // Skip rate limiting in test environment
+            return nodeEnv === 'test';
           },
-          {
-            name: 'short',
-            ttl: 1000, // 1 second
-            limit: 10, // 10 requests per second
-          },
-          {
-            name: 'medium',
-            ttl: 60000, // 1 minute
-            limit: 100, // 100 requests per minute
-          },
-          {
-            name: 'long',
-            ttl: 900000, // 15 minutes
-            limit: 1000, // 1000 requests per 15 minutes
-          },
-        ],
-        skipIf: () => {
-          // Skip rate limiting in test environment
-          return process.env.NODE_ENV === 'test';
-        },
-        // Redis storage for multi-instance support, fallback to in-memory if REDIS_URL is not set
-        storage: process.env.REDIS_URL
-          ? new ThrottlerStorageRedisService(process.env.REDIS_URL)
-          : undefined,
-      }),
+          // Redis storage for multi-instance support, fallback to in-memory if REDIS_URL is not set
+          storage: redisUrl
+            ? new ThrottlerStorageRedisService(redisUrl)
+            : undefined,
+        };
+      },
     }),
   ],
   providers: [
