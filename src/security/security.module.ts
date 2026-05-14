@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SecurityService } from './security.service';
@@ -15,6 +15,13 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
       useFactory: (configService: ConfigService) => {
         const redisUrl = configService.get<string>('REDIS_URL');
         const nodeEnv = configService.get<string>('NODE_ENV');
+
+        if (nodeEnv === 'production' && !redisUrl) {
+          new Logger('SecurityModule').warn(
+            'REDIS_URL is not set in production. Rate limiting will be enforced per instance, not globally across all instances.',
+          );
+        }
+
         return {
           throttlers: [
             {
