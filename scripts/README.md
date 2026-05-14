@@ -1,72 +1,77 @@
-# Database Scripts
+# Scripts
 
-This directory contains database management scripts for the FOODMISSION Data Framework.
+This directory contains development, database, CI, and utility scripts used by
+the FOODMISSION Data Framework.
 
-## Scripts Overview
+## Main Scripts
 
-### Seeding Scripts
+### Database and Seeding
 
-- **`seed-dev.ts`** - Enhanced seeding for development environment with comprehensive test data
-- **`seed-test.ts`** - Minimal, predictable seeding for automated testing
+- `seed-dev.ts` - Development seeding with richer local data
+- `seed-test.ts` - Deterministic test seeding
+- `seed-foods-only.ts` - Seed only food-related data
+- `migration-utils.ts` - Migration helper utilities
+- `db-reset.sh` - Reset local database state
+- `init-test-db.sql` - Test DB bootstrap SQL
 
-### Migration Scripts
+### Backup and Restore
 
-- **`migration-utils.ts`** - Data migration utilities for schema changes and data transformations
+- `db-backup.sh` - Backup utility (full/data/schema/all modes)
+- `db-restore.sh` - Restore utility
 
-### Backup & Restore Scripts
+### OpenAPI
 
-- **`db-backup.sh`** - Database backup utility with multiple backup types
-- **`db-restore.sh`** - Database restore utility with interactive selection
+- `generate-openapi.js` - Generate OpenAPI JSON
+- `generate-openapi-spec.ts` - Generate OpenAPI artifacts (JSON/YAML)
+- `ci-docs-generate.sh` - CI docs generation helper
 
-### Development Scripts
+### Development and CI Utilities
 
-- **`dev-setup.sh`** - Complete development environment setup
-- **`db-reset.sh`** - Quick database reset for development
+- `dev-setup.sh` - One-time local development setup
+- `ci-local-test.sh` - Local CI-style checks
+- `test-runner.sh` - Scripted test runner helper
+- `manage-secrets.sh` - Secrets management helper script
 
-## Quick Reference
+## `scripts/dev/` Folder
+
+The `scripts/dev/` folder contains meal-log analytics development utilities:
+
+- `seed-meal-logs.ts` - Generate synthetic meal-log data for analytics testing
+- `clean-meal-logs.ts` - Remove generated meal-log records
+- `clean-analytics.ts` - Remove generated analytics batch/output records
+
+These scripts are useful for repeatable local analytics testing cycles:
+seed -> generate batch -> approve/publish -> verify -> clean.
+
+## Quick Commands
 
 ```bash
-# Development setup
+# Local setup/reset
 npm run dev:setup
+npm run dev:reset
 
-# Seeding
-npm run db:seed          # Standard seeding
-npm run db:seed:dev      # Development seeding
-npm run db:seed:test     # Test seeding
+# Core seeding
+npm run db:seed
+npm run db:seed:dev
+npm run db:seed:test
+npm run db:seed:foods
 
-# Backup & Restore
-npm run db:backup        # Create backup
-npm run db:restore       # List/restore backups
+# Meal-log analytics dev scripts
+npm run db:seed:meal-logs
+npm run db:clean:meal-logs
+npm run db:clean:analytics
 
-# Migrations
-npm run migrate list     # List migrations
-npm run migrate run 001  # Run migration
+# Backup/restore
+npm run db:backup
+npm run db:restore
 
-# Database reset
-npm run dev:reset        # Reset with fresh data
-```
-
-## Environment Variables
-
-All scripts support these environment variables:
-
-```bash
-DATABASE_NAME=foodmission_dev
-DATABASE_USER=postgres
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-DATABASE_URL=postgresql://user:pass@host:port/db
-```
-
-## File Permissions
-
-Ensure shell scripts are executable:
-
-```bash
-chmod +x scripts/*.sh
+# OpenAPI
+npm run docs:generate
+npm run openapi:generate
 ```
 
 ## Documentation
 
-- Root [README.md](../README.md) — setup, migrations, and `npm run db:*` commands.
-- [prisma/seed.ts](../prisma/seed.ts) — main database seed entrypoint.
+- `docs/DATABASE_SEEDING_MIGRATION.md`
+- `docs/analytics_instructions:.md`
+- `docs/Data anonymization/`

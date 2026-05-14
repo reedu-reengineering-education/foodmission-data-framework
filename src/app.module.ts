@@ -12,19 +12,23 @@ import { LoggingModule } from './common/logging/logging.module';
 import { MonitoringMiddleware } from './monitoring/monitoring.middleware';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { SecurityMiddleware } from './security/middleware/security.middleware';
+import { AnalyticsModule } from './analytics/analytics.module';
 import { SecurityModule } from './security/security.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
     InfrastructureModule,
     LoggingModule,
     MonitoringModule,
+    AnalyticsModule,
     SecurityModule,
     UserCommunityModule,
     CatalogFeatureModule,
     ShoppingPantryModule,
     MealRecipeModule,
     EngagementModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

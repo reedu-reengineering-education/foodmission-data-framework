@@ -82,7 +82,8 @@
             ],
             "account": [
               "view-profile",
-              "manage-account"
+              "manage-account",
+              "delete-account"
             ]
           }
         },
@@ -743,7 +744,8 @@
         "http://127.0.0.1:3000/*",
         "http://localhost:3000/*",
         "http://127.0.0.1:3001/*",
-        "http://localhost:3001/*"
+        "http://localhost:3001/*",
+        "/realms/foodmission/account/*"
       ],
       "webOrigins": [
         "http://127.0.0.1:3001",
@@ -1712,7 +1714,8 @@
   "eventsEnabled": true,
   "eventsListeners": [
     "jboss-logging",
-    "email"
+    "email",
+    "ext-event-webhook"
   ],
   "enabledEventTypes": [
     "UPDATE_CONSENT_ERROR",
@@ -2711,7 +2714,7 @@
       "alias": "delete_account",
       "name": "Delete Account",
       "providerId": "delete_account",
-      "enabled": false,
+      "enabled": true,
       "defaultAction": false,
       "priority": 60,
       "config": {}

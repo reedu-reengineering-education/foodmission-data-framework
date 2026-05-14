@@ -101,11 +101,38 @@ export class PantryItemRepository {
     });
   }
 
+  /**
+   * Find all expired items for a specific user
+   * Filters by userId through pantry relation for security
+   */
+  async findExpiredByUser(
+    userId: string,
+    currentDate: Date,
+  ): Promise<PantryItemWithRelations[]> {
+    return await this.prisma.pantryItem.findMany({
+      where: {
+        expiryDate: {
+          lt: currentDate,
+        },
+        pantry: {
+          userId: userId,
+        },
+      },
+      include: {
+        pantry: true,
+        food: true,
+        foodCategory: true,
+      },
+    });
+  }
+
   async update(
     id: string,
     data: Prisma.PantryItemUpdateInput,
+    tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
-    return this.prisma.pantryItem.update({
+    const client = tx ?? this.prisma;
+    return client.pantryItem.update({
       where: { id },
       data,
       include: {
@@ -116,8 +143,9 @@ export class PantryItemRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
-    await this.prisma.pantryItem.delete({
+  async delete(id: string, tx?: Prisma.TransactionClient): Promise<void> {
+    const client = tx ?? this.prisma;
+    await client.pantryItem.delete({
       where: { id },
     });
   }

@@ -28,7 +28,7 @@ export class MonitoringMiddleware implements NestMiddleware {
     });
 
     // Capture response metrics when response finishes
-    res.on('finish', () => {
+    res.once('finish', () => {
       const endTime = Date.now();
       const duration = (endTime - startTime) / 1000; // Convert to seconds
       const hrDuration = process.hrtime(startHrTime);

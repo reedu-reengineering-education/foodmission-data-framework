@@ -12,6 +12,9 @@
  * - Graceful shutdown handling
  */
 
+import { EventEmitter } from 'events';
+EventEmitter.defaultMaxListeners = 20;
+
 import 'dotenv/config';
 
 import { NodeSDK } from '@opentelemetry/sdk-node';

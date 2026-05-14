@@ -75,7 +75,7 @@
           "realm": ["offline_access", "uma_authorization"],
           "client": {
             "foodmission-api": ["user"],
-            "account": ["view-profile", "manage-account"]
+            "account": ["view-profile", "manage-account", "delete-account"]
           }
         },
         "clientRole": false,
@@ -785,7 +785,8 @@
         "http://127.0.0.1:3000/*",
         "http://localhost:3000/*",
         "http://localhost:3001/*",
-        "http://127.0.0.1:3001/*"
+        "http://127.0.0.1:3001/*",
+        "/realms/foodmission/account/*"
       ],
       "webOrigins": [
         "http://127.0.0.1:3001",
@@ -1727,13 +1728,31 @@
     "contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self'; object-src 'none';",
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
-  "smtpServer": {},
+  "smtpServer": {
+    "host": "mailpit",
+    "port": "1025",
+    "from": "noreply@localhost",
+    "ssl": "false",
+    "starttls": "false",
+    "auth": "false"
+  },
   "loginTheme": "keycloakify-foodmission-ui",
-  "eventsEnabled": false,
-  "eventsListeners": ["jboss-logging"],
-  "enabledEventTypes": [],
-  "adminEventsEnabled": false,
-  "adminEventsDetailsEnabled": false,
+  "eventsEnabled": true,
+  "eventsListeners": ["jboss-logging", "ext-event-webhook"],
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "LOGOUT_ERROR",
+    "REGISTER",
+    "REGISTER_ERROR",
+    "DELETE_ACCOUNT",
+    "DELETE_ACCOUNT_ERROR",
+    "UPDATE_PROFILE",
+    "UPDATE_PROFILE_ERROR"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
   "identityProviders": [],
   "identityProviderMappers": [],
   "components": {
@@ -2593,7 +2612,7 @@
       "alias": "delete_account",
       "name": "Delete Account",
       "providerId": "delete_account",
-      "enabled": false,
+      "enabled": true,
       "defaultAction": false,
       "priority": 60,
       "config": {}

@@ -70,14 +70,14 @@ spec:
             memory: {{ .Values.api.resources.limits.memory | default "512Mi" }}
         readinessProbe:
           httpGet:
-            path: /api/v1/health
+            path: /api/v1/health/ready
             port: 3000
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
         livenessProbe:
           httpGet:
-            path: /api/v1/health
+            path: /api/v1/health/live
             port: 3000
           initialDelaySeconds: 30
           periodSeconds: 30

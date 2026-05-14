@@ -245,4 +245,37 @@ export class UserProfilesService {
     // Delete from Keycloak
     await this.keycloakAdminService.deleteUser(user.keycloakId);
   }
+
+  /**
+   * Delete a user by Keycloak ID. Used by webhooks when user is already deleted from Keycloak.
+   * Always cascades to delete all related data.
+   * Does NOT call Keycloak delete (user is already deleted there).
+   */
+  async deleteUserByKeycloakId(keycloakId: string): Promise<void> {
+    const user = await this.usersRepository.findByKeycloakId(keycloakId);
+    if (!user) {
+      // User not found locally - may have already been deleted or never created
+      throw new NotFoundException(
+        'User not found for Keycloak ID: ' + keycloakId,
+      );
+    }
+
+    const userId = user.id;
+
+    // Delete related entities first (order matters for FK constraints)
+    await this.prisma.mealLog.deleteMany({ where: { userId } });
+    await this.prisma.meal.deleteMany({ where: { userId } });
+    await this.prisma.recipe.deleteMany({ where: { userId } });
+    await this.prisma.pantryItem.deleteMany({
+      where: { pantry: { userId } },
+    });
+    await this.prisma.pantry.deleteMany({ where: { userId } });
+    await this.prisma.shoppingListItem.deleteMany({
+      where: { shoppingList: { userId } },
+    });
+    await this.prisma.shoppingList.deleteMany({ where: { userId } });
+
+    // Delete user from local database
+    await this.usersRepository.remove(userId);
+  }
 }
