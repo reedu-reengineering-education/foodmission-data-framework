@@ -23,9 +23,9 @@ export class WasteByMethodDto {
 }
 
 export class MostWastedFoodDto {
-  @ApiProperty({ description: 'Food ID', example: 'uuid-food-id' })
+  @ApiProperty({ description: 'Food item ID', example: 'uuid-item-id' })
   @Expose()
-  foodId: string;
+  itemId: string;
 
   @ApiProperty({ description: 'Food name', example: 'Tomatoes' })
   @Expose()

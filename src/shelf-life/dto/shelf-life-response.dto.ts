@@ -74,7 +74,7 @@ export class ShelfLifeResponseDto {
   freezerMaxDays: number | null;
 }
 
-export class MultipleFoodShelfLifeResponseDto {
+export class MultipleFoodProductShelfLifeResponseDto {
   @ApiProperty({ type: [ShelfLifeResponseDto] })
   @Expose()
   @Type(() => ShelfLifeResponseDto)

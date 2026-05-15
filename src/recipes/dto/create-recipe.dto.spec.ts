@@ -23,14 +23,14 @@ describe('CreateRecipeDto with ingredients', () => {
     expect(errors.length).toBe(0);
   });
 
-  it('should validate recipe with ingredient linked to foodCategoryId', async () => {
+  it('should validate recipe with ingredient linked to genericFoodId', async () => {
     const dto = plainToInstance(CreateRecipeDto, {
       title: 'Linked Recipe',
       ingredients: [
         {
           name: 'Chicken',
           measure: '500g',
-          foodCategoryId: '550e8400-e29b-41d4-a716-446655440000',
+          genericFoodId: '550e8400-e29b-41d4-a716-446655440000',
         },
       ],
     });
@@ -38,14 +38,14 @@ describe('CreateRecipeDto with ingredients', () => {
     expect(errors.length).toBe(0);
   });
 
-  it('should validate recipe with ingredient linked to foodId', async () => {
+  it('should validate recipe with ingredient linked to foodProductId', async () => {
     const dto = plainToInstance(CreateRecipeDto, {
       title: 'Product Recipe',
       ingredients: [
         {
           name: 'Branded Product',
           measure: '1 pack',
-          foodId: '550e8400-e29b-41d4-a716-446655440000',
+          foodProductId: '550e8400-e29b-41d4-a716-446655440000',
         },
       ],
     });
@@ -53,15 +53,15 @@ describe('CreateRecipeDto with ingredients', () => {
     expect(errors.length).toBe(0);
   });
 
-  it('should fail validation when ingredient has both foodId and foodCategoryId', async () => {
+  it('should fail validation when ingredient has both foodProductId and genericFoodId', async () => {
     const dto = plainToInstance(CreateRecipeDto, {
       title: 'Invalid Recipe',
       ingredients: [
         {
           name: 'Ambiguous Item',
           measure: '100g',
-          foodId: '550e8400-e29b-41d4-a716-446655440000',
-          foodCategoryId: '550e8400-e29b-41d4-a716-446655440001',
+          foodProductId: '550e8400-e29b-41d4-a716-446655440000',
+          genericFoodId: '550e8400-e29b-41d4-a716-446655440001',
         },
       ],
     });

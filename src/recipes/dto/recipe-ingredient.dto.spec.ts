@@ -1,6 +1,10 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import {
+  buildMinimalRecipeIngredientFoodProduct,
+  STUB_GENERIC_FOOD_CHICKEN_NEVO,
+} from '../../../test/fixtures/food-ref.fixtures';
+import {
   CreateRecipeIngredientDto,
   UpdateRecipeIngredientDto,
   RecipeIngredientResponseDto,
@@ -44,29 +48,29 @@ describe('RecipeIngredient DTOs', () => {
       expect(errors.length).toBeGreaterThan(0);
     });
 
-    it('should validate dto with foodCategoryId only', async () => {
+    it('should validate dto with genericFoodId only', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         ...validDto,
-        foodCategoryId: '550e8400-e29b-41d4-a716-446655440000',
+        genericFoodId: '550e8400-e29b-41d4-a716-446655440000',
       });
       const errors = await validate(dto);
       expect(errors.length).toBe(0);
     });
 
-    it('should validate dto with foodId only', async () => {
+    it('should validate dto with foodProductId only', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         ...validDto,
-        foodId: '550e8400-e29b-41d4-a716-446655440000',
+        foodProductId: '550e8400-e29b-41d4-a716-446655440000',
       });
       const errors = await validate(dto);
       expect(errors.length).toBe(0);
     });
 
-    it('should fail validation when both foodId and foodCategoryId are provided', async () => {
+    it('should fail validation when both foodProductId and genericFoodId are provided', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         ...validDto,
-        foodId: '550e8400-e29b-41d4-a716-446655440000',
-        foodCategoryId: '550e8400-e29b-41d4-a716-446655440001',
+        foodProductId: '550e8400-e29b-41d4-a716-446655440000',
+        genericFoodId: '550e8400-e29b-41d4-a716-446655440001',
       });
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -80,24 +84,24 @@ describe('RecipeIngredient DTOs', () => {
       expect(constraintError).toBeDefined();
     });
 
-    it('should fail validation when foodId is not a valid UUID', async () => {
+    it('should fail validation when foodProductId is not a valid UUID', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         ...validDto,
-        foodId: 'not-a-uuid',
+        foodProductId: 'not-a-uuid',
       });
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some((e) => e.property === 'foodId')).toBe(true);
+      expect(errors.some((e) => e.property === 'foodProductId')).toBe(true);
     });
 
-    it('should fail validation when foodCategoryId is not a valid UUID', async () => {
+    it('should fail validation when genericFoodId is not a valid UUID', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         ...validDto,
-        foodCategoryId: 'invalid',
+        genericFoodId: 'invalid',
       });
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some((e) => e.property === 'foodCategoryId')).toBe(true);
+      expect(errors.some((e) => e.property === 'genericFoodId')).toBe(true);
     });
 
     it('should fail validation when order is negative', async () => {
@@ -143,9 +147,9 @@ describe('RecipeIngredient DTOs', () => {
       expect(errors.length).toBe(0);
     });
 
-    it('should validate update with foodCategoryId', async () => {
+    it('should validate update with genericFoodId', async () => {
       const dto = plainToInstance(UpdateRecipeIngredientDto, {
-        foodCategoryId: '550e8400-e29b-41d4-a716-446655440000',
+        genericFoodId: '550e8400-e29b-41d4-a716-446655440000',
       });
       const errors = await validate(dto);
       expect(errors.length).toBe(0);
@@ -168,8 +172,8 @@ describe('RecipeIngredient DTOs', () => {
         name: 'Chicken',
         measure: '500g',
         order: 1,
-        itemType: 'food_category',
-        foodCategoryId: 'fc-1',
+        itemType: 'generic_food',
+        genericFoodId: 'fc-1',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -183,8 +187,8 @@ describe('RecipeIngredient DTOs', () => {
       expect(dto.name).toBe('Chicken');
       expect(dto.measure).toBe('500g');
       expect(dto.order).toBe(1);
-      expect(dto.itemType).toBe('food_category');
-      expect(dto.foodCategoryId).toBe('fc-1');
+      expect(dto.itemType).toBe('generic_food');
+      expect(dto.genericFoodId).toBe('fc-1');
       expect(dto.createdAt).toEqual(data.createdAt);
       expect(dto.updatedAt).toEqual(data.updatedAt);
     });
@@ -194,9 +198,9 @@ describe('RecipeIngredient DTOs', () => {
         id: 'ing-1',
         recipeId: 'recipe-1',
         name: 'Product X',
-        itemType: 'food',
-        foodId: 'food-1',
-        food: { id: 'food-1', name: 'Product X', imageUrl: 'http://...' },
+        itemType: 'food_product',
+        foodProductId: 'food-1',
+        foodProduct: buildMinimalRecipeIngredientFoodProduct(),
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -205,18 +209,18 @@ describe('RecipeIngredient DTOs', () => {
         excludeExtraneousValues: true,
       });
 
-      expect(dto.foodId).toBe('food-1');
-      expect(dto.food).toEqual(data.food);
+      expect(dto.foodProductId).toBe('food-1');
+      expect(dto.foodProduct).toEqual(data.foodProduct);
     });
 
-    it('should expose optional foodCategory relation', () => {
+    it('should expose optional genericFood relation', () => {
       const data = {
         id: 'ing-1',
         recipeId: 'recipe-1',
         name: 'Chicken',
-        itemType: 'food_category',
-        foodCategoryId: 'fc-1',
-        foodCategory: { id: 'fc-1', foodName: 'Chicken', nevoCode: 1234 },
+        itemType: 'generic_food',
+        genericFoodId: 'fc-1',
+        genericFood: STUB_GENERIC_FOOD_CHICKEN_NEVO,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -225,8 +229,8 @@ describe('RecipeIngredient DTOs', () => {
         excludeExtraneousValues: true,
       });
 
-      expect(dto.foodCategoryId).toBe('fc-1');
-      expect(dto.foodCategory).toEqual(data.foodCategory);
+      expect(dto.genericFoodId).toBe('fc-1');
+      expect(dto.genericFood).toEqual(data.genericFood);
     });
   });
 });

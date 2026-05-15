@@ -58,11 +58,20 @@ export class UpdateShoppingListItemDto {
   shoppingListId?: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food item',
-    example: 'uuid-food-id',
+    description: 'The ID of the food product',
+    example: 'uuid-food-product-id',
   })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
+
+  @ApiPropertyOptional({
+    description: 'The ID of the generic food',
+    example: 'uuid-generic-food-id',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  genericFoodId?: string;
 }

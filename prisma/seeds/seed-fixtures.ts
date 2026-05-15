@@ -1,6 +1,6 @@
 import type { SeedUserInput } from './seed-helpers';
 
-export const TEST_SEED_FOODS: ReadonlyArray<{
+export const TEST_SEED_FOOD_PRODUCTS: ReadonlyArray<{
   name: string;
   description: string;
   barcode: string;
@@ -45,7 +45,7 @@ export const TEST_SEED_USERS: ReadonlyArray<SeedUserInput> = [
   },
 ];
 
-export const DEV_EXTRA_FOODS: ReadonlyArray<{
+export const DEV_EXTRA_FOOD_PRODUCTS: ReadonlyArray<{
   name: string;
   description: string;
   barcode?: string;

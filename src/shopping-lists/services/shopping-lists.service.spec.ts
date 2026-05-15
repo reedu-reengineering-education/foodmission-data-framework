@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   NotFoundException,
@@ -210,6 +211,46 @@ describe('ShoppingListService', () => {
       await expect(
         service.update(listId, updateDto, differentUserId),
       ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw ConflictException when updating to duplicate title', async () => {
+      const listId = 'list-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListDto = { title: 'Family-Shopping-List' };
+      const prismaError = new PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
+          clientVersion: '4.0.0',
+          meta: { target: ['userId', 'title'] },
+        },
+      );
+
+      shoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      shoppingListRepository.update.mockRejectedValue(prismaError);
+
+      await expect(service.update(listId, updateDto, userId)).rejects.toThrow(
+        ConflictException,
+      );
+      await expect(service.update(listId, updateDto, userId)).rejects.toThrow(
+        'Shopping list with this title already exists',
+      );
+    });
+
+    it('should keep generic bad request for unknown update errors', async () => {
+      const listId = 'list-1';
+      const userId = 'user-1';
+      const updateDto: UpdateShoppingListDto = { title: 'Updated Title' };
+
+      shoppingListRepository.findById.mockResolvedValue(mockShoppingList);
+      shoppingListRepository.update.mockRejectedValue(new Error('Unexpected'));
+
+      await expect(service.update(listId, updateDto, userId)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.update(listId, updateDto, userId)).rejects.toThrow(
+        'Failed to update shopping list',
+      );
     });
   });
 

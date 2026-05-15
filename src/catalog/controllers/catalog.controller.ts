@@ -191,7 +191,7 @@ export class CatalogController {
     required: false,
     type: String,
     description:
-      'ISO 3166-1 alpha-2 country code. Required unless search is provided (world-wide list is large).',
+      'ISO 3166-1 alpha-2 country code. Optional; when omitted, regions across all countries are returned paginated.',
   })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiResponse({ status: 200, type: PaginatedCatalogListResponseDto })

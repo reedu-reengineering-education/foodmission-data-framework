@@ -102,7 +102,7 @@ async function bootstrap() {
         "message": "Validation failed",
         "error": "VALIDATION_ERROR",
         "timestamp": "2024-01-15T10:30:00.000Z",
-        "path": "/api/v1/foods",
+        "path": "/api/v1/food-products",
         "traceId": "abc123def456",
         "details": {
           "errors": [
@@ -158,8 +158,8 @@ async function bootstrap() {
       'Authentication and authorization endpoints for Keycloak integration',
     )
     .addTag(
-      'foods',
-      'Food item management with OpenFoodFacts integration for nutritional data',
+      'food-products',
+      'FoodProduct management with OpenFoodFacts integration for nutritional data',
     )
     .addTag('users', 'User management (only admin)')
     .addTag(

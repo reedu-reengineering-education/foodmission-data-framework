@@ -25,7 +25,7 @@ let SAMPLE_CATEGORIES: Array<{ id: string; hasPer100gData: boolean }> = [];
 async function loadSampleIds() {
   console.log('Loading sample food and category IDs...');
 
-  const foods = await prisma.food.findMany({
+  const foods = await prisma.foodProduct.findMany({
     take: 50,
     select: {
       id: true,
@@ -34,7 +34,7 @@ async function loadSampleIds() {
     },
   });
 
-  const categories = await prisma.foodCategory.findMany({
+  const categories = await prisma.genericFood.findMany({
     take: 20,
     select: {
       id: true,
@@ -110,8 +110,8 @@ async function seedMealLogs() {
         const usedCategoryIds = new Set<string>();
 
         const mealItems: Array<{
-          foodId: string | null;
-          foodCategoryId: string | null;
+          foodProductId: string | null;
+          genericFoodId: string | null;
           itemType: string;
           quantity: number;
           unit: Unit;
@@ -137,9 +137,9 @@ async function seedMealLogs() {
               const unit = foodItem.hasPer100gData ? Unit.G : Unit.PIECES;
 
               mealItems.push({
-                foodId: foodItem.id,
-                foodCategoryId: null,
-                itemType: 'food',
+                foodProductId: foodItem.id,
+                genericFoodId: null,
+                itemType: 'food_product',
                 quantity,
                 unit,
               });
@@ -164,9 +164,9 @@ async function seedMealLogs() {
               const unit = categoryItem.hasPer100gData ? Unit.G : Unit.PIECES;
 
               mealItems.push({
-                foodId: null,
-                foodCategoryId: categoryItem.id,
-                itemType: 'food_category',
+                foodProductId: null,
+                genericFoodId: categoryItem.id,
+                itemType: 'generic_food',
                 quantity,
                 unit,
               });

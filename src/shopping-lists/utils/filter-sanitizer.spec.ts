@@ -6,20 +6,21 @@ describe('sanitizeShoppingListItemFilters', () => {
   it('should return undefined filters when query is not provided', () => {
     const result = sanitizeShoppingListItemFilters();
     expect(result).toEqual({
-      foodId: undefined,
+      foodProductId: undefined,
+      genericFoodId: undefined,
       checked: undefined,
       unit: undefined,
     });
   });
 
-  it('should trim foodId and drop empty strings', () => {
-    const query = { foodId: '  food-1  ' } as QueryShoppingListItemDto;
+  it('should trim foodProductId and drop empty strings', () => {
+    const query = { foodProductId: '  food-1  ' } as QueryShoppingListItemDto;
     const result = sanitizeShoppingListItemFilters(query);
-    expect(result.foodId).toBe('food-1');
+    expect(result.foodProductId).toBe('food-1');
 
-    const emptyQuery = { foodId: '   ' } as QueryShoppingListItemDto;
+    const emptyQuery = { foodProductId: '   ' } as QueryShoppingListItemDto;
     const emptyResult = sanitizeShoppingListItemFilters(emptyQuery);
-    expect(emptyResult.foodId).toBeUndefined();
+    expect(emptyResult.foodProductId).toBeUndefined();
   });
 
   it('should drop checked when nullish or empty string', () => {

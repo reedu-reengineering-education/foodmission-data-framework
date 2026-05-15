@@ -105,27 +105,40 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('success-result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
-        'food_barcode:{barcode}',
-        'foods:list',
+        'food-products:{id}',
+        'food-products:barcode:{barcode}',
+        'food-products:list',
       ]);
 
       const result = interceptor.intercept(context, next);
       const observableResult = await result.toPromise();
 
       expect(observableResult).toBe('success-result');
-      expect(cacheManager.del).toHaveBeenCalledWith('food:123');
-      expect(cacheManager.del).toHaveBeenCalledWith('food_barcode:1234567890');
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:list');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:barcode:1234567890',
+      );
+      // 'food-products:list' has no placeholders so it is expanded to the full
+      // CacheInterceptor key format: {base}:{userId}:{sortedRouteParams}
+      // AND the anonymous variant (public endpoints may be cached anonymously)
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:user123:barcode:1234567890|id:123',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:anonymous:barcode:1234567890|id:123',
+      );
 
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: food:123',
+        'Evicted cache key: food-products:123',
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: food_barcode:1234567890',
+        'Evicted cache key: food-products:barcode:1234567890',
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
-        'Evicted cache key: foods:list',
+        'Evicted cache key: food-products:list:user123:barcode:1234567890|id:123',
+      );
+      expect(loggingService.debug).toHaveBeenCalledWith(
+        'Evicted cache key: food-products:list:anonymous:barcode:1234567890|id:123',
       );
     });
 
@@ -135,7 +148,7 @@ describe('CacheEvictInterceptor', () => {
         handle: () => throwError(() => new Error('Method failed')),
       };
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
 
       try {
         const result = interceptor.intercept(context, next);
@@ -147,11 +160,27 @@ describe('CacheEvictInterceptor', () => {
       expect(cacheManager.del).not.toHaveBeenCalled();
     });
 
+    it('should evict cache keys even when response is void (undefined)', async () => {
+      const context = createMockExecutionContext(
+        { id: '123' },
+        { id: 'user123', sub: 'keycloak123' },
+      );
+      // void methods (e.g. delete) return undefined
+      const next = createMockCallHandler(undefined);
+
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
+
+      const result = interceptor.intercept(context, next);
+      await result.toPromise();
+
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
+    });
+
     it('should not evict cache keys when response contains error', async () => {
       const context = createMockExecutionContext({ id: '123' });
       const next = createMockCallHandler({ error: 'Something went wrong' });
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
 
       const result = interceptor.intercept(context, next);
       await result.toPromise();
@@ -167,7 +196,7 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
+        'food-products:{id}',
         'user_profile:{keycloakId}',
         'user_data:{userId}',
         'barcode:{barcode}',
@@ -176,7 +205,7 @@ describe('CacheEvictInterceptor', () => {
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('food:123');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:123');
       expect(cacheManager.del).toHaveBeenCalledWith('user_profile:keycloak789');
       expect(cacheManager.del).toHaveBeenCalledWith('user_data:user456');
       expect(cacheManager.del).toHaveBeenCalledWith('barcode:1234567890');
@@ -187,7 +216,7 @@ describe('CacheEvictInterceptor', () => {
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'food:{id}',
+        'food-products:{id}',
         'user_profile:{keycloakId}',
         'user_data:{userId}',
         'barcode:{barcode}',
@@ -196,7 +225,7 @@ describe('CacheEvictInterceptor', () => {
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('food:');
+      expect(cacheManager.del).toHaveBeenCalledWith('food-products:');
       expect(cacheManager.del).toHaveBeenCalledWith('user_profile:');
       expect(cacheManager.del).toHaveBeenCalledWith('user_data:anonymous');
       expect(cacheManager.del).toHaveBeenCalledWith('barcode:');
@@ -206,7 +235,7 @@ describe('CacheEvictInterceptor', () => {
       const context = createMockExecutionContext({ id: '123' });
       const next = createMockCallHandler('result');
 
-      reflector.getAllAndOverride.mockReturnValue(['food:{id}']);
+      reflector.getAllAndOverride.mockReturnValue(['food-products:{id}']);
       cacheManager.del.mockRejectedValue(new Error('Cache deletion failed'));
 
       const result = interceptor.intercept(context, next);
@@ -214,27 +243,58 @@ describe('CacheEvictInterceptor', () => {
 
       expect(observableResult).toBe('result');
       expect(loggingService.error).toHaveBeenCalledWith(
-        'Error evicting cache key food:{id}:',
+        'Error evicting cache key food-products:{id}:',
         expect.any(Error),
       );
     });
 
-    it('should handle keys without placeholders', async () => {
+    it('should handle base keys without placeholders by building full cache key', async () => {
+      // Base keys (no {} placeholders) are expanded to the same format CacheInterceptor
+      // uses: "{baseKey}:{userId}:{routeParamsString}"
+      // AND also the anonymous variant, so public endpoint caches are always evicted.
+      const context = createMockExecutionContext(
+        { id: 'abc' },
+        { id: 'user99' },
+      );
+      const next = createMockCallHandler('result');
+
+      reflector.getAllAndOverride.mockReturnValue(['food-products:detail']);
+
+      const result = interceptor.intercept(context, next);
+      await result.toPromise();
+
+      // Authenticated user variant
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:detail:user99:id:abc',
+      );
+      // Anonymous variant — evicted so public (unauthenticated) caches are cleared too
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:detail:anonymous:id:abc',
+      );
+      expect(cacheManager.del).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle static keys without placeholders (legacy behaviour)', async () => {
       const context = createMockExecutionContext();
       const next = createMockCallHandler('result');
 
       reflector.getAllAndOverride.mockReturnValue([
-        'foods:list',
-        'foods:count',
+        'food-products:list',
+        'food-products:count',
         'static:key',
       ]);
 
       const result = interceptor.intercept(context, next);
       await result.toPromise();
 
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:list');
-      expect(cacheManager.del).toHaveBeenCalledWith('foods:count');
-      expect(cacheManager.del).toHaveBeenCalledWith('static:key');
+      // No route params, no user → anonymous, no routeParamsString
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:list:anonymous',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith(
+        'food-products:count:anonymous',
+      );
+      expect(cacheManager.del).toHaveBeenCalledWith('static:key:anonymous');
     });
   });
 });

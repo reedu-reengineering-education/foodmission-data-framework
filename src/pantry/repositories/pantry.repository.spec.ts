@@ -25,12 +25,12 @@ describe('PantryRepository', () => {
         notes: null,
         expiryDate: new Date('2024-12-31'),
         pantryId: TEST_IDS.PANTRY,
-        itemType: 'food',
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
+        itemType: 'food_product',
+        foodProductId: TEST_IDS.FOOD,
+        genericFoodId: null,
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
-        food: {
+        foodProduct: {
           id: TEST_IDS.FOOD,
           name: 'Tomatoes',
           createdAt: new Date('2024-01-01'),
@@ -81,8 +81,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -101,8 +101,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -126,8 +126,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -155,8 +155,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -178,8 +178,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },
@@ -197,8 +197,8 @@ describe('PantryRepository', () => {
         include: {
           items: {
             include: {
-              food: true,
-              foodCategory: true,
+              foodProduct: true,
+              genericFood: true,
             },
           },
         },

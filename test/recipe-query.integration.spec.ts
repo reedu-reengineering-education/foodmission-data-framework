@@ -310,7 +310,7 @@ describe('Recipe Query Integration (e2e)', () => {
         include: {
           ingredients: {
             include: {
-              foodCategory: true,
+              genericFood: true,
             },
           },
         },
@@ -321,7 +321,7 @@ describe('Recipe Query Integration (e2e)', () => {
 
       for (const recipe of recipes) {
         for (const ing of recipe.ingredients) {
-          if (ing.foodCategoryId && ing.foodCategory) {
+          if (ing.genericFoodId && ing.genericFood) {
             foundMappedIngredient = true;
             break;
           }

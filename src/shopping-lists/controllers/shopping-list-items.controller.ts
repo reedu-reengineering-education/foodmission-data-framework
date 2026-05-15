@@ -58,9 +58,15 @@ export class ShoppingListItemsController {
   })
   @ApiParam({ name: 'shoppingListId', format: 'uuid' })
   @ApiQuery({
-    name: 'foodId',
+    name: 'foodProductId',
     required: false,
-    description: 'Filter by food ID',
+    description: 'Filter by food product ID',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'genericFoodId',
+    required: false,
+    description: 'Filter by generic food ID',
     type: String,
   })
   @ApiQuery({

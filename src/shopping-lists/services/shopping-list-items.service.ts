@@ -3,12 +3,13 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   handlePrismaError,
   handleServiceError,
 } from '../../common/utils/error.utils';
-import { validatePolymorphicItem } from '../../common/utils/polymorphic-item.util';
+import { validateFoodRef } from '../../common/utils/food-ref.util';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { CreateShoppingListItemDto } from '../dto/create-shopping-list-item.dto';
@@ -19,12 +20,10 @@ import {
 } from '../dto/response-shopping-list-item.dto';
 import { UpdateShoppingListItemDto } from '../dto/update-shopping-list-item.dto';
 import { plainToInstance } from 'class-transformer';
-import {
-  ShoppingListItemRepository,
-  ShoppingListItemWithRelations,
-} from '../repositories/shopping-list-items.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
-import { FoodCategoriesRepository } from '../../food-category/repositories/food-categories.repository';
+import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
+import { ShoppingListItemWithRelations } from '../../common/types/prisma-relations';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
 import { sanitizeShoppingListItemFilters } from '../utils/filter-sanitizer';
 
@@ -42,8 +41,8 @@ export class ShoppingListItemService {
 
   constructor(
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
-    private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodProductRepository: FoodProductRepository,
+    private readonly genericFoodRepository: GenericFoodRepository,
     private readonly shoppingListRepository: ShoppingListRepository,
   ) {}
 
@@ -54,32 +53,27 @@ export class ShoppingListItemService {
     try {
       await this.validateShoppingListAccess(createDto.shoppingListId, userId);
 
-      // Validate polymorphic reference
-      const { itemType, foodId, foodCategoryId } =
-        validatePolymorphicItem(createDto);
+      // Map CreateShoppingListItemDto to FoodRefDto
 
-      // Validate the referenced item exists
-      if (itemType === 'food') {
-        await this.validateFoodExists(foodId!);
-        await this.checkForDuplicateItem(
-          createDto.shoppingListId,
-          foodId,
-          undefined,
-        );
-      } else {
-        await this.validateFoodCategoryExists(foodCategoryId!);
-        await this.checkForDuplicateItem(
-          createDto.shoppingListId,
-          undefined,
-          foodCategoryId,
-        );
-      }
+      const foodRefDto = {
+        foodProductId: createDto.foodProductId,
+        genericFoodId: createDto.genericFoodId,
+      };
+      const { itemType, foodProductId, genericFoodId } =
+        validateFoodRef(foodRefDto);
+
+      await this.validateAndEnsureUniqueFoodRef(
+        createDto.shoppingListId,
+        itemType,
+        foodProductId,
+        genericFoodId,
+      );
 
       const item = await this.shoppingListItemRepository.create({
         ...createDto,
         itemType,
-        foodId,
-        foodCategoryId,
+        foodProductId,
+        genericFoodId,
       });
 
       return this.transformToResponseDto(item);
@@ -110,11 +104,13 @@ export class ShoppingListItemService {
   async findAll(
     query: QueryShoppingListItemDto,
   ): Promise<MultipleShoppingListItemResponseDto> {
-    const { shoppingListId, foodId, checked, unit } = query;
+    const { shoppingListId, foodProductId, genericFoodId, checked, unit } =
+      query;
 
     const items = await this.shoppingListItemRepository.findMany({
       shoppingListId,
-      foodId,
+      foodProductId,
+      genericFoodId,
       checked,
       unit,
     });
@@ -129,12 +125,13 @@ export class ShoppingListItemService {
   ): Promise<MultipleShoppingListItemResponseDto> {
     await this.validateShoppingListAccess(shoppingListId, userId);
 
-    const { foodId, checked, unit } = sanitizeShoppingListItemFilters(query);
+    const { foodProductId, genericFoodId, checked, unit } =
+      sanitizeShoppingListItemFilters(query);
 
     const items = await this.shoppingListItemRepository.findByShoppingListId(
       shoppingListId,
       userId,
-      { foodId, checked, unit },
+      { foodProductId, genericFoodId, checked, unit },
     );
 
     return this.transformMultipleToResponseDto(items);
@@ -179,8 +176,8 @@ export class ShoppingListItemService {
   ): Promise<ShoppingListItemResponseDto> {
     await this.findById(id, userId, shoppingListId);
 
-    if (updateDto.foodId) {
-      await this.validateFoodExists(updateDto.foodId);
+    if (updateDto.foodProductId) {
+      await this.validateFoodProductExists(updateDto.foodProductId);
     }
 
     if (updateDto.shoppingListId) {
@@ -309,8 +306,10 @@ export class ShoppingListItemService {
     }
   }
 
-  private async validateFoodExists(foodId: string): Promise<void> {
-    const food = await this.foodRepository.findById(foodId);
+  private async validateFoodProductExists(
+    foodProductId: string,
+  ): Promise<void> {
+    const food = await this.foodProductRepository.findById(foodProductId);
 
     if (!food) {
       throw new NotFoundException(
@@ -319,44 +318,56 @@ export class ShoppingListItemService {
     }
   }
 
-  private async validateFoodCategoryExists(
-    foodCategoryId: string,
+  private async validateGenericFoodExists(
+    genericFoodId: string,
   ): Promise<void> {
-    const foodCategory =
-      await this.foodCategoryRepository.findById(foodCategoryId);
-    if (!foodCategory) {
+    const genericFood =
+      await this.genericFoodRepository.findById(genericFoodId);
+    if (!genericFood) {
       throw new NotFoundException(
-        `Food category with ID '${foodCategoryId}' not found`,
+        `Generic food with ID '${genericFoodId}' not found`,
       );
     }
   }
 
   private async checkForDuplicateItem(
     shoppingListId: string,
-    foodId?: string,
-    foodCategoryId?: string,
+    foodProductId?: string,
+    genericFoodId?: string,
   ): Promise<void> {
-    let existingItem;
-
-    if (foodId) {
-      existingItem =
-        await this.shoppingListItemRepository.findByShoppingListAndFood(
-          shoppingListId,
-          foodId,
-        );
-    } else if (foodCategoryId) {
-      existingItem =
-        await this.shoppingListItemRepository.findByShoppingListAndFoodCategory(
-          shoppingListId,
-          foodCategoryId,
-        );
-    }
+    const existingItem =
+      await this.shoppingListItemRepository.findByShoppingListAndFoodRef(
+        shoppingListId,
+        { foodProductId, genericFoodId },
+      );
 
     if (existingItem) {
       throw new ConflictException(
         ShoppingListItemService.ERROR_MESSAGES.ITEM_ALREADY_EXISTS,
       );
     }
+  }
+
+  private async validateAndEnsureUniqueFoodRef(
+    shoppingListId: string,
+    itemType: 'food_product' | 'generic_food',
+    foodProductId?: string,
+    genericFoodId?: string,
+  ): Promise<void> {
+    if (itemType === 'food_product') {
+      if (!foodProductId) {
+        throw new BadRequestException('foodProductId is required');
+      }
+      await this.validateFoodProductExists(foodProductId);
+      await this.checkForDuplicateItem(shoppingListId, foodProductId, undefined);
+      return;
+    }
+
+    if (!genericFoodId) {
+      throw new BadRequestException('genericFoodId is required');
+    }
+    await this.validateGenericFoodExists(genericFoodId);
+    await this.checkForDuplicateItem(shoppingListId, undefined, genericFoodId);
   }
 
   private transformToResponseDto(
@@ -385,5 +396,4 @@ export class ShoppingListItemService {
       Object.entries(updateDto).filter(([, value]) => value !== undefined),
     ) as Partial<UpdateShoppingListItemDto>;
   }
-
 }

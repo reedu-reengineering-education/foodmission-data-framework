@@ -15,20 +15,20 @@ import {
 import { Expose } from 'class-transformer';
 
 /**
- * Validator: ensures 0 or 1 of foodId/foodCategoryId is provided (not both)
+ * Validator: ensures 0 or 1 of foodProductId/genericFoodId is provided (not both)
  */
 @ValidatorConstraint({ name: 'OptionalExclusiveFoodReference', async: false })
 class OptionalExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
   validate(_: unknown, args: ValidationArguments): boolean {
     const obj = args.object as CreateRecipeIngredientDto;
-    const hasFood = !!obj.foodId;
-    const hasCategory = !!obj.foodCategoryId;
+    const hasFood = !!obj.foodProductId;
+    const hasCategory = !!obj.genericFoodId;
     // Valid if neither or exactly one is provided (not both)
     return !(hasFood && hasCategory);
   }
 
   defaultMessage(): string {
-    return 'Only one of foodId or foodCategoryId can be provided, not both';
+    return 'Only one of foodProductId or genericFoodId can be provided, not both';
   }
 }
 
@@ -64,23 +64,23 @@ export class CreateRecipeIngredientDto {
   order?: number;
 
   @ApiPropertyOptional({
-    description: 'ID of linked Food (OpenFoodFacts product)',
-    example: 'uuid-food-id',
+    description: 'ID of linked food product (OpenFoodFacts product)',
+    example: 'uuid-food-product-id',
   })
   @IsUUID()
   @IsOptional()
-  @ValidateIf((o) => !o.foodCategoryId)
+  @ValidateIf((o) => !o.genericFoodId)
   @Validate(OptionalExclusiveFoodReferenceConstraint)
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'ID of linked FoodCategory (NEVO generic food)',
-    example: 'uuid-food-category-id',
+    description: 'ID of linked generic food (NEVO generic food)',
+    example: 'uuid-generic-food-id',
   })
   @IsUUID()
   @IsOptional()
-  @ValidateIf((o) => !o.foodId)
-  foodCategoryId?: string;
+  @ValidateIf((o) => !o.foodProductId)
+  genericFoodId?: string;
 }
 
 /**
@@ -114,20 +114,20 @@ export class UpdateRecipeIngredientDto {
   order?: number;
 
   @ApiPropertyOptional({
-    description: 'ID of linked Food (OpenFoodFacts product)',
-    example: 'uuid-food-id',
+    description: 'ID of linked food product (OpenFoodFacts product)',
+    example: 'uuid-food-product-id',
   })
   @IsUUID()
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'ID of linked FoodCategory (NEVO generic food)',
-    example: 'uuid-food-category-id',
+    description: 'ID of linked generic food (NEVO generic food)',
+    example: 'uuid-generic-food-id',
   })
   @IsUUID()
   @IsOptional()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 }
 
 /**
@@ -154,20 +154,23 @@ export class RecipeIngredientResponseDto {
   @Expose()
   order: number;
 
-  @ApiProperty({ description: 'Item type (food or food_category)' })
+  @ApiProperty({ description: 'Item type (food_product or generic_food)' })
   @Expose()
   itemType: string;
 
-  @ApiPropertyOptional({ description: 'Linked Food ID', format: 'uuid' })
-  @Expose()
-  foodId?: string;
-
   @ApiPropertyOptional({
-    description: 'Linked FoodCategory ID',
+    description: 'Linked food product ID',
     format: 'uuid',
   })
   @Expose()
-  foodCategoryId?: string;
+  foodProductId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Linked generic food ID',
+    format: 'uuid',
+  })
+  @Expose()
+  genericFoodId?: string;
 
   @ApiProperty({ description: 'Created at' })
   @Expose()
@@ -178,11 +181,11 @@ export class RecipeIngredientResponseDto {
   updatedAt: Date;
 
   // Optional expanded relations (plain objects passed through)
-  @ApiPropertyOptional({ description: 'Linked Food details' })
+  @ApiPropertyOptional({ description: 'Linked food product details' })
   @Expose()
-  food?: Record<string, any>;
+  foodProduct?: Record<string, any>;
 
-  @ApiPropertyOptional({ description: 'Linked FoodCategory details' })
+  @ApiPropertyOptional({ description: 'Linked generic food details' })
   @Expose()
-  foodCategory?: Record<string, any>;
+  genericFood?: Record<string, any>;
 }

@@ -540,8 +540,8 @@ export class MealLogAnalyticsAggregator {
       JOIN meals m ON ml."mealId" = m.id
       JOIN users u ON ml."userId" = u.id
       LEFT JOIN meal_items mi ON mi."mealId" = m.id
-      LEFT JOIN foods f ON mi."foodId" = f.id
-      LEFT JOIN food_categories fc ON mi."foodCategoryId" = fc.id
+      LEFT JOIN food_products f ON mi."foodProductId" = f.id
+      LEFT JOIN generic_foods fc ON mi."genericFoodId" = fc.id
       WHERE ml."timestamp" >= ${periodStart}
         AND ml."timestamp" < ${periodEnd}
       ORDER BY ml."userId", ml."timestamp"
@@ -605,7 +605,7 @@ export class MealLogAnalyticsAggregator {
       // For gram-based items, scale per-100g values
       const scale = row.itemUnit === 'G' ? quantity / 100 : 1;
 
-      if (row.itemType === 'food' && row.foodName) {
+      if (row.itemType === 'food_product' && row.foodName) {
         meal.totalCalories += (row.foodEnergyKcal ?? 0) * scale;
         meal.totalProteins += (row.foodProteins ?? 0) * scale;
         meal.totalFat += (row.foodFat ?? 0) * scale;
@@ -627,11 +627,11 @@ export class MealLogAnalyticsAggregator {
         meal.foods.push({
           name: row.foodName,
           foodGroup: null,
-          itemType: 'food',
+          itemType: 'food_product',
           quantity,
           unit: row.itemUnit ?? 'PIECES',
         });
-      } else if (row.itemType === 'food_category' && row.categoryFoodName) {
+      } else if (row.itemType === 'generic_food' && row.categoryFoodName) {
         meal.totalCalories += (row.categoryEnergyKcal ?? 0) * scale;
         meal.totalProteins += (row.categoryProteins ?? 0) * scale;
         meal.totalFat += (row.categoryFat ?? 0) * scale;
@@ -645,7 +645,7 @@ export class MealLogAnalyticsAggregator {
         meal.foods.push({
           name: row.categoryFoodName,
           foodGroup: row.categoryFoodGroup,
-          itemType: 'food_category',
+          itemType: 'generic_food',
           quantity,
           unit: row.itemUnit ?? 'PIECES',
         });

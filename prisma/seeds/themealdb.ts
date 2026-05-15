@@ -79,9 +79,9 @@ interface RecipeIngredientData {
   name: string;
   measure: string;
   order: number;
-  foodId?: string;
-  foodCategoryId?: string;
-  itemType: 'food' | 'food_category';
+  foodProductId?: string;
+  genericFoodId?: string;
+  itemType: 'food_product' | 'generic_food';
 }
 
 interface SeedOptions {
@@ -101,9 +101,9 @@ function loadThemealdbData(): ThemealdbData {
 }
 
 interface IngredientLookupMaps {
-  foodIdByBarcode: Map<string, string>;
-  foodIdByName: Map<string, string>;
-  foodCategoryByNevoCode: Map<number, string>;
+  foodProductIdByBarcode: Map<string, string>;
+  foodProductIdByName: Map<string, string>;
+  genericFoodByNevoCode: Map<number, string>;
 }
 
 function buildIngredientMapping(
@@ -125,7 +125,7 @@ function resolveIngredient(
     name: ing.name,
     measure: ing.measure,
     order: ing.order,
-    itemType: 'food_category',
+    itemType: 'generic_food',
   };
 
   if (!mapping) return ingredient;
@@ -133,24 +133,24 @@ function resolveIngredient(
   if (mapping.source === SOURCE_NEVO) {
     const nevoCode = mapping.sourceId ? parseInt(mapping.sourceId, 10) : NaN;
     if (!isNaN(nevoCode)) {
-      const fcId = maps.foodCategoryByNevoCode.get(nevoCode);
-      if (fcId) {
-        ingredient.foodCategoryId = fcId;
-        ingredient.itemType = 'food_category';
+      const gfId = maps.genericFoodByNevoCode.get(nevoCode);
+      if (gfId) {
+        ingredient.genericFoodId = gfId;
+        ingredient.itemType = 'generic_food';
       }
     }
   } else if (
     (mapping.source === SOURCE_OFF || mapping.source === 'off') &&
     mapping.sourceId
   ) {
-    const foodId =
-      maps.foodIdByBarcode.get(mapping.sourceId.trim()) ??
+    const foodProductId =
+      maps.foodProductIdByBarcode.get(mapping.sourceId.trim()) ??
       (mapping.foodName
-        ? maps.foodIdByName.get(mapping.foodName.toLowerCase())
+        ? maps.foodProductIdByName.get(mapping.foodName.toLowerCase())
         : undefined);
-    if (foodId) {
-      ingredient.foodId = foodId;
-      ingredient.itemType = 'food';
+    if (foodProductId) {
+      ingredient.foodProductId = foodProductId;
+      ingredient.itemType = 'food_product';
     }
   }
 
@@ -194,42 +194,52 @@ export async function seedRecipes(
   const recipes = data.recipes;
   const ingredientMapping = buildIngredientMapping(data.ingredientMappings);
 
-  const ingredientCount = recipes.reduce((sum, r) => sum + r.ingredients.length, 0);
+  const ingredientCount = recipes.reduce(
+    (sum, r) => sum + r.ingredients.length,
+    0,
+  );
   console.log(`   📄 ${recipes.length} recipes`);
   console.log(`   🥕 ${ingredientCount} ingredient entries`);
   console.log(`   🔗 ${data.ingredientMappings.length} ingredient mappings`);
-  const enrichedCount = recipes.filter((r) => r.nutritionalInfo != null || (r.allergens?.length ?? 0) > 0).length;
+  const enrichedCount = recipes.filter(
+    (r) => r.nutritionalInfo != null || (r.allergens?.length ?? 0) > 0,
+  ).length;
   if (enrichedCount > 0) {
-    console.log(`   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`);
+    console.log(
+      `   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`,
+    );
   }
 
-  const foodIdByBarcode = new Map<string, string>();
-  const foodIdByName = new Map<string, string>();
-  const foodCategoryByNevoCode = new Map<number, string>();
+  const foodProductIdByBarcode = new Map<string, string>();
+  const foodProductIdByName = new Map<string, string>();
+  const genericFoodByNevoCode = new Map<number, string>();
   const lookupMaps: IngredientLookupMaps = {
-    foodIdByBarcode,
-    foodIdByName,
-    foodCategoryByNevoCode,
+    foodProductIdByBarcode,
+    foodProductIdByName,
+    genericFoodByNevoCode,
   };
 
   if (!dryRun) {
-    const foods = await prisma.food.findMany({
+    const foodProducts = await prisma.foodProduct.findMany({
       select: { id: true, name: true, barcode: true },
     });
-    for (const food of foods) {
-      if (food.barcode) foodIdByBarcode.set(food.barcode.trim(), food.id);
-      foodIdByName.set(food.name.toLowerCase(), food.id);
-    }
-    console.log(`   🍎 ${foods.length} Food records available for linking`);
-
-    const foodCategories = await prisma.foodCategory.findMany({
-      select: { id: true, nevoCode: true },
-    });
-    for (const fc of foodCategories) {
-      foodCategoryByNevoCode.set(fc.nevoCode, fc.id);
+    for (const foodProduct of foodProducts) {
+      if (foodProduct.barcode)
+        foodProductIdByBarcode.set(foodProduct.barcode.trim(), foodProduct.id);
+      foodProductIdByName.set(foodProduct.name.toLowerCase(), foodProduct.id);
     }
     console.log(
-      `   🥗 ${foodCategories.length} FoodCategory (NEVO) records available for linking`,
+      `   🍎 ${foodProducts.length} FoodProduct records available for linking`,
+    );
+
+    const genericFoods = await prisma.genericFood.findMany({
+      select: { id: true, nevoCode: true },
+    });
+    for (const gf of genericFoods) {
+      genericFoodByNevoCode.set(gf.nevoCode, gf.id);
+    }
+    console.log(
+      `   🥗 ${genericFoods.length} GenericFood (NEVO) records available for linking`,
     );
   }
 
@@ -282,8 +292,8 @@ export async function seedRecipes(
               measure: ing.measure?.trim() ?? null,
               order: ing.order,
               itemType: ing.itemType,
-              foodId: ing.foodId ?? null,
-              foodCategoryId: ing.foodCategoryId ?? null,
+              foodProductId: ing.foodProductId ?? null,
+              genericFoodId: ing.genericFoodId ?? null,
             })),
           });
         }

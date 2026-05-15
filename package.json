@@ -70,7 +70,7 @@
     "db:seed:prod": "ts-node scripts/seed-prod.ts",
     "db:seed:dev": "ts-node scripts/seed-dev.ts",
     "db:seed:test": "ts-node scripts/seed-test.ts",
-    "db:seed:foods": "ts-node scripts/seed-foods-only.ts",
+    "db:seed:foods": "ts-node scripts/seed-food-products-only.ts",
     "db:seed:meal-logs": "ts-node scripts/dev/seed-meal-logs.ts",
     "db:clean:meal-logs": "ts-node scripts/dev/clean-meal-logs.ts",
     "db:clean:analytics": "ts-node scripts/dev/clean-analytics.ts",

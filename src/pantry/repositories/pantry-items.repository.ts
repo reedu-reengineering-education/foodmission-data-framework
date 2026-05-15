@@ -1,41 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Unit } from '@prisma/client';
+import {
+  PantryItemWithRelations,
+  PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
+} from '../../common/types/prisma-relations';
 import { PrismaService } from '../../database/prisma.service';
-
-export type PantryItemWithRelations = Prisma.PantryItemGetPayload<{
-  include: {
-    pantry: true;
-    food: true;
-    foodCategory: true;
-  };
-}>;
-
-export interface PantryItemFilter {
-  pantryId?: string;
-  foodId?: string;
-  foodCategoryId?: string;
-  unit?: Unit;
-  expiryDate?: Date;
-}
-
-export interface CreatePantryItemData {
-  pantryId: string;
-  foodId?: string | null;
-  foodCategoryId?: string | null;
-  itemType: string;
-  quantity: number;
-  unit: Unit;
-  notes?: string;
-  location?: string;
-  expiryDate?: Date;
-  expiryDateSource?: 'manual' | 'auto_foodkeeper';
-}
+import { Prisma } from '@prisma/client';
+import { CreatePantryItemData } from '../dto/create-pantry-item-data.dto';
+import { PantryItemFilter } from '../dto/pantry-item-filter.dto';
 
 @Injectable()
 export class PantryItemRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
+  create(
     data: CreatePantryItemData,
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
@@ -43,8 +20,8 @@ export class PantryItemRepository {
     return client.pantryItem.create({
       data: {
         pantryId: data.pantryId,
-        foodId: data.foodId,
-        foodCategoryId: data.foodCategoryId,
+        foodProductId: data.foodProductId,
+        genericFoodId: data.genericFoodId,
         itemType: data.itemType,
         quantity: data.quantity,
         unit: data.unit,
@@ -53,51 +30,35 @@ export class PantryItemRepository {
         expiryDate: data.expiryDate,
         expiryDateSource: data.expiryDateSource,
       },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findAll(): Promise<PantryItemWithRelations[]> {
     return await this.prisma.pantryItem.findMany({
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findById(id: string): Promise<PantryItemWithRelations | null> {
-    return this.prisma.pantryItem.findUnique({
+    return await this.prisma.pantryItem.findUnique({
       where: { id },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findMany(
     filter: PantryItemFilter = {},
   ): Promise<PantryItemWithRelations[]> {
-    return this.prisma.pantryItem.findMany({
+    return await this.prisma.pantryItem.findMany({
       where: {
         pantryId: filter.pantryId,
-        foodId: filter.foodId,
-        foodCategoryId: filter.foodCategoryId,
+        foodProductId: filter.foodProductId,
+        genericFoodId: filter.genericFoodId,
         expiryDate: filter.expiryDate,
         unit: filter.unit,
       },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -120,8 +81,8 @@ export class PantryItemRepository {
       },
       include: {
         pantry: true,
-        food: true,
-        foodCategory: true,
+        foodProduct: true,
+        genericFood: true,
       },
     });
   }
@@ -132,14 +93,10 @@ export class PantryItemRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.update({
+    return await client.pantryItem.update({
       where: { id },
       data,
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -150,41 +107,34 @@ export class PantryItemRepository {
     });
   }
 
-  async findFoodInPantry(
+  async findFoodProductInPantry(
     pantryId: string,
-    foodId: string,
+    foodProductId: string,
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.findFirst({
+    return await client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
-        foodId: foodId,
+        foodProductId: foodProductId,
       },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 
-  async findFoodCategoryInPantry(
+  async findGenericFoodInPantry(
     pantryId: string,
-    foodCategoryId: string,
+    genericFoodId: string,
     tx?: Prisma.TransactionClient,
   ): Promise<PantryItemWithRelations | null> {
     const client = tx ?? this.prisma;
-    return client.pantryItem.findFirst({
+    return await client.pantryItem.findFirst({
       where: {
         pantryId: pantryId,
-        foodCategoryId: foodCategoryId,
+        genericFoodId: genericFoodId,
       },
-      include: {
-        pantry: true,
-        food: true,
-        foodCategory: true,
-      },
+      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
     });
   }
 }
+export { PantryItemWithRelations };

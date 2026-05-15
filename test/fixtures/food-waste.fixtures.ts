@@ -4,8 +4,8 @@ export const TEST_FOOD_WASTE = {
   id: 'food-waste-1',
   userId: 'user-1',
   pantryItemId: 'pantry-item-1',
-  foodId: 'food-1',
-  foodCategoryId: null,
+  foodProductId: 'food-1',
+  genericFoodId: null,
   quantity: 1.5,
   unit: Unit.KG,
   wasteReason: WasteReason.EXPIRED,
@@ -22,8 +22,8 @@ export const TEST_FOOD_WASTE_2 = {
   id: 'food-waste-2',
   userId: 'user-1',
   pantryItemId: null,
-  foodId: 'food-2',
-  foodCategoryId: null,
+  foodProductId: 'food-2',
+  genericFoodId: null,
   quantity: 0.5,
   unit: Unit.KG,
   wasteReason: WasteReason.SPOILED,
@@ -70,7 +70,7 @@ export const TEST_FOOD_WASTE_STATISTICS = {
     { method: DetectionMethod.AUTOMATIC, count: 4 },
   ],
   mostWastedFoods: [
-    { foodId: 'food-1', foodName: 'Test Food', totalQuantity: 5, count: 3 },
+    { itemId: 'food-1', foodName: 'Test Food', totalQuantity: 5, count: 3 },
   ],
 };
 

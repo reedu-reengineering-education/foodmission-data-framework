@@ -90,7 +90,7 @@ describe('RateLimitGuard', () => {
           getRequest: () => ({
             ip: '192.168.1.1',
             get: jest.fn(() => 'test-agent'),
-            url: '/api/v1/foods',
+            url: '/api/v1/food-products',
             method: 'GET',
             user: { sub: 'user-123' },
           }),
@@ -134,7 +134,7 @@ describe('RateLimitGuard', () => {
         switchToHttp: () => ({
           getRequest: () => ({
             ip: '192.168.1.1',
-            url: '/api/v1/foods',
+            url: '/api/v1/food-products',
           }),
         }),
       } as ExecutionContext;
@@ -149,7 +149,7 @@ describe('RateLimitGuard', () => {
           getRequest: () => ({
             ip: '192.168.1.1',
             get: jest.fn(() => 'test-agent'),
-            url: '/api/v1/foods',
+            url: '/api/v1/food-products',
             method: 'GET',
             user: { sub: 'user-123' },
           }),
@@ -170,7 +170,7 @@ describe('RateLimitGuard', () => {
           getRequest: () => ({
             ip: '192.168.1.1',
             get: jest.fn(() => 'test-agent'),
-            url: '/api/v1/foods',
+            url: '/api/v1/food-products',
             method: 'POST',
             user: { sub: 'user-123' },
           }),
@@ -190,7 +190,7 @@ describe('RateLimitGuard', () => {
       expect(logSpy).toHaveBeenCalledWith('RATE_LIMIT_EXCEEDED', {
         ip: '192.168.1.1',
         userAgent: 'test-agent',
-        url: '/api/v1/foods',
+        url: '/api/v1/food-products',
         method: 'POST',
         userId: 'user-123',
         limit: 2,
@@ -204,7 +204,7 @@ describe('RateLimitGuard', () => {
           getRequest: () => ({
             ip: '192.168.1.1',
             get: jest.fn(() => 'test-agent'),
-            url: '/api/v1/foods',
+            url: '/api/v1/food-products',
             method: 'GET',
             user: { sub: 'user-123' },
           }),

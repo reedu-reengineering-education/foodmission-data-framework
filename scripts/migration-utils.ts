@@ -116,14 +116,14 @@ export class MigrationManager {
   }
 
   private async enhanceFoodDescriptions(prisma: PrismaClient) {
-    const foods = await prisma.food.findMany();
+    const foodProducts = await prisma.foodProduct.findMany();
 
-    for (const food of foods) {
-      if (food.description && !food.description.includes('Enhanced:')) {
-        await prisma.food.update({
-          where: { id: food.id },
+    for (const foodProduct of foodProducts) {
+      if (foodProduct.description && !foodProduct.description.includes('Enhanced:')) {
+        await prisma.foodProduct.update({
+          where: { id: foodProduct.id },
           data: {
-            description: `Enhanced: ${food.description}`,
+            description: `Enhanced: ${foodProduct.description}`,
           },
         });
       }
@@ -131,7 +131,7 @@ export class MigrationManager {
   }
 
   private async revertFoodDescriptions(prisma: PrismaClient) {
-    const foods = await prisma.food.findMany({
+    const foodProducts = await prisma.foodProduct.findMany({
       where: {
         description: {
           contains: 'Enhanced:',
@@ -139,12 +139,12 @@ export class MigrationManager {
       },
     });
 
-    for (const food of foods) {
-      if (food.description) {
-        await prisma.food.update({
-          where: { id: food.id },
+    for (const foodProduct of foodProducts) {
+      if (foodProduct.description) {
+        await prisma.foodProduct.update({
+          where: { id: foodProduct.id },
           data: {
-            description: food.description.replace('Enhanced: ', ''),
+            description: foodProduct.description.replace('Enhanced: ', ''),
           },
         });
       }

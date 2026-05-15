@@ -22,18 +22,22 @@ export class CacheInvalidationService {
   private initializeStrategies() {
     // Food-related invalidation strategies
     this.strategies.set('food:create', {
-      pattern: 'foods',
-      dependencies: ['foods:list', 'foods:count'],
+      pattern: 'food-products',
+      dependencies: ['food-products:list', 'food-products:count'],
     });
 
     this.strategies.set('food:update', {
-      pattern: 'foods',
-      dependencies: ['foods:list', 'foods:count', 'food_search:*'],
+      pattern: 'food-products',
+      dependencies: [
+        'food-products:list',
+        'food-products:count',
+        'food-products:search:*',
+      ],
     });
 
     this.strategies.set('food:delete', {
-      pattern: 'foods',
-      dependencies: ['foods:list', 'foods:count'],
+      pattern: 'food-products',
+      dependencies: ['food-products:list', 'food-products:count'],
     });
 
     // User-related invalidation strategies

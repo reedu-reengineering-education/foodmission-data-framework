@@ -51,7 +51,7 @@ export class PerformanceController {
     description: 'Cache hit rates retrieved successfully',
   })
   async getCacheHitRates() {
-    const prefixes = ['foods', 'users', 'api'];
+    const prefixes = ['food-products', 'users', 'api'];
     const hitRates = await Promise.all(
       prefixes.map(async (prefix) => ({
         prefix,

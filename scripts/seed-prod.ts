@@ -15,16 +15,18 @@ async function main() {
     if (nevoRes && nevoRes.skipped) {
       console.log('   ⏭️  NEVO CSV not found; skipping NEVO import.');
     } else if (nevoRes && typeof nevoRes.count === 'number') {
-      console.log(`   ✅ NEVO: ${nevoRes.count} categories created`);
+      console.log(`   ✅ NEVO: ${nevoRes.count} generic foods created`);
     }
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);
     if (offRes && offRes.skipped) {
       console.log(
-        '   ⏭️  OpenFoodFacts JSON not found; Food table will have no OFF products.',
+        '   ⏭️  OpenFoodFacts JSON not found; FoodProduct table will have no OFF products.',
       );
     } else if (offRes && typeof offRes.count === 'number') {
-      console.log(`   ✅ OpenFoodFacts JSON: ${offRes.count} foods upserted`);
+      console.log(
+        `   ✅ OpenFoodFacts JSON: ${offRes.count} foodProducts upserted`,
+      );
     }
 
     const result = await seedRecipes(prisma, { skipExisting: true });
@@ -53,7 +55,7 @@ async function main() {
 
     const shelfLifeLinks = await linkShelfLife(prisma);
     console.log(
-      `   ✅ ShelfLife links: ${shelfLifeLinks.foods} foods, ${shelfLifeLinks.categories} categories`,
+      `   ✅ ShelfLife links: ${shelfLifeLinks.foodProducts} foodProducts, ${shelfLifeLinks.genericFoods} genericFoods`,
     );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);

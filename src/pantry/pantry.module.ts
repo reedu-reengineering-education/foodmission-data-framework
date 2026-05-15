@@ -3,8 +3,9 @@ import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
-import { FoodCategoriesModule } from '../food-category/food-categories.module';
-import { FoodsModule } from '../foods/foods.module';
+
+import { FoodProductsModule } from '../food-products/food-products.module';
+import { GenericFoodsModule } from '../generic-foods/generic-foods.module';
 import { ShelfLifeModule } from '../shelf-life/shelf-life.module';
 import { FoodWasteModule } from '../foodWaste/food-waste.module';
 import { PantryController } from './controllers/pantry.controller';
@@ -19,8 +20,8 @@ import { PantryItemRepository } from './repositories/pantry-items.repository';
     DatabaseModule,
     HttpModule,
     CommonModule,
-    FoodCategoriesModule,
-    FoodsModule,
+    GenericFoodsModule,
+    FoodProductsModule,
     ShelfLifeModule,
     FoodWasteModule,
   ],

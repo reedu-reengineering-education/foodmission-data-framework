@@ -18,41 +18,41 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-@ValidatorConstraint({ name: 'ExclusiveFoodReference', async: false })
-class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'ExclusiveFoodRef', async: false })
+class ExclusiveFoodRefConstraint implements ValidatorConstraintInterface {
   validate(_: unknown, args: ValidationArguments): boolean {
     const obj = args.object as CreatePantryItemDto;
-    const hasFood = !!obj.foodId;
-    const hasCategory = !!obj.foodCategoryId;
-    return hasFood !== hasCategory; // exactly one must be true (XOR)
+    const hasProduct = !!obj.foodProductId;
+    const hasGeneric = !!obj.genericFoodId;
+    return hasProduct !== hasGeneric; // exactly one must be true (XOR)
   }
 
   defaultMessage(): string {
-    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+    return 'Exactly one of foodProductId or genericFoodId must be provided, not both or neither';
   }
 }
 
 export class CreatePantryItemDto {
   @ApiPropertyOptional({
     description:
-      'The ID of the food item to add (OpenFoodFacts). Either foodId or foodCategoryId must be provided.',
-    example: 'uuid-food-id',
+      'The ID of the food product to add (OpenFoodFacts). Either foodProductId or genericFoodId must be provided.',
+    example: 'uuid-food-product-id',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodCategoryId)
+  @ValidateIf((o) => !o.genericFoodId)
   @IsNotEmpty()
-  @Validate(ExclusiveFoodReferenceConstraint)
-  foodId?: string;
+  @Validate(ExclusiveFoodRefConstraint)
+  foodProductId?: string;
 
   @ApiPropertyOptional({
     description:
-      'UUID of the food category (NEVO generic). Either foodId or foodCategoryId must be provided.',
-    example: 'uuid-food-category-id',
+      'UUID of the generic food (NEVO generic). Either foodProductId or genericFoodId must be provided.',
+    example: 'uuid-generic-food-id',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodId)
+  @ValidateIf((o) => !o.foodProductId)
   @IsNotEmpty()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiProperty({
     description: 'The quantity of the item',

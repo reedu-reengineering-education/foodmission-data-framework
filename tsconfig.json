@@ -1,4 +1,5 @@
 {
+  "exclude": ["node_modules", "dist", "local-scripts"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,

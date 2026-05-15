@@ -5,29 +5,14 @@ import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
 import { GroupRole, Prisma } from '@prisma/client';
 import { GroupNotFoundException } from '../../common/exceptions/business.exception';
 import { generateInviteCode } from '../../common/utils/invite-code';
-
-export type UserGroupWithRelations = NonNullable<
-  Awaited<ReturnType<PrismaService['userGroup']['findUnique']>>
->;
+import {
+  USER_GROUP_WITH_RELATIONS_INCLUDE,
+  UserGroupWithRelations,
+} from '../../common/types/prisma-relations';
 
 @Injectable()
 export class UserGroupRepository {
   constructor(private prisma: PrismaService) {}
-
-  private readonly includeRelations: Prisma.UserGroupInclude = {
-    memberships: {
-      include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-      },
-    },
-  };
 
   create(
     data: CreateUserGroupDto & { createdBy: string },
@@ -45,21 +30,21 @@ export class UserGroupRepository {
           },
         },
       },
-      include: this.includeRelations,
+      include: USER_GROUP_WITH_RELATIONS_INCLUDE,
     });
   }
 
   findById(id: string): Promise<UserGroupWithRelations | null> {
     return this.prisma.userGroup.findUnique({
       where: { id },
-      include: this.includeRelations,
+      include: USER_GROUP_WITH_RELATIONS_INCLUDE,
     });
   }
 
   findByInviteCode(inviteCode: string): Promise<UserGroupWithRelations | null> {
     return this.prisma.userGroup.findUnique({
       where: { inviteCode },
-      include: this.includeRelations,
+      include: USER_GROUP_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -72,7 +57,7 @@ export class UserGroupRepository {
           },
         },
       },
-      include: this.includeRelations,
+      include: USER_GROUP_WITH_RELATIONS_INCLUDE,
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -85,7 +70,7 @@ export class UserGroupRepository {
       return await this.prisma.userGroup.update({
         where: { id },
         data,
-        include: this.includeRelations,
+        include: USER_GROUP_WITH_RELATIONS_INCLUDE,
       });
     } catch (error) {
       if (
@@ -105,7 +90,7 @@ export class UserGroupRepository {
         data: {
           inviteCode: generateInviteCode(),
         },
-        include: this.includeRelations,
+        include: USER_GROUP_WITH_RELATIONS_INCLUDE,
       });
     } catch (error) {
       if (

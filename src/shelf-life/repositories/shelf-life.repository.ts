@@ -6,15 +6,13 @@ import { PrismaService } from '../../database/prisma.service';
 export class ShelfLifeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByProductId(
-    foodKeeperProductId: number,
-  ): Promise<FoodShelfLife | null> {
+  findByProductId(foodKeeperProductId: number): Promise<FoodShelfLife | null> {
     return this.prisma.foodShelfLife.findUnique({
       where: { foodKeeperProductId },
     });
   }
 
-  async findByKeywords(keywords: string[]): Promise<FoodShelfLife[]> {
+  findByKeywords(keywords: string[]): Promise<FoodShelfLife[]> {
     const normalizedKeywords = keywords.map((k) => k.toLowerCase().trim());
     return this.prisma.foodShelfLife.findMany({
       where: {
@@ -53,7 +51,7 @@ export class ShelfLifeRepository {
     return scored[0]?.candidate ?? null;
   }
 
-  async findAll(options?: {
+  findAll(options?: {
     skip?: number;
     take?: number;
     where?: Prisma.FoodShelfLifeWhereInput;
@@ -68,7 +66,7 @@ export class ShelfLifeRepository {
     });
   }
 
-  async count(where?: Prisma.FoodShelfLifeWhereInput): Promise<number> {
+  count(where?: Prisma.FoodShelfLifeWhereInput): Promise<number> {
     return this.prisma.foodShelfLife.count({ where });
   }
 }

@@ -7,17 +7,21 @@ the FOODMISSION Data Framework.
 
 ### Database and Seeding
 
-- `seed-dev.ts` - Development seeding with richer local data
-- `seed-test.ts` - Deterministic test seeding
-- `seed-foods-only.ts` - Seed only food-related data
-- `migration-utils.ts` - Migration helper utilities
-- `db-reset.sh` - Reset local database state
-- `init-test-db.sql` - Test DB bootstrap SQL
+- **`seed-dev.ts`** — OFF JSON + core users + extra dev users / food products from fixtures
+- **`seed-test.ts`** — Minimal deterministic users + barcode food products for CI (`npm run db:seed:test`)
+- **`seed-prod.ts`** — Production-oriented pipeline: NEVO (create-only) → OFF JSON → recipes → FoodKeeper → shelf-life links (`npm run db:seed:prod`)
+- **`seed-nevo.ts`** — Standalone NEVO CSV → `generic_foods` (create-only); also runnable as CLI
+- **`seed-prod-nevo.ts`** — NEVO import then recipe seeding (subset prod workflow)
+- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive — use only when you intend to replace the catalog
+- **`migration-utils.ts`** - Migration helper utilities
+- **`db-reset.sh`** - Reset local database state
+- **`init-test-db.sql`** - Test DB bootstrap SQL
 
 ### Backup and Restore
 
-- `db-backup.sh` - Backup utility (full/data/schema/all modes)
-- `db-restore.sh` - Restore utility
+- **`migration-utils.ts`** — Custom data migrations (separate from `prisma migrate`); CLI via `npm run migrate`
+- **`db-backup.sh`** - Backup utility (full/data/schema/all modes)
+- **`db-restore.sh`** - Restore utility
 
 ### OpenAPI
 

@@ -59,7 +59,7 @@ async function generateOpenApiSpec() {
       
       ## Features
       - **Authentication**: Secure JWT-based authentication via Keycloak
-      - **Food Management**: CRUD operations for food items with categorization
+      - **Food products**: CRUD for catalog items (barcoded products, OpenFoodFacts)
       - **OpenFoodFacts Integration**: Automatic nutritional data retrieval
       - **User Management**: User profiles and dietary preferences
       - **Health Monitoring**: Comprehensive health checks and metrics
@@ -109,7 +109,7 @@ async function generateOpenApiSpec() {
         "message": "Validation failed",
         "error": "VALIDATION_ERROR",
         "timestamp": "2024-01-15T10:30:00.000Z",
-        "path": "/api/v1/foods",
+        "path": "/api/v1/food-products",
         "traceId": "abc123def456",
         "details": {
           "errors": [
@@ -147,8 +147,8 @@ async function generateOpenApiSpec() {
         'Authentication and authorization endpoints for Keycloak integration',
       )
       .addTag(
-        'foods',
-        'Food item management with OpenFoodFacts integration for nutritional data',
+        'food-products',
+        'Food product catalog with OpenFoodFacts integration for nutritional data',
       )
       .addTag(
         'users',
