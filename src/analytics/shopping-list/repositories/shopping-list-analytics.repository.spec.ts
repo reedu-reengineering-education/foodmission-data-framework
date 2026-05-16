@@ -1,7 +1,5 @@
 import { ShoppingListAnalyticsRepository } from './shopping-list-analytics.repository';
-import {
-  ShoppingListAnalyticsBatchStatus,
-} from '@prisma/client';
+import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsRepository', () => {
   let repository: ShoppingListAnalyticsRepository;
@@ -16,16 +14,46 @@ describe('ShoppingListAnalyticsRepository', () => {
         update: jest.fn(),
         delete: jest.fn(),
       },
-      shoppingListAnalyticsItemPopularity: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsCategoryPopularity: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsListPatterns: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsNutritionProfile: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsSustainability: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsFoodGroups: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsDemographicPatterns: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsDemographicNutrition: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsCrossDimPatterns: { createMany: jest.fn(), findMany: jest.fn() },
-      shoppingListAnalyticsCrossDimNutrition: { createMany: jest.fn(), findMany: jest.fn() },
+      shoppingListAnalyticsItemPopularity: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsCategoryPopularity: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsListPatterns: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsNutritionProfile: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsSustainability: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsFoodGroups: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsDemographicPatterns: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsDemographicNutrition: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsCrossDimPatterns: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
+      shoppingListAnalyticsCrossDimNutrition: {
+        createMany: jest.fn(),
+        findMany: jest.fn(),
+      },
     } as any;
 
     repository = new ShoppingListAnalyticsRepository(prisma as any);
@@ -57,7 +85,9 @@ describe('ShoppingListAnalyticsRepository', () => {
   // ============================================================
 
   it('findBatchById includes all related tables', async () => {
-    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({ id: 'b1' } as any);
+    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({
+      id: 'b1',
+    } as any);
 
     await repository.findBatchById('b1');
 
@@ -82,8 +112,13 @@ describe('ShoppingListAnalyticsRepository', () => {
   // ============================================================
 
   it('updateBatchStatus sets publishedAt and publishedBy when publishing', async () => {
-    const published = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.PUBLISHED };
-    prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(published as any);
+    const published = {
+      id: 'b1',
+      status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+    };
+    prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(
+      published as any,
+    );
 
     await repository.updateBatchStatus(
       'b1',
@@ -98,7 +133,10 @@ describe('ShoppingListAnalyticsRepository', () => {
   });
 
   it('updateBatchStatus sets rejectedAt, rejectedBy and rejectionReason when rejecting', async () => {
-    const rejected = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.REJECTED };
+    const rejected = {
+      id: 'b1',
+      status: ShoppingListAnalyticsBatchStatus.REJECTED,
+    };
     prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(rejected as any);
 
     await repository.updateBatchStatus(
@@ -162,8 +200,9 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.getPublishedListPatterns();
 
-    const where = (prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock).mock
-      .calls[0][0].where;
+    const where = (
+      prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
+    ).mock.calls[0][0].where;
     expect(where.batch.status).toBe(ShoppingListAnalyticsBatchStatus.PUBLISHED);
   });
 
@@ -174,8 +213,9 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.getPublishedListPatterns(from, to);
 
-    const where = (prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock).mock
-      .calls[0][0].where;
+    const where = (
+      prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
+    ).mock.calls[0][0].where;
     expect(where.batch.periodStart).toEqual({ gte: from });
     expect(where.batch.periodEnd).toEqual({ lte: to });
   });
@@ -185,29 +225,43 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.getPublishedItemPopularity(undefined, undefined, 5);
 
-    const callArg = (prisma.shoppingListAnalyticsItemPopularity.findMany as jest.Mock)
-      .mock.calls[0][0];
+    const callArg = (
+      prisma.shoppingListAnalyticsItemPopularity.findMany as jest.Mock
+    ).mock.calls[0][0];
     expect(callArg.take).toBe(5);
     expect(callArg.orderBy).toEqual({ frequency: 'desc' });
   });
 
   it('getPublishedDemographicPatterns filters by dimension when provided', async () => {
-    prisma.shoppingListAnalyticsDemographicPatterns.findMany.mockResolvedValue([]);
+    prisma.shoppingListAnalyticsDemographicPatterns.findMany.mockResolvedValue(
+      [],
+    );
 
-    await repository.getPublishedDemographicPatterns(undefined, undefined, 'gender');
+    await repository.getPublishedDemographicPatterns(
+      undefined,
+      undefined,
+      'gender',
+    );
 
-    const where = (prisma.shoppingListAnalyticsDemographicPatterns.findMany as jest.Mock)
-      .mock.calls[0][0].where;
+    const where = (
+      prisma.shoppingListAnalyticsDemographicPatterns.findMany as jest.Mock
+    ).mock.calls[0][0].where;
     expect(where.gender).toEqual({ not: null });
   });
 
   it('getPublishedCrossDimPatterns filters by dim1 and dim2 when provided', async () => {
     prisma.shoppingListAnalyticsCrossDimPatterns.findMany.mockResolvedValue([]);
 
-    await repository.getPublishedCrossDimPatterns(undefined, undefined, 'ageGroup', 'gender');
+    await repository.getPublishedCrossDimPatterns(
+      undefined,
+      undefined,
+      'ageGroup',
+      'gender',
+    );
 
-    const where = (prisma.shoppingListAnalyticsCrossDimPatterns.findMany as jest.Mock)
-      .mock.calls[0][0].where;
+    const where = (
+      prisma.shoppingListAnalyticsCrossDimPatterns.findMany as jest.Mock
+    ).mock.calls[0][0].where;
     expect(where.dim1Name).toBe('ageGroup');
     expect(where.dim2Name).toBe('gender');
   });
