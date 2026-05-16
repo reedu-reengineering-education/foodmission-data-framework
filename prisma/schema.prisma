@@ -1349,3 +1349,300 @@ model UserKnowledgeProgress {
   @@index([knowledgeId])
   @@map("user_knowledge_progress")
 }
+
+// ============================================================
+// Analytics — Shopping List
+// ============================================================
+
+enum ShoppingListAnalyticsBatchStatus {
+  STAGING
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+model ShoppingListAnalyticsBatch {
+  id              String                           @id @default(uuid())
+  periodStart     DateTime
+  periodEnd       DateTime
+  status          ShoppingListAnalyticsBatchStatus @default(STAGING)
+  generatedAt     DateTime                         @default(now())
+  publishedAt     DateTime?
+  publishedBy     String?
+  rejectedAt      DateTime?
+  rejectedBy      String?
+  rejectionReason String?
+  recordCount     Int                              @default(0)
+  metadata        Json?
+
+  itemPopularity       ShoppingListAnalyticsItemPopularity[]
+  categoryPopularity   ShoppingListAnalyticsCategoryPopularity[]
+  listPatterns         ShoppingListAnalyticsListPatterns[]
+  nutritionProfile     ShoppingListAnalyticsNutritionProfile[]
+  sustainability       ShoppingListAnalyticsSustainability[]
+  foodGroups           ShoppingListAnalyticsFoodGroups[]
+  demographicPatterns  ShoppingListAnalyticsDemographicPatterns[]
+  demographicNutrition ShoppingListAnalyticsDemographicNutrition[]
+  crossDimPatterns     ShoppingListAnalyticsCrossDimPatterns[]
+  crossDimNutrition    ShoppingListAnalyticsCrossDimNutrition[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([periodStart, periodEnd])
+  @@map("shopping_list_analytics_batches")
+}
+
+model ShoppingListAnalyticsItemPopularity {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  foodName        String
+  foodGroup       String?
+  itemType        String
+  frequency       Int
+  uniqueUsers     Int
+  avgQuantity     Float
+  predominantUnit String
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, foodName, itemType])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_item_popularity")
+}
+
+model ShoppingListAnalyticsCategoryPopularity {
+  id          String                     @id @default(uuid())
+  batchId     String
+  batch       ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date        DateTime                   @db.Date
+  category    String
+  frequency   Int
+  uniqueUsers Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, category])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_category_popularity")
+}
+
+model ShoppingListAnalyticsListPatterns {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date])
+  @@index([date])
+  @@map("shopping_list_analytics_list_patterns")
+}
+
+model ShoppingListAnalyticsNutritionProfile {
+  id                     String                     @id @default(uuid())
+  batchId                String
+  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                   DateTime                   @db.Date
+  userCount              Int
+  itemCount              Int
+  avgCaloriesPer100g     Float?
+  avgProteinsPer100g     Float?
+  avgFatPer100g          Float?
+  avgCarbsPer100g        Float?
+  avgFiberPer100g        Float?
+  avgSodiumPer100g       Float?
+  avgSugarPer100g        Float?
+  avgSaturatedFatPer100g Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date])
+  @@index([date])
+  @@map("shopping_list_analytics_nutrition_profile")
+}
+
+model ShoppingListAnalyticsSustainability {
+  id                     String                     @id @default(uuid())
+  batchId                String
+  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                   DateTime                   @db.Date
+  userCount              Int
+  itemCount              Int
+  avgCarbonFootprint     Float?
+  nutriScoreDistribution Json?
+  ecoScoreDistribution   Json?
+  novaDistribution       Json?
+  vegetarianItemPct      Float?
+  veganItemPct           Float?
+  avgUltraProcessedPct   Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date])
+  @@index([date])
+  @@map("shopping_list_analytics_sustainability")
+}
+
+model ShoppingListAnalyticsFoodGroups {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  foodGroup       String
+  frequency       Int
+  uniqueUsers     Int
+  avgQuantity     Float
+  predominantUnit String
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, foodGroup])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_food_groups")
+}
+
+// ============================================================
+// Analytics — Shopping List Demographic Breakdown Tables
+//
+// Each row represents one (date, demographicValue) combination
+// for EXACTLY ONE demographic dimension (ageGroup | gender | educationLevel | region | country).
+// The other four dimension columns are NULL in that row.
+// k-anonymity (K=5) enforced before insertion.
+// ============================================================
+
+model ShoppingListAnalyticsDemographicPatterns {
+  id             String                     @id @default(uuid())
+  batchId        String
+  batch          ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date           DateTime                   @db.Date
+
+  ageGroup       String?
+  gender         String?
+  educationLevel String?
+  region         String?
+  country        String?
+
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, ageGroup, gender, educationLevel, region, country])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([date])
+  @@map("shopping_list_analytics_demographic_patterns")
+}
+
+model ShoppingListAnalyticsDemographicNutrition {
+  id                     String                     @id @default(uuid())
+  batchId                String
+  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                   DateTime                   @db.Date
+
+  ageGroup               String?
+  gender                 String?
+  educationLevel         String?
+  region                 String?
+  country                String?
+
+  userCount              Int
+  itemCount              Int
+  avgCaloriesPer100g     Float?
+  avgProteinsPer100g     Float?
+  avgFatPer100g          Float?
+  avgCarbsPer100g        Float?
+  avgFiberPer100g        Float?
+  avgSodiumPer100g       Float?
+  avgSugarPer100g        Float?
+  avgSaturatedFatPer100g Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, ageGroup, gender, educationLevel, region, country])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([date])
+  @@map("shopping_list_analytics_demographic_nutrition")
+}
+
+// ============================================================
+// Analytics — Shopping List Cross-Dimensional Tables (K=20)
+// dim1Name < dim2Name alphabetically.
+// ============================================================
+
+model ShoppingListAnalyticsCrossDimPatterns {
+  id        String                     @id @default(uuid())
+  batchId   String
+  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date      DateTime                   @db.Date
+
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("shopping_list_analytics_cross_dim_patterns")
+}
+
+model ShoppingListAnalyticsCrossDimNutrition {
+  id        String                     @id @default(uuid())
+  batchId   String
+  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date      DateTime                   @db.Date
+
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount              Int
+  itemCount              Int
+  avgCaloriesPer100g     Float?
+  avgProteinsPer100g     Float?
+  avgFatPer100g          Float?
+  avgCarbsPer100g        Float?
+  avgFiberPer100g        Float?
+  avgSodiumPer100g       Float?
+  avgSugarPer100g        Float?
+  avgSaturatedFatPer100g Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("shopping_list_analytics_cross_dim_nutrition")
+}

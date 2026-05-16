@@ -1,0 +1,376 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../database/prisma.service';
+import {
+  Prisma,
+  ShoppingListAnalyticsBatch,
+  ShoppingListAnalyticsBatchStatus,
+} from '@prisma/client';
+import { DemographicDimension } from '../services/shopping-list-analytics-aggregator.service';
+
+@Injectable()
+export class ShoppingListAnalyticsRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createBatch(data: {
+    periodStart: Date;
+    periodEnd: Date;
+    recordCount: number;
+    metadata?: Prisma.InputJsonValue;
+  }): Promise<ShoppingListAnalyticsBatch> {
+    return this.prisma.shoppingListAnalyticsBatch.create({ data });
+  }
+
+  async findBatchById(id: string) {
+    return this.prisma.shoppingListAnalyticsBatch.findUnique({
+      where: { id },
+      include: {
+        itemPopularity: { orderBy: { frequency: 'desc' } },
+        categoryPopularity: { orderBy: { frequency: 'desc' } },
+        listPatterns: true,
+        nutritionProfile: true,
+        sustainability: true,
+        foodGroups: { orderBy: { frequency: 'desc' } },
+        demographicPatterns: true,
+        demographicNutrition: true,
+        crossDimPatterns: true,
+        crossDimNutrition: true,
+      },
+    });
+  }
+
+  async findBatches(status?: ShoppingListAnalyticsBatchStatus) {
+    return this.prisma.shoppingListAnalyticsBatch.findMany({
+      where: status ? { status } : undefined,
+      orderBy: { generatedAt: 'desc' },
+    });
+  }
+
+  async updateBatchStatus(
+    id: string,
+    status: ShoppingListAnalyticsBatchStatus,
+    userId?: string,
+    reason?: string,
+  ): Promise<ShoppingListAnalyticsBatch> {
+    const data: Prisma.ShoppingListAnalyticsBatchUpdateInput = { status };
+
+    if (status === ShoppingListAnalyticsBatchStatus.PUBLISHED) {
+      data.publishedAt = new Date();
+      data.publishedBy = userId;
+    } else if (status === ShoppingListAnalyticsBatchStatus.REJECTED) {
+      data.rejectedAt = new Date();
+      data.rejectedBy = userId;
+      data.rejectionReason = reason;
+    }
+
+    return this.prisma.shoppingListAnalyticsBatch.update({ where: { id }, data });
+  }
+
+  async deleteBatch(id: string): Promise<void> {
+    await this.prisma.shoppingListAnalyticsBatch.delete({ where: { id } });
+  }
+
+  // ============================================================
+  // Bulk inserts
+  // ============================================================
+
+  async insertItemPopularity(
+    data: Prisma.ShoppingListAnalyticsItemPopularityCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsItemPopularity.createMany({ data });
+  }
+
+  async insertCategoryPopularity(
+    data: Prisma.ShoppingListAnalyticsCategoryPopularityCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsCategoryPopularity.createMany({ data });
+  }
+
+  async insertListPatterns(
+    data: Prisma.ShoppingListAnalyticsListPatternsCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsListPatterns.createMany({ data });
+  }
+
+  async insertNutritionProfile(
+    data: Prisma.ShoppingListAnalyticsNutritionProfileCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsNutritionProfile.createMany({ data });
+  }
+
+  async insertSustainability(
+    data: Prisma.ShoppingListAnalyticsSustainabilityCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsSustainability.createMany({ data });
+  }
+
+  async insertFoodGroups(
+    data: Prisma.ShoppingListAnalyticsFoodGroupsCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsFoodGroups.createMany({ data });
+  }
+
+  async insertDemographicPatterns(
+    data: Prisma.ShoppingListAnalyticsDemographicPatternsCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicPatterns.createMany({ data });
+  }
+
+  async insertDemographicNutrition(
+    data: Prisma.ShoppingListAnalyticsDemographicNutritionCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicNutrition.createMany({ data });
+  }
+
+  async insertCrossDimPatterns(
+    data: Prisma.ShoppingListAnalyticsCrossDimPatternsCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimPatterns.createMany({ data });
+  }
+
+  async insertCrossDimNutrition(
+    data: Prisma.ShoppingListAnalyticsCrossDimNutritionCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimNutrition.createMany({ data });
+  }
+
+  // ============================================================
+  // Published data queries
+  // ============================================================
+
+  private publishedBatchFilter(
+    from?: Date,
+    to?: Date,
+  ): Prisma.ShoppingListAnalyticsBatchWhereInput {
+    const filter: Prisma.ShoppingListAnalyticsBatchWhereInput = {
+      status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+    };
+    if (from) filter.periodStart = { gte: from };
+    if (to) filter.periodEnd = { lte: to };
+    return filter;
+  }
+
+  async getPublishedItemPopularity(from?: Date, to?: Date, limit = 20) {
+    return this.prisma.shoppingListAnalyticsItemPopularity.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { frequency: 'desc' },
+      take: limit,
+      select: {
+        date: true,
+        foodName: true,
+        foodGroup: true,
+        itemType: true,
+        frequency: true,
+        uniqueUsers: true,
+        avgQuantity: true,
+        predominantUnit: true,
+      },
+    });
+  }
+
+  async getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
+    return this.prisma.shoppingListAnalyticsCategoryPopularity.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { frequency: 'desc' },
+      take: limit,
+      select: {
+        date: true,
+        category: true,
+        frequency: true,
+        uniqueUsers: true,
+      },
+    });
+  }
+
+  async getPublishedListPatterns(from?: Date, to?: Date) {
+    return this.prisma.shoppingListAnalyticsListPatterns.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { date: 'asc' },
+      select: {
+        date: true,
+        userCount: true,
+        totalLists: true,
+        avgItemsPerList: true,
+        avgListsPerUser: true,
+        foodProductPct: true,
+        genericFoodPct: true,
+      },
+    });
+  }
+
+  async getPublishedNutritionProfile(from?: Date, to?: Date) {
+    return this.prisma.shoppingListAnalyticsNutritionProfile.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { date: 'asc' },
+      select: {
+        date: true,
+        userCount: true,
+        itemCount: true,
+        avgCaloriesPer100g: true,
+        avgProteinsPer100g: true,
+        avgFatPer100g: true,
+        avgCarbsPer100g: true,
+        avgFiberPer100g: true,
+        avgSodiumPer100g: true,
+        avgSugarPer100g: true,
+        avgSaturatedFatPer100g: true,
+      },
+    });
+  }
+
+  async getPublishedSustainability(from?: Date, to?: Date) {
+    return this.prisma.shoppingListAnalyticsSustainability.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { date: 'asc' },
+      select: {
+        date: true,
+        userCount: true,
+        itemCount: true,
+        avgCarbonFootprint: true,
+        nutriScoreDistribution: true,
+        ecoScoreDistribution: true,
+        novaDistribution: true,
+        vegetarianItemPct: true,
+        veganItemPct: true,
+        avgUltraProcessedPct: true,
+      },
+    });
+  }
+
+  async getPublishedFoodGroups(from?: Date, to?: Date, limit = 20) {
+    return this.prisma.shoppingListAnalyticsFoodGroups.findMany({
+      where: { batch: this.publishedBatchFilter(from, to) },
+      orderBy: { frequency: 'desc' },
+      take: limit,
+      select: {
+        date: true,
+        foodGroup: true,
+        frequency: true,
+        uniqueUsers: true,
+        avgQuantity: true,
+        predominantUnit: true,
+      },
+    });
+  }
+
+  async getPublishedDemographicPatterns(
+    from?: Date,
+    to?: Date,
+    dimension?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicPatterns.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dimension ? { [dimension]: { not: null } } : {}),
+      },
+      orderBy: [{ date: 'asc' }],
+      select: {
+        date: true,
+        ageGroup: true,
+        gender: true,
+        educationLevel: true,
+        region: true,
+        country: true,
+        userCount: true,
+        totalLists: true,
+        avgItemsPerList: true,
+        avgListsPerUser: true,
+        foodProductPct: true,
+        genericFoodPct: true,
+      },
+    });
+  }
+
+  async getPublishedDemographicNutrition(
+    from?: Date,
+    to?: Date,
+    dimension?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicNutrition.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dimension ? { [dimension]: { not: null } } : {}),
+      },
+      orderBy: [{ date: 'asc' }],
+      select: {
+        date: true,
+        ageGroup: true,
+        gender: true,
+        educationLevel: true,
+        region: true,
+        country: true,
+        userCount: true,
+        itemCount: true,
+        avgCaloriesPer100g: true,
+        avgProteinsPer100g: true,
+        avgFatPer100g: true,
+        avgCarbsPer100g: true,
+        avgFiberPer100g: true,
+        avgSodiumPer100g: true,
+        avgSugarPer100g: true,
+        avgSaturatedFatPer100g: true,
+      },
+    });
+  }
+
+  async getPublishedCrossDimPatterns(
+    from?: Date,
+    to?: Date,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimPatterns.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dim1 ? { dim1Name: dim1 } : {}),
+        ...(dim2 ? { dim2Name: dim2 } : {}),
+      },
+      orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
+      select: {
+        date: true,
+        dim1Name: true,
+        dim1Value: true,
+        dim2Name: true,
+        dim2Value: true,
+        userCount: true,
+        totalLists: true,
+        avgItemsPerList: true,
+        avgListsPerUser: true,
+        foodProductPct: true,
+        genericFoodPct: true,
+      },
+    });
+  }
+
+  async getPublishedCrossDimNutrition(
+    from?: Date,
+    to?: Date,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimNutrition.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dim1 ? { dim1Name: dim1 } : {}),
+        ...(dim2 ? { dim2Name: dim2 } : {}),
+      },
+      orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
+      select: {
+        date: true,
+        dim1Name: true,
+        dim1Value: true,
+        dim2Name: true,
+        dim2Value: true,
+        userCount: true,
+        itemCount: true,
+        avgCaloriesPer100g: true,
+        avgProteinsPer100g: true,
+        avgFatPer100g: true,
+        avgCarbsPer100g: true,
+        avgFiberPer100g: true,
+        avgSodiumPer100g: true,
+        avgSugarPer100g: true,
+        avgSaturatedFatPer100g: true,
+      },
+    });
+  }
+}
