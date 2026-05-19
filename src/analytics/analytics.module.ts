@@ -9,6 +9,7 @@ import { ShoppingListAnalyticsService } from './shopping-list/services/shopping-
 import { ShoppingListAnalyticsAggregator } from './shopping-list/services/shopping-list-analytics-aggregator.service';
 import { ShoppingListAnalyticsRepository } from './shopping-list/repositories/shopping-list-analytics.repository';
 import { UsersRepository } from '../users/repositories/users.repository';
+import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service';
 
 @Module({
   imports: [ScheduleModule.forRoot()],
@@ -21,6 +22,7 @@ import { UsersRepository } from '../users/repositories/users.repository';
     ShoppingListAnalyticsAggregator,
     ShoppingListAnalyticsRepository,
     UsersRepository,
+    AnalyticsBatchCoordinator,
   ],
   exports: [MealLogAnalyticsService, ShoppingListAnalyticsService],
 })

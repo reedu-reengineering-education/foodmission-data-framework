@@ -23,15 +23,10 @@ import {
 } from '@nestjs/swagger';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
 import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
-
-const DEMOGRAPHIC_DIMENSIONS = [
-  'ageGroup',
-  'country',
-  'educationLevel',
-  'gender',
-  'region',
-] as const;
-type DemographicDimensionParam = (typeof DEMOGRAPHIC_DIMENSIONS)[number];
+import {
+  DEMOGRAPHIC_DIMENSIONS,
+  DemographicDimension,
+} from '../../common/demographic-dimensions';
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
@@ -59,14 +54,14 @@ export class ShoppingListAnalyticsController {
 
   private parseDimension(
     value: string | undefined,
-  ): DemographicDimensionParam | undefined {
+  ): DemographicDimension | undefined {
     if (value === undefined) return undefined;
-    if (!DEMOGRAPHIC_DIMENSIONS.includes(value as DemographicDimensionParam)) {
+    if (!DEMOGRAPHIC_DIMENSIONS.includes(value as DemographicDimension)) {
       throw new BadRequestException(
         `Invalid dimension "${value}". Must be one of: ${DEMOGRAPHIC_DIMENSIONS.join(', ')}.`,
       );
     }
-    return value as DemographicDimensionParam;
+    return value as DemographicDimension;
   }
 
   // ============================================================

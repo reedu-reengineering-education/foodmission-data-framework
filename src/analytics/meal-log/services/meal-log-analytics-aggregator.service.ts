@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import { TypeOfMeal } from '@prisma/client';
+import {
+  DEMOGRAPHIC_DIMENSIONS,
+  DemographicDimension,
+} from '../../common/demographic-dimensions';
+import {
+  K_ANONYMITY_THRESHOLD,
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+} from '../../common/k-anonymity';
 
-/** k-anonymity threshold: suppress groups with fewer than K unique users */
-const K_ANONYMITY_THRESHOLD = 5;
-
-/** k-anonymity threshold for cross-dimensional groups (two dimensions combined) */
-const K_ANONYMITY_CROSS_DIM_THRESHOLD = 20;
+export { DemographicDimension, DEMOGRAPHIC_DIMENSIONS };
 
 // ============================================================
 // Raw SQL row type — joined from meal_logs, Meal, MealItem, Food, FoodCategory
@@ -200,23 +204,9 @@ export interface MealRecordRow {
 }
 
 // ============================================================
-// Demographic dimension types
+// Demographic dimension types — imported from common, re-exported for
+// backward compatibility with existing importers of this aggregator.
 // ============================================================
-
-export type DemographicDimension =
-  | 'ageGroup'
-  | 'gender'
-  | 'educationLevel'
-  | 'region'
-  | 'country';
-
-export const DEMOGRAPHIC_DIMENSIONS: DemographicDimension[] = [
-  'ageGroup',
-  'gender',
-  'educationLevel',
-  'region',
-  'country',
-];
 
 export interface DemographicNutritionRow {
   date: Date;

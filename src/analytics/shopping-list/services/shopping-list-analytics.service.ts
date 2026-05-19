@@ -4,13 +4,11 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
-import {
-  ShoppingListAnalyticsAggregator,
-  DemographicDimension,
-} from './shopping-list-analytics-aggregator.service';
+import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
 import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { DemographicDimension } from '../../common/demographic-dimensions';
+import { runBatchGeneration } from '../../common/batch-runner';
 
 @Injectable()
 export class ShoppingListAnalyticsService {
@@ -22,10 +20,9 @@ export class ShoppingListAnalyticsService {
   ) {}
 
   /**
-   * Daily cron: aggregate yesterday's data into staging.
-   * Runs at 3:00 AM every day (offset from meal log's 2 AM to avoid contention).
+   * Aggregate yesterday's data into staging.
+   * Scheduled by AnalyticsBatchCoordinator at 3:00 AM daily.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async runDailyAggregation(): Promise<string> {
     const yesterday = new Date();
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
@@ -38,15 +35,10 @@ export class ShoppingListAnalyticsService {
   }
 
   async generateBatch(periodStart: Date, periodEnd: Date): Promise<string> {
-    if (periodStart >= periodEnd) {
-      throw new BadRequestException('periodStart must be before periodEnd');
-    }
     this.logger.log(
       `Generating batch: ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );
-
-    const result = await this.aggregator.aggregate(periodStart, periodEnd);
-
+    return runBatchGeneration(periodStart, periodEnd, this.aggregator, async (result) => {
     const batch = await this.repository.createBatch({
       periodStart,
       periodEnd,
@@ -128,6 +120,7 @@ export class ShoppingListAnalyticsService {
     );
 
     return batch.id;
+    });
   }
 
   // ============================================================

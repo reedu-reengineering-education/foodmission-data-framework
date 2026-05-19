@@ -5,7 +5,7 @@ import {
   ShoppingListAnalyticsBatch,
   ShoppingListAnalyticsBatchStatus,
 } from '@prisma/client';
-import { DemographicDimension } from '../services/shopping-list-analytics-aggregator.service';
+import { DemographicDimension } from '../../common/demographic-dimensions';
 
 @Injectable()
 export class ShoppingListAnalyticsRepository {

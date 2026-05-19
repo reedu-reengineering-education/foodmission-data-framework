@@ -5,7 +5,7 @@ import {
   MealLogAnalyticsBatchStatus,
   Prisma,
 } from '@prisma/client';
-import { DemographicDimension } from '../services/meal-log-analytics-aggregator.service';
+import { DemographicDimension } from '../../common/demographic-dimensions';
 
 @Injectable()
 export class MealLogAnalyticsRepository {

@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
+import {
+  DEMOGRAPHIC_DIMENSIONS,
+  DemographicDimension,
+} from '../../common/demographic-dimensions';
+import {
+  K_ANONYMITY_THRESHOLD,
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+} from '../../common/k-anonymity';
 
-/** k-anonymity threshold: suppress groups with fewer than K unique users */
-const K_ANONYMITY_THRESHOLD = 5;
-
-/** Stricter k-anonymity threshold for cross-dimensional groups */
-const K_ANONYMITY_CROSS_DIM_THRESHOLD = 20;
+export { DemographicDimension, DEMOGRAPHIC_DIMENSIONS };
 
 // ============================================================
 // Raw SQL row type — joined from shopping_list_items, shopping_lists, users,
@@ -214,20 +218,7 @@ export interface ShoppingListAggregationResult {
   suppressedGroups: number;
 }
 
-export type DemographicDimension =
-  | 'ageGroup'
-  | 'gender'
-  | 'educationLevel'
-  | 'region'
-  | 'country';
-
-export const DEMOGRAPHIC_DIMENSIONS: DemographicDimension[] = [
-  'ageGroup',
-  'gender',
-  'educationLevel',
-  'region',
-  'country',
-];
+// DemographicDimension and DEMOGRAPHIC_DIMENSIONS imported from common and re-exported above.
 
 // Maps dimension name → field on RawShoppingListRow
 const DIM_TO_ROW_FIELD: Record<DemographicDimension, keyof RawShoppingListRow> =

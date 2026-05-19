@@ -4,13 +4,11 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
-import {
-  MealLogAnalyticsAggregator,
-  DemographicDimension,
-} from './meal-log-analytics-aggregator.service';
+import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
+import { DemographicDimension } from '../../common/demographic-dimensions';
+import { runBatchGeneration } from '../../common/batch-runner';
 
 @Injectable()
 export class MealLogAnalyticsService {
@@ -22,10 +20,9 @@ export class MealLogAnalyticsService {
   ) {}
 
   /**
-   * Daily cron: aggregate yesterday's data into staging.
-   * Runs at 2:00 AM every day.
+   * Aggregate yesterday's data into staging.
+   * Scheduled by AnalyticsBatchCoordinator at 2:00 AM daily.
    */
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async runDailyAggregation(): Promise<string> {
     const yesterday = new Date();
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
@@ -41,15 +38,10 @@ export class MealLogAnalyticsService {
    * Generate a batch for a specific date range.
    */
   async generateBatch(periodStart: Date, periodEnd: Date): Promise<string> {
-    if (periodStart >= periodEnd) {
-      throw new BadRequestException('periodStart must be before periodEnd');
-    }
     this.logger.log(
       `Generating batch: ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );
-
-    const result = await this.aggregator.aggregate(periodStart, periodEnd);
-
+    return runBatchGeneration(periodStart, periodEnd, this.aggregator, async (result) => {
     const batch = await this.repository.createBatch({
       periodStart,
       periodEnd,
@@ -154,6 +146,7 @@ export class MealLogAnalyticsService {
     );
 
     return batch.id;
+    });
   }
 
   // ============================================================
