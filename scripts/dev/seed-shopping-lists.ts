@@ -99,7 +99,7 @@ async function seedShoppingLists() {
         const usedGenericIds = new Set<string>();
 
         const items: Array<{
-          itemType: string;
+          itemType: 'food_product' | 'generic_food';
           foodProductId: string | null;
           genericFoodId: string | null;
           quantity: number;

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
@@ -22,6 +23,15 @@ import {
 } from '@nestjs/swagger';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
 import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+
+const DEMOGRAPHIC_DIMENSIONS = [
+  'ageGroup',
+  'country',
+  'educationLevel',
+  'gender',
+  'region',
+] as const;
+type DemographicDimensionParam = (typeof DEMOGRAPHIC_DIMENSIONS)[number];
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
@@ -32,6 +42,32 @@ export class ShoppingListAnalyticsController {
   constructor(
     private readonly analyticsService: ShoppingListAnalyticsService,
   ) {}
+
+  private parseDate(
+    value: string | undefined,
+    param: string,
+  ): Date | undefined {
+    if (value === undefined || value === '') return undefined;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) {
+      throw new BadRequestException(
+        `Invalid date "${value}" for ${param}. Expected ISO 8601 format (e.g. 2026-01-01).`,
+      );
+    }
+    return d;
+  }
+
+  private parseDimension(
+    value: string | undefined,
+  ): DemographicDimensionParam | undefined {
+    if (value === undefined) return undefined;
+    if (!DEMOGRAPHIC_DIMENSIONS.includes(value as DemographicDimensionParam)) {
+      throw new BadRequestException(
+        `Invalid dimension "${value}". Must be one of: ${DEMOGRAPHIC_DIMENSIONS.join(', ')}.`,
+      );
+    }
+    return value as DemographicDimensionParam;
+  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -45,8 +81,18 @@ export class ShoppingListAnalyticsController {
       'Items ranked by frequency of addition to shopping lists. ' +
       'Only items added by ≥5 unique users are shown (k-anonymity).',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Item popularity rankings' })
   async getPublicItemPopularity(
@@ -55,8 +101,8 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedItemPopularity(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       limit ? parseInt(limit, 10) : 20,
     );
   }
@@ -69,8 +115,18 @@ export class ShoppingListAnalyticsController {
       'Food categories (e.g. "Dairy", "Vegetables") ranked by how often items from them appear ' +
       'in shopping lists. Only categories added by ≥5 unique users are shown (k-anonymity).',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Category popularity rankings' })
   async getPublicCategoryPopularity(
@@ -79,8 +135,8 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedCategoryPopularity(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       limit ? parseInt(limit, 10) : 20,
     );
   }
@@ -93,16 +149,26 @@ export class ShoppingListAnalyticsController {
       'Daily aggregates of list structure: average items per list, lists per user, ' +
       'and split between food-product vs. generic-food items. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiResponse({ status: 200, description: 'List pattern aggregates' })
   async getPublicListPatterns(
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedListPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
     );
   }
 
@@ -114,16 +180,26 @@ export class ShoppingListAnalyticsController {
       'Daily averages of key nutritional values per 100 g across all items added to shopping lists. ' +
       'k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiResponse({ status: 200, description: 'Nutrition profile aggregates' })
   async getPublicNutritionProfile(
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedNutritionProfile(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
     );
   }
 
@@ -137,16 +213,26 @@ export class ShoppingListAnalyticsController {
       'Applies to food-product items only (scores unavailable for generic foods). ' +
       'k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiResponse({ status: 200, description: 'Sustainability aggregates' })
   async getPublicSustainability(
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
     );
   }
 
@@ -158,8 +244,18 @@ export class ShoppingListAnalyticsController {
       'Which food groups (e.g. "Potatoes and tubers", "Meat") dominate shopping lists, ' +
       'including average quantities and predominant units. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Food group distribution' })
   async getPublicFoodGroups(
@@ -168,8 +264,8 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedFoodGroups(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       limit ? parseInt(limit, 10) : 20,
     );
   }
@@ -182,24 +278,37 @@ export class ShoppingListAnalyticsController {
       'List behaviour patterns (items/list, lists/user, item type split) segmented by one demographic dimension. ' +
       'Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({
     name: 'dimension',
     required: false,
     enum: ['ageGroup', 'gender', 'educationLevel', 'region', 'country'],
     description: 'Filter to a single demographic axis',
   })
-  @ApiResponse({ status: 200, description: 'Demographic list pattern aggregates' })
+  @ApiResponse({
+    status: 200,
+    description: 'Demographic list pattern aggregates',
+  })
   async getPublicDemographicPatterns(
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('dimension') dimension?: string,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
-      dimension,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dimension),
     );
   }
 
@@ -211,38 +320,62 @@ export class ShoppingListAnalyticsController {
       'Average nutritional density per 100 g segmented by one demographic dimension. ' +
       'Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({
     name: 'dimension',
     required: false,
     enum: ['ageGroup', 'gender', 'educationLevel', 'region', 'country'],
     description: 'Filter to a single demographic axis',
   })
-  @ApiResponse({ status: 200, description: 'Demographic nutrition profile aggregates' })
+  @ApiResponse({
+    status: 200,
+    description: 'Demographic nutrition profile aggregates',
+  })
   async getPublicDemographicNutrition(
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('dimension') dimension?: string,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
-      dimension,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dimension),
     );
   }
 
   @Public()
   @Get('public/cross-dim/patterns')
   @ApiOperation({
-    summary: 'Cross-dimensional shopping list patterns (two demographic dimensions combined)',
+    summary:
+      'Cross-dimensional shopping list patterns (two demographic dimensions combined)',
     description:
       'List behaviour patterns where two demographic dimensions are active simultaneously ' +
       '(e.g. ageGroup=25_34 AND gender=FEMALE). dim1Name < dim2Name alphabetically. ' +
       'Stricter k-anonymity (k≥20) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({
     name: 'dim1',
     required: false,
@@ -255,7 +388,10 @@ export class ShoppingListAnalyticsController {
     enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
     description: 'Second dimension name (alphabetically later)',
   })
-  @ApiResponse({ status: 200, description: 'Cross-dimensional list pattern aggregates (k≥20)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cross-dimensional list pattern aggregates (k≥20)',
+  })
   async getPublicCrossDimPatterns(
     @Query('from') from?: string,
     @Query('to') to?: string,
@@ -263,23 +399,34 @@ export class ShoppingListAnalyticsController {
     @Query('dim2') dim2?: string,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
-      dim1,
-      dim2,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
     );
   }
 
   @Public()
   @Get('public/cross-dim/nutrition')
   @ApiOperation({
-    summary: 'Cross-dimensional nutrition profile (two demographic dimensions combined)',
+    summary:
+      'Cross-dimensional nutrition profile (two demographic dimensions combined)',
     description:
       'Average nutritional density per 100 g where two demographic dimensions are active simultaneously. ' +
       'Stricter k-anonymity (k≥20) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiQuery({
     name: 'dim1',
     required: false,
@@ -290,7 +437,10 @@ export class ShoppingListAnalyticsController {
     required: false,
     enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
   })
-  @ApiResponse({ status: 200, description: 'Cross-dimensional nutrition aggregates (k≥20)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cross-dimensional nutrition aggregates (k≥20)',
+  })
   async getPublicCrossDimNutrition(
     @Query('from') from?: string,
     @Query('to') to?: string,
@@ -298,26 +448,38 @@ export class ShoppingListAnalyticsController {
     @Query('dim2') dim2?: string,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
-      dim1,
-      dim2,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
     );
   }
 
   @Public()
   @Get('public/summary')
-  @ApiOperation({ summary: 'High-level summary across all shopping list analytics dimensions' })
-  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiOperation({
+    summary: 'High-level summary across all shopping list analytics dimensions',
+  })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiResponse({ status: 200, description: 'Summary across all dimensions' })
   async getPublicSummary(
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSummary(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
     );
   }
 
@@ -329,17 +491,32 @@ export class ShoppingListAnalyticsController {
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
-  @ApiOperation({ summary: 'Manually trigger shopping list analytics aggregation' })
-  @ApiQuery({ name: 'periodStart', required: true, type: String, example: '2026-02-18' })
-  @ApiQuery({ name: 'periodEnd', required: true, type: String, example: '2026-02-25' })
+  @ApiOperation({
+    summary: 'Manually trigger shopping list analytics aggregation',
+  })
+  @ApiQuery({
+    name: 'periodStart',
+    required: true,
+    type: String,
+    example: '2026-02-18',
+  })
+  @ApiQuery({
+    name: 'periodEnd',
+    required: true,
+    type: String,
+    example: '2026-02-25',
+  })
   @ApiResponse({ status: 201, description: 'Batch ID' })
   async generateBatch(
-    @Query('periodStart') periodStart: string,
-    @Query('periodEnd') periodEnd: string,
+    @Query('periodStart') periodStart?: string,
+    @Query('periodEnd') periodEnd?: string,
   ) {
+    if (!periodStart || !periodEnd) {
+      throw new BadRequestException('periodStart and periodEnd are required');
+    }
     const batchId = await this.analyticsService.generateBatch(
-      new Date(periodStart),
-      new Date(periodEnd),
+      this.parseDate(periodStart, 'periodStart')!,
+      this.parseDate(periodEnd, 'periodEnd')!,
     );
     return { batchId };
   }
@@ -348,7 +525,9 @@ export class ShoppingListAnalyticsController {
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
-  @ApiOperation({ summary: 'Manually trigger the daily aggregation job (yesterday)' })
+  @ApiOperation({
+    summary: 'Manually trigger the daily aggregation job (yesterday)',
+  })
   @ApiResponse({ status: 201, description: 'Batch ID for yesterday' })
   async runDaily() {
     const batchId = await this.analyticsService.runDailyAggregation();
@@ -366,7 +545,9 @@ export class ShoppingListAnalyticsController {
     enum: ShoppingListAnalyticsBatchStatus,
   })
   @ApiResponse({ status: 200, description: 'List of batches' })
-  async listBatches(@Query('status') status?: ShoppingListAnalyticsBatchStatus) {
+  async listBatches(
+    @Query('status') status?: ShoppingListAnalyticsBatchStatus,
+  ) {
     return this.analyticsService.listBatches(status);
   }
 
@@ -374,7 +555,9 @@ export class ShoppingListAnalyticsController {
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
-  @ApiOperation({ summary: 'Get batch details with all aggregated data for review' })
+  @ApiOperation({
+    summary: 'Get batch details with all aggregated data for review',
+  })
   @ApiParam({ name: 'id', description: 'Batch UUID' })
   @ApiResponse({ status: 200, description: 'Batch with aggregated data' })
   async getBatch(@Param('id', ParseUUIDPipe) id: string) {

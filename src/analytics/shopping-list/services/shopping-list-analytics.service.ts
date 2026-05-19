@@ -28,16 +28,19 @@ export class ShoppingListAnalyticsService {
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async runDailyAggregation(): Promise<string> {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+    yesterday.setUTCHours(0, 0, 0, 0);
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0);
 
     return this.generateBatch(yesterday, today);
   }
 
   async generateBatch(periodStart: Date, periodEnd: Date): Promise<string> {
+    if (periodStart >= periodEnd) {
+      throw new BadRequestException('periodStart must be before periodEnd');
+    }
     this.logger.log(
       `Generating batch: ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );

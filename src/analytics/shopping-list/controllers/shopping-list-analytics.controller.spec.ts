@@ -36,8 +36,12 @@ describe('ShoppingListAnalyticsController', () => {
   // Public endpoints — query param parsing
   // ============================================================
 
+  // ============================================================
+  // Public endpoints — query param parsing
+  // ============================================================
+
   describe('getPublicItemPopularity', () => {
-    it('passes parsed Date objects and default limit=20', async () => {
+    it('parses date strings and passes Date objects with default limit=20', async () => {
       service.getPublishedItemPopularity.mockResolvedValue([]);
 
       await controller.getPublicItemPopularity('2026-04-01', '2026-04-30');
@@ -49,37 +53,34 @@ describe('ShoppingListAnalyticsController', () => {
       );
     });
 
-    it('passes undefined dates and parsed limit when only limit provided', async () => {
+    it('parses limit string as integer', async () => {
       service.getPublishedItemPopularity.mockResolvedValue([]);
 
       await controller.getPublicItemPopularity(undefined, undefined, '5');
 
-      expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-        5,
-      );
+      expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(undefined, undefined, 5);
     });
 
-    it('uses limit=20 when limit string is absent', async () => {
+    it('uses limit=20 when limit is absent', async () => {
       service.getPublishedItemPopularity.mockResolvedValue([]);
 
       await controller.getPublicItemPopularity();
 
-      const call = service.getPublishedItemPopularity.mock.calls[0];
-      expect(call[2]).toBe(20);
+      expect(service.getPublishedItemPopularity.mock.calls[0][2]).toBe(20);
+    });
+
+    it('throws BadRequestException for an invalid date string', async () => {
+      await expect(controller.getPublicItemPopularity('not-a-date')).rejects.toThrow(
+        'Invalid date',
+      );
     });
   });
 
   describe('getPublicCategoryPopularity', () => {
-    it('passes parsed Date objects and integer limit', async () => {
+    it('parses date strings and integer limit', async () => {
       service.getPublishedCategoryPopularity.mockResolvedValue([]);
 
-      await controller.getPublicCategoryPopularity(
-        '2026-04-01',
-        '2026-04-30',
-        '10',
-      );
+      await controller.getPublicCategoryPopularity('2026-04-01', '2026-04-30', '10');
 
       expect(service.getPublishedCategoryPopularity).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -90,7 +91,7 @@ describe('ShoppingListAnalyticsController', () => {
   });
 
   describe('getPublicListPatterns', () => {
-    it('passes parsed Date objects', async () => {
+    it('parses date strings and forwards Date objects', async () => {
       service.getPublishedListPatterns.mockResolvedValue([]);
 
       await controller.getPublicListPatterns('2026-04-01', '2026-04-30');
@@ -106,15 +107,12 @@ describe('ShoppingListAnalyticsController', () => {
 
       await controller.getPublicListPatterns();
 
-      expect(service.getPublishedListPatterns).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-      );
+      expect(service.getPublishedListPatterns).toHaveBeenCalledWith(undefined, undefined);
     });
   });
 
   describe('getPublicNutritionProfile', () => {
-    it('delegates to service with parsed dates', async () => {
+    it('parses date strings and forwards Date objects', async () => {
       service.getPublishedNutritionProfile.mockResolvedValue([]);
 
       await controller.getPublicNutritionProfile('2026-04-01', '2026-04-30');
@@ -127,7 +125,7 @@ describe('ShoppingListAnalyticsController', () => {
   });
 
   describe('getPublicSustainability', () => {
-    it('delegates to service with parsed dates', async () => {
+    it('parses date strings and forwards Date objects', async () => {
       service.getPublishedSustainability.mockResolvedValue([]);
 
       await controller.getPublicSustainability('2026-04-01', '2026-04-30');
@@ -140,7 +138,7 @@ describe('ShoppingListAnalyticsController', () => {
   });
 
   describe('getPublicFoodGroups', () => {
-    it('passes parsed dates and default limit=20', async () => {
+    it('parses date strings and forwards Date objects with default limit=20', async () => {
       service.getPublishedFoodGroups.mockResolvedValue([]);
 
       await controller.getPublicFoodGroups('2026-04-01', '2026-04-30');
@@ -154,14 +152,10 @@ describe('ShoppingListAnalyticsController', () => {
   });
 
   describe('getPublicDemographicPatterns', () => {
-    it('passes dimension filter to service', async () => {
+    it('parses dates and validates dimension', async () => {
       service.getPublishedDemographicPatterns.mockResolvedValue([]);
 
-      await controller.getPublicDemographicPatterns(
-        '2026-04-01',
-        '2026-04-30',
-        'gender',
-      );
+      await controller.getPublicDemographicPatterns('2026-04-01', '2026-04-30', 'gender');
 
       expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -170,47 +164,36 @@ describe('ShoppingListAnalyticsController', () => {
       );
     });
 
-    it('passes undefined dimension when not provided', async () => {
+    it('passes undefined when no params provided', async () => {
       service.getPublishedDemographicPatterns.mockResolvedValue([]);
 
       await controller.getPublicDemographicPatterns();
 
-      expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-        undefined,
-      );
+      expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(undefined, undefined, undefined);
+    });
+
+    it('throws BadRequestException for an invalid dimension', async () => {
+      await expect(
+        controller.getPublicDemographicPatterns(undefined, undefined, 'invalid'),
+      ).rejects.toThrow('Invalid dimension');
     });
   });
 
   describe('getPublicDemographicNutrition', () => {
-    it('passes dimension filter to service', async () => {
+    it('validates dimension and forwards to the service', async () => {
       service.getPublishedDemographicNutrition.mockResolvedValue([]);
 
-      await controller.getPublicDemographicNutrition(
-        undefined,
-        undefined,
-        'ageGroup',
-      );
+      await controller.getPublicDemographicNutrition(undefined, undefined, 'ageGroup');
 
-      expect(service.getPublishedDemographicNutrition).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-        'ageGroup',
-      );
+      expect(service.getPublishedDemographicNutrition).toHaveBeenCalledWith(undefined, undefined, 'ageGroup');
     });
   });
 
   describe('getPublicCrossDimPatterns', () => {
-    it('passes dim1 and dim2 filter to service', async () => {
+    it('parses dates and validates dim filters', async () => {
       service.getPublishedCrossDimPatterns.mockResolvedValue([]);
 
-      await controller.getPublicCrossDimPatterns(
-        '2026-04-01',
-        '2026-04-30',
-        'ageGroup',
-        'gender',
-      );
+      await controller.getPublicCrossDimPatterns('2026-04-01', '2026-04-30', 'ageGroup', 'gender');
 
       expect(service.getPublishedCrossDimPatterns).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -222,34 +205,21 @@ describe('ShoppingListAnalyticsController', () => {
   });
 
   describe('getPublicCrossDimNutrition', () => {
-    it('passes dim filters to service', async () => {
+    it('validates dim filters and forwards to the service', async () => {
       service.getPublishedCrossDimNutrition.mockResolvedValue([]);
 
-      await controller.getPublicCrossDimNutrition(
-        undefined,
-        undefined,
-        'country',
-        'educationLevel',
-      );
+      await controller.getPublicCrossDimNutrition(undefined, undefined, 'country', 'educationLevel');
 
-      expect(service.getPublishedCrossDimNutrition).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-        'country',
-        'educationLevel',
-      );
+      expect(service.getPublishedCrossDimNutrition).toHaveBeenCalledWith(undefined, undefined, 'country', 'educationLevel');
     });
   });
 
   describe('getPublicSummary', () => {
-    it('delegates to service with parsed dates', async () => {
+    it('parses date strings and forwards Date objects', async () => {
       const summary = { topItems: [] };
       service.getPublishedSummary.mockResolvedValue(summary as any);
 
-      const result = await controller.getPublicSummary(
-        '2026-04-01',
-        '2026-04-30',
-      );
+      const result = await controller.getPublicSummary('2026-04-01', '2026-04-30');
 
       expect(service.getPublishedSummary).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -264,7 +234,7 @@ describe('ShoppingListAnalyticsController', () => {
   // ============================================================
 
   describe('generateBatch', () => {
-    it('returns the batch id wrapped in an object', async () => {
+    it('parses date strings and returns wrapped batch id', async () => {
       service.generateBatch.mockResolvedValue('new-batch-id');
 
       const result = await controller.generateBatch('2026-04-01', '2026-04-30');
@@ -274,6 +244,12 @@ describe('ShoppingListAnalyticsController', () => {
         new Date('2026-04-30'),
       );
       expect(result).toEqual({ batchId: 'new-batch-id' });
+    });
+
+    it('throws BadRequestException when dates are missing', async () => {
+      await expect(controller.generateBatch(undefined, undefined)).rejects.toThrow(
+        'periodStart and periodEnd are required',
+      );
     });
   });
 

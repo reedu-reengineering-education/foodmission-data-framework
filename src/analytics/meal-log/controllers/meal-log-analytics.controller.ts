@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
@@ -22,6 +23,15 @@ import {
 } from '@nestjs/swagger';
 import { MealLogAnalyticsService } from '../services/meal-log-analytics.service';
 import { MealLogAnalyticsBatchStatus } from '@prisma/client';
+
+const DEMOGRAPHIC_DIMENSIONS = [
+  'ageGroup',
+  'country',
+  'educationLevel',
+  'gender',
+  'region',
+] as const;
+type DemographicDimensionParam = (typeof DEMOGRAPHIC_DIMENSIONS)[number];
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
@@ -30,6 +40,32 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 @Controller('analytics/meal-log')
 export class MealLogAnalyticsController {
   constructor(private readonly analyticsService: MealLogAnalyticsService) {}
+
+  private parseDate(
+    value: string | undefined,
+    param: string,
+  ): Date | undefined {
+    if (value === undefined || value === '') return undefined;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) {
+      throw new BadRequestException(
+        `Invalid date "${value}" for ${param}. Expected ISO 8601 format (e.g. 2026-01-01).`,
+      );
+    }
+    return d;
+  }
+
+  private parseDimension(
+    value: string | undefined,
+  ): DemographicDimensionParam | undefined {
+    if (value === undefined) return undefined;
+    if (!DEMOGRAPHIC_DIMENSIONS.includes(value as DemographicDimensionParam)) {
+      throw new BadRequestException(
+        `Invalid dimension "${value}". Must be one of: ${DEMOGRAPHIC_DIMENSIONS.join(', ')}.`,
+      );
+    }
+    return value as DemographicDimensionParam;
+  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -66,8 +102,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -88,8 +124,8 @@ export class MealLogAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedFoodPopularity(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       limit ? parseInt(limit, 10) : 20,
     );
   }
@@ -113,8 +149,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -138,8 +174,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -163,8 +199,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -189,8 +225,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealRecords(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -234,10 +270,10 @@ export class MealLogAnalyticsController {
     @Query('dimension') dimension?: string,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dimension,
+      this.parseDimension(dimension),
     );
   }
 
@@ -272,10 +308,10 @@ export class MealLogAnalyticsController {
     @Query('dimension') dimension?: string,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dimension,
+      this.parseDimension(dimension),
     );
   }
 
@@ -310,10 +346,10 @@ export class MealLogAnalyticsController {
     @Query('dimension') dimension?: string,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dimension,
+      this.parseDimension(dimension),
     );
   }
 
@@ -369,11 +405,11 @@ export class MealLogAnalyticsController {
     @Query('dim2') dim2?: string,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dim1,
-      dim2,
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
     );
   }
 
@@ -415,11 +451,11 @@ export class MealLogAnalyticsController {
     @Query('dim2') dim2?: string,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dim1,
-      dim2,
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
     );
   }
 
@@ -461,11 +497,11 @@ export class MealLogAnalyticsController {
     @Query('dim2') dim2?: string,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
       typeOfMeal,
-      dim1,
-      dim2,
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
     );
   }
 
@@ -482,8 +518,8 @@ export class MealLogAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSummary(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
     );
   }
 
@@ -510,12 +546,15 @@ export class MealLogAnalyticsController {
   })
   @ApiResponse({ status: 201, description: 'Batch ID' })
   async generateBatch(
-    @Query('periodStart') periodStart: string,
-    @Query('periodEnd') periodEnd: string,
+    @Query('periodStart') periodStart?: string,
+    @Query('periodEnd') periodEnd?: string,
   ) {
+    if (!periodStart || !periodEnd) {
+      throw new BadRequestException('periodStart and periodEnd are required');
+    }
     const batchId = await this.analyticsService.generateBatch(
-      new Date(periodStart),
-      new Date(periodEnd),
+      this.parseDate(periodStart, 'periodStart')!,
+      this.parseDate(periodEnd, 'periodEnd')!,
     );
     return { batchId };
   }
@@ -536,7 +575,11 @@ export class MealLogAnalyticsController {
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
   @ApiOperation({ summary: 'List all analytics batches' })
-  @ApiQuery({ name: 'status', required: false, enum: MealLogAnalyticsBatchStatus })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: MealLogAnalyticsBatchStatus,
+  })
   @ApiResponse({ status: 200, description: 'List of batches' })
   async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
     return this.analyticsService.listBatches(status);

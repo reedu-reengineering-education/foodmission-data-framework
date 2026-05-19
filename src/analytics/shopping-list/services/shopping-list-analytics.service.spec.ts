@@ -2,7 +2,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ShoppingListAnalyticsService } from './shopping-list-analytics.service';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
-import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsService', () => {
   let service: ShoppingListAnalyticsService;
@@ -123,8 +123,8 @@ describe('ShoppingListAnalyticsService', () => {
       await service.generateBatch(new Date('2026-04-01'), new Date('2026-04-02'));
 
       const insertArg = repository.insertSustainability.mock.calls[0][0][0];
-      // Prisma.JsonNull is the symbol Prisma uses; verify it's not a plain null
-      expect(insertArg.nutriScoreDistribution).not.toBeNull();
+      // Prisma.JsonNull is the typed sentinel Prisma uses for explicit null in JSON fields
+      expect(insertArg.nutriScoreDistribution).toBe(Prisma.JsonNull);
     });
   });
 
