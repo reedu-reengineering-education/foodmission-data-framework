@@ -12,23 +12,37 @@ export interface IAnalyticsAggregator<TResult> {
  * Generic batch generation orchestration.
  *
  * 1. Validates that periodStart < periodEnd.
- * 2. Delegates to the aggregator to compute all analytical slices.
- * 3. Calls the domain-specific `persist` callback (repo writes) and returns
- *    the new batch id.
+ * 2. Calls aggregator.aggregate() to compute all analytical slices.
+ * 3. Calls createBatch() to insert the STAGING row and obtain a batch id.
+ * 4. Calls insertRows() to bulk-insert all slice tables.
+ *    If insertRows() throws, the orphaned batch row is deleted automatically
+ *    so the DB is left clean — no half-written STAGING batches.
+ * 5. Returns the batch id.
  *
- * Keeping the `persist` callback domain-specific means the repository layer
- * (and its typed Prisma delegates) stay fully independent per data type.
+ * Keeping createBatch/insertRows domain-specific means the repository layer
+ * (and its typed Prisma delegates) stays fully independent per data type.
  */
 export async function runBatchGeneration<TResult>(
   periodStart: Date,
   periodEnd: Date,
   aggregator: IAnalyticsAggregator<TResult>,
-  persist: (result: TResult) => Promise<string>,
+  createBatch: (result: TResult) => Promise<string>,
+  insertRows: (batchId: string, result: TResult) => Promise<void>,
+  deleteBatch: (batchId: string) => Promise<void>,
 ): Promise<string> {
   if (periodStart >= periodEnd) {
     throw new BadRequestException('periodStart must be before periodEnd');
   }
 
   const result = await aggregator.aggregate(periodStart, periodEnd);
-  return persist(result);
+  const batchId = await createBatch(result);
+
+  try {
+    await insertRows(batchId, result);
+  } catch (err) {
+    await deleteBatch(batchId).catch(() => undefined); // best-effort cleanup
+    throw err;
+  }
+
+  return batchId;
 }

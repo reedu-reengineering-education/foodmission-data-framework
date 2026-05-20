@@ -339,7 +339,7 @@ describe('ShoppingListAnalyticsService', () => {
       expect(result.sustainability.avgCarbonFootprint).toBeNull();
     });
 
-    it('derives period from listPatterns when not provided', async () => {
+    it('returns null period when from/to not provided', async () => {
       repository.getPublishedItemPopularity.mockResolvedValue([]);
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([
@@ -351,8 +351,23 @@ describe('ShoppingListAnalyticsService', () => {
 
       const result = await service.getPublishedSummary();
 
-      expect(result.period.from).toEqual(new Date('2026-04-01'));
-      expect(result.period.to).toEqual(new Date('2026-04-30'));
+      expect(result.period.from).toBeNull();
+      expect(result.period.to).toBeNull();
+    });
+
+    it('reflects provided from/to in period', async () => {
+      repository.getPublishedItemPopularity.mockResolvedValue([]);
+      repository.getPublishedCategoryPopularity.mockResolvedValue([]);
+      repository.getPublishedListPatterns.mockResolvedValue([]);
+      repository.getPublishedNutritionProfile.mockResolvedValue([]);
+      repository.getPublishedSustainability.mockResolvedValue([]);
+
+      const from = new Date('2026-04-01');
+      const to = new Date('2026-04-30');
+      const result = await service.getPublishedSummary(from, to);
+
+      expect(result.period.from).toEqual(from);
+      expect(result.period.to).toEqual(to);
     });
   });
 

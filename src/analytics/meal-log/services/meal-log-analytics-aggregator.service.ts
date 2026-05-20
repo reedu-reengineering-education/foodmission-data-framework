@@ -8,7 +8,7 @@ import {
 import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
-} from '../../common/k-anonymity';
+} from '../../common/analytics-utils';
 
 export { DemographicDimension, DEMOGRAPHIC_DIMENSIONS };
 

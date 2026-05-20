@@ -60,8 +60,8 @@ describe('MealLogAnalyticsService', () => {
 
     const result = await service.getPublishedSummary();
 
-    expect(result.period.from).toEqual(new Date('2026-04-01T00:00:00.000Z'));
-    expect(result.period.to).toEqual(new Date('2026-04-21T00:00:00.000Z'));
+    expect(result.period.from).toBeNull();
+    expect(result.period.to).toBeNull();
     expect(result.nutrition.latestAvgCalories).toBe(120);
     expect(result.nutrition.latestAvgProteins).toBe(15);
     expect(result.topFoods).toEqual([

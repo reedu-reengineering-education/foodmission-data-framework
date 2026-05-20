@@ -1,14 +1,18 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
 import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
+import { safeAvg } from '../../common/analytics-utils';
+import {
+  getAnalyticsBatch,
+  listAnalyticsBatches,
+  approveAnalyticsBatch,
+  publishAnalyticsBatch,
+  rejectAnalyticsBatch,
+  deleteAnalyticsBatch,
+} from '../../common/batch-lifecycle';
 
 @Injectable()
 export class ShoppingListAnalyticsService {
@@ -38,89 +42,94 @@ export class ShoppingListAnalyticsService {
     this.logger.log(
       `Generating batch: ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );
-    return runBatchGeneration(periodStart, periodEnd, this.aggregator, async (result) => {
-    const batch = await this.repository.createBatch({
+    return runBatchGeneration(
       periodStart,
       periodEnd,
-      recordCount: result.totalRecords,
-      metadata: {
-        suppressedGroups: result.suppressedGroups,
-        itemPopularityRows: result.itemPopularity.length,
-        categoryPopularityRows: result.categoryPopularity.length,
-        listPatternsRows: result.listPatterns.length,
-        nutritionProfileRows: result.nutritionProfile.length,
-        sustainabilityRows: result.sustainability.length,
-        foodGroupsRows: result.foodGroups.length,
-        demographicPatternsRows: result.demographicPatterns.length,
-        demographicNutritionRows: result.demographicNutrition.length,
-        crossDimPatternsRows: result.crossDimPatterns.length,
-        crossDimNutritionRows: result.crossDimNutrition.length,
+      this.aggregator,
+      async (result) => {
+        const batch = await this.repository.createBatch({
+          periodStart,
+          periodEnd,
+          recordCount: result.totalRecords,
+          metadata: {
+            suppressedGroups: result.suppressedGroups,
+            itemPopularityRows: result.itemPopularity.length,
+            categoryPopularityRows: result.categoryPopularity.length,
+            listPatternsRows: result.listPatterns.length,
+            nutritionProfileRows: result.nutritionProfile.length,
+            sustainabilityRows: result.sustainability.length,
+            foodGroupsRows: result.foodGroups.length,
+            demographicPatternsRows: result.demographicPatterns.length,
+            demographicNutritionRows: result.demographicNutrition.length,
+            crossDimPatternsRows: result.crossDimPatterns.length,
+            crossDimNutritionRows: result.crossDimNutrition.length,
+          },
+        });
+        return batch.id;
       },
-    });
-
-    if (result.itemPopularity.length > 0) {
-      await this.repository.insertItemPopularity(
-        result.itemPopularity.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.categoryPopularity.length > 0) {
-      await this.repository.insertCategoryPopularity(
-        result.categoryPopularity.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.listPatterns.length > 0) {
-      await this.repository.insertListPatterns(
-        result.listPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.nutritionProfile.length > 0) {
-      await this.repository.insertNutritionProfile(
-        result.nutritionProfile.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.sustainability.length > 0) {
-      await this.repository.insertSustainability(
-        result.sustainability.map((r) => ({
-          ...r,
-          batchId: batch.id,
-          nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
-          ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
-          novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-        })),
-      );
-    }
-    if (result.foodGroups.length > 0) {
-      await this.repository.insertFoodGroups(
-        result.foodGroups.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.demographicPatterns.length > 0) {
-      await this.repository.insertDemographicPatterns(
-        result.demographicPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.demographicNutrition.length > 0) {
-      await this.repository.insertDemographicNutrition(
-        result.demographicNutrition.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.crossDimPatterns.length > 0) {
-      await this.repository.insertCrossDimPatterns(
-        result.crossDimPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.crossDimNutrition.length > 0) {
-      await this.repository.insertCrossDimNutrition(
-        result.crossDimNutrition.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-
-    this.logger.log(
-      `Batch ${batch.id}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
+      async (batchId, result) => {
+        if (result.itemPopularity.length > 0) {
+          await this.repository.insertItemPopularity(
+            result.itemPopularity.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.categoryPopularity.length > 0) {
+          await this.repository.insertCategoryPopularity(
+            result.categoryPopularity.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.listPatterns.length > 0) {
+          await this.repository.insertListPatterns(
+            result.listPatterns.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.nutritionProfile.length > 0) {
+          await this.repository.insertNutritionProfile(
+            result.nutritionProfile.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.sustainability.length > 0) {
+          await this.repository.insertSustainability(
+            result.sustainability.map((r) => ({
+              ...r,
+              batchId,
+              nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+              ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
+              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+            })),
+          );
+        }
+        if (result.foodGroups.length > 0) {
+          await this.repository.insertFoodGroups(
+            result.foodGroups.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.demographicPatterns.length > 0) {
+          await this.repository.insertDemographicPatterns(
+            result.demographicPatterns.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.demographicNutrition.length > 0) {
+          await this.repository.insertDemographicNutrition(
+            result.demographicNutrition.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.crossDimPatterns.length > 0) {
+          await this.repository.insertCrossDimPatterns(
+            result.crossDimPatterns.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.crossDimNutrition.length > 0) {
+          await this.repository.insertCrossDimNutrition(
+            result.crossDimNutrition.map((r) => ({ ...r, batchId })),
+          );
+        }
+        this.logger.log(
+          `Batch ${batchId}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
+        );
+      },
+      (batchId) => this.repository.deleteBatch(batchId),
     );
-
-    return batch.id;
-    });
   }
 
   // ============================================================
@@ -218,11 +227,8 @@ export class ShoppingListAnalyticsService {
       this.repository.getPublishedSustainability(from, to),
     ]);
 
-    const derivedFrom = from ?? listPatterns.at(0)?.date ?? null;
-    const derivedTo = to ?? listPatterns.at(-1)?.date ?? null;
-
     return {
-      period: { from: derivedFrom, to: derivedTo },
+      period: { from: from ?? null, to: to ?? null },
       topItems: itemPopularity.map((f) => ({
         name: f.foodName,
         frequency: f.frequency,
@@ -237,11 +243,11 @@ export class ShoppingListAnalyticsService {
         dataPoints: listPatterns.length,
         avgItemsPerList:
           listPatterns.length > 0
-            ? this.safeAvg(listPatterns.map((p) => p.avgItemsPerList))
+            ? safeAvg(listPatterns.map((p) => p.avgItemsPerList))
             : null,
         avgListsPerUser:
           listPatterns.length > 0
-            ? this.safeAvg(listPatterns.map((p) => p.avgListsPerUser))
+            ? safeAvg(listPatterns.map((p) => p.avgListsPerUser))
             : null,
       },
       nutritionProfile: {
@@ -253,17 +259,17 @@ export class ShoppingListAnalyticsService {
       },
       sustainability: {
         dataPoints: sustainability.length,
-        avgCarbonFootprint: this.safeAvg(
+        avgCarbonFootprint: safeAvg(
           sustainability
             .map((s) => s.avgCarbonFootprint)
             .filter((v): v is number => v !== null),
         ),
-        avgVegetarianItemPct: this.safeAvg(
+        avgVegetarianItemPct: safeAvg(
           sustainability
             .map((s) => s.vegetarianItemPct)
             .filter((v): v is number => v !== null),
         ),
-        avgUltraProcessedPct: this.safeAvg(
+        avgUltraProcessedPct: safeAvg(
           sustainability
             .map((s) => s.avgUltraProcessedPct)
             .filter((v): v is number => v !== null),
@@ -277,79 +283,41 @@ export class ShoppingListAnalyticsService {
   // ============================================================
 
   async listBatches(status?: ShoppingListAnalyticsBatchStatus) {
-    return this.repository.findBatches(status);
+    return listAnalyticsBatches(this.repository, status);
   }
 
   async getBatch(batchId: string) {
-    const batch = await this.repository.findBatchById(batchId);
-    if (!batch) {
-      throw new NotFoundException(`Batch ${batchId} not found`);
-    }
-    return batch;
+    return getAnalyticsBatch(this.repository, batchId);
   }
 
   async approveBatch(batchId: string, adminUserId: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== ShoppingListAnalyticsBatchStatus.STAGING) {
-      throw new BadRequestException(
-        `Batch is ${batch.status}, can only approve STAGING batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
+    return approveAnalyticsBatch(
+      this.repository, batchId, adminUserId,
+      ShoppingListAnalyticsBatchStatus.STAGING,
       ShoppingListAnalyticsBatchStatus.APPROVED,
-      adminUserId,
     );
   }
 
   async publishBatch(batchId: string, adminUserId: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== ShoppingListAnalyticsBatchStatus.APPROVED) {
-      throw new BadRequestException(
-        `Batch is ${batch.status}, can only publish APPROVED batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
+    return publishAnalyticsBatch(
+      this.repository, batchId, adminUserId,
+      ShoppingListAnalyticsBatchStatus.APPROVED,
       ShoppingListAnalyticsBatchStatus.PUBLISHED,
-      adminUserId,
     );
   }
 
   async rejectBatch(batchId: string, adminUserId: string, reason: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== ShoppingListAnalyticsBatchStatus.STAGING) {
-      throw new BadRequestException(
-        `Batch is ${batch.status}, can only reject STAGING batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
+    return rejectAnalyticsBatch(
+      this.repository, batchId, adminUserId, reason,
+      ShoppingListAnalyticsBatchStatus.STAGING,
       ShoppingListAnalyticsBatchStatus.REJECTED,
-      adminUserId,
-      reason,
     );
   }
 
   async deleteBatch(batchId: string) {
-    const batch = await this.getBatch(batchId);
-    if (
-      batch.status === ShoppingListAnalyticsBatchStatus.PUBLISHED ||
-      batch.status === ShoppingListAnalyticsBatchStatus.APPROVED
-    ) {
-      throw new BadRequestException(
-        `Cannot delete ${batch.status} batch. Reject it first.`,
-      );
-    }
-    await this.repository.deleteBatch(batchId);
-  }
-
-  // ============================================================
-  // Helpers
-  // ============================================================
-
-  private safeAvg(values: number[]): number | null {
-    if (values.length === 0) return null;
-    return values.reduce((a, b) => a + b, 0) / values.length;
+    return deleteAnalyticsBatch(
+      this.repository, batchId,
+      [ShoppingListAnalyticsBatchStatus.PUBLISHED, ShoppingListAnalyticsBatchStatus.APPROVED],
+    );
   }
 }
