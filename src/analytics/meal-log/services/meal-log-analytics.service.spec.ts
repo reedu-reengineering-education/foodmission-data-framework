@@ -2,7 +2,7 @@ import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatchStatus } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
   let service: MealLogAnalyticsService;
@@ -17,12 +17,84 @@ describe('MealLogAnalyticsService', () => {
       getPublishedMealClassification: jest.fn(),
       findBatchById: jest.fn(),
       updateBatchStatus: jest.fn(),
+      createBatch: jest.fn(),
+      deleteBatch: jest.fn(),
+      supersedeBatchesForPeriod: jest.fn().mockResolvedValue(undefined),
+      insertDailyNutrition: jest.fn(),
+      insertFoodPopularity: jest.fn(),
+      insertMealPatterns: jest.fn(),
+      insertSustainability: jest.fn(),
+      insertMealClassification: jest.fn(),
+      insertMealRecords: jest.fn(),
     } as unknown as jest.Mocked<MealLogAnalyticsRepository>;
 
     service = new MealLogAnalyticsService(
       repository,
       {} as MealLogAnalyticsAggregator,
     );
+  });
+
+  // ============================================================
+  // runDailyAggregation
+  // ============================================================
+
+  describe('runDailyAggregation', () => {
+    const emptyAggResult = {
+      dailyNutrition: [], foodPopularity: [], mealPatterns: [],
+      sustainability: [], mealClassification: [], mealRecords: [],
+      demographicNutrition: [], demographicClassification: [],
+      demographicPatterns: [], crossDimNutrition: [],
+      crossDimClassification: [], crossDimPatterns: [],
+      totalRecords: 0, suppressedGroups: 0,
+    };
+    let aggregatorMock: jest.Mocked<MealLogAnalyticsAggregator>;
+
+    beforeEach(() => {
+      aggregatorMock = {
+        aggregate: jest.fn().mockResolvedValue(emptyAggResult),
+      } as unknown as jest.Mocked<MealLogAnalyticsAggregator>;
+      // rebuild service with a real aggregator mock
+      service = new MealLogAnalyticsService(repository, aggregatorMock);
+      repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
+      repository.updateBatchStatus.mockResolvedValue({
+        id: 'daily-batch',
+        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+      } as any);
+    });
+
+    it('supersedes existing published batches for yesterday before generating', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
+      const supersedeOrder = repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
+      const createOrder = repository.createBatch.mock.invocationCallOrder[0];
+      expect(supersedeOrder).toBeLessThan(createOrder);
+    });
+
+    it('auto-publishes the generated batch as system user', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'daily-batch',
+        MealLogAnalyticsBatchStatus.PUBLISHED,
+        'system',
+      );
+    });
+
+    it('returns the batch id', async () => {
+      const id = await service.runDailyAggregation();
+
+      expect(id).toBe('daily-batch');
+    });
+
+    it('uses yesterday midnight UTC as periodStart', async () => {
+      await service.runDailyAggregation();
+
+      const { periodStart } = repository.createBatch.mock.calls[0][0];
+      expect(periodStart.getUTCHours()).toBe(0);
+      expect(periodStart.getUTCMinutes()).toBe(0);
+      expect(periodStart.getUTCSeconds()).toBe(0);
+    });
   });
 
   it('getPublishedSummary computes derived values and handles nulls', async () => {

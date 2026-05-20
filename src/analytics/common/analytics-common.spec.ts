@@ -18,7 +18,7 @@ import { runBatchGeneration, IAnalyticsAggregator } from './batch-runner';
 // Shared test helpers
 // ============================================================
 
-type Status = 'STAGING' | 'APPROVED' | 'PUBLISHED' | 'REJECTED';
+type Status = 'STAGING' | 'APPROVED' | 'PUBLISHED' | 'REJECTED' | 'SUPERSEDED';
 interface Batch {
   id: string;
   status: Status;
@@ -319,7 +319,11 @@ describe('deleteAnalyticsBatch', () => {
   it('deletes a STAGING batch', async () => {
     const repo = makeRepo(makeBatch('b1', 'STAGING'));
 
-    await deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']);
+    await deleteAnalyticsBatch(repo, 'b1', [
+      'PUBLISHED',
+      'APPROVED',
+      'SUPERSEDED',
+    ]);
 
     expect(repo.deleteBatch).toHaveBeenCalledWith('b1');
   });
@@ -327,7 +331,11 @@ describe('deleteAnalyticsBatch', () => {
   it('deletes a REJECTED batch', async () => {
     const repo = makeRepo(makeBatch('b1', 'REJECTED'));
 
-    await deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']);
+    await deleteAnalyticsBatch(repo, 'b1', [
+      'PUBLISHED',
+      'APPROVED',
+      'SUPERSEDED',
+    ]);
 
     expect(repo.deleteBatch).toHaveBeenCalledWith('b1');
   });
@@ -336,10 +344,10 @@ describe('deleteAnalyticsBatch', () => {
     const repo = makeRepo(makeBatch('b1', 'PUBLISHED'));
 
     await expect(
-      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']),
+      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED', 'SUPERSEDED']),
     ).rejects.toThrow(BadRequestException);
     await expect(
-      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']),
+      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED', 'SUPERSEDED']),
     ).rejects.toThrow('Reject it first');
   });
 
@@ -347,7 +355,15 @@ describe('deleteAnalyticsBatch', () => {
     const repo = makeRepo(makeBatch('b1', 'APPROVED'));
 
     await expect(
-      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']),
+      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED', 'SUPERSEDED']),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('throws BadRequestException for a SUPERSEDED batch (audit history must be kept)', async () => {
+    const repo = makeRepo(makeBatch('b1', 'SUPERSEDED'));
+
+    await expect(
+      deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED', 'SUPERSEDED']),
     ).rejects.toThrow(BadRequestException);
   });
 
@@ -362,9 +378,11 @@ describe('deleteAnalyticsBatch', () => {
   it('does not call deleteBatch when batch is protected', async () => {
     const repo = makeRepo(makeBatch('b1', 'PUBLISHED'));
 
-    await deleteAnalyticsBatch(repo, 'b1', ['PUBLISHED', 'APPROVED']).catch(
-      () => {},
-    );
+    await deleteAnalyticsBatch(repo, 'b1', [
+      'PUBLISHED',
+      'APPROVED',
+      'SUPERSEDED',
+    ]).catch(() => {});
 
     expect(repo.deleteBatch).not.toHaveBeenCalled();
   });

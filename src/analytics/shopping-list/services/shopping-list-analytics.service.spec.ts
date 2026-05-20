@@ -16,6 +16,7 @@ describe('ShoppingListAnalyticsService', () => {
       findBatches: jest.fn(),
       updateBatchStatus: jest.fn(),
       deleteBatch: jest.fn(),
+      supersedeBatchesForPeriod: jest.fn().mockResolvedValue(undefined),
       insertItemPopularity: jest.fn(),
       insertCategoryPopularity: jest.fn(),
       insertListPatterns: jest.fn(),
@@ -125,6 +126,64 @@ describe('ShoppingListAnalyticsService', () => {
       const insertArg = repository.insertSustainability.mock.calls[0][0][0];
       // Prisma.JsonNull is the typed sentinel Prisma uses for explicit null in JSON fields
       expect(insertArg.nutriScoreDistribution).toBe(Prisma.JsonNull);
+    });
+  });
+
+  // ============================================================
+  // runDailyAggregation
+  // ============================================================
+
+  describe('runDailyAggregation', () => {
+    const emptyAggResult = {
+      itemPopularity: [], categoryPopularity: [], listPatterns: [],
+      nutritionProfile: [], sustainability: [], foodGroups: [],
+      demographicPatterns: [], demographicNutrition: [],
+      crossDimPatterns: [], crossDimNutrition: [],
+      totalRecords: 0, suppressedGroups: 0,
+    };
+
+    beforeEach(() => {
+      aggregator.aggregate.mockResolvedValue(emptyAggResult as any);
+      repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
+      repository.updateBatchStatus.mockResolvedValue({
+        id: 'daily-batch',
+        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      } as any);
+    });
+
+    it('supersedes existing published batches for yesterday before generating', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
+      // supersede is called before createBatch
+      const supersedeOrder = repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
+      const createOrder = repository.createBatch.mock.invocationCallOrder[0];
+      expect(supersedeOrder).toBeLessThan(createOrder);
+    });
+
+    it('auto-publishes the generated batch as system user', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'daily-batch',
+        ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        'system',
+      );
+    });
+
+    it('returns the batch id', async () => {
+      const id = await service.runDailyAggregation();
+
+      expect(id).toBe('daily-batch');
+    });
+
+    it('uses yesterday midnight UTC as periodStart', async () => {
+      await service.runDailyAggregation();
+
+      const { periodStart } = repository.createBatch.mock.calls[0][0];
+      expect(periodStart.getUTCHours()).toBe(0);
+      expect(periodStart.getUTCMinutes()).toBe(0);
+      expect(periodStart.getUTCSeconds()).toBe(0);
     });
   });
 

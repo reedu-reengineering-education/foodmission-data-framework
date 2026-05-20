@@ -868,6 +868,7 @@ enum MealLogAnalyticsBatchStatus {
   APPROVED
   PUBLISHED
   REJECTED
+  SUPERSEDED
 }
 
 model MealLogAnalyticsDailyNutrition {
@@ -1359,6 +1360,7 @@ enum ShoppingListAnalyticsBatchStatus {
   APPROVED
   PUBLISHED
   REJECTED
+  SUPERSEDED
 }
 
 model ShoppingListAnalyticsBatch {

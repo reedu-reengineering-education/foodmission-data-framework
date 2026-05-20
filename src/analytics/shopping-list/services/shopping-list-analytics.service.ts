@@ -35,7 +35,20 @@ export class ShoppingListAnalyticsService {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    return this.generateBatch(yesterday, today);
+    // If a previous run already published data for this day, supersede it so
+    // read queries never see two PUBLISHED batches covering the same period.
+    await this.repository.supersedeBatchesForPeriod(yesterday, today);
+
+    const batchId = await this.generateBatch(yesterday, today);
+
+    // Auto-publish: daily cron data needs no manual approval.
+    await this.repository.updateBatchStatus(
+      batchId,
+      ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      'system',
+    );
+
+    return batchId;
   }
 
   async generateBatch(periodStart: Date, periodEnd: Date): Promise<string> {
@@ -317,7 +330,11 @@ export class ShoppingListAnalyticsService {
   async deleteBatch(batchId: string) {
     return deleteAnalyticsBatch(
       this.repository, batchId,
-      [ShoppingListAnalyticsBatchStatus.PUBLISHED, ShoppingListAnalyticsBatchStatus.APPROVED],
+      [
+        ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        ShoppingListAnalyticsBatchStatus.APPROVED,
+        ShoppingListAnalyticsBatchStatus.SUPERSEDED,
+      ],
     );
   }
 }

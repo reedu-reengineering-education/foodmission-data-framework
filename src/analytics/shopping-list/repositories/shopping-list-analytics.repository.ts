@@ -69,6 +69,22 @@ export class ShoppingListAnalyticsRepository {
     await this.prisma.shoppingListAnalyticsBatch.delete({ where: { id } });
   }
 
+  /**
+   * Mark all PUBLISHED batches that cover [from, to) as SUPERSEDED.
+   * Called by runDailyAggregation before publishing the replacement batch,
+   * so read queries never see two PUBLISHED batches for the same day.
+   */
+  async supersedeBatchesForPeriod(from: Date, to: Date): Promise<void> {
+    await this.prisma.shoppingListAnalyticsBatch.updateMany({
+      where: {
+        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        periodStart: { gte: from },
+        periodEnd: { lte: to },
+      },
+      data: { status: ShoppingListAnalyticsBatchStatus.SUPERSEDED },
+    });
+  }
+
   // ============================================================
   // Bulk inserts
   // ============================================================

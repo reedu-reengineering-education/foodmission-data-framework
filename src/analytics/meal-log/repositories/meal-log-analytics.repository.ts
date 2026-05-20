@@ -67,6 +67,22 @@ export class MealLogAnalyticsRepository {
     await this.prisma.mealLogAnalyticsBatch.delete({ where: { id } });
   }
 
+  /**
+   * Mark all PUBLISHED batches that cover [from, to) as SUPERSEDED.
+   * Called by runDailyAggregation before publishing the replacement batch,
+   * so read queries never see two PUBLISHED batches for the same day.
+   */
+  async supersedeBatchesForPeriod(from: Date, to: Date): Promise<void> {
+    await this.prisma.mealLogAnalyticsBatch.updateMany({
+      where: {
+        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+        periodStart: { gte: from },
+        periodEnd: { lte: to },
+      },
+      data: { status: MealLogAnalyticsBatchStatus.SUPERSEDED },
+    });
+  }
+
   // ============================================================
   // Bulk inserts for aggregated data
   // ============================================================
