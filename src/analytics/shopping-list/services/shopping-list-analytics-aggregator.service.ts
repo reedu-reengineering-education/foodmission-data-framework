@@ -8,6 +8,10 @@ import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
   safeAvg,
+  percentile,
+  mode,
+  distribution,
+  FoodFrequencyRow,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -72,16 +76,7 @@ interface ListAggregate {
 // Output row types
 // ============================================================
 
-export interface ItemPopularityRow {
-  date: Date;
-  foodName: string;
-  foodGroup: string | null;
-  itemType: string;
-  frequency: number;
-  uniqueUsers: number;
-  avgQuantity: number;
-  predominantUnit: string;
-}
+export type ItemPopularityRow = FoodFrequencyRow;
 
 export interface CategoryPopularityRow {
   date: Date;
@@ -524,7 +519,7 @@ export class ShoppingListAnalyticsAggregator {
       frequency: g.quantities.length,
       uniqueUsers: g.users.size,
       avgQuantity: safeAvg(g.quantities) ?? 0,
-      predominantUnit: mode(g.units),
+      predominantUnit: mode(g.units) ?? '',
     }));
   }
 
@@ -784,7 +779,7 @@ export class ShoppingListAnalyticsAggregator {
       frequency: g.quantities.length,
       uniqueUsers: g.users.size,
       avgQuantity: safeAvg(g.quantities) ?? 0,
-      predominantUnit: mode(g.units),
+      predominantUnit: mode(g.units) ?? '',
     }));
   }
 
@@ -1275,36 +1270,4 @@ export class ShoppingListAnalyticsAggregator {
 
     return result;
   }
-}
-
-// ============================================================
-// Helpers
-// ============================================================
-
-function mode(arr: string[]): string {
-  if (arr.length === 0) return '';
-  const counts = new Map<string, number>();
-  for (const v of arr) counts.set(v, (counts.get(v) ?? 0) + 1);
-  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
-}
-
-function distribution(values: string[]): Record<string, number> | null {
-  if (values.length === 0) return null;
-  const dist: Record<string, number> = {};
-  for (const v of values) dist[v] = (dist[v] ?? 0) + 1;
-  return dist;
-}
-
-/**
- * Returns the p-th percentile of a sorted numeric array using linear interpolation.
- * Returns null for empty arrays.
- */
-function percentile(values: number[], p: number): number | null {
-  if (values.length === 0) return null;
-  const sorted = [...values].sort((a, b) => a - b);
-  const idx = (p / 100) * (sorted.length - 1);
-  const lower = Math.floor(idx);
-  const upper = Math.ceil(idx);
-  if (lower === upper) return sorted[lower];
-  return sorted[lower] + (sorted[upper] - sorted[lower]) * (idx - lower);
 }

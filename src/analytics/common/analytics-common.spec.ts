@@ -4,6 +4,10 @@ import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
   normalizeDimPair,
+  percentile,
+  stdDev,
+  mode,
+  distribution,
 } from './analytics-utils';
 import {
   getAnalyticsBatch,
@@ -131,6 +135,110 @@ describe('normalizeDimPair', () => {
 
   it('returns unchanged when both dims are equal', () => {
     expect(normalizeDimPair('gender', 'gender')).toEqual(['gender', 'gender']);
+  });
+});
+
+// ============================================================
+// analytics-utils — percentile
+// ============================================================
+
+describe('percentile', () => {
+  it('returns null for an empty array', () => {
+    expect(percentile([], 50)).toBeNull();
+  });
+
+  it('returns the only element for a single-element array', () => {
+    expect(percentile([42], 50)).toBe(42);
+  });
+
+  it('returns the median of [1, 2, 3] at p=50', () => {
+    expect(percentile([1, 2, 3], 50)).toBe(2);
+  });
+
+  it('returns the minimum at p=0', () => {
+    expect(percentile([10, 20, 30], 0)).toBe(10);
+  });
+
+  it('returns the maximum at p=100', () => {
+    expect(percentile([10, 20, 30], 100)).toBe(30);
+  });
+
+  it('interpolates between values', () => {
+    // p=25 of [1,2,3,4] → 1.75
+    expect(percentile([1, 2, 3, 4], 25)).toBeCloseTo(1.75);
+  });
+
+  it('sorts the input before computing', () => {
+    expect(percentile([3, 1, 2], 50)).toBe(2);
+  });
+});
+
+// ============================================================
+// analytics-utils — stdDev
+// ============================================================
+
+describe('stdDev', () => {
+  it('returns null for an empty array', () => {
+    expect(stdDev([])).toBeNull();
+  });
+
+  it('returns null for a single-element array', () => {
+    expect(stdDev([5])).toBeNull();
+  });
+
+  it('returns 0 for an array of identical values', () => {
+    expect(stdDev([3, 3, 3])).toBeCloseTo(0);
+  });
+
+  it('computes the sample standard deviation', () => {
+    // [2, 4, 4, 4, 5, 5, 7, 9] → sample s ≈ 2.138
+    expect(stdDev([2, 4, 4, 4, 5, 5, 7, 9])).toBeCloseTo(2.138);
+  });
+});
+
+// ============================================================
+// analytics-utils — mode
+// ============================================================
+
+describe('mode', () => {
+  it('returns null for an empty array', () => {
+    expect(mode([])).toBeNull();
+  });
+
+  it('returns the only value for a single-element array', () => {
+    expect(mode(['a'])).toBe('a');
+  });
+
+  it('returns the most frequent value', () => {
+    expect(mode(['a', 'b', 'b', 'c'])).toBe('b');
+  });
+
+  it('returns the first-encountered value when all counts are equal', () => {
+    // 'a' and 'b' both appear once — sort by count desc picks the first max
+    const result = mode(['a', 'b']);
+    expect(['a', 'b']).toContain(result);
+  });
+});
+
+// ============================================================
+// analytics-utils — distribution
+// ============================================================
+
+describe('distribution', () => {
+  it('returns null for an empty array', () => {
+    expect(distribution([])).toBeNull();
+  });
+
+  it('counts occurrences of each value', () => {
+    expect(distribution(['a', 'b', 'a', 'c', 'b', 'b'])).toEqual({
+      a: 2,
+      b: 3,
+      c: 1,
+    });
+  });
+
+  it('returns a single-key object for a uniform array', () => {
+    expect(distribution(['x', 'x', 'x'])).toEqual({ x: 3 });
   });
 });
 

@@ -116,8 +116,8 @@ describe('MealLogAnalyticsRepository', () => {
           where: expect.objectContaining({
             batch: {
               status: 'PUBLISHED',
-              periodStart: { gte: from },
-              periodEnd: { lte: to },
+              periodEnd: { gt: from },
+              periodStart: { lt: to },
             },
             typeOfMeal: 'DINNER',
           }),

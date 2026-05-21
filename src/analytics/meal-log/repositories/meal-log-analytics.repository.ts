@@ -133,12 +133,10 @@ export class MealLogAnalyticsRepository {
     const filter: Prisma.MealLogAnalyticsBatchWhereInput = {
       status: MealLogAnalyticsBatchStatus.PUBLISHED,
     };
-    if (from) {
-      filter.periodStart = { gte: from };
-    }
-    if (to) {
-      filter.periodEnd = { lte: to };
-    }
+    // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to.
+    // Matches supersedeBatchesForPeriod and the shopping-list equivalent.
+    if (from) filter.periodEnd = { gt: from };
+    if (to) filter.periodStart = { lt: to };
     return filter;
   }
 

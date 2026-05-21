@@ -8,6 +8,12 @@ import {
 import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  safeAvg,
+  percentile,
+  stdDev,
+  mode,
+  distribution,
+  FoodFrequencyRow,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -128,16 +134,7 @@ export interface DailyNutritionRow {
   p75Calories: number | null;
 }
 
-export interface FoodPopularityRow {
-  date: Date;
-  foodName: string;
-  foodGroup: string | null;
-  itemType: string;
-  frequency: number;
-  uniqueUsers: number;
-  avgQuantity: number;
-  predominantUnit: string;
-}
+export type FoodPopularityRow = FoodFrequencyRow;
 
 export interface MealPatternsRow {
   date: Date;
@@ -662,17 +659,17 @@ export class MealLogAnalyticsAggregator {
         typeOfMeal: typeOfMeal as TypeOfMeal,
         userCount: uniqueUsers,
         mealCount: group.length,
-        avgCalories: this.avg(calories),
-        avgProteins: this.avg(group.map((m) => m.totalProteins)),
-        avgFat: this.avg(group.map((m) => m.totalFat)),
-        avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-        avgFiber: this.avg(group.map((m) => m.totalFiber)),
-        avgSodium: this.avg(group.map((m) => m.totalSodium)),
-        avgSugar: this.avg(group.map((m) => m.totalSugar)),
-        avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-        p25Calories: this.percentile(calories, 25),
-        p50Calories: this.percentile(calories, 50),
-        p75Calories: this.percentile(calories, 75),
+        avgCalories: safeAvg(calories),
+        avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+        avgFat: safeAvg(group.map((m) => m.totalFat)),
+        avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+        avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+        avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+        avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+        avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+        p25Calories: percentile(calories, 25),
+        p50Calories: percentile(calories, 50),
+        p75Calories: percentile(calories, 75),
       };
     });
   }
@@ -720,8 +717,8 @@ export class MealLogAnalyticsAggregator {
       itemType: entry.itemType,
       frequency: entry.quantities.length,
       uniqueUsers: entry.users.size,
-      avgQuantity: this.avg(entry.quantities) ?? 0,
-      predominantUnit: this.mode(entry.units),
+      avgQuantity: safeAvg(entry.quantities) ?? 0,
+      predominantUnit: mode(entry.units) ?? '',
     }));
   }
 
@@ -751,9 +748,9 @@ export class MealLogAnalyticsAggregator {
         mealsEatenOutCount: eatenOutMeals.length,
         mealsEatenOutPct:
           group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-        avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-        avgMealHour: this.avg(hours),
-        mealHourStdDev: this.stdDev(hours),
+        avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+        avgMealHour: safeAvg(hours),
+        mealHourStdDev: stdDev(hours),
       };
     });
   }
@@ -784,13 +781,13 @@ export class MealLogAnalyticsAggregator {
         typeOfMeal: typeOfMeal as TypeOfMeal,
         userCount: uniqueUsers,
         avgSustainabilityScore:
-          susScores.length > 0 ? this.avg(susScores) : null,
+          susScores.length > 0 ? safeAvg(susScores) : null,
         avgCarbonFootprint:
-          carbonScores.length > 0 ? this.avg(carbonScores) : null,
+          carbonScores.length > 0 ? safeAvg(carbonScores) : null,
         nutriScoreDistribution:
-          nutriGrades.length > 0 ? this.distribution(nutriGrades) : null,
+          nutriGrades.length > 0 ? distribution(nutriGrades) : null,
         ecoScoreDistribution:
-          ecoGrades.length > 0 ? this.distribution(ecoGrades) : null,
+          ecoGrades.length > 0 ? distribution(ecoGrades) : null,
       };
     });
   }
@@ -818,7 +815,7 @@ export class MealLogAnalyticsAggregator {
 
       // NOVA distribution across all items
       const allNova = group.flatMap((m) => m.novaGroups);
-      const novaDistribution = this.distribution(allNova.map((g) => String(g)));
+      const novaDistribution = distribution(allNova.map((g) => String(g)));
 
       return {
         date: new Date(dateStr),
@@ -829,12 +826,11 @@ export class MealLogAnalyticsAggregator {
         vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
         veganCount,
         veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-        avgUltraProcessedPct: this.avg(ultraPcts),
-        p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-        p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-        p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-        novaDistribution:
-          Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+        avgUltraProcessedPct: safeAvg(ultraPcts),
+        p25UltraProcessedPct: percentile(ultraPcts, 25),
+        p50UltraProcessedPct: percentile(ultraPcts, 50),
+        p75UltraProcessedPct: percentile(ultraPcts, 75),
+        novaDistribution: novaDistribution,
       };
     });
   }
@@ -846,15 +842,13 @@ export class MealLogAnalyticsAggregator {
   private aggregateMealRecords(meals: MealAggregate[]): MealRecordRow[] {
     return meals.map((m) => {
       const nutriScoreGrade =
-        m.nutriScoreGrades.length > 0 ? this.mode(m.nutriScoreGrades) : null;
+        m.nutriScoreGrades.length > 0 ? mode(m.nutriScoreGrades) : null;
 
       const ecoScoreGrade =
-        m.ecoScoreGrades.length > 0 ? this.mode(m.ecoScoreGrades) : null;
+        m.ecoScoreGrades.length > 0 ? mode(m.ecoScoreGrades) : null;
 
       const novaGroupMode =
-        m.novaGroups.length > 0
-          ? Number(this.mode(m.novaGroups.map(String)))
-          : null;
+        m.novaGroups.length > 0 ? Number(mode(m.novaGroups.map(String))) : null;
       const ultraProcessedPct =
         m.novaGroups.length > 0
           ? (m.novaGroups.filter((g) => g === 4).length / m.novaGroups.length) *
@@ -936,17 +930,17 @@ export class MealLogAnalyticsAggregator {
           ...this.buildDemographicDimensions(dim, dimValue),
           userCount: uniqueUsers,
           mealCount: group.length,
-          avgCalories: this.avg(calories),
-          avgProteins: this.avg(group.map((m) => m.totalProteins)),
-          avgFat: this.avg(group.map((m) => m.totalFat)),
-          avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-          avgFiber: this.avg(group.map((m) => m.totalFiber)),
-          avgSodium: this.avg(group.map((m) => m.totalSodium)),
-          avgSugar: this.avg(group.map((m) => m.totalSugar)),
-          avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-          p25Calories: this.percentile(calories, 25),
-          p50Calories: this.percentile(calories, 50),
-          p75Calories: this.percentile(calories, 75),
+          avgCalories: safeAvg(calories),
+          avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+          avgFat: safeAvg(group.map((m) => m.totalFat)),
+          avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+          avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+          avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+          avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+          avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+          p25Calories: percentile(calories, 25),
+          p50Calories: percentile(calories, 50),
+          p75Calories: percentile(calories, 75),
         });
       }
     }
@@ -979,9 +973,7 @@ export class MealLogAnalyticsAggregator {
         });
 
         const allNova = group.flatMap((m) => m.novaGroups);
-        const novaDistribution = this.distribution(
-          allNova.map((g) => String(g)),
-        );
+        const novaDistribution = distribution(allNova.map((g) => String(g)));
 
         rows.push({
           date: new Date(dateStr),
@@ -993,12 +985,11 @@ export class MealLogAnalyticsAggregator {
           vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
           veganCount,
           veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-          avgUltraProcessedPct: this.avg(ultraPcts),
-          p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-          p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-          p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-          novaDistribution:
-            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+          avgUltraProcessedPct: safeAvg(ultraPcts),
+          p25UltraProcessedPct: percentile(ultraPcts, 25),
+          p50UltraProcessedPct: percentile(ultraPcts, 50),
+          p75UltraProcessedPct: percentile(ultraPcts, 75),
+          novaDistribution: novaDistribution,
         });
       }
     }
@@ -1039,9 +1030,9 @@ export class MealLogAnalyticsAggregator {
           mealsEatenOutCount: eatenOutMeals.length,
           mealsEatenOutPct:
             group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-          avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-          avgMealHour: this.avg(hours),
-          mealHourStdDev: this.stdDev(hours),
+          avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+          avgMealHour: safeAvg(hours),
+          mealHourStdDev: stdDev(hours),
         });
       }
     }
@@ -1098,17 +1089,17 @@ export class MealLogAnalyticsAggregator {
           dim2Value,
           userCount: uniqueUsers,
           mealCount: group.length,
-          avgCalories: this.avg(calories),
-          avgProteins: this.avg(group.map((m) => m.totalProteins)),
-          avgFat: this.avg(group.map((m) => m.totalFat)),
-          avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-          avgFiber: this.avg(group.map((m) => m.totalFiber)),
-          avgSodium: this.avg(group.map((m) => m.totalSodium)),
-          avgSugar: this.avg(group.map((m) => m.totalSugar)),
-          avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-          p25Calories: this.percentile(calories, 25),
-          p50Calories: this.percentile(calories, 50),
-          p75Calories: this.percentile(calories, 75),
+          avgCalories: safeAvg(calories),
+          avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+          avgFat: safeAvg(group.map((m) => m.totalFat)),
+          avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+          avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+          avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+          avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+          avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+          p25Calories: percentile(calories, 25),
+          p50Calories: percentile(calories, 50),
+          p75Calories: percentile(calories, 75),
         });
       }
     }
@@ -1142,9 +1133,7 @@ export class MealLogAnalyticsAggregator {
         });
 
         const allNova = group.flatMap((m) => m.novaGroups);
-        const novaDistribution = this.distribution(
-          allNova.map((g) => String(g)),
-        );
+        const novaDistribution = distribution(allNova.map((g) => String(g)));
 
         rows.push({
           date: new Date(dateStr),
@@ -1159,12 +1148,11 @@ export class MealLogAnalyticsAggregator {
           vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
           veganCount,
           veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-          avgUltraProcessedPct: this.avg(ultraPcts),
-          p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-          p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-          p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-          novaDistribution:
-            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+          avgUltraProcessedPct: safeAvg(ultraPcts),
+          p25UltraProcessedPct: percentile(ultraPcts, 25),
+          p50UltraProcessedPct: percentile(ultraPcts, 50),
+          p75UltraProcessedPct: percentile(ultraPcts, 75),
+          novaDistribution: novaDistribution,
         });
       }
     }
@@ -1209,9 +1197,9 @@ export class MealLogAnalyticsAggregator {
           mealsEatenOutCount: eatenOutMeals.length,
           mealsEatenOutPct:
             group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-          avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-          avgMealHour: this.avg(hours),
-          mealHourStdDev: this.stdDev(hours),
+          avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+          avgMealHour: safeAvg(hours),
+          mealHourStdDev: stdDev(hours),
         });
       }
     }
@@ -1228,53 +1216,5 @@ export class MealLogAnalyticsAggregator {
       map.set(key, group);
     }
     return map;
-  }
-
-  private avg(values: number[]): number | null {
-    if (values.length === 0) return null;
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  }
-
-  private percentile(values: number[], p: number): number | null {
-    if (values.length === 0) return null;
-    const sorted = [...values].sort((a, b) => a - b);
-    const index = (p / 100) * (sorted.length - 1);
-    const lower = Math.floor(index);
-    const upper = Math.ceil(index);
-    if (lower === upper) return sorted[lower];
-    return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower);
-  }
-
-  private stdDev(values: number[]): number | null {
-    if (values.length < 2) return null;
-    const mean = this.avg(values)!;
-    const squaredDiffs = values.map((v) => (v - mean) ** 2);
-    return Math.sqrt(
-      squaredDiffs.reduce((a, b) => a + b, 0) / (values.length - 1),
-    );
-  }
-
-  private mode(values: string[]): string {
-    const counts = new Map<string, number>();
-    for (const v of values) {
-      counts.set(v, (counts.get(v) ?? 0) + 1);
-    }
-    let maxCount = 0;
-    let maxValue = values[0];
-    for (const [value, count] of counts) {
-      if (count > maxCount) {
-        maxCount = count;
-        maxValue = value;
-      }
-    }
-    return maxValue;
-  }
-
-  private distribution(values: string[]): Record<string, number> {
-    const counts: Record<string, number> = {};
-    for (const v of values) {
-      counts[v] = (counts[v] ?? 0) + 1;
-    }
-    return counts;
   }
 }
