@@ -202,8 +202,7 @@ export interface MealRecordRow {
 }
 
 // ============================================================
-// Demographic dimension types — imported from common, re-exported for
-// backward compatibility with existing importers of this aggregator.
+// Row types returned by the aggregator
 // ============================================================
 
 export interface DemographicNutritionRow {
