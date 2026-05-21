@@ -64,3 +64,17 @@ export function parseDate(
   }
   return d;
 }
+
+/**
+ * Normalizes a cross-dimensional filter pair so that dim1 ≤ dim2
+ * alphabetically, matching the storage convention used at aggregation time.
+ * When both dimensions are provided in the wrong order the pair is swapped
+ * silently; the caller receives correct results regardless of client ordering.
+ */
+export function normalizeDimPair<T extends string>(
+  dim1: T | undefined,
+  dim2: T | undefined,
+): [T | undefined, T | undefined] {
+  if (dim1 && dim2 && dim1 > dim2) return [dim2, dim1];
+  return [dim1, dim2];
+}

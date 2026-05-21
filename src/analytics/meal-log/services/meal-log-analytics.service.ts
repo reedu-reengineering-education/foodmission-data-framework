@@ -4,7 +4,7 @@ import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.serv
 import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
-import { safeAvg } from '../../common/analytics-utils';
+import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
 import {
   getAnalyticsBatch,
   listAnalyticsBatches,
@@ -257,12 +257,13 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
     return this.repository.getPublishedCrossDimNutrition(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
   }
 
@@ -273,12 +274,13 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
     return this.repository.getPublishedCrossDimClassification(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
   }
 
@@ -289,12 +291,13 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
     return this.repository.getPublishedCrossDimPatterns(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
   }
 

@@ -4,7 +4,7 @@ import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggre
 import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
-import { safeAvg } from '../../common/analytics-utils';
+import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
 import {
   getAnalyticsBatch,
   listAnalyticsBatches,
@@ -220,7 +220,8 @@ export class ShoppingListAnalyticsService {
     dim1?: DemographicDimension,
     dim2?: DemographicDimension,
   ) {
-    return this.repository.getPublishedCrossDimPatterns(from, to, dim1, dim2);
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    return this.repository.getPublishedCrossDimPatterns(from, to, d1, d2);
   }
 
   getPublishedCrossDimNutrition(
@@ -229,7 +230,8 @@ export class ShoppingListAnalyticsService {
     dim1?: DemographicDimension,
     dim2?: DemographicDimension,
   ) {
-    return this.repository.getPublishedCrossDimNutrition(from, to, dim1, dim2);
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    return this.repository.getPublishedCrossDimNutrition(from, to, d1, d2);
   }
 
   getPublishedDemographicClassification(
@@ -250,12 +252,8 @@ export class ShoppingListAnalyticsService {
     dim1?: DemographicDimension,
     dim2?: DemographicDimension,
   ) {
-    return this.repository.getPublishedCrossDimClassification(
-      from,
-      to,
-      dim1,
-      dim2,
-    );
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    return this.repository.getPublishedCrossDimClassification(from, to, d1, d2);
   }
 
   async getPublishedSummary(from?: Date, to?: Date) {

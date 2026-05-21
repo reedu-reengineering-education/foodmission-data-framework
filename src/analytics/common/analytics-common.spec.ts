@@ -3,6 +3,7 @@ import {
   safeAvg,
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  normalizeDimPair,
 } from './analytics-utils';
 import {
   getAnalyticsBatch,
@@ -89,6 +90,47 @@ describe('K_ANONYMITY_CROSS_DIM_THRESHOLD', () => {
     expect(K_ANONYMITY_CROSS_DIM_THRESHOLD).toBeGreaterThan(
       K_ANONYMITY_THRESHOLD,
     );
+  });
+});
+
+describe('normalizeDimPair', () => {
+  it('returns dims unchanged when already in alphabetical order', () => {
+    expect(normalizeDimPair('ageGroup', 'gender')).toEqual([
+      'ageGroup',
+      'gender',
+    ]);
+  });
+
+  it('swaps dims when passed in reverse alphabetical order', () => {
+    expect(normalizeDimPair('gender', 'ageGroup')).toEqual([
+      'ageGroup',
+      'gender',
+    ]);
+  });
+
+  it('returns [undefined, undefined] when both are absent', () => {
+    expect(normalizeDimPair(undefined, undefined)).toEqual([
+      undefined,
+      undefined,
+    ]);
+  });
+
+  it('returns [dim, undefined] when only dim1 is provided', () => {
+    expect(normalizeDimPair('gender', undefined)).toEqual([
+      'gender',
+      undefined,
+    ]);
+  });
+
+  it('returns [undefined, dim] when only dim2 is provided', () => {
+    expect(normalizeDimPair(undefined, 'gender')).toEqual([
+      undefined,
+      'gender',
+    ]);
+  });
+
+  it('returns unchanged when both dims are equal', () => {
+    expect(normalizeDimPair('gender', 'gender')).toEqual(['gender', 'gender']);
   });
 });
 
