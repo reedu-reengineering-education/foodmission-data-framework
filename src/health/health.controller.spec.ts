@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
+import {
+  HealthCheckService,
+  HealthCheckResult,
+  HealthCheckStatus,
+} from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
 import { KeycloakHealthIndicator } from './keycloak.health';
@@ -11,7 +15,7 @@ describe('HealthController', () => {
   let databaseHealth: jest.Mocked<DatabaseHealthIndicator>;
 
   const mockHealthResult: HealthCheckResult = {
-    status: 'ok',
+    status: 'ok' as HealthCheckStatus,
     info: {
       database: { status: 'up' },
     },
@@ -104,7 +108,7 @@ describe('HealthController', () => {
   describe('liveness', () => {
     it('should return liveness check result', async () => {
       const livenessResult: HealthCheckResult = {
-        status: 'ok',
+        status: 'ok' as HealthCheckStatus,
         info: {},
         error: {},
         details: {},
