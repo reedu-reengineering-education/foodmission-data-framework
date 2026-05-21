@@ -181,15 +181,16 @@ describe('ShoppingListAnalyticsService', () => {
       } as any);
     });
 
-    it('supersedes existing published batches for yesterday before generating', async () => {
+    it('supersedes existing published batches for the period after publishing', async () => {
       await service.runDailyAggregation();
 
       expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
-      // supersede is called before createBatch
+      // supersede is called after updateBatchStatus (publish)
       const supersedeOrder =
         repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
-      const createOrder = repository.createBatch.mock.invocationCallOrder[0];
-      expect(supersedeOrder).toBeLessThan(createOrder);
+      const publishOrder =
+        repository.updateBatchStatus.mock.invocationCallOrder[0];
+      expect(publishOrder).toBeLessThan(supersedeOrder);
     });
 
     it('auto-publishes the generated batch as system user', async () => {

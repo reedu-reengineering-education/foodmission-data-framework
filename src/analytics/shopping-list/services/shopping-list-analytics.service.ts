@@ -12,6 +12,7 @@ import {
   publishAnalyticsBatch,
   rejectAnalyticsBatch,
   deleteAnalyticsBatch,
+  autoPublishAndSupersede,
 } from '../../common/batch-lifecycle';
 
 @Injectable()
@@ -35,17 +36,15 @@ export class ShoppingListAnalyticsService {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    // If a previous run already published data for this day, supersede it so
-    // read queries never see two PUBLISHED batches covering the same period.
-    await this.repository.supersedeBatchesForPeriod(yesterday, today);
-
     const batchId = await this.generateBatch(yesterday, today);
 
-    // Auto-publish: daily cron data needs no manual approval.
-    await this.repository.updateBatchStatus(
+    await autoPublishAndSupersede(
+      this.repository,
       batchId,
       ShoppingListAnalyticsBatchStatus.PUBLISHED,
       'system',
+      yesterday,
+      today,
     );
 
     return batchId;

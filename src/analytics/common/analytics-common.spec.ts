@@ -11,6 +11,7 @@ import {
   publishAnalyticsBatch,
   rejectAnalyticsBatch,
   deleteAnalyticsBatch,
+  autoPublishAndSupersede,
 } from './batch-lifecycle';
 import { runBatchGeneration, IAnalyticsAggregator } from './batch-runner';
 
@@ -38,6 +39,7 @@ function makeRepo(batch: Batch | null = null) {
         Promise.resolve({ id, status }),
       ),
     deleteBatch: jest.fn().mockResolvedValue(undefined),
+    supersedeBatchesForPeriod: jest.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -603,5 +605,77 @@ describe('runBatchGeneration', () => {
     ).catch(() => {});
 
     expect(deleteBatch).not.toHaveBeenCalled();
+  });
+});
+
+// ============================================================
+// batch-lifecycle — autoPublishAndSupersede
+// ============================================================
+
+describe('autoPublishAndSupersede', () => {
+  const periodStart = new Date('2026-04-01T00:00:00Z');
+  const periodEnd = new Date('2026-04-02T00:00:00Z');
+
+  it('calls updateBatchStatus before supersedeBatchesForPeriod', async () => {
+    const repo = makeRepo(makeBatch('b1', 'STAGING'));
+    const order: string[] = [];
+    repo.updateBatchStatus.mockImplementation(() => {
+      order.push('publish');
+      return Promise.resolve({ id: 'b1', status: 'PUBLISHED' as const });
+    });
+    repo.supersedeBatchesForPeriod.mockImplementation(() => {
+      order.push('supersede');
+      return Promise.resolve();
+    });
+
+    await autoPublishAndSupersede(
+      repo,
+      'b1',
+      'PUBLISHED' as any,
+      'system',
+      periodStart,
+      periodEnd,
+    );
+
+    expect(order).toEqual(['publish', 'supersede']);
+  });
+
+  it('passes the correct arguments to each call', async () => {
+    const repo = makeRepo(makeBatch('b1', 'STAGING'));
+
+    await autoPublishAndSupersede(
+      repo,
+      'b1',
+      'PUBLISHED' as any,
+      'system',
+      periodStart,
+      periodEnd,
+    );
+
+    expect(repo.updateBatchStatus).toHaveBeenCalledWith(
+      'b1',
+      'PUBLISHED',
+      'system',
+    );
+    expect(repo.supersedeBatchesForPeriod).toHaveBeenCalledWith(
+      periodStart,
+      periodEnd,
+    );
+  });
+
+  it('does not call supersede if publish throws', async () => {
+    const repo = makeRepo(makeBatch('b1', 'STAGING'));
+    repo.updateBatchStatus.mockRejectedValue(new Error('publish failed'));
+
+    await autoPublishAndSupersede(
+      repo,
+      'b1',
+      'PUBLISHED' as any,
+      'system',
+      periodStart,
+      periodEnd,
+    ).catch(() => {});
+
+    expect(repo.supersedeBatchesForPeriod).not.toHaveBeenCalled();
   });
 });
