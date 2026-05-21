@@ -60,7 +60,11 @@ describe('ShoppingListAnalyticsController', () => {
 
       await controller.getPublicItemPopularity(undefined, undefined, '5');
 
-      expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(undefined, undefined, 5);
+      expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        5,
+      );
     });
 
     it('uses limit=20 when limit is absent', async () => {
@@ -72,9 +76,9 @@ describe('ShoppingListAnalyticsController', () => {
     });
 
     it('throws BadRequestException for an invalid date string', async () => {
-      await expect(controller.getPublicItemPopularity('not-a-date')).rejects.toThrow(
-        'Invalid date',
-      );
+      await expect(
+        controller.getPublicItemPopularity('not-a-date'),
+      ).rejects.toThrow('Invalid date');
     });
   });
 
@@ -82,7 +86,11 @@ describe('ShoppingListAnalyticsController', () => {
     it('parses date strings and integer limit', async () => {
       service.getPublishedCategoryPopularity.mockResolvedValue([]);
 
-      await controller.getPublicCategoryPopularity('2026-04-01', '2026-04-30', '10');
+      await controller.getPublicCategoryPopularity(
+        '2026-04-01',
+        '2026-04-30',
+        '10',
+      );
 
       expect(service.getPublishedCategoryPopularity).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -109,7 +117,10 @@ describe('ShoppingListAnalyticsController', () => {
 
       await controller.getPublicListPatterns();
 
-      expect(service.getPublishedListPatterns).toHaveBeenCalledWith(undefined, undefined);
+      expect(service.getPublishedListPatterns).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+      );
     });
   });
 
@@ -157,7 +168,11 @@ describe('ShoppingListAnalyticsController', () => {
     it('parses dates and validates dimension', async () => {
       service.getPublishedDemographicPatterns.mockResolvedValue([]);
 
-      await controller.getPublicDemographicPatterns('2026-04-01', '2026-04-30', 'gender');
+      await controller.getPublicDemographicPatterns(
+        '2026-04-01',
+        '2026-04-30',
+        'gender',
+      );
 
       expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -171,12 +186,20 @@ describe('ShoppingListAnalyticsController', () => {
 
       await controller.getPublicDemographicPatterns();
 
-      expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(undefined, undefined, undefined);
+      expect(service.getPublishedDemographicPatterns).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        undefined,
+      );
     });
 
     it('throws BadRequestException for an invalid dimension', async () => {
       await expect(
-        controller.getPublicDemographicPatterns(undefined, undefined, 'invalid'),
+        controller.getPublicDemographicPatterns(
+          undefined,
+          undefined,
+          'invalid',
+        ),
       ).rejects.toThrow('Invalid dimension');
     });
   });
@@ -185,9 +208,17 @@ describe('ShoppingListAnalyticsController', () => {
     it('validates dimension and forwards to the service', async () => {
       service.getPublishedDemographicNutrition.mockResolvedValue([]);
 
-      await controller.getPublicDemographicNutrition(undefined, undefined, 'ageGroup');
+      await controller.getPublicDemographicNutrition(
+        undefined,
+        undefined,
+        'ageGroup',
+      );
 
-      expect(service.getPublishedDemographicNutrition).toHaveBeenCalledWith(undefined, undefined, 'ageGroup');
+      expect(service.getPublishedDemographicNutrition).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        'ageGroup',
+      );
     });
   });
 
@@ -195,7 +226,12 @@ describe('ShoppingListAnalyticsController', () => {
     it('parses dates and validates dim filters', async () => {
       service.getPublishedCrossDimPatterns.mockResolvedValue([]);
 
-      await controller.getPublicCrossDimPatterns('2026-04-01', '2026-04-30', 'ageGroup', 'gender');
+      await controller.getPublicCrossDimPatterns(
+        '2026-04-01',
+        '2026-04-30',
+        'ageGroup',
+        'gender',
+      );
 
       expect(service.getPublishedCrossDimPatterns).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -210,9 +246,19 @@ describe('ShoppingListAnalyticsController', () => {
     it('validates dim filters and forwards to the service', async () => {
       service.getPublishedCrossDimNutrition.mockResolvedValue([]);
 
-      await controller.getPublicCrossDimNutrition(undefined, undefined, 'country', 'educationLevel');
+      await controller.getPublicCrossDimNutrition(
+        undefined,
+        undefined,
+        'country',
+        'educationLevel',
+      );
 
-      expect(service.getPublishedCrossDimNutrition).toHaveBeenCalledWith(undefined, undefined, 'country', 'educationLevel');
+      expect(service.getPublishedCrossDimNutrition).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+        'country',
+        'educationLevel',
+      );
     });
   });
 
@@ -221,7 +267,10 @@ describe('ShoppingListAnalyticsController', () => {
       const summary = { topItems: [] };
       service.getPublishedSummary.mockResolvedValue(summary as any);
 
-      const result = await controller.getPublicSummary('2026-04-01', '2026-04-30');
+      const result = await controller.getPublicSummary(
+        '2026-04-01',
+        '2026-04-30',
+      );
 
       expect(service.getPublishedSummary).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -235,9 +284,15 @@ describe('ShoppingListAnalyticsController', () => {
     it('parses dates and passes dimension to service', async () => {
       service.getPublishedDemographicClassification.mockResolvedValue([]);
 
-      await controller.getPublicDemographicClassification('2026-04-01', '2026-04-30', 'ageGroup');
+      await controller.getPublicDemographicClassification(
+        '2026-04-01',
+        '2026-04-30',
+        'ageGroup',
+      );
 
-      expect(service.getPublishedDemographicClassification).toHaveBeenCalledWith(
+      expect(
+        service.getPublishedDemographicClassification,
+      ).toHaveBeenCalledWith(
         new Date('2026-04-01'),
         new Date('2026-04-30'),
         'ageGroup',
@@ -249,14 +304,18 @@ describe('ShoppingListAnalyticsController', () => {
 
       await controller.getPublicDemographicClassification();
 
-      expect(service.getPublishedDemographicClassification).toHaveBeenCalledWith(
-        undefined, undefined, undefined,
-      );
+      expect(
+        service.getPublishedDemographicClassification,
+      ).toHaveBeenCalledWith(undefined, undefined, undefined);
     });
 
     it('throws BadRequestException for invalid dimension', async () => {
       await expect(
-        controller.getPublicDemographicClassification(undefined, undefined, 'invalid'),
+        controller.getPublicDemographicClassification(
+          undefined,
+          undefined,
+          'invalid',
+        ),
       ).rejects.toThrow('Invalid dimension');
     });
   });
@@ -265,7 +324,12 @@ describe('ShoppingListAnalyticsController', () => {
     it('parses dates and passes dim filters to service', async () => {
       service.getPublishedCrossDimClassification.mockResolvedValue([]);
 
-      await controller.getPublicCrossDimClassification('2026-04-01', '2026-04-30', 'ageGroup', 'gender');
+      await controller.getPublicCrossDimClassification(
+        '2026-04-01',
+        '2026-04-30',
+        'ageGroup',
+        'gender',
+      );
 
       expect(service.getPublishedCrossDimClassification).toHaveBeenCalledWith(
         new Date('2026-04-01'),
@@ -281,7 +345,10 @@ describe('ShoppingListAnalyticsController', () => {
       await controller.getPublicCrossDimClassification();
 
       expect(service.getPublishedCrossDimClassification).toHaveBeenCalledWith(
-        undefined, undefined, undefined, undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
       );
     });
   });
@@ -304,9 +371,9 @@ describe('ShoppingListAnalyticsController', () => {
     });
 
     it('throws BadRequestException when dates are missing', async () => {
-      await expect(controller.generateBatch(undefined, undefined)).rejects.toThrow(
-        'periodStart and periodEnd are required',
-      );
+      await expect(
+        controller.generateBatch(undefined, undefined),
+      ).rejects.toThrow('periodStart and periodEnd are required');
     });
   });
 

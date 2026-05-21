@@ -125,10 +125,20 @@ describe('ShoppingListAnalyticsAggregator', () => {
     // 19 users in one gender group — cross-dim should be suppressed
     const rows = [
       ...Array.from({ length: 19 }, (_, i) =>
-        makeRow({ userId: `f-${i}`, listId: `fl-${i}`, itemId: `fi-${i}`, userGender: 'FEMALE' }),
+        makeRow({
+          userId: `f-${i}`,
+          listId: `fl-${i}`,
+          itemId: `fi-${i}`,
+          userGender: 'FEMALE',
+        }),
       ),
       ...Array.from({ length: 20 }, (_, i) =>
-        makeRow({ userId: `m-${i}`, listId: `ml-${i}`, itemId: `mi-${i}`, userGender: 'MALE' }),
+        makeRow({
+          userId: `m-${i}`,
+          listId: `ml-${i}`,
+          itemId: `mi-${i}`,
+          userGender: 'MALE',
+        }),
       ),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
@@ -161,13 +171,20 @@ describe('ShoppingListAnalyticsAggregator', () => {
     // user-0 adds Milk twice (two separate items in the same list)
     const rows = [
       ...makeRows(5), // 5 users each with Whole Milk (1 each)
-      makeRow({ itemId: 'extra-item', userId: 'user-0', listId: 'list-0', foodName: 'Whole Milk' }),
+      makeRow({
+        itemId: 'extra-item',
+        userId: 'user-0',
+        listId: 'list-0',
+        foodName: 'Whole Milk',
+      }),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    const milkRow = result.itemPopularity.find((r) => r.foodName === 'Whole Milk');
+    const milkRow = result.itemPopularity.find(
+      (r) => r.foodName === 'Whole Milk',
+    );
     expect(milkRow).toBeDefined();
     expect(milkRow!.frequency).toBe(6); // 6 item occurrences
     expect(milkRow!.uniqueUsers).toBe(5); // still 5 distinct users
@@ -176,14 +193,26 @@ describe('ShoppingListAnalyticsAggregator', () => {
   it('selects predominant unit by mode', async () => {
     const rows = [
       ...makeRows(4, { unit: 'PIECES' }),
-      makeRow({ userId: 'user-4', listId: 'list-4', itemId: 'item-4', unit: 'KG' }),
-      makeRow({ userId: 'user-5', listId: 'list-5', itemId: 'item-5', unit: 'PIECES' }),
+      makeRow({
+        userId: 'user-4',
+        listId: 'list-4',
+        itemId: 'item-4',
+        unit: 'KG',
+      }),
+      makeRow({
+        userId: 'user-5',
+        listId: 'list-5',
+        itemId: 'item-5',
+        unit: 'PIECES',
+      }),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    const milkRow = result.itemPopularity.find((r) => r.foodName === 'Whole Milk');
+    const milkRow = result.itemPopularity.find(
+      (r) => r.foodName === 'Whole Milk',
+    );
     expect(milkRow!.predominantUnit).toBe('PIECES');
   });
 
@@ -193,7 +222,11 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
   it('counts multiple food categories independently', async () => {
     const rows = [
-      ...makeRows(5, { category: 'Dairy', foodGroup: 'Dairy', foodName: 'Milk' }),
+      ...makeRows(5, {
+        category: 'Dairy',
+        foodGroup: 'Dairy',
+        foodName: 'Milk',
+      }),
       ...Array.from({ length: 5 }, (_, i) =>
         makeRow({
           userId: `v-user-${i}`,
@@ -210,7 +243,9 @@ describe('ShoppingListAnalyticsAggregator', () => {
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
     const dairy = result.categoryPopularity.find((r) => r.category === 'Dairy');
-    const veg = result.categoryPopularity.find((r) => r.category === 'Vegetables');
+    const veg = result.categoryPopularity.find(
+      (r) => r.category === 'Vegetables',
+    );
     expect(dairy).toBeDefined();
     expect(veg).toBeDefined();
     expect(dairy!.frequency).toBe(5);
@@ -269,7 +304,13 @@ describe('ShoppingListAnalyticsAggregator', () => {
   it('averages nutritional values across all items', async () => {
     const rows = [
       ...makeRows(4, { energyKcal: 100, proteins: 10 }),
-      makeRow({ userId: 'user-4', listId: 'list-4', itemId: 'item-4', energyKcal: 200, proteins: 20 }),
+      makeRow({
+        userId: 'user-4',
+        listId: 'list-4',
+        itemId: 'item-4',
+        energyKcal: 200,
+        proteins: 20,
+      }),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
 
@@ -278,11 +319,16 @@ describe('ShoppingListAnalyticsAggregator', () => {
     expect(result.nutritionProfile).toHaveLength(1);
     const n = result.nutritionProfile[0];
     expect(n.avgCaloriesPer100g).toBeCloseTo(120, 5); // (4*100 + 200) / 5
-    expect(n.avgProteinsPer100g).toBeCloseTo(12, 5);  // (4*10 + 20) / 5
+    expect(n.avgProteinsPer100g).toBeCloseTo(12, 5); // (4*10 + 20) / 5
   });
 
   it('returns null for nutrition fields when no items have data', async () => {
-    const rows = makeRows(5, { energyKcal: null, proteins: null, fat: null, carbohydrates: null });
+    const rows = makeRows(5, {
+      energyKcal: null,
+      proteins: null,
+      fat: null,
+      carbohydrates: null,
+    });
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
@@ -330,7 +376,11 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
   it('excludes generic_food items from sustainability scores', async () => {
     // All items are generic_food — sustainability scores should have itemCount=0 for fp items
-    const rows = makeRows(5, { itemType: 'generic_food', nutriScoreGrade: null, novaGroup: null });
+    const rows = makeRows(5, {
+      itemType: 'generic_food',
+      nutriScoreGrade: null,
+      novaGroup: null,
+    });
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
@@ -344,17 +394,30 @@ describe('ShoppingListAnalyticsAggregator', () => {
   it('builds novaDistribution correctly', async () => {
     const rows = [
       ...Array.from({ length: 3 }, (_, i) =>
-        makeRow({ userId: `u-${i}`, listId: `l-${i}`, itemId: `n1-${i}`, novaGroup: 1 }),
+        makeRow({
+          userId: `u-${i}`,
+          listId: `l-${i}`,
+          itemId: `n1-${i}`,
+          novaGroup: 1,
+        }),
       ),
       ...Array.from({ length: 2 }, (_, i) =>
-        makeRow({ userId: `u-${i + 3}`, listId: `l-${i + 3}`, itemId: `n4-${i}`, novaGroup: 4 }),
+        makeRow({
+          userId: `u-${i + 3}`,
+          listId: `l-${i + 3}`,
+          itemId: `n4-${i}`,
+          novaGroup: 4,
+        }),
       ),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    const dist = result.sustainability[0].novaDistribution as Record<string, number>;
+    const dist = result.sustainability[0].novaDistribution as Record<
+      string,
+      number
+    >;
     expect(dist['1']).toBe(3);
     expect(dist['4']).toBe(2);
   });
@@ -365,13 +428,15 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
   it('groups items by foodGroup and suppresses below K=5', async () => {
     const rows = [
-      ...makeRows(4, { foodGroup: 'Dairy', foodName: 'Milk' }),        // suppressed
-      ...makeRows(5, { foodGroup: 'Vegetables', foodName: 'Carrot' }).map((r, i) => ({
-        ...r,
-        userId: `v-${i}`,
-        listId: `vl-${i}`,
-        itemId: `vi-${i}`,
-      })),
+      ...makeRows(4, { foodGroup: 'Dairy', foodName: 'Milk' }), // suppressed
+      ...makeRows(5, { foodGroup: 'Vegetables', foodName: 'Carrot' }).map(
+        (r, i) => ({
+          ...r,
+          userId: `v-${i}`,
+          listId: `vl-${i}`,
+          itemId: `vi-${i}`,
+        }),
+      ),
     ];
     prisma.$queryRaw.mockResolvedValue(rows);
 
@@ -396,8 +461,13 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
     // Each dimension should have exactly one non-null column per row
     for (const row of result.demographicPatterns) {
-      const nonNull = [row.ageGroup, row.gender, row.educationLevel, row.region, row.country]
-        .filter((v) => v !== null);
+      const nonNull = [
+        row.ageGroup,
+        row.gender,
+        row.educationLevel,
+        row.region,
+        row.country,
+      ].filter((v) => v !== null);
       expect(nonNull).toHaveLength(1);
     }
   });
@@ -408,12 +478,8 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    const ageRow = result.demographicPatterns.find(
-      (r) => r.ageGroup !== null,
-    );
-    const genderRow = result.demographicPatterns.find(
-      (r) => r.gender !== null,
-    );
+    const ageRow = result.demographicPatterns.find((r) => r.ageGroup !== null);
+    const genderRow = result.demographicPatterns.find((r) => r.gender !== null);
     // null demographic values should appear as null in output, not the __null__ sentinel
     expect(ageRow).toBeUndefined();
     expect(genderRow).toBeUndefined();

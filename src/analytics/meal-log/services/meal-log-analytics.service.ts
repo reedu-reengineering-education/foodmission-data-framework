@@ -76,7 +76,8 @@ export class MealLogAnalyticsService {
             mealClassificationRows: result.mealClassification.length,
             mealRecordsRows: result.mealRecords.length,
             demographicNutritionRows: result.demographicNutrition.length,
-            demographicClassificationRows: result.demographicClassification.length,
+            demographicClassificationRows:
+              result.demographicClassification.length,
             demographicPatternsRows: result.demographicPatterns.length,
             crossDimNutritionRows: result.crossDimNutrition.length,
             crossDimClassificationRows: result.crossDimClassification.length,
@@ -106,7 +107,8 @@ export class MealLogAnalyticsService {
             result.sustainability.map((r) => ({
               ...r,
               batchId,
-              nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+              nutriScoreDistribution:
+                r.nutriScoreDistribution ?? Prisma.JsonNull,
               ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
             })),
           );
@@ -344,9 +346,7 @@ export class MealLogAnalyticsService {
       },
       classification: {
         dataPoints: classification.length,
-        avgVegetarianPct: safeAvg(
-          classification.map((c) => c.vegetarianPct),
-        ),
+        avgVegetarianPct: safeAvg(classification.map((c) => c.vegetarianPct)),
         avgVeganPct: safeAvg(classification.map((c) => c.veganPct)),
         avgUltraProcessedPct: safeAvg(
           classification
@@ -371,7 +371,9 @@ export class MealLogAnalyticsService {
 
   async approveBatch(batchId: string, adminUserId: string) {
     return approveAnalyticsBatch(
-      this.repository, batchId, adminUserId,
+      this.repository,
+      batchId,
+      adminUserId,
       MealLogAnalyticsBatchStatus.STAGING,
       MealLogAnalyticsBatchStatus.APPROVED,
     );
@@ -379,7 +381,9 @@ export class MealLogAnalyticsService {
 
   async publishBatch(batchId: string, adminUserId: string) {
     return publishAnalyticsBatch(
-      this.repository, batchId, adminUserId,
+      this.repository,
+      batchId,
+      adminUserId,
       MealLogAnalyticsBatchStatus.APPROVED,
       MealLogAnalyticsBatchStatus.PUBLISHED,
     );
@@ -387,20 +391,20 @@ export class MealLogAnalyticsService {
 
   async rejectBatch(batchId: string, adminUserId: string, reason: string) {
     return rejectAnalyticsBatch(
-      this.repository, batchId, adminUserId, reason,
+      this.repository,
+      batchId,
+      adminUserId,
+      reason,
       MealLogAnalyticsBatchStatus.STAGING,
       MealLogAnalyticsBatchStatus.REJECTED,
     );
   }
 
   async deleteBatch(batchId: string) {
-    return deleteAnalyticsBatch(
-      this.repository, batchId,
-      [
-        MealLogAnalyticsBatchStatus.PUBLISHED,
-        MealLogAnalyticsBatchStatus.APPROVED,
-        MealLogAnalyticsBatchStatus.SUPERSEDED,
-      ],
-    );
+    return deleteAnalyticsBatch(this.repository, batchId, [
+      MealLogAnalyticsBatchStatus.PUBLISHED,
+      MealLogAnalyticsBatchStatus.APPROVED,
+      MealLogAnalyticsBatchStatus.SUPERSEDED,
+    ]);
   }
 }

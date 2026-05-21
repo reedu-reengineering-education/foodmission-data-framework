@@ -73,7 +73,7 @@ describe('ShoppingListAnalyticsService', () => {
     };
 
     it('creates a batch and returns its id', async () => {
-      aggregator.aggregate.mockResolvedValue(emptyAggResult as any);
+      aggregator.aggregate.mockResolvedValue(emptyAggResult);
       repository.createBatch.mockResolvedValue({ id: 'batch-1' } as any);
 
       const id = await service.generateBatch(
@@ -91,14 +91,26 @@ describe('ShoppingListAnalyticsService', () => {
       aggregator.aggregate.mockResolvedValue({
         ...emptyAggResult,
         itemPopularity: [
-          { date: new Date(), foodName: 'Milk', foodGroup: 'Dairy', itemType: 'food_product', frequency: 5, uniqueUsers: 5, avgQuantity: 1, predominantUnit: 'PIECES' },
+          {
+            date: new Date(),
+            foodName: 'Milk',
+            foodGroup: 'Dairy',
+            itemType: 'food_product',
+            frequency: 5,
+            uniqueUsers: 5,
+            avgQuantity: 1,
+            predominantUnit: 'PIECES',
+          },
         ],
         totalRecords: 1,
-      } as any);
+      });
       repository.createBatch.mockResolvedValue({ id: 'batch-2' } as any);
       repository.insertItemPopularity.mockResolvedValue(undefined as any);
 
-      await service.generateBatch(new Date('2026-04-01'), new Date('2026-04-02'));
+      await service.generateBatch(
+        new Date('2026-04-01'),
+        new Date('2026-04-02'),
+      );
 
       expect(repository.insertItemPopularity).toHaveBeenCalledTimes(1);
       expect(repository.insertCategoryPopularity).not.toHaveBeenCalled();
@@ -123,11 +135,14 @@ describe('ShoppingListAnalyticsService', () => {
           },
         ],
         totalRecords: 1,
-      } as any);
+      });
       repository.createBatch.mockResolvedValue({ id: 'batch-3' } as any);
       repository.insertSustainability.mockResolvedValue(undefined as any);
 
-      await service.generateBatch(new Date('2026-04-01'), new Date('2026-04-02'));
+      await service.generateBatch(
+        new Date('2026-04-01'),
+        new Date('2026-04-02'),
+      );
 
       const insertArg = repository.insertSustainability.mock.calls[0][0][0];
       // Prisma.JsonNull is the typed sentinel Prisma uses for explicit null in JSON fields
@@ -141,15 +156,24 @@ describe('ShoppingListAnalyticsService', () => {
 
   describe('runDailyAggregation', () => {
     const emptyAggResult = {
-      itemPopularity: [], categoryPopularity: [], listPatterns: [],
-      nutritionProfile: [], sustainability: [], foodGroups: [],
-      demographicPatterns: [], demographicNutrition: [], demographicClassification: [],
-      crossDimPatterns: [], crossDimNutrition: [], crossDimClassification: [],
-      totalRecords: 0, suppressedGroups: 0,
+      itemPopularity: [],
+      categoryPopularity: [],
+      listPatterns: [],
+      nutritionProfile: [],
+      sustainability: [],
+      foodGroups: [],
+      demographicPatterns: [],
+      demographicNutrition: [],
+      demographicClassification: [],
+      crossDimPatterns: [],
+      crossDimNutrition: [],
+      crossDimClassification: [],
+      totalRecords: 0,
+      suppressedGroups: 0,
     };
 
     beforeEach(() => {
-      aggregator.aggregate.mockResolvedValue(emptyAggResult as any);
+      aggregator.aggregate.mockResolvedValue(emptyAggResult);
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
       repository.updateBatchStatus.mockResolvedValue({
         id: 'daily-batch',
@@ -162,7 +186,8 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
       // supersede is called before createBatch
-      const supersedeOrder = repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
+      const supersedeOrder =
+        repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
       const createOrder = repository.createBatch.mock.invocationCallOrder[0];
       expect(supersedeOrder).toBeLessThan(createOrder);
     });
@@ -199,8 +224,14 @@ describe('ShoppingListAnalyticsService', () => {
 
   describe('approveBatch', () => {
     it('approves a STAGING batch', async () => {
-      const batch = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.STAGING };
-      const approved = { ...batch, status: ShoppingListAnalyticsBatchStatus.APPROVED };
+      const batch = {
+        id: 'b1',
+        status: ShoppingListAnalyticsBatchStatus.STAGING,
+      };
+      const approved = {
+        ...batch,
+        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+      };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(approved as any);
 
@@ -240,8 +271,14 @@ describe('ShoppingListAnalyticsService', () => {
 
   describe('publishBatch', () => {
     it('publishes an APPROVED batch', async () => {
-      const batch = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.APPROVED };
-      const published = { ...batch, status: ShoppingListAnalyticsBatchStatus.PUBLISHED };
+      const batch = {
+        id: 'b1',
+        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+      };
+      const published = {
+        ...batch,
+        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(published as any);
 
@@ -273,8 +310,14 @@ describe('ShoppingListAnalyticsService', () => {
 
   describe('rejectBatch', () => {
     it('rejects a STAGING batch', async () => {
-      const batch = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.STAGING };
-      const rejected = { ...batch, status: ShoppingListAnalyticsBatchStatus.REJECTED };
+      const batch = {
+        id: 'b1',
+        status: ShoppingListAnalyticsBatchStatus.STAGING,
+      };
+      const rejected = {
+        ...batch,
+        status: ShoppingListAnalyticsBatchStatus.REJECTED,
+      };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(rejected as any);
 
@@ -295,9 +338,9 @@ describe('ShoppingListAnalyticsService', () => {
         status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
       } as any);
 
-      await expect(service.rejectBatch('b1', 'admin-1', 'reason')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.rejectBatch('b1', 'admin-1', 'reason'),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -336,7 +379,9 @@ describe('ShoppingListAnalyticsService', () => {
         status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
       } as any);
 
-      await expect(service.deleteBatch('b1')).rejects.toThrow(BadRequestException);
+      await expect(service.deleteBatch('b1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('throws BadRequestException for APPROVED batches', async () => {
@@ -345,7 +390,9 @@ describe('ShoppingListAnalyticsService', () => {
         status: ShoppingListAnalyticsBatchStatus.APPROVED,
       } as any);
 
-      await expect(service.deleteBatch('b1')).rejects.toThrow(BadRequestException);
+      await expect(service.deleteBatch('b1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -359,9 +406,9 @@ describe('ShoppingListAnalyticsService', () => {
 
       await service.getPublishedDemographicClassification();
 
-      expect(repository.getPublishedDemographicClassification).toHaveBeenCalledWith(
-        undefined, undefined, undefined,
-      );
+      expect(
+        repository.getPublishedDemographicClassification,
+      ).toHaveBeenCalledWith(undefined, undefined, undefined);
     });
 
     it('passes dates and dimension to repository', async () => {
@@ -371,9 +418,9 @@ describe('ShoppingListAnalyticsService', () => {
 
       await service.getPublishedDemographicClassification(from, to, 'ageGroup');
 
-      expect(repository.getPublishedDemographicClassification).toHaveBeenCalledWith(
-        from, to, 'ageGroup',
-      );
+      expect(
+        repository.getPublishedDemographicClassification,
+      ).toHaveBeenCalledWith(from, to, 'ageGroup');
     });
   });
 
@@ -387,9 +434,9 @@ describe('ShoppingListAnalyticsService', () => {
 
       await service.getPublishedCrossDimClassification();
 
-      expect(repository.getPublishedCrossDimClassification).toHaveBeenCalledWith(
-        undefined, undefined, undefined, undefined,
-      );
+      expect(
+        repository.getPublishedCrossDimClassification,
+      ).toHaveBeenCalledWith(undefined, undefined, undefined, undefined);
     });
 
     it('passes dates and dim filters to repository', async () => {
@@ -397,11 +444,16 @@ describe('ShoppingListAnalyticsService', () => {
       const from = new Date('2026-04-01');
       const to = new Date('2026-04-30');
 
-      await service.getPublishedCrossDimClassification(from, to, 'ageGroup', 'gender');
-
-      expect(repository.getPublishedCrossDimClassification).toHaveBeenCalledWith(
-        from, to, 'ageGroup', 'gender',
+      await service.getPublishedCrossDimClassification(
+        from,
+        to,
+        'ageGroup',
+        'gender',
       );
+
+      expect(
+        repository.getPublishedCrossDimClassification,
+      ).toHaveBeenCalledWith(from, to, 'ageGroup', 'gender');
     });
   });
 
@@ -418,15 +470,35 @@ describe('ShoppingListAnalyticsService', () => {
         { category: 'Dairy', frequency: 10, uniqueUsers: 8 } as any,
       ]);
       repository.getPublishedListPatterns.mockResolvedValue([
-        { date: new Date('2026-04-01'), avgItemsPerList: 4, avgListsPerUser: 2 } as any,
-        { date: new Date('2026-04-02'), avgItemsPerList: 6, avgListsPerUser: 3 } as any,
+        {
+          date: new Date('2026-04-01'),
+          avgItemsPerList: 4,
+          avgListsPerUser: 2,
+        } as any,
+        {
+          date: new Date('2026-04-02'),
+          avgItemsPerList: 6,
+          avgListsPerUser: 3,
+        } as any,
       ]);
       repository.getPublishedNutritionProfile.mockResolvedValue([
-        { date: new Date('2026-04-02'), avgCaloriesPer100g: 80, avgProteinsPer100g: 5 } as any,
+        {
+          date: new Date('2026-04-02'),
+          avgCaloriesPer100g: 80,
+          avgProteinsPer100g: 5,
+        } as any,
       ]);
       repository.getPublishedSustainability.mockResolvedValue([
-        { avgCarbonFootprint: 2.5, vegetarianItemPct: 60, avgUltraProcessedPct: 20 } as any,
-        { avgCarbonFootprint: null, vegetarianItemPct: null, avgUltraProcessedPct: 40 } as any,
+        {
+          avgCarbonFootprint: 2.5,
+          vegetarianItemPct: 60,
+          avgUltraProcessedPct: 20,
+        } as any,
+        {
+          avgCarbonFootprint: null,
+          vegetarianItemPct: null,
+          avgUltraProcessedPct: 40,
+        } as any,
       ]);
 
       const result = await service.getPublishedSummary();
@@ -464,8 +536,16 @@ describe('ShoppingListAnalyticsService', () => {
       repository.getPublishedItemPopularity.mockResolvedValue([]);
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([
-        { date: new Date('2026-04-01'), avgItemsPerList: 3, avgListsPerUser: 1 } as any,
-        { date: new Date('2026-04-30'), avgItemsPerList: 4, avgListsPerUser: 1 } as any,
+        {
+          date: new Date('2026-04-01'),
+          avgItemsPerList: 3,
+          avgListsPerUser: 1,
+        } as any,
+        {
+          date: new Date('2026-04-30'),
+          avgItemsPerList: 4,
+          avgListsPerUser: 1,
+        } as any,
       ]);
       repository.getPublishedNutritionProfile.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
@@ -498,7 +578,10 @@ describe('ShoppingListAnalyticsService', () => {
 
   describe('getBatch', () => {
     it('returns the batch when found', async () => {
-      const batch = { id: 'b1', status: ShoppingListAnalyticsBatchStatus.STAGING };
+      const batch = {
+        id: 'b1',
+        status: ShoppingListAnalyticsBatchStatus.STAGING,
+      };
       repository.findBatchById.mockResolvedValue(batch as any);
 
       const result = await service.getBatch('b1');
@@ -509,7 +592,9 @@ describe('ShoppingListAnalyticsService', () => {
     it('throws NotFoundException when batch is not found', async () => {
       repository.findBatchById.mockResolvedValue(null);
 
-      await expect(service.getBatch('missing')).rejects.toThrow(NotFoundException);
+      await expect(service.getBatch('missing')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

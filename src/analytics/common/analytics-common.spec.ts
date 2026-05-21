@@ -428,16 +428,17 @@ describe('runBatchGeneration', () => {
 
   it('calls aggregator, createBatch, then insertRows in order', async () => {
     const order: string[] = [];
-    aggregator.aggregate.mockImplementation(async () => {
+    aggregator.aggregate.mockImplementation(() => {
       order.push('aggregate');
-      return mockResult;
+      return Promise.resolve(mockResult);
     });
-    createBatch.mockImplementation(async () => {
+    createBatch.mockImplementation(() => {
       order.push('createBatch');
-      return 'batch-123';
+      return Promise.resolve('batch-123');
     });
-    insertRows.mockImplementation(async () => {
+    insertRows.mockImplementation(() => {
       order.push('insertRows');
+      return Promise.resolve();
     });
 
     await runBatchGeneration(

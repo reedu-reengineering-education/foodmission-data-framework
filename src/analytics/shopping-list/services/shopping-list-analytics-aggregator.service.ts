@@ -309,10 +309,12 @@ export class ShoppingListAnalyticsAggregator {
     const foodGroups = this.aggregateFoodGroups(rawData);
     const demographicPatterns = this.aggregateDemographicPatterns(listAggs);
     const demographicNutrition = this.aggregateDemographicNutrition(rawData);
-    const demographicClassification = this.aggregateDemographicClassification(rawData);
+    const demographicClassification =
+      this.aggregateDemographicClassification(rawData);
     const crossDimPatterns = this.aggregateCrossDimPatterns(listAggs);
     const crossDimNutrition = this.aggregateCrossDimNutrition(rawData);
-    const crossDimClassification = this.aggregateCrossDimClassification(rawData);
+    const crossDimClassification =
+      this.aggregateCrossDimClassification(rawData);
 
     // k-anonymity filter (K=5)
     const filter = <T extends { userCount?: number; uniqueUsers?: number }>(
@@ -339,7 +341,10 @@ export class ShoppingListAnalyticsAggregator {
       });
 
     const filteredItemPopularity = filter(itemPopularity, 'uniqueUsers');
-    const filteredCategoryPopularity = filter(categoryPopularity, 'uniqueUsers');
+    const filteredCategoryPopularity = filter(
+      categoryPopularity,
+      'uniqueUsers',
+    );
     const filteredListPatterns = filter(listPatterns);
     const filteredNutritionProfile = filter(nutritionProfile);
     const filteredSustainability = filter(sustainability);
@@ -727,7 +732,9 @@ export class ShoppingListAnalyticsAggregator {
         (r) => r.isVegetarian === true,
       ).length;
       const veganItems = fpRows.filter((r) => r.isVegan === true).length;
-      const ultraProcessedItems = fpRows.filter((r) => r.novaGroup === 4).length;
+      const ultraProcessedItems = fpRows.filter(
+        (r) => r.novaGroup === 4,
+      ).length;
       const novaTotal = fpRows.filter((r) => r.novaGroup !== null).length;
 
       return {
@@ -805,7 +812,12 @@ export class ShoppingListAnalyticsAggregator {
       // Group by (dateKey, dimValue)
       const groups = new Map<
         string,
-        { date: Date; dimValue: string; users: Set<string>; lists: ListAggregate[] }
+        {
+          date: Date;
+          dimValue: string;
+          users: Set<string>;
+          lists: ListAggregate[];
+        }
       >();
 
       for (const la of listAggs.values()) {
@@ -831,8 +843,7 @@ export class ShoppingListAnalyticsAggregator {
         const totalItems = g.lists.reduce((s, l) => s + l.totalItems, 0);
         const fpItems = g.lists.reduce((s, l) => s + l.foodProductItems, 0);
         const gfItems = g.lists.reduce((s, l) => s + l.genericFoodItems, 0);
-        const activeValue =
-          g.dimValue === '__null__' ? null : g.dimValue;
+        const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
 
         result.push({
           date: g.date,
@@ -1147,7 +1158,9 @@ export class ShoppingListAnalyticsAggregator {
         const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
         const fpRows = g.fpRows;
         const itemCount = fpRows.length;
-        const vegetarianItems = fpRows.filter((r) => r.isVegetarian === true).length;
+        const vegetarianItems = fpRows.filter(
+          (r) => r.isVegetarian === true,
+        ).length;
         const veganItems = fpRows.filter((r) => r.isVegan === true).length;
         const novaValues = fpRows
           .map((r) => r.novaGroup)
@@ -1165,7 +1178,8 @@ export class ShoppingListAnalyticsAggregator {
           country: dim === 'country' ? activeValue : null,
           userCount: g.users.size,
           itemCount,
-          vegetarianItemPct: itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+          vegetarianItemPct:
+            itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
           veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
           avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
           p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
@@ -1227,7 +1241,9 @@ export class ShoppingListAnalyticsAggregator {
         for (const g of groups.values()) {
           const fpRows = g.fpRows;
           const itemCount = fpRows.length;
-          const vegetarianItems = fpRows.filter((r) => r.isVegetarian === true).length;
+          const vegetarianItems = fpRows.filter(
+            (r) => r.isVegetarian === true,
+          ).length;
           const veganItems = fpRows.filter((r) => r.isVegan === true).length;
           const novaValues = fpRows
             .map((r) => r.novaGroup)
@@ -1244,7 +1260,8 @@ export class ShoppingListAnalyticsAggregator {
             dim2Value: g.dim2Value,
             userCount: g.users.size,
             itemCount,
-            vegetarianItemPct: itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+            vegetarianItemPct:
+              itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
             veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
             avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
             p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),

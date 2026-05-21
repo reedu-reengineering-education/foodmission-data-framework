@@ -74,7 +74,8 @@ export class ShoppingListAnalyticsService {
             foodGroupsRows: result.foodGroups.length,
             demographicPatternsRows: result.demographicPatterns.length,
             demographicNutritionRows: result.demographicNutrition.length,
-            demographicClassificationRows: result.demographicClassification.length,
+            demographicClassificationRows:
+              result.demographicClassification.length,
             crossDimPatternsRows: result.crossDimPatterns.length,
             crossDimNutritionRows: result.crossDimNutrition.length,
             crossDimClassificationRows: result.crossDimClassification.length,
@@ -108,7 +109,8 @@ export class ShoppingListAnalyticsService {
             result.sustainability.map((r) => ({
               ...r,
               batchId,
-              nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+              nutriScoreDistribution:
+                r.nutriScoreDistribution ?? Prisma.JsonNull,
               ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
               novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
             })),
@@ -351,7 +353,9 @@ export class ShoppingListAnalyticsService {
 
   async approveBatch(batchId: string, adminUserId: string) {
     return approveAnalyticsBatch(
-      this.repository, batchId, adminUserId,
+      this.repository,
+      batchId,
+      adminUserId,
       ShoppingListAnalyticsBatchStatus.STAGING,
       ShoppingListAnalyticsBatchStatus.APPROVED,
     );
@@ -359,7 +363,9 @@ export class ShoppingListAnalyticsService {
 
   async publishBatch(batchId: string, adminUserId: string) {
     return publishAnalyticsBatch(
-      this.repository, batchId, adminUserId,
+      this.repository,
+      batchId,
+      adminUserId,
       ShoppingListAnalyticsBatchStatus.APPROVED,
       ShoppingListAnalyticsBatchStatus.PUBLISHED,
     );
@@ -367,20 +373,20 @@ export class ShoppingListAnalyticsService {
 
   async rejectBatch(batchId: string, adminUserId: string, reason: string) {
     return rejectAnalyticsBatch(
-      this.repository, batchId, adminUserId, reason,
+      this.repository,
+      batchId,
+      adminUserId,
+      reason,
       ShoppingListAnalyticsBatchStatus.STAGING,
       ShoppingListAnalyticsBatchStatus.REJECTED,
     );
   }
 
   async deleteBatch(batchId: string) {
-    return deleteAnalyticsBatch(
-      this.repository, batchId,
-      [
-        ShoppingListAnalyticsBatchStatus.PUBLISHED,
-        ShoppingListAnalyticsBatchStatus.APPROVED,
-        ShoppingListAnalyticsBatchStatus.SUPERSEDED,
-      ],
-    );
+    return deleteAnalyticsBatch(this.repository, batchId, [
+      ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      ShoppingListAnalyticsBatchStatus.APPROVED,
+      ShoppingListAnalyticsBatchStatus.SUPERSEDED,
+    ]);
   }
 }

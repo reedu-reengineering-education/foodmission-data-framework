@@ -62,7 +62,10 @@ export class ShoppingListAnalyticsRepository {
       data.rejectionReason = reason;
     }
 
-    return this.prisma.shoppingListAnalyticsBatch.update({ where: { id }, data });
+    return this.prisma.shoppingListAnalyticsBatch.update({
+      where: { id },
+      data,
+    });
   }
 
   async deleteBatch(id: string): Promise<void> {
@@ -98,7 +101,9 @@ export class ShoppingListAnalyticsRepository {
   async insertCategoryPopularity(
     data: Prisma.ShoppingListAnalyticsCategoryPopularityCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsCategoryPopularity.createMany({ data });
+    return this.prisma.shoppingListAnalyticsCategoryPopularity.createMany({
+      data,
+    });
   }
 
   async insertListPatterns(
@@ -110,7 +115,9 @@ export class ShoppingListAnalyticsRepository {
   async insertNutritionProfile(
     data: Prisma.ShoppingListAnalyticsNutritionProfileCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsNutritionProfile.createMany({ data });
+    return this.prisma.shoppingListAnalyticsNutritionProfile.createMany({
+      data,
+    });
   }
 
   async insertSustainability(
@@ -128,37 +135,49 @@ export class ShoppingListAnalyticsRepository {
   async insertDemographicPatterns(
     data: Prisma.ShoppingListAnalyticsDemographicPatternsCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsDemographicPatterns.createMany({ data });
+    return this.prisma.shoppingListAnalyticsDemographicPatterns.createMany({
+      data,
+    });
   }
 
   async insertDemographicNutrition(
     data: Prisma.ShoppingListAnalyticsDemographicNutritionCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsDemographicNutrition.createMany({ data });
+    return this.prisma.shoppingListAnalyticsDemographicNutrition.createMany({
+      data,
+    });
   }
 
   async insertDemographicClassification(
     data: Prisma.ShoppingListAnalyticsDemographicClassificationCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsDemographicClassification.createMany({ data });
+    return this.prisma.shoppingListAnalyticsDemographicClassification.createMany(
+      { data },
+    );
   }
 
   async insertCrossDimPatterns(
     data: Prisma.ShoppingListAnalyticsCrossDimPatternsCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsCrossDimPatterns.createMany({ data });
+    return this.prisma.shoppingListAnalyticsCrossDimPatterns.createMany({
+      data,
+    });
   }
 
   async insertCrossDimNutrition(
     data: Prisma.ShoppingListAnalyticsCrossDimNutritionCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsCrossDimNutrition.createMany({ data });
+    return this.prisma.shoppingListAnalyticsCrossDimNutrition.createMany({
+      data,
+    });
   }
 
   async insertCrossDimClassification(
     data: Prisma.ShoppingListAnalyticsCrossDimClassificationCreateManyInput[],
   ) {
-    return this.prisma.shoppingListAnalyticsCrossDimClassification.createMany({ data });
+    return this.prisma.shoppingListAnalyticsCrossDimClassification.createMany({
+      data,
+    });
   }
 
   // ============================================================

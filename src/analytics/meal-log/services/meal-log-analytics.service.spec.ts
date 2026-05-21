@@ -2,7 +2,7 @@ import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatchStatus } from '@prisma/client';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
   let service: MealLogAnalyticsService;
@@ -40,12 +40,20 @@ describe('MealLogAnalyticsService', () => {
 
   describe('runDailyAggregation', () => {
     const emptyAggResult = {
-      dailyNutrition: [], foodPopularity: [], mealPatterns: [],
-      sustainability: [], mealClassification: [], mealRecords: [],
-      demographicNutrition: [], demographicClassification: [],
-      demographicPatterns: [], crossDimNutrition: [],
-      crossDimClassification: [], crossDimPatterns: [],
-      totalRecords: 0, suppressedGroups: 0,
+      dailyNutrition: [],
+      foodPopularity: [],
+      mealPatterns: [],
+      sustainability: [],
+      mealClassification: [],
+      mealRecords: [],
+      demographicNutrition: [],
+      demographicClassification: [],
+      demographicPatterns: [],
+      crossDimNutrition: [],
+      crossDimClassification: [],
+      crossDimPatterns: [],
+      totalRecords: 0,
+      suppressedGroups: 0,
     };
     let aggregatorMock: jest.Mocked<MealLogAnalyticsAggregator>;
 
@@ -66,7 +74,8 @@ describe('MealLogAnalyticsService', () => {
       await service.runDailyAggregation();
 
       expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
-      const supersedeOrder = repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
+      const supersedeOrder =
+        repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
       const createOrder = repository.createBatch.mock.invocationCallOrder[0];
       expect(supersedeOrder).toBeLessThan(createOrder);
     });

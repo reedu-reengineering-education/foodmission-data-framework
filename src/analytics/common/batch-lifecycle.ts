@@ -4,7 +4,10 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
  * Minimal repository shape required by the shared batch lifecycle functions.
  * Each domain repository satisfies this via TypeScript structural typing.
  */
-interface IBatchRepository<TStatus, TBatch extends { id: string; status: TStatus }> {
+interface IBatchRepository<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+> {
   findBatchById(id: string): Promise<TBatch | null>;
   findBatches(status?: TStatus): Promise<TBatch[]>;
   updateBatchStatus(
@@ -16,23 +19,29 @@ interface IBatchRepository<TStatus, TBatch extends { id: string; status: TStatus
   deleteBatch(id: string): Promise<void>;
 }
 
-export async function getAnalyticsBatch<TStatus, TBatch extends { id: string; status: TStatus }>(
-  repo: IBatchRepository<TStatus, TBatch>,
-  batchId: string,
-): Promise<TBatch> {
+export async function getAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(repo: IBatchRepository<TStatus, TBatch>, batchId: string): Promise<TBatch> {
   const batch = await repo.findBatchById(batchId);
   if (!batch) throw new NotFoundException(`Batch ${batchId} not found`);
   return batch;
 }
 
-export async function listAnalyticsBatches<TStatus, TBatch extends { id: string; status: TStatus }>(
+export async function listAnalyticsBatches<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
   repo: IBatchRepository<TStatus, TBatch>,
   status?: TStatus,
 ): Promise<TBatch[]> {
   return repo.findBatches(status);
 }
 
-export async function approveAnalyticsBatch<TStatus, TBatch extends { id: string; status: TStatus }>(
+export async function approveAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
   repo: IBatchRepository<TStatus, TBatch>,
   batchId: string,
   adminUserId: string,
@@ -48,7 +57,10 @@ export async function approveAnalyticsBatch<TStatus, TBatch extends { id: string
   return repo.updateBatchStatus(batchId, approvedStatus, adminUserId);
 }
 
-export async function publishAnalyticsBatch<TStatus, TBatch extends { id: string; status: TStatus }>(
+export async function publishAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
   repo: IBatchRepository<TStatus, TBatch>,
   batchId: string,
   adminUserId: string,
@@ -64,7 +76,10 @@ export async function publishAnalyticsBatch<TStatus, TBatch extends { id: string
   return repo.updateBatchStatus(batchId, publishedStatus, adminUserId);
 }
 
-export async function rejectAnalyticsBatch<TStatus, TBatch extends { id: string; status: TStatus }>(
+export async function rejectAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
   repo: IBatchRepository<TStatus, TBatch>,
   batchId: string,
   adminUserId: string,
@@ -81,7 +96,10 @@ export async function rejectAnalyticsBatch<TStatus, TBatch extends { id: string;
   return repo.updateBatchStatus(batchId, rejectedStatus, adminUserId, reason);
 }
 
-export async function deleteAnalyticsBatch<TStatus, TBatch extends { id: string; status: TStatus }>(
+export async function deleteAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
   repo: IBatchRepository<TStatus, TBatch>,
   batchId: string,
   protectedStatuses: TStatus[],
