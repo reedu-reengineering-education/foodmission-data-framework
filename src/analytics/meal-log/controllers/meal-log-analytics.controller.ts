@@ -9,6 +9,7 @@ import {
   Query,
   Body,
   ParseUUIDPipe,
+  ParseEnumPipe,
   HttpCode,
   HttpStatus,
   UseGuards,
@@ -24,8 +25,8 @@ import {
 import { MealLogAnalyticsService } from '../services/meal-log-analytics.service';
 import { MealLogAnalyticsBatchStatus } from '@prisma/client';
 import {
-  DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
+  DemographicDimensionEnum,
 } from '../../common/demographic-dimensions';
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
@@ -48,18 +49,6 @@ export class MealLogAnalyticsController {
       );
     }
     return d;
-  }
-
-  private parseDimension(
-    value: string | undefined,
-  ): DemographicDimension | undefined {
-    if (value === undefined) return undefined;
-    if (!DEMOGRAPHIC_DIMENSIONS.includes(value as DemographicDimension)) {
-      throw new BadRequestException(
-        `Invalid dimension "${value}". Must be one of: ${DEMOGRAPHIC_DIMENSIONS.join(', ')}.`,
-      );
-    }
-    return value as DemographicDimension;
   }
 
   private parseLimit(value: string | undefined, defaultLimit = 20): number {
@@ -273,13 +262,17 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @Query(
+      'dimension',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dimension),
+      dimension,
     );
   }
 
@@ -311,13 +304,17 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @Query(
+      'dimension',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dimension),
+      dimension,
     );
   }
 
@@ -349,13 +346,17 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @Query(
+      'dimension',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dimension),
+      dimension,
     );
   }
 
@@ -407,15 +408,23 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @Query(
+      'dim1',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim1?: DemographicDimension,
+    @Query(
+      'dim2',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dim1),
-      this.parseDimension(dim2),
+      dim1,
+      dim2,
     );
   }
 
@@ -453,15 +462,23 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @Query(
+      'dim1',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim1?: DemographicDimension,
+    @Query(
+      'dim2',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dim1),
-      this.parseDimension(dim2),
+      dim1,
+      dim2,
     );
   }
 
@@ -499,15 +516,23 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @Query(
+      'dim1',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim1?: DemographicDimension,
+    @Query(
+      'dim2',
+      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
+    )
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
       typeOfMeal,
-      this.parseDimension(dim1),
-      this.parseDimension(dim2),
+      dim1,
+      dim2,
     );
   }
 

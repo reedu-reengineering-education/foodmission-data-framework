@@ -71,10 +71,10 @@ describe('ShoppingListAnalyticsController', () => {
       expect(service.getPublishedItemPopularity.mock.calls[0][2]).toBe(20);
     });
 
-    it('throws BadRequestException for an invalid date string', async () => {
-      await expect(
-        controller.getPublicItemPopularity('not-a-date'),
-      ).rejects.toThrow('Invalid date');
+    it('throws BadRequestException for an invalid date string', () => {
+      expect(() => controller.getPublicItemPopularity('not-a-date')).toThrow(
+        'Invalid date',
+      );
     });
   });
 
@@ -188,16 +188,6 @@ describe('ShoppingListAnalyticsController', () => {
         undefined,
       );
     });
-
-    it('throws BadRequestException for an invalid dimension', async () => {
-      await expect(
-        controller.getPublicDemographicPatterns(
-          undefined,
-          undefined,
-          'invalid',
-        ),
-      ).rejects.toThrow('Invalid dimension');
-    });
   });
 
   describe('getPublicDemographicNutrition', () => {
@@ -303,16 +293,6 @@ describe('ShoppingListAnalyticsController', () => {
       expect(
         service.getPublishedDemographicClassification,
       ).toHaveBeenCalledWith(undefined, undefined, undefined);
-    });
-
-    it('throws BadRequestException for invalid dimension', async () => {
-      await expect(
-        controller.getPublicDemographicClassification(
-          undefined,
-          undefined,
-          'invalid',
-        ),
-      ).rejects.toThrow('Invalid dimension');
     });
   });
 

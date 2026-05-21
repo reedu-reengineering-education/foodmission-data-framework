@@ -11,7 +11,7 @@ import { DemographicDimension } from '../../common/demographic-dimensions';
 export class MealLogAnalyticsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createBatch(data: {
+  createBatch(data: {
     periodStart: Date;
     periodEnd: Date;
     recordCount: number;
@@ -20,7 +20,7 @@ export class MealLogAnalyticsRepository {
     return this.prisma.mealLogAnalyticsBatch.create({ data });
   }
 
-  async findBatchById(id: string) {
+  findBatchById(id: string) {
     return this.prisma.mealLogAnalyticsBatch.findUnique({
       where: { id },
       include: {
@@ -36,14 +36,14 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async findBatches(status?: MealLogAnalyticsBatchStatus) {
+  findBatches(status?: MealLogAnalyticsBatchStatus) {
     return this.prisma.mealLogAnalyticsBatch.findMany({
       where: status ? { status } : undefined,
       orderBy: { generatedAt: 'desc' },
     });
   }
 
-  async updateBatchStatus(
+  updateBatchStatus(
     id: string,
     status: MealLogAnalyticsBatchStatus,
     userId?: string,
@@ -88,39 +88,37 @@ export class MealLogAnalyticsRepository {
   // Bulk inserts for aggregated data
   // ============================================================
 
-  async insertDailyNutrition(
+  insertDailyNutrition(
     data: Prisma.MealLogAnalyticsDailyNutritionCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsDailyNutrition.createMany({ data });
   }
 
-  async insertFoodPopularity(
+  insertFoodPopularity(
     data: Prisma.MealLogAnalyticsFoodPopularityCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsFoodPopularity.createMany({ data });
   }
 
-  async insertMealPatterns(
+  insertMealPatterns(
     data: Prisma.MealLogAnalyticsMealPatternsCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsMealPatterns.createMany({ data });
   }
 
-  async insertSustainability(
+  insertSustainability(
     data: Prisma.MealLogAnalyticsSustainabilityCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsSustainability.createMany({ data });
   }
 
-  async insertMealClassification(
+  insertMealClassification(
     data: Prisma.MealLogAnalyticsMealClassificationCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsMealClassification.createMany({ data });
   }
 
-  async insertMealRecords(
-    data: Prisma.MealLogAnalyticsMealRecordCreateManyInput[],
-  ) {
+  insertMealRecords(data: Prisma.MealLogAnalyticsMealRecordCreateManyInput[]) {
     return this.prisma.mealLogAnalyticsMealRecord.createMany({ data });
   }
 
@@ -144,7 +142,7 @@ export class MealLogAnalyticsRepository {
     return filter;
   }
 
-  async getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
+  getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsDailyNutrition.findMany({
@@ -175,7 +173,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
+  getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsFoodPopularity.findMany({
@@ -195,7 +193,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
+  getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsMealPatterns.findMany({
@@ -222,11 +220,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedSustainability(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  getPublishedSustainability(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsSustainability.findMany({
@@ -249,11 +243,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedMealClassification(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  getPublishedMealClassification(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsMealClassification.findMany({
@@ -282,7 +272,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedMealRecords(from?: Date, to?: Date, typeOfMeal?: string) {
+  getPublishedMealRecords(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsMealRecord.findMany({
@@ -321,7 +311,7 @@ export class MealLogAnalyticsRepository {
   // Demographic breakdown inserts
   // ============================================================
 
-  async insertDemographicNutrition(
+  insertDemographicNutrition(
     data: Prisma.MealLogAnalyticsDemographicNutritionCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsDemographicNutrition.createMany({
@@ -329,7 +319,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async insertDemographicClassification(
+  insertDemographicClassification(
     data: Prisma.MealLogAnalyticsDemographicClassificationCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsDemographicClassification.createMany({
@@ -337,7 +327,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async insertDemographicPatterns(
+  insertDemographicPatterns(
     data: Prisma.MealLogAnalyticsDemographicPatternsCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsDemographicPatterns.createMany({ data });
@@ -347,13 +337,13 @@ export class MealLogAnalyticsRepository {
   // Cross-dimensional inserts (K=20)
   // ============================================================
 
-  async insertCrossDimNutrition(
+  insertCrossDimNutrition(
     data: Prisma.MealLogAnalyticsCrossDimNutritionCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsCrossDimNutrition.createMany({ data });
   }
 
-  async insertCrossDimClassification(
+  insertCrossDimClassification(
     data: Prisma.MealLogAnalyticsCrossDimClassificationCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsCrossDimClassification.createMany({
@@ -361,7 +351,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async insertCrossDimPatterns(
+  insertCrossDimPatterns(
     data: Prisma.MealLogAnalyticsCrossDimPatternsCreateManyInput[],
   ) {
     return this.prisma.mealLogAnalyticsCrossDimPatterns.createMany({ data });
@@ -371,7 +361,7 @@ export class MealLogAnalyticsRepository {
   // Cross-dimensional public queries
   // ============================================================
 
-  async getPublishedCrossDimNutrition(
+  getPublishedCrossDimNutrition(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
@@ -414,7 +404,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedCrossDimClassification(
+  getPublishedCrossDimClassification(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
@@ -455,7 +445,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedCrossDimPatterns(
+  getPublishedCrossDimPatterns(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
@@ -498,7 +488,7 @@ export class MealLogAnalyticsRepository {
   // Demographic breakdown public queries
   // ============================================================
 
-  async getPublishedDemographicNutrition(
+  getPublishedDemographicNutrition(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
@@ -540,7 +530,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedDemographicClassification(
+  getPublishedDemographicClassification(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
@@ -580,7 +570,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedDemographicPatterns(
+  getPublishedDemographicPatterns(
     from?: Date,
     to?: Date,
     typeOfMeal?: string,
