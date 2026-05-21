@@ -32,8 +32,10 @@ export class ShoppingListAnalyticsRepository {
         foodGroups: { orderBy: { frequency: 'desc' } },
         demographicPatterns: true,
         demographicNutrition: true,
+        demographicClassification: true,
         crossDimPatterns: true,
         crossDimNutrition: true,
+        crossDimClassification: true,
       },
     });
   }
@@ -191,12 +193,14 @@ export class ShoppingListAnalyticsRepository {
     const filter: Prisma.ShoppingListAnalyticsBatchWhereInput = {
       status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
     };
-    if (from) filter.periodStart = { gte: from };
-    if (to) filter.periodEnd = { lte: to };
+    // Use overlap semantics: any batch whose period intersects [from, to].
+    // A batch overlaps the window when periodStart < to AND periodEnd > from.
+    if (from) filter.periodEnd = { gt: from };
+    if (to) filter.periodStart = { lt: to };
     return filter;
   }
 
-  async getPublishedItemPopularity(from?: Date, to?: Date, limit = 20) {
+  getPublishedItemPopularity(from?: Date, to?: Date, limit = 20) {
     return this.prisma.shoppingListAnalyticsItemPopularity.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { frequency: 'desc' },
@@ -214,7 +218,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
+  getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
     return this.prisma.shoppingListAnalyticsCategoryPopularity.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { frequency: 'desc' },
@@ -228,7 +232,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedListPatterns(from?: Date, to?: Date) {
+  getPublishedListPatterns(from?: Date, to?: Date) {
     return this.prisma.shoppingListAnalyticsListPatterns.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
@@ -244,7 +248,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedNutritionProfile(from?: Date, to?: Date) {
+  getPublishedNutritionProfile(from?: Date, to?: Date) {
     return this.prisma.shoppingListAnalyticsNutritionProfile.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
@@ -267,7 +271,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedSustainability(from?: Date, to?: Date) {
+  getPublishedSustainability(from?: Date, to?: Date) {
     return this.prisma.shoppingListAnalyticsSustainability.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
@@ -286,7 +290,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedFoodGroups(from?: Date, to?: Date, limit = 20) {
+  getPublishedFoodGroups(from?: Date, to?: Date, limit = 20) {
     return this.prisma.shoppingListAnalyticsFoodGroups.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { frequency: 'desc' },
@@ -302,7 +306,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedDemographicPatterns(
+  getPublishedDemographicPatterns(
     from?: Date,
     to?: Date,
     dimension?: DemographicDimension,
@@ -327,7 +331,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedDemographicNutrition(
+  getPublishedDemographicNutrition(
     from?: Date,
     to?: Date,
     dimension?: DemographicDimension,
@@ -356,7 +360,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedCrossDimPatterns(
+  getPublishedCrossDimPatterns(
     from?: Date,
     to?: Date,
     dim1?: DemographicDimension,
@@ -385,7 +389,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedCrossDimNutrition(
+  getPublishedCrossDimNutrition(
     from?: Date,
     to?: Date,
     dim1?: DemographicDimension,
@@ -418,7 +422,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedDemographicClassification(
+  getPublishedDemographicClassification(
     from?: Date,
     to?: Date,
     dimension?: DemographicDimension,
@@ -446,7 +450,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async getPublishedCrossDimClassification(
+  getPublishedCrossDimClassification(
     from?: Date,
     to?: Date,
     dim1?: DemographicDimension,

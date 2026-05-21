@@ -71,8 +71,8 @@ async function seedShoppingLists() {
 
     for (let dayOffset = 0; dayOffset < daysToSeed; dayOffset++) {
       const date = new Date();
-      date.setDate(date.getDate() - dayOffset);
-      date.setHours(0, 0, 0, 0);
+      date.setUTCDate(date.getUTCDate() - dayOffset);
+      date.setUTCHours(0, 0, 0, 0);
 
       const listsThisDay = Math.random() > 0.4 ? listsPerDay : 1;
 
@@ -158,8 +158,8 @@ async function seedShoppingLists() {
         if (items.length === 0) continue;
 
         const createdAt = new Date(date);
-        createdAt.setHours(
-          Math.floor(Math.random() * 18) + 6, // 6am–midnight
+        createdAt.setUTCHours(
+          Math.floor(Math.random() * 18) + 6, // 6am–midnight UTC
           Math.floor(Math.random() * 60),
           0,
           0,

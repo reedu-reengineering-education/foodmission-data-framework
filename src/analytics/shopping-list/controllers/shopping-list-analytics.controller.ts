@@ -64,6 +64,17 @@ export class ShoppingListAnalyticsController {
     return value as DemographicDimension;
   }
 
+  private parseLimit(value: string | undefined, defaultLimit = 20): number {
+    if (value === undefined || value === '') return defaultLimit;
+    const parsed = parseInt(value, 10);
+    if (!Number.isFinite(parsed) || parsed < 1 || parsed > 100) {
+      throw new BadRequestException(
+        `Invalid limit "${value}". Must be an integer between 1 and 100.`,
+      );
+    }
+    return parsed;
+  }
+
   // ============================================================
   // Public Endpoints — no auth required
   // ============================================================
@@ -98,7 +109,7 @@ export class ShoppingListAnalyticsController {
     return this.analyticsService.getPublishedItemPopularity(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
-      limit ? parseInt(limit, 10) : 20,
+      this.parseLimit(limit),
     );
   }
 
@@ -132,7 +143,7 @@ export class ShoppingListAnalyticsController {
     return this.analyticsService.getPublishedCategoryPopularity(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
-      limit ? parseInt(limit, 10) : 20,
+      this.parseLimit(limit),
     );
   }
 
@@ -261,7 +272,7 @@ export class ShoppingListAnalyticsController {
     return this.analyticsService.getPublishedFoodGroups(
       this.parseDate(from, 'from'),
       this.parseDate(to, 'to'),
-      limit ? parseInt(limit, 10) : 20,
+      this.parseLimit(limit),
     );
   }
 

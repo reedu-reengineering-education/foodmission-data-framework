@@ -25,7 +25,7 @@ export class ShoppingListAnalyticsService {
 
   /**
    * Aggregate yesterday's data into staging.
-   * Scheduled by AnalyticsBatchCoordinator at 3:00 AM daily.
+   * Scheduled by AnalyticsBatchCoordinator at 2:00 AM daily.
    */
   async runDailyAggregation(): Promise<string> {
     const yesterday = new Date();

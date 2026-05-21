@@ -417,7 +417,7 @@ export class ShoppingListAnalyticsAggregator {
         sli."unit"::text              AS "unit",
         COALESCE(fp."name", gf."foodName")            AS "foodName",
         COALESCE(gf."foodGroup", fp."categories"[1])  AS "foodGroup",
-        COALESCE(gf."foodGroup", fp."categories"[1])  AS "category",
+        COALESCE(fp."categories"[2], fp."categories"[1]) AS "category",
         COALESCE(fp."energyKcal", gf."energyKcal")    AS "energyKcal",
         COALESCE(fp."proteins", gf."proteins")         AS "proteins",
         COALESCE(fp."fat", gf."fat")                   AS "fat",
@@ -619,6 +619,7 @@ export class ShoppingListAnalyticsAggregator {
       {
         date: Date;
         users: Set<string>;
+        count: number;
         calories: number[];
         proteins: number[];
         fat: number[];
@@ -636,6 +637,7 @@ export class ShoppingListAnalyticsAggregator {
         groups.set(dateKey, {
           date: new Date(dateKey),
           users: new Set(),
+          count: 0,
           calories: [],
           proteins: [],
           fat: [],
@@ -648,6 +650,7 @@ export class ShoppingListAnalyticsAggregator {
       }
       const g = groups.get(dateKey)!;
       g.users.add(row.userId);
+      g.count++;
       if (row.energyKcal !== null) g.calories.push(row.energyKcal);
       if (row.proteins !== null) g.proteins.push(row.proteins);
       if (row.fat !== null) g.fat.push(row.fat);
@@ -661,7 +664,7 @@ export class ShoppingListAnalyticsAggregator {
     return [...groups.values()].map((g) => ({
       date: g.date,
       userCount: g.users.size,
-      itemCount: g.calories.length,
+      itemCount: g.count,
       avgCaloriesPer100g: safeAvg(g.calories),
       avgProteinsPer100g: safeAvg(g.proteins),
       avgFatPer100g: safeAvg(g.fat),
@@ -868,6 +871,7 @@ export class ShoppingListAnalyticsAggregator {
           date: Date;
           dimValue: string;
           users: Set<string>;
+          count: number;
           calories: number[];
           proteins: number[];
           fat: number[];
@@ -889,6 +893,7 @@ export class ShoppingListAnalyticsAggregator {
             date: new Date(dateKey),
             dimValue,
             users: new Set(),
+            count: 0,
             calories: [],
             proteins: [],
             fat: [],
@@ -901,6 +906,7 @@ export class ShoppingListAnalyticsAggregator {
         }
         const g = groups.get(key)!;
         g.users.add(row.userId);
+        g.count++;
         if (row.energyKcal !== null) g.calories.push(row.energyKcal);
         if (row.proteins !== null) g.proteins.push(row.proteins);
         if (row.fat !== null) g.fat.push(row.fat);
@@ -919,7 +925,7 @@ export class ShoppingListAnalyticsAggregator {
           dimensionName: dim,
           dimensionValue: activeValue,
           userCount: g.users.size,
-          itemCount: g.calories.length,
+          itemCount: g.count,
           avgCaloriesPer100g: safeAvg(g.calories),
           avgProteinsPer100g: safeAvg(g.proteins),
           avgFatPer100g: safeAvg(g.fat),
@@ -1032,6 +1038,7 @@ export class ShoppingListAnalyticsAggregator {
             dim1Value: string;
             dim2Value: string;
             users: Set<string>;
+            count: number;
             calories: number[];
             proteins: number[];
             fat: number[];
@@ -1054,6 +1061,7 @@ export class ShoppingListAnalyticsAggregator {
               dim1Value: v1,
               dim2Value: v2,
               users: new Set(),
+              count: 0,
               calories: [],
               proteins: [],
               fat: [],
@@ -1066,6 +1074,7 @@ export class ShoppingListAnalyticsAggregator {
           }
           const g = groups.get(key)!;
           g.users.add(row.userId);
+          g.count++;
           if (row.energyKcal !== null) g.calories.push(row.energyKcal);
           if (row.proteins !== null) g.proteins.push(row.proteins);
           if (row.fat !== null) g.fat.push(row.fat);
@@ -1084,7 +1093,7 @@ export class ShoppingListAnalyticsAggregator {
             dim2Name: dim2,
             dim2Value: g.dim2Value,
             userCount: g.users.size,
-            itemCount: g.calories.length,
+            itemCount: g.count,
             avgCaloriesPer100g: safeAvg(g.calories),
             avgProteinsPer100g: safeAvg(g.proteins),
             avgFatPer100g: safeAvg(g.fat),

@@ -38,10 +38,6 @@ describe('ShoppingListAnalyticsController', () => {
   // Public endpoints — query param parsing
   // ============================================================
 
-  // ============================================================
-  // Public endpoints — query param parsing
-  // ============================================================
-
   describe('getPublicItemPopularity', () => {
     it('parses date strings and passes Date objects with default limit=20', async () => {
       service.getPublishedItemPopularity.mockResolvedValue([]);

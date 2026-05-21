@@ -216,8 +216,8 @@ describe('ShoppingListAnalyticsRepository', () => {
     const where = (
       prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
     ).mock.calls[0][0].where;
-    expect(where.batch.periodStart).toEqual({ gte: from });
-    expect(where.batch.periodEnd).toEqual({ lte: to });
+    expect(where.batch.periodEnd).toEqual({ gt: from });
+    expect(where.batch.periodStart).toEqual({ lt: to });
   });
 
   it('getPublishedItemPopularity respects limit parameter', async () => {
