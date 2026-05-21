@@ -246,7 +246,7 @@ describe('ShoppingListAnalyticsRepository', () => {
     const where = (
       prisma.shoppingListAnalyticsDemographicPatterns.findMany as jest.Mock
     ).mock.calls[0][0].where;
-    expect(where.gender).toEqual({ not: null });
+    expect(where.dimensionName).toBe('gender');
   });
 
   it('getPublishedCrossDimPatterns filters by dim1 and dim2 when provided', async () => {

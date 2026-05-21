@@ -132,11 +132,8 @@ CREATE TABLE "shopping_list_analytics_demographic_patterns" (
     "id" TEXT NOT NULL,
     "batchId" TEXT NOT NULL,
     "date" DATE NOT NULL,
-    "ageGroup" TEXT,
-    "gender" TEXT,
-    "educationLevel" TEXT,
-    "region" TEXT,
-    "country" TEXT,
+    "dimensionName" TEXT NOT NULL,
+    "dimensionValue" TEXT NOT NULL,
     "userCount" INTEGER NOT NULL,
     "totalLists" INTEGER NOT NULL,
     "avgItemsPerList" DOUBLE PRECISION NOT NULL,
@@ -153,11 +150,8 @@ CREATE TABLE "shopping_list_analytics_demographic_nutrition" (
     "id" TEXT NOT NULL,
     "batchId" TEXT NOT NULL,
     "date" DATE NOT NULL,
-    "ageGroup" TEXT,
-    "gender" TEXT,
-    "educationLevel" TEXT,
-    "region" TEXT,
-    "country" TEXT,
+    "dimensionName" TEXT NOT NULL,
+    "dimensionValue" TEXT NOT NULL,
     "userCount" INTEGER NOT NULL,
     "itemCount" INTEGER NOT NULL,
     "avgCaloriesPer100g" DOUBLE PRECISION,
@@ -222,11 +216,8 @@ CREATE TABLE "shopping_list_analytics_demographic_classification" (
     "id" TEXT NOT NULL,
     "batchId" TEXT NOT NULL,
     "date" DATE NOT NULL,
-    "ageGroup" TEXT,
-    "gender" TEXT,
-    "educationLevel" TEXT,
-    "region" TEXT,
-    "country" TEXT,
+    "dimensionName" TEXT NOT NULL,
+    "dimensionValue" TEXT NOT NULL,
     "userCount" INTEGER NOT NULL,
     "itemCount" INTEGER NOT NULL,
     "vegetarianItemPct" DOUBLE PRECISION,
@@ -316,34 +307,22 @@ CREATE INDEX "shopping_list_analytics_food_groups_frequency_idx" ON "shopping_li
 CREATE UNIQUE INDEX "shopping_list_analytics_food_groups_batchId_date_foodGroup_key" ON "shopping_list_analytics_food_groups"("batchId", "date", "foodGroup");
 
 -- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_patterns_ageGroup_idx" ON "shopping_list_analytics_demographic_patterns"("ageGroup");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_patterns_gender_idx" ON "shopping_list_analytics_demographic_patterns"("gender");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_patterns_educationLevel_idx" ON "shopping_list_analytics_demographic_patterns"("educationLevel");
+CREATE INDEX "shopping_list_analytics_demographic_patterns_dimensionName_idx" ON "shopping_list_analytics_demographic_patterns"("dimensionName");
 
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_demographic_patterns_date_idx" ON "shopping_list_analytics_demographic_patterns"("date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "shopping_list_analytics_demographic_patterns_batchId_date_a_key" ON "shopping_list_analytics_demographic_patterns"("batchId", "date", "ageGroup", "gender", "educationLevel", "region", "country");
+CREATE UNIQUE INDEX "shopping_list_analytics_demographic_patterns_batchId_date_d_key" ON "shopping_list_analytics_demographic_patterns"("batchId", "date", "dimensionName", "dimensionValue");
 
 -- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_nutrition_ageGroup_idx" ON "shopping_list_analytics_demographic_nutrition"("ageGroup");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_nutrition_gender_idx" ON "shopping_list_analytics_demographic_nutrition"("gender");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_nutrition_educationLeve_idx" ON "shopping_list_analytics_demographic_nutrition"("educationLevel");
+CREATE INDEX "shopping_list_analytics_demographic_nutrition_dimensionName_idx" ON "shopping_list_analytics_demographic_nutrition"("dimensionName");
 
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_demographic_nutrition_date_idx" ON "shopping_list_analytics_demographic_nutrition"("date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "shopping_list_analytics_demographic_nutrition_batchId_date__key" ON "shopping_list_analytics_demographic_nutrition"("batchId", "date", "ageGroup", "gender", "educationLevel", "region", "country");
+CREATE UNIQUE INDEX "shopping_list_analytics_demographic_nutrition_batchId_date_d_key" ON "shopping_list_analytics_demographic_nutrition"("batchId", "date", "dimensionName", "dimensionValue");
 
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_cross_dim_patterns_dim1Name_dim2Nam_idx" ON "shopping_list_analytics_cross_dim_patterns"("dim1Name", "dim2Name");
@@ -364,19 +343,13 @@ CREATE INDEX "shopping_list_analytics_cross_dim_nutrition_date_idx" ON "shopping
 CREATE UNIQUE INDEX "shopping_list_analytics_cross_dim_nutrition_batchId_date_di_key" ON "shopping_list_analytics_cross_dim_nutrition"("batchId", "date", "dim1Name", "dim1Value", "dim2Name", "dim2Value");
 
 -- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_classification_ageGroup_idx" ON "shopping_list_analytics_demographic_classification"("ageGroup");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_classification_gender_idx" ON "shopping_list_analytics_demographic_classification"("gender");
-
--- CreateIndex
-CREATE INDEX "shopping_list_analytics_demographic_classification_educatio_idx" ON "shopping_list_analytics_demographic_classification"("educationLevel");
+CREATE INDEX "shopping_list_analytics_demographic_classification_dimensionName_idx" ON "shopping_list_analytics_demographic_classification"("dimensionName");
 
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_demographic_classification_date_idx" ON "shopping_list_analytics_demographic_classification"("date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "shopping_list_analytics_demographic_classification_batchId__key" ON "shopping_list_analytics_demographic_classification"("batchId", "date", "ageGroup", "gender", "educationLevel", "region", "country");
+CREATE UNIQUE INDEX "shopping_list_analytics_demographic_classification_batchId_d_key" ON "shopping_list_analytics_demographic_classification"("batchId", "date", "dimensionName", "dimensionValue");
 
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_cross_dim_classification_dim1Name_d_idx" ON "shopping_list_analytics_cross_dim_classification"("dim1Name", "dim2Name");

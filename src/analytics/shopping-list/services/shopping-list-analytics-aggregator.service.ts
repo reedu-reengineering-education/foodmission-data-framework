@@ -142,11 +142,8 @@ export interface FoodGroupsRow {
 
 export interface DemographicPatternsRow {
   date: Date;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   totalLists: number;
   avgItemsPerList: number;
@@ -157,11 +154,8 @@ export interface DemographicPatternsRow {
 
 export interface DemographicNutritionRow {
   date: Date;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   itemCount: number;
   avgCaloriesPer100g: number | null;
@@ -208,11 +202,8 @@ export interface CrossDimNutritionRow {
 
 export interface DemographicClassificationRow {
   date: Date;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   itemCount: number;
   vegetarianItemPct: number | null;
@@ -838,20 +829,18 @@ export class ShoppingListAnalyticsAggregator {
       }
 
       for (const g of groups.values()) {
+        const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
+        if (activeValue === null) continue; // skip users without this demographic
         const userCount = g.users.size;
         const totalLists = g.lists.length;
         const totalItems = g.lists.reduce((s, l) => s + l.totalItems, 0);
         const fpItems = g.lists.reduce((s, l) => s + l.foodProductItems, 0);
         const gfItems = g.lists.reduce((s, l) => s + l.genericFoodItems, 0);
-        const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
 
         result.push({
           date: g.date,
-          ageGroup: dim === 'ageGroup' ? activeValue : null,
-          gender: dim === 'gender' ? activeValue : null,
-          educationLevel: dim === 'educationLevel' ? activeValue : null,
-          region: dim === 'region' ? activeValue : null,
-          country: dim === 'country' ? activeValue : null,
+          dimensionName: dim,
+          dimensionValue: activeValue,
           userCount,
           totalLists,
           avgItemsPerList: totalLists > 0 ? totalItems / totalLists : 0,
@@ -924,13 +913,11 @@ export class ShoppingListAnalyticsAggregator {
 
       for (const g of groups.values()) {
         const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
+        if (activeValue === null) continue; // skip users without this demographic
         result.push({
           date: g.date,
-          ageGroup: dim === 'ageGroup' ? activeValue : null,
-          gender: dim === 'gender' ? activeValue : null,
-          educationLevel: dim === 'educationLevel' ? activeValue : null,
-          region: dim === 'region' ? activeValue : null,
-          country: dim === 'country' ? activeValue : null,
+          dimensionName: dim,
+          dimensionValue: activeValue,
           userCount: g.users.size,
           itemCount: g.calories.length,
           avgCaloriesPer100g: safeAvg(g.calories),
@@ -1156,6 +1143,7 @@ export class ShoppingListAnalyticsAggregator {
 
       for (const g of groups.values()) {
         const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
+        if (activeValue === null) continue; // skip users without this demographic
         const fpRows = g.fpRows;
         const itemCount = fpRows.length;
         const vegetarianItems = fpRows.filter(
@@ -1171,11 +1159,8 @@ export class ShoppingListAnalyticsAggregator {
 
         result.push({
           date: g.date,
-          ageGroup: dim === 'ageGroup' ? activeValue : null,
-          gender: dim === 'gender' ? activeValue : null,
-          educationLevel: dim === 'educationLevel' ? activeValue : null,
-          region: dim === 'region' ? activeValue : null,
-          country: dim === 'country' ? activeValue : null,
+          dimensionName: dim,
+          dimensionValue: activeValue,
           userCount: g.users.size,
           itemCount,
           vegetarianItemPct:

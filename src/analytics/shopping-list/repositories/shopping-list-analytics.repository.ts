@@ -310,16 +310,13 @@ export class ShoppingListAnalyticsRepository {
     return this.prisma.shoppingListAnalyticsDemographicPatterns.findMany({
       where: {
         batch: this.publishedBatchFilter(from, to),
-        ...(dimension ? { [dimension]: { not: null } } : {}),
+        ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }],
+      orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
         date: true,
-        ageGroup: true,
-        gender: true,
-        educationLevel: true,
-        region: true,
-        country: true,
+        dimensionName: true,
+        dimensionValue: true,
         userCount: true,
         totalLists: true,
         avgItemsPerList: true,
@@ -338,16 +335,13 @@ export class ShoppingListAnalyticsRepository {
     return this.prisma.shoppingListAnalyticsDemographicNutrition.findMany({
       where: {
         batch: this.publishedBatchFilter(from, to),
-        ...(dimension ? { [dimension]: { not: null } } : {}),
+        ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }],
+      orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
         date: true,
-        ageGroup: true,
-        gender: true,
-        educationLevel: true,
-        region: true,
-        country: true,
+        dimensionName: true,
+        dimensionValue: true,
         userCount: true,
         itemCount: true,
         avgCaloriesPer100g: true,
@@ -432,16 +426,13 @@ export class ShoppingListAnalyticsRepository {
     return this.prisma.shoppingListAnalyticsDemographicClassification.findMany({
       where: {
         batch: this.publishedBatchFilter(from, to),
-        ...(dimension ? { [dimension]: { not: null } } : {}),
+        ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }],
+      orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
         date: true,
-        ageGroup: true,
-        gender: true,
-        educationLevel: true,
-        region: true,
-        country: true,
+        dimensionName: true,
+        dimensionValue: true,
         userCount: true,
         itemCount: true,
         vegetarianItemPct: true,

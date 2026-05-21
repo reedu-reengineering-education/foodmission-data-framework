@@ -459,28 +459,28 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    // Each dimension should have exactly one non-null column per row
+    // Each row must have exactly one dimensionName and a non-empty dimensionValue
     for (const row of result.demographicPatterns) {
-      const nonNull = [
-        row.ageGroup,
-        row.gender,
-        row.educationLevel,
-        row.region,
-        row.country,
-      ].filter((v) => v !== null);
-      expect(nonNull).toHaveLength(1);
+      expect(typeof row.dimensionName).toBe('string');
+      expect(row.dimensionName.length).toBeGreaterThan(0);
+      expect(typeof row.dimensionValue).toBe('string');
+      expect(row.dimensionValue.length).toBeGreaterThan(0);
     }
   });
 
-  it('uses __null__ sentinel for missing demographic values and maps them to null in output', async () => {
+  it('skips rows for users with no demographic value (does not emit null dimensionValue)', async () => {
     const rows = makeRows(5, { userAgeGroup: null, userGender: null });
     prisma.$queryRaw.mockResolvedValue(rows);
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    const ageRow = result.demographicPatterns.find((r) => r.ageGroup !== null);
-    const genderRow = result.demographicPatterns.find((r) => r.gender !== null);
-    // null demographic values should appear as null in output, not the __null__ sentinel
+    const ageRow = result.demographicPatterns.find(
+      (r) => r.dimensionName === 'ageGroup',
+    );
+    const genderRow = result.demographicPatterns.find(
+      (r) => r.dimensionName === 'gender',
+    );
+    // rows where all users lack that demographic should be suppressed
     expect(ageRow).toBeUndefined();
     expect(genderRow).toBeUndefined();
   });
