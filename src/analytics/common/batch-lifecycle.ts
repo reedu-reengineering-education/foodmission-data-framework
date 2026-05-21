@@ -51,7 +51,7 @@ export async function approveAnalyticsBatch<
   const batch = await getAnalyticsBatch(repo, batchId);
   if (batch.status !== stagingStatus) {
     throw new BadRequestException(
-      `Batch is ${batch.status}, can only approve STAGING batches`,
+      `Batch is ${String(batch.status)}, can only approve STAGING batches`,
     );
   }
   return repo.updateBatchStatus(batchId, approvedStatus, adminUserId);
@@ -70,7 +70,7 @@ export async function publishAnalyticsBatch<
   const batch = await getAnalyticsBatch(repo, batchId);
   if (batch.status !== approvedStatus) {
     throw new BadRequestException(
-      `Batch is ${batch.status}, can only publish APPROVED batches`,
+      `Batch is ${String(batch.status)}, can only publish APPROVED batches`,
     );
   }
   return repo.updateBatchStatus(batchId, publishedStatus, adminUserId);
@@ -90,7 +90,7 @@ export async function rejectAnalyticsBatch<
   const batch = await getAnalyticsBatch(repo, batchId);
   if (batch.status !== stagingStatus) {
     throw new BadRequestException(
-      `Batch is ${batch.status}, can only reject STAGING batches`,
+      `Batch is ${String(batch.status)}, can only reject STAGING batches`,
     );
   }
   return repo.updateBatchStatus(batchId, rejectedStatus, adminUserId, reason);
@@ -107,7 +107,7 @@ export async function deleteAnalyticsBatch<
   const batch = await getAnalyticsBatch(repo, batchId);
   if (protectedStatuses.includes(batch.status)) {
     throw new BadRequestException(
-      `Cannot delete ${batch.status} batch. Reject it first.`,
+      `Cannot delete ${String(batch.status)} batch. Reject it first.`,
     );
   }
   await repo.deleteBatch(batchId);
