@@ -478,6 +478,72 @@ export class ShoppingListAnalyticsController {
     );
   }
 
+  @Public()
+  @Get('public/demographic/classification')
+  @ApiOperation({
+    summary: 'Demographic breakdown of shopping list item classification',
+    description:
+      'Vegetarian/vegan/ultra-processed/NOVA breakdown of food_product items segmented by one ' +
+      'demographic dimension. Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
+  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'dimension',
+    required: false,
+    enum: ['ageGroup', 'gender', 'educationLevel', 'region', 'country'],
+    description: 'Filter to a single demographic axis',
+  })
+  @ApiResponse({ status: 200, description: 'Demographic classification aggregates' })
+  async getPublicDemographicClassification(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('dimension') dimension?: string,
+  ) {
+    return this.analyticsService.getPublishedDemographicClassification(
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dimension),
+    );
+  }
+
+  @Public()
+  @Get('public/cross-dim/classification')
+  @ApiOperation({
+    summary: 'Cross-dimensional shopping list item classification (two demographic dimensions combined)',
+    description:
+      'Vegetarian/vegan/ultra-processed/NOVA breakdown where two demographic dimensions are active ' +
+      'simultaneously. dim1Name < dim2Name alphabetically. Stricter k-anonymity (k≥20) enforced.',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String, example: '2026-01-01' })
+  @ApiQuery({ name: 'to', required: false, type: String, example: '2026-02-25' })
+  @ApiQuery({
+    name: 'dim1',
+    required: false,
+    enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
+    description: 'First dimension name (alphabetically earlier)',
+  })
+  @ApiQuery({
+    name: 'dim2',
+    required: false,
+    enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
+    description: 'Second dimension name (alphabetically later)',
+  })
+  @ApiResponse({ status: 200, description: 'Cross-dimensional classification aggregates (k≥20)' })
+  async getPublicCrossDimClassification(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('dim1') dim1?: string,
+    @Query('dim2') dim2?: string,
+  ) {
+    return this.analyticsService.getPublishedCrossDimClassification(
+      this.parseDate(from, 'from'),
+      this.parseDate(to, 'to'),
+      this.parseDimension(dim1),
+      this.parseDimension(dim2),
+    );
+  }
+
   // ============================================================
   // Admin Endpoints — requires auth + admin role
   // ============================================================

@@ -113,6 +113,9 @@ export interface NutritionProfileRow {
   avgSodiumPer100g: number | null;
   avgSugarPer100g: number | null;
   avgSaturatedFatPer100g: number | null;
+  p25CaloriesPer100g: number | null;
+  p50CaloriesPer100g: number | null;
+  p75CaloriesPer100g: number | null;
 }
 
 export interface SustainabilityRow {
@@ -203,6 +206,41 @@ export interface CrossDimNutritionRow {
   avgSaturatedFatPer100g: number | null;
 }
 
+export interface DemographicClassificationRow {
+  date: Date;
+  ageGroup: string | null;
+  gender: string | null;
+  educationLevel: string | null;
+  region: string | null;
+  country: string | null;
+  userCount: number;
+  itemCount: number;
+  vegetarianItemPct: number | null;
+  veganItemPct: number | null;
+  avgUltraProcessedPct: number | null;
+  p25UltraProcessedPct: number | null;
+  p50UltraProcessedPct: number | null;
+  p75UltraProcessedPct: number | null;
+  novaDistribution: Record<string, number> | null;
+}
+
+export interface CrossDimClassificationRow {
+  date: Date;
+  dim1Name: string;
+  dim1Value: string;
+  dim2Name: string;
+  dim2Value: string;
+  userCount: number;
+  itemCount: number;
+  vegetarianItemPct: number | null;
+  veganItemPct: number | null;
+  avgUltraProcessedPct: number | null;
+  p25UltraProcessedPct: number | null;
+  p50UltraProcessedPct: number | null;
+  p75UltraProcessedPct: number | null;
+  novaDistribution: Record<string, number> | null;
+}
+
 export interface ShoppingListAggregationResult {
   itemPopularity: ItemPopularityRow[];
   categoryPopularity: CategoryPopularityRow[];
@@ -212,8 +250,10 @@ export interface ShoppingListAggregationResult {
   foodGroups: FoodGroupsRow[];
   demographicPatterns: DemographicPatternsRow[];
   demographicNutrition: DemographicNutritionRow[];
+  demographicClassification: DemographicClassificationRow[];
   crossDimPatterns: CrossDimPatternsRow[];
   crossDimNutrition: CrossDimNutritionRow[];
+  crossDimClassification: CrossDimClassificationRow[];
   totalRecords: number;
   suppressedGroups: number;
 }
@@ -269,8 +309,10 @@ export class ShoppingListAnalyticsAggregator {
     const foodGroups = this.aggregateFoodGroups(rawData);
     const demographicPatterns = this.aggregateDemographicPatterns(listAggs);
     const demographicNutrition = this.aggregateDemographicNutrition(rawData);
+    const demographicClassification = this.aggregateDemographicClassification(rawData);
     const crossDimPatterns = this.aggregateCrossDimPatterns(listAggs);
     const crossDimNutrition = this.aggregateCrossDimNutrition(rawData);
+    const crossDimClassification = this.aggregateCrossDimClassification(rawData);
 
     // k-anonymity filter (K=5)
     const filter = <T extends { userCount?: number; uniqueUsers?: number }>(
@@ -304,8 +346,10 @@ export class ShoppingListAnalyticsAggregator {
     const filteredFoodGroups = filter(foodGroups, 'uniqueUsers');
     const filteredDemographicPatterns = filter(demographicPatterns);
     const filteredDemographicNutrition = filter(demographicNutrition);
+    const filteredDemographicClassification = filter(demographicClassification);
     const filteredCrossDimPatterns = filterCross(crossDimPatterns);
     const filteredCrossDimNutrition = filterCross(crossDimNutrition);
+    const filteredCrossDimClassification = filterCross(crossDimClassification);
 
     const totalRecords =
       filteredItemPopularity.length +
@@ -316,8 +360,10 @@ export class ShoppingListAnalyticsAggregator {
       filteredFoodGroups.length +
       filteredDemographicPatterns.length +
       filteredDemographicNutrition.length +
+      filteredDemographicClassification.length +
       filteredCrossDimPatterns.length +
-      filteredCrossDimNutrition.length;
+      filteredCrossDimNutrition.length +
+      filteredCrossDimClassification.length;
 
     this.logger.log(
       `Aggregation done: ${totalRecords} records, ${suppressedGroups} suppressed ` +
@@ -333,8 +379,10 @@ export class ShoppingListAnalyticsAggregator {
       foodGroups: filteredFoodGroups,
       demographicPatterns: filteredDemographicPatterns,
       demographicNutrition: filteredDemographicNutrition,
+      demographicClassification: filteredDemographicClassification,
       crossDimPatterns: filteredCrossDimPatterns,
       crossDimNutrition: filteredCrossDimNutrition,
+      crossDimClassification: filteredCrossDimClassification,
       totalRecords,
       suppressedGroups,
     };
@@ -626,6 +674,9 @@ export class ShoppingListAnalyticsAggregator {
       avgSodiumPer100g: safeAvg(g.sodium),
       avgSugarPer100g: safeAvg(g.sugar),
       avgSaturatedFatPer100g: safeAvg(g.saturatedFat),
+      p25CaloriesPer100g: percentile(g.calories, 25),
+      p50CaloriesPer100g: percentile(g.calories, 50),
+      p75CaloriesPer100g: percentile(g.calories, 75),
     }));
   }
 
@@ -1051,6 +1102,162 @@ export class ShoppingListAnalyticsAggregator {
 
     return result;
   }
+
+  // ============================================================
+  // Classification aggregations — vegetarian/vegan/NOVA/ultra-processed
+  // ============================================================
+
+  private aggregateDemographicClassification(
+    rows: RawShoppingListRow[],
+  ): DemographicClassificationRow[] {
+    const result: DemographicClassificationRow[] = [];
+
+    for (const dim of DEMOGRAPHIC_DIMENSIONS) {
+      const rowField = DIM_TO_ROW_FIELD[dim];
+
+      const groups = new Map<
+        string,
+        {
+          date: Date;
+          dimValue: string;
+          users: Set<string>;
+          fpRows: RawShoppingListRow[];
+        }
+      >();
+
+      for (const row of rows) {
+        const rawValue = row[rowField] as string | null;
+        const dimValue = rawValue ?? '__null__';
+        const dateKey = row.createdAt.toISOString().slice(0, 10);
+        const key = `${dateKey}||${dimValue}`;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            date: new Date(dateKey),
+            dimValue,
+            users: new Set(),
+            fpRows: [],
+          });
+        }
+        const g = groups.get(key)!;
+        g.users.add(row.userId);
+        if (row.itemType === 'food_product') g.fpRows.push(row);
+      }
+
+      for (const g of groups.values()) {
+        const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
+        const fpRows = g.fpRows;
+        const itemCount = fpRows.length;
+        const vegetarianItems = fpRows.filter((r) => r.isVegetarian === true).length;
+        const veganItems = fpRows.filter((r) => r.isVegan === true).length;
+        const novaValues = fpRows
+          .map((r) => r.novaGroup)
+          .filter((v): v is number => v !== null);
+        const ultraProcessedPcts = fpRows
+          .filter((r) => r.novaGroup !== null)
+          .map((r) => (r.novaGroup === 4 ? 100 : 0));
+
+        result.push({
+          date: g.date,
+          ageGroup: dim === 'ageGroup' ? activeValue : null,
+          gender: dim === 'gender' ? activeValue : null,
+          educationLevel: dim === 'educationLevel' ? activeValue : null,
+          region: dim === 'region' ? activeValue : null,
+          country: dim === 'country' ? activeValue : null,
+          userCount: g.users.size,
+          itemCount,
+          vegetarianItemPct: itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+          veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
+          avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
+          p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
+          p50UltraProcessedPct: percentile(ultraProcessedPcts, 50),
+          p75UltraProcessedPct: percentile(ultraProcessedPcts, 75),
+          novaDistribution: distribution(novaValues.map(String)),
+        });
+      }
+    }
+
+    return result;
+  }
+
+  private aggregateCrossDimClassification(
+    rows: RawShoppingListRow[],
+  ): CrossDimClassificationRow[] {
+    const result: CrossDimClassificationRow[] = [];
+
+    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
+      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
+        const [dim1, dim2] = [
+          DEMOGRAPHIC_DIMENSIONS[i],
+          DEMOGRAPHIC_DIMENSIONS[j],
+        ].sort() as [DemographicDimension, DemographicDimension];
+
+        const dim1Field = DIM_TO_ROW_FIELD[dim1];
+        const dim2Field = DIM_TO_ROW_FIELD[dim2];
+
+        const groups = new Map<
+          string,
+          {
+            date: Date;
+            dim1Value: string;
+            dim2Value: string;
+            users: Set<string>;
+            fpRows: RawShoppingListRow[];
+          }
+        >();
+
+        for (const row of rows) {
+          const v1 = (row[dim1Field] as string | null) ?? '__null__';
+          const v2 = (row[dim2Field] as string | null) ?? '__null__';
+          const dateKey = row.createdAt.toISOString().slice(0, 10);
+          const key = `${dateKey}||${v1}||${v2}`;
+          if (!groups.has(key)) {
+            groups.set(key, {
+              date: new Date(dateKey),
+              dim1Value: v1,
+              dim2Value: v2,
+              users: new Set(),
+              fpRows: [],
+            });
+          }
+          const g = groups.get(key)!;
+          g.users.add(row.userId);
+          if (row.itemType === 'food_product') g.fpRows.push(row);
+        }
+
+        for (const g of groups.values()) {
+          const fpRows = g.fpRows;
+          const itemCount = fpRows.length;
+          const vegetarianItems = fpRows.filter((r) => r.isVegetarian === true).length;
+          const veganItems = fpRows.filter((r) => r.isVegan === true).length;
+          const novaValues = fpRows
+            .map((r) => r.novaGroup)
+            .filter((v): v is number => v !== null);
+          const ultraProcessedPcts = fpRows
+            .filter((r) => r.novaGroup !== null)
+            .map((r) => (r.novaGroup === 4 ? 100 : 0));
+
+          result.push({
+            date: g.date,
+            dim1Name: dim1,
+            dim1Value: g.dim1Value,
+            dim2Name: dim2,
+            dim2Value: g.dim2Value,
+            userCount: g.users.size,
+            itemCount,
+            vegetarianItemPct: itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+            veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
+            avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
+            p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
+            p50UltraProcessedPct: percentile(ultraProcessedPcts, 50),
+            p75UltraProcessedPct: percentile(ultraProcessedPcts, 75),
+            novaDistribution: distribution(novaValues.map(String)),
+          });
+        }
+      }
+    }
+
+    return result;
+  }
 }
 
 // ============================================================
@@ -1074,4 +1281,18 @@ function distribution(values: string[]): Record<string, number> | null {
   const dist: Record<string, number> = {};
   for (const v of values) dist[v] = (dist[v] ?? 0) + 1;
   return dist;
+}
+
+/**
+ * Returns the p-th percentile of a sorted numeric array using linear interpolation.
+ * Returns null for empty arrays.
+ */
+function percentile(values: number[], p: number): number | null {
+  if (values.length === 0) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const idx = (p / 100) * (sorted.length - 1);
+  const lower = Math.floor(idx);
+  const upper = Math.ceil(idx);
+  if (lower === upper) return sorted[lower];
+  return sorted[lower] + (sorted[upper] - sorted[lower]) * (idx - lower);
 }

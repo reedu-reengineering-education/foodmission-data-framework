@@ -74,8 +74,10 @@ export class ShoppingListAnalyticsService {
             foodGroupsRows: result.foodGroups.length,
             demographicPatternsRows: result.demographicPatterns.length,
             demographicNutritionRows: result.demographicNutrition.length,
+            demographicClassificationRows: result.demographicClassification.length,
             crossDimPatternsRows: result.crossDimPatterns.length,
             crossDimNutritionRows: result.crossDimNutrition.length,
+            crossDimClassificationRows: result.crossDimClassification.length,
           },
         });
         return batch.id;
@@ -127,6 +129,15 @@ export class ShoppingListAnalyticsService {
             result.demographicNutrition.map((r) => ({ ...r, batchId })),
           );
         }
+        if (result.demographicClassification.length > 0) {
+          await this.repository.insertDemographicClassification(
+            result.demographicClassification.map((r) => ({
+              ...r,
+              batchId,
+              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+            })),
+          );
+        }
         if (result.crossDimPatterns.length > 0) {
           await this.repository.insertCrossDimPatterns(
             result.crossDimPatterns.map((r) => ({ ...r, batchId })),
@@ -135,6 +146,15 @@ export class ShoppingListAnalyticsService {
         if (result.crossDimNutrition.length > 0) {
           await this.repository.insertCrossDimNutrition(
             result.crossDimNutrition.map((r) => ({ ...r, batchId })),
+          );
+        }
+        if (result.crossDimClassification.length > 0) {
+          await this.repository.insertCrossDimClassification(
+            result.crossDimClassification.map((r) => ({
+              ...r,
+              batchId,
+              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+            })),
           );
         }
         this.logger.log(
@@ -218,6 +238,32 @@ export class ShoppingListAnalyticsService {
     dim2?: string,
   ) {
     return this.repository.getPublishedCrossDimNutrition(
+      from,
+      to,
+      dim1 as DemographicDimension | undefined,
+      dim2 as DemographicDimension | undefined,
+    );
+  }
+
+  async getPublishedDemographicClassification(
+    from?: Date,
+    to?: Date,
+    dimension?: string,
+  ) {
+    return this.repository.getPublishedDemographicClassification(
+      from,
+      to,
+      dimension as DemographicDimension | undefined,
+    );
+  }
+
+  async getPublishedCrossDimClassification(
+    from?: Date,
+    to?: Date,
+    dim1?: string,
+    dim2?: string,
+  ) {
+    return this.repository.getPublishedCrossDimClassification(
       from,
       to,
       dim1 as DemographicDimension | undefined,

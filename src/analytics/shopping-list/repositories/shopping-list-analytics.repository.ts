@@ -137,6 +137,12 @@ export class ShoppingListAnalyticsRepository {
     return this.prisma.shoppingListAnalyticsDemographicNutrition.createMany({ data });
   }
 
+  async insertDemographicClassification(
+    data: Prisma.ShoppingListAnalyticsDemographicClassificationCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicClassification.createMany({ data });
+  }
+
   async insertCrossDimPatterns(
     data: Prisma.ShoppingListAnalyticsCrossDimPatternsCreateManyInput[],
   ) {
@@ -147,6 +153,12 @@ export class ShoppingListAnalyticsRepository {
     data: Prisma.ShoppingListAnalyticsCrossDimNutritionCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsCrossDimNutrition.createMany({ data });
+  }
+
+  async insertCrossDimClassification(
+    data: Prisma.ShoppingListAnalyticsCrossDimClassificationCreateManyInput[],
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimClassification.createMany({ data });
   }
 
   // ============================================================
@@ -229,6 +241,9 @@ export class ShoppingListAnalyticsRepository {
         avgSodiumPer100g: true,
         avgSugarPer100g: true,
         avgSaturatedFatPer100g: true,
+        p25CaloriesPer100g: true,
+        p50CaloriesPer100g: true,
+        p75CaloriesPer100g: true,
       },
     });
   }
@@ -386,6 +401,69 @@ export class ShoppingListAnalyticsRepository {
         avgSodiumPer100g: true,
         avgSugarPer100g: true,
         avgSaturatedFatPer100g: true,
+      },
+    });
+  }
+
+  async getPublishedDemographicClassification(
+    from?: Date,
+    to?: Date,
+    dimension?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsDemographicClassification.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dimension ? { [dimension]: { not: null } } : {}),
+      },
+      orderBy: [{ date: 'asc' }],
+      select: {
+        date: true,
+        ageGroup: true,
+        gender: true,
+        educationLevel: true,
+        region: true,
+        country: true,
+        userCount: true,
+        itemCount: true,
+        vegetarianItemPct: true,
+        veganItemPct: true,
+        avgUltraProcessedPct: true,
+        p25UltraProcessedPct: true,
+        p50UltraProcessedPct: true,
+        p75UltraProcessedPct: true,
+        novaDistribution: true,
+      },
+    });
+  }
+
+  async getPublishedCrossDimClassification(
+    from?: Date,
+    to?: Date,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
+  ) {
+    return this.prisma.shoppingListAnalyticsCrossDimClassification.findMany({
+      where: {
+        batch: this.publishedBatchFilter(from, to),
+        ...(dim1 ? { dim1Name: dim1 } : {}),
+        ...(dim2 ? { dim2Name: dim2 } : {}),
+      },
+      orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
+      select: {
+        date: true,
+        dim1Name: true,
+        dim1Value: true,
+        dim2Name: true,
+        dim2Value: true,
+        userCount: true,
+        itemCount: true,
+        vegetarianItemPct: true,
+        veganItemPct: true,
+        avgUltraProcessedPct: true,
+        p25UltraProcessedPct: true,
+        p50UltraProcessedPct: true,
+        p75UltraProcessedPct: true,
+        novaDistribution: true,
       },
     });
   }

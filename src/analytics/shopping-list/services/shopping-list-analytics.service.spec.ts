@@ -25,8 +25,10 @@ describe('ShoppingListAnalyticsService', () => {
       insertFoodGroups: jest.fn(),
       insertDemographicPatterns: jest.fn(),
       insertDemographicNutrition: jest.fn(),
+      insertDemographicClassification: jest.fn(),
       insertCrossDimPatterns: jest.fn(),
       insertCrossDimNutrition: jest.fn(),
+      insertCrossDimClassification: jest.fn(),
       getPublishedItemPopularity: jest.fn(),
       getPublishedCategoryPopularity: jest.fn(),
       getPublishedListPatterns: jest.fn(),
@@ -35,8 +37,10 @@ describe('ShoppingListAnalyticsService', () => {
       getPublishedFoodGroups: jest.fn(),
       getPublishedDemographicPatterns: jest.fn(),
       getPublishedDemographicNutrition: jest.fn(),
+      getPublishedDemographicClassification: jest.fn(),
       getPublishedCrossDimPatterns: jest.fn(),
       getPublishedCrossDimNutrition: jest.fn(),
+      getPublishedCrossDimClassification: jest.fn(),
     } as unknown as jest.Mocked<ShoppingListAnalyticsRepository>;
 
     aggregator = {
@@ -60,8 +64,10 @@ describe('ShoppingListAnalyticsService', () => {
       foodGroups: [],
       demographicPatterns: [],
       demographicNutrition: [],
+      demographicClassification: [],
       crossDimPatterns: [],
       crossDimNutrition: [],
+      crossDimClassification: [],
       totalRecords: 0,
       suppressedGroups: 0,
     };
@@ -137,8 +143,8 @@ describe('ShoppingListAnalyticsService', () => {
     const emptyAggResult = {
       itemPopularity: [], categoryPopularity: [], listPatterns: [],
       nutritionProfile: [], sustainability: [], foodGroups: [],
-      demographicPatterns: [], demographicNutrition: [],
-      crossDimPatterns: [], crossDimNutrition: [],
+      demographicPatterns: [], demographicNutrition: [], demographicClassification: [],
+      crossDimPatterns: [], crossDimNutrition: [], crossDimClassification: [],
       totalRecords: 0, suppressedGroups: 0,
     };
 
@@ -340,6 +346,62 @@ describe('ShoppingListAnalyticsService', () => {
       } as any);
 
       await expect(service.deleteBatch('b1')).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  // ============================================================
+  // getPublishedDemographicClassification
+  // ============================================================
+
+  describe('getPublishedDemographicClassification', () => {
+    it('delegates to repository without filter', async () => {
+      repository.getPublishedDemographicClassification.mockResolvedValue([]);
+
+      await service.getPublishedDemographicClassification();
+
+      expect(repository.getPublishedDemographicClassification).toHaveBeenCalledWith(
+        undefined, undefined, undefined,
+      );
+    });
+
+    it('passes dates and dimension to repository', async () => {
+      repository.getPublishedDemographicClassification.mockResolvedValue([]);
+      const from = new Date('2026-04-01');
+      const to = new Date('2026-04-30');
+
+      await service.getPublishedDemographicClassification(from, to, 'ageGroup');
+
+      expect(repository.getPublishedDemographicClassification).toHaveBeenCalledWith(
+        from, to, 'ageGroup',
+      );
+    });
+  });
+
+  // ============================================================
+  // getPublishedCrossDimClassification
+  // ============================================================
+
+  describe('getPublishedCrossDimClassification', () => {
+    it('delegates to repository without filters', async () => {
+      repository.getPublishedCrossDimClassification.mockResolvedValue([]);
+
+      await service.getPublishedCrossDimClassification();
+
+      expect(repository.getPublishedCrossDimClassification).toHaveBeenCalledWith(
+        undefined, undefined, undefined, undefined,
+      );
+    });
+
+    it('passes dates and dim filters to repository', async () => {
+      repository.getPublishedCrossDimClassification.mockResolvedValue([]);
+      const from = new Date('2026-04-01');
+      const to = new Date('2026-04-30');
+
+      await service.getPublishedCrossDimClassification(from, to, 'ageGroup', 'gender');
+
+      expect(repository.getPublishedCrossDimClassification).toHaveBeenCalledWith(
+        from, to, 'ageGroup', 'gender',
+      );
     });
   });
 

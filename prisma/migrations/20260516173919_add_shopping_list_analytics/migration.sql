@@ -1,5 +1,8 @@
+-- AlterEnum
+ALTER TYPE "MealLogAnalyticsBatchStatus" ADD VALUE 'SUPERSEDED';
+
 -- CreateEnum
-CREATE TYPE "ShoppingListAnalyticsBatchStatus" AS ENUM ('STAGING', 'APPROVED', 'PUBLISHED', 'REJECTED');
+CREATE TYPE "ShoppingListAnalyticsBatchStatus" AS ENUM ('STAGING', 'APPROVED', 'PUBLISHED', 'REJECTED', 'SUPERSEDED');
 
 -- CreateTable
 CREATE TABLE "shopping_list_analytics_batches" (
@@ -82,6 +85,9 @@ CREATE TABLE "shopping_list_analytics_nutrition_profile" (
     "avgSodiumPer100g" DOUBLE PRECISION,
     "avgSugarPer100g" DOUBLE PRECISION,
     "avgSaturatedFatPer100g" DOUBLE PRECISION,
+    "p25CaloriesPer100g" DOUBLE PRECISION,
+    "p50CaloriesPer100g" DOUBLE PRECISION,
+    "p75CaloriesPer100g" DOUBLE PRECISION,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "shopping_list_analytics_nutrition_profile_pkey" PRIMARY KEY ("id")
@@ -211,6 +217,53 @@ CREATE TABLE "shopping_list_analytics_cross_dim_nutrition" (
     CONSTRAINT "shopping_list_analytics_cross_dim_nutrition_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "shopping_list_analytics_demographic_classification" (
+    "id" TEXT NOT NULL,
+    "batchId" TEXT NOT NULL,
+    "date" DATE NOT NULL,
+    "ageGroup" TEXT,
+    "gender" TEXT,
+    "educationLevel" TEXT,
+    "region" TEXT,
+    "country" TEXT,
+    "userCount" INTEGER NOT NULL,
+    "itemCount" INTEGER NOT NULL,
+    "vegetarianItemPct" DOUBLE PRECISION,
+    "veganItemPct" DOUBLE PRECISION,
+    "avgUltraProcessedPct" DOUBLE PRECISION,
+    "p25UltraProcessedPct" DOUBLE PRECISION,
+    "p50UltraProcessedPct" DOUBLE PRECISION,
+    "p75UltraProcessedPct" DOUBLE PRECISION,
+    "novaDistribution" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "shopping_list_analytics_demographic_classification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "shopping_list_analytics_cross_dim_classification" (
+    "id" TEXT NOT NULL,
+    "batchId" TEXT NOT NULL,
+    "date" DATE NOT NULL,
+    "dim1Name" TEXT NOT NULL,
+    "dim1Value" TEXT NOT NULL,
+    "dim2Name" TEXT NOT NULL,
+    "dim2Value" TEXT NOT NULL,
+    "userCount" INTEGER NOT NULL,
+    "itemCount" INTEGER NOT NULL,
+    "vegetarianItemPct" DOUBLE PRECISION,
+    "veganItemPct" DOUBLE PRECISION,
+    "avgUltraProcessedPct" DOUBLE PRECISION,
+    "p25UltraProcessedPct" DOUBLE PRECISION,
+    "p50UltraProcessedPct" DOUBLE PRECISION,
+    "p75UltraProcessedPct" DOUBLE PRECISION,
+    "novaDistribution" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "shopping_list_analytics_cross_dim_classification_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE INDEX "shopping_list_analytics_batches_status_idx" ON "shopping_list_analytics_batches"("status");
 
@@ -310,6 +363,30 @@ CREATE INDEX "shopping_list_analytics_cross_dim_nutrition_date_idx" ON "shopping
 -- CreateIndex
 CREATE UNIQUE INDEX "shopping_list_analytics_cross_dim_nutrition_batchId_date_di_key" ON "shopping_list_analytics_cross_dim_nutrition"("batchId", "date", "dim1Name", "dim1Value", "dim2Name", "dim2Value");
 
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_demographic_classification_ageGroup_idx" ON "shopping_list_analytics_demographic_classification"("ageGroup");
+
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_demographic_classification_gender_idx" ON "shopping_list_analytics_demographic_classification"("gender");
+
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_demographic_classification_educatio_idx" ON "shopping_list_analytics_demographic_classification"("educationLevel");
+
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_demographic_classification_date_idx" ON "shopping_list_analytics_demographic_classification"("date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "shopping_list_analytics_demographic_classification_batchId__key" ON "shopping_list_analytics_demographic_classification"("batchId", "date", "ageGroup", "gender", "educationLevel", "region", "country");
+
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_cross_dim_classification_dim1Name_d_idx" ON "shopping_list_analytics_cross_dim_classification"("dim1Name", "dim2Name");
+
+-- CreateIndex
+CREATE INDEX "shopping_list_analytics_cross_dim_classification_date_idx" ON "shopping_list_analytics_cross_dim_classification"("date");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "shopping_list_analytics_cross_dim_classification_batchId_da_key" ON "shopping_list_analytics_cross_dim_classification"("batchId", "date", "dim1Name", "dim1Value", "dim2Name", "dim2Value");
+
 -- AddForeignKey
 ALTER TABLE "shopping_list_analytics_item_popularity" ADD CONSTRAINT "shopping_list_analytics_item_popularity_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "shopping_list_analytics_batches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -339,3 +416,9 @@ ALTER TABLE "shopping_list_analytics_cross_dim_patterns" ADD CONSTRAINT "shoppin
 
 -- AddForeignKey
 ALTER TABLE "shopping_list_analytics_cross_dim_nutrition" ADD CONSTRAINT "shopping_list_analytics_cross_dim_nutrition_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "shopping_list_analytics_batches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "shopping_list_analytics_demographic_classification" ADD CONSTRAINT "shopping_list_analytics_demographic_classification_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "shopping_list_analytics_batches"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "shopping_list_analytics_cross_dim_classification" ADD CONSTRAINT "shopping_list_analytics_cross_dim_classification_batchId_fkey" FOREIGN KEY ("batchId") REFERENCES "shopping_list_analytics_batches"("id") ON DELETE CASCADE ON UPDATE CASCADE;

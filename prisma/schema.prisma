@@ -1377,16 +1377,18 @@ model ShoppingListAnalyticsBatch {
   recordCount     Int                              @default(0)
   metadata        Json?
 
-  itemPopularity       ShoppingListAnalyticsItemPopularity[]
-  categoryPopularity   ShoppingListAnalyticsCategoryPopularity[]
-  listPatterns         ShoppingListAnalyticsListPatterns[]
-  nutritionProfile     ShoppingListAnalyticsNutritionProfile[]
-  sustainability       ShoppingListAnalyticsSustainability[]
-  foodGroups           ShoppingListAnalyticsFoodGroups[]
-  demographicPatterns  ShoppingListAnalyticsDemographicPatterns[]
-  demographicNutrition ShoppingListAnalyticsDemographicNutrition[]
-  crossDimPatterns     ShoppingListAnalyticsCrossDimPatterns[]
-  crossDimNutrition    ShoppingListAnalyticsCrossDimNutrition[]
+  itemPopularity            ShoppingListAnalyticsItemPopularity[]
+  categoryPopularity        ShoppingListAnalyticsCategoryPopularity[]
+  listPatterns              ShoppingListAnalyticsListPatterns[]
+  nutritionProfile          ShoppingListAnalyticsNutritionProfile[]
+  sustainability            ShoppingListAnalyticsSustainability[]
+  foodGroups                ShoppingListAnalyticsFoodGroups[]
+  demographicPatterns       ShoppingListAnalyticsDemographicPatterns[]
+  demographicNutrition      ShoppingListAnalyticsDemographicNutrition[]
+  demographicClassification ShoppingListAnalyticsDemographicClassification[]
+  crossDimPatterns          ShoppingListAnalyticsCrossDimPatterns[]
+  crossDimNutrition         ShoppingListAnalyticsCrossDimNutrition[]
+  crossDimClassification    ShoppingListAnalyticsCrossDimClassification[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1468,6 +1470,9 @@ model ShoppingListAnalyticsNutritionProfile {
   avgSodiumPer100g       Float?
   avgSugarPer100g        Float?
   avgSaturatedFatPer100g Float?
+  p25CaloriesPer100g     Float?
+  p50CaloriesPer100g     Float?
+  p75CaloriesPer100g     Float?
 
   createdAt DateTime @default(now())
 
@@ -1589,6 +1594,44 @@ model ShoppingListAnalyticsDemographicNutrition {
 }
 
 // ============================================================
+// Analytics — Shopping List Demographic Classification
+// Vegetarian / vegan / ultra-processed / NOVA breakdown by one dimension.
+// k-anonymity (K=5) enforced.
+// ============================================================
+
+model ShoppingListAnalyticsDemographicClassification {
+  id             String                     @id @default(uuid())
+  batchId        String
+  batch          ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date           DateTime                   @db.Date
+
+  ageGroup       String?
+  gender         String?
+  educationLevel String?
+  region         String?
+  country        String?
+
+  userCount            Int
+  itemCount            Int
+  vegetarianItemPct    Float?
+  veganItemPct         Float?
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, ageGroup, gender, educationLevel, region, country])
+  @@index([ageGroup])
+  @@index([gender])
+  @@index([educationLevel])
+  @@index([date])
+  @@map("shopping_list_analytics_demographic_classification")
+}
+
+// ============================================================
 // Analytics — Shopping List Cross-Dimensional Tables (K=20)
 // dim1Name < dim2Name alphabetically.
 // ============================================================
@@ -1647,4 +1690,33 @@ model ShoppingListAnalyticsCrossDimNutrition {
   @@index([dim1Name, dim2Name])
   @@index([date])
   @@map("shopping_list_analytics_cross_dim_nutrition")
+}
+
+model ShoppingListAnalyticsCrossDimClassification {
+  id        String                     @id @default(uuid())
+  batchId   String
+  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date      DateTime                   @db.Date
+
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount            Int
+  itemCount            Int
+  vegetarianItemPct    Float?
+  veganItemPct         Float?
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("shopping_list_analytics_cross_dim_classification")
 }

@@ -16,8 +16,10 @@ describe('ShoppingListAnalyticsController', () => {
       getPublishedFoodGroups: jest.fn(),
       getPublishedDemographicPatterns: jest.fn(),
       getPublishedDemographicNutrition: jest.fn(),
+      getPublishedDemographicClassification: jest.fn(),
       getPublishedCrossDimPatterns: jest.fn(),
       getPublishedCrossDimNutrition: jest.fn(),
+      getPublishedCrossDimClassification: jest.fn(),
       getPublishedSummary: jest.fn(),
       generateBatch: jest.fn(),
       runDailyAggregation: jest.fn(),
@@ -226,6 +228,61 @@ describe('ShoppingListAnalyticsController', () => {
         new Date('2026-04-30'),
       );
       expect(result).toEqual(summary);
+    });
+  });
+
+  describe('getPublicDemographicClassification', () => {
+    it('parses dates and passes dimension to service', async () => {
+      service.getPublishedDemographicClassification.mockResolvedValue([]);
+
+      await controller.getPublicDemographicClassification('2026-04-01', '2026-04-30', 'ageGroup');
+
+      expect(service.getPublishedDemographicClassification).toHaveBeenCalledWith(
+        new Date('2026-04-01'),
+        new Date('2026-04-30'),
+        'ageGroup',
+      );
+    });
+
+    it('passes undefined when no params provided', async () => {
+      service.getPublishedDemographicClassification.mockResolvedValue([]);
+
+      await controller.getPublicDemographicClassification();
+
+      expect(service.getPublishedDemographicClassification).toHaveBeenCalledWith(
+        undefined, undefined, undefined,
+      );
+    });
+
+    it('throws BadRequestException for invalid dimension', async () => {
+      await expect(
+        controller.getPublicDemographicClassification(undefined, undefined, 'invalid'),
+      ).rejects.toThrow('Invalid dimension');
+    });
+  });
+
+  describe('getPublicCrossDimClassification', () => {
+    it('parses dates and passes dim filters to service', async () => {
+      service.getPublishedCrossDimClassification.mockResolvedValue([]);
+
+      await controller.getPublicCrossDimClassification('2026-04-01', '2026-04-30', 'ageGroup', 'gender');
+
+      expect(service.getPublishedCrossDimClassification).toHaveBeenCalledWith(
+        new Date('2026-04-01'),
+        new Date('2026-04-30'),
+        'ageGroup',
+        'gender',
+      );
+    });
+
+    it('passes undefined when no filters provided', async () => {
+      service.getPublishedCrossDimClassification.mockResolvedValue([]);
+
+      await controller.getPublicCrossDimClassification();
+
+      expect(service.getPublishedCrossDimClassification).toHaveBeenCalledWith(
+        undefined, undefined, undefined, undefined,
+      );
     });
   });
 

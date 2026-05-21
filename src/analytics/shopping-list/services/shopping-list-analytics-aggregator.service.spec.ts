@@ -454,8 +454,10 @@ describe('ShoppingListAnalyticsAggregator', () => {
       result.foodGroups.length +
       result.demographicPatterns.length +
       result.demographicNutrition.length +
+      result.demographicClassification.length +
       result.crossDimPatterns.length +
-      result.crossDimNutrition.length;
+      result.crossDimNutrition.length +
+      result.crossDimClassification.length;
 
     expect(result.totalRecords).toBe(expectedTotal);
   });
