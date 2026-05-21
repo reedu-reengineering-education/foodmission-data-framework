@@ -76,8 +76,9 @@ export class MealLogAnalyticsRepository {
     await this.prisma.mealLogAnalyticsBatch.updateMany({
       where: {
         status: MealLogAnalyticsBatchStatus.PUBLISHED,
-        periodStart: { gte: from },
-        periodEnd: { lte: to },
+        // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
+        periodEnd: { gt: from },
+        periodStart: { lt: to },
       },
       data: { status: MealLogAnalyticsBatchStatus.SUPERSEDED },
     });

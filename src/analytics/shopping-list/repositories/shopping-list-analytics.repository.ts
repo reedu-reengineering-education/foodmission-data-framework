@@ -83,8 +83,9 @@ export class ShoppingListAnalyticsRepository {
     await this.prisma.shoppingListAnalyticsBatch.updateMany({
       where: {
         status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
-        periodStart: { gte: from },
-        periodEnd: { lte: to },
+        // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
+        periodEnd: { gt: from },
+        periodStart: { lt: to },
       },
       data: { status: ShoppingListAnalyticsBatchStatus.SUPERSEDED },
     });
@@ -94,13 +95,13 @@ export class ShoppingListAnalyticsRepository {
   // Bulk inserts
   // ============================================================
 
-  async insertItemPopularity(
+  insertItemPopularity(
     data: Prisma.ShoppingListAnalyticsItemPopularityCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsItemPopularity.createMany({ data });
   }
 
-  async insertCategoryPopularity(
+  insertCategoryPopularity(
     data: Prisma.ShoppingListAnalyticsCategoryPopularityCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsCategoryPopularity.createMany({
@@ -108,13 +109,13 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async insertListPatterns(
+  insertListPatterns(
     data: Prisma.ShoppingListAnalyticsListPatternsCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsListPatterns.createMany({ data });
   }
 
-  async insertNutritionProfile(
+  insertNutritionProfile(
     data: Prisma.ShoppingListAnalyticsNutritionProfileCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsNutritionProfile.createMany({

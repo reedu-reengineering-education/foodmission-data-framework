@@ -171,105 +171,91 @@ export class ShoppingListAnalyticsService {
   // Public data
   // ============================================================
 
-  async getPublishedItemPopularity(from?: Date, to?: Date, limit = 20) {
+  getPublishedItemPopularity(from?: Date, to?: Date, limit = 20) {
     return this.repository.getPublishedItemPopularity(from, to, limit);
   }
 
-  async getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
+  getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
     return this.repository.getPublishedCategoryPopularity(from, to, limit);
   }
 
-  async getPublishedListPatterns(from?: Date, to?: Date) {
+  getPublishedListPatterns(from?: Date, to?: Date) {
     return this.repository.getPublishedListPatterns(from, to);
   }
 
-  async getPublishedNutritionProfile(from?: Date, to?: Date) {
+  getPublishedNutritionProfile(from?: Date, to?: Date) {
     return this.repository.getPublishedNutritionProfile(from, to);
   }
 
-  async getPublishedSustainability(from?: Date, to?: Date) {
+  getPublishedSustainability(from?: Date, to?: Date) {
     return this.repository.getPublishedSustainability(from, to);
   }
 
-  async getPublishedFoodGroups(from?: Date, to?: Date, limit = 20) {
+  getPublishedFoodGroups(from?: Date, to?: Date, limit = 20) {
     return this.repository.getPublishedFoodGroups(from, to, limit);
   }
 
-  async getPublishedDemographicPatterns(
+  getPublishedDemographicPatterns(
     from?: Date,
     to?: Date,
-    dimension?: string,
+    dimension?: DemographicDimension,
   ) {
-    return this.repository.getPublishedDemographicPatterns(
-      from,
-      to,
-      dimension as DemographicDimension | undefined,
-    );
+    return this.repository.getPublishedDemographicPatterns(from, to, dimension);
   }
 
-  async getPublishedDemographicNutrition(
+  getPublishedDemographicNutrition(
     from?: Date,
     to?: Date,
-    dimension?: string,
+    dimension?: DemographicDimension,
   ) {
     return this.repository.getPublishedDemographicNutrition(
       from,
       to,
-      dimension as DemographicDimension | undefined,
+      dimension,
     );
   }
 
-  async getPublishedCrossDimPatterns(
+  getPublishedCrossDimPatterns(
     from?: Date,
     to?: Date,
-    dim1?: string,
-    dim2?: string,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
   ) {
-    return this.repository.getPublishedCrossDimPatterns(
-      from,
-      to,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
-    );
+    return this.repository.getPublishedCrossDimPatterns(from, to, dim1, dim2);
   }
 
-  async getPublishedCrossDimNutrition(
+  getPublishedCrossDimNutrition(
     from?: Date,
     to?: Date,
-    dim1?: string,
-    dim2?: string,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
   ) {
-    return this.repository.getPublishedCrossDimNutrition(
-      from,
-      to,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
-    );
+    return this.repository.getPublishedCrossDimNutrition(from, to, dim1, dim2);
   }
 
-  async getPublishedDemographicClassification(
+  getPublishedDemographicClassification(
     from?: Date,
     to?: Date,
-    dimension?: string,
+    dimension?: DemographicDimension,
   ) {
     return this.repository.getPublishedDemographicClassification(
       from,
       to,
-      dimension as DemographicDimension | undefined,
+      dimension,
     );
   }
 
-  async getPublishedCrossDimClassification(
+  getPublishedCrossDimClassification(
     from?: Date,
     to?: Date,
-    dim1?: string,
-    dim2?: string,
+    dim1?: DemographicDimension,
+    dim2?: DemographicDimension,
   ) {
     return this.repository.getPublishedCrossDimClassification(
       from,
       to,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      dim1,
+      dim2,
     );
   }
 

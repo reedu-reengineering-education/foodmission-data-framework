@@ -102,8 +102,10 @@ describe('ShoppingListAnalyticsRepository', () => {
       foodGroups: expect.any(Object),
       demographicPatterns: true,
       demographicNutrition: true,
+      demographicClassification: true,
       crossDimPatterns: true,
       crossDimNutrition: true,
+      crossDimClassification: true,
     });
   });
 

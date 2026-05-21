@@ -10,8 +10,6 @@ import {
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
 } from '../../common/analytics-utils';
 
-export { DemographicDimension, DEMOGRAPHIC_DIMENSIONS };
-
 // ============================================================
 // Raw SQL row type — joined from meal_logs, Meal, MealItem, Food, FoodCategory
 // ============================================================

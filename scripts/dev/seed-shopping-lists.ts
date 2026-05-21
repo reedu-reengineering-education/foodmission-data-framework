@@ -198,7 +198,7 @@ async function seedShoppingLists() {
   // Print suggested date range for the generate batch call
   const to = new Date();
   const from = new Date();
-  from.setDate(from.getDate() - 7);
+  from.setUTCDate(from.getUTCDate() - 7);
   console.log(
     `\n   Suggested batch range: periodStart=${from.toISOString().split('T')[0]}&periodEnd=${to.toISOString().split('T')[0]}`,
   );

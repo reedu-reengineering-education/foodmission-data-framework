@@ -26,13 +26,6 @@ export class AnalyticsBatchCoordinator {
 
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async runDailyForAll(): Promise<void> {
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    yesterday.setUTCHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-
     const domains: Array<{
       name: string;
       service: { runDailyAggregation(): Promise<string> };

@@ -7,9 +7,8 @@ import {
 import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  safeAvg,
 } from '../../common/analytics-utils';
-
-export { DemographicDimension, DEMOGRAPHIC_DIMENSIONS };
 
 // ============================================================
 // Raw SQL row type — joined from shopping_list_items, shopping_lists, users,
@@ -248,8 +247,6 @@ export interface ShoppingListAggregationResult {
   totalRecords: number;
   suppressedGroups: number;
 }
-
-// DemographicDimension and DEMOGRAPHIC_DIMENSIONS imported from common and re-exported above.
 
 // Maps dimension name → field on RawShoppingListRow
 const DIM_TO_ROW_FIELD: Record<DemographicDimension, keyof RawShoppingListRow> =
@@ -991,6 +988,9 @@ export class ShoppingListAnalyticsAggregator {
         }
 
         for (const g of groups.values()) {
+          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
+          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
+          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
           const userCount = g.users.size;
           const totalLists = g.lists.length;
           const totalItems = g.lists.reduce((s, l) => s + l.totalItems, 0);
@@ -999,9 +999,9 @@ export class ShoppingListAnalyticsAggregator {
           result.push({
             date: g.date,
             dim1Name: dim1,
-            dim1Value: g.dim1Value,
+            dim1Value,
             dim2Name: dim2,
-            dim2Value: g.dim2Value,
+            dim2Value,
             userCount,
             totalLists,
             avgItemsPerList: totalLists > 0 ? totalItems / totalLists : 0,
@@ -1086,12 +1086,15 @@ export class ShoppingListAnalyticsAggregator {
         }
 
         for (const g of groups.values()) {
+          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
+          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
+          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
           result.push({
             date: g.date,
             dim1Name: dim1,
-            dim1Value: g.dim1Value,
+            dim1Value,
             dim2Name: dim2,
-            dim2Value: g.dim2Value,
+            dim2Value,
             userCount: g.users.size,
             itemCount: g.count,
             avgCaloriesPer100g: safeAvg(g.calories),
@@ -1233,6 +1236,9 @@ export class ShoppingListAnalyticsAggregator {
         }
 
         for (const g of groups.values()) {
+          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
+          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
+          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
           const fpRows = g.fpRows;
           const itemCount = fpRows.length;
           const vegetarianItems = fpRows.filter(
@@ -1249,9 +1255,9 @@ export class ShoppingListAnalyticsAggregator {
           result.push({
             date: g.date,
             dim1Name: dim1,
-            dim1Value: g.dim1Value,
+            dim1Value,
             dim2Name: dim2,
-            dim2Value: g.dim2Value,
+            dim2Value,
             userCount: g.users.size,
             itemCount,
             vegetarianItemPct:
@@ -1274,11 +1280,6 @@ export class ShoppingListAnalyticsAggregator {
 // ============================================================
 // Helpers
 // ============================================================
-
-function safeAvg(values: number[]): number | null {
-  if (values.length === 0) return null;
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
 
 function mode(arr: string[]): string {
   if (arr.length === 0) return '';
