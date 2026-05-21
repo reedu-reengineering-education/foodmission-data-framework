@@ -28,6 +28,7 @@ import {
   DemographicDimension,
   DemographicDimensionEnum,
 } from '../../common/demographic-dimensions';
+import { parseLimit, parseDate } from '../../common/analytics-utils';
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
@@ -36,31 +37,6 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 @Controller('analytics/meal-log')
 export class MealLogAnalyticsController {
   constructor(private readonly analyticsService: MealLogAnalyticsService) {}
-
-  private parseDate(
-    value: string | undefined,
-    param: string,
-  ): Date | undefined {
-    if (value === undefined || value === '') return undefined;
-    const d = new Date(value);
-    if (isNaN(d.getTime())) {
-      throw new BadRequestException(
-        `Invalid date "${value}" for ${param}. Expected ISO 8601 format (e.g. 2026-01-01).`,
-      );
-    }
-    return d;
-  }
-
-  private parseLimit(value: string | undefined, defaultLimit = 20): number {
-    if (value === undefined || value === '') return defaultLimit;
-    const parsed = parseInt(value, 10);
-    if (!Number.isFinite(parsed) || parsed < 1 || parsed > 100) {
-      throw new BadRequestException(
-        `Invalid limit "${value}". Must be an integer between 1 and 100.`,
-      );
-    }
-    return parsed;
-  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -97,8 +73,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedNutrition(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -119,9 +95,9 @@ export class MealLogAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedFoodPopularity(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
-      this.parseLimit(limit),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
     );
   }
 
@@ -144,8 +120,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -169,8 +145,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -194,8 +170,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealClassification(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -220,8 +196,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealRecords(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -269,8 +245,8 @@ export class MealLogAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -311,8 +287,8 @@ export class MealLogAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -353,8 +329,8 @@ export class MealLogAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -420,8 +396,8 @@ export class MealLogAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -474,8 +450,8 @@ export class MealLogAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -528,8 +504,8 @@ export class MealLogAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -549,8 +525,8 @@ export class MealLogAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSummary(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
   }
 
@@ -584,8 +560,8 @@ export class MealLogAnalyticsController {
       throw new BadRequestException('periodStart and periodEnd are required');
     }
     const batchId = await this.analyticsService.generateBatch(
-      this.parseDate(periodStart, 'periodStart')!,
-      this.parseDate(periodEnd, 'periodEnd')!,
+      parseDate(periodStart, 'periodStart')!,
+      parseDate(periodEnd, 'periodEnd')!,
     );
     return { batchId };
   }

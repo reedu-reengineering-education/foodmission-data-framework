@@ -28,6 +28,7 @@ import {
   DemographicDimension,
   DemographicDimensionEnum,
 } from '../../common/demographic-dimensions';
+import { parseLimit, parseDate } from '../../common/analytics-utils';
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
@@ -38,31 +39,6 @@ export class ShoppingListAnalyticsController {
   constructor(
     private readonly analyticsService: ShoppingListAnalyticsService,
   ) {}
-
-  private parseDate(
-    value: string | undefined,
-    param: string,
-  ): Date | undefined {
-    if (value === undefined || value === '') return undefined;
-    const d = new Date(value);
-    if (isNaN(d.getTime())) {
-      throw new BadRequestException(
-        `Invalid date "${value}" for ${param}. Expected ISO 8601 format (e.g. 2026-01-01).`,
-      );
-    }
-    return d;
-  }
-
-  private parseLimit(value: string | undefined, defaultLimit = 20): number {
-    if (value === undefined || value === '') return defaultLimit;
-    const parsed = parseInt(value, 10);
-    if (!Number.isFinite(parsed) || parsed < 1 || parsed > 100) {
-      throw new BadRequestException(
-        `Invalid limit "${value}". Must be an integer between 1 and 100.`,
-      );
-    }
-    return parsed;
-  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -96,9 +72,9 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedItemPopularity(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
-      this.parseLimit(limit),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
     );
   }
 
@@ -130,9 +106,9 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedCategoryPopularity(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
-      this.parseLimit(limit),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
     );
   }
 
@@ -162,8 +138,8 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedListPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
   }
 
@@ -193,8 +169,8 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedNutritionProfile(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
   }
 
@@ -226,8 +202,8 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
   }
 
@@ -259,9 +235,9 @@ export class ShoppingListAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedFoodGroups(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
-      this.parseLimit(limit),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
     );
   }
 
@@ -305,8 +281,8 @@ export class ShoppingListAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dimension,
     );
   }
@@ -351,8 +327,8 @@ export class ShoppingListAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dimension,
     );
   }
@@ -410,8 +386,8 @@ export class ShoppingListAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dim1,
       dim2,
     );
@@ -467,8 +443,8 @@ export class ShoppingListAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dim1,
       dim2,
     );
@@ -497,8 +473,8 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSummary(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
   }
 
@@ -542,8 +518,8 @@ export class ShoppingListAnalyticsController {
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dimension,
     );
   }
@@ -600,8 +576,8 @@ export class ShoppingListAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
-      this.parseDate(from, 'from'),
-      this.parseDate(to, 'to'),
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       dim1,
       dim2,
     );
@@ -639,8 +615,8 @@ export class ShoppingListAnalyticsController {
       throw new BadRequestException('periodStart and periodEnd are required');
     }
     const batchId = await this.analyticsService.generateBatch(
-      this.parseDate(periodStart, 'periodStart')!,
-      this.parseDate(periodEnd, 'periodEnd')!,
+      parseDate(periodStart, 'periodStart')!,
+      parseDate(periodEnd, 'periodEnd')!,
     );
     return { batchId };
   }
