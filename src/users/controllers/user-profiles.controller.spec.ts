@@ -175,6 +175,21 @@ describe('UserProfilesController', () => {
       expect(result.settings).toEqual(updateDto.settings);
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
     });
+
+    it('should update preferences', async () => {
+      const updateDto = { preferences: { newsletter: false, timezone: 'Europe/Berlin' } };
+
+      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+      service.updateProfile.mockResolvedValue({
+        ...mockUserProfile,
+        preferences: updateDto.preferences,
+      });
+
+      const result = await controller.updateProfile('user-1', updateDto as any);
+
+      expect(result.preferences).toEqual(updateDto.preferences);
+      expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
+    });
   });
 
   describe('deleteMe', () => {
