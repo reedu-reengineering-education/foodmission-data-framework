@@ -810,6 +810,7 @@ describe('autoPublishAndSupersede', () => {
     expect(repo.supersedeBatchesForPeriod).toHaveBeenCalledWith(
       periodStart,
       periodEnd,
+      'b1',
     );
   });
 

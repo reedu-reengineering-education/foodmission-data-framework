@@ -17,7 +17,7 @@ interface IBatchRepository<
     reason?: string,
   ): Promise<TBatch>;
   deleteBatch(id: string): Promise<void>;
-  supersedeBatchesForPeriod(from: Date, to: Date): Promise<void>;
+  supersedeBatchesForPeriod(from: Date, to: Date, excludeId: string): Promise<void>;
 }
 
 export async function getAnalyticsBatch<
@@ -118,6 +118,9 @@ export async function deleteAnalyticsBatch<
  * Publishes a newly generated batch and supersedes any previously PUBLISHED
  * batches that overlap the same period — in that order, so the old data
  * remains visible until the new batch is confirmed published.
+ *
+ * The newly published batch is excluded from the supersede query so it
+ * cannot be immediately superseded by its own call.
  */
 export async function autoPublishAndSupersede<
   TStatus extends string,
@@ -131,5 +134,5 @@ export async function autoPublishAndSupersede<
   periodEnd: Date,
 ): Promise<void> {
   await repo.updateBatchStatus(batchId, publishedStatus, userId);
-  await repo.supersedeBatchesForPeriod(periodStart, periodEnd);
+  await repo.supersedeBatchesForPeriod(periodStart, periodEnd, batchId);
 }

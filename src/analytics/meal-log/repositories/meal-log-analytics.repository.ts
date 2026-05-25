@@ -72,9 +72,14 @@ export class MealLogAnalyticsRepository {
    * Called by runDailyAggregation before publishing the replacement batch,
    * so read queries never see two PUBLISHED batches for the same day.
    */
-  async supersedeBatchesForPeriod(from: Date, to: Date): Promise<void> {
+  async supersedeBatchesForPeriod(
+    from: Date,
+    to: Date,
+    excludeId: string,
+  ): Promise<void> {
     await this.prisma.mealLogAnalyticsBatch.updateMany({
       where: {
+        id: { not: excludeId },
         status: MealLogAnalyticsBatchStatus.PUBLISHED,
         // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
         periodEnd: { gt: from },

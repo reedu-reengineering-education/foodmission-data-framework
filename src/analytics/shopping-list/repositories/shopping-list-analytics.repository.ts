@@ -79,9 +79,14 @@ export class ShoppingListAnalyticsRepository {
    * Called by runDailyAggregation before publishing the replacement batch,
    * so read queries never see two PUBLISHED batches for the same day.
    */
-  async supersedeBatchesForPeriod(from: Date, to: Date): Promise<void> {
+  async supersedeBatchesForPeriod(
+    from: Date,
+    to: Date,
+    excludeId: string,
+  ): Promise<void> {
     await this.prisma.shoppingListAnalyticsBatch.updateMany({
       where: {
+        id: { not: excludeId },
         status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
         // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
         periodEnd: { gt: from },
