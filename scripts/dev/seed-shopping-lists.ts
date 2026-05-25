@@ -195,10 +195,17 @@ async function seedShoppingLists() {
     `   Avg items/list: ${totalLists > 0 ? (totalItems / totalLists).toFixed(1) : 0}`,
   );
 
-  // Print suggested date range for the generate batch call
+  // Print suggested date range for the generate batch call.
+  // Use UTC midnight boundaries so the range aligns with how the aggregator
+  // buckets dates (createdAt.toISOString().slice(0, 10)).
+  // periodEnd is tomorrow midnight UTC so today's items are included by the
+  // exclusive upper bound (sli."createdAt" < periodEnd).
   const to = new Date();
+  to.setUTCDate(to.getUTCDate() + 1);
+  to.setUTCHours(0, 0, 0, 0);
   const from = new Date();
-  from.setUTCDate(from.getUTCDate() - 7);
+  from.setUTCDate(from.getUTCDate() - daysToSeed);
+  from.setUTCHours(0, 0, 0, 0);
   console.log(
     `\n   Suggested batch range: periodStart=${from.toISOString().split('T')[0]}&periodEnd=${to.toISOString().split('T')[0]}`,
   );

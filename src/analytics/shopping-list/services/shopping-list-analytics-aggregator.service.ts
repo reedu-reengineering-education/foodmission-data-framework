@@ -642,7 +642,6 @@ export class ShoppingListAnalyticsAggregator {
       }
       const g = groups.get(dateKey)!;
       g.users.add(row.userId);
-      g.count++;
       if (row.energyKcal !== null) g.calories.push(row.energyKcal);
       if (row.proteins !== null) g.proteins.push(row.proteins);
       if (row.fat !== null) g.fat.push(row.fat);
@@ -651,6 +650,18 @@ export class ShoppingListAnalyticsAggregator {
       if (row.sodium !== null) g.sodium.push(row.sodium);
       if (row.sugar !== null) g.sugar.push(row.sugar);
       if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
+      // itemCount = items with at least one nutrition value (consistent with averages)
+      if (
+        row.energyKcal !== null ||
+        row.proteins !== null ||
+        row.fat !== null ||
+        row.carbohydrates !== null ||
+        row.fiber !== null ||
+        row.sodium !== null ||
+        row.sugar !== null ||
+        row.saturatedFat !== null
+      )
+        g.count++;
     }
 
     return [...groups.values()].map((g) => ({
@@ -898,7 +909,6 @@ export class ShoppingListAnalyticsAggregator {
         }
         const g = groups.get(key)!;
         g.users.add(row.userId);
-        g.count++;
         if (row.energyKcal !== null) g.calories.push(row.energyKcal);
         if (row.proteins !== null) g.proteins.push(row.proteins);
         if (row.fat !== null) g.fat.push(row.fat);
@@ -907,6 +917,18 @@ export class ShoppingListAnalyticsAggregator {
         if (row.sodium !== null) g.sodium.push(row.sodium);
         if (row.sugar !== null) g.sugar.push(row.sugar);
         if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
+        // itemCount = items with at least one nutrition value (consistent with averages)
+        if (
+          row.energyKcal !== null ||
+          row.proteins !== null ||
+          row.fat !== null ||
+          row.carbohydrates !== null ||
+          row.fiber !== null ||
+          row.sodium !== null ||
+          row.sugar !== null ||
+          row.saturatedFat !== null
+        )
+          g.count++;
       }
 
       for (const g of groups.values()) {
@@ -1069,7 +1091,6 @@ export class ShoppingListAnalyticsAggregator {
           }
           const g = groups.get(key)!;
           g.users.add(row.userId);
-          g.count++;
           if (row.energyKcal !== null) g.calories.push(row.energyKcal);
           if (row.proteins !== null) g.proteins.push(row.proteins);
           if (row.fat !== null) g.fat.push(row.fat);
@@ -1078,6 +1099,18 @@ export class ShoppingListAnalyticsAggregator {
           if (row.sodium !== null) g.sodium.push(row.sodium);
           if (row.sugar !== null) g.sugar.push(row.sugar);
           if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
+          // itemCount = items with at least one nutrition value (consistent with averages)
+          if (
+            row.energyKcal !== null ||
+            row.proteins !== null ||
+            row.fat !== null ||
+            row.carbohydrates !== null ||
+            row.fiber !== null ||
+            row.sodium !== null ||
+            row.sugar !== null ||
+            row.saturatedFat !== null
+          )
+            g.count++;
         }
 
         for (const g of groups.values()) {
