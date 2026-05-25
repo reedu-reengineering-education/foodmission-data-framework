@@ -646,7 +646,11 @@ export class ShoppingListAnalyticsController {
   })
   @ApiResponse({ status: 200, description: 'List of batches' })
   async listBatches(
-    @Query('status') status?: ShoppingListAnalyticsBatchStatus,
+    @Query(
+      'status',
+      new ParseEnumPipe(ShoppingListAnalyticsBatchStatus, { optional: true }),
+    )
+    status?: ShoppingListAnalyticsBatchStatus,
   ) {
     return this.analyticsService.listBatches(status);
   }

@@ -588,7 +588,13 @@ export class MealLogAnalyticsController {
     enum: MealLogAnalyticsBatchStatus,
   })
   @ApiResponse({ status: 200, description: 'List of batches' })
-  async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
+  async listBatches(
+    @Query(
+      'status',
+      new ParseEnumPipe(MealLogAnalyticsBatchStatus, { optional: true }),
+    )
+    status?: MealLogAnalyticsBatchStatus,
+  ) {
     return this.analyticsService.listBatches(status);
   }
 
