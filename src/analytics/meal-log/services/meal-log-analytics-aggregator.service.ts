@@ -691,7 +691,8 @@ export class MealLogAnalyticsAggregator {
     for (const meal of meals) {
       const dateStr = meal.timestamp.toISOString().split('T')[0];
       for (const food of meal.foods) {
-        const key = `${dateStr}|${food.name}|${food.itemType}`;
+        const foodGroupKey = food.foodGroup ?? '__NULL_FOOD_GROUP__';
+        const key = `${dateStr}|${food.name}|${food.itemType}|${foodGroupKey}`;
         if (!foodMap.has(key)) {
           foodMap.set(key, {
             date: dateStr,
@@ -761,35 +762,46 @@ export class MealLogAnalyticsAggregator {
       return `${dateStr}|${m.typeOfMeal}`;
     });
 
-    return Array.from(grouped.entries()).map(([key, group]) => {
-      const [dateStr, typeOfMeal] = key.split('|');
-      const uniqueUsers = new Set(group.map((m) => m.userId)).size;
+    return Array.from(grouped.entries())
+      .map(([key, group]) => {
+        const [dateStr, typeOfMeal] = key.split('|');
+        const uniqueUsers = new Set(group.map((m) => m.userId)).size;
 
-      const susScores = group
-        .map((m) => m.sustainabilityScore)
-        .filter((s): s is number => s !== null);
-      const carbonScores = group
-        .map((m) => m.totalCarbonFootprint)
-        .filter((c) => c > 0);
+        const susScores = group
+          .map((m) => m.sustainabilityScore)
+          .filter((s): s is number => s !== null);
+        const carbonScores = group
+          .map((m) => m.totalCarbonFootprint)
+          .filter((c) => c > 0);
 
-      // Build score distributions
-      const nutriGrades = group.flatMap((m) => m.nutriScoreGrades);
-      const ecoGrades = group.flatMap((m) => m.ecoScoreGrades);
+        // Build score distributions
+        const nutriGrades = group.flatMap((m) => m.nutriScoreGrades);
+        const ecoGrades = group.flatMap((m) => m.ecoScoreGrades);
 
-      return {
-        date: new Date(dateStr),
-        typeOfMeal: typeOfMeal as TypeOfMeal,
-        userCount: uniqueUsers,
-        avgSustainabilityScore:
-          susScores.length > 0 ? safeAvg(susScores) : null,
-        avgCarbonFootprint:
-          carbonScores.length > 0 ? safeAvg(carbonScores) : null,
-        nutriScoreDistribution:
-          nutriGrades.length > 0 ? distribution(nutriGrades) : null,
-        ecoScoreDistribution:
-          ecoGrades.length > 0 ? distribution(ecoGrades) : null,
-      };
-    });
+        if (
+          susScores.length === 0 &&
+          carbonScores.length === 0 &&
+          nutriGrades.length === 0 &&
+          ecoGrades.length === 0
+        ) {
+          return null;
+        }
+
+        return {
+          date: new Date(dateStr),
+          typeOfMeal: typeOfMeal as TypeOfMeal,
+          userCount: uniqueUsers,
+          avgSustainabilityScore:
+            susScores.length > 0 ? safeAvg(susScores) : null,
+          avgCarbonFootprint:
+            carbonScores.length > 0 ? safeAvg(carbonScores) : null,
+          nutriScoreDistribution:
+            nutriGrades.length > 0 ? distribution(nutriGrades) : null,
+          ecoScoreDistribution:
+            ecoGrades.length > 0 ? distribution(ecoGrades) : null,
+        };
+      })
+      .filter((row): row is SustainabilityRow => row !== null);
   }
 
   private aggregateMealClassification(

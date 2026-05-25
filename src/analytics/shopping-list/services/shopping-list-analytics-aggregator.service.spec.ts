@@ -190,6 +190,42 @@ describe('ShoppingListAnalyticsAggregator', () => {
     expect(milkRow!.uniqueUsers).toBe(5); // still 5 distinct users
   });
 
+  it('keeps same-name items in different food groups as separate popularity rows', async () => {
+    const rows = [
+      ...makeRows(5, {
+        foodName: 'Milk',
+        itemType: 'food_product',
+        foodGroup: 'Dairy',
+      }),
+      ...Array.from({ length: 5 }, (_, i) =>
+        makeRow({
+          userId: `g-user-${i}`,
+          listId: `g-list-${i}`,
+          itemId: `g-item-${i}`,
+          foodName: 'Milk',
+          itemType: 'food_product',
+          foodGroup: 'Plant-based drinks',
+        }),
+      ),
+    ];
+
+    prisma.$queryRaw.mockResolvedValue(rows);
+
+    const result = await aggregator.aggregate(periodStart, periodEnd);
+
+    const milkRows = result.itemPopularity.filter(
+      (r) => r.foodName === 'Milk' && r.itemType === 'food_product',
+    );
+
+    expect(milkRows).toHaveLength(2);
+    expect(milkRows.map((r) => r.foodGroup).sort()).toEqual([
+      'Dairy',
+      'Plant-based drinks',
+    ]);
+    expect(milkRows.every((r) => r.frequency === 5)).toBe(true);
+    expect(milkRows.every((r) => r.uniqueUsers === 5)).toBe(true);
+  });
+
   it('selects predominant unit by mode', async () => {
     const rows = [
       ...makeRows(4, { unit: 'PIECES' }),
@@ -375,7 +411,7 @@ describe('ShoppingListAnalyticsAggregator', () => {
   });
 
   it('excludes generic_food items from sustainability scores', async () => {
-    // All items are generic_food — sustainability scores should have itemCount=0 for fp items
+    // All items are generic_food — no sustainability cohort should be emitted.
     const rows = makeRows(5, {
       itemType: 'generic_food',
       nutriScoreGrade: null,
@@ -385,10 +421,7 @@ describe('ShoppingListAnalyticsAggregator', () => {
 
     const result = await aggregator.aggregate(periodStart, periodEnd);
 
-    // userCount still covers all users
-    expect(result.sustainability[0].userCount).toBe(5);
-    expect(result.sustainability[0].itemCount).toBe(0);
-    expect(result.sustainability[0].vegetarianItemPct).toBeNull();
+    expect(result.sustainability).toHaveLength(0);
   });
 
   it('builds novaDistribution correctly', async () => {

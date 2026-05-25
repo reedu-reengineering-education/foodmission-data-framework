@@ -224,4 +224,106 @@ describe('MealLogAnalyticsAggregator', () => {
     expect(result.crossDimNutrition).toHaveLength(0); // K=20 suppression
     expect(result.mealRecords).toHaveLength(4); // intentionally retained
   });
+
+  it('keeps same-name foods in different groups as separate popularity rows', async () => {
+    const dairyMilkRows = Array.from({ length: 5 }, (_, i) =>
+      makeRawRow({
+        mealLogId: `dairy-log-${i}`,
+        mealId: `dairy-meal-${i}`,
+        userId: `dairy-user-${i}`,
+        itemId: `dairy-item-${i}`,
+        itemType: 'generic_food',
+        foodName: null,
+        foodEnergyKcal: null,
+        foodProteins: null,
+        foodFat: null,
+        foodCarbs: null,
+        foodFiber: null,
+        foodSodium: null,
+        foodSugar: null,
+        foodSaturatedFat: null,
+        foodNutriScoreGrade: null,
+        foodEcoScoreGrade: null,
+        foodNovaGroup: null,
+        foodCarbonFootprint: null,
+        categoryFoodName: 'Milk',
+        categoryFoodGroup: 'Dairy',
+      }),
+    );
+
+    const plantMilkRows = Array.from({ length: 5 }, (_, i) =>
+      makeRawRow({
+        mealLogId: `plant-log-${i}`,
+        mealId: `plant-meal-${i}`,
+        userId: `plant-user-${i}`,
+        itemId: `plant-item-${i}`,
+        itemType: 'generic_food',
+        foodName: null,
+        foodEnergyKcal: null,
+        foodProteins: null,
+        foodFat: null,
+        foodCarbs: null,
+        foodFiber: null,
+        foodSodium: null,
+        foodSugar: null,
+        foodSaturatedFat: null,
+        foodNutriScoreGrade: null,
+        foodEcoScoreGrade: null,
+        foodNovaGroup: null,
+        foodCarbonFootprint: null,
+        categoryFoodName: 'Milk',
+        categoryFoodGroup: 'Plant-based drinks',
+      }),
+    );
+
+    prisma.$queryRaw.mockResolvedValue([...dairyMilkRows, ...plantMilkRows]);
+
+    const result = await aggregator.aggregate(periodStart, periodEnd);
+
+    const milkRows = result.foodPopularity.filter(
+      (r) => r.foodName === 'Milk' && r.itemType === 'generic_food',
+    );
+
+    expect(milkRows).toHaveLength(2);
+    expect(milkRows.map((r) => r.foodGroup).sort()).toEqual([
+      'Dairy',
+      'Plant-based drinks',
+    ]);
+    expect(milkRows.every((r) => r.uniqueUsers === 5)).toBe(true);
+    expect(milkRows.every((r) => r.frequency === 5)).toBe(true);
+  });
+
+  it('suppresses sustainability rows with no score evidence', async () => {
+    const rows = Array.from({ length: 5 }, (_, i) =>
+      makeRawRow({
+        mealLogId: `null-sus-log-${i}`,
+        mealId: `null-sus-meal-${i}`,
+        userId: `null-sus-user-${i}`,
+        itemId: `null-sus-item-${i}`,
+        sustainabilityScore: null,
+        itemType: 'generic_food',
+        foodName: null,
+        foodEnergyKcal: null,
+        foodProteins: null,
+        foodFat: null,
+        foodCarbs: null,
+        foodFiber: null,
+        foodSodium: null,
+        foodSugar: null,
+        foodSaturatedFat: null,
+        foodNutriScoreGrade: null,
+        foodEcoScoreGrade: null,
+        foodNovaGroup: null,
+        foodCarbonFootprint: null,
+        categoryFoodName: 'Rice',
+        categoryFoodGroup: 'Cereals',
+      }),
+    );
+
+    prisma.$queryRaw.mockResolvedValue(rows);
+
+    const result = await aggregator.aggregate(periodStart, periodEnd);
+
+    expect(result.sustainability).toHaveLength(0);
+  });
 });

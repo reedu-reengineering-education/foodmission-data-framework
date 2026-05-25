@@ -476,7 +476,8 @@ export class ShoppingListAnalyticsAggregator {
   private aggregateItemPopularity(
     rows: RawShoppingListRow[],
   ): ItemPopularityRow[] {
-    // Group by (dateKey, foodName, itemType)
+    // Group by (dateKey, foodName, itemType, foodGroup) to avoid
+    // collapsing same-name foods from different groups into one bucket.
     const groups = new Map<
       string,
       {
@@ -493,7 +494,8 @@ export class ShoppingListAnalyticsAggregator {
     for (const row of rows) {
       if (!row.foodName) continue;
       const dateKey = row.createdAt.toISOString().slice(0, 10);
-      const key = `${dateKey}||${row.foodName}||${row.itemType}`;
+      const foodGroupKey = row.foodGroup ?? '__NULL_FOOD_GROUP__';
+      const key = `${dateKey}||${row.foodName}||${row.itemType}||${foodGroupKey}`;
       if (!groups.has(key)) {
         groups.set(key, {
           date: new Date(dateKey),
@@ -709,46 +711,48 @@ export class ShoppingListAnalyticsAggregator {
       if (row.itemType === 'food_product') g.fpRows.push(row);
     }
 
-    return [...groups.values()].map((g) => {
-      const fpRows = g.fpRows;
-      const itemCount = fpRows.length;
+    return [...groups.values()]
+      .filter((g) => g.fpRows.length > 0)
+      .map((g) => {
+        const fpRows = g.fpRows;
+        const itemCount = fpRows.length;
 
-      const carbonValues = fpRows
-        .map((r) => r.carbonFootprint)
-        .filter((v): v is number => v !== null);
-      const nutriScores = fpRows
-        .map((r) => r.nutriScoreGrade)
-        .filter((v): v is string => v !== null);
-      const ecoScores = fpRows
-        .map((r) => r.ecoScoreGrade)
-        .filter((v): v is string => v !== null);
-      const novaGroups = fpRows
-        .map((r) => r.novaGroup)
-        .filter((v): v is number => v !== null);
-      const vegetarianItems = fpRows.filter(
-        (r) => r.isVegetarian === true,
-      ).length;
-      const veganItems = fpRows.filter((r) => r.isVegan === true).length;
-      const ultraProcessedItems = fpRows.filter(
-        (r) => r.novaGroup === 4,
-      ).length;
-      const novaTotal = fpRows.filter((r) => r.novaGroup !== null).length;
+        const carbonValues = fpRows
+          .map((r) => r.carbonFootprint)
+          .filter((v): v is number => v !== null);
+        const nutriScores = fpRows
+          .map((r) => r.nutriScoreGrade)
+          .filter((v): v is string => v !== null);
+        const ecoScores = fpRows
+          .map((r) => r.ecoScoreGrade)
+          .filter((v): v is string => v !== null);
+        const novaGroups = fpRows
+          .map((r) => r.novaGroup)
+          .filter((v): v is number => v !== null);
+        const vegetarianItems = fpRows.filter(
+          (r) => r.isVegetarian === true,
+        ).length;
+        const veganItems = fpRows.filter((r) => r.isVegan === true).length;
+        const ultraProcessedItems = fpRows.filter(
+          (r) => r.novaGroup === 4,
+        ).length;
+        const novaTotal = fpRows.filter((r) => r.novaGroup !== null).length;
 
-      return {
-        date: g.date,
-        userCount: g.allUsers.size,
-        itemCount,
-        avgCarbonFootprint: safeAvg(carbonValues),
-        nutriScoreDistribution: distribution(nutriScores),
-        ecoScoreDistribution: distribution(ecoScores),
-        novaDistribution: distribution(novaGroups.map(String)),
-        vegetarianItemPct:
-          itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
-        veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
-        avgUltraProcessedPct:
-          novaTotal > 0 ? (ultraProcessedItems / novaTotal) * 100 : null,
-      };
-    });
+        return {
+          date: g.date,
+          userCount: g.allUsers.size,
+          itemCount,
+          avgCarbonFootprint: safeAvg(carbonValues),
+          nutriScoreDistribution: distribution(nutriScores),
+          ecoScoreDistribution: distribution(ecoScores),
+          novaDistribution: distribution(novaGroups.map(String)),
+          vegetarianItemPct:
+            itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+          veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
+          avgUltraProcessedPct:
+            novaTotal > 0 ? (ultraProcessedItems / novaTotal) * 100 : null,
+        };
+      });
   }
 
   private aggregateFoodGroups(rows: RawShoppingListRow[]): FoodGroupsRow[] {
