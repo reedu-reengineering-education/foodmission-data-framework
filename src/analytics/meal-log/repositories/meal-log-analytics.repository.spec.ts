@@ -163,7 +163,7 @@ describe('MealLogAnalyticsRepository', () => {
           where: expect.objectContaining({
             batch: { status: 'PUBLISHED' },
             typeOfMeal: 'DINNER',
-            country: { not: null },
+            dimensionName: 'country',
           }),
         }),
       );

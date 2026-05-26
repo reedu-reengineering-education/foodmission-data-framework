@@ -208,11 +208,8 @@ export interface MealRecordRow {
 export interface DemographicNutritionRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   mealCount: number;
   avgCalories: number | null;
@@ -231,11 +228,8 @@ export interface DemographicNutritionRow {
 export interface DemographicClassificationRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   totalMeals: number;
   vegetarianCount: number;
@@ -252,11 +246,8 @@ export interface DemographicClassificationRow {
 export interface DemographicPatternsRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   totalMeals: number;
   mealsFromPantryCount: number;
@@ -843,29 +834,6 @@ export class MealLogAnalyticsAggregator {
   // Demographic breakdown aggregators
   // ============================================================
 
-  /**
-   * Returns the 4 dimension columns for a row where only `activeDim` is set.
-   * Users who haven't provided the demographic value appear under '__null__'.
-   */
-  private buildDemographicDimensions(
-    activeDim: DemographicDimension,
-    dimValue: string,
-  ): {
-    ageGroup: string | null;
-    gender: string | null;
-    educationLevel: string | null;
-    region: string | null;
-    country: string | null;
-  } {
-    return {
-      ageGroup: activeDim === 'ageGroup' ? dimValue : null,
-      gender: activeDim === 'gender' ? dimValue : null,
-      educationLevel: activeDim === 'educationLevel' ? dimValue : null,
-      region: activeDim === 'region' ? dimValue : null,
-      country: activeDim === 'country' ? dimValue : null,
-    };
-  }
-
   private aggregateDemographicNutrition(
     meals: MealAggregate[],
   ): DemographicNutritionRow[] {
@@ -886,7 +854,8 @@ export class MealLogAnalyticsAggregator {
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           mealCount: group.length,
           avgCalories: safeAvg(calories),
@@ -937,7 +906,8 @@ export class MealLogAnalyticsAggregator {
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           totalMeals: group.length,
           vegetarianCount: vegCount,
@@ -980,7 +950,8 @@ export class MealLogAnalyticsAggregator {
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           totalMeals: group.length,
           mealsFromPantryCount: pantryMeals.length,

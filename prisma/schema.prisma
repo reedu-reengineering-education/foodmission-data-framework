@@ -1049,12 +1049,8 @@ model MealLogAnalyticsDemographicNutrition {
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
-  // Exactly one of these is non-null per row
-  ageGroup       String?
-  gender         String?
-  educationLevel String?
-  region         String?
-  country        String?
+  dimensionName  String
+  dimensionValue String
 
   userCount       Int
   mealCount       Int
@@ -1072,13 +1068,9 @@ model MealLogAnalyticsDemographicNutrition {
 
   createdAt DateTime @default(now())
 
-  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@unique([batchId, date, typeOfMeal, dimensionName, dimensionValue])
   @@index([date])
-  @@index([ageGroup])
-  @@index([gender])
-  @@index([educationLevel])
-  @@index([region])
-  @@index([country])
+  @@index([dimensionName])
   @@map("meal_log_analytics_demographic_nutrition")
 }
 
@@ -1090,12 +1082,8 @@ model MealLogAnalyticsDemographicClassification {
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
-  // Exactly one of these is non-null per row
-  ageGroup       String?
-  gender         String?
-  educationLevel String?
-  region         String?
-  country        String?
+  dimensionName  String
+  dimensionValue String
 
   userCount            Int
   totalMeals           Int
@@ -1111,13 +1099,9 @@ model MealLogAnalyticsDemographicClassification {
 
   createdAt DateTime @default(now())
 
-  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@unique([batchId, date, typeOfMeal, dimensionName, dimensionValue])
   @@index([date])
-  @@index([ageGroup])
-  @@index([gender])
-  @@index([educationLevel])
-  @@index([region])
-  @@index([country])
+  @@index([dimensionName])
   @@map("meal_log_analytics_demographic_classification")
 }
 
@@ -1129,12 +1113,8 @@ model MealLogAnalyticsDemographicPatterns {
   date       DateTime       @db.Date
   typeOfMeal TypeOfMeal
 
-  // Exactly one of these is non-null per row
-  ageGroup       String?
-  gender         String?
-  educationLevel String?
-  region         String?
-  country        String?
+  dimensionName  String
+  dimensionValue String
 
   userCount            Int
   totalMeals           Int
@@ -1148,13 +1128,9 @@ model MealLogAnalyticsDemographicPatterns {
 
   createdAt DateTime @default(now())
 
-  @@unique([batchId, date, typeOfMeal, ageGroup, gender, educationLevel, region, country])
+  @@unique([batchId, date, typeOfMeal, dimensionName, dimensionValue])
   @@index([date])
-  @@index([ageGroup])
-  @@index([gender])
-  @@index([educationLevel])
-  @@index([region])
-  @@index([country])
+  @@index([dimensionName])
   @@map("meal_log_analytics_demographic_patterns")
 }
 
