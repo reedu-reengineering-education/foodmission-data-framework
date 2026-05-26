@@ -62,20 +62,20 @@ export class UpdatePantryItemDto {
   expiryDate?: Date;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food item',
-    example: 'uuid-food-id',
+    description: 'The ID of the food product',
+    example: 'uuid-food-product-id',
   })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food category (NEVO generic)',
-    example: 'uuid-food-category-id',
+    description: 'The ID of the generic food (NEVO generic)',
+    example: 'uuid-generic-food-id',
   })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 }

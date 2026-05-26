@@ -100,6 +100,29 @@ describe('ValidationExceptionFilter', () => {
       expect(mockResponse.json).not.toHaveBeenCalled();
     });
 
+    it('should handle ParseUUIDPipe errors as validation errors', () => {
+      const exception = new BadRequestException({
+        message: 'Validation failed (uuid is expected)',
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+
+      filter.catch(exception, mockHost);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        statusCode: 400,
+        message: 'Validation failed',
+        error: 'VALIDATION_ERROR',
+        timestamp: expect.any(String),
+        path: '/api/test',
+        traceId: 'test-trace-id',
+        details: {
+          errors: ['Validation failed (uuid is expected)'],
+        },
+      });
+    });
+
     it('should re-throw BadRequestException with empty array message', () => {
       const exception = new BadRequestException({
         message: [],

@@ -87,13 +87,13 @@ export class PantryItemsController {
               format: 'date',
               example: '2027-02-02',
             },
-            foodId: {
+            foodProductId: {
               type: 'string',
               format: 'uuid',
-              description: 'UUID of the food item (OpenFoodFacts).',
+              description: 'UUID of the food product (OpenFoodFacts).',
             },
           },
-          required: ['foodId', 'quantity'],
+          required: ['foodProductId', 'quantity'],
         },
         {
           type: 'object',
@@ -111,13 +111,13 @@ export class PantryItemsController {
               format: 'date',
               example: '2027-02-02',
             },
-            foodCategoryId: {
+            genericFoodId: {
               type: 'string',
               format: 'uuid',
-              description: 'UUID of the food category (NEVO generic).',
+              description: 'UUID of the generic food (NEVO generic).',
             },
           },
-          required: ['foodCategoryId', 'quantity'],
+          required: ['genericFoodId', 'quantity'],
         },
       ],
     },
@@ -148,18 +148,18 @@ export class PantryItemsController {
   @ApiOperation({
     summary: 'Get pantry items',
     description:
-      'Retrieve pantry items from your dedicated pantry. Optional filtering by foodId, foodCategoryId, unit, or expiryDate.',
+      'Retrieve pantry items from your dedicated pantry. Optional filtering by foodProductId, genericFoodId, unit, or expiryDate.',
   })
   @ApiQuery({
-    name: 'foodId',
+    name: 'foodProductId',
     required: false,
-    description: 'Filter by food ID (UUID)',
+    description: 'Filter by food product ID (UUID)',
     type: String,
   })
   @ApiQuery({
-    name: 'foodCategoryId',
+    name: 'genericFoodId',
     required: false,
-    description: 'Filter by food category ID (UUID)',
+    description: 'Filter by generic food ID (UUID)',
     type: String,
   })
   @ApiQuery({

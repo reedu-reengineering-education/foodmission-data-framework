@@ -57,8 +57,9 @@ const FOOD_NUTRITION_SELECT = {
 } as const;
 
 /**
- * Select fields for FoodCategory model nutrition data.
- * Must include all NUTRIENT_FIELDS that exist on FoodCategory (e.g. salt, vitaminA, vitaminD).
+ * Select fields for GenericFood model nutrition data.
+ * Must include all NUTRIENT_FIELDS that exist on GenericFood (e.g. vitaminA, vitaminD).
+ * Note: GenericFood does not have a `salt` field; use `sodium` instead.
  */
 const FOOD_CATEGORY_NUTRITION_SELECT = {
   id: true,
@@ -85,8 +86,8 @@ const FOOD_CATEGORY_NUTRITION_SELECT = {
 /**
  * Service for calculating aggregated nutritional information for recipes.
  *
- * Aggregates nutrient values from linked Food (OpenFoodFacts) and
- * FoodCategory (NEVO) sources, scaling by ingredient weight.
+ * Aggregates nutrient values from linked FoodProduct (OpenFoodFacts) and
+ * GenericFood (NEVO) sources, scaling by ingredient weight.
  */
 @Injectable()
 export class RecipeNutritionService {
@@ -98,10 +99,10 @@ export class RecipeNutritionService {
    * Calculate aggregated nutrition for a recipe by summing ingredient nutrients.
    *
    * Algorithm:
-   * 1. Fetch recipe with ingredients + linked Food/FoodCategory nutrient data
+   * 1. Fetch recipe with ingredients + linked FoodProduct/GenericFood nutrient data
    * 2. For each ingredient:
    *    a. Parse measure string to grams using parseMeasure()
-   *    b. Get nutrient source (Food or FoodCategory)
+   *    b. Get nutrient source (FoodProduct or GenericFood)
    *    c. Scale nutrients: (nutrientPer100g * grams / 100)
    * 3. Sum all scaled nutrients
    * 4. Calculate per-serving if recipe.servings is set
@@ -114,8 +115,8 @@ export class RecipeNutritionService {
         ingredients: {
           orderBy: { order: 'asc' },
           include: {
-            food: { select: FOOD_NUTRITION_SELECT },
-            foodCategory: { select: FOOD_CATEGORY_NUTRITION_SELECT },
+            foodProduct: { select: FOOD_NUTRITION_SELECT },
+            genericFood: { select: FOOD_CATEGORY_NUTRITION_SELECT },
           },
         },
       },
@@ -136,8 +137,8 @@ export class RecipeNutritionService {
     let confidenceSum = 0;
 
     for (const ingredient of recipe.ingredients) {
-      // Get nutrient source (prefer Food over FoodCategory)
-      const nutrientSource = ingredient.food || ingredient.foodCategory;
+      // Get nutrient source (prefer FoodProduct over GenericFood)
+      const nutrientSource = ingredient.foodProduct || ingredient.genericFood;
 
       if (!nutrientSource) {
         missingIngredients.push(ingredient.name);

@@ -1,7 +1,7 @@
+import { FoodProductResponseDto } from '../../../food-products/dto/food-product-response.dto';
+import { GenericFoodResponseDto } from '../../../generic-foods/dto/generic-food-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Unit } from '@prisma/client';
-import { FoodResponseDto } from '../../../foods/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../../food-category/dto/food-category-response.dto';
 
 export class MealItemResponseDto {
   @ApiProperty({
@@ -19,24 +19,24 @@ export class MealItemResponseDto {
   @ApiProperty({
     description:
       'Type of item - either a specific food product or a generic food category',
-    enum: ['food', 'food_category'],
-    example: 'food',
+    enum: ['food_product', 'generic_food'],
+    example: 'food_product',
   })
-  itemType: 'food' | 'food_category';
+  itemType: 'food_product' | 'generic_food';
 
   @ApiPropertyOptional({
-    description: 'UUID of the specific food product (if itemType is "food")',
+    description: 'UUID of the specific food product (if itemType is "food_product")',
     example: '550e8400-e29b-41d4-a716-446655440002',
     nullable: true,
   })
-  foodId: string | null;
+  foodProductId: string | null;
 
   @ApiPropertyOptional({
-    description: 'UUID of the food category (if itemType is "food_category")',
+    description: 'UUID of the generic food (if itemType is "generic_food")',
     example: '550e8400-e29b-41d4-a716-446655440003',
     nullable: true,
   })
-  foodCategoryId: string | null;
+  genericFoodId: string | null;
 
   @ApiProperty({
     description: 'Quantity of the item',
@@ -59,18 +59,18 @@ export class MealItemResponseDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    description: 'Food product details (if itemType is "food")',
-    type: () => FoodResponseDto,
+    description: 'Food product details (if itemType is "food_product")',
+    type: () => FoodProductResponseDto,
     nullable: true,
   })
-  food?: FoodResponseDto | null;
+  foodProduct?: FoodProductResponseDto | null;
 
   @ApiPropertyOptional({
-    description: 'Food category details (if itemType is "food_category")',
-    type: () => FoodCategoryResponseDto,
+    description: 'Generic food details (if itemType is "generic_food")',
+    type: () => GenericFoodResponseDto,
     nullable: true,
   })
-  foodCategory?: FoodCategoryResponseDto | null;
+  genericFood?: GenericFoodResponseDto | null;
 
   @ApiProperty({
     description: 'Timestamp when the meal item was created',

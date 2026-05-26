@@ -5,70 +5,17 @@ import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { Unit } from '@prisma/client';
+import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
+import { createMockMealItemService } from '../../../../test/mocks/mock-meal-item-service';
+import { MEAL_ITEM_TEST_IDS as TEST_IDS } from '../test-utils/meal-item-test-ids';
 
 describe('MealItemController', () => {
   let controller: MealItemController;
   let service: MealItemService;
 
-  const TEST_IDS = {
-    USER: 'user-uuid-123',
-    MEAL: 'meal-uuid-123',
-    MEAL_ITEM: 'meal-item-uuid-123',
-    FOOD: 'food-uuid-123',
-    FOOD_CATEGORY: 'food-category-uuid-123',
-  };
+  const mockMealItemWithFood = TEST_MEAL_ITEM_WITH_FOOD;
 
-  const mockMealItemWithFood = {
-    id: TEST_IDS.MEAL_ITEM,
-    mealId: TEST_IDS.MEAL,
-    itemType: 'food',
-    foodId: TEST_IDS.FOOD,
-    foodCategoryId: null,
-    quantity: 2,
-    unit: Unit.PIECES,
-    notes: 'Test notes',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    meal: {
-      id: TEST_IDS.MEAL,
-      name: 'Breakfast',
-      userId: TEST_IDS.USER,
-      calories: 500,
-      proteins: 20,
-      nutritionalInfo: {},
-      sustainabilityScore: null,
-      price: null,
-      barcode: null,
-      recipeId: null,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    food: {
-      id: TEST_IDS.FOOD,
-      name: 'Banana',
-      barcode: '1234567890',
-      quantity: '100g',
-      description: 'Fresh banana',
-      allergens: [],
-      proteins: 1.1,
-      carbohydrates: 23,
-      fats: 0.3,
-      calories: 89,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    foodCategory: null,
-  };
-
-  const mockMealItemService = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findByMealId: jest.fn(),
-    findById: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    deleteByMealId: jest.fn(),
-  };
+  const mockMealItemService = createMockMealItemService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -93,7 +40,7 @@ describe('MealItemController', () => {
   describe('create', () => {
     it('should create a meal item', async () => {
       const createDto = Object.assign(new CreateMealItemDto(), {
-        foodId: TEST_IDS.FOOD,
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
         quantity: 2,
         unit: Unit.PIECES,
         notes: 'Test notes',

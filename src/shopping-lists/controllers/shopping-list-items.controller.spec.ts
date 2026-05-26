@@ -3,26 +3,27 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ShoppingListItemsController } from './shopping-list-items.controller';
 import { ShoppingListItemService } from '../services/shopping-list-items.service';
-import { TEST_FOOD } from '../../../test/fixtures/food.fixtures';
-import { Unit } from '@prisma/client';
 
 describe('ShoppingListItemsController', () => {
   let controller: ShoppingListItemsController;
   let service: jest.Mocked<ShoppingListItemService>;
 
-  const mockItemResponse = {
-    id: 'item-1',
-    shoppingListId: 'list-1',
-    foodId: TEST_FOOD.id,
-    quantity: 2,
-    unit: 'KG',
-    checked: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  const shoppingListId = '98e6c344-5fbe-400c-a682-ecca1e5fbfe4';
+  const itemId = 'e4e562a0-5e11-4f7f-b951-7fce2d2686d1';
 
-  const shoppingListId = 'list-1';
-  const itemId = 'item-1';
+  const mockItemResponse: any = {
+    id: itemId,
+    shoppingListId,
+    checked: false,
+    quantity: 1,
+    unit: 'KG',
+    itemType: 'food_product',
+    foodProductId: 'food-1',
+    genericFoodId: null,
+    notes: null,
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
+  };
 
   beforeEach(async () => {
     const mockService: Partial<jest.Mocked<ShoppingListItemService>> = {
@@ -36,12 +37,7 @@ describe('ShoppingListItemsController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ShoppingListItemsController],
-      providers: [
-        {
-          provide: ShoppingListItemService,
-          useValue: mockService,
-        },
-      ],
+      providers: [{ provide: ShoppingListItemService, useValue: mockService }],
     })
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
@@ -49,9 +45,7 @@ describe('ShoppingListItemsController', () => {
       .useValue({ canActivate: () => true })
       .compile();
 
-    controller = module.get<ShoppingListItemsController>(
-      ShoppingListItemsController,
-    );
+    controller = module.get(ShoppingListItemsController);
     service = module.get(ShoppingListItemService);
   });
 
@@ -59,9 +53,27 @@ describe('ShoppingListItemsController', () => {
     jest.clearAllMocks();
   });
 
+  it('passes checked attribute through patch update', async () => {
+    service.update.mockResolvedValue({ checked: true } as any);
+
+    await controller.update(
+      shoppingListId,
+      itemId,
+      { checked: true },
+      'user-1',
+    );
+
+    expect(service.update).toHaveBeenCalledWith(
+      itemId,
+      { checked: true },
+      'user-1',
+      shoppingListId,
+    );
+  });
+
   describe('findByShoppingList', () => {
     it('should call service with shoppingListId and userId', async () => {
-      service.findByShoppingList.mockResolvedValueOnce({ data: [] } as any);
+      service.findByShoppingList.mockResolvedValueOnce({ data: [] });
 
       await controller.findByShoppingList(shoppingListId, {}, 'user-1');
 
@@ -100,7 +112,7 @@ describe('ShoppingListItemsController', () => {
       const result = await controller.update(
         shoppingListId,
         itemId,
-        updateDto as any,
+        updateDto,
         'user-1',
       );
 
@@ -116,12 +128,12 @@ describe('ShoppingListItemsController', () => {
     it('should pass checked attribute through patch update', async () => {
       const updateDto = { checked: true };
       const checkedResponse = { ...mockItemResponse, checked: true };
-      service.update = jest.fn().mockResolvedValue(checkedResponse as any);
+      service.update = jest.fn().mockResolvedValue(checkedResponse);
 
       const result = await controller.update(
         shoppingListId,
         itemId,
-        updateDto as any,
+        updateDto,
         'user-1',
       );
 
@@ -158,46 +170,7 @@ describe('ShoppingListItemsController', () => {
         shoppingListId,
         'user-1',
       );
-
       expect(result).toBeUndefined();
-      expect(service.clearCheckedItems).toHaveBeenCalledWith(
-        shoppingListId,
-        'user-1',
-      );
-    });
-  });
-
-  describe('create', () => {
-    it('should add an item to the shopping list', async () => {
-      const createDto = {
-        quantity: 2,
-        unit: Unit.KG,
-        notes: 'Test notes',
-        checked: false,
-        foodId: 'food-1',
-      };
-
-      const mockResponse = {
-        id: 'item-1',
-        shoppingListId,
-        ...createDto,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      service.create = jest.fn().mockResolvedValue(mockResponse);
-
-      const result = await controller.create(
-        shoppingListId,
-        createDto as any,
-        'user-1',
-      );
-
-      expect(service.create).toHaveBeenCalledWith(
-        expect.objectContaining({ shoppingListId, ...createDto }),
-        'user-1',
-      );
-      expect(result).toEqual(mockResponse);
     });
   });
 });

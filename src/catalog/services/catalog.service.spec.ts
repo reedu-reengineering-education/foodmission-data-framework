@@ -59,10 +59,11 @@ describe('CatalogService', () => {
     expect(res.data.length).toBeLessThanOrEqual(10);
   });
 
-  it('requires countryCode or search for regions', () => {
-    expect(() => service.listRegions({ page: 1, limit: 10 })).toThrow(
-      /countryCode or search/i,
-    );
+  it('lists regions without filters (paginated)', () => {
+    const res = service.listRegions({ page: 1, limit: 10 });
+    expect(res.data.length).toBeGreaterThan(0);
+    expect(res.data.length).toBeLessThanOrEqual(10);
+    expect(res.total).toBeGreaterThan(10);
   });
 
   it('paginates languages and supports search', () => {

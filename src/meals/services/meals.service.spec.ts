@@ -6,6 +6,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 describe('MealsService', () => {
   let service: MealsService;
@@ -187,6 +188,58 @@ describe('MealsService', () => {
         dietaryLabels: { has: 'VEGAN' },
       },
       orderBy: { createdAt: 'desc' },
+    });
+  });
+
+  describe('create — FK constraint handling', () => {
+    it('should throw NotFoundException when recipeId does not exist', async () => {
+      mockMealRepository.findByBarcode.mockResolvedValue(null);
+      mockMealRepository.create.mockRejectedValue(
+        new PrismaClientKnownRequestError('FK violation', {
+          code: 'P2003',
+          clientVersion: '6.0.0',
+          meta: { field_name: 'recipeId' },
+        }),
+      );
+
+      await expect(
+        service.create(
+          { name: 'Meal', recipeId: 'nonexistent-id' } as any,
+          userId,
+        ),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should include the invalid recipeId in the error message', async () => {
+      mockMealRepository.findByBarcode.mockResolvedValue(null);
+      mockMealRepository.create.mockRejectedValue(
+        new PrismaClientKnownRequestError('FK violation', {
+          code: 'P2003',
+          clientVersion: '6.0.0',
+        }),
+      );
+
+      await expect(
+        service.create({ name: 'Meal', recipeId: 'bad-uuid' } as any, userId),
+      ).rejects.toThrow("Recipe with id 'bad-uuid' not found");
+    });
+  });
+
+  describe('update — FK constraint handling', () => {
+    it('should throw NotFoundException when recipeId does not exist', async () => {
+      const meal = { id: 'm1', name: 'Meal', userId, barcode: null };
+      mockMealRepository.findById.mockResolvedValue(meal);
+      mockMealRepository.update.mockRejectedValue(
+        new PrismaClientKnownRequestError('FK violation', {
+          code: 'P2003',
+          clientVersion: '6.0.0',
+          meta: { field_name: 'recipeId' },
+        }),
+      );
+
+      await expect(
+        service.update('m1', { recipeId: 'nonexistent-id' } as any, userId),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

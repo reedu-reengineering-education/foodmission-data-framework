@@ -2,60 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MealItemRepository } from './meal-items.repository';
 import { PrismaService } from '../../../database/prisma.service';
 import { Unit } from '@prisma/client';
+import { TEST_MEAL_ITEM_WITH_FOOD } from '../../../../test/fixtures/meal-item.fixtures';
+import { MEAL_ITEM_TEST_IDS as TEST_IDS } from '../test-utils/meal-item-test-ids';
 
 describe('MealItemRepository', () => {
   let repository: MealItemRepository;
   let prisma: PrismaService;
 
-  const TEST_IDS = {
-    USER: 'user-uuid-123',
-    MEAL: 'meal-uuid-123',
-    MEAL_ITEM: 'meal-item-uuid-123',
-    FOOD: 'food-uuid-123',
-    FOOD_CATEGORY: 'food-category-uuid-123',
-  };
-
-  const mockMealItemWithFood = {
-    id: TEST_IDS.MEAL_ITEM,
-    mealId: TEST_IDS.MEAL,
-    itemType: 'food',
-    foodId: TEST_IDS.FOOD,
-    foodCategoryId: null,
-    quantity: 2,
-    unit: Unit.PIECES,
-    notes: 'Test notes',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    meal: {
-      id: TEST_IDS.MEAL,
-      name: 'Breakfast',
-      userId: TEST_IDS.USER,
-      calories: 500,
-      proteins: 20,
-      nutritionalInfo: {},
-      sustainabilityScore: null,
-      price: null,
-      barcode: null,
-      recipeId: null,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    food: {
-      id: TEST_IDS.FOOD,
-      name: 'Banana',
-      barcode: '1234567890',
-      quantity: '100g',
-      description: 'Fresh banana',
-      allergens: [],
-      proteins: 1.1,
-      carbohydrates: 23,
-      fats: 0.3,
-      calories: 89,
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    foodCategory: null,
-  };
+  const mockMealItemWithFood = TEST_MEAL_ITEM_WITH_FOOD;
 
   const mockPrismaService = {
     mealItem: {
@@ -88,14 +42,14 @@ describe('MealItemRepository', () => {
   });
 
   describe('create', () => {
-    it('should create a meal item with food', async () => {
+    it('should create a meal item with food product', async () => {
       mockPrismaService.mealItem.create.mockResolvedValue(mockMealItemWithFood);
 
       const result = await repository.create({
         mealId: TEST_IDS.MEAL,
-        foodId: TEST_IDS.FOOD,
-        foodCategoryId: null,
-        itemType: 'food',
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
+        genericFoodId: null,
+        itemType: 'food_product',
         quantity: 2,
         unit: Unit.PIECES,
         notes: 'Test notes',
@@ -105,17 +59,17 @@ describe('MealItemRepository', () => {
       expect(prisma.mealItem.create).toHaveBeenCalledWith({
         data: {
           mealId: TEST_IDS.MEAL,
-          foodId: TEST_IDS.FOOD,
-          foodCategoryId: null,
-          itemType: 'food',
+          foodProductId: TEST_IDS.FOOD_PRODUCT,
+          genericFoodId: null,
+          itemType: 'food_product',
           quantity: 2,
           unit: Unit.PIECES,
           notes: 'Test notes',
         },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -125,15 +79,13 @@ describe('MealItemRepository', () => {
     it('should return all meal items', async () => {
       const mockItems = [mockMealItemWithFood];
       mockPrismaService.mealItem.findMany.mockResolvedValue(mockItems);
-
       const result = await repository.findAll();
-
       expect(result).toEqual(mockItems);
       expect(prisma.mealItem.findMany).toHaveBeenCalledWith({
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -151,8 +103,8 @@ describe('MealItemRepository', () => {
         where: { mealId: TEST_IDS.MEAL },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
         orderBy: { createdAt: 'asc' },
       });
@@ -172,8 +124,8 @@ describe('MealItemRepository', () => {
         where: { id: TEST_IDS.MEAL_ITEM },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
@@ -187,42 +139,42 @@ describe('MealItemRepository', () => {
     });
   });
 
-  describe('findByMealAndFood', () => {
-    it('should find a meal item by meal and food', async () => {
+  describe('findByMealAndFoodProduct', () => {
+    it('should find a meal item by meal and food product', async () => {
       mockPrismaService.mealItem.findFirst.mockResolvedValue(
         mockMealItemWithFood,
       );
 
-      const result = await repository.findByMealAndFood(
+      const result = await repository.findByMealAndFoodProduct(
         TEST_IDS.MEAL,
-        TEST_IDS.FOOD,
+        TEST_IDS.FOOD_PRODUCT,
       );
 
       expect(result).toEqual(mockMealItemWithFood);
       expect(prisma.mealItem.findFirst).toHaveBeenCalledWith({
         where: {
           mealId: TEST_IDS.MEAL,
-          foodId: TEST_IDS.FOOD,
+          foodProductId: TEST_IDS.FOOD_PRODUCT,
         },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
   });
 
-  describe('findByMealAndFoodCategory', () => {
-    it('should find a meal item by meal and food category', async () => {
+  describe('findByMealAndGenericFood', () => {
+    it('should find a meal item by meal and generic food', async () => {
       const mockItemWithCategory = {
         ...mockMealItemWithFood,
-        itemType: 'food_category',
-        foodId: null,
-        foodCategoryId: TEST_IDS.FOOD_CATEGORY,
-        food: null,
-        foodCategory: {
-          id: TEST_IDS.FOOD_CATEGORY,
+        itemType: 'generic_food',
+        foodProductId: null,
+        genericFoodId: TEST_IDS.GENERIC_FOOD,
+        foodProduct: null,
+        genericFood: {
+          id: TEST_IDS.GENERIC_FOOD,
           name: 'Fruits',
           nevoCode: '01.001',
           description: 'Fresh fruits',
@@ -235,59 +187,51 @@ describe('MealItemRepository', () => {
         mockItemWithCategory,
       );
 
-      const result = await repository.findByMealAndFoodCategory(
+      const result = await repository.findByMealAndGenericFood(
         TEST_IDS.MEAL,
-        TEST_IDS.FOOD_CATEGORY,
+        TEST_IDS.GENERIC_FOOD,
       );
 
       expect(result).toEqual(mockItemWithCategory);
       expect(prisma.mealItem.findFirst).toHaveBeenCalledWith({
         where: {
           mealId: TEST_IDS.MEAL,
-          foodCategoryId: TEST_IDS.FOOD_CATEGORY,
+          genericFoodId: TEST_IDS.GENERIC_FOOD,
         },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });
   });
 
   describe('checkForDuplicateItem', () => {
-    it('should check for duplicate by food', async () => {
+    it('should check for duplicate by food product', async () => {
       mockPrismaService.mealItem.findFirst.mockResolvedValue(
         mockMealItemWithFood,
       );
 
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        TEST_IDS.FOOD,
-        undefined,
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
+      });
 
       expect(result).toEqual(mockMealItemWithFood);
     });
 
-    it('should check for duplicate by food category', async () => {
+    it('should check for duplicate by generic food', async () => {
       mockPrismaService.mealItem.findFirst.mockResolvedValue(null);
 
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        undefined,
-        TEST_IDS.FOOD_CATEGORY,
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {
+        genericFoodId: TEST_IDS.GENERIC_FOOD,
+      });
 
       expect(result).toBeNull();
     });
 
     it('should return null if neither food nor category provided', async () => {
-      const result = await repository.checkForDuplicateItem(
-        TEST_IDS.MEAL,
-        undefined,
-        undefined,
-      );
+      const result = await repository.checkForDuplicateItem(TEST_IDS.MEAL, {});
 
       expect(result).toBeNull();
     });
@@ -312,8 +256,8 @@ describe('MealItemRepository', () => {
         data: { quantity: 3 },
         include: {
           meal: true,
-          food: true,
-          foodCategory: true,
+          foodProduct: true,
+          genericFood: true,
         },
       });
     });

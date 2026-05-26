@@ -1,7 +1,7 @@
+import { FoodProductResponseDto } from '../../food-products/dto/food-product-response.dto';
+import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { FoodResponseDto } from '../../foods/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../food-category/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
 
 @Exclude()
@@ -49,26 +49,26 @@ export class ShoppingListItemResponseDto {
   shoppingListId: string;
 
   @ApiProperty({
-    description: 'The type of item (food or food_category)',
-    example: 'food',
-    enum: ['food', 'food_category'],
+    description: 'The type of item (food_product or generic_food)',
+    example: 'food_product',
+    enum: ['food_product', 'generic_food'],
   })
   @Expose()
-  itemType: 'food' | 'food_category';
+  itemType: 'food_product' | 'generic_food';
 
   @ApiPropertyOptional({
-    description: 'The ID of the food item (if itemType is food)',
-    example: 'uuid-food-id',
+    description: 'The ID of the food product (if itemType is food_product)',
+    example: 'uuid-food-product-id',
   })
   @Expose()
-  foodId: string | null;
+  foodProductId: string | null;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food category (if itemType is food_category)',
-    example: 'uuid-food-category-id',
+    description: 'The ID of the generic food (if itemType is generic_food)',
+    example: 'uuid-generic-food-id',
   })
   @Expose()
-  foodCategoryId: string | null;
+  genericFoodId: string | null;
 
   @ApiProperty({
     description: 'The creation timestamp',
@@ -85,20 +85,20 @@ export class ShoppingListItemResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'Associated food item (if itemType is food)',
-    type: () => FoodResponseDto,
+    description: 'Associated food product (if itemType is food_product)',
+    type: () => FoodProductResponseDto,
   })
   @Expose()
-  @Type(() => FoodResponseDto)
-  food: FoodResponseDto | null;
+  @Type(() => FoodProductResponseDto)
+  foodProduct: FoodProductResponseDto | null;
 
   @ApiPropertyOptional({
-    description: 'Associated food category (if itemType is food_category)',
-    type: () => FoodCategoryResponseDto,
+    description: 'Associated generic food (if itemType is generic_food)',
+    type: () => GenericFoodResponseDto,
   })
   @Expose()
-  @Type(() => FoodCategoryResponseDto)
-  foodCategory: FoodCategoryResponseDto | null;
+  @Type(() => GenericFoodResponseDto)
+  genericFood: GenericFoodResponseDto | null;
 }
 
 export class MultipleShoppingListItemResponseDto {

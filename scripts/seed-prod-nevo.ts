@@ -207,7 +207,7 @@ async function main() {
     const nevoCode = parseInt_(cols[COL.NEVO_CODE]);
     if (isNaN(nevoCode)) continue;
 
-    const exists = await prisma.foodCategory.findUnique({
+    const exists = await prisma.genericFood.findUnique({
       where: { nevoCode },
     });
     if (exists) continue; // skip existing — create-only
@@ -360,7 +360,7 @@ async function main() {
     } as any;
 
     try {
-      await prisma.foodCategory.create({ data: { nevoCode, ...data } });
+      await prisma.genericFood.create({ data: { nevoCode, ...data } });
       created += 1;
     } catch (err: any) {
       // If a concurrent process created the same nevoCode, skip
@@ -375,11 +375,11 @@ async function main() {
     }
   }
 
-  console.log(`   ✅ Created ${created} new NEVO food categories`);
+  console.log(`   ✅ Created ${created} new NEVO generic foods`);
 
   try {
     console.log(
-      '\n🍽️  Seeding recipes linked to NEVO categories (skip existing)...',
+      '\n🍽️  Seeding recipes linked to generic foods / NEVO (skip existing)...',
     );
     const result = await seedRecipes(prisma, { skipExisting: true });
     if (result.errors && result.errors > 0) {

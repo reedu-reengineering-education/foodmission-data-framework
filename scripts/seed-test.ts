@@ -9,7 +9,10 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { TEST_SEED_FOODS, TEST_SEED_USERS } from '../prisma/seeds/seed-fixtures';
+import {
+  TEST_SEED_FOOD_PRODUCTS,
+  TEST_SEED_USERS,
+} from '../prisma/seeds/seed-fixtures';
 import {
   upsertSeedFoodByBarcode,
   upsertSeedUser,
@@ -22,8 +25,8 @@ async function seedTestData() {
   console.log('=====================================');
 
   try {
-    for (const food of TEST_SEED_FOODS) {
-      await upsertSeedFoodByBarcode(prisma, food, 'test-seed');
+    for (const foodProduct of TEST_SEED_FOOD_PRODUCTS) {
+      await upsertSeedFoodByBarcode(prisma, foodProduct, 'test-seed');
     }
 
     for (const user of TEST_SEED_USERS) {

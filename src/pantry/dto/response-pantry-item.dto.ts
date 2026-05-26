@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { FoodResponseDto } from '../../foods/dto/food-response.dto';
-import { FoodCategoryResponseDto } from '../../food-category/dto/food-category-response.dto';
 import { Unit } from '@prisma/client';
+import { FoodProductResponseDto } from '../../food-products/dto/food-product-response.dto';
+import { GenericFoodResponseDto } from '../../generic-foods/dto/generic-food-response.dto';
 
 export class PantryItemResponseDto {
   @ApiProperty({
@@ -67,34 +67,34 @@ export class PantryItemResponseDto {
   pantryId: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food item',
-    example: 'uuid-food-id',
+    description: 'The ID of the food product',
+    example: 'uuid-food-product-id',
   })
   @Expose()
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'The ID of the food category',
-    example: 'uuid-food-category-id',
+    description: 'The ID of the generic food',
+    example: 'uuid-generic-food-id',
   })
   @Expose()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 
   @ApiPropertyOptional({
-    description: 'The food item details',
-    type: () => FoodResponseDto,
+    description: 'The food product details',
+    type: () => FoodProductResponseDto,
   })
   @Expose()
-  @Type(() => FoodResponseDto)
-  food?: FoodResponseDto;
+  @Type(() => FoodProductResponseDto)
+  foodProduct?: FoodProductResponseDto;
 
   @ApiPropertyOptional({
-    description: 'The food category details',
-    type: () => FoodCategoryResponseDto,
+    description: 'The generic food details',
+    type: () => GenericFoodResponseDto,
   })
   @Expose()
-  @Type(() => FoodCategoryResponseDto)
-  foodCategory?: FoodCategoryResponseDto;
+  @Type(() => GenericFoodResponseDto)
+  genericFood?: GenericFoodResponseDto;
 }
 
 export class MultiplePantryItemResponseDto {

@@ -48,15 +48,22 @@ export class ValidationExceptionFilter implements ExceptionFilter {
   }
 
   private isValidationPipeException(exceptionResponse: any): boolean {
-    // ValidationPipe exceptions have a specific structure:
-    // - response is an object with a 'message' property
-    // - the 'message' property is an array of strings (validation errors)
+    // Validation-related BadRequest exceptions can have:
+    // - message as an array (ValidationPipe/class-validator)
+    // - message as a string (e.g. ParseUUIDPipe)
+    if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+      const message = (exceptionResponse as any).message;
+      if (Array.isArray(message) && message.length > 0) {
+        return true;
+      }
+      if (typeof message === 'string' && message.includes('uuid is expected')) {
+        return true;
+      }
+    }
+
     return (
-      typeof exceptionResponse === 'object' &&
-      exceptionResponse !== null &&
-      'message' in exceptionResponse &&
-      Array.isArray(exceptionResponse.message) &&
-      exceptionResponse.message.length > 0
+      typeof exceptionResponse === 'string' &&
+      exceptionResponse.includes('uuid is expected')
     );
   }
 

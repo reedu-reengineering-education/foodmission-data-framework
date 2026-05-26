@@ -6,18 +6,12 @@ import {
   ActivityLevel,
   AnnualIncomeLevel,
   Prisma,
-  GroupMembership,
 } from '@prisma/client';
 import { GroupMemberNotFoundException } from '../../common/exceptions/business.exception';
-
-export type GroupMembershipWithUser = GroupMembership & {
-  user?: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string;
-  } | null;
-};
+import {
+  GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
+  GroupMembershipWithUser,
+} from '../../common/types/prisma-relations';
 
 export interface CreateVirtualMemberData {
   groupId: string;
@@ -43,17 +37,6 @@ export interface UpdateVirtualMemberData {
 export class GroupMembershipRepository {
   constructor(private prisma: PrismaService) {}
 
-  private readonly includeUser = {
-    user: {
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-      },
-    },
-  };
-
   private toJsonInput(value?: object): Prisma.InputJsonValue | undefined {
     return value !== undefined ? (value as Prisma.InputJsonValue) : undefined;
   }
@@ -73,7 +56,7 @@ export class GroupMembershipRepository {
         groupId: data.groupId,
         role: data.role || GroupRole.MEMBER,
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 
@@ -93,7 +76,7 @@ export class GroupMembershipRepository {
         createdBy: data.createdBy,
         role: GroupRole.MEMBER,
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 
@@ -106,21 +89,21 @@ export class GroupMembershipRepository {
         userId,
         groupId,
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 
   async findById(id: string): Promise<GroupMembershipWithUser | null> {
     return this.prisma.groupMembership.findUnique({
       where: { id },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 
   async findAllByGroupId(groupId: string): Promise<GroupMembershipWithUser[]> {
     return this.prisma.groupMembership.findMany({
       where: { groupId },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
       orderBy: { joinedAt: 'asc' },
     });
   }
@@ -133,7 +116,7 @@ export class GroupMembershipRepository {
         groupId,
         userId: { not: null },
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
       orderBy: { joinedAt: 'asc' },
     });
   }
@@ -146,7 +129,7 @@ export class GroupMembershipRepository {
         groupId,
         userId: null,
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
       orderBy: { joinedAt: 'asc' },
     });
   }
@@ -189,7 +172,7 @@ export class GroupMembershipRepository {
         annualIncome: data.annualIncome,
         preferences: this.toJsonInput(data.preferences),
       },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 
@@ -260,7 +243,7 @@ export class GroupMembershipRepository {
     return this.prisma.groupMembership.update({
       where: { id: membershipId },
       data: { role },
-      include: this.includeUser,
+      include: GROUP_MEMBERSHIP_WITH_USER_INCLUDE,
     });
   }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-
-export type PantryWithRelations = NonNullable<
-  Awaited<ReturnType<PrismaService['pantry']['findUnique']>>
->;
+import {
+  PantryWithRelations,
+  PANTRY_WITH_RELATIONS_INCLUDE,
+} from '../../common/types/prisma-relations';
 
 @Injectable()
 export class PantryRepository {
@@ -12,7 +12,7 @@ export class PantryRepository {
   async findByUserId(userId: string): Promise<PantryWithRelations | null> {
     return this.prisma.pantry.findUnique({
       where: { userId },
-      include: { items: { include: { food: true, foodCategory: true } } },
+      include: PANTRY_WITH_RELATIONS_INCLUDE,
     });
   }
 
@@ -21,28 +21,14 @@ export class PantryRepository {
       where: { userId },
       create: { userId },
       update: {},
-      include: {
-        items: {
-          include: {
-            food: true,
-            foodCategory: true,
-          },
-        },
-      },
+      include: PANTRY_WITH_RELATIONS_INCLUDE,
     });
   }
 
   async findById(id: string): Promise<PantryWithRelations | null> {
     return await this.prisma.pantry.findUnique({
       where: { id },
-      include: {
-        items: {
-          include: {
-            food: true,
-            foodCategory: true,
-          },
-        },
-      },
+      include: PANTRY_WITH_RELATIONS_INCLUDE,
     });
   }
 }

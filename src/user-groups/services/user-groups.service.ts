@@ -4,7 +4,6 @@ import { GroupRole } from '@prisma/client';
 import { UserGroupRepository } from '../repositories/user-groups.repository';
 import {
   GroupMembershipRepository,
-  GroupMembershipWithUser,
 } from '../repositories/group-memberships.repository';
 import { CreateUserGroupDto } from '../dto/create-user-group.dto';
 import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
@@ -25,7 +24,10 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
-import { UserGroupWithRelations } from '../repositories/user-groups.repository';
+import {
+  GroupMembershipWithUser,
+  UserGroupWithRelations,
+} from '../../common/types/prisma-relations';
 
 @Injectable()
 export class UserGroupService {

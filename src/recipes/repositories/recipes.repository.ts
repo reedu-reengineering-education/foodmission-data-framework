@@ -8,13 +8,18 @@ import {
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
+import {
+  RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
+  RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
+  RECIPE_WITH_INGREDIENTS_INCLUDE,
+} from '../../common/types/prisma-relations';
 
 export interface CreateRecipeIngredientData {
   name: string;
   measure?: string;
   order?: number;
-  foodId?: string;
-  foodCategoryId?: string;
+  foodProductId?: string;
+  genericFoodId?: string;
 }
 
 export interface CreateRecipeData {
@@ -59,23 +64,6 @@ export class RecipesRepository implements BaseRepository<
 > {
   constructor(private readonly prisma: PrismaService) {}
 
-  private readonly includeIngredients: Prisma.RecipeInclude = {
-    ingredients: {
-      orderBy: { order: 'asc' },
-      include: {
-        food: { select: { id: true, name: true, imageUrl: true } },
-        foodCategory: {
-          select: {
-            id: true,
-            foodName: true,
-            nevoCode: true,
-            energyKcal: true,
-          },
-        },
-      },
-    },
-  };
-
   async findAll(
     options: FindAllOptions<
       Prisma.RecipeWhereInput,
@@ -88,7 +76,7 @@ export class RecipesRepository implements BaseRepository<
       take: options.take,
       where: options.where,
       orderBy: options.orderBy || { createdAt: 'desc' },
-      include: { ...this.includeIngredients, ...options.include },
+      include: { ...RECIPE_WITH_INGREDIENTS_INCLUDE, ...options.include },
     });
   }
 
@@ -108,7 +96,7 @@ export class RecipesRepository implements BaseRepository<
         take: safeTake,
         where,
         orderBy: orderBy || { createdAt: 'desc' },
-        include: { ...this.includeIngredients, ...include },
+        include: { ...RECIPE_WITH_INGREDIENTS_INCLUDE, ...include },
       }),
       this.count(where),
     ]);
@@ -128,7 +116,7 @@ export class RecipesRepository implements BaseRepository<
   async findById(id: string): Promise<Recipe | null> {
     return this.prisma.recipe.findUnique({
       where: { id },
-      include: { ...this.includeIngredients, meals: true },
+      include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
 
@@ -144,14 +132,14 @@ export class RecipesRepository implements BaseRepository<
                 name: ing.name,
                 measure: ing.measure ?? null,
                 order: ing.order ?? index,
-                itemType: ing.foodId ? 'food' : 'food_category',
-                foodId: ing.foodId ?? null,
-                foodCategoryId: ing.foodCategoryId ?? null,
+                itemType: ing.foodProductId ? 'food_product' : 'generic_food',
+                foodProductId: ing.foodProductId ?? null,
+                genericFoodId: ing.genericFoodId ?? null,
               })),
             }
           : undefined,
       } as Prisma.RecipeUncheckedCreateInput,
-      include: { ...this.includeIngredients, meals: true },
+      include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
 
@@ -175,14 +163,16 @@ export class RecipesRepository implements BaseRepository<
                     name: ing.name,
                     measure: ing.measure ?? null,
                     order: ing.order ?? index,
-                    itemType: ing.foodId ? 'food' : 'food_category',
-                    foodId: ing.foodId ?? null,
-                    foodCategoryId: ing.foodCategoryId ?? null,
+                    itemType: ing.foodProductId
+                      ? 'food_product'
+                      : 'generic_food',
+                    foodProductId: ing.foodProductId ?? null,
+                    genericFoodId: ing.genericFoodId ?? null,
                   })),
                 }
               : undefined,
           } as Prisma.RecipeUncheckedUpdateInput,
-          include: { ...this.includeIngredients, meals: true },
+          include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
         });
       });
     }
@@ -190,7 +180,7 @@ export class RecipesRepository implements BaseRepository<
     return this.prisma.recipe.update({
       where: { id },
       data: recipeData as Prisma.RecipeUncheckedUpdateInput,
-      include: { ...this.includeIngredients, meals: true },
+      include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
 
@@ -203,8 +193,8 @@ export class RecipesRepository implements BaseRepository<
   }
 
   async findCandidatesForRecommendation(
-    foodIds: string[],
-    categoryIds: string[],
+    foodProductIds: string[],
+    genericFoodIds: string[],
     userId: string,
     options: {
       skip?: number;
@@ -212,16 +202,16 @@ export class RecipesRepository implements BaseRepository<
       orderBy?: Prisma.RecipeOrderByWithRelationInput;
     } = {},
   ): Promise<RecipeWithIngredients[]> {
-    if (foodIds.length === 0 && categoryIds.length === 0) {
+    if (foodProductIds.length === 0 && genericFoodIds.length === 0) {
       return [];
     }
 
     const orConditions: Prisma.RecipeIngredientWhereInput[] = [];
-    if (foodIds.length > 0) {
-      orConditions.push({ foodId: { in: foodIds } });
+    if (foodProductIds.length > 0) {
+      orConditions.push({ foodProductId: { in: foodProductIds } });
     }
-    if (categoryIds.length > 0) {
-      orConditions.push({ foodCategoryId: { in: categoryIds } });
+    if (genericFoodIds.length > 0) {
+      orConditions.push({ genericFoodId: { in: genericFoodIds } });
     }
 
     const { skip = 0, take = 10, orderBy = { createdAt: 'desc' } } = options;
@@ -238,15 +228,7 @@ export class RecipesRepository implements BaseRepository<
         },
       },
       orderBy,
-      include: {
-        ingredients: {
-          orderBy: { order: 'asc' },
-          include: {
-            food: true,
-            foodCategory: true,
-          },
-        },
-      },
+      include: RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
     });
   }
 }

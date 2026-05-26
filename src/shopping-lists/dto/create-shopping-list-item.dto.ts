@@ -21,13 +21,13 @@ import {
 class ExclusiveFoodReferenceConstraint implements ValidatorConstraintInterface {
   validate(_: unknown, args: ValidationArguments): boolean {
     const obj = args.object as CreateShoppingListItemDto;
-    const hasFood = !!obj.foodId;
-    const hasCategory = !!obj.foodCategoryId;
-    return hasFood !== hasCategory; // exactly one must be true (XOR)
+    const hasFoodProduct = !!obj.foodProductId;
+    const hasGenericFood = !!obj.genericFoodId;
+    return hasFoodProduct !== hasGenericFood; // exactly one must be true (XOR)
   }
 
   defaultMessage(): string {
-    return 'Exactly one of foodId or foodCategoryId must be provided, not both or neither';
+    return 'Exactly one of foodProductId or genericFoodId must be provided, not both or neither';
   }
 }
 
@@ -78,24 +78,24 @@ export class CreateShoppingListItemDto {
 
   @ApiPropertyOptional({
     description:
-      'The ID of the food item (provide either foodId or foodCategoryId)',
-    example: 'uuid-food-id',
+      'The ID of the food product (provide either foodProductId or genericFoodId)',
+    example: 'uuid-food-product-id',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodCategoryId)
+  @ValidateIf((o) => !o.genericFoodId)
   @IsNotEmpty()
   @Validate(ExclusiveFoodReferenceConstraint)
-  foodId?: string;
+  foodProductId?: string;
 
   @ApiPropertyOptional({
     description:
-      'The ID of the food category (provide either foodId or foodCategoryId)',
-    example: 'uuid-food-category-id',
+      'The ID of the generic food (provide either foodProductId or genericFoodId)',
+    example: 'uuid-generic-food-id',
   })
   @IsUUID()
-  @ValidateIf((o) => !o.foodId)
+  @ValidateIf((o) => !o.foodProductId)
   @IsNotEmpty()
-  foodCategoryId?: string;
+  genericFoodId?: string;
 }
 
 /** Body for POST /shopping-lists/:shoppingListId/items (list id from URL). */

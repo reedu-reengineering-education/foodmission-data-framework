@@ -4,12 +4,12 @@ import { FoodWasteService } from './services/food-waste.service';
 import { FoodWasteRepository } from './repositories/food-waste.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
-import { FoodsModule } from '../foods/foods.module';
+import { FoodProductsModule } from '../food-products/food-products.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { PantryItemRepository } from '../pantry/repositories/pantry-items.repository';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, FoodsModule],
+  imports: [DatabaseModule, CommonModule, FoodProductsModule],
   controllers: [FoodWasteController],
   providers: [
     FoodWasteService,

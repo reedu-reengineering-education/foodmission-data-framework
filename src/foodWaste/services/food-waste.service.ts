@@ -25,7 +25,7 @@ import {
   WasteTrendDataPointDto,
 } from '../dto/food-waste-statistics.dto';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
-import { FoodRepository } from '../../foods/repositories/food.repository';
+import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { Prisma, WasteReason, DetectionMethod, Unit } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
@@ -81,7 +81,7 @@ export class FoodWasteService {
   constructor(
     private readonly foodWasteRepository: FoodWasteRepository,
     private readonly pantryItemRepository: PantryItemRepository,
-    private readonly foodRepository: FoodRepository,
+    private readonly foodProductRepository: FoodProductRepository,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -103,14 +103,14 @@ export class FoodWasteService {
    * @deprecated Use calculateCarbonFootprintForPantryItem instead
    */
   async calculateCarbonFootprint(
-    foodId: string,
+    foodProductId: string,
     quantity: number,
     unit: Unit,
   ): Promise<number> {
     try {
-      const food = await this.foodRepository.findById(foodId);
+      const food = await this.foodProductRepository.findById(foodProductId);
       if (!food) {
-        this.logger.warn(`Food not found for carbon calculation: ${foodId}`);
+        this.logger.warn(`Food product not found for carbon calculation: ${foodProductId}`);
         return this.getDefaultCarbonEstimate(quantity, unit);
       }
 
@@ -135,21 +135,21 @@ export class FoodWasteService {
     quantity: number,
     unit: Unit,
   ): number {
-    // If pantry item has a food, use the food-based calculation
-    if (pantryItem?.food) {
+    // If pantry item has a food product, use the food-based calculation
+    if (pantryItem?.foodProduct) {
       return this.calculateCarbonFootprintFromFoodData(
-        pantryItem.food.name,
-        pantryItem.food.description,
+        pantryItem.foodProduct.name,
+        pantryItem.foodProduct.description,
         quantity,
         unit,
       );
     }
 
-    // If pantry item has a food category, use category name for estimation
-    if (pantryItem?.foodCategory) {
+    // If pantry item has a generic food, use category name for estimation
+    if (pantryItem?.genericFood) {
       return this.calculateCarbonFootprintFromFoodData(
-        pantryItem.foodCategory.foodName,
-        pantryItem.foodCategory.foodGroup,
+        pantryItem.genericFood.foodName,
+        pantryItem.genericFood.foodGroup,
         quantity,
         unit,
       );
@@ -279,8 +279,8 @@ export class FoodWasteService {
       }
 
       // Derive food info from pantry item
-      const foodId = pantryItem.foodId ?? undefined;
-      const foodCategoryId = pantryItem.foodCategoryId ?? undefined;
+      const foodProductId = pantryItem.foodProductId ?? undefined;
+      const genericFoodId = pantryItem.genericFoodId ?? undefined;
 
       // Use provided quantity/unit or default to full pantry item
       const quantity = createDto.quantity ?? pantryItem.quantity;
@@ -305,8 +305,8 @@ export class FoodWasteService {
           {
             userId,
             pantryItemId: createDto.pantryItemId,
-            foodId,
-            foodCategoryId,
+            foodProductId,
+            genericFoodId,
             quantity,
             unit,
             wasteReason: createDto.wasteReason,
@@ -376,7 +376,7 @@ export class FoodWasteService {
     const {
       page = 1,
       limit = 10,
-      foodId,
+      foodProductId,
       pantryItemId,
       wasteReason,
       detectionMethod,
@@ -388,7 +388,7 @@ export class FoodWasteService {
 
     const where: Prisma.FoodWasteWhereInput = {
       userId,
-      ...(foodId ? { foodId } : {}),
+      ...(foodProductId ? { foodProductId } : {}),
       ...(pantryItemId ? { pantryItemId } : {}),
       ...(wasteReason ? { wasteReason } : {}),
       ...(detectionMethod ? { detectionMethod } : {}),
@@ -408,7 +408,7 @@ export class FoodWasteService {
         take: limit,
         where,
         orderBy: { wastedAt: 'desc' },
-        include: { food: true, pantryItem: true },
+        include: { foodProduct: true, pantryItem: true },
       });
 
       return plainToInstance(
@@ -445,11 +445,11 @@ export class FoodWasteService {
   ): Promise<FoodWasteResponseDto> {
     const waste = await this.getOwnedFoodWasteOrThrow(id, userId);
 
-    // If food ID is being changed, validate it exists
-    if (updateDto.foodId && updateDto.foodId !== waste.foodId) {
-      const food = await this.foodRepository.findById(updateDto.foodId);
+    // If food product ID is being changed, validate it exists
+    if (updateDto.foodProductId && updateDto.foodProductId !== waste.foodProductId) {
+      const food = await this.foodProductRepository.findById(updateDto.foodProductId);
       if (!food) {
-        throw new NotFoundException('Food not found');
+        throw new NotFoundException('Food product not found');
       }
     }
 
@@ -459,21 +459,21 @@ export class FoodWasteService {
       carbonFootprint === undefined &&
       (updateDto.quantity !== undefined ||
         updateDto.unit !== undefined ||
-        updateDto.foodId !== undefined)
+        updateDto.foodProductId !== undefined)
     ) {
-      const finalFoodId = updateDto.foodId ?? waste.foodId;
+      const finalFoodProductId = updateDto.foodProductId ?? waste.foodProductId;
       const finalQuantity = updateDto.quantity ?? waste.quantity;
       const finalUnit = updateDto.unit ?? waste.unit;
 
-      // Only recalculate if we have a foodId
-      if (finalFoodId) {
+      // Only recalculate if we have a foodProductId
+      if (finalFoodProductId) {
         carbonFootprint = await this.calculateCarbonFootprint(
-          finalFoodId,
+          finalFoodProductId,
           finalQuantity,
           finalUnit,
         );
       } else {
-        // Fall back to default estimate if no foodId
+        // Fall back to default estimate if no foodProductId
         carbonFootprint = this.getDefaultCarbonEstimate(
           finalQuantity,
           finalUnit,
@@ -561,8 +561,8 @@ export class FoodWasteService {
             {
               userId,
               pantryItemId: item.pantryItemId,
-              foodId: pantryItem.foodId ?? undefined,
-              foodCategoryId: pantryItem.foodCategoryId ?? undefined,
+              foodProductId: pantryItem.foodProductId ?? undefined,
+              genericFoodId: pantryItem.genericFoodId ?? undefined,
               quantity,
               unit,
               wasteReason: WasteReason.EXPIRED,

@@ -93,8 +93,6 @@ export class UserProfilesService {
       'username',
       'createdAt',
       'updatedAt',
-      'preferences',
-      'settings',
       'shoppingList',
       'pantry',
     ];
@@ -132,6 +130,8 @@ export class UserProfilesService {
       'activityLevel',
       'healthGoals',
       'nutritionTargets',
+      'settings',
+      'preferences',
     ];
 
     for (const f of extendedFields) {

@@ -1,5 +1,5 @@
 /**
- * Idempotent seed step: links Food and FoodCategory records to their best-matching
+ * Idempotent seed step: links FoodProduct and GenericFood records to their best-matching
  * FoodShelfLife entry using 3-tier scoring:
  *   Tier 1: exact name match        (+10)
  *   Tier 2: keyword token overlap   (+N, one point per matching token)
@@ -130,8 +130,8 @@ export function findBestMatch(
 // ─── link step ───────────────────────────────────────────────────────────────
 
 export interface LinkShelfLifeResult {
-  foods: number;
-  categories: number;
+  foodProducts: number;
+  genericFoods: number;
 }
 
 export async function linkShelfLife(
@@ -141,16 +141,17 @@ export async function linkShelfLife(
   const entries = await prisma.foodShelfLife.findMany();
   if (entries.length === 0) {
     console.log('   ⏭️  No FoodShelfLife entries found; skipping link step.');
-    return { foods: 0, categories: 0 };
+    return { foodProducts: 0, genericFoods: 0 };
   }
 
-  // ── Foods ─────────────────────────────────────────────────────────────────
+  // ── Food products ─────────────────────────────────────────────────────────
+
   const foodIdsByShelfLife = new Map<string, string[]>();
-  const foodTotal = await prisma.food.count();
+  const foodTotal = await prisma.foodProduct.count();
   let foodSkipped = 0;
 
   for (let skip = 0; skip < foodTotal; skip += 500) {
-    const batch = await prisma.food.findMany({
+    const batch = await prisma.foodProduct.findMany({
       select: { id: true, name: true, categories: true, shelfLifeId: true },
       skip,
       take: 500,
@@ -172,20 +173,20 @@ export async function linkShelfLife(
 
   let foodLinked = 0;
   for (const [shelfLifeId, ids] of foodIdsByShelfLife) {
-    const { count } = await prisma.food.updateMany({
+    const { count } = await prisma.foodProduct.updateMany({
       where: { id: { in: ids } },
       data: { shelfLifeId },
     });
     foodLinked += count;
   }
 
-  // ── FoodCategories ────────────────────────────────────────────────────────
+  // ── GenericFoods ────────────────────────────────────────────────────────
   const catIdsByShelfLife = new Map<string, string[]>();
-  const catTotal = await prisma.foodCategory.count();
+  const catTotal = await prisma.genericFood.count();
   let catSkipped = 0;
 
   for (let skip = 0; skip < catTotal; skip += 500) {
-    const batch = await prisma.foodCategory.findMany({
+    const batch = await prisma.genericFood.findMany({
       select: { id: true, foodName: true, foodGroup: true, shelfLifeId: true },
       skip,
       take: 500,
@@ -207,7 +208,7 @@ export async function linkShelfLife(
 
   let catLinked = 0;
   for (const [shelfLifeId, ids] of catIdsByShelfLife) {
-    const { count } = await prisma.foodCategory.updateMany({
+    const { count } = await prisma.genericFood.updateMany({
       where: { id: { in: ids } },
       data: { shelfLifeId },
     });
@@ -220,5 +221,5 @@ export async function linkShelfLife(
     );
   }
 
-  return { foods: foodLinked, categories: catLinked };
+  return { foodProducts: foodLinked, genericFoods: catLinked };
 }

@@ -16,7 +16,7 @@ export class PantryItemsTestBuilder {
     return {
       id: TEST_IDS.PANTRY_ITEM,
       pantryId: TEST_IDS.PANTRY,
-      foodId: TEST_IDS.FOOD,
+      foodProductId: TEST_IDS.FOOD,
       quantity: TEST_DATA.QUANTITY,
       unit: Unit.KG,
       notes: TEST_DATA.NOTES,
@@ -29,7 +29,7 @@ export class PantryItemsTestBuilder {
     overrides?: Partial<CreatePantryItemDto>,
   ): CreatePantryItemDto {
     return {
-      foodId: TEST_IDS.FOOD,
+      foodProductId: TEST_IDS.FOOD,
       quantity: TEST_DATA.QUANTITY,
       unit: Unit.KG,
       notes: TEST_DATA.NOTES,

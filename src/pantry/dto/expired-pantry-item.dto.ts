@@ -11,12 +11,12 @@ export class ExpiredPantryItemDto {
   pantryItemId: string;
 
   @ApiProperty({
-    description: 'UUID of the food',
+    description: 'UUID of the food product',
     example: '123e4567-e89b-12d3-a456-426614174001',
     nullable: true,
   })
   @Expose()
-  foodId: string | null;
+  foodProductId: string | null;
 
   @ApiProperty({
     description: 'Quantity of the item',

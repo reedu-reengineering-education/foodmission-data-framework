@@ -3,13 +3,11 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import {
-  MealItemRepository,
-  MealItemWithRelations,
-} from '../repositories/meal-items.repository';
+import { MealItemRepository } from '../repositories/meal-items.repository';
+import { MealItemWithRelations } from '../../../common/types/prisma-relations';
 import { MealsRepository } from '../../repositories/meals.repository';
-import { FoodRepository } from '../../../foods/repositories/food.repository';
-import { FoodCategoriesRepository } from '../../../food-category/repositories/food-categories.repository';
+import { FoodProductRepository } from '../../../food-products/repositories/food-product.repository';
+import { GenericFoodRepository } from '../../../generic-foods/repositories/generic-food.repository';
 import { CreateMealItemDto } from '../dto/create-meal-item.dto';
 import { UpdateMealItemDto } from '../dto/update-meal-item.dto';
 import { handlePrismaError } from '../../../common/utils/error.utils';
@@ -19,8 +17,8 @@ export class MealItemService {
   constructor(
     private readonly mealItemRepository: MealItemRepository,
     private readonly mealRepository: MealsRepository,
-    private readonly foodRepository: FoodRepository,
-    private readonly foodCategoryRepository: FoodCategoriesRepository,
+    private readonly foodProductRepository: FoodProductRepository,
+    private readonly genericFoodRepository: GenericFoodRepository,
   ) {}
 
   async create(
@@ -28,10 +26,9 @@ export class MealItemService {
     userId: string,
   ): Promise<MealItemWithRelations> {
     try {
-      const { mealId, foodId, foodCategoryId, quantity, unit, notes } =
+      const { mealId, foodProductId, genericFoodId, quantity, unit, notes } =
         createMealItemDto;
 
-      // Validate meal exists and belongs to user
       const meal = await this.mealRepository.findById(mealId);
       if (!meal) {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
@@ -40,53 +37,50 @@ export class MealItemService {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
       }
 
-      // Validate either food or foodCategory exists
-      if (foodId) {
-        const food = await this.foodRepository.findById(foodId);
-        if (!food) {
-          throw new NotFoundException(`Food with ID '${foodId}' not found`);
+      if (foodProductId) {
+        const foodProduct =
+          await this.foodProductRepository.findById(foodProductId);
+        if (!foodProduct) {
+          throw new NotFoundException(
+            `Food product with ID '${foodProductId}' not found`,
+          );
         }
 
-        // Check for duplicates
-        const existing = await this.mealItemRepository.findByMealAndFood(
+        const existing = await this.mealItemRepository.findByMealAndFoodProduct(
           mealId,
-          foodId,
+          foodProductId,
         );
         if (existing) {
           throw new ConflictException(
-            `Meal already contains this food item. Update the existing item instead.`,
+            `Meal already contains this food product. Update the existing item instead.`,
           );
         }
-      } else if (foodCategoryId) {
-        const foodCategory =
-          await this.foodCategoryRepository.findById(foodCategoryId);
-        if (!foodCategory) {
+      } else if (genericFoodId) {
+        const genericFood =
+          await this.genericFoodRepository.findById(genericFoodId);
+        if (!genericFood) {
           throw new NotFoundException(
-            `Food category with ID '${foodCategoryId}' not found`,
+            `Generic food with ID '${genericFoodId}' not found`,
           );
         }
 
-        // Check for duplicates
-        const existing =
-          await this.mealItemRepository.findByMealAndFoodCategory(
-            mealId,
-            foodCategoryId,
-          );
+        const existing = await this.mealItemRepository.findByMealAndGenericFood(
+          mealId,
+          genericFoodId,
+        );
         if (existing) {
           throw new ConflictException(
-            `Meal already contains this food category. Update the existing item instead.`,
+            `Meal already contains this generic food. Update the existing item instead.`,
           );
         }
       }
 
-      // Determine itemType based on which ID is provided
-      const itemType = foodId ? 'food' : 'food_category';
+      const itemType = foodProductId ? 'food_product' : 'generic_food';
 
-      // Create meal item
       return await this.mealItemRepository.create({
         mealId,
-        foodId: foodId || null,
-        foodCategoryId: foodCategoryId || null,
+        foodProductId: foodProductId || null,
+        genericFoodId: genericFoodId || null,
         itemType,
         quantity,
         unit,
@@ -110,7 +104,6 @@ export class MealItemService {
     userId: string,
   ): Promise<MealItemWithRelations[]> {
     try {
-      // Validate meal exists and belongs to user
       const meal = await this.mealRepository.findById(mealId);
       if (!meal) {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
@@ -132,7 +125,6 @@ export class MealItemService {
         throw new NotFoundException(`Meal item with ID '${id}' not found`);
       }
 
-      // Validate meal belongs to user
       const meal = await this.mealRepository.findById(mealItem.mealId);
       if (!meal || meal.userId !== userId) {
         throw new NotFoundException(`Meal item with ID '${id}' not found`);
@@ -153,71 +145,75 @@ export class MealItemService {
       // Find existing item
       const existingItem = await this.findById(id, userId);
 
-      const { foodId, foodCategoryId, quantity, unit, notes } =
+      const { foodProductId, genericFoodId, quantity, unit, notes } =
         updateMealItemDto;
 
-      // Validate new food/foodCategory if provided
+      // Validate new foodProduct/genericFood if provided
       let itemType = existingItem.itemType;
 
-      if (foodId !== undefined) {
-        if (foodId === null) {
-          // Removing food, must have foodCategory
-          if (!foodCategoryId && !existingItem.foodCategoryId) {
+      if (foodProductId !== undefined) {
+        if (foodProductId === null) {
+          // Removing foodProduct, must have genericFood
+          if (!genericFoodId && !existingItem.genericFoodId) {
             throw new ConflictException(
-              'Cannot remove food without providing a food category',
+              'Cannot remove food product without providing a generic food',
             );
           }
         } else {
-          const food = await this.foodRepository.findById(foodId);
-          if (!food) {
-            throw new NotFoundException(`Food with ID '${foodId}' not found`);
-          }
-
-          // Check for duplicates
-          const existing = await this.mealItemRepository.findByMealAndFood(
-            existingItem.mealId,
-            foodId,
-          );
-          if (existing && existing.id !== id) {
-            throw new ConflictException(
-              `Meal already contains this food item. Update the existing item instead.`,
-            );
-          }
-
-          itemType = 'food';
-        }
-      }
-
-      if (foodCategoryId !== undefined) {
-        if (foodCategoryId === null) {
-          // Removing foodCategory, must have food
-          if (!foodId && !existingItem.foodId) {
-            throw new ConflictException(
-              'Cannot remove food category without providing a food',
-            );
-          }
-        } else {
-          const foodCategory =
-            await this.foodCategoryRepository.findById(foodCategoryId);
-          if (!foodCategory) {
+          const foodProduct =
+            await this.foodProductRepository.findById(foodProductId);
+          if (!foodProduct) {
             throw new NotFoundException(
-              `Food category with ID '${foodCategoryId}' not found`,
+              `Food product with ID '${foodProductId}' not found`,
             );
           }
 
           // Check for duplicates
           const existing =
-            await this.mealItemRepository.findByMealAndFoodCategory(
+            await this.mealItemRepository.findByMealAndFoodProduct(
               existingItem.mealId,
-              foodCategoryId,
+              foodProductId,
             );
           if (existing && existing.id !== id) {
             throw new ConflictException(
-              `Meal already contains this food category. Update the existing item instead.`,
+              `Meal already contains this food product. Update the existing item instead.`,
             );
           }
 
-          itemType = 'food_category';
+          itemType = 'food_product';
+        }
+      }
+
+      if (genericFoodId !== undefined) {
+        if (genericFoodId === null) {
+          // Removing genericFood, must have foodProduct
+          if (!foodProductId && !existingItem.foodProductId) {
+            throw new ConflictException(
+              'Cannot remove generic food without providing a food product',
+            );
+          }
+        } else {
+          const genericFood =
+            await this.genericFoodRepository.findById(genericFoodId);
+          if (!genericFood) {
+            throw new NotFoundException(
+              `Generic food with ID '${genericFoodId}' not found`,
+            );
+          }
+
+          // Check for duplicates
+          const existing =
+            await this.mealItemRepository.findByMealAndGenericFood(
+              existingItem.mealId,
+              genericFoodId,
+            );
+          if (existing && existing.id !== id) {
+            throw new ConflictException(
+              `Meal already contains this generic food. Update the existing item instead.`,
+            );
+          }
+
+          itemType = 'generic_food';
         }
       }
 
@@ -229,38 +225,35 @@ export class MealItemService {
         notes: notes !== undefined ? notes : existingItem.notes,
       };
 
-      // Handle food relation
-      if (foodId !== undefined) {
-        if (foodId === null) {
-          updateData.food = { disconnect: true };
-          updateData.foodId = null;
+      // Handle foodProduct relation
+      if (foodProductId !== undefined) {
+        if (foodProductId === null) {
+          updateData.foodProduct = { disconnect: true };
+          updateData.foodProductId = null;
         } else {
-          updateData.food = { connect: { id: foodId } };
+          updateData.foodProduct = { connect: { id: foodProductId } };
         }
       }
 
-      // Handle foodCategory relation
-      if (foodCategoryId !== undefined) {
-        if (foodCategoryId === null) {
-          updateData.foodCategory = { disconnect: true };
-          updateData.foodCategoryId = null;
+      // Handle genericFood relation
+      if (genericFoodId !== undefined) {
+        if (genericFoodId === null) {
+          updateData.genericFood = { disconnect: true };
+          updateData.genericFoodId = null;
         } else {
-          updateData.foodCategory = { connect: { id: foodCategoryId } };
+          updateData.genericFood = { connect: { id: genericFoodId } };
         }
       }
 
-      // Update meal item
       return await this.mealItemRepository.update(id, updateData);
     } catch (error) {
       throw handlePrismaError(error, 'update meal item', 'MealItem');
     }
   }
-
   async delete(id: string, userId: string): Promise<void> {
     try {
       // Validate exists and belongs to user
       await this.findById(id, userId);
-
       await this.mealItemRepository.delete(id);
     } catch (error) {
       throw handlePrismaError(error, 'delete meal item', 'MealItem');
@@ -269,15 +262,10 @@ export class MealItemService {
 
   async deleteByMealId(mealId: string, userId: string): Promise<void> {
     try {
-      // Validate meal exists and belongs to user
       const meal = await this.mealRepository.findById(mealId);
-      if (!meal) {
+      if (!meal || meal.userId !== userId) {
         throw new NotFoundException(`Meal with ID '${mealId}' not found`);
       }
-      if (meal.userId !== userId) {
-        throw new NotFoundException(`Meal with ID '${mealId}' not found`);
-      }
-
       await this.mealItemRepository.deleteByMealId(mealId);
     } catch (error) {
       throw handlePrismaError(error, 'delete meal items', 'MealItem');

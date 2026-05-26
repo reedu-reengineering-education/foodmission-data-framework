@@ -26,33 +26,33 @@ describe('MetricsService', () => {
 
   describe('recordHttpRequest', () => {
     it('should record HTTP request metrics', async () => {
-      service.recordHttpRequest('GET', '/api/foods', 200, 0.5);
+      service.recordHttpRequest('GET', '/api/food-products', 200, 0.5);
 
       const metrics = await service.getMetrics();
 
       expect(metrics).toContain(
-        'http_requests_total{method="GET",route="/api/foods",status_code="200"} 1',
+        'http_requests_total{method="GET",route="/api/food-products",status_code="200"} 1',
       );
       expect(metrics).toContain(
-        'http_request_duration_seconds_count{method="GET",route="/api/foods",status_code="200"} 1',
+        'http_request_duration_seconds_count{method="GET",route="/api/food-products",status_code="200"} 1',
       );
     });
 
     it('should record multiple HTTP requests with different labels', async () => {
-      service.recordHttpRequest('GET', '/api/foods', 200, 0.3);
-      service.recordHttpRequest('POST', '/api/foods', 201, 0.8);
-      service.recordHttpRequest('GET', '/api/foods', 404, 0.1);
+      service.recordHttpRequest('GET', '/api/food-products', 200, 0.3);
+      service.recordHttpRequest('POST', '/api/food-products', 201, 0.8);
+      service.recordHttpRequest('GET', '/api/food-products', 404, 0.1);
 
       const metrics = await service.getMetrics();
 
       expect(metrics).toContain(
-        'http_requests_total{method="GET",route="/api/foods",status_code="200"} 1',
+        'http_requests_total{method="GET",route="/api/food-products",status_code="200"} 1',
       );
       expect(metrics).toContain(
-        'http_requests_total{method="POST",route="/api/foods",status_code="201"} 1',
+        'http_requests_total{method="POST",route="/api/food-products",status_code="201"} 1',
       );
       expect(metrics).toContain(
-        'http_requests_total{method="GET",route="/api/foods",status_code="404"} 1',
+        'http_requests_total{method="GET",route="/api/food-products",status_code="404"} 1',
       );
     });
   });

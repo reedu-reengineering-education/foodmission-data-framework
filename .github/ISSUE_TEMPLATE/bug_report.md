@@ -38,7 +38,7 @@ If applicable, add screenshots to help explain your problem.
 
 ## API Details (if applicable)
 
-- Endpoint: [e.g. GET /api/v1/foods]
+- Endpoint: [e.g. GET /api/v1/food-products]
 - Request payload:
 
 ```json

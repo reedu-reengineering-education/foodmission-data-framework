@@ -176,14 +176,14 @@ export async function seedPantryItems(prisma: PrismaClient) {
       });
     }
 
-    // Find food by name
-    const food = await prisma.food.findFirst({
+    // Find foodProduct by name
+    const foodProduct = await prisma.foodProduct.findFirst({
       where: { name: itemInfo.foodName },
     });
 
-    if (!food) {
+    if (!foodProduct) {
       console.warn(
-        `⚠️  Food "${itemInfo.foodName}" not found, skipping pantry item`,
+        `⚠️  FoodProduct "${itemInfo.foodName}" not found, skipping pantry item`,
       );
       skippedCount++;
       continue;
@@ -193,7 +193,7 @@ export async function seedPantryItems(prisma: PrismaClient) {
     const existingItem = await prisma.pantryItem.findFirst({
       where: {
         pantryId: pantry.id,
-        foodId: food.id,
+        foodProductId: foodProduct.id,
       },
     });
 
@@ -216,7 +216,7 @@ export async function seedPantryItems(prisma: PrismaClient) {
       const pantryItem = await prisma.pantryItem.create({
         data: {
           pantryId: pantry.id,
-          foodId: food.id,
+          foodProductId: foodProduct.id,
           quantity: itemInfo.quantity,
           unit: itemInfo.unit,
           notes: itemInfo.notes,
