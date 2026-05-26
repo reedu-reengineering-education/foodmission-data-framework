@@ -4,7 +4,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
  * Minimal repository shape required by the shared batch lifecycle functions.
  * Each domain repository satisfies this via TypeScript structural typing.
  */
-interface IBatchRepository<
+export interface IBatchRepository<
   TStatus extends string,
   TBatch extends { id: string; status: TStatus },
 > {

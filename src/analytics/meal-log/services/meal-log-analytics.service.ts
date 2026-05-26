@@ -1,53 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
-import { AnalyticsBatchStatus, Prisma } from '@prisma/client';
+import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
-import {
-  getAnalyticsBatch,
-  listAnalyticsBatches,
-  approveAnalyticsBatch,
-  publishAnalyticsBatch,
-  rejectAnalyticsBatch,
-  deleteAnalyticsBatch,
-  autoPublishAndSupersede,
-} from '../../common/batch-lifecycle';
+import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()
-export class MealLogAnalyticsService {
+export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyticsBatch> {
   private readonly logger = new Logger(MealLogAnalyticsService.name);
 
   constructor(
-    private readonly repository: MealLogAnalyticsRepository,
+    protected readonly repository: MealLogAnalyticsRepository,
     private readonly aggregator: MealLogAnalyticsAggregator,
-  ) {}
-
-  /**
-   * Aggregate yesterday's data into staging.
-   * Scheduled by AnalyticsBatchCoordinator at 2:00 AM daily.
-   */
-  async runDailyAggregation(): Promise<string> {
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    yesterday.setUTCHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-
-    const batchId = await this.generateBatch(yesterday, today);
-
-    await autoPublishAndSupersede(
-      this.repository,
-      batchId,
-      AnalyticsBatchStatus.PUBLISHED,
-      'system',
-      yesterday,
-      today,
-    );
-
-    return batchId;
+  ) {
+    super();
   }
 
   /**
@@ -362,51 +330,4 @@ export class MealLogAnalyticsService {
   // ============================================================
   // Admin — batch management
   // ============================================================
-
-  async listBatches(status?: AnalyticsBatchStatus) {
-    return listAnalyticsBatches(this.repository, status);
-  }
-
-  async getBatch(batchId: string) {
-    return getAnalyticsBatch(this.repository, batchId);
-  }
-
-  async approveBatch(batchId: string, adminUserId: string) {
-    return approveAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      AnalyticsBatchStatus.STAGING,
-      AnalyticsBatchStatus.APPROVED,
-    );
-  }
-
-  async publishBatch(batchId: string, adminUserId: string) {
-    return publishAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      AnalyticsBatchStatus.APPROVED,
-      AnalyticsBatchStatus.PUBLISHED,
-    );
-  }
-
-  async rejectBatch(batchId: string, adminUserId: string, reason: string) {
-    return rejectAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      reason,
-      AnalyticsBatchStatus.STAGING,
-      AnalyticsBatchStatus.REJECTED,
-    );
-  }
-
-  async deleteBatch(batchId: string) {
-    return deleteAnalyticsBatch(this.repository, batchId, [
-      AnalyticsBatchStatus.PUBLISHED,
-      AnalyticsBatchStatus.APPROVED,
-      AnalyticsBatchStatus.SUPERSEDED,
-    ]);
-  }
 }

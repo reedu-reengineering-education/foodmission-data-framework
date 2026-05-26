@@ -12,6 +12,9 @@ import {
   mode,
   distribution,
   FoodFrequencyRow,
+  AGE_GROUP_SQL,
+  applyKAnonymity,
+  aggregateFoodFrequency,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -300,44 +303,31 @@ export class ShoppingListAnalyticsAggregator {
       this.aggregateCrossDimClassification(rawData);
 
     // k-anonymity filter (K=5)
-    const filter = <T extends { userCount?: number; uniqueUsers?: number }>(
+    const applyK = <T extends { userCount?: number; uniqueUsers?: number }>(
       rows: T[],
       field: 'userCount' | 'uniqueUsers' = 'userCount',
-    ): T[] =>
-      rows.filter((r) => {
-        const count = r[field] as number;
-        if (count < K_ANONYMITY_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
+      threshold = K_ANONYMITY_THRESHOLD,
+    ): T[] => {
+      const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
+      suppressedGroups += suppressed;
+      return filtered;
+    };
 
-    // Stricter K=20 filter for cross-dimensional groups
-    const filterCross = <T extends { userCount: number }>(rows: T[]): T[] =>
-      rows.filter((r) => {
-        if (r.userCount < K_ANONYMITY_CROSS_DIM_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
-
-    const filteredItemPopularity = filter(itemPopularity, 'uniqueUsers');
-    const filteredCategoryPopularity = filter(
+    const filteredItemPopularity = applyK(itemPopularity, 'uniqueUsers');
+    const filteredCategoryPopularity = applyK(
       categoryPopularity,
       'uniqueUsers',
     );
-    const filteredListPatterns = filter(listPatterns);
-    const filteredNutritionProfile = filter(nutritionProfile);
-    const filteredSustainability = filter(sustainability);
-    const filteredFoodGroups = filter(foodGroups, 'uniqueUsers');
-    const filteredDemographicPatterns = filter(demographicPatterns);
-    const filteredDemographicNutrition = filter(demographicNutrition);
-    const filteredDemographicClassification = filter(demographicClassification);
-    const filteredCrossDimPatterns = filterCross(crossDimPatterns);
-    const filteredCrossDimNutrition = filterCross(crossDimNutrition);
-    const filteredCrossDimClassification = filterCross(crossDimClassification);
+    const filteredListPatterns = applyK(listPatterns);
+    const filteredNutritionProfile = applyK(nutritionProfile);
+    const filteredSustainability = applyK(sustainability);
+    const filteredFoodGroups = applyK(foodGroups, 'uniqueUsers');
+    const filteredDemographicPatterns = applyK(demographicPatterns);
+    const filteredDemographicNutrition = applyK(demographicNutrition);
+    const filteredDemographicClassification = applyK(demographicClassification);
+    const filteredCrossDimPatterns = applyK(crossDimPatterns, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimNutrition = applyK(crossDimNutrition, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimClassification = applyK(crossDimClassification, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
 
     const totalRecords =
       filteredItemPopularity.length +
@@ -390,16 +380,7 @@ export class ShoppingListAnalyticsAggregator {
         sl."userId"                   AS "userId",
         sl.id                         AS "listId",
         sli."createdAt"               AS "createdAt",
-        CASE
-          WHEN u."yearOfBirth" IS NULL THEN NULL
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 18 THEN 'under_18'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 25 THEN '18_24'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 35 THEN '25_34'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 45 THEN '35_44'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 55 THEN '45_54'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 65 THEN '55_64'
-          ELSE '65_plus'
-        END                           AS "userAgeGroup",
+        ${AGE_GROUP_SQL}                           AS "userAgeGroup",
         u."gender"::text              AS "userGender",
         u."educationLevel"::text      AS "userEducationLevel",
         u."region"                    AS "userRegion",
@@ -476,53 +457,18 @@ export class ShoppingListAnalyticsAggregator {
   private aggregateItemPopularity(
     rows: RawShoppingListRow[],
   ): ItemPopularityRow[] {
-    // Group by (dateKey, foodName, itemType, foodGroup) to avoid
-    // collapsing same-name foods from different groups into one bucket.
-    const groups = new Map<
-      string,
-      {
-        date: Date;
-        foodName: string;
-        foodGroup: string | null;
-        itemType: string;
-        users: Set<string>;
-        quantities: number[];
-        units: string[];
-      }
-    >();
-
-    for (const row of rows) {
-      if (!row.foodName) continue;
-      const dateKey = row.createdAt.toISOString().slice(0, 10);
-      const foodGroupKey = row.foodGroup ?? '__NULL_FOOD_GROUP__';
-      const key = `${dateKey}||${row.foodName}||${row.itemType}||${foodGroupKey}`;
-      if (!groups.has(key)) {
-        groups.set(key, {
-          date: new Date(dateKey),
-          foodName: row.foodName,
-          foodGroup: row.foodGroup,
-          itemType: row.itemType,
-          users: new Set(),
-          quantities: [],
-          units: [],
-        });
-      }
-      const g = groups.get(key)!;
-      g.users.add(row.userId);
-      g.quantities.push(row.quantity);
-      g.units.push(row.unit);
-    }
-
-    return [...groups.values()].map((g) => ({
-      date: g.date,
-      foodName: g.foodName,
-      foodGroup: g.foodGroup,
-      itemType: g.itemType,
-      frequency: g.quantities.length,
-      uniqueUsers: g.users.size,
-      avgQuantity: safeAvg(g.quantities) ?? 0,
-      predominantUnit: mode(g.units) ?? '',
-    }));
+    const entries = rows
+      .filter((r) => r.foodName !== null)
+      .map((r) => ({
+        date: r.createdAt,
+        userId: r.userId,
+        foodName: r.foodName!,
+        foodGroup: r.foodGroup,
+        itemType: r.itemType,
+        quantity: r.quantity,
+        unit: r.unit,
+      }));
+    return aggregateFoodFrequency(entries);
   }
 
   private aggregateCategoryPopularity(

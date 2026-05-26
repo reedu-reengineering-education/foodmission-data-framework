@@ -14,6 +14,9 @@ import {
   mode,
   distribution,
   FoodFrequencyRow,
+  AGE_GROUP_SQL,
+  applyKAnonymity,
+  aggregateFoodFrequency,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -383,40 +386,27 @@ export class MealLogAnalyticsAggregator {
     const crossDimPatterns = this.aggregateCrossDimPatterns(meals);
 
     // Apply k-anonymity: suppress groups with < K unique users
-    const filter = <T extends { userCount?: number; uniqueUsers?: number }>(
+    const applyK = <T extends { userCount?: number; uniqueUsers?: number }>(
       rows: T[],
       field: 'userCount' | 'uniqueUsers' = 'userCount',
-    ): T[] =>
-      rows.filter((r) => {
-        const count = r[field] as number;
-        if (count < K_ANONYMITY_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
+      threshold = K_ANONYMITY_THRESHOLD,
+    ): T[] => {
+      const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
+      suppressedGroups += suppressed;
+      return filtered;
+    };
 
-    // Stricter K=20 filter for cross-dimensional groups
-    const filterCross = <T extends { userCount: number }>(rows: T[]): T[] =>
-      rows.filter((r) => {
-        if (r.userCount < K_ANONYMITY_CROSS_DIM_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
-
-    const filteredNutrition = filter(dailyNutrition);
-    const filteredPopularity = filter(foodPopularity, 'uniqueUsers');
-    const filteredPatterns = filter(mealPatterns);
-    const filteredSustainability = filter(sustainability);
-    const filteredClassification = filter(mealClassification);
-    const filteredDemographicNutrition = filter(demographicNutrition);
-    const filteredDemographicClassification = filter(demographicClassification);
-    const filteredDemographicPatterns = filter(demographicPatterns);
-    const filteredCrossDimNutrition = filterCross(crossDimNutrition);
-    const filteredCrossDimClassification = filterCross(crossDimClassification);
-    const filteredCrossDimPatterns = filterCross(crossDimPatterns);
+    const filteredNutrition = applyK(dailyNutrition);
+    const filteredPopularity = applyK(foodPopularity, 'uniqueUsers');
+    const filteredPatterns = applyK(mealPatterns);
+    const filteredSustainability = applyK(sustainability);
+    const filteredClassification = applyK(mealClassification);
+    const filteredDemographicNutrition = applyK(demographicNutrition);
+    const filteredDemographicClassification = applyK(demographicClassification);
+    const filteredDemographicPatterns = applyK(demographicPatterns);
+    const filteredCrossDimNutrition = applyK(crossDimNutrition, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimClassification = applyK(crossDimClassification, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimPatterns = applyK(crossDimPatterns, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
 
     const totalRecords =
       filteredNutrition.length +
@@ -471,16 +461,7 @@ export class MealLogAnalyticsAggregator {
         ml."mealFromPantry"  AS "mealFromPantry",
         ml."eatenOut"        AS "eatenOut",
         u."createdAt"        AS "userCreatedAt",
-        CASE
-          WHEN u."yearOfBirth" IS NULL THEN NULL
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 18 THEN 'under_18'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 25 THEN '18_24'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 35 THEN '25_34'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 45 THEN '35_44'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 55 THEN '45_54'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 65 THEN '55_64'
-          ELSE '65_plus'
-        END                  AS "userAgeGroup",
+        ${AGE_GROUP_SQL} AS "userAgeGroup",
         u."gender"::text     AS "userGender",
         u."educationLevel"::text AS "userEducationLevel",
         u."region"           AS "userRegion",
@@ -675,52 +656,18 @@ export class MealLogAnalyticsAggregator {
   }
 
   private aggregateFoodPopularity(meals: MealAggregate[]): FoodPopularityRow[] {
-    const foodMap = new Map<
-      string,
-      {
-        date: string;
-        foodName: string;
-        foodGroup: string | null;
-        itemType: string;
-        users: Set<string>;
-        quantities: number[];
-        units: string[];
-      }
-    >();
-
-    for (const meal of meals) {
-      const dateStr = meal.timestamp.toISOString().split('T')[0];
-      for (const food of meal.foods) {
-        const foodGroupKey = food.foodGroup ?? '__NULL_FOOD_GROUP__';
-        const key = `${dateStr}|${food.name}|${food.itemType}|${foodGroupKey}`;
-        if (!foodMap.has(key)) {
-          foodMap.set(key, {
-            date: dateStr,
-            foodName: food.name,
-            foodGroup: food.foodGroup,
-            itemType: food.itemType,
-            users: new Set(),
-            quantities: [],
-            units: [],
-          });
-        }
-        const entry = foodMap.get(key)!;
-        entry.users.add(meal.userId);
-        entry.quantities.push(food.quantity);
-        entry.units.push(food.unit);
-      }
-    }
-
-    return Array.from(foodMap.values()).map((entry) => ({
-      date: new Date(entry.date),
-      foodName: entry.foodName,
-      foodGroup: entry.foodGroup,
-      itemType: entry.itemType,
-      frequency: entry.quantities.length,
-      uniqueUsers: entry.users.size,
-      avgQuantity: safeAvg(entry.quantities) ?? 0,
-      predominantUnit: mode(entry.units) ?? '',
-    }));
+    const entries = meals.flatMap((meal) =>
+      meal.foods.map((food) => ({
+        date: meal.timestamp,
+        userId: meal.userId,
+        foodName: food.name,
+        foodGroup: food.foodGroup,
+        itemType: food.itemType,
+        quantity: food.quantity,
+        unit: food.unit,
+      })),
+    );
+    return aggregateFoodFrequency(entries);
   }
 
   private aggregateMealPatterns(meals: MealAggregate[]): MealPatternsRow[] {

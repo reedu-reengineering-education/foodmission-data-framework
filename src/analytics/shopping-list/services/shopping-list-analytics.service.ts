@@ -1,53 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
-import { Prisma, AnalyticsBatchStatus } from '@prisma/client';
+import { Prisma, ShoppingListAnalyticsBatch } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
-import {
-  getAnalyticsBatch,
-  listAnalyticsBatches,
-  approveAnalyticsBatch,
-  publishAnalyticsBatch,
-  rejectAnalyticsBatch,
-  deleteAnalyticsBatch,
-  autoPublishAndSupersede,
-} from '../../common/batch-lifecycle';
+import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()
-export class ShoppingListAnalyticsService {
+export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingListAnalyticsBatch> {
   private readonly logger = new Logger(ShoppingListAnalyticsService.name);
 
   constructor(
-    private readonly repository: ShoppingListAnalyticsRepository,
+    protected readonly repository: ShoppingListAnalyticsRepository,
     private readonly aggregator: ShoppingListAnalyticsAggregator,
-  ) {}
-
-  /**
-   * Aggregate yesterday's data into staging.
-   * Scheduled by AnalyticsBatchCoordinator at 2:00 AM daily.
-   */
-  async runDailyAggregation(): Promise<string> {
-    const yesterday = new Date();
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-    yesterday.setUTCHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-
-    const batchId = await this.generateBatch(yesterday, today);
-
-    await autoPublishAndSupersede(
-      this.repository,
-      batchId,
-      AnalyticsBatchStatus.PUBLISHED,
-      'system',
-      yesterday,
-      today,
-    );
-
-    return batchId;
+  ) {
+    super();
   }
 
   async generateBatch(periodStart: Date, periodEnd: Date): Promise<string> {
@@ -325,51 +293,4 @@ export class ShoppingListAnalyticsService {
   // ============================================================
   // Admin — batch management
   // ============================================================
-
-  async listBatches(status?: AnalyticsBatchStatus) {
-    return listAnalyticsBatches(this.repository, status);
-  }
-
-  async getBatch(batchId: string) {
-    return getAnalyticsBatch(this.repository, batchId);
-  }
-
-  async approveBatch(batchId: string, adminUserId: string) {
-    return approveAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      AnalyticsBatchStatus.STAGING,
-      AnalyticsBatchStatus.APPROVED,
-    );
-  }
-
-  async publishBatch(batchId: string, adminUserId: string) {
-    return publishAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      AnalyticsBatchStatus.APPROVED,
-      AnalyticsBatchStatus.PUBLISHED,
-    );
-  }
-
-  async rejectBatch(batchId: string, adminUserId: string, reason: string) {
-    return rejectAnalyticsBatch(
-      this.repository,
-      batchId,
-      adminUserId,
-      reason,
-      AnalyticsBatchStatus.STAGING,
-      AnalyticsBatchStatus.REJECTED,
-    );
-  }
-
-  async deleteBatch(batchId: string) {
-    return deleteAnalyticsBatch(this.repository, batchId, [
-      AnalyticsBatchStatus.PUBLISHED,
-      AnalyticsBatchStatus.APPROVED,
-      AnalyticsBatchStatus.SUPERSEDED,
-    ]);
-  }
 }

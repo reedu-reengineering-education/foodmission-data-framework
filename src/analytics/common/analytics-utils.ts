@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 /**
  * Returns the arithmetic mean of a non-empty number array, or null when empty.
@@ -141,4 +142,123 @@ export interface FoodFrequencyRow {
   uniqueUsers: number;
   avgQuantity: number;
   predominantUnit: string;
+}
+
+// ============================================================
+// Age-group SQL fragment
+// ============================================================
+
+/**
+ * Prisma SQL fragment that maps u."yearOfBirth" to a standardised age-group
+ * bucket. Ready to be interpolated into any Prisma $queryRaw template.
+ * Produces a text value or NULL when yearOfBirth is not set.
+ */
+export const AGE_GROUP_SQL: Prisma.Sql = Prisma.sql`
+  CASE
+    WHEN u."yearOfBirth" IS NULL THEN NULL
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 18 THEN 'under_18'
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 25 THEN '18_24'
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 35 THEN '25_34'
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 45 THEN '35_44'
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 55 THEN '45_54'
+    WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 65 THEN '55_64'
+    ELSE '65_plus'
+  END`;
+
+// ============================================================
+// k-anonymity filter
+// ============================================================
+
+/**
+ * Filters rows whose user-count field is below the given threshold.
+ * Returns both the filtered rows and the number of suppressed groups so
+ * callers can accumulate a total suppression count.
+ *
+ * @param rows     Rows to filter.
+ * @param field    Which field holds the user count. Defaults to 'userCount'.
+ * @param threshold Minimum count required to keep a row. Defaults to K_ANONYMITY_THRESHOLD.
+ */
+export function applyKAnonymity<
+  T extends { userCount?: number; uniqueUsers?: number },
+>(
+  rows: T[],
+  field: 'userCount' | 'uniqueUsers' = 'userCount',
+  threshold = K_ANONYMITY_THRESHOLD,
+): { rows: T[]; suppressed: number } {
+  let suppressed = 0;
+  const filtered = rows.filter((r) => {
+    const count = r[field] as number;
+    if (count < threshold) {
+      suppressed++;
+      return false;
+    }
+    return true;
+  });
+  return { rows: filtered, suppressed };
+}
+
+// ============================================================
+// Food frequency aggregation helper
+// ============================================================
+
+/**
+ * Aggregates a flat list of food-item observations into FoodFrequencyRow[].
+ * Shared by meal-log (aggregateFoodPopularity) and shopping-list
+ * (aggregateItemPopularity) — both produce the same FoodFrequencyRow shape.
+ */
+export function aggregateFoodFrequency(
+  entries: Array<{
+    date: Date;
+    userId: string;
+    foodName: string;
+    foodGroup: string | null;
+    itemType: string;
+    quantity: number;
+    unit: string;
+  }>,
+): FoodFrequencyRow[] {
+  const groups = new Map<
+    string,
+    {
+      date: Date;
+      foodName: string;
+      foodGroup: string | null;
+      itemType: string;
+      users: Set<string>;
+      quantities: number[];
+      units: string[];
+    }
+  >();
+
+  for (const e of entries) {
+    const dateKey = e.date.toISOString().slice(0, 10);
+    const foodGroupKey = e.foodGroup ?? '__NULL_FOOD_GROUP__';
+    const key = `${dateKey}||${e.foodName}||${e.itemType}||${foodGroupKey}`;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        date: new Date(dateKey),
+        foodName: e.foodName,
+        foodGroup: e.foodGroup,
+        itemType: e.itemType,
+        users: new Set(),
+        quantities: [],
+        units: [],
+      });
+    }
+    const g = groups.get(key)!;
+    g.users.add(e.userId);
+    g.quantities.push(e.quantity);
+    g.units.push(e.unit);
+  }
+
+  return [...groups.values()].map((g) => ({
+    date: g.date,
+    foodName: g.foodName,
+    foodGroup: g.foodGroup,
+    itemType: g.itemType,
+    frequency: g.quantities.length,
+    uniqueUsers: g.users.size,
+    avgQuantity: safeAvg(g.quantities) ?? 0,
+    predominantUnit: mode(g.units) ?? '',
+  }));
 }
