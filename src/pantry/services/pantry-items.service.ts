@@ -26,8 +26,16 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
-import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
+import {
+  Prisma,
+  Unit,
+  WasteReason,
+  DetectionMethod,
+  GenericFood,
+} from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
+import { FoodProductWithRelations } from '../../common/types/prisma-relations';
+import { buildCategoryHints } from '../../common/utils/food-tag.utils';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 
 @Injectable()
@@ -95,37 +103,23 @@ export class PantryItemService {
         tx,
       );
 
-      const { foodName, shelfLifeId, categoryHints } = foodId
+      const { foodName, shelfLifeId, categoryHints } = foodProductId
         ? {
-            foodName: (validatedEntity as Food).name ?? null,
-            shelfLifeId: (validatedEntity as Food).shelfLifeId ?? null,
+            foodName:
+              (validatedEntity as FoodProductWithRelations).name ?? null,
+            shelfLifeId:
+              (validatedEntity as FoodProductWithRelations).shelfLifeId ?? null,
             categoryHints: buildCategoryHints(
-              (validatedEntity as Food).categories ?? [],
+              (validatedEntity as FoodProductWithRelations).categories ?? [],
             ),
           }
         : {
-            foodName: (validatedEntity as FoodCategory).foodName ?? null,
-            shelfLifeId: (validatedEntity as FoodCategory).shelfLifeId ?? null,
-            categoryHints: (validatedEntity as FoodCategory).foodGroup
-              ? [(validatedEntity as FoodCategory).foodGroup.toLowerCase()]
+            foodName: (validatedEntity as GenericFood).foodName ?? null,
+            shelfLifeId: (validatedEntity as GenericFood).shelfLifeId ?? null,
+            categoryHints: (validatedEntity as GenericFood).foodGroup
+              ? [(validatedEntity as GenericFood).foodGroup.toLowerCase()]
               : [],
           };
-      let resolvedFoodName: string | null = null;
-      let linkedShelfLifeId: string | null = null;
-      if (foodProductId) {
-        const food = await this.foodProductRepository.findById(foodProductId);
-        resolvedFoodName = food?.name ?? null;
-        linkedShelfLifeId = food?.shelfLifeId ?? null;
-      } else if (genericFoodId) {
-        const genericFood =
-          await this.genericFoodRepository.findById(genericFoodId);
-        resolvedFoodName = genericFood?.foodName ?? null;
-        linkedShelfLifeId = genericFood?.shelfLifeId ?? null;
-      }
-
-      let expiryDate: Date | undefined;
-      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
-
       const { expiryDate: autoExpiry, source: autoSource } =
         await this.shelfLifeService.resolveExpiryDate({
           shelfLifeId,
@@ -232,9 +226,7 @@ export class PantryItemService {
       return genericFood;
     }
 
-    throw new Error(
-      'Either foodProductId or genericFoodId is required',
-    );
+    throw new Error('Either foodProductId or genericFoodId is required');
   }
 
   async findAll(

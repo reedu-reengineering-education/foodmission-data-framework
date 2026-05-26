@@ -43,6 +43,9 @@ export function createMockShelfLifeService() {
     }),
     inferStorageType: jest.fn().mockReturnValue('refrigerator'),
     getDaysForStorageType: jest.fn().mockReturnValue(7),
+    resolveExpiryDate: jest
+      .fn()
+      .mockResolvedValue({ expiryDate: undefined, source: undefined }),
   };
 }
 
