@@ -1,6 +1,6 @@
 import { ShoppingListAnalyticsController } from './shopping-list-analytics.controller';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
-import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { AnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsController', () => {
   let controller: ShoppingListAnalyticsController;
@@ -368,10 +368,10 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes status filter to service', async () => {
       service.listBatches.mockResolvedValue([]);
 
-      await controller.listBatches(ShoppingListAnalyticsBatchStatus.STAGING);
+      await controller.listBatches(AnalyticsBatchStatus.STAGING);
 
       expect(service.listBatches).toHaveBeenCalledWith(
-        ShoppingListAnalyticsBatchStatus.STAGING,
+        AnalyticsBatchStatus.STAGING,
       );
     });
 
@@ -400,7 +400,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id and admin user id to service', async () => {
       const approved = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+        status: AnalyticsBatchStatus.APPROVED,
       };
       service.approveBatch.mockResolvedValue(approved as any);
 
@@ -415,7 +415,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id and admin user id to service', async () => {
       const published = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       };
       service.publishBatch.mockResolvedValue(published as any);
 
@@ -430,7 +430,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id, admin user id and reason to service', async () => {
       const rejected = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.REJECTED,
+        status: AnalyticsBatchStatus.REJECTED,
       };
       service.rejectBatch.mockResolvedValue(rejected as any);
 

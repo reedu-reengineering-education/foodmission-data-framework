@@ -1,7 +1,7 @@
 import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
-import { MealLogAnalyticsBatchStatus } from '@prisma/client';
+import { AnalyticsBatchStatus } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
@@ -66,7 +66,7 @@ describe('MealLogAnalyticsService', () => {
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
       repository.updateBatchStatus.mockResolvedValue({
         id: 'daily-batch',
-        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       } as any);
     });
 
@@ -87,7 +87,7 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'daily-batch',
-        MealLogAnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.PUBLISHED,
         'system',
       );
     });
@@ -160,10 +160,10 @@ describe('MealLogAnalyticsService', () => {
 
   describe('approveBatch', () => {
     it('should approve a STAGING batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+      const batch = { id: 'b1', status: AnalyticsBatchStatus.STAGING };
       const approved = {
         ...batch,
-        status: MealLogAnalyticsBatchStatus.APPROVED,
+        status: AnalyticsBatchStatus.APPROVED,
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(approved as any);
@@ -172,14 +172,14 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        MealLogAnalyticsBatchStatus.APPROVED,
+        AnalyticsBatchStatus.APPROVED,
         'admin1',
       );
       expect(result).toEqual(approved);
     });
 
     it('should throw Error for non-STAGING batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.PUBLISHED };
+      const batch = { id: 'b1', status: AnalyticsBatchStatus.PUBLISHED };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.approveBatch('b1', 'admin1')).rejects.toThrow(
@@ -198,10 +198,10 @@ describe('MealLogAnalyticsService', () => {
 
   describe('publishBatch', () => {
     it('should publish an APPROVED batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.APPROVED };
+      const batch = { id: 'b1', status: AnalyticsBatchStatus.APPROVED };
       const published = {
         ...batch,
-        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(published as any);
@@ -210,14 +210,14 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        MealLogAnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.PUBLISHED,
         'admin1',
       );
       expect(result).toEqual(published);
     });
 
     it('should throw Error for non-APPROVED batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+      const batch = { id: 'b1', status: AnalyticsBatchStatus.STAGING };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.publishBatch('b1', 'admin1')).rejects.toThrow(

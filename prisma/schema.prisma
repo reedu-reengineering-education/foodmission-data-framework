@@ -832,7 +832,7 @@ model MealLogAnalyticsBatch {
   id              String               @id @default(uuid())
   periodStart     DateTime
   periodEnd       DateTime
-  status          MealLogAnalyticsBatchStatus @default(STAGING)
+  status          AnalyticsBatchStatus         @default(STAGING)
   generatedAt     DateTime             @default(now())
   publishedAt     DateTime?
   publishedBy     String?
@@ -861,14 +861,6 @@ model MealLogAnalyticsBatch {
   @@index([status])
   @@index([periodStart, periodEnd])
   @@map("meal_log_analytics_batches")
-}
-
-enum MealLogAnalyticsBatchStatus {
-  STAGING
-  APPROVED
-  PUBLISHED
-  REJECTED
-  SUPERSEDED
 }
 
 model MealLogAnalyticsDailyNutrition {
@@ -1355,7 +1347,7 @@ model UserKnowledgeProgress {
 // Analytics — Shopping List
 // ============================================================
 
-enum ShoppingListAnalyticsBatchStatus {
+enum AnalyticsBatchStatus {
   STAGING
   APPROVED
   PUBLISHED
@@ -1367,7 +1359,7 @@ model ShoppingListAnalyticsBatch {
   id              String                           @id @default(uuid())
   periodStart     DateTime
   periodEnd       DateTime
-  status          ShoppingListAnalyticsBatchStatus @default(STAGING)
+  status          AnalyticsBatchStatus             @default(STAGING)
   generatedAt     DateTime                         @default(now())
   publishedAt     DateTime?
   publishedBy     String?

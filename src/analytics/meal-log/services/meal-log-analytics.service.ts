@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
-import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
+import { AnalyticsBatchStatus, Prisma } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
@@ -41,7 +41,7 @@ export class MealLogAnalyticsService {
     await autoPublishAndSupersede(
       this.repository,
       batchId,
-      MealLogAnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.PUBLISHED,
       'system',
       yesterday,
       today,
@@ -363,7 +363,7 @@ export class MealLogAnalyticsService {
   // Admin — batch management
   // ============================================================
 
-  async listBatches(status?: MealLogAnalyticsBatchStatus) {
+  async listBatches(status?: AnalyticsBatchStatus) {
     return listAnalyticsBatches(this.repository, status);
   }
 
@@ -376,8 +376,8 @@ export class MealLogAnalyticsService {
       this.repository,
       batchId,
       adminUserId,
-      MealLogAnalyticsBatchStatus.STAGING,
-      MealLogAnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.STAGING,
+      AnalyticsBatchStatus.APPROVED,
     );
   }
 
@@ -386,8 +386,8 @@ export class MealLogAnalyticsService {
       this.repository,
       batchId,
       adminUserId,
-      MealLogAnalyticsBatchStatus.APPROVED,
-      MealLogAnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.PUBLISHED,
     );
   }
 
@@ -397,16 +397,16 @@ export class MealLogAnalyticsService {
       batchId,
       adminUserId,
       reason,
-      MealLogAnalyticsBatchStatus.STAGING,
-      MealLogAnalyticsBatchStatus.REJECTED,
+      AnalyticsBatchStatus.STAGING,
+      AnalyticsBatchStatus.REJECTED,
     );
   }
 
   async deleteBatch(batchId: string) {
     return deleteAnalyticsBatch(this.repository, batchId, [
-      MealLogAnalyticsBatchStatus.PUBLISHED,
-      MealLogAnalyticsBatchStatus.APPROVED,
-      MealLogAnalyticsBatchStatus.SUPERSEDED,
+      AnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.SUPERSEDED,
     ]);
   }
 }

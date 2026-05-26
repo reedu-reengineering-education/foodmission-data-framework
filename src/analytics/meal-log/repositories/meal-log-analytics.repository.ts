@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import {
   MealLogAnalyticsBatch,
-  MealLogAnalyticsBatchStatus,
+  AnalyticsBatchStatus,
   Prisma,
 } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
@@ -36,7 +36,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  findBatches(status?: MealLogAnalyticsBatchStatus) {
+  findBatches(status?: AnalyticsBatchStatus) {
     return this.prisma.mealLogAnalyticsBatch.findMany({
       where: status ? { status } : undefined,
       orderBy: { generatedAt: 'desc' },
@@ -45,16 +45,16 @@ export class MealLogAnalyticsRepository {
 
   updateBatchStatus(
     id: string,
-    status: MealLogAnalyticsBatchStatus,
+    status: AnalyticsBatchStatus,
     userId?: string,
     reason?: string,
   ): Promise<MealLogAnalyticsBatch> {
     const data: Prisma.MealLogAnalyticsBatchUpdateInput = { status };
 
-    if (status === MealLogAnalyticsBatchStatus.PUBLISHED) {
+    if (status === AnalyticsBatchStatus.PUBLISHED) {
       data.publishedAt = new Date();
       data.publishedBy = userId;
-    } else if (status === MealLogAnalyticsBatchStatus.REJECTED) {
+    } else if (status === AnalyticsBatchStatus.REJECTED) {
       data.rejectedAt = new Date();
       data.rejectedBy = userId;
       data.rejectionReason = reason;
@@ -80,12 +80,12 @@ export class MealLogAnalyticsRepository {
     await this.prisma.mealLogAnalyticsBatch.updateMany({
       where: {
         id: { not: excludeId },
-        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
         // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
         periodEnd: { gt: from },
         periodStart: { lt: to },
       },
-      data: { status: MealLogAnalyticsBatchStatus.SUPERSEDED },
+      data: { status: AnalyticsBatchStatus.SUPERSEDED },
     });
   }
 
@@ -136,7 +136,7 @@ export class MealLogAnalyticsRepository {
     to?: Date,
   ): Prisma.MealLogAnalyticsBatchWhereInput {
     const filter: Prisma.MealLogAnalyticsBatchWhereInput = {
-      status: MealLogAnalyticsBatchStatus.PUBLISHED,
+      status: AnalyticsBatchStatus.PUBLISHED,
     };
     // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to.
     // Matches supersedeBatchesForPeriod and the shopping-list equivalent.

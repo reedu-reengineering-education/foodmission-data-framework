@@ -1,0 +1,8 @@
+-- RenameIndex
+ALTER INDEX "shopping_list_analytics_demographic_classification_batchId_d_ke" RENAME TO "shopping_list_analytics_demographic_classification_batchId__key";
+
+-- RenameIndex
+ALTER INDEX "shopping_list_analytics_demographic_classification_dimensionNam" RENAME TO "shopping_list_analytics_demographic_classification_dimensio_idx";
+
+-- RenameIndex
+ALTER INDEX "shopping_list_analytics_demographic_nutrition_batchId_date_d_ke" RENAME TO "shopping_list_analytics_demographic_nutrition_batchId_date__key";

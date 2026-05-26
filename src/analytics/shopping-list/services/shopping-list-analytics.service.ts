@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
-import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { Prisma, AnalyticsBatchStatus } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
@@ -41,7 +41,7 @@ export class ShoppingListAnalyticsService {
     await autoPublishAndSupersede(
       this.repository,
       batchId,
-      ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.PUBLISHED,
       'system',
       yesterday,
       today,
@@ -326,7 +326,7 @@ export class ShoppingListAnalyticsService {
   // Admin — batch management
   // ============================================================
 
-  async listBatches(status?: ShoppingListAnalyticsBatchStatus) {
+  async listBatches(status?: AnalyticsBatchStatus) {
     return listAnalyticsBatches(this.repository, status);
   }
 
@@ -339,8 +339,8 @@ export class ShoppingListAnalyticsService {
       this.repository,
       batchId,
       adminUserId,
-      ShoppingListAnalyticsBatchStatus.STAGING,
-      ShoppingListAnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.STAGING,
+      AnalyticsBatchStatus.APPROVED,
     );
   }
 
@@ -349,8 +349,8 @@ export class ShoppingListAnalyticsService {
       this.repository,
       batchId,
       adminUserId,
-      ShoppingListAnalyticsBatchStatus.APPROVED,
-      ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.PUBLISHED,
     );
   }
 
@@ -360,16 +360,16 @@ export class ShoppingListAnalyticsService {
       batchId,
       adminUserId,
       reason,
-      ShoppingListAnalyticsBatchStatus.STAGING,
-      ShoppingListAnalyticsBatchStatus.REJECTED,
+      AnalyticsBatchStatus.STAGING,
+      AnalyticsBatchStatus.REJECTED,
     );
   }
 
   async deleteBatch(batchId: string) {
     return deleteAnalyticsBatch(this.repository, batchId, [
-      ShoppingListAnalyticsBatchStatus.PUBLISHED,
-      ShoppingListAnalyticsBatchStatus.APPROVED,
-      ShoppingListAnalyticsBatchStatus.SUPERSEDED,
+      AnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.APPROVED,
+      AnalyticsBatchStatus.SUPERSEDED,
     ]);
   }
 }

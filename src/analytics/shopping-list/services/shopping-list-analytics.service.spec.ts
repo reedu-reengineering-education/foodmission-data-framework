@@ -2,7 +2,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ShoppingListAnalyticsService } from './shopping-list-analytics.service';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
-import { Prisma, ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { Prisma, AnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsService', () => {
   let service: ShoppingListAnalyticsService;
@@ -177,7 +177,7 @@ describe('ShoppingListAnalyticsService', () => {
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
       repository.updateBatchStatus.mockResolvedValue({
         id: 'daily-batch',
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       } as any);
     });
 
@@ -198,7 +198,7 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'daily-batch',
-        ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.PUBLISHED,
         'system',
       );
     });
@@ -227,11 +227,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('approves a STAGING batch', async () => {
       const batch = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.STAGING,
+        status: AnalyticsBatchStatus.STAGING,
       };
       const approved = {
         ...batch,
-        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+        status: AnalyticsBatchStatus.APPROVED,
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(approved as any);
@@ -240,16 +240,16 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        ShoppingListAnalyticsBatchStatus.APPROVED,
+        AnalyticsBatchStatus.APPROVED,
         'admin-1',
       );
-      expect(result.status).toBe(ShoppingListAnalyticsBatchStatus.APPROVED);
+      expect(result.status).toBe(AnalyticsBatchStatus.APPROVED);
     });
 
     it('throws BadRequestException for a non-STAGING batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       } as any);
 
       await expect(service.approveBatch('b1', 'admin-1')).rejects.toThrow(
@@ -274,11 +274,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('publishes an APPROVED batch', async () => {
       const batch = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+        status: AnalyticsBatchStatus.APPROVED,
       };
       const published = {
         ...batch,
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(published as any);
@@ -287,16 +287,16 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.PUBLISHED,
         'admin-1',
       );
-      expect(result.status).toBe(ShoppingListAnalyticsBatchStatus.PUBLISHED);
+      expect(result.status).toBe(AnalyticsBatchStatus.PUBLISHED);
     });
 
     it('throws BadRequestException when batch is not APPROVED', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.STAGING,
+        status: AnalyticsBatchStatus.STAGING,
       } as any);
 
       await expect(service.publishBatch('b1', 'admin-1')).rejects.toThrow(
@@ -313,11 +313,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('rejects a STAGING batch', async () => {
       const batch = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.STAGING,
+        status: AnalyticsBatchStatus.STAGING,
       };
       const rejected = {
         ...batch,
-        status: ShoppingListAnalyticsBatchStatus.REJECTED,
+        status: AnalyticsBatchStatus.REJECTED,
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(rejected as any);
@@ -326,17 +326,17 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        ShoppingListAnalyticsBatchStatus.REJECTED,
+        AnalyticsBatchStatus.REJECTED,
         'admin-1',
         'bad data',
       );
-      expect(result.status).toBe(ShoppingListAnalyticsBatchStatus.REJECTED);
+      expect(result.status).toBe(AnalyticsBatchStatus.REJECTED);
     });
 
     it('throws BadRequestException when batch is not STAGING', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       } as any);
 
       await expect(
@@ -353,7 +353,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('deletes a STAGING batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.STAGING,
+        status: AnalyticsBatchStatus.STAGING,
       } as any);
       repository.deleteBatch.mockResolvedValue(undefined);
 
@@ -365,7 +365,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('deletes a REJECTED batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.REJECTED,
+        status: AnalyticsBatchStatus.REJECTED,
       } as any);
       repository.deleteBatch.mockResolvedValue(undefined);
 
@@ -377,7 +377,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('throws BadRequestException for PUBLISHED batches', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
       } as any);
 
       await expect(service.deleteBatch('b1')).rejects.toThrow(
@@ -388,7 +388,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('throws BadRequestException for APPROVED batches', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.APPROVED,
+        status: AnalyticsBatchStatus.APPROVED,
       } as any);
 
       await expect(service.deleteBatch('b1')).rejects.toThrow(
@@ -581,7 +581,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('returns the batch when found', async () => {
       const batch = {
         id: 'b1',
-        status: ShoppingListAnalyticsBatchStatus.STAGING,
+        status: AnalyticsBatchStatus.STAGING,
       };
       repository.findBatchById.mockResolvedValue(batch as any);
 

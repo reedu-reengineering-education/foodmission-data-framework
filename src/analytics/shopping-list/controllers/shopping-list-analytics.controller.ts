@@ -23,7 +23,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
-import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { AnalyticsBatchStatus } from '@prisma/client';
 import {
   DemographicDimension,
   DemographicDimensionEnum,
@@ -642,15 +642,15 @@ export class ShoppingListAnalyticsController {
   @ApiQuery({
     name: 'status',
     required: false,
-    enum: ShoppingListAnalyticsBatchStatus,
+    enum: AnalyticsBatchStatus,
   })
   @ApiResponse({ status: 200, description: 'List of batches' })
   async listBatches(
     @Query(
       'status',
-      new ParseEnumPipe(ShoppingListAnalyticsBatchStatus, { optional: true }),
+      new ParseEnumPipe(AnalyticsBatchStatus, { optional: true }),
     )
-    status?: ShoppingListAnalyticsBatchStatus,
+    status?: AnalyticsBatchStatus,
   ) {
     return this.analyticsService.listBatches(status);
   }

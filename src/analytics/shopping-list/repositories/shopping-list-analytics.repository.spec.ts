@@ -1,5 +1,5 @@
 import { ShoppingListAnalyticsRepository } from './shopping-list-analytics.repository';
-import { ShoppingListAnalyticsBatchStatus } from '@prisma/client';
+import { AnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsRepository', () => {
   let repository: ShoppingListAnalyticsRepository;
@@ -116,7 +116,7 @@ describe('ShoppingListAnalyticsRepository', () => {
   it('updateBatchStatus sets publishedAt and publishedBy when publishing', async () => {
     const published = {
       id: 'b1',
-      status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      status: AnalyticsBatchStatus.PUBLISHED,
     };
     prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(
       published as any,
@@ -124,12 +124,12 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.updateBatchStatus(
       'b1',
-      ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.PUBLISHED,
       'admin-1',
     );
 
     const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe(ShoppingListAnalyticsBatchStatus.PUBLISHED);
+    expect(data.status).toBe(AnalyticsBatchStatus.PUBLISHED);
     expect(data.publishedAt).toBeInstanceOf(Date);
     expect(data.publishedBy).toBe('admin-1');
   });
@@ -137,19 +137,19 @@ describe('ShoppingListAnalyticsRepository', () => {
   it('updateBatchStatus sets rejectedAt, rejectedBy and rejectionReason when rejecting', async () => {
     const rejected = {
       id: 'b1',
-      status: ShoppingListAnalyticsBatchStatus.REJECTED,
+      status: AnalyticsBatchStatus.REJECTED,
     };
     prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(rejected as any);
 
     await repository.updateBatchStatus(
       'b1',
-      ShoppingListAnalyticsBatchStatus.REJECTED,
+      AnalyticsBatchStatus.REJECTED,
       'admin-1',
       'bad data quality',
     );
 
     const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe(ShoppingListAnalyticsBatchStatus.REJECTED);
+    expect(data.status).toBe(AnalyticsBatchStatus.REJECTED);
     expect(data.rejectedAt).toBeInstanceOf(Date);
     expect(data.rejectedBy).toBe('admin-1');
     expect(data.rejectionReason).toBe('bad data quality');
@@ -205,7 +205,7 @@ describe('ShoppingListAnalyticsRepository', () => {
     const where = (
       prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
     ).mock.calls[0][0].where;
-    expect(where.batch.status).toBe(ShoppingListAnalyticsBatchStatus.PUBLISHED);
+    expect(where.batch.status).toBe(AnalyticsBatchStatus.PUBLISHED);
   });
 
   it('getPublishedListPatterns applies from/to date filter on batch', async () => {

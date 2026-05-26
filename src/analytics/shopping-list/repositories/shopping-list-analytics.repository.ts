@@ -3,7 +3,7 @@ import { PrismaService } from '../../../database/prisma.service';
 import {
   Prisma,
   ShoppingListAnalyticsBatch,
-  ShoppingListAnalyticsBatchStatus,
+  AnalyticsBatchStatus,
 } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 
@@ -40,7 +40,7 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async findBatches(status?: ShoppingListAnalyticsBatchStatus) {
+  async findBatches(status?: AnalyticsBatchStatus) {
     return this.prisma.shoppingListAnalyticsBatch.findMany({
       where: status ? { status } : undefined,
       orderBy: { generatedAt: 'desc' },
@@ -49,16 +49,16 @@ export class ShoppingListAnalyticsRepository {
 
   async updateBatchStatus(
     id: string,
-    status: ShoppingListAnalyticsBatchStatus,
+    status: AnalyticsBatchStatus,
     userId?: string,
     reason?: string,
   ): Promise<ShoppingListAnalyticsBatch> {
     const data: Prisma.ShoppingListAnalyticsBatchUpdateInput = { status };
 
-    if (status === ShoppingListAnalyticsBatchStatus.PUBLISHED) {
+    if (status === AnalyticsBatchStatus.PUBLISHED) {
       data.publishedAt = new Date();
       data.publishedBy = userId;
-    } else if (status === ShoppingListAnalyticsBatchStatus.REJECTED) {
+    } else if (status === AnalyticsBatchStatus.REJECTED) {
       data.rejectedAt = new Date();
       data.rejectedBy = userId;
       data.rejectionReason = reason;
@@ -87,12 +87,12 @@ export class ShoppingListAnalyticsRepository {
     await this.prisma.shoppingListAnalyticsBatch.updateMany({
       where: {
         id: { not: excludeId },
-        status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+        status: AnalyticsBatchStatus.PUBLISHED,
         // Overlap semantics: batch overlaps [from, to) when periodEnd > from AND periodStart < to
         periodEnd: { gt: from },
         periodStart: { lt: to },
       },
-      data: { status: ShoppingListAnalyticsBatchStatus.SUPERSEDED },
+      data: { status: AnalyticsBatchStatus.SUPERSEDED },
     });
   }
 
@@ -197,7 +197,7 @@ export class ShoppingListAnalyticsRepository {
     to?: Date,
   ): Prisma.ShoppingListAnalyticsBatchWhereInput {
     const filter: Prisma.ShoppingListAnalyticsBatchWhereInput = {
-      status: ShoppingListAnalyticsBatchStatus.PUBLISHED,
+      status: AnalyticsBatchStatus.PUBLISHED,
     };
     // Use overlap semantics: any batch whose period intersects [from, to].
     // A batch overlaps the window when periodStart < to AND periodEnd > from.

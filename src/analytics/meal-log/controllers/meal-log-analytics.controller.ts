@@ -23,7 +23,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { MealLogAnalyticsService } from '../services/meal-log-analytics.service';
-import { MealLogAnalyticsBatchStatus } from '@prisma/client';
+import { AnalyticsBatchStatus } from '@prisma/client';
 import {
   DemographicDimension,
   DemographicDimensionEnum,
@@ -585,15 +585,15 @@ export class MealLogAnalyticsController {
   @ApiQuery({
     name: 'status',
     required: false,
-    enum: MealLogAnalyticsBatchStatus,
+    enum: AnalyticsBatchStatus,
   })
   @ApiResponse({ status: 200, description: 'List of batches' })
   async listBatches(
     @Query(
       'status',
-      new ParseEnumPipe(MealLogAnalyticsBatchStatus, { optional: true }),
+      new ParseEnumPipe(AnalyticsBatchStatus, { optional: true }),
     )
-    status?: MealLogAnalyticsBatchStatus,
+    status?: AnalyticsBatchStatus,
   ) {
     return this.analyticsService.listBatches(status);
   }
