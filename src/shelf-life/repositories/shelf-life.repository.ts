@@ -66,7 +66,22 @@ export class ShelfLifeRepository {
     });
   }
 
-  count(where?: Prisma.FoodShelfLifeWhereInput): Promise<number> {
+  async findById(id: string): Promise<FoodShelfLife | null> {
+    return this.prisma.foodShelfLife.findUnique({ where: { id } });
+  }
+
+  async findByCategoryHints(hints: string[]): Promise<FoodShelfLife | null> {
+    return this.prisma.foodShelfLife.findFirst({
+      where: {
+        OR: hints.map((hint) => ({
+          categoryName: { contains: hint, mode: 'insensitive' as const },
+        })),
+      },
+      orderBy: { id: 'asc' },
+    });
+  }
+
+  async count(where?: Prisma.FoodShelfLifeWhereInput): Promise<number> {
     return this.prisma.foodShelfLife.count({ where });
   }
 }
