@@ -183,52 +183,6 @@ export class ShoppingListAnalyticsController {
   }
 
   @Public()
-  @Get('public/nutrition-profile')
-  @ApiOperation({
-    summary: 'Average nutritional density of planned shopping items',
-    description:
-      'Daily averages of key nutritional values per 100 g across all items added to shopping lists. ' +
-      'k-anonymity (k≥5) enforced.',
-  })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
-  @ApiResponse({ status: 200, description: 'Nutrition profile aggregates' })
-  getPublicNutritionProfile(
-    @Query('from') from?: string,
-    @Query('to') to?: string,
-  ) {
-    return this.analyticsService.getPublishedNutritionProfile(
-      parseDate(from, 'from'),
-      parseDate(to, 'to'),
-    );
-  }
-
-  @Public()
-  @Get('public/nutrition')
-  @ApiOperation({
-    summary: 'Unified nutrition metrics for shopping list analytics',
-  })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
-  @ApiResponse({ status: 200, description: 'Unified nutrition aggregates' })
-  getPublicNutrition(@Query('from') from?: string, @Query('to') to?: string) {
-    return this.analyticsService.getPublishedNutrition(
-      parseDate(from, 'from'),
-      parseDate(to, 'to'),
-    );
-  }
-
-  @Public()
   @Get('public/sustainability')
   @ApiOperation({
     summary: 'Sustainability & health quality of planned baskets',
@@ -363,52 +317,6 @@ export class ShoppingListAnalyticsController {
   }
 
   @Public()
-  @Get('public/demographic/nutrition')
-  @ApiOperation({
-    summary: 'Demographic breakdown of shopping list nutrition profile',
-    description:
-      'Average nutritional density per 100 g segmented by one demographic dimension. ' +
-      'Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
-  })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
-  @ApiQuery({
-    name: 'dimension',
-    required: false,
-    enum: ['ageGroup', 'gender', 'educationLevel', 'region', 'country'],
-    description: 'Filter to a single demographic axis',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Demographic nutrition profile aggregates',
-  })
-  getPublicDemographicNutrition(
-    @Query('from') from?: string,
-    @Query('to') to?: string,
-    @Query(
-      'dimension',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
-    dimension?: DemographicDimension,
-  ) {
-    return this.analyticsService.getPublishedDemographicNutrition(
-      parseDate(from, 'from'),
-      parseDate(to, 'to'),
-      dimension,
-    );
-  }
-
-  @Public()
   @Get('public/cross-dim/patterns')
   @ApiOperation({
     summary:
@@ -461,63 +369,6 @@ export class ShoppingListAnalyticsController {
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      parseDate(from, 'from'),
-      parseDate(to, 'to'),
-      dim1,
-      dim2,
-    );
-  }
-
-  @Public()
-  @Get('public/cross-dim/nutrition')
-  @ApiOperation({
-    summary:
-      'Cross-dimensional nutrition profile (two demographic dimensions combined)',
-    description:
-      'Average nutritional density per 100 g where two demographic dimensions are active simultaneously. ' +
-      'Stricter k-anonymity (k≥20) enforced.',
-  })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
-  @ApiQuery({
-    name: 'dim1',
-    required: false,
-    enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
-  })
-  @ApiQuery({
-    name: 'dim2',
-    required: false,
-    enum: ['ageGroup', 'country', 'educationLevel', 'gender', 'region'],
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Cross-dimensional nutrition aggregates (k≥20)',
-  })
-  getPublicCrossDimNutrition(
-    @Query('from') from?: string,
-    @Query('to') to?: string,
-    @Query(
-      'dim1',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
-    dim1?: DemographicDimension,
-    @Query(
-      'dim2',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
-    dim2?: DemographicDimension,
-  ) {
-    return this.analyticsService.getPublishedCrossDimNutrition(
       parseDate(from, 'from'),
       parseDate(to, 'to'),
       dim1,

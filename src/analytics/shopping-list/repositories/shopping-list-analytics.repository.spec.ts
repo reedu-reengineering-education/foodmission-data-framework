@@ -21,9 +21,6 @@ describe('ShoppingListAnalyticsRepository', () => {
         createMany: jest.fn(),
         findMany: jest.fn(),
       },
-      shoppingListAnalyticsNutritionProfile: {
-        createMany: jest.fn(),
-      },
       shoppingListAnalyticsSustainability: {
         createMany: jest.fn(),
       },
@@ -34,15 +31,9 @@ describe('ShoppingListAnalyticsRepository', () => {
         createMany: jest.fn(),
         findMany: jest.fn(),
       },
-      shoppingListAnalyticsDemographicNutrition: {
-        createMany: jest.fn(),
-      },
       shoppingListAnalyticsCrossDimPatterns: {
         createMany: jest.fn(),
         findMany: jest.fn(),
-      },
-      shoppingListAnalyticsCrossDimNutrition: {
-        createMany: jest.fn(),
       },
     } as any;
 
@@ -50,7 +41,9 @@ describe('ShoppingListAnalyticsRepository', () => {
   });
 
   it('findBatchById includes review data ordered where needed', async () => {
-    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({ id: 'b1' });
+    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({
+      id: 'b1',
+    });
 
     await repository.findBatchById('b1');
 
@@ -60,7 +53,6 @@ describe('ShoppingListAnalyticsRepository', () => {
         itemPopularity: { orderBy: { frequency: 'desc' } },
         categoryPopularity: { orderBy: { frequency: 'desc' } },
         listPatterns: true,
-        nutritionProfile: true,
         sustainability: true,
         foodGroups: { orderBy: { frequency: 'desc' } },
       }),
@@ -71,7 +63,7 @@ describe('ShoppingListAnalyticsRepository', () => {
     it('sets publication metadata when publishing', async () => {
       prisma.shoppingListAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
 
-      await repository.updateBatchStatus('b1', 'PUBLISHED' as any, 'admin-1');
+      await repository.updateBatchStatus('b1', 'PUBLISHED', 'admin-1');
 
       expect(prisma.shoppingListAnalyticsBatch.update).toHaveBeenCalledWith({
         where: { id: 'b1' },
@@ -88,7 +80,7 @@ describe('ShoppingListAnalyticsRepository', () => {
 
       await repository.updateBatchStatus(
         'b1',
-        'REJECTED' as any,
+        'REJECTED',
         'admin-1',
         'bad data quality',
       );
@@ -109,13 +101,10 @@ describe('ShoppingListAnalyticsRepository', () => {
     ['insertItemPopularity', 'shoppingListAnalyticsItemPopularity'],
     ['insertCategoryPopularity', 'shoppingListAnalyticsCategoryPopularity'],
     ['insertListPatterns', 'shoppingListAnalyticsListPatterns'],
-    ['insertNutritionProfile', 'shoppingListAnalyticsNutritionProfile'],
     ['insertSustainability', 'shoppingListAnalyticsSustainability'],
     ['insertFoodGroups', 'shoppingListAnalyticsFoodGroups'],
     ['insertDemographicPatterns', 'shoppingListAnalyticsDemographicPatterns'],
-    ['insertDemographicNutrition', 'shoppingListAnalyticsDemographicNutrition'],
     ['insertCrossDimPatterns', 'shoppingListAnalyticsCrossDimPatterns'],
-    ['insertCrossDimNutrition', 'shoppingListAnalyticsCrossDimNutrition'],
   ])('%s calls prisma createMany on %s', async (method, model) => {
     const data = [{ batchId: 'b1' }] as any[];
     (prisma[model] as any).createMany.mockResolvedValue({ count: 1 });
@@ -132,7 +121,9 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.getPublishedListPatterns(from, to);
 
-    expect(prisma.shoppingListAnalyticsListPatterns.findMany).toHaveBeenCalledWith(
+    expect(
+      prisma.shoppingListAnalyticsListPatterns.findMany,
+    ).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
           batch: {

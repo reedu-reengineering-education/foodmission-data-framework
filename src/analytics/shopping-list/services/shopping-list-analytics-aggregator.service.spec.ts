@@ -334,46 +334,6 @@ describe('ShoppingListAnalyticsAggregator', () => {
   });
 
   // ============================================================
-  // Nutrition profile
-  // ============================================================
-
-  it('averages nutritional values across all items', async () => {
-    const rows = [
-      ...makeRows(4, { energyKcal: 100, proteins: 10 }),
-      makeRow({
-        userId: 'user-4',
-        listId: 'list-4',
-        itemId: 'item-4',
-        energyKcal: 200,
-        proteins: 20,
-      }),
-    ];
-    prisma.$queryRaw.mockResolvedValue(rows);
-
-    const result = await aggregator.aggregate(periodStart, periodEnd);
-
-    expect(result.nutritionProfile).toHaveLength(1);
-    const n = result.nutritionProfile[0];
-    expect(n.avgCaloriesPer100g).toBeCloseTo(120, 5); // (4*100 + 200) / 5
-    expect(n.avgProteinsPer100g).toBeCloseTo(12, 5); // (4*10 + 20) / 5
-  });
-
-  it('returns null for nutrition fields when no items have data', async () => {
-    const rows = makeRows(5, {
-      energyKcal: null,
-      proteins: null,
-      fat: null,
-      carbohydrates: null,
-    });
-    prisma.$queryRaw.mockResolvedValue(rows);
-
-    const result = await aggregator.aggregate(periodStart, periodEnd);
-
-    expect(result.nutritionProfile[0].avgCaloriesPer100g).toBeNull();
-    expect(result.nutritionProfile[0].avgProteinsPer100g).toBeNull();
-  });
-
-  // ============================================================
   // Sustainability
   // ============================================================
 
@@ -455,6 +415,36 @@ describe('ShoppingListAnalyticsAggregator', () => {
     expect(dist['4']).toBe(2);
   });
 
+  it('computes top-level ultra-processed percentiles for classification', async () => {
+    const rows = [
+      ...Array.from({ length: 3 }, (_, i) =>
+        makeRow({
+          userId: `u-${i}`,
+          listId: `l-${i}`,
+          itemId: `n1-${i}`,
+          novaGroup: 1,
+        }),
+      ),
+      ...Array.from({ length: 2 }, (_, i) =>
+        makeRow({
+          userId: `u-${i + 3}`,
+          listId: `l-${i + 3}`,
+          itemId: `n4-${i}`,
+          novaGroup: 4,
+        }),
+      ),
+    ];
+    prisma.$queryRaw.mockResolvedValue(rows);
+
+    const result = await aggregator.aggregate(periodStart, periodEnd);
+    const row = result.sustainability[0];
+
+    expect(row.avgUltraProcessedPct).toBe(40);
+    expect(row.p25UltraProcessedPct).toBe(0);
+    expect(row.p50UltraProcessedPct).toBe(0);
+    expect(row.p75UltraProcessedPct).toBe(100);
+  });
+
   // ============================================================
   // Food groups
   // ============================================================
@@ -530,9 +520,6 @@ describe('ShoppingListAnalyticsAggregator', () => {
     for (const row of result.crossDimPatterns) {
       expect(row.dim1Name < row.dim2Name).toBe(true);
     }
-    for (const row of result.crossDimNutrition) {
-      expect(row.dim1Name < row.dim2Name).toBe(true);
-    }
   });
 
   // ============================================================
@@ -548,14 +535,11 @@ describe('ShoppingListAnalyticsAggregator', () => {
       result.itemPopularity.length +
       result.categoryPopularity.length +
       result.listPatterns.length +
-      result.nutritionProfile.length +
       result.sustainability.length +
       result.foodGroups.length +
       result.demographicPatterns.length +
-      result.demographicNutrition.length +
       result.demographicClassification.length +
       result.crossDimPatterns.length +
-      result.crossDimNutrition.length +
       result.crossDimClassification.length;
 
     expect(result.totalRecords).toBe(expectedTotal);

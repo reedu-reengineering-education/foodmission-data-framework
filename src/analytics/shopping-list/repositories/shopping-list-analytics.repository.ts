@@ -27,14 +27,11 @@ export class ShoppingListAnalyticsRepository {
         itemPopularity: { orderBy: { frequency: 'desc' } },
         categoryPopularity: { orderBy: { frequency: 'desc' } },
         listPatterns: true,
-        nutritionProfile: true,
         sustainability: true,
         foodGroups: { orderBy: { frequency: 'desc' } },
         demographicPatterns: true,
-        demographicNutrition: true,
         demographicClassification: true,
         crossDimPatterns: true,
-        crossDimNutrition: true,
         crossDimClassification: true,
       },
     });
@@ -120,14 +117,6 @@ export class ShoppingListAnalyticsRepository {
     return this.prisma.shoppingListAnalyticsListPatterns.createMany({ data });
   }
 
-  insertNutritionProfile(
-    data: Prisma.ShoppingListAnalyticsNutritionProfileCreateManyInput[],
-  ) {
-    return this.prisma.shoppingListAnalyticsNutritionProfile.createMany({
-      data,
-    });
-  }
-
   async insertSustainability(
     data: Prisma.ShoppingListAnalyticsSustainabilityCreateManyInput[],
   ) {
@@ -148,14 +137,6 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  async insertDemographicNutrition(
-    data: Prisma.ShoppingListAnalyticsDemographicNutritionCreateManyInput[],
-  ) {
-    return this.prisma.shoppingListAnalyticsDemographicNutrition.createMany({
-      data,
-    });
-  }
-
   async insertDemographicClassification(
     data: Prisma.ShoppingListAnalyticsDemographicClassificationCreateManyInput[],
   ) {
@@ -168,14 +149,6 @@ export class ShoppingListAnalyticsRepository {
     data: Prisma.ShoppingListAnalyticsCrossDimPatternsCreateManyInput[],
   ) {
     return this.prisma.shoppingListAnalyticsCrossDimPatterns.createMany({
-      data,
-    });
-  }
-
-  async insertCrossDimNutrition(
-    data: Prisma.ShoppingListAnalyticsCrossDimNutritionCreateManyInput[],
-  ) {
-    return this.prisma.shoppingListAnalyticsCrossDimNutrition.createMany({
       data,
     });
   }
@@ -257,30 +230,6 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  getPublishedNutritionProfile(from?: Date, to?: Date) {
-    return this.prisma.shoppingListAnalyticsNutritionProfile.findMany({
-      where: { batch: this.publishedBatchFilter(from, to) },
-      orderBy: { date: 'asc' },
-      select: {
-        id: true,
-        date: true,
-        userCount: true,
-        itemCount: true,
-        avgCaloriesPer100g: true,
-        avgProteinsPer100g: true,
-        avgFatPer100g: true,
-        avgCarbsPer100g: true,
-        avgFiberPer100g: true,
-        avgSodiumPer100g: true,
-        avgSugarPer100g: true,
-        avgSaturatedFatPer100g: true,
-        p25CaloriesPer100g: true,
-        p50CaloriesPer100g: true,
-        p75CaloriesPer100g: true,
-      },
-    });
-  }
-
   getPublishedSustainability(from?: Date, to?: Date) {
     return this.prisma.shoppingListAnalyticsSustainability.findMany({
       where: { batch: this.publishedBatchFilter(from, to) },
@@ -297,6 +246,9 @@ export class ShoppingListAnalyticsRepository {
         vegetarianItemPct: true,
         veganItemPct: true,
         avgUltraProcessedPct: true,
+        p25UltraProcessedPct: true,
+        p50UltraProcessedPct: true,
+        p75UltraProcessedPct: true,
       },
     });
   }
@@ -344,36 +296,6 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
-  getPublishedDemographicNutrition(
-    from?: Date,
-    to?: Date,
-    dimension?: DemographicDimension,
-  ) {
-    return this.prisma.shoppingListAnalyticsDemographicNutrition.findMany({
-      where: {
-        batch: this.publishedBatchFilter(from, to),
-        ...(dimension ? { dimensionName: dimension } : {}),
-      },
-      orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
-      select: {
-        id: true,
-        date: true,
-        dimensionName: true,
-        dimensionValue: true,
-        userCount: true,
-        itemCount: true,
-        avgCaloriesPer100g: true,
-        avgProteinsPer100g: true,
-        avgFatPer100g: true,
-        avgCarbsPer100g: true,
-        avgFiberPer100g: true,
-        avgSodiumPer100g: true,
-        avgSugarPer100g: true,
-        avgSaturatedFatPer100g: true,
-      },
-    });
-  }
-
   getPublishedCrossDimPatterns(
     from?: Date,
     to?: Date,
@@ -400,40 +322,6 @@ export class ShoppingListAnalyticsRepository {
         avgListsPerUser: true,
         foodProductPct: true,
         genericFoodPct: true,
-      },
-    });
-  }
-
-  getPublishedCrossDimNutrition(
-    from?: Date,
-    to?: Date,
-    dim1?: DemographicDimension,
-    dim2?: DemographicDimension,
-  ) {
-    return this.prisma.shoppingListAnalyticsCrossDimNutrition.findMany({
-      where: {
-        batch: this.publishedBatchFilter(from, to),
-        ...(dim1 ? { dim1Name: dim1 } : {}),
-        ...(dim2 ? { dim2Name: dim2 } : {}),
-      },
-      orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
-      select: {
-        id: true,
-        date: true,
-        dim1Name: true,
-        dim1Value: true,
-        dim2Name: true,
-        dim2Value: true,
-        userCount: true,
-        itemCount: true,
-        avgCaloriesPer100g: true,
-        avgProteinsPer100g: true,
-        avgFatPer100g: true,
-        avgCarbsPer100g: true,
-        avgFiberPer100g: true,
-        avgSodiumPer100g: true,
-        avgSugarPer100g: true,
-        avgSaturatedFatPer100g: true,
       },
     });
   }

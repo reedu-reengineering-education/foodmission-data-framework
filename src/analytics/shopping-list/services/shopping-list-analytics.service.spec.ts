@@ -20,26 +20,20 @@ describe('ShoppingListAnalyticsService', () => {
       insertItemPopularity: jest.fn(),
       insertCategoryPopularity: jest.fn(),
       insertListPatterns: jest.fn(),
-      insertNutritionProfile: jest.fn(),
       insertSustainability: jest.fn(),
       insertFoodGroups: jest.fn(),
       insertDemographicPatterns: jest.fn(),
-      insertDemographicNutrition: jest.fn(),
       insertDemographicClassification: jest.fn(),
       insertCrossDimPatterns: jest.fn(),
-      insertCrossDimNutrition: jest.fn(),
       insertCrossDimClassification: jest.fn(),
       getPublishedItemPopularity: jest.fn(),
       getPublishedCategoryPopularity: jest.fn(),
       getPublishedListPatterns: jest.fn(),
-      getPublishedNutritionProfile: jest.fn(),
       getPublishedSustainability: jest.fn(),
       getPublishedFoodGroups: jest.fn(),
       getPublishedDemographicPatterns: jest.fn(),
-      getPublishedDemographicNutrition: jest.fn(),
       getPublishedDemographicClassification: jest.fn(),
       getPublishedCrossDimPatterns: jest.fn(),
-      getPublishedCrossDimNutrition: jest.fn(),
       getPublishedCrossDimClassification: jest.fn(),
     } as unknown as jest.Mocked<ShoppingListAnalyticsRepository>;
 
@@ -59,14 +53,11 @@ describe('ShoppingListAnalyticsService', () => {
       itemPopularity: [],
       categoryPopularity: [],
       listPatterns: [],
-      nutritionProfile: [],
       sustainability: [],
       foodGroups: [],
       demographicPatterns: [],
-      demographicNutrition: [],
       demographicClassification: [],
       crossDimPatterns: [],
-      crossDimNutrition: [],
       crossDimClassification: [],
       totalRecords: 0,
       suppressedGroups: 0,
@@ -132,6 +123,9 @@ describe('ShoppingListAnalyticsService', () => {
             vegetarianItemPct: null,
             veganItemPct: null,
             avgUltraProcessedPct: null,
+            p25UltraProcessedPct: null,
+            p50UltraProcessedPct: null,
+            p75UltraProcessedPct: null,
           },
         ],
         totalRecords: 1,
@@ -159,14 +153,11 @@ describe('ShoppingListAnalyticsService', () => {
       itemPopularity: [],
       categoryPopularity: [],
       listPatterns: [],
-      nutritionProfile: [],
       sustainability: [],
       foodGroups: [],
       demographicPatterns: [],
-      demographicNutrition: [],
       demographicClassification: [],
       crossDimPatterns: [],
-      crossDimNutrition: [],
       crossDimClassification: [],
       totalRecords: 0,
       suppressedGroups: 0,
@@ -486,27 +477,24 @@ describe('ShoppingListAnalyticsService', () => {
           avgListsPerUser: 3,
         } as any,
       ]);
-      repository.getPublishedNutritionProfile.mockResolvedValue([
-        {
-          date: new Date('2026-04-02'),
-          avgCaloriesPer100g: 80,
-          avgProteinsPer100g: 5,
-          avgFatPer100g: 2,
-          avgCarbsPer100g: 9,
-        } as any,
-      ]);
       repository.getPublishedSustainability.mockResolvedValue([
         {
           avgSustainabilityScore: 55,
           avgCarbonFootprint: 2.5,
           vegetarianItemPct: 60,
           avgUltraProcessedPct: 20,
+          p25UltraProcessedPct: 0,
+          p50UltraProcessedPct: 0,
+          p75UltraProcessedPct: 100,
         } as any,
         {
           avgSustainabilityScore: null,
           avgCarbonFootprint: null,
           vegetarianItemPct: null,
           avgUltraProcessedPct: 40,
+          p25UltraProcessedPct: 0,
+          p50UltraProcessedPct: 50,
+          p75UltraProcessedPct: 100,
         } as any,
       ]);
 
@@ -526,29 +514,24 @@ describe('ShoppingListAnalyticsService', () => {
       ]);
       expect(result.patterns.avgItemsPerEntity).toBe(5);
       expect(result.patterns.avgPantryPct).toBe(60);
-      expect(result.nutrition.latestAvgCalories).toBe(80);
-      expect(result.nutrition.latestAvgProteins).toBe(5);
-      expect(result.nutrition.latestAvgFat).toBe(2);
-      expect(result.nutrition.latestAvgCarbs).toBe(9);
+      expect(result).not.toHaveProperty('nutrition');
       expect(result.sustainability.avgCarbonFootprint).toBe(2.5); // null excluded
       expect(result.sustainability.avgSustainabilityScore).toBeNull();
       expect(result.classification.avgVegetarianPct).toBe(60);
       expect(result.classification.avgUltraProcessedPct).toBe(30);
-      expect(result.nutrition).not.toHaveProperty('latestAvgCaloriesPer100g');
     });
 
     it('returns nulls when there is no published data', async () => {
       repository.getPublishedItemPopularity.mockResolvedValue([]);
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([]);
-      repository.getPublishedNutritionProfile.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
 
       const result = await service.getPublishedSummary();
 
       expect(result.topItems).toHaveLength(0);
       expect(result.patterns.avgItemsPerEntity).toBeNull();
-      expect(result.nutrition.latestAvgCalories).toBeNull();
+      expect(result).not.toHaveProperty('nutrition');
       expect(result.sustainability.avgCarbonFootprint).toBeNull();
     });
 
@@ -567,7 +550,6 @@ describe('ShoppingListAnalyticsService', () => {
           avgListsPerUser: 1,
         } as any,
       ]);
-      repository.getPublishedNutritionProfile.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
 
       const result = await service.getPublishedSummary();
@@ -580,7 +562,6 @@ describe('ShoppingListAnalyticsService', () => {
       repository.getPublishedItemPopularity.mockResolvedValue([]);
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([]);
-      repository.getPublishedNutritionProfile.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
 
       const from = new Date('2026-04-01');

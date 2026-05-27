@@ -87,14 +87,16 @@ The script prints a suggested `periodStart`/`periodEnd` range at the end — use
 {{baseUrl}}/api/v1/analytics/shopping-list/public/item-popularity
 {{baseUrl}}/api/v1/analytics/shopping-list/public/category-popularity
 {{baseUrl}}/api/v1/analytics/shopping-list/public/list-patterns
-{{baseUrl}}/api/v1/analytics/shopping-list/public/nutrition-profile
 {{baseUrl}}/api/v1/analytics/shopping-list/public/sustainability
+{{baseUrl}}/api/v1/analytics/shopping-list/public/classification
 {{baseUrl}}/api/v1/analytics/shopping-list/public/food-groups
 {{baseUrl}}/api/v1/analytics/shopping-list/public/demographic/patterns
-{{baseUrl}}/api/v1/analytics/shopping-list/public/demographic/nutrition
+{{baseUrl}}/api/v1/analytics/shopping-list/public/demographic/classification
 {{baseUrl}}/api/v1/analytics/shopping-list/public/cross-dim/patterns
-{{baseUrl}}/api/v1/analytics/shopping-list/public/cross-dim/nutrition
+{{baseUrl}}/api/v1/analytics/shopping-list/public/cross-dim/classification
 ```
+
+Shopping List analytics intentionally does not expose nutrition or per-100g nutritional density routes. Meal Log is the source of truth for consumed nutrition analytics; Shopping List covers planned item popularity, patterns, sustainability, and classification.
 
 **K-anonymity thresholds:** single-dimension aggregates require ≥5 unique users; cross-dimensional aggregates require ≥20 unique users. Groups below threshold are suppressed.
 

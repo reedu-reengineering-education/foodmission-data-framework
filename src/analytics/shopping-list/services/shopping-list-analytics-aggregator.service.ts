@@ -37,15 +37,6 @@ interface RawShoppingListRow {
   foodName: string | null;
   foodGroup: string | null;
   category: string | null;
-  // Nutrition per 100 g
-  energyKcal: number | null;
-  proteins: number | null;
-  fat: number | null;
-  carbohydrates: number | null;
-  fiber: number | null;
-  sodium: number | null;
-  sugar: number | null;
-  saturatedFat: number | null;
   // Scores — food_product only
   nutriScoreGrade: string | null;
   ecoScoreGrade: string | null;
@@ -96,23 +87,6 @@ export interface ListPatternsRow {
   genericFoodPct: number;
 }
 
-export interface NutritionProfileRow {
-  date: Date;
-  userCount: number;
-  itemCount: number;
-  avgCaloriesPer100g: number | null;
-  avgProteinsPer100g: number | null;
-  avgFatPer100g: number | null;
-  avgCarbsPer100g: number | null;
-  avgFiberPer100g: number | null;
-  avgSodiumPer100g: number | null;
-  avgSugarPer100g: number | null;
-  avgSaturatedFatPer100g: number | null;
-  p25CaloriesPer100g: number | null;
-  p50CaloriesPer100g: number | null;
-  p75CaloriesPer100g: number | null;
-}
-
 export interface SustainabilityRow {
   date: Date;
   userCount: number;
@@ -124,6 +98,9 @@ export interface SustainabilityRow {
   vegetarianItemPct: number | null;
   veganItemPct: number | null;
   avgUltraProcessedPct: number | null;
+  p25UltraProcessedPct: number | null;
+  p50UltraProcessedPct: number | null;
+  p75UltraProcessedPct: number | null;
 }
 
 export interface FoodGroupsRow {
@@ -147,22 +124,6 @@ export interface DemographicPatternsRow {
   genericFoodPct: number;
 }
 
-export interface DemographicNutritionRow {
-  date: Date;
-  dimensionName: string;
-  dimensionValue: string;
-  userCount: number;
-  itemCount: number;
-  avgCaloriesPer100g: number | null;
-  avgProteinsPer100g: number | null;
-  avgFatPer100g: number | null;
-  avgCarbsPer100g: number | null;
-  avgFiberPer100g: number | null;
-  avgSodiumPer100g: number | null;
-  avgSugarPer100g: number | null;
-  avgSaturatedFatPer100g: number | null;
-}
-
 export interface CrossDimPatternsRow {
   date: Date;
   dim1Name: string;
@@ -175,24 +136,6 @@ export interface CrossDimPatternsRow {
   avgListsPerUser: number;
   foodProductPct: number;
   genericFoodPct: number;
-}
-
-export interface CrossDimNutritionRow {
-  date: Date;
-  dim1Name: string;
-  dim1Value: string;
-  dim2Name: string;
-  dim2Value: string;
-  userCount: number;
-  itemCount: number;
-  avgCaloriesPer100g: number | null;
-  avgProteinsPer100g: number | null;
-  avgFatPer100g: number | null;
-  avgCarbsPer100g: number | null;
-  avgFiberPer100g: number | null;
-  avgSodiumPer100g: number | null;
-  avgSugarPer100g: number | null;
-  avgSaturatedFatPer100g: number | null;
 }
 
 export interface DemographicClassificationRow {
@@ -231,14 +174,11 @@ export interface ShoppingListAggregationResult {
   itemPopularity: ItemPopularityRow[];
   categoryPopularity: CategoryPopularityRow[];
   listPatterns: ListPatternsRow[];
-  nutritionProfile: NutritionProfileRow[];
   sustainability: SustainabilityRow[];
   foodGroups: FoodGroupsRow[];
   demographicPatterns: DemographicPatternsRow[];
-  demographicNutrition: DemographicNutritionRow[];
   demographicClassification: DemographicClassificationRow[];
   crossDimPatterns: CrossDimPatternsRow[];
-  crossDimNutrition: CrossDimNutritionRow[];
   crossDimClassification: CrossDimClassificationRow[];
   totalRecords: number;
   suppressedGroups: number;
@@ -288,15 +228,12 @@ export class ShoppingListAnalyticsAggregator {
     const itemPopularity = this.aggregateItemPopularity(rawData);
     const categoryPopularity = this.aggregateCategoryPopularity(rawData);
     const listPatterns = this.aggregateListPatterns(listAggs);
-    const nutritionProfile = this.aggregateNutritionProfile(rawData);
     const sustainability = this.aggregateSustainability(rawData);
     const foodGroups = this.aggregateFoodGroups(rawData);
     const demographicPatterns = this.aggregateDemographicPatterns(listAggs);
-    const demographicNutrition = this.aggregateDemographicNutrition(rawData);
     const demographicClassification =
       this.aggregateDemographicClassification(rawData);
     const crossDimPatterns = this.aggregateCrossDimPatterns(listAggs);
-    const crossDimNutrition = this.aggregateCrossDimNutrition(rawData);
     const crossDimClassification =
       this.aggregateCrossDimClassification(rawData);
 
@@ -306,7 +243,11 @@ export class ShoppingListAnalyticsAggregator {
       field: 'userCount' | 'uniqueUsers' = 'userCount',
       threshold = K_ANONYMITY_THRESHOLD,
     ): T[] => {
-      const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
+      const { rows: filtered, suppressed } = applyKAnonymity(
+        rows,
+        field,
+        threshold,
+      );
       suppressedGroups += suppressed;
       return filtered;
     };
@@ -317,28 +258,30 @@ export class ShoppingListAnalyticsAggregator {
       'uniqueUsers',
     );
     const filteredListPatterns = applyK(listPatterns);
-    const filteredNutritionProfile = applyK(nutritionProfile);
     const filteredSustainability = applyK(sustainability);
     const filteredFoodGroups = applyK(foodGroups, 'uniqueUsers');
     const filteredDemographicPatterns = applyK(demographicPatterns);
-    const filteredDemographicNutrition = applyK(demographicNutrition);
     const filteredDemographicClassification = applyK(demographicClassification);
-    const filteredCrossDimPatterns = applyK(crossDimPatterns, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
-    const filteredCrossDimNutrition = applyK(crossDimNutrition, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
-    const filteredCrossDimClassification = applyK(crossDimClassification, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimPatterns = applyK(
+      crossDimPatterns,
+      'userCount',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
+    const filteredCrossDimClassification = applyK(
+      crossDimClassification,
+      'userCount',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
 
     const totalRecords =
       filteredItemPopularity.length +
       filteredCategoryPopularity.length +
       filteredListPatterns.length +
-      filteredNutritionProfile.length +
       filteredSustainability.length +
       filteredFoodGroups.length +
       filteredDemographicPatterns.length +
-      filteredDemographicNutrition.length +
       filteredDemographicClassification.length +
       filteredCrossDimPatterns.length +
-      filteredCrossDimNutrition.length +
       filteredCrossDimClassification.length;
 
     this.logger.log(
@@ -350,14 +293,11 @@ export class ShoppingListAnalyticsAggregator {
       itemPopularity: filteredItemPopularity,
       categoryPopularity: filteredCategoryPopularity,
       listPatterns: filteredListPatterns,
-      nutritionProfile: filteredNutritionProfile,
       sustainability: filteredSustainability,
       foodGroups: filteredFoodGroups,
       demographicPatterns: filteredDemographicPatterns,
-      demographicNutrition: filteredDemographicNutrition,
       demographicClassification: filteredDemographicClassification,
       crossDimPatterns: filteredCrossDimPatterns,
-      crossDimNutrition: filteredCrossDimNutrition,
       crossDimClassification: filteredCrossDimClassification,
       totalRecords,
       suppressedGroups,
@@ -389,14 +329,6 @@ export class ShoppingListAnalyticsAggregator {
         COALESCE(fp."name", gf."foodName")            AS "foodName",
         COALESCE(gf."foodGroup", fp."categories"[1])  AS "foodGroup",
         COALESCE(fp."categories"[2], fp."categories"[1]) AS "category",
-        COALESCE(fp."energyKcal", gf."energyKcal")    AS "energyKcal",
-        COALESCE(fp."proteins", gf."proteins")         AS "proteins",
-        COALESCE(fp."fat", gf."fat")                   AS "fat",
-        COALESCE(fp."carbohydrates", gf."carbohydrates") AS "carbohydrates",
-        COALESCE(fp."fiber", gf."fiber")               AS "fiber",
-        COALESCE(fp."sodium", gf."sodium")             AS "sodium",
-        COALESCE(fp."sugars", gf."sugars")             AS "sugar",
-        COALESCE(fp."saturatedFat", gf."saturatedFat") AS "saturatedFat",
         fp."nutriscoreGrade"          AS "nutriScoreGrade",
         fp."ecoscoreGrade"            AS "ecoScoreGrade",
         fp."novaGroup"                AS "novaGroup",
@@ -548,86 +480,6 @@ export class ShoppingListAnalyticsAggregator {
     });
   }
 
-  private aggregateNutritionProfile(
-    rows: RawShoppingListRow[],
-  ): NutritionProfileRow[] {
-    // Group by dateKey — average nutritional values per 100 g
-    const groups = new Map<
-      string,
-      {
-        date: Date;
-        users: Set<string>;
-        count: number;
-        calories: number[];
-        proteins: number[];
-        fat: number[];
-        carbs: number[];
-        fiber: number[];
-        sodium: number[];
-        sugar: number[];
-        saturatedFat: number[];
-      }
-    >();
-
-    for (const row of rows) {
-      const dateKey = row.createdAt.toISOString().slice(0, 10);
-      if (!groups.has(dateKey)) {
-        groups.set(dateKey, {
-          date: new Date(dateKey),
-          users: new Set(),
-          count: 0,
-          calories: [],
-          proteins: [],
-          fat: [],
-          carbs: [],
-          fiber: [],
-          sodium: [],
-          sugar: [],
-          saturatedFat: [],
-        });
-      }
-      const g = groups.get(dateKey)!;
-      g.users.add(row.userId);
-      if (row.energyKcal !== null) g.calories.push(row.energyKcal);
-      if (row.proteins !== null) g.proteins.push(row.proteins);
-      if (row.fat !== null) g.fat.push(row.fat);
-      if (row.carbohydrates !== null) g.carbs.push(row.carbohydrates);
-      if (row.fiber !== null) g.fiber.push(row.fiber);
-      if (row.sodium !== null) g.sodium.push(row.sodium);
-      if (row.sugar !== null) g.sugar.push(row.sugar);
-      if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
-      // itemCount = items with at least one nutrition value (consistent with averages)
-      if (
-        row.energyKcal !== null ||
-        row.proteins !== null ||
-        row.fat !== null ||
-        row.carbohydrates !== null ||
-        row.fiber !== null ||
-        row.sodium !== null ||
-        row.sugar !== null ||
-        row.saturatedFat !== null
-      )
-        g.count++;
-    }
-
-    return [...groups.values()].map((g) => ({
-      date: g.date,
-      userCount: g.users.size,
-      itemCount: g.count,
-      avgCaloriesPer100g: safeAvg(g.calories),
-      avgProteinsPer100g: safeAvg(g.proteins),
-      avgFatPer100g: safeAvg(g.fat),
-      avgCarbsPer100g: safeAvg(g.carbs),
-      avgFiberPer100g: safeAvg(g.fiber),
-      avgSodiumPer100g: safeAvg(g.sodium),
-      avgSugarPer100g: safeAvg(g.sugar),
-      avgSaturatedFatPer100g: safeAvg(g.saturatedFat),
-      p25CaloriesPer100g: percentile(g.calories, 25),
-      p50CaloriesPer100g: percentile(g.calories, 50),
-      p75CaloriesPer100g: percentile(g.calories, 75),
-    }));
-  }
-
   private aggregateSustainability(
     rows: RawShoppingListRow[],
   ): SustainabilityRow[] {
@@ -681,6 +533,9 @@ export class ShoppingListAnalyticsAggregator {
           (r) => r.novaGroup === 4,
         ).length;
         const novaTotal = fpRows.filter((r) => r.novaGroup !== null).length;
+        const ultraProcessedPcts = fpRows
+          .filter((r) => r.novaGroup !== null)
+          .map((r) => (r.novaGroup === 4 ? 100 : 0));
 
         return {
           date: g.date,
@@ -695,6 +550,9 @@ export class ShoppingListAnalyticsAggregator {
           veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
           avgUltraProcessedPct:
             novaTotal > 0 ? (ultraProcessedItems / novaTotal) * 100 : null,
+          p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
+          p50UltraProcessedPct: percentile(ultraProcessedPcts, 50),
+          p75UltraProcessedPct: percentile(ultraProcessedPcts, 75),
         };
       });
   }
@@ -808,101 +666,6 @@ export class ShoppingListAnalyticsAggregator {
     return result;
   }
 
-  private aggregateDemographicNutrition(
-    rows: RawShoppingListRow[],
-  ): DemographicNutritionRow[] {
-    const result: DemographicNutritionRow[] = [];
-
-    for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const rowField = DIM_TO_ROW_FIELD[dim];
-
-      const groups = new Map<
-        string,
-        {
-          date: Date;
-          dimValue: string;
-          users: Set<string>;
-          count: number;
-          calories: number[];
-          proteins: number[];
-          fat: number[];
-          carbs: number[];
-          fiber: number[];
-          sodium: number[];
-          sugar: number[];
-          saturatedFat: number[];
-        }
-      >();
-
-      for (const row of rows) {
-        const rawValue = row[rowField] as string | null;
-        const dimValue = rawValue ?? '__null__';
-        const dateKey = row.createdAt.toISOString().slice(0, 10);
-        const key = `${dateKey}||${dimValue}`;
-        if (!groups.has(key)) {
-          groups.set(key, {
-            date: new Date(dateKey),
-            dimValue,
-            users: new Set(),
-            count: 0,
-            calories: [],
-            proteins: [],
-            fat: [],
-            carbs: [],
-            fiber: [],
-            sodium: [],
-            sugar: [],
-            saturatedFat: [],
-          });
-        }
-        const g = groups.get(key)!;
-        g.users.add(row.userId);
-        if (row.energyKcal !== null) g.calories.push(row.energyKcal);
-        if (row.proteins !== null) g.proteins.push(row.proteins);
-        if (row.fat !== null) g.fat.push(row.fat);
-        if (row.carbohydrates !== null) g.carbs.push(row.carbohydrates);
-        if (row.fiber !== null) g.fiber.push(row.fiber);
-        if (row.sodium !== null) g.sodium.push(row.sodium);
-        if (row.sugar !== null) g.sugar.push(row.sugar);
-        if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
-        // itemCount = items with at least one nutrition value (consistent with averages)
-        if (
-          row.energyKcal !== null ||
-          row.proteins !== null ||
-          row.fat !== null ||
-          row.carbohydrates !== null ||
-          row.fiber !== null ||
-          row.sodium !== null ||
-          row.sugar !== null ||
-          row.saturatedFat !== null
-        )
-          g.count++;
-      }
-
-      for (const g of groups.values()) {
-        const activeValue = g.dimValue === '__null__' ? null : g.dimValue;
-        if (activeValue === null) continue; // skip users without this demographic
-        result.push({
-          date: g.date,
-          dimensionName: dim,
-          dimensionValue: activeValue,
-          userCount: g.users.size,
-          itemCount: g.count,
-          avgCaloriesPer100g: safeAvg(g.calories),
-          avgProteinsPer100g: safeAvg(g.proteins),
-          avgFatPer100g: safeAvg(g.fat),
-          avgCarbsPer100g: safeAvg(g.carbs),
-          avgFiberPer100g: safeAvg(g.fiber),
-          avgSodiumPer100g: safeAvg(g.sodium),
-          avgSugarPer100g: safeAvg(g.sugar),
-          avgSaturatedFatPer100g: safeAvg(g.saturatedFat),
-        });
-      }
-    }
-
-    return result;
-  }
-
   // ============================================================
   // Cross-dimensional aggregations (K=20)
   // ============================================================
@@ -973,114 +736,6 @@ export class ShoppingListAnalyticsAggregator {
             avgListsPerUser: userCount > 0 ? totalLists / userCount : 0,
             foodProductPct: totalItems > 0 ? (fpItems / totalItems) * 100 : 0,
             genericFoodPct: totalItems > 0 ? (gfItems / totalItems) * 100 : 0,
-          });
-        }
-      }
-    }
-
-    return result;
-  }
-
-  private aggregateCrossDimNutrition(
-    rows: RawShoppingListRow[],
-  ): CrossDimNutritionRow[] {
-    const result: CrossDimNutritionRow[] = [];
-
-    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
-      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
-        const [dim1, dim2] = [
-          DEMOGRAPHIC_DIMENSIONS[i],
-          DEMOGRAPHIC_DIMENSIONS[j],
-        ].sort() as [DemographicDimension, DemographicDimension];
-
-        const dim1Field = DIM_TO_ROW_FIELD[dim1];
-        const dim2Field = DIM_TO_ROW_FIELD[dim2];
-
-        const groups = new Map<
-          string,
-          {
-            date: Date;
-            dim1Value: string;
-            dim2Value: string;
-            users: Set<string>;
-            count: number;
-            calories: number[];
-            proteins: number[];
-            fat: number[];
-            carbs: number[];
-            fiber: number[];
-            sodium: number[];
-            sugar: number[];
-            saturatedFat: number[];
-          }
-        >();
-
-        for (const row of rows) {
-          const v1 = (row[dim1Field] as string | null) ?? '__null__';
-          const v2 = (row[dim2Field] as string | null) ?? '__null__';
-          const dateKey = row.createdAt.toISOString().slice(0, 10);
-          const key = `${dateKey}||${v1}||${v2}`;
-          if (!groups.has(key)) {
-            groups.set(key, {
-              date: new Date(dateKey),
-              dim1Value: v1,
-              dim2Value: v2,
-              users: new Set(),
-              count: 0,
-              calories: [],
-              proteins: [],
-              fat: [],
-              carbs: [],
-              fiber: [],
-              sodium: [],
-              sugar: [],
-              saturatedFat: [],
-            });
-          }
-          const g = groups.get(key)!;
-          g.users.add(row.userId);
-          if (row.energyKcal !== null) g.calories.push(row.energyKcal);
-          if (row.proteins !== null) g.proteins.push(row.proteins);
-          if (row.fat !== null) g.fat.push(row.fat);
-          if (row.carbohydrates !== null) g.carbs.push(row.carbohydrates);
-          if (row.fiber !== null) g.fiber.push(row.fiber);
-          if (row.sodium !== null) g.sodium.push(row.sodium);
-          if (row.sugar !== null) g.sugar.push(row.sugar);
-          if (row.saturatedFat !== null) g.saturatedFat.push(row.saturatedFat);
-          // itemCount = items with at least one nutrition value (consistent with averages)
-          if (
-            row.energyKcal !== null ||
-            row.proteins !== null ||
-            row.fat !== null ||
-            row.carbohydrates !== null ||
-            row.fiber !== null ||
-            row.sodium !== null ||
-            row.sugar !== null ||
-            row.saturatedFat !== null
-          )
-            g.count++;
-        }
-
-        for (const g of groups.values()) {
-          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
-          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
-          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
-          result.push({
-            date: g.date,
-            dim1Name: dim1,
-            dim1Value,
-            dim2Name: dim2,
-            dim2Value,
-            userCount: g.users.size,
-            itemCount: g.count,
-            avgCaloriesPer100g: safeAvg(g.calories),
-            avgProteinsPer100g: safeAvg(g.proteins),
-            avgFatPer100g: safeAvg(g.fat),
-            avgCarbsPer100g: safeAvg(g.carbs),
-            avgFiberPer100g: safeAvg(g.fiber),
-            avgSodiumPer100g: safeAvg(g.sodium),
-            avgSugarPer100g: safeAvg(g.sugar),
-            avgSaturatedFatPer100g: safeAvg(g.saturatedFat),
           });
         }
       }

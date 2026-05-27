@@ -7,7 +7,6 @@ import {
   DemographicDimension,
   safeAvg,
   normalizeDimPair,
-  toAnalyticsNutritionDto,
   toAnalyticsFoodPopularityDto,
 } from '../../common/analytics-utils';
 import { BaseAnalyticsService } from '../../common/base-analytics.service';
@@ -41,15 +40,12 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
             itemPopularityRows: result.itemPopularity.length,
             categoryPopularityRows: result.categoryPopularity.length,
             listPatternsRows: result.listPatterns.length,
-            nutritionProfileRows: result.nutritionProfile.length,
             sustainabilityRows: result.sustainability.length,
             foodGroupsRows: result.foodGroups.length,
             demographicPatternsRows: result.demographicPatterns.length,
-            demographicNutritionRows: result.demographicNutrition.length,
             demographicClassificationRows:
               result.demographicClassification.length,
             crossDimPatternsRows: result.crossDimPatterns.length,
-            crossDimNutritionRows: result.crossDimNutrition.length,
             crossDimClassificationRows: result.crossDimClassification.length,
           },
         });
@@ -69,11 +65,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
         if (result.listPatterns.length > 0) {
           await this.repository.insertListPatterns(
             result.listPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.nutritionProfile.length > 0) {
-          await this.repository.insertNutritionProfile(
-            result.nutritionProfile.map((r) => ({ ...r, batchId })),
           );
         }
         if (result.sustainability.length > 0) {
@@ -98,11 +89,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
             result.demographicPatterns.map((r) => ({ ...r, batchId })),
           );
         }
-        if (result.demographicNutrition.length > 0) {
-          await this.repository.insertDemographicNutrition(
-            result.demographicNutrition.map((r) => ({ ...r, batchId })),
-          );
-        }
         if (result.demographicClassification.length > 0) {
           await this.repository.insertDemographicClassification(
             result.demographicClassification.map((r) => ({
@@ -115,11 +101,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
         if (result.crossDimPatterns.length > 0) {
           await this.repository.insertCrossDimPatterns(
             result.crossDimPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.crossDimNutrition.length > 0) {
-          await this.repository.insertCrossDimNutrition(
-            result.crossDimNutrition.map((r) => ({ ...r, batchId })),
           );
         }
         if (result.crossDimClassification.length > 0) {
@@ -182,15 +163,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
     }));
   }
 
-  getPublishedNutritionProfile(from?: Date, to?: Date) {
-    return this.repository.getPublishedNutritionProfile(from, to);
-  }
-
-  async getPublishedNutrition(from?: Date, to?: Date) {
-    const rows = await this.repository.getPublishedNutritionProfile(from, to);
-    return rows.map(toAnalyticsNutritionDto);
-  }
-
   async getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
     const rows = await this.repository.getPublishedItemPopularity(
       from,
@@ -220,6 +192,9 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       vegetarianItemPct: row.vegetarianItemPct,
       veganItemPct: row.veganItemPct,
       avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
     }));
   }
 
@@ -232,9 +207,9 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       vegetarianPct: row.vegetarianItemPct,
       veganPct: row.veganItemPct,
       avgUltraProcessedPct: row.avgUltraProcessedPct,
-      p25UltraProcessedPct: null,
-      p50UltraProcessedPct: null,
-      p75UltraProcessedPct: null,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
       novaDistribution: row.novaDistribution,
       metadata: {
         valueUnit: 'percentage',
@@ -278,48 +253,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
     }));
   }
 
-  async getPublishedDemographicNutrition(
-    from?: Date,
-    to?: Date,
-    dimension?: DemographicDimension,
-  ) {
-    const rows = await this.repository.getPublishedDemographicNutrition(
-      from,
-      to,
-      dimension,
-    );
-    return rows.map((row) => ({
-      id: row.id,
-      date: row.date,
-      dimensionName: row.dimensionName,
-      dimensionValue: row.dimensionValue,
-      userCount: row.userCount,
-      entityCount: row.itemCount,
-      avgCalories: row.avgCaloriesPer100g,
-      avgProteins: row.avgProteinsPer100g,
-      avgFat: row.avgFatPer100g,
-      avgCarbs: row.avgCarbsPer100g,
-      avgFiber: row.avgFiberPer100g,
-      avgSodium: row.avgSodiumPer100g,
-      avgSugar: row.avgSugarPer100g,
-      avgSaturatedFat: row.avgSaturatedFatPer100g,
-      metadata: {
-        valueUnit: 'per_100g',
-        entityUnit: 'item',
-      },
-      // Legacy fields kept.
-      itemCount: row.itemCount,
-      avgCaloriesPer100g: row.avgCaloriesPer100g,
-      avgProteinsPer100g: row.avgProteinsPer100g,
-      avgFatPer100g: row.avgFatPer100g,
-      avgCarbsPer100g: row.avgCarbsPer100g,
-      avgFiberPer100g: row.avgFiberPer100g,
-      avgSodiumPer100g: row.avgSodiumPer100g,
-      avgSugarPer100g: row.avgSugarPer100g,
-      avgSaturatedFatPer100g: row.avgSaturatedFatPer100g,
-    }));
-  }
-
   async getPublishedCrossDimPatterns(
     from?: Date,
     to?: Date,
@@ -353,53 +286,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       totalLists: row.totalLists,
       avgItemsPerList: row.avgItemsPerList,
       avgListsPerUser: row.avgListsPerUser,
-    }));
-  }
-
-  async getPublishedCrossDimNutrition(
-    from?: Date,
-    to?: Date,
-    dim1?: DemographicDimension,
-    dim2?: DemographicDimension,
-  ) {
-    const [d1, d2] = normalizeDimPair(dim1, dim2);
-    const rows = await this.repository.getPublishedCrossDimNutrition(
-      from,
-      to,
-      d1,
-      d2,
-    );
-    return rows.map((row) => ({
-      id: row.id,
-      date: row.date,
-      dim1Name: row.dim1Name,
-      dim1Value: row.dim1Value,
-      dim2Name: row.dim2Name,
-      dim2Value: row.dim2Value,
-      userCount: row.userCount,
-      entityCount: row.itemCount,
-      avgCalories: row.avgCaloriesPer100g,
-      avgProteins: row.avgProteinsPer100g,
-      avgFat: row.avgFatPer100g,
-      avgCarbs: row.avgCarbsPer100g,
-      avgFiber: row.avgFiberPer100g,
-      avgSodium: row.avgSodiumPer100g,
-      avgSugar: row.avgSugarPer100g,
-      avgSaturatedFat: row.avgSaturatedFatPer100g,
-      metadata: {
-        valueUnit: 'per_100g',
-        entityUnit: 'item',
-      },
-      // Legacy fields kept.
-      itemCount: row.itemCount,
-      avgCaloriesPer100g: row.avgCaloriesPer100g,
-      avgProteinsPer100g: row.avgProteinsPer100g,
-      avgFatPer100g: row.avgFatPer100g,
-      avgCarbsPer100g: row.avgCarbsPer100g,
-      avgFiberPer100g: row.avgFiberPer100g,
-      avgSodiumPer100g: row.avgSodiumPer100g,
-      avgSugarPer100g: row.avgSugarPer100g,
-      avgSaturatedFatPer100g: row.avgSaturatedFatPer100g,
     }));
   }
 
@@ -480,14 +366,12 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
     const [
       popularity,
       patterns,
-      nutrition,
       sustainability,
       classification,
       categoryPopularity,
     ] = await Promise.all([
       this.getPublishedPopularity(from, to, 5),
       this.getPublishedPatterns(from, to),
-      this.getPublishedNutrition(from, to),
       this.getPublishedSustainability(from, to),
       this.getPublishedClassification(from, to),
       this.repository.getPublishedCategoryPopularity(from, to, 5),
@@ -512,17 +396,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
           patterns.length > 0
             ? safeAvg(patterns.map((p) => p.foodProductPct))
             : null,
-      },
-      nutrition: {
-        dataPoints: nutrition.length,
-        latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,
-        latestAvgProteins: nutrition.at(-1)?.avgProteins ?? null,
-        latestAvgFat: nutrition.at(-1)?.avgFat ?? null,
-        latestAvgCarbs: nutrition.at(-1)?.avgCarbs ?? null,
-        metadata: {
-          valueUnit: 'per_meal',
-          entityUnit: 'meal',
-        },
       },
       sustainability: {
         dataPoints: sustainability.length,

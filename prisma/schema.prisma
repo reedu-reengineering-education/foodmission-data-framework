@@ -1348,14 +1348,11 @@ model ShoppingListAnalyticsBatch {
   itemPopularity            ShoppingListAnalyticsItemPopularity[]
   categoryPopularity        ShoppingListAnalyticsCategoryPopularity[]
   listPatterns              ShoppingListAnalyticsListPatterns[]
-  nutritionProfile          ShoppingListAnalyticsNutritionProfile[]
   sustainability            ShoppingListAnalyticsSustainability[]
   foodGroups                ShoppingListAnalyticsFoodGroups[]
   demographicPatterns       ShoppingListAnalyticsDemographicPatterns[]
-  demographicNutrition      ShoppingListAnalyticsDemographicNutrition[]
   demographicClassification ShoppingListAnalyticsDemographicClassification[]
   crossDimPatterns          ShoppingListAnalyticsCrossDimPatterns[]
-  crossDimNutrition         ShoppingListAnalyticsCrossDimNutrition[]
   crossDimClassification    ShoppingListAnalyticsCrossDimClassification[]
 
   createdAt DateTime @default(now())
@@ -1423,32 +1420,6 @@ model ShoppingListAnalyticsListPatterns {
   @@map("shopping_list_analytics_list_patterns")
 }
 
-model ShoppingListAnalyticsNutritionProfile {
-  id                     String                     @id @default(uuid())
-  batchId                String
-  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  date                   DateTime                   @db.Date
-  userCount              Int
-  itemCount              Int
-  avgCaloriesPer100g     Float?
-  avgProteinsPer100g     Float?
-  avgFatPer100g          Float?
-  avgCarbsPer100g        Float?
-  avgFiberPer100g        Float?
-  avgSodiumPer100g       Float?
-  avgSugarPer100g        Float?
-  avgSaturatedFatPer100g Float?
-  p25CaloriesPer100g     Float?
-  p50CaloriesPer100g     Float?
-  p75CaloriesPer100g     Float?
-
-  createdAt DateTime @default(now())
-
-  @@unique([batchId, date])
-  @@index([date])
-  @@map("shopping_list_analytics_nutrition_profile")
-}
-
 model ShoppingListAnalyticsSustainability {
   id                     String                     @id @default(uuid())
   batchId                String
@@ -1463,6 +1434,9 @@ model ShoppingListAnalyticsSustainability {
   vegetarianItemPct      Float?
   veganItemPct           Float?
   avgUltraProcessedPct   Float?
+  p25UltraProcessedPct   Float?
+  p50UltraProcessedPct   Float?
+  p75UltraProcessedPct   Float?
 
   createdAt DateTime @default(now())
 
@@ -1524,34 +1498,6 @@ model ShoppingListAnalyticsDemographicPatterns {
   @@index([dimensionName])
   @@index([date])
   @@map("shopping_list_analytics_demographic_patterns")
-}
-
-model ShoppingListAnalyticsDemographicNutrition {
-  id                     String                     @id @default(uuid())
-  batchId                String
-  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  date                   DateTime                   @db.Date
-
-  dimensionName          String
-  dimensionValue         String
-
-  userCount              Int
-  itemCount              Int
-  avgCaloriesPer100g     Float?
-  avgProteinsPer100g     Float?
-  avgFatPer100g          Float?
-  avgCarbsPer100g        Float?
-  avgFiberPer100g        Float?
-  avgSodiumPer100g       Float?
-  avgSugarPer100g        Float?
-  avgSaturatedFatPer100g Float?
-
-  createdAt DateTime @default(now())
-
-  @@unique([batchId, date, dimensionName, dimensionValue])
-  @@index([dimensionName])
-  @@index([date])
-  @@map("shopping_list_analytics_demographic_nutrition")
 }
 
 // ============================================================
@@ -1616,36 +1562,6 @@ model ShoppingListAnalyticsCrossDimPatterns {
   @@index([dim1Name, dim2Name])
   @@index([date])
   @@map("shopping_list_analytics_cross_dim_patterns")
-}
-
-model ShoppingListAnalyticsCrossDimNutrition {
-  id        String                     @id @default(uuid())
-  batchId   String
-  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  date      DateTime                   @db.Date
-
-  dim1Name  String
-  dim1Value String
-  dim2Name  String
-  dim2Value String
-
-  userCount              Int
-  itemCount              Int
-  avgCaloriesPer100g     Float?
-  avgProteinsPer100g     Float?
-  avgFatPer100g          Float?
-  avgCarbsPer100g        Float?
-  avgFiberPer100g        Float?
-  avgSodiumPer100g       Float?
-  avgSugarPer100g        Float?
-  avgSaturatedFatPer100g Float?
-
-  createdAt DateTime @default(now())
-
-  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
-  @@index([dim1Name, dim2Name])
-  @@index([date])
-  @@map("shopping_list_analytics_cross_dim_nutrition")
 }
 
 model ShoppingListAnalyticsCrossDimClassification {

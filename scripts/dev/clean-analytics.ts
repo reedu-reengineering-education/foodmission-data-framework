@@ -24,14 +24,11 @@ async function cleanAnalytics() {
     slItemPopularity,
     slCategoryPopularity,
     slListPatterns,
-    slNutritionProfile,
     slSustainability,
     slFoodGroups,
     slDemoPatterns,
-    slDemoNutrition,
     slDemoClassification,
     slCrossDimPatterns,
-    slCrossDimNutrition,
     slCrossDimClassification,
   ] = await Promise.all([
     prisma.mealLogAnalyticsBatch.count(),
@@ -51,14 +48,11 @@ async function cleanAnalytics() {
     prisma.shoppingListAnalyticsItemPopularity.count(),
     prisma.shoppingListAnalyticsCategoryPopularity.count(),
     prisma.shoppingListAnalyticsListPatterns.count(),
-    prisma.shoppingListAnalyticsNutritionProfile.count(),
     prisma.shoppingListAnalyticsSustainability.count(),
     prisma.shoppingListAnalyticsFoodGroups.count(),
     prisma.shoppingListAnalyticsDemographicPatterns.count(),
-    prisma.shoppingListAnalyticsDemographicNutrition.count(),
     prisma.shoppingListAnalyticsDemographicClassification.count(),
     prisma.shoppingListAnalyticsCrossDimPatterns.count(),
-    prisma.shoppingListAnalyticsCrossDimNutrition.count(),
     prisma.shoppingListAnalyticsCrossDimClassification.count(),
   ]);
 
@@ -82,24 +76,37 @@ async function cleanAnalytics() {
   console.log(`  Item popularity:               ${slItemPopularity}`);
   console.log(`  Category popularity:           ${slCategoryPopularity}`);
   console.log(`  List patterns:                 ${slListPatterns}`);
-  console.log(`  Nutrition profile:             ${slNutritionProfile}`);
   console.log(`  Sustainability:                ${slSustainability}`);
   console.log(`  Food groups:                   ${slFoodGroups}`);
   console.log(`  Demographic patterns:          ${slDemoPatterns}`);
-  console.log(`  Demographic nutrition:         ${slDemoNutrition}`);
   console.log(`  Demographic classification:    ${slDemoClassification}`);
   console.log(`  Cross-dim patterns:            ${slCrossDimPatterns}`);
-  console.log(`  Cross-dim nutrition:           ${slCrossDimNutrition}`);
   console.log(`  Cross-dim classification:      ${slCrossDimClassification}\n`);
 
   const total =
-    mlBatches + nutrition + popularity + patterns + sustainability +
-    classification + records + demoNutrition + demoClassification +
-    demoPatterns + crossDimNutrition + crossDimClassification + crossDimPatterns +
-    slBatches + slItemPopularity + slCategoryPopularity + slListPatterns +
-    slNutritionProfile + slSustainability + slFoodGroups + slDemoPatterns +
-    slDemoNutrition + slDemoClassification + slCrossDimPatterns +
-    slCrossDimNutrition + slCrossDimClassification;
+    mlBatches +
+    nutrition +
+    popularity +
+    patterns +
+    sustainability +
+    classification +
+    records +
+    demoNutrition +
+    demoClassification +
+    demoPatterns +
+    crossDimNutrition +
+    crossDimClassification +
+    crossDimPatterns +
+    slBatches +
+    slItemPopularity +
+    slCategoryPopularity +
+    slListPatterns +
+    slSustainability +
+    slFoodGroups +
+    slDemoPatterns +
+    slDemoClassification +
+    slCrossDimPatterns +
+    slCrossDimClassification;
 
   if (total === 0) {
     console.log('✓ No analytics data to clean');

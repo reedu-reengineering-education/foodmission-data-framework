@@ -271,7 +271,9 @@ describe('parseLimit', () => {
     'rejects invalid limit %s',
     (value) => {
       expect(() => parseLimit(value)).toThrow(BadRequestException);
-      expect(() => parseLimit(value)).toThrow('Must be an integer between 1 and 100');
+      expect(() => parseLimit(value)).toThrow(
+        'Must be an integer between 1 and 100',
+      );
     },
   );
 });
@@ -449,25 +451,6 @@ describe('analytics mappers', () => {
       avgCalories: 300,
       avgProteins: 20,
       p50Calories: 310,
-    });
-  });
-
-  it('maps shopping-list per-100g nutrition fields to the unified shape', () => {
-    expect(
-      toAnalyticsNutritionDto({
-        id: 'n1',
-        date: new Date('2026-04-01'),
-        userCount: 5,
-        itemCount: 9,
-        avgCaloriesPer100g: 120,
-        avgProteinsPer100g: 8,
-        p75CaloriesPer100g: 180,
-      }),
-    ).toMatchObject({
-      mealCount: 9,
-      avgCalories: 120,
-      avgProteins: 8,
-      p75Calories: 180,
     });
   });
 
