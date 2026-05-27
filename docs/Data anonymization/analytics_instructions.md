@@ -1,5 +1,40 @@
 instructions:
 
+## Generate All Analytics
+
+Use this endpoint when you want to generate Meal Log and Shopping List analytics for the same period in one admin action:
+
+```
+{{baseUrl}}/api/v1/analytics/batches/generate-all?periodStart=2026-04-18&periodEnd=2026-04-25
+```
+
+The endpoint requires admin authentication and returns both staging batch IDs:
+
+```json
+{
+  "mealLogBatchId": "meal-log-batch-id",
+  "shoppingListBatchId": "shopping-list-batch-id"
+}
+```
+
+Generation runs sequentially: Meal Log first, then Shopping List.
+
+Approve both generated staging batches together:
+
+```
+{{baseUrl}}/api/v1/analytics/batches/approve-all?mealLogBatchId=:mealLogBatchId&shoppingListBatchId=:shoppingListBatchId
+```
+
+Publish both approved batches together:
+
+```
+{{baseUrl}}/api/v1/analytics/batches/publish-all?mealLogBatchId=:mealLogBatchId&shoppingListBatchId=:shoppingListBatchId
+```
+
+Both endpoints use the same lifecycle rules as the source-specific routes: approval requires `STAGING` batches and publishing requires `APPROVED` batches.
+
+---
+
 ## Meal Log Analytics
 
 1. Run normal seed for DB

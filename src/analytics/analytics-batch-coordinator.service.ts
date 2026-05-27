@@ -24,6 +24,56 @@ export class AnalyticsBatchCoordinator {
     private readonly shoppingListService: ShoppingListAnalyticsService,
   ) {}
 
+  async generateForAll(
+    periodStart: Date,
+    periodEnd: Date,
+  ): Promise<{ mealLogBatchId: string; shoppingListBatchId: string }> {
+    const mealLogBatchId = await this.mealLogService.generateBatch(
+      periodStart,
+      periodEnd,
+    );
+    const shoppingListBatchId = await this.shoppingListService.generateBatch(
+      periodStart,
+      periodEnd,
+    );
+
+    return { mealLogBatchId, shoppingListBatchId };
+  }
+
+  async approveForAll(
+    mealLogBatchId: string,
+    shoppingListBatchId: string,
+    adminUserId: string,
+  ) {
+    const mealLogBatch = await this.mealLogService.approveBatch(
+      mealLogBatchId,
+      adminUserId,
+    );
+    const shoppingListBatch = await this.shoppingListService.approveBatch(
+      shoppingListBatchId,
+      adminUserId,
+    );
+
+    return { mealLogBatch, shoppingListBatch };
+  }
+
+  async publishForAll(
+    mealLogBatchId: string,
+    shoppingListBatchId: string,
+    adminUserId: string,
+  ) {
+    const mealLogBatch = await this.mealLogService.publishBatch(
+      mealLogBatchId,
+      adminUserId,
+    );
+    const shoppingListBatch = await this.shoppingListService.publishBatch(
+      shoppingListBatchId,
+      adminUserId,
+    );
+
+    return { mealLogBatch, shoppingListBatch };
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_2AM)
   async runDailyForAll(): Promise<void> {
     const domains: Array<{

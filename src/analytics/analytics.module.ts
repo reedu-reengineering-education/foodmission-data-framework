@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AnalyticsController } from './analytics.controller';
 import { MealLogAnalyticsController } from './meal-log/controllers/meal-log-analytics.controller';
 import { MealLogAnalyticsService } from './meal-log/services/meal-log-analytics.service';
 import { MealLogAnalyticsAggregator } from './meal-log/services/meal-log-analytics-aggregator.service';
@@ -13,7 +14,11 @@ import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service
 
 @Module({
   imports: [ScheduleModule.forRoot()],
-  controllers: [MealLogAnalyticsController, ShoppingListAnalyticsController],
+  controllers: [
+    AnalyticsController,
+    MealLogAnalyticsController,
+    ShoppingListAnalyticsController,
+  ],
   providers: [
     MealLogAnalyticsService,
     MealLogAnalyticsAggregator,
