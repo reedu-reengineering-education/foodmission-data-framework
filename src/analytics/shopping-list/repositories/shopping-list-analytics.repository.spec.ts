@@ -1,5 +1,4 @@
 import { ShoppingListAnalyticsRepository } from './shopping-list-analytics.repository';
-import { AnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsRepository', () => {
   let repository: ShoppingListAnalyticsRepository;
@@ -116,7 +115,7 @@ describe('ShoppingListAnalyticsRepository', () => {
   it('updateBatchStatus sets publishedAt and publishedBy when publishing', async () => {
     const published = {
       id: 'b1',
-      status: AnalyticsBatchStatus.PUBLISHED,
+      status: 'PUBLISHED',
     };
     prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(
       published as any,
@@ -124,12 +123,12 @@ describe('ShoppingListAnalyticsRepository', () => {
 
     await repository.updateBatchStatus(
       'b1',
-      AnalyticsBatchStatus.PUBLISHED,
+      'PUBLISHED' as any,
       'admin-1',
     );
 
     const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe(AnalyticsBatchStatus.PUBLISHED);
+    expect(data.status).toBe('PUBLISHED');
     expect(data.publishedAt).toBeInstanceOf(Date);
     expect(data.publishedBy).toBe('admin-1');
   });
@@ -137,19 +136,19 @@ describe('ShoppingListAnalyticsRepository', () => {
   it('updateBatchStatus sets rejectedAt, rejectedBy and rejectionReason when rejecting', async () => {
     const rejected = {
       id: 'b1',
-      status: AnalyticsBatchStatus.REJECTED,
+      status: 'REJECTED',
     };
     prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(rejected as any);
 
     await repository.updateBatchStatus(
       'b1',
-      AnalyticsBatchStatus.REJECTED,
+      'REJECTED' as any,
       'admin-1',
       'bad data quality',
     );
 
     const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe(AnalyticsBatchStatus.REJECTED);
+    expect(data.status).toBe('REJECTED');
     expect(data.rejectedAt).toBeInstanceOf(Date);
     expect(data.rejectedBy).toBe('admin-1');
     expect(data.rejectionReason).toBe('bad data quality');
@@ -205,7 +204,7 @@ describe('ShoppingListAnalyticsRepository', () => {
     const where = (
       prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
     ).mock.calls[0][0].where;
-    expect(where.batch.status).toBe(AnalyticsBatchStatus.PUBLISHED);
+    expect(where.batch.status).toBe('PUBLISHED');
   });
 
   it('getPublishedListPatterns applies from/to date filter on batch', async () => {
@@ -232,6 +231,32 @@ describe('ShoppingListAnalyticsRepository', () => {
     ).mock.calls[0][0];
     expect(callArg.take).toBe(5);
     expect(callArg.orderBy).toEqual({ frequency: 'desc' });
+    expect(callArg.select).toMatchObject({
+      id: true,
+      date: true,
+      foodName: true,
+      foodGroup: true,
+      itemType: true,
+      frequency: true,
+    });
+  });
+
+  it('getPublishedNutritionProfile selects id and nutrition fields consumed by unified mappers', async () => {
+    prisma.shoppingListAnalyticsNutritionProfile.findMany.mockResolvedValue([]);
+
+    await repository.getPublishedNutritionProfile();
+
+    const callArg = (
+      prisma.shoppingListAnalyticsNutritionProfile.findMany as jest.Mock
+    ).mock.calls[0][0];
+    expect(callArg.select).toMatchObject({
+      id: true,
+      date: true,
+      userCount: true,
+      itemCount: true,
+      avgCaloriesPer100g: true,
+      avgProteinsPer100g: true,
+    });
   });
 
   it('getPublishedDemographicPatterns filters by dimension when provided', async () => {

@@ -124,6 +124,22 @@ describe('MealLogAnalyticsRepository', () => {
         }),
       );
     });
+
+    it('selects id and canonical nutrition fields required by unified mappers', async () => {
+      prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValueOnce([]);
+
+      await repository.getPublishedNutrition();
+
+      const callArg = prisma.mealLogAnalyticsDailyNutrition.findMany.mock.calls[0][0];
+      expect(callArg.select).toMatchObject({
+        id: true,
+        date: true,
+        userCount: true,
+        mealCount: true,
+        avgCalories: true,
+        avgProteins: true,
+      });
+    });
   });
 
   describe('getPublishedFoodPopularity', () => {
@@ -140,6 +156,22 @@ describe('MealLogAnalyticsRepository', () => {
           take: 7,
         }),
       );
+    });
+
+    it('selects id plus canonical popularity naming source fields', async () => {
+      prisma.mealLogAnalyticsFoodPopularity.findMany.mockResolvedValueOnce([]);
+
+      await repository.getPublishedFoodPopularity();
+
+      const callArg = prisma.mealLogAnalyticsFoodPopularity.findMany.mock.calls[0][0];
+      expect(callArg.select).toMatchObject({
+        id: true,
+        date: true,
+        foodName: true,
+        foodGroup: true,
+        itemType: true,
+        frequency: true,
+      });
     });
   });
 

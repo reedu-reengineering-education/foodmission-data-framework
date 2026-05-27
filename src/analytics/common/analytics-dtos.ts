@@ -2,7 +2,7 @@
 
 export interface AnalyticsNutritionDto {
   id: string;
-  date: string;
+  date: Date;
   typeOfMeal?: string;
   userCount: number;
   mealCount?: number;
@@ -22,7 +22,9 @@ export interface AnalyticsNutritionDto {
 
 export interface AnalyticsFoodPopularityDto {
   id: string;
-  date: string;
+  date: Date;
+  itemName: string;
+  itemGroup?: string;
   foodName: string;
   foodGroup?: string;
   itemType?: string;

@@ -1,8 +1,8 @@
 import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
-import { AnalyticsBatchStatus } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
+// Prisma enum export unavailable in this workspace; use literal statuses in tests.
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
   let service: MealLogAnalyticsService;
@@ -66,7 +66,7 @@ describe('MealLogAnalyticsService', () => {
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
       repository.updateBatchStatus.mockResolvedValue({
         id: 'daily-batch',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       } as any);
     });
 
@@ -87,7 +87,7 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'daily-batch',
-        AnalyticsBatchStatus.PUBLISHED,
+        'PUBLISHED',
         'system',
       );
     });
@@ -147,23 +147,30 @@ describe('MealLogAnalyticsService', () => {
     expect(result.period.to).toBeNull();
     expect(result.nutrition.latestAvgCalories).toBe(120);
     expect(result.nutrition.latestAvgProteins).toBe(15);
-    expect(result.topFoods).toEqual([
-      { name: 'Apple', frequency: 8, uniqueUsers: 5 },
+    expect(result.topItems).toEqual([
+      {
+        itemName: 'Apple',
+        itemGroup: undefined,
+        itemType: undefined,
+        frequency: 8,
+        uniqueUsers: 5,
+      },
     ]);
-    expect(result.mealPatterns.avgPantryUsagePct).toBe(50);
-    expect(result.mealPatterns.avgItemsPerMeal).toBe(3);
+    expect(result.patterns.avgPantryPct).toBe(50);
+    expect(result.patterns.avgItemsPerEntity).toBe(3);
     expect(result.sustainability.avgSustainabilityScore).toBe(50);
     expect(result.classification.avgVegetarianPct).toBe(30);
     expect(result.classification.avgVeganPct).toBe(20);
     expect(result.classification.avgUltraProcessedPct).toBe(60);
+    expect(result.nutrition).not.toHaveProperty('latestAvgCaloriesPer100g');
   });
 
   describe('approveBatch', () => {
     it('should approve a STAGING batch', async () => {
-      const batch = { id: 'b1', status: AnalyticsBatchStatus.STAGING };
+      const batch = { id: 'b1', status: 'STAGING' };
       const approved = {
         ...batch,
-        status: AnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(approved as any);
@@ -172,18 +179,18 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        AnalyticsBatchStatus.APPROVED,
+        'APPROVED',
         'admin1',
       );
       expect(result).toEqual(approved);
     });
 
-    it('should throw Error for non-STAGING batch', async () => {
-      const batch = { id: 'b1', status: AnalyticsBatchStatus.PUBLISHED };
+    it('should throw BadRequestException for non-STAGING batch', async () => {
+      const batch = { id: 'b1', status: 'PUBLISHED' };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.approveBatch('b1', 'admin1')).rejects.toThrow(
-        'Batch is PUBLISHED, can only approve STAGING batches',
+        BadRequestException,
       );
     });
 
@@ -198,10 +205,10 @@ describe('MealLogAnalyticsService', () => {
 
   describe('publishBatch', () => {
     it('should publish an APPROVED batch', async () => {
-      const batch = { id: 'b1', status: AnalyticsBatchStatus.APPROVED };
+      const batch = { id: 'b1', status: 'APPROVED' };
       const published = {
         ...batch,
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(published as any);
@@ -210,18 +217,18 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        AnalyticsBatchStatus.PUBLISHED,
+        'PUBLISHED',
         'admin1',
       );
       expect(result).toEqual(published);
     });
 
-    it('should throw Error for non-APPROVED batch', async () => {
-      const batch = { id: 'b1', status: AnalyticsBatchStatus.STAGING };
+    it('should throw BadRequestException for non-APPROVED batch', async () => {
+      const batch = { id: 'b1', status: 'STAGING' };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.publishBatch('b1', 'admin1')).rejects.toThrow(
-        'Batch is STAGING, can only publish APPROVED batches',
+        BadRequestException,
       );
     });
 

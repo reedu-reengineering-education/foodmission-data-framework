@@ -5,7 +5,10 @@ import { Prisma, ShoppingListAnalyticsBatch } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
-import { toAnalyticsNutritionDto, toAnalyticsFoodPopularityDto } from '../../common/analytics-mappers';
+import {
+  toAnalyticsNutritionDto,
+  toAnalyticsFoodPopularityDto,
+} from '../../common/analytics-mappers';
 import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()
@@ -504,18 +507,20 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
           patterns.length > 0
             ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
             : null,
-        avgTotalEntities:
+        avgPantryPct:
           patterns.length > 0
-            ? safeAvg(patterns.map((p) => p.totalEntities))
+            ? safeAvg(patterns.map((p) => p.foodProductPct))
             : null,
       },
       nutrition: {
         dataPoints: nutrition.length,
         latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,
         latestAvgProteins: nutrition.at(-1)?.avgProteins ?? null,
+        latestAvgFat: nutrition.at(-1)?.avgFat ?? null,
+        latestAvgCarbs: nutrition.at(-1)?.avgCarbs ?? null,
         metadata: {
-          valueUnit: 'per_100g',
-          entityUnit: 'item',
+          valueUnit: 'per_meal',
+          entityUnit: 'meal',
         },
       },
       sustainability: {
@@ -525,16 +530,6 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
           sustainability
             .map((s) => s.avgCarbonFootprint)
             .filter((v): v is number => v !== null),
-        ),
-        avgVegetarianItemPct: safeAvg(
-          sustainability
-            .map((s) => s.vegetarianItemPct)
-            .filter((v): v is number => v !== null && v !== undefined),
-        ),
-        avgUltraProcessedPct: safeAvg(
-          sustainability
-            .map((s) => s.avgUltraProcessedPct)
-            .filter((v): v is number => v !== null && v !== undefined),
         ),
       },
       classification: {
@@ -557,56 +552,14 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       },
       // Backward-compatibility fields kept for legacy clients.
       topCategories: categoryPopularity.map((c) => ({
-        return {
-          period: { from: from ?? null, to: to ?? null },
-          topItems: popularity.map((f) => ({
-            itemName: f.foodName,
-            itemGroup: f.foodGroup,
-            itemType: f.itemType,
-            frequency: f.frequency,
-            uniqueUsers: f.uniqueUsers,
-          })),
-          patterns: {
-            dataPoints: patterns.length,
-            avgItemsPerEntity:
-              patterns.length > 0
-                ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
-                : null,
-            avgPantryPct:
-              patterns.length > 0
-                ? safeAvg(patterns.map((p) => p.pantryPct))
-                : null,
-          },
-          nutrition: {
-            dataPoints: nutrition.length,
-            latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,
-            latestAvgProteins: nutrition.at(-1)?.avgProteins ?? null,
-            latestAvgFat: nutrition.at(-1)?.avgFat ?? null,
-            latestAvgCarbs: nutrition.at(-1)?.avgCarbs ?? null,
-            metadata: {
-              valueUnit: 'per_meal',
-              entityUnit: 'meal',
-            },
-          },
-          sustainability: {
-            dataPoints: sustainability.length,
-            avgSustainabilityScore: safeAvg(
-              sustainability
-                .map((s) => s.avgSustainabilityScore)
-                .filter((v): v is number => v !== null),
-            ),
-            avgCarbonFootprint: safeAvg(
-              sustainability
-                .map((s) => s.avgCarbonFootprint)
-                .filter((v): v is number => v !== null),
-            ),
-          },
-          classification: {
-            dataPoints: classification.length,
-            avgVegetarianPct: safeAvg(classification.map((c) => c.vegetarianPct)),
-            avgVeganPct: safeAvg(classification.map((c) => c.veganPct)),
-            avgUltraProcessedPct: safeAvg(
-              classification.map((c) => c.avgUltraProcessedPct),
-            ),
-          },
-        };
+        category: c.category,
+        frequency: c.frequency,
+        uniqueUsers: c.uniqueUsers,
+      })),
+    };
+  }
+
+  // ============================================================
+  // Admin — batch management
+  // ============================================================
+}

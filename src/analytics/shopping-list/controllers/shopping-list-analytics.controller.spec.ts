@@ -1,6 +1,5 @@
 import { ShoppingListAnalyticsController } from './shopping-list-analytics.controller';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
-import { AnalyticsBatchStatus } from '@prisma/client';
 
 describe('ShoppingListAnalyticsController', () => {
   let controller: ShoppingListAnalyticsController;
@@ -12,6 +11,8 @@ describe('ShoppingListAnalyticsController', () => {
       getPublishedCategoryPopularity: jest.fn(),
       getPublishedListPatterns: jest.fn(),
       getPublishedNutritionProfile: jest.fn(),
+      getPublishedNutrition: jest.fn(),
+      getPublishedPopularity: jest.fn(),
       getPublishedSustainability: jest.fn(),
       getPublishedFoodGroups: jest.fn(),
       getPublishedDemographicPatterns: jest.fn(),
@@ -130,6 +131,58 @@ describe('ShoppingListAnalyticsController', () => {
         new Date('2026-04-01'),
         new Date('2026-04-30'),
       );
+    });
+  });
+
+  describe('getPublicNutrition', () => {
+    it('forwards parsed dates to unified nutrition service method', async () => {
+      service.getPublishedNutrition.mockResolvedValue([]);
+
+      await controller.getPublicNutrition('2026-04-01', '2026-04-30');
+
+      expect(service.getPublishedNutrition).toHaveBeenCalledWith(
+        new Date('2026-04-01'),
+        new Date('2026-04-30'),
+      );
+    });
+
+    it('returns unified nutrition keys without per100g naming', async () => {
+      service.getPublishedNutrition.mockResolvedValue([
+        { id: 'n1', avgCalories: 200, avgProteins: 12 },
+      ] as any);
+
+      const result = await controller.getPublicNutrition();
+
+      expect(result[0]).toMatchObject({ id: 'n1', avgCalories: 200 });
+      expect(result[0]).not.toHaveProperty('avgCaloriesPer100g');
+    });
+  });
+
+  describe('getPublicPopularity', () => {
+    it('parses dates/limit and forwards to unified popularity service method', async () => {
+      service.getPublishedPopularity.mockResolvedValue([]);
+
+      await controller.getPublicPopularity('2026-04-01', '2026-04-30', '5');
+
+      expect(service.getPublishedPopularity).toHaveBeenCalledWith(
+        new Date('2026-04-01'),
+        new Date('2026-04-30'),
+        5,
+      );
+    });
+
+    it('returns canonical itemName/itemGroup fields', async () => {
+      service.getPublishedPopularity.mockResolvedValue([
+        { id: 'p1', itemName: 'Milk', itemGroup: 'Dairy', frequency: 8 },
+      ] as any);
+
+      const result = await controller.getPublicPopularity();
+
+      expect(result[0]).toMatchObject({
+        itemName: 'Milk',
+        itemGroup: 'Dairy',
+        frequency: 8,
+      });
     });
   });
 
@@ -264,6 +317,25 @@ describe('ShoppingListAnalyticsController', () => {
       );
       expect(result).toEqual(summary);
     });
+
+    it('returns canonical summary blocks', async () => {
+      const summary = {
+        topItems: [],
+        patterns: {},
+        nutrition: {},
+        sustainability: {},
+        classification: {},
+      };
+      service.getPublishedSummary.mockResolvedValue(summary as any);
+
+      const result = await controller.getPublicSummary();
+
+      expect(result).toHaveProperty('topItems');
+      expect(result).toHaveProperty('patterns');
+      expect(result).toHaveProperty('nutrition');
+      expect(result).toHaveProperty('sustainability');
+      expect(result).toHaveProperty('classification');
+    });
   });
 
   describe('getPublicDemographicClassification', () => {
@@ -368,11 +440,9 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes status filter to service', async () => {
       service.listBatches.mockResolvedValue([]);
 
-      await controller.listBatches(AnalyticsBatchStatus.STAGING);
+      await controller.listBatches('STAGING' as any);
 
-      expect(service.listBatches).toHaveBeenCalledWith(
-        AnalyticsBatchStatus.STAGING,
-      );
+      expect(service.listBatches).toHaveBeenCalledWith('STAGING');
     });
 
     it('passes undefined when no status provided', async () => {
@@ -400,7 +470,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id and admin user id to service', async () => {
       const approved = {
         id: 'b1',
-        status: AnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       };
       service.approveBatch.mockResolvedValue(approved as any);
 
@@ -415,7 +485,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id and admin user id to service', async () => {
       const published = {
         id: 'b1',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       };
       service.publishBatch.mockResolvedValue(published as any);
 
@@ -430,7 +500,7 @@ describe('ShoppingListAnalyticsController', () => {
     it('passes batch id, admin user id and reason to service', async () => {
       const rejected = {
         id: 'b1',
-        status: AnalyticsBatchStatus.REJECTED,
+        status: 'REJECTED',
       };
       service.rejectBatch.mockResolvedValue(rejected as any);
 

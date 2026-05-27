@@ -2,7 +2,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ShoppingListAnalyticsService } from './shopping-list-analytics.service';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
-import { Prisma, AnalyticsBatchStatus } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 describe('ShoppingListAnalyticsService', () => {
   let service: ShoppingListAnalyticsService;
@@ -177,7 +177,7 @@ describe('ShoppingListAnalyticsService', () => {
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
       repository.updateBatchStatus.mockResolvedValue({
         id: 'daily-batch',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       } as any);
     });
 
@@ -198,7 +198,7 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'daily-batch',
-        AnalyticsBatchStatus.PUBLISHED,
+        'PUBLISHED',
         'system',
       );
     });
@@ -227,11 +227,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('approves a STAGING batch', async () => {
       const batch = {
         id: 'b1',
-        status: AnalyticsBatchStatus.STAGING,
+        status: 'STAGING',
       };
       const approved = {
         ...batch,
-        status: AnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(approved as any);
@@ -240,16 +240,16 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        AnalyticsBatchStatus.APPROVED,
+        'APPROVED',
         'admin-1',
       );
-      expect(result.status).toBe(AnalyticsBatchStatus.APPROVED);
+      expect(result.status).toBe('APPROVED');
     });
 
     it('throws BadRequestException for a non-STAGING batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       } as any);
 
       await expect(service.approveBatch('b1', 'admin-1')).rejects.toThrow(
@@ -274,11 +274,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('publishes an APPROVED batch', async () => {
       const batch = {
         id: 'b1',
-        status: AnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       };
       const published = {
         ...batch,
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(published as any);
@@ -287,16 +287,16 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        AnalyticsBatchStatus.PUBLISHED,
+        'PUBLISHED',
         'admin-1',
       );
-      expect(result.status).toBe(AnalyticsBatchStatus.PUBLISHED);
+      expect(result.status).toBe('PUBLISHED');
     });
 
     it('throws BadRequestException when batch is not APPROVED', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.STAGING,
+        status: 'STAGING',
       } as any);
 
       await expect(service.publishBatch('b1', 'admin-1')).rejects.toThrow(
@@ -313,11 +313,11 @@ describe('ShoppingListAnalyticsService', () => {
     it('rejects a STAGING batch', async () => {
       const batch = {
         id: 'b1',
-        status: AnalyticsBatchStatus.STAGING,
+        status: 'STAGING',
       };
       const rejected = {
         ...batch,
-        status: AnalyticsBatchStatus.REJECTED,
+        status: 'REJECTED',
       };
       repository.findBatchById.mockResolvedValue(batch as any);
       repository.updateBatchStatus.mockResolvedValue(rejected as any);
@@ -326,17 +326,17 @@ describe('ShoppingListAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        AnalyticsBatchStatus.REJECTED,
+        'REJECTED',
         'admin-1',
         'bad data',
       );
-      expect(result.status).toBe(AnalyticsBatchStatus.REJECTED);
+      expect(result.status).toBe('REJECTED');
     });
 
     it('throws BadRequestException when batch is not STAGING', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       } as any);
 
       await expect(
@@ -353,7 +353,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('deletes a STAGING batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.STAGING,
+        status: 'STAGING',
       } as any);
       repository.deleteBatch.mockResolvedValue(undefined);
 
@@ -365,7 +365,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('deletes a REJECTED batch', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.REJECTED,
+        status: 'REJECTED',
       } as any);
       repository.deleteBatch.mockResolvedValue(undefined);
 
@@ -377,7 +377,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('throws BadRequestException for PUBLISHED batches', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       } as any);
 
       await expect(service.deleteBatch('b1')).rejects.toThrow(
@@ -388,7 +388,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('throws BadRequestException for APPROVED batches', async () => {
       repository.findBatchById.mockResolvedValue({
         id: 'b1',
-        status: AnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       } as any);
 
       await expect(service.deleteBatch('b1')).rejects.toThrow(
@@ -463,7 +463,7 @@ describe('ShoppingListAnalyticsService', () => {
   // ============================================================
 
   describe('getPublishedSummary', () => {
-    it('returns top items, top categories, and aggregated stats', async () => {
+    it('returns canonical summary blocks and aggregated stats', async () => {
       repository.getPublishedItemPopularity.mockResolvedValue([
         { foodName: 'Milk', frequency: 10, uniqueUsers: 8 } as any,
       ]);
@@ -473,11 +473,15 @@ describe('ShoppingListAnalyticsService', () => {
       repository.getPublishedListPatterns.mockResolvedValue([
         {
           date: new Date('2026-04-01'),
+          totalLists: 9,
+          foodProductPct: 70,
           avgItemsPerList: 4,
           avgListsPerUser: 2,
         } as any,
         {
           date: new Date('2026-04-02'),
+          totalLists: 11,
+          foodProductPct: 50,
           avgItemsPerList: 6,
           avgListsPerUser: 3,
         } as any,
@@ -487,15 +491,19 @@ describe('ShoppingListAnalyticsService', () => {
           date: new Date('2026-04-02'),
           avgCaloriesPer100g: 80,
           avgProteinsPer100g: 5,
+          avgFatPer100g: 2,
+          avgCarbsPer100g: 9,
         } as any,
       ]);
       repository.getPublishedSustainability.mockResolvedValue([
         {
+          avgSustainabilityScore: 55,
           avgCarbonFootprint: 2.5,
           vegetarianItemPct: 60,
           avgUltraProcessedPct: 20,
         } as any,
         {
+          avgSustainabilityScore: null,
           avgCarbonFootprint: null,
           vegetarianItemPct: null,
           avgUltraProcessedPct: 40,
@@ -505,17 +513,28 @@ describe('ShoppingListAnalyticsService', () => {
       const result = await service.getPublishedSummary();
 
       expect(result.topItems).toEqual([
-        { name: 'Milk', frequency: 10, uniqueUsers: 8 },
+        {
+          itemName: 'Milk',
+          itemGroup: undefined,
+          itemType: undefined,
+          frequency: 10,
+          uniqueUsers: 8,
+        },
       ]);
       expect(result.topCategories).toEqual([
         { category: 'Dairy', frequency: 10, uniqueUsers: 8 },
       ]);
-      expect(result.listPatterns.avgItemsPerList).toBe(5); // (4+6)/2
-      expect(result.listPatterns.avgListsPerUser).toBe(2.5); // (2+3)/2
-      expect(result.nutritionProfile.latestAvgCaloriesPer100g).toBe(80);
+      expect(result.patterns.avgItemsPerEntity).toBe(5);
+      expect(result.patterns.avgPantryPct).toBe(60);
+      expect(result.nutrition.latestAvgCalories).toBe(80);
+      expect(result.nutrition.latestAvgProteins).toBe(5);
+      expect(result.nutrition.latestAvgFat).toBe(2);
+      expect(result.nutrition.latestAvgCarbs).toBe(9);
       expect(result.sustainability.avgCarbonFootprint).toBe(2.5); // null excluded
-      expect(result.sustainability.avgVegetarianItemPct).toBe(60); // null excluded
-      expect(result.sustainability.avgUltraProcessedPct).toBe(30); // (20+40)/2
+      expect(result.sustainability.avgSustainabilityScore).toBeNull();
+      expect(result.classification.avgVegetarianPct).toBe(60);
+      expect(result.classification.avgUltraProcessedPct).toBe(30);
+      expect(result.nutrition).not.toHaveProperty('latestAvgCaloriesPer100g');
     });
 
     it('returns nulls when there is no published data', async () => {
@@ -528,8 +547,8 @@ describe('ShoppingListAnalyticsService', () => {
       const result = await service.getPublishedSummary();
 
       expect(result.topItems).toHaveLength(0);
-      expect(result.listPatterns.avgItemsPerList).toBeNull();
-      expect(result.nutritionProfile.latestAvgCaloriesPer100g).toBeNull();
+      expect(result.patterns.avgItemsPerEntity).toBeNull();
+      expect(result.nutrition.latestAvgCalories).toBeNull();
       expect(result.sustainability.avgCarbonFootprint).toBeNull();
     });
 
@@ -581,7 +600,7 @@ describe('ShoppingListAnalyticsService', () => {
     it('returns the batch when found', async () => {
       const batch = {
         id: 'b1',
-        status: AnalyticsBatchStatus.STAGING,
+        status: 'STAGING',
       };
       repository.findBatchById.mockResolvedValue(batch as any);
 
