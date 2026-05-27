@@ -7,6 +7,7 @@ export interface AnalyticsNutritionDto {
   date: Date;
   typeOfMeal?: string;
   userCount: number;
+  entityCount?: number;
   mealCount?: number;
   avgCalories?: number;
   avgProteins?: number;
@@ -19,6 +20,10 @@ export interface AnalyticsNutritionDto {
   p25Calories?: number;
   p50Calories?: number;
   p75Calories?: number;
+  metadata?: {
+    valueUnit: string;
+    entityUnit: string;
+  };
 }
 
 export interface AnalyticsFoodPopularityDto {
@@ -325,6 +330,7 @@ export function toAnalyticsNutritionDto(row: any): AnalyticsNutritionDto {
     date: row.date,
     typeOfMeal: row.typeOfMeal,
     userCount: row.userCount,
+    entityCount: row.mealCount,
     mealCount: row.mealCount,
     avgCalories: row.avgCalories,
     avgProteins: row.avgProteins,
@@ -337,6 +343,10 @@ export function toAnalyticsNutritionDto(row: any): AnalyticsNutritionDto {
     p25Calories: row.p25Calories,
     p50Calories: row.p50Calories,
     p75Calories: row.p75Calories,
+    metadata: {
+      valueUnit: 'per_meal',
+      entityUnit: 'meal',
+    },
   };
 }
 

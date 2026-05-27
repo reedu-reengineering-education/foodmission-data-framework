@@ -134,7 +134,13 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       to,
       limit,
     );
-    return rows.map(toAnalyticsFoodPopularityDto);
+    return rows.map((row) => ({
+      ...toAnalyticsFoodPopularityDto(row),
+      metadata: {
+        valueUnit: 'count',
+        entityUnit: 'item',
+      },
+    }));
   }
 
   getPublishedCategoryPopularity(from?: Date, to?: Date, limit = 20) {
@@ -392,7 +398,7 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
           patterns.length > 0
             ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
             : null,
-        avgPantryPct:
+        avgFoodProductPct:
           patterns.length > 0
             ? safeAvg(patterns.map((p) => p.foodProductPct))
             : null,

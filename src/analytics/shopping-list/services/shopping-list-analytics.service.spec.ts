@@ -389,6 +389,38 @@ describe('ShoppingListAnalyticsService', () => {
   });
 
   // ============================================================
+  // getPublishedPopularity
+  // ============================================================
+
+  describe('getPublishedPopularity', () => {
+    it('adds shopping-list item metadata to unified popularity rows', async () => {
+      repository.getPublishedItemPopularity.mockResolvedValue([
+        {
+          id: 'p1',
+          date: new Date('2026-04-01'),
+          foodName: 'Milk',
+          foodGroup: 'Dairy',
+          itemType: 'food_product',
+          frequency: 10,
+          uniqueUsers: 8,
+          avgQuantity: 1,
+          predominantUnit: 'PIECES',
+        },
+      ]);
+
+      const result = await service.getPublishedPopularity();
+
+      expect(result[0]).toMatchObject({
+        itemName: 'Milk',
+        metadata: {
+          valueUnit: 'count',
+          entityUnit: 'item',
+        },
+      });
+    });
+  });
+
+  // ============================================================
   // getPublishedDemographicClassification
   // ============================================================
 
@@ -513,7 +545,8 @@ describe('ShoppingListAnalyticsService', () => {
         { category: 'Dairy', frequency: 10, uniqueUsers: 8 },
       ]);
       expect(result.patterns.avgItemsPerEntity).toBe(5);
-      expect(result.patterns.avgPantryPct).toBe(60);
+      expect(result.patterns.avgFoodProductPct).toBe(60);
+      expect(result.patterns).not.toHaveProperty('avgPantryPct');
       expect(result).not.toHaveProperty('nutrition');
       expect(result.sustainability.avgCarbonFootprint).toBe(2.5); // null excluded
       expect(result.sustainability.avgSustainabilityScore).toBeNull();

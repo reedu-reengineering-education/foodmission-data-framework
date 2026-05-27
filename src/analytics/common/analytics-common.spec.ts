@@ -447,10 +447,15 @@ describe('analytics mappers', () => {
     ).toMatchObject({
       id: 'n1',
       typeOfMeal: 'DINNER',
+      entityCount: 7,
       mealCount: 7,
       avgCalories: 300,
       avgProteins: 20,
       p50Calories: 310,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
     });
   });
 
