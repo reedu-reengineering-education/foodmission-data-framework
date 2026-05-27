@@ -544,6 +544,24 @@ describe('ShoppingListAnalyticsService', () => {
       expect(result.topCategories).toEqual([
         { category: 'Dairy', frequency: 10, uniqueUsers: 8 },
       ]);
+      expect(result.metadata.capabilities).toMatchObject({
+        supportsNutrition: false,
+        supportsDemographicNutrition: false,
+        supportsCrossDimNutrition: false,
+        supportsClassification: true,
+        supportsRecords: false,
+        supportedDimensions: [
+          'ageGroup',
+          'country',
+          'educationLevel',
+          'gender',
+          'region',
+        ],
+        privacyThresholds: {
+          singleDimMinUsers: 5,
+          crossDimMinUsers: 20,
+        },
+      });
       expect(result.patterns.avgItemsPerEntity).toBe(5);
       expect(result.patterns.avgFoodProductPct).toBe(60);
       expect(result.patterns).not.toHaveProperty('avgPantryPct');

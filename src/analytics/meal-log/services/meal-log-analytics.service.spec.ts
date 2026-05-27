@@ -145,6 +145,24 @@ describe('MealLogAnalyticsService', () => {
 
     expect(result.period.from).toBeNull();
     expect(result.period.to).toBeNull();
+    expect(result.metadata.capabilities).toMatchObject({
+      supportsNutrition: true,
+      supportsDemographicNutrition: true,
+      supportsCrossDimNutrition: true,
+      supportsClassification: true,
+      supportsRecords: true,
+      supportedDimensions: [
+        'ageGroup',
+        'country',
+        'educationLevel',
+        'gender',
+        'region',
+      ],
+      privacyThresholds: {
+        singleDimMinUsers: 5,
+        crossDimMinUsers: 20,
+      },
+    });
     expect(result.nutrition.latestAvgCalories).toBe(120);
     expect(result.nutrition.latestAvgProteins).toBe(15);
     expect(result.topItems).toEqual([

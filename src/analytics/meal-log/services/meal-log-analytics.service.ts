@@ -4,7 +4,10 @@ import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.serv
 import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
 import { runBatchGeneration } from '../../common/batch-runner';
 import {
+  DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  K_ANONYMITY_THRESHOLD,
   safeAvg,
   normalizeDimPair,
   toAnalyticsNutritionDto,
@@ -551,6 +554,20 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
 
     return {
       period: { from: from ?? null, to: to ?? null },
+      metadata: {
+        capabilities: {
+          supportsNutrition: true,
+          supportsDemographicNutrition: true,
+          supportsCrossDimNutrition: true,
+          supportsClassification: true,
+          supportsRecords: true,
+          supportedDimensions: DEMOGRAPHIC_DIMENSIONS,
+          privacyThresholds: {
+            singleDimMinUsers: K_ANONYMITY_THRESHOLD,
+            crossDimMinUsers: K_ANONYMITY_CROSS_DIM_THRESHOLD,
+          },
+        },
+      },
       topItems: popularity.map((f) => ({
         itemName: f.itemName,
         itemGroup: f.itemGroup,

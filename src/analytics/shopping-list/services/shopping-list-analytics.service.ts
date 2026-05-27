@@ -4,7 +4,10 @@ import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggre
 import { Prisma, ShoppingListAnalyticsBatch } from '@prisma/client';
 import { runBatchGeneration } from '../../common/batch-runner';
 import {
+  DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  K_ANONYMITY_THRESHOLD,
   safeAvg,
   normalizeDimPair,
   toAnalyticsFoodPopularityDto,
@@ -385,6 +388,20 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
 
     return {
       period: { from: from ?? null, to: to ?? null },
+      metadata: {
+        capabilities: {
+          supportsNutrition: false,
+          supportsDemographicNutrition: false,
+          supportsCrossDimNutrition: false,
+          supportsClassification: true,
+          supportsRecords: false,
+          supportedDimensions: DEMOGRAPHIC_DIMENSIONS,
+          privacyThresholds: {
+            singleDimMinUsers: K_ANONYMITY_THRESHOLD,
+            crossDimMinUsers: K_ANONYMITY_CROSS_DIM_THRESHOLD,
+          },
+        },
+      },
       topItems: popularity.map((item) => ({
         itemName: item.itemName,
         itemGroup: item.itemGroup,
