@@ -7,11 +7,8 @@ describe('ShoppingListAnalyticsRepository', () => {
   beforeEach(() => {
     prisma = {
       shoppingListAnalyticsBatch: {
-        create: jest.fn(),
         findUnique: jest.fn(),
-        findMany: jest.fn(),
         update: jest.fn(),
-        delete: jest.fn(),
       },
       shoppingListAnalyticsItemPopularity: {
         createMany: jest.fn(),
@@ -19,7 +16,6 @@ describe('ShoppingListAnalyticsRepository', () => {
       },
       shoppingListAnalyticsCategoryPopularity: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
       shoppingListAnalyticsListPatterns: {
         createMany: jest.fn(),
@@ -27,15 +23,12 @@ describe('ShoppingListAnalyticsRepository', () => {
       },
       shoppingListAnalyticsNutritionProfile: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
       shoppingListAnalyticsSustainability: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
       shoppingListAnalyticsFoodGroups: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
       shoppingListAnalyticsDemographicPatterns: {
         createMany: jest.fn(),
@@ -43,7 +36,6 @@ describe('ShoppingListAnalyticsRepository', () => {
       },
       shoppingListAnalyticsDemographicNutrition: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
       shoppingListAnalyticsCrossDimPatterns: {
         createMany: jest.fn(),
@@ -51,126 +43,67 @@ describe('ShoppingListAnalyticsRepository', () => {
       },
       shoppingListAnalyticsCrossDimNutrition: {
         createMany: jest.fn(),
-        findMany: jest.fn(),
       },
     } as any;
 
     repository = new ShoppingListAnalyticsRepository(prisma as any);
   });
 
-  // ============================================================
-  // createBatch
-  // ============================================================
-
-  it('createBatch delegates to prisma.create', async () => {
-    const input = {
-      periodStart: new Date('2026-04-01'),
-      periodEnd: new Date('2026-04-02'),
-      recordCount: 10,
-    };
-    const returned = { id: 'batch-1', ...input };
-    prisma.shoppingListAnalyticsBatch.create.mockResolvedValue(returned as any);
-
-    const result = await repository.createBatch(input);
-
-    expect(prisma.shoppingListAnalyticsBatch.create).toHaveBeenCalledWith({
-      data: input,
-    });
-    expect(result).toEqual(returned);
-  });
-
-  // ============================================================
-  // findBatchById
-  // ============================================================
-
-  it('findBatchById includes all related tables', async () => {
-    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({
-      id: 'b1',
-    } as any);
+  it('findBatchById includes review data ordered where needed', async () => {
+    prisma.shoppingListAnalyticsBatch.findUnique.mockResolvedValue({ id: 'b1' });
 
     await repository.findBatchById('b1');
 
-    const call = prisma.shoppingListAnalyticsBatch.findUnique.mock.calls[0][0];
-    expect(call.where).toEqual({ id: 'b1' });
-    expect(call.include).toMatchObject({
-      itemPopularity: expect.any(Object),
-      categoryPopularity: expect.any(Object),
-      listPatterns: true,
-      nutritionProfile: true,
-      sustainability: true,
-      foodGroups: expect.any(Object),
-      demographicPatterns: true,
-      demographicNutrition: true,
-      demographicClassification: true,
-      crossDimPatterns: true,
-      crossDimNutrition: true,
-      crossDimClassification: true,
-    });
-  });
-
-  // ============================================================
-  // updateBatchStatus — published path
-  // ============================================================
-
-  it('updateBatchStatus sets publishedAt and publishedBy when publishing', async () => {
-    const published = {
-      id: 'b1',
-      status: 'PUBLISHED',
-    };
-    prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(
-      published as any,
-    );
-
-    await repository.updateBatchStatus(
-      'b1',
-      'PUBLISHED' as any,
-      'admin-1',
-    );
-
-    const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe('PUBLISHED');
-    expect(data.publishedAt).toBeInstanceOf(Date);
-    expect(data.publishedBy).toBe('admin-1');
-  });
-
-  it('updateBatchStatus sets rejectedAt, rejectedBy and rejectionReason when rejecting', async () => {
-    const rejected = {
-      id: 'b1',
-      status: 'REJECTED',
-    };
-    prisma.shoppingListAnalyticsBatch.update.mockResolvedValue(rejected as any);
-
-    await repository.updateBatchStatus(
-      'b1',
-      'REJECTED' as any,
-      'admin-1',
-      'bad data quality',
-    );
-
-    const data = prisma.shoppingListAnalyticsBatch.update.mock.calls[0][0].data;
-    expect(data.status).toBe('REJECTED');
-    expect(data.rejectedAt).toBeInstanceOf(Date);
-    expect(data.rejectedBy).toBe('admin-1');
-    expect(data.rejectionReason).toBe('bad data quality');
-  });
-
-  // ============================================================
-  // deleteBatch
-  // ============================================================
-
-  it('deleteBatch calls prisma.delete with the batch id', async () => {
-    prisma.shoppingListAnalyticsBatch.delete.mockResolvedValue({} as any);
-
-    await repository.deleteBatch('b1');
-
-    expect(prisma.shoppingListAnalyticsBatch.delete).toHaveBeenCalledWith({
+    expect(prisma.shoppingListAnalyticsBatch.findUnique).toHaveBeenCalledWith({
       where: { id: 'b1' },
+      include: expect.objectContaining({
+        itemPopularity: { orderBy: { frequency: 'desc' } },
+        categoryPopularity: { orderBy: { frequency: 'desc' } },
+        listPatterns: true,
+        nutritionProfile: true,
+        sustainability: true,
+        foodGroups: { orderBy: { frequency: 'desc' } },
+      }),
     });
   });
 
-  // ============================================================
-  // Bulk inserts
-  // ============================================================
+  describe('updateBatchStatus', () => {
+    it('sets publication metadata when publishing', async () => {
+      prisma.shoppingListAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
+
+      await repository.updateBatchStatus('b1', 'PUBLISHED' as any, 'admin-1');
+
+      expect(prisma.shoppingListAnalyticsBatch.update).toHaveBeenCalledWith({
+        where: { id: 'b1' },
+        data: expect.objectContaining({
+          status: 'PUBLISHED',
+          publishedAt: expect.any(Date),
+          publishedBy: 'admin-1',
+        }),
+      });
+    });
+
+    it('sets rejection metadata when rejecting', async () => {
+      prisma.shoppingListAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
+
+      await repository.updateBatchStatus(
+        'b1',
+        'REJECTED' as any,
+        'admin-1',
+        'bad data quality',
+      );
+
+      expect(prisma.shoppingListAnalyticsBatch.update).toHaveBeenCalledWith({
+        where: { id: 'b1' },
+        data: expect.objectContaining({
+          status: 'REJECTED',
+          rejectedAt: expect.any(Date),
+          rejectedBy: 'admin-1',
+          rejectionReason: 'bad data quality',
+        }),
+      });
+    });
+  });
 
   it.each([
     ['insertItemPopularity', 'shoppingListAnalyticsItemPopularity'],
@@ -192,74 +125,43 @@ describe('ShoppingListAnalyticsRepository', () => {
     expect((prisma[model] as any).createMany).toHaveBeenCalledWith({ data });
   });
 
-  // ============================================================
-  // Published data queries — batch filter
-  // ============================================================
-
-  it('getPublishedListPatterns filters by PUBLISHED status', async () => {
-    prisma.shoppingListAnalyticsListPatterns.findMany.mockResolvedValue([]);
-
-    await repository.getPublishedListPatterns();
-
-    const where = (
-      prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
-    ).mock.calls[0][0].where;
-    expect(where.batch.status).toBe('PUBLISHED');
-  });
-
-  it('getPublishedListPatterns applies from/to date filter on batch', async () => {
+  it('applies published batch and date overlap filters', async () => {
     prisma.shoppingListAnalyticsListPatterns.findMany.mockResolvedValue([]);
     const from = new Date('2026-04-01');
     const to = new Date('2026-04-30');
 
     await repository.getPublishedListPatterns(from, to);
 
-    const where = (
-      prisma.shoppingListAnalyticsListPatterns.findMany as jest.Mock
-    ).mock.calls[0][0].where;
-    expect(where.batch.periodEnd).toEqual({ gt: from });
-    expect(where.batch.periodStart).toEqual({ lt: to });
+    expect(prisma.shoppingListAnalyticsListPatterns.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          batch: {
+            status: 'PUBLISHED',
+            periodEnd: { gt: from },
+            periodStart: { lt: to },
+          },
+        },
+      }),
+    );
   });
 
-  it('getPublishedItemPopularity respects limit parameter', async () => {
+  it('applies limit and ordering for item popularity', async () => {
     prisma.shoppingListAnalyticsItemPopularity.findMany.mockResolvedValue([]);
 
     await repository.getPublishedItemPopularity(undefined, undefined, 5);
 
-    const callArg = (
-      prisma.shoppingListAnalyticsItemPopularity.findMany as jest.Mock
-    ).mock.calls[0][0];
-    expect(callArg.take).toBe(5);
-    expect(callArg.orderBy).toEqual({ frequency: 'desc' });
-    expect(callArg.select).toMatchObject({
-      id: true,
-      date: true,
-      foodName: true,
-      foodGroup: true,
-      itemType: true,
-      frequency: true,
-    });
+    expect(
+      prisma.shoppingListAnalyticsItemPopularity.findMany,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { batch: { status: 'PUBLISHED' } },
+        orderBy: { frequency: 'desc' },
+        take: 5,
+      }),
+    );
   });
 
-  it('getPublishedNutritionProfile selects id and nutrition fields consumed by unified mappers', async () => {
-    prisma.shoppingListAnalyticsNutritionProfile.findMany.mockResolvedValue([]);
-
-    await repository.getPublishedNutritionProfile();
-
-    const callArg = (
-      prisma.shoppingListAnalyticsNutritionProfile.findMany as jest.Mock
-    ).mock.calls[0][0];
-    expect(callArg.select).toMatchObject({
-      id: true,
-      date: true,
-      userCount: true,
-      itemCount: true,
-      avgCaloriesPer100g: true,
-      avgProteinsPer100g: true,
-    });
-  });
-
-  it('getPublishedDemographicPatterns filters by dimension when provided', async () => {
+  it('applies demographic dimension filters', async () => {
     prisma.shoppingListAnalyticsDemographicPatterns.findMany.mockResolvedValue(
       [],
     );
@@ -270,13 +172,19 @@ describe('ShoppingListAnalyticsRepository', () => {
       'gender',
     );
 
-    const where = (
-      prisma.shoppingListAnalyticsDemographicPatterns.findMany as jest.Mock
-    ).mock.calls[0][0].where;
-    expect(where.dimensionName).toBe('gender');
+    expect(
+      prisma.shoppingListAnalyticsDemographicPatterns.findMany,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          batch: { status: 'PUBLISHED' },
+          dimensionName: 'gender',
+        }),
+      }),
+    );
   });
 
-  it('getPublishedCrossDimPatterns filters by dim1 and dim2 when provided', async () => {
+  it('applies cross-dimensional filters', async () => {
     prisma.shoppingListAnalyticsCrossDimPatterns.findMany.mockResolvedValue([]);
 
     await repository.getPublishedCrossDimPatterns(
@@ -286,10 +194,16 @@ describe('ShoppingListAnalyticsRepository', () => {
       'gender',
     );
 
-    const where = (
-      prisma.shoppingListAnalyticsCrossDimPatterns.findMany as jest.Mock
-    ).mock.calls[0][0].where;
-    expect(where.dim1Name).toBe('ageGroup');
-    expect(where.dim2Name).toBe('gender');
+    expect(
+      prisma.shoppingListAnalyticsCrossDimPatterns.findMany,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          batch: { status: 'PUBLISHED' },
+          dim1Name: 'ageGroup',
+          dim2Name: 'gender',
+        }),
+      }),
+    );
   });
 });

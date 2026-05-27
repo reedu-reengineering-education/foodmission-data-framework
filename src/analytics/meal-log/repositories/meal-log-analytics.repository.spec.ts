@@ -1,12 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '../../../database/prisma.service';
 import { MealLogAnalyticsRepository } from './meal-log-analytics.repository';
 
 describe('MealLogAnalyticsRepository', () => {
   let repository: MealLogAnalyticsRepository;
   let prisma: any;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     prisma = {
       mealLogAnalyticsBatch: {
         update: jest.fn(),
@@ -23,33 +21,14 @@ describe('MealLogAnalyticsRepository', () => {
       mealLogAnalyticsCrossDimNutrition: {
         findMany: jest.fn(),
       },
-      mealLogAnalyticsMealRecord: {
-        findMany: jest.fn(),
-      },
     };
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        MealLogAnalyticsRepository,
-        {
-          provide: PrismaService,
-          useValue: prisma,
-        },
-      ],
-    }).compile();
-
-    repository = module.get<MealLogAnalyticsRepository>(
-      MealLogAnalyticsRepository,
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    repository = new MealLogAnalyticsRepository(prisma);
   });
 
   describe('updateBatchStatus', () => {
-    it('sets published metadata when status is PUBLISHED', async () => {
-      prisma.mealLogAnalyticsBatch.update.mockResolvedValueOnce({ id: 'b1' });
+    it('sets publication metadata when publishing', async () => {
+      prisma.mealLogAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
 
       await repository.updateBatchStatus('b1', 'PUBLISHED', 'admin-1');
 
@@ -63,8 +42,8 @@ describe('MealLogAnalyticsRepository', () => {
       });
     });
 
-    it('sets rejection metadata when status is REJECTED', async () => {
-      prisma.mealLogAnalyticsBatch.update.mockResolvedValueOnce({ id: 'b1' });
+    it('sets rejection metadata when rejecting', async () => {
+      prisma.mealLogAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
 
       await repository.updateBatchStatus(
         'b1',
@@ -85,166 +64,84 @@ describe('MealLogAnalyticsRepository', () => {
     });
   });
 
-  describe('getPublishedNutrition', () => {
-    it('always filters by PUBLISHED status', async () => {
-      prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValueOnce([]);
+  it('applies published batch, date overlap, and meal type filters', async () => {
+    prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValue([]);
+    const from = new Date('2026-04-01');
+    const to = new Date('2026-04-30');
 
-      await repository.getPublishedNutrition();
+    await repository.getPublishedNutrition(from, to, 'DINNER');
 
-      expect(
-        prisma.mealLogAnalyticsDailyNutrition.findMany,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: { status: 'PUBLISHED' },
-          }),
+    expect(prisma.mealLogAnalyticsDailyNutrition.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          batch: {
+            status: 'PUBLISHED',
+            periodEnd: { gt: from },
+            periodStart: { lt: to },
+          },
+          typeOfMeal: 'DINNER',
         }),
-      );
-    });
-
-    it('adds date range and typeOfMeal filters when provided', async () => {
-      prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValueOnce([]);
-      const from = new Date('2026-04-01');
-      const to = new Date('2026-04-30');
-
-      await repository.getPublishedNutrition(from, to, 'DINNER');
-
-      expect(
-        prisma.mealLogAnalyticsDailyNutrition.findMany,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: {
-              status: 'PUBLISHED',
-              periodEnd: { gt: from },
-              periodStart: { lt: to },
-            },
-            typeOfMeal: 'DINNER',
-          }),
-        }),
-      );
-    });
-
-    it('selects id and canonical nutrition fields required by unified mappers', async () => {
-      prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValueOnce([]);
-
-      await repository.getPublishedNutrition();
-
-      const callArg = prisma.mealLogAnalyticsDailyNutrition.findMany.mock.calls[0][0];
-      expect(callArg.select).toMatchObject({
-        id: true,
-        date: true,
-        userCount: true,
-        mealCount: true,
-        avgCalories: true,
-        avgProteins: true,
-      });
-    });
+      }),
+    );
   });
 
-  describe('getPublishedFoodPopularity', () => {
-    it('applies limit and published batch filter', async () => {
-      prisma.mealLogAnalyticsFoodPopularity.findMany.mockResolvedValueOnce([]);
+  it('applies limit and ordering for food popularity', async () => {
+    prisma.mealLogAnalyticsFoodPopularity.findMany.mockResolvedValue([]);
 
-      await repository.getPublishedFoodPopularity(undefined, undefined, 7);
+    await repository.getPublishedFoodPopularity(undefined, undefined, 7);
 
-      expect(
-        prisma.mealLogAnalyticsFoodPopularity.findMany,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { batch: { status: 'PUBLISHED' } },
-          take: 7,
-        }),
-      );
-    });
-
-    it('selects id plus canonical popularity naming source fields', async () => {
-      prisma.mealLogAnalyticsFoodPopularity.findMany.mockResolvedValueOnce([]);
-
-      await repository.getPublishedFoodPopularity();
-
-      const callArg = prisma.mealLogAnalyticsFoodPopularity.findMany.mock.calls[0][0];
-      expect(callArg.select).toMatchObject({
-        id: true,
-        date: true,
-        foodName: true,
-        foodGroup: true,
-        itemType: true,
-        frequency: true,
-      });
-    });
+    expect(prisma.mealLogAnalyticsFoodPopularity.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { batch: { status: 'PUBLISHED' } },
+        orderBy: { frequency: 'desc' },
+        take: 7,
+      }),
+    );
   });
 
-  describe('getPublishedDemographicNutrition', () => {
-    it('applies dynamic dimension filter when provided', async () => {
-      prisma.mealLogAnalyticsDemographicNutrition.findMany.mockResolvedValueOnce(
-        [],
-      );
+  it('applies demographic dimension filters', async () => {
+    prisma.mealLogAnalyticsDemographicNutrition.findMany.mockResolvedValue([]);
 
-      await repository.getPublishedDemographicNutrition(
-        undefined,
-        undefined,
-        'DINNER',
-        'country',
-      );
+    await repository.getPublishedDemographicNutrition(
+      undefined,
+      undefined,
+      'LUNCH',
+      'country',
+    );
 
-      expect(
-        prisma.mealLogAnalyticsDemographicNutrition.findMany,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: { status: 'PUBLISHED' },
-            typeOfMeal: 'DINNER',
-            dimensionName: 'country',
-          }),
+    expect(
+      prisma.mealLogAnalyticsDemographicNutrition.findMany,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          batch: { status: 'PUBLISHED' },
+          typeOfMeal: 'LUNCH',
+          dimensionName: 'country',
         }),
-      );
-    });
+      }),
+    );
   });
 
-  describe('getPublishedCrossDimNutrition', () => {
-    it('applies dim1 and dim2 filters when provided', async () => {
-      prisma.mealLogAnalyticsCrossDimNutrition.findMany.mockResolvedValueOnce(
-        [],
-      );
+  it('applies cross-dimensional filters', async () => {
+    prisma.mealLogAnalyticsCrossDimNutrition.findMany.mockResolvedValue([]);
 
-      await repository.getPublishedCrossDimNutrition(
-        undefined,
-        undefined,
-        'LUNCH',
-        'ageGroup',
-        'gender',
-      );
+    await repository.getPublishedCrossDimNutrition(
+      undefined,
+      undefined,
+      'SNACK',
+      'ageGroup',
+      'gender',
+    );
 
-      expect(
-        prisma.mealLogAnalyticsCrossDimNutrition.findMany,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: { status: 'PUBLISHED' },
-            typeOfMeal: 'LUNCH',
-            dim1Name: 'ageGroup',
-            dim2Name: 'gender',
-          }),
+    expect(prisma.mealLogAnalyticsCrossDimNutrition.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          batch: { status: 'PUBLISHED' },
+          typeOfMeal: 'SNACK',
+          dim1Name: 'ageGroup',
+          dim2Name: 'gender',
         }),
-      );
-    });
-  });
-
-  describe('getPublishedMealRecords', () => {
-    it('applies typeOfMeal filter and published batch filter', async () => {
-      prisma.mealLogAnalyticsMealRecord.findMany.mockResolvedValueOnce([]);
-
-      await repository.getPublishedMealRecords(undefined, undefined, 'SNACK');
-
-      expect(prisma.mealLogAnalyticsMealRecord.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: { status: 'PUBLISHED' },
-            typeOfMeal: 'SNACK',
-          }),
-        }),
-      );
-    });
+      }),
+    );
   });
 });

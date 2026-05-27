@@ -3,8 +3,6 @@ import { PrismaService } from '../../../database/prisma.service';
 import {
   DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
-} from '../../common/demographic-dimensions';
-import {
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
   safeAvg,

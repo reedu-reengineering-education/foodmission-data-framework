@@ -3,11 +3,19 @@ import {
   safeAvg,
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  DEMOGRAPHIC_DIMENSIONS,
+  DemographicDimensionEnum,
+  parseLimit,
+  parseDate,
   normalizeDimPair,
   percentile,
   stdDev,
   mode,
   distribution,
+  applyKAnonymity,
+  aggregateFoodFrequency,
+  toAnalyticsNutritionDto,
+  toAnalyticsFoodPopularityDto,
 } from './analytics-utils';
 import {
   getAnalyticsBatch,
@@ -239,6 +247,270 @@ describe('distribution', () => {
 
   it('returns a single-key object for a uniform array', () => {
     expect(distribution(['x', 'x', 'x'])).toEqual({ x: 3 });
+  });
+});
+
+// ============================================================
+// analytics-utils — query parsing
+// ============================================================
+
+describe('parseLimit', () => {
+  it('returns the default limit for absent or empty values', () => {
+    expect(parseLimit(undefined)).toBe(20);
+    expect(parseLimit('')).toBe(20);
+    expect(parseLimit(undefined, 10)).toBe(10);
+  });
+
+  it('accepts integer strings within the allowed range', () => {
+    expect(parseLimit('1')).toBe(1);
+    expect(parseLimit('42')).toBe(42);
+    expect(parseLimit('100')).toBe(100);
+  });
+
+  it.each(['0', '101', '-1', '3.5', '5xyz', ' 5 '])(
+    'rejects invalid limit %s',
+    (value) => {
+      expect(() => parseLimit(value)).toThrow(BadRequestException);
+      expect(() => parseLimit(value)).toThrow('Must be an integer between 1 and 100');
+    },
+  );
+});
+
+describe('parseDate', () => {
+  it('returns undefined for absent or empty values', () => {
+    expect(parseDate(undefined, 'from')).toBeUndefined();
+    expect(parseDate('', 'from')).toBeUndefined();
+  });
+
+  it('parses valid date strings', () => {
+    expect(parseDate('2026-04-01', 'from')).toEqual(new Date('2026-04-01'));
+  });
+
+  it('rejects invalid date strings with the parameter name', () => {
+    expect(() => parseDate('not-a-date', 'periodStart')).toThrow(
+      BadRequestException,
+    );
+    expect(() => parseDate('not-a-date', 'periodStart')).toThrow(
+      'for periodStart',
+    );
+  });
+});
+
+// ============================================================
+// analytics-utils — k-anonymity
+// ============================================================
+
+describe('applyKAnonymity', () => {
+  it('filters rows below the default userCount threshold', () => {
+    const result = applyKAnonymity([
+      { id: 'a', userCount: 4 },
+      { id: 'b', userCount: 5 },
+    ]);
+
+    expect(result.rows).toEqual([{ id: 'b', userCount: 5 }]);
+    expect(result.suppressed).toBe(1);
+  });
+
+  it('supports uniqueUsers and custom thresholds', () => {
+    const result = applyKAnonymity(
+      [
+        { id: 'a', uniqueUsers: 19 },
+        { id: 'b', uniqueUsers: 20 },
+      ],
+      'uniqueUsers',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
+
+    expect(result.rows).toEqual([{ id: 'b', uniqueUsers: 20 }]);
+    expect(result.suppressed).toBe(1);
+  });
+
+  it('returns an empty result without suppressions for empty input', () => {
+    expect(applyKAnonymity([])).toEqual({ rows: [], suppressed: 0 });
+  });
+});
+
+// ============================================================
+// analytics-utils — food frequency
+// ============================================================
+
+describe('aggregateFoodFrequency', () => {
+  it('groups entries by date, food name, item type, and food group', () => {
+    const result = aggregateFoodFrequency([
+      {
+        date: new Date('2026-04-01T10:00:00Z'),
+        userId: 'u1',
+        foodName: 'Milk',
+        foodGroup: 'Dairy',
+        itemType: 'food_product',
+        quantity: 1,
+        unit: 'L',
+      },
+      {
+        date: new Date('2026-04-01T12:00:00Z'),
+        userId: 'u2',
+        foodName: 'Milk',
+        foodGroup: 'Dairy',
+        itemType: 'food_product',
+        quantity: 3,
+        unit: 'L',
+      },
+      {
+        date: new Date('2026-04-01T12:00:00Z'),
+        userId: 'u2',
+        foodName: 'Milk',
+        foodGroup: 'Plant-based drinks',
+        itemType: 'food_product',
+        quantity: 2,
+        unit: 'L',
+      },
+    ]);
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toMatchObject({
+      date: new Date('2026-04-01'),
+      foodName: 'Milk',
+      foodGroup: 'Dairy',
+      itemType: 'food_product',
+      frequency: 2,
+      uniqueUsers: 2,
+      avgQuantity: 2,
+      predominantUnit: 'L',
+    });
+  });
+
+  it('counts repeated entries from the same user once for uniqueUsers', () => {
+    const result = aggregateFoodFrequency([
+      {
+        date: new Date('2026-04-01T10:00:00Z'),
+        userId: 'u1',
+        foodName: 'Apple',
+        foodGroup: null,
+        itemType: 'generic_food',
+        quantity: 1,
+        unit: 'PIECES',
+      },
+      {
+        date: new Date('2026-04-01T11:00:00Z'),
+        userId: 'u1',
+        foodName: 'Apple',
+        foodGroup: null,
+        itemType: 'generic_food',
+        quantity: 2,
+        unit: 'KG',
+      },
+      {
+        date: new Date('2026-04-01T12:00:00Z'),
+        userId: 'u2',
+        foodName: 'Apple',
+        foodGroup: null,
+        itemType: 'generic_food',
+        quantity: 3,
+        unit: 'PIECES',
+      },
+    ]);
+
+    expect(result).toEqual([
+      {
+        date: new Date('2026-04-01'),
+        foodName: 'Apple',
+        foodGroup: null,
+        itemType: 'generic_food',
+        frequency: 3,
+        uniqueUsers: 2,
+        avgQuantity: 2,
+        predominantUnit: 'PIECES',
+      },
+    ]);
+  });
+});
+
+// ============================================================
+// analytics-utils — mappers and dimensions
+// ============================================================
+
+describe('analytics mappers', () => {
+  it('maps meal-log nutrition rows directly', () => {
+    expect(
+      toAnalyticsNutritionDto({
+        id: 'n1',
+        date: new Date('2026-04-01'),
+        typeOfMeal: 'DINNER',
+        userCount: 5,
+        mealCount: 7,
+        avgCalories: 300,
+        avgProteins: 20,
+        p50Calories: 310,
+      }),
+    ).toMatchObject({
+      id: 'n1',
+      typeOfMeal: 'DINNER',
+      mealCount: 7,
+      avgCalories: 300,
+      avgProteins: 20,
+      p50Calories: 310,
+    });
+  });
+
+  it('maps shopping-list per-100g nutrition fields to the unified shape', () => {
+    expect(
+      toAnalyticsNutritionDto({
+        id: 'n1',
+        date: new Date('2026-04-01'),
+        userCount: 5,
+        itemCount: 9,
+        avgCaloriesPer100g: 120,
+        avgProteinsPer100g: 8,
+        p75CaloriesPer100g: 180,
+      }),
+    ).toMatchObject({
+      mealCount: 9,
+      avgCalories: 120,
+      avgProteins: 8,
+      p75Calories: 180,
+    });
+  });
+
+  it('maps food popularity rows to canonical item fields', () => {
+    expect(
+      toAnalyticsFoodPopularityDto({
+        id: 'p1',
+        date: new Date('2026-04-01'),
+        foodName: 'Apple',
+        foodGroup: 'Fruit',
+        itemType: 'food_product',
+        frequency: 10,
+        uniqueUsers: 6,
+        avgQuantity: 2,
+        predominantUnit: 'PIECES',
+      }),
+    ).toMatchObject({
+      itemName: 'Apple',
+      itemGroup: 'Fruit',
+      foodName: 'Apple',
+      foodGroup: 'Fruit',
+      frequency: 10,
+      uniqueUsers: 6,
+    });
+  });
+});
+
+describe('demographic dimensions', () => {
+  it('keeps the enum object aligned with allowed dimensions', () => {
+    expect(DEMOGRAPHIC_DIMENSIONS).toEqual([
+      'ageGroup',
+      'country',
+      'educationLevel',
+      'gender',
+      'region',
+    ]);
+    expect(DemographicDimensionEnum).toEqual({
+      ageGroup: 'ageGroup',
+      country: 'country',
+      educationLevel: 'educationLevel',
+      gender: 'gender',
+      region: 'region',
+    });
   });
 });
 

@@ -27,8 +27,9 @@ import { AnalyticsBatchStatus } from '@prisma/client';
 import {
   DemographicDimension,
   DemographicDimensionEnum,
-} from '../../common/demographic-dimensions';
-import { parseLimit, parseDate } from '../../common/analytics-utils';
+  parseLimit,
+  parseDate,
+} from '../../common/analytics-utils';
 import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';

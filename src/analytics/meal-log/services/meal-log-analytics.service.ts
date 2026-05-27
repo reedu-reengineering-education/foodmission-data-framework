@@ -2,13 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
-import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
-import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
 import {
+  DemographicDimension,
+  safeAvg,
+  normalizeDimPair,
   toAnalyticsNutritionDto,
   toAnalyticsFoodPopularityDto,
-} from '../../common/analytics-mappers';
+} from '../../common/analytics-utils';
 import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()

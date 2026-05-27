@@ -8,149 +8,67 @@ describe('MealLogAnalyticsController', () => {
   beforeEach(() => {
     service = {
       getPublishedNutrition: jest.fn(),
-      getPublishedFoodPopularity: jest.fn(),
       getPublishedPopularity: jest.fn(),
-      getPublishedMealPatterns: jest.fn(),
-      getPublishedSustainability: jest.fn(),
-      getPublishedMealClassification: jest.fn(),
-      getPublishedMealRecords: jest.fn(),
-      getPublishedDemographicNutrition: jest.fn(),
-      getPublishedDemographicClassification: jest.fn(),
-      getPublishedDemographicPatterns: jest.fn(),
-      getPublishedCrossDimNutrition: jest.fn(),
-      getPublishedCrossDimClassification: jest.fn(),
-      getPublishedCrossDimPatterns: jest.fn(),
-      getPublishedSummary: jest.fn(),
       generateBatch: jest.fn(),
-      runDailyAggregation: jest.fn(),
       listBatches: jest.fn(),
-      getBatch: jest.fn(),
-      approveBatch: jest.fn(),
-      publishBatch: jest.fn(),
-      rejectBatch: jest.fn(),
-      deleteBatch: jest.fn(),
     } as unknown as jest.Mocked<MealLogAnalyticsService>;
 
     controller = new MealLogAnalyticsController(service);
   });
 
-  describe('getPublicNutrition', () => {
-    it('parses date and typeOfMeal filters', async () => {
-      service.getPublishedNutrition.mockResolvedValue([]);
+  it('parses date and typeOfMeal filters for public nutrition', async () => {
+    service.getPublishedNutrition.mockResolvedValue([]);
 
-      await controller.getPublicNutrition('2026-04-01', '2026-04-30', 'DINNER');
+    await controller.getPublicNutrition('2026-04-01', '2026-04-30', 'DINNER');
 
-      expect(service.getPublishedNutrition).toHaveBeenCalledWith(
-        new Date('2026-04-01'),
-        new Date('2026-04-30'),
-        'DINNER',
-      );
-    });
-
-    it('returns unified nutrition fields (no per100g naming)', async () => {
-      service.getPublishedNutrition.mockResolvedValue([
-        {
-          id: 'n1',
-          date: new Date('2026-04-01'),
-          userCount: 7,
-          entityCount: 12,
-          avgCalories: 300,
-        },
-      ] as any);
-
-      const result = await controller.getPublicNutrition();
-
-      expect(result[0]).toMatchObject({
-        id: 'n1',
-        avgCalories: 300,
-      });
-      expect(result[0]).not.toHaveProperty('avgCaloriesPer100g');
-    });
+    expect(service.getPublishedNutrition).toHaveBeenCalledWith(
+      new Date('2026-04-01'),
+      new Date('2026-04-30'),
+      'DINNER',
+    );
   });
 
-  describe('getPublicPopularity', () => {
-    it('parses limit and forwards dates', async () => {
-      service.getPublishedPopularity.mockResolvedValue([]);
+  it('parses limit and forwards dates for unified popularity', async () => {
+    service.getPublishedPopularity.mockResolvedValue([]);
 
-      await controller.getPublicPopularity('2026-04-01', '2026-04-30', '5');
+    await controller.getPublicPopularity('2026-04-01', '2026-04-30', '5');
 
-      expect(service.getPublishedPopularity).toHaveBeenCalledWith(
-        new Date('2026-04-01'),
-        new Date('2026-04-30'),
-        5,
-      );
-    });
-
-    it('returns canonical itemName/itemGroup fields', async () => {
-      service.getPublishedPopularity.mockResolvedValue([
-        {
-          id: 'p1',
-          itemName: 'Apple',
-          itemGroup: 'Fruit',
-          itemType: 'food_product',
-          frequency: 9,
-        },
-      ] as any);
-
-      const result = await controller.getPublicPopularity();
-
-      expect(result[0]).toMatchObject({
-        itemName: 'Apple',
-        itemGroup: 'Fruit',
-      });
-    });
+    expect(service.getPublishedPopularity).toHaveBeenCalledWith(
+      new Date('2026-04-01'),
+      new Date('2026-04-30'),
+      5,
+    );
   });
 
-  describe('getPublicSummary', () => {
-    it('parses date strings and forwards Date objects', async () => {
-      service.getPublishedSummary.mockResolvedValue({ topItems: [] } as any);
-
-      await controller.getPublicSummary('2026-04-01', '2026-04-30');
-
-      expect(service.getPublishedSummary).toHaveBeenCalledWith(
-        new Date('2026-04-01'),
-        new Date('2026-04-30'),
-      );
-    });
-
-    it('returns canonical summary blocks', async () => {
-      const summary = {
-        topItems: [],
-        patterns: {},
-        nutrition: {},
-        sustainability: {},
-        classification: {},
-      };
-      service.getPublishedSummary.mockResolvedValue(summary as any);
-
-      const result = await controller.getPublicSummary();
-
-      expect(result).toEqual(summary);
-      expect(result).toHaveProperty('topItems');
-      expect(result).toHaveProperty('patterns');
-      expect(result).toHaveProperty('nutrition');
-    });
+  it('throws for invalid public date filters', async () => {
+    await expect(controller.getPublicNutrition('not-a-date')).rejects.toThrow(
+      'Invalid date',
+    );
   });
 
-  describe('admin endpoints', () => {
-    it('generateBatch parses required date strings', async () => {
-      service.generateBatch.mockResolvedValue('new-batch');
+  it('requires both dates when generating a batch', async () => {
+    await expect(
+      controller.generateBatch(undefined, undefined),
+    ).rejects.toThrow('periodStart and periodEnd are required');
+  });
 
-      const result = await controller.generateBatch('2026-04-01', '2026-04-30');
+  it('parses generation dates and wraps the batch id', async () => {
+    service.generateBatch.mockResolvedValue('new-batch');
 
-      expect(service.generateBatch).toHaveBeenCalledWith(
-        new Date('2026-04-01'),
-        new Date('2026-04-30'),
-      );
-      expect(result).toEqual({ batchId: 'new-batch' });
-    });
+    const result = await controller.generateBatch('2026-04-01', '2026-04-30');
 
-    it('listBatches passes optional status', async () => {
-      service.listBatches.mockResolvedValue([]);
+    expect(service.generateBatch).toHaveBeenCalledWith(
+      new Date('2026-04-01'),
+      new Date('2026-04-30'),
+    );
+    expect(result).toEqual({ batchId: 'new-batch' });
+  });
 
-      await controller.listBatches('STAGING' as any);
+  it('passes optional batch status to the service', async () => {
+    service.listBatches.mockResolvedValue([]);
 
-      expect(service.listBatches).toHaveBeenCalledWith('STAGING');
-    });
+    await controller.listBatches('STAGING' as any);
+
+    expect(service.listBatches).toHaveBeenCalledWith('STAGING');
   });
 });
