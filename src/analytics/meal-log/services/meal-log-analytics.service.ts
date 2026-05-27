@@ -5,6 +5,10 @@ import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
 import { DemographicDimension } from '../../common/demographic-dimensions';
 import { runBatchGeneration } from '../../common/batch-runner';
 import { safeAvg, normalizeDimPair } from '../../common/analytics-utils';
+import {
+  toAnalyticsNutritionDto,
+  toAnalyticsFoodPopularityDto,
+} from '../../common/analytics-mappers';
 import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()
@@ -145,15 +149,82 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
   // ============================================================
 
   async getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
-    return this.repository.getPublishedNutrition(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedNutrition(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map(toAnalyticsNutritionDto);
   }
 
   async getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
-    return this.repository.getPublishedFoodPopularity(from, to, limit);
+    const rows = await this.repository.getPublishedFoodPopularity(
+      from,
+      to,
+      limit,
+    );
+    return rows.map(toAnalyticsFoodPopularityDto);
+  }
+
+  async getPublishedPopularity(from?: Date, to?: Date, limit = 20) {
+    const rows = await this.repository.getPublishedFoodPopularity(
+      from,
+      to,
+      limit,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      itemName: row.foodName,
+      itemGroup: row.foodGroup,
+      itemType: row.itemType,
+      frequency: row.frequency,
+      uniqueUsers: row.uniqueUsers,
+      avgQuantity: row.avgQuantity,
+      predominantUnit: row.predominantUnit,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      foodName: row.foodName,
+      foodGroup: row.foodGroup,
+    }));
   }
 
   async getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
-    return this.repository.getPublishedMealPatterns(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedMealPatterns(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
+  }
+
+  async getPublishedPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
+    return this.getPublishedMealPatterns(from, to, typeOfMeal);
   }
 
   async getPublishedSustainability(
@@ -161,7 +232,26 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     to?: Date,
     typeOfMeal?: string,
   ) {
-    return this.repository.getPublishedSustainability(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedSustainability(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      avgSustainabilityScore: row.avgSustainabilityScore,
+      avgCarbonFootprint: row.avgCarbonFootprint,
+      nutriScoreDistribution: row.nutriScoreDistribution,
+      ecoScoreDistribution: row.ecoScoreDistribution,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+    }));
   }
 
   async getPublishedMealClassification(
@@ -169,7 +259,32 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     to?: Date,
     typeOfMeal?: string,
   ) {
-    return this.repository.getPublishedMealClassification(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedMealClassification(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedMealRecords(from?: Date, to?: Date, typeOfMeal?: string) {
@@ -182,12 +297,38 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicNutrition(
+    const rows = await this.repository.getPublishedDemographicNutrition(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      entityCount: row.mealCount,
+      avgCalories: row.avgCalories,
+      avgProteins: row.avgProteins,
+      avgFat: row.avgFat,
+      avgCarbs: row.avgCarbs,
+      avgFiber: row.avgFiber,
+      avgSodium: row.avgSodium,
+      avgSugar: row.avgSugar,
+      avgSaturatedFat: row.avgSaturatedFat,
+      p25Calories: row.p25Calories,
+      p50Calories: row.p50Calories,
+      p75Calories: row.p75Calories,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      mealCount: row.mealCount,
+    }));
   }
 
   async getPublishedDemographicClassification(
@@ -196,12 +337,35 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicClassification(
+    const rows = await this.repository.getPublishedDemographicClassification(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedDemographicPatterns(
@@ -210,12 +374,37 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicPatterns(
+    const rows = await this.repository.getPublishedDemographicPatterns(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
   }
 
   async getPublishedCrossDimNutrition(
@@ -226,13 +415,41 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     dim2?: string,
   ) {
     const [d1, d2] = normalizeDimPair(dim1, dim2);
-    return this.repository.getPublishedCrossDimNutrition(
+    const rows = await this.repository.getPublishedCrossDimNutrition(
       from,
       to,
       typeOfMeal,
       d1 as DemographicDimension | undefined,
       d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      entityCount: row.mealCount,
+      avgCalories: row.avgCalories,
+      avgProteins: row.avgProteins,
+      avgFat: row.avgFat,
+      avgCarbs: row.avgCarbs,
+      avgFiber: row.avgFiber,
+      avgSodium: row.avgSodium,
+      avgSugar: row.avgSugar,
+      avgSaturatedFat: row.avgSaturatedFat,
+      p25Calories: row.p25Calories,
+      p50Calories: row.p50Calories,
+      p75Calories: row.p75Calories,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      mealCount: row.mealCount,
+    }));
   }
 
   async getPublishedCrossDimClassification(
@@ -243,13 +460,38 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     dim2?: string,
   ) {
     const [d1, d2] = normalizeDimPair(dim1, dim2);
-    return this.repository.getPublishedCrossDimClassification(
+    const rows = await this.repository.getPublishedCrossDimClassification(
       from,
       to,
       typeOfMeal,
       d1 as DemographicDimension | undefined,
       d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedCrossDimPatterns(
@@ -260,57 +502,93 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
     dim2?: string,
   ) {
     const [d1, d2] = normalizeDimPair(dim1, dim2);
-    return this.repository.getPublishedCrossDimPatterns(
+    const rows = await this.repository.getPublishedCrossDimPatterns(
       from,
       to,
       typeOfMeal,
       d1 as DemographicDimension | undefined,
       d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
   }
 
   async getPublishedSummary(from?: Date, to?: Date) {
     const [nutrition, popularity, patterns, sustainability, classification] =
       await Promise.all([
-        this.repository.getPublishedNutrition(from, to),
-        this.repository.getPublishedFoodPopularity(from, to, 5),
-        this.repository.getPublishedMealPatterns(from, to),
-        this.repository.getPublishedSustainability(from, to),
-        this.repository.getPublishedMealClassification(from, to),
+        this.getPublishedNutrition(from, to),
+        this.getPublishedPopularity(from, to, 5),
+        this.getPublishedPatterns(from, to),
+        this.getPublishedSustainability(from, to),
+        this.getPublishedMealClassification(from, to),
       ]);
 
     return {
       period: { from: from ?? null, to: to ?? null },
+      topItems: popularity.map((f) => ({
+        itemName: f.itemName,
+        itemGroup: f.itemGroup,
+        itemType: f.itemType,
+        frequency: f.frequency,
+        uniqueUsers: f.uniqueUsers,
+      })),
+      patterns: {
+        dataPoints: patterns.length,
+        avgItemsPerEntity:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
+            : null,
+        avgPantryPct:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.pantryPct))
+            : null,
+      },
       nutrition: {
         dataPoints: nutrition.length,
         latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,
         latestAvgProteins: nutrition.at(-1)?.avgProteins ?? null,
         latestAvgFat: nutrition.at(-1)?.avgFat ?? null,
         latestAvgCarbs: nutrition.at(-1)?.avgCarbs ?? null,
-      },
-      topFoods: popularity.map((f) => ({
-        name: f.foodName,
-        frequency: f.frequency,
-        uniqueUsers: f.uniqueUsers,
-      })),
-      mealPatterns: {
-        dataPoints: patterns.length,
-        avgPantryUsagePct:
-          patterns.length > 0
-            ? patterns.reduce((s, p) => s + p.mealsFromPantryPct, 0) /
-              patterns.length
-            : null,
-        avgItemsPerMeal:
-          patterns.length > 0
-            ? patterns.reduce((s, p) => s + p.avgItemsPerMeal, 0) /
-              patterns.length
-            : null,
+        metadata: {
+          valueUnit: 'per_meal',
+          entityUnit: 'meal',
+        },
       },
       sustainability: {
         dataPoints: sustainability.length,
         avgSustainabilityScore: safeAvg(
           sustainability
             .map((s) => s.avgSustainabilityScore)
+            .filter((v): v is number => v !== null),
+        ),
+        avgCarbonFootprint: safeAvg(
+          sustainability
+            .map((s) => s.avgCarbonFootprint)
             .filter((v): v is number => v !== null),
         ),
       },
@@ -323,6 +601,23 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
             .map((c) => c.avgUltraProcessedPct)
             .filter((v): v is number => v !== null),
         ),
+      },
+      // Backward-compatibility fields kept for legacy clients.
+      topFoods: popularity.map((f) => ({
+        name: f.itemName,
+        frequency: f.frequency,
+        uniqueUsers: f.uniqueUsers,
+      })),
+      mealPatterns: {
+        dataPoints: patterns.length,
+        avgPantryUsagePct:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.pantryPct))
+            : null,
+        avgItemsPerMeal:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
+            : null,
       },
     };
   }

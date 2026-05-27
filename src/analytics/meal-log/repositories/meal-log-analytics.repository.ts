@@ -157,6 +157,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         userCount: true,
@@ -184,6 +185,7 @@ export class MealLogAnalyticsRepository {
       orderBy: { frequency: 'desc' },
       take: limit,
       select: {
+        id: true,
         date: true,
         foodName: true,
         foodGroup: true,
@@ -208,6 +210,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         userCount: true,
@@ -235,6 +238,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         userCount: true,
@@ -258,6 +262,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         userCount: true,
@@ -287,6 +292,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: { weeksSinceRegistration: 'asc' },
       select: {
+        id: true,
         weeksSinceRegistration: true,
         typeOfMeal: true,
         totalCalories: true,
@@ -384,6 +390,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dim1Name: true,
@@ -427,6 +434,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dim1Name: true,
@@ -468,6 +476,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dim1Name: true,
@@ -509,6 +518,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dimensionName: true,
@@ -548,6 +558,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dimensionName: true,
@@ -585,6 +596,7 @@ export class MealLogAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         typeOfMeal: true,
         dimensionName: true,

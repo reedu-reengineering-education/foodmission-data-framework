@@ -79,6 +79,29 @@ export class ShoppingListAnalyticsController {
   }
 
   @Public()
+  @Get('public/popularity')
+  @ApiOperation({
+    summary: 'Unified popularity metrics for shopping list analytics',
+    description:
+      'Unified contract endpoint with consistent itemName/itemGroup/itemType fields and metadata.',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiResponse({ status: 200, description: 'Unified popularity rows' })
+  getPublicPopularity(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.analyticsService.getPublishedPopularity(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
+    );
+  }
+
+  @Public()
   @Get('public/category-popularity')
   @ApiOperation({
     summary: 'Most commonly planned food categories',
@@ -144,6 +167,21 @@ export class ShoppingListAnalyticsController {
   }
 
   @Public()
+  @Get('public/patterns')
+  @ApiOperation({
+    summary: 'Unified behavior patterns for shopping list analytics',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
+  @ApiResponse({ status: 200, description: 'Unified pattern aggregates' })
+  getPublicPatterns(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.analyticsService.getPublishedPatterns(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+    );
+  }
+
+  @Public()
   @Get('public/nutrition-profile')
   @ApiOperation({
     summary: 'Average nutritional density of planned shopping items',
@@ -169,6 +207,21 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedNutritionProfile(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+    );
+  }
+
+  @Public()
+  @Get('public/nutrition')
+  @ApiOperation({
+    summary: 'Unified nutrition metrics for shopping list analytics',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
+  @ApiResponse({ status: 200, description: 'Unified nutrition aggregates' })
+  getPublicNutrition(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.analyticsService.getPublishedNutrition(
       parseDate(from, 'from'),
       parseDate(to, 'to'),
     );
@@ -202,6 +255,27 @@ export class ShoppingListAnalyticsController {
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+    );
+  }
+
+  @Public()
+  @Get('public/classification')
+  @ApiOperation({
+    summary: 'Unified classification metrics for shopping list analytics',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Unified classification aggregates',
+  })
+  getPublicClassification(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    return this.analyticsService.getPublishedClassification(
       parseDate(from, 'from'),
       parseDate(to, 'to'),
     );

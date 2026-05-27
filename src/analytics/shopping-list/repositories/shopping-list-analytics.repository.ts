@@ -212,6 +212,7 @@ export class ShoppingListAnalyticsRepository {
       orderBy: { frequency: 'desc' },
       take: limit,
       select: {
+        id: true,
         date: true,
         foodName: true,
         foodGroup: true,
@@ -230,6 +231,7 @@ export class ShoppingListAnalyticsRepository {
       orderBy: { frequency: 'desc' },
       take: limit,
       select: {
+        id: true,
         date: true,
         category: true,
         frequency: true,
@@ -243,6 +245,7 @@ export class ShoppingListAnalyticsRepository {
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         userCount: true,
         totalLists: true,
@@ -259,6 +262,7 @@ export class ShoppingListAnalyticsRepository {
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         userCount: true,
         itemCount: true,
@@ -282,6 +286,7 @@ export class ShoppingListAnalyticsRepository {
       where: { batch: this.publishedBatchFilter(from, to) },
       orderBy: { date: 'asc' },
       select: {
+        id: true,
         date: true,
         userCount: true,
         itemCount: true,
@@ -302,6 +307,7 @@ export class ShoppingListAnalyticsRepository {
       orderBy: { frequency: 'desc' },
       take: limit,
       select: {
+        id: true,
         date: true,
         foodGroup: true,
         frequency: true,
@@ -324,6 +330,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         dimensionName: true,
         dimensionValue: true,
@@ -349,6 +356,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         dimensionName: true,
         dimensionValue: true,
@@ -380,6 +388,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         dim1Name: true,
         dim1Value: true,
@@ -409,6 +418,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         dim1Name: true,
         dim1Value: true,
@@ -440,6 +450,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dimensionName: 'asc' }],
       select: {
+        id: true,
         date: true,
         dimensionName: true,
         dimensionValue: true,
@@ -470,6 +481,7 @@ export class ShoppingListAnalyticsRepository {
       },
       orderBy: [{ date: 'asc' }, { dim1Name: 'asc' }, { dim2Name: 'asc' }],
       select: {
+        id: true,
         date: true,
         dim1Name: true,
         dim1Value: true,

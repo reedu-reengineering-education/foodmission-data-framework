@@ -102,6 +102,29 @@ export class MealLogAnalyticsController {
   }
 
   @Public()
+  @Get('public/popularity')
+  @ApiOperation({
+    summary: 'Unified popularity metrics for meal log analytics',
+    description:
+      'Unified contract endpoint with consistent itemName/itemGroup/itemType fields and metadata.',
+  })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiResponse({ status: 200, description: 'Unified popularity rows' })
+  getPublicPopularity(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.analyticsService.getPublishedPopularity(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
+    );
+  }
+
+  @Public()
   @Get('public/patterns')
   @ApiOperation({
     summary: 'Meal behavior patterns (timing, pantry usage, items per meal)',
