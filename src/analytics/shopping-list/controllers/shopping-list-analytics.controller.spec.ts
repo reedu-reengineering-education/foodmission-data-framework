@@ -16,10 +16,10 @@ describe('ShoppingListAnalyticsController', () => {
     controller = new ShoppingListAnalyticsController(service);
   });
 
-  it('parses date strings and applies the default popularity limit', () => {
+  it('parses date strings and applies the default popularity limit', async () => {
     service.getPublishedItemPopularity.mockResolvedValue([]);
 
-    controller.getPublicItemPopularity('2026-04-01', '2026-04-30');
+    await controller.getPublicItemPopularity('2026-04-01', '2026-04-30');
 
     expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(
       new Date('2026-04-01'),
@@ -28,10 +28,10 @@ describe('ShoppingListAnalyticsController', () => {
     );
   });
 
-  it('parses custom popularity limits', () => {
+  it('parses custom popularity limits', async () => {
     service.getPublishedItemPopularity.mockResolvedValue([]);
 
-    controller.getPublicItemPopularity(undefined, undefined, '5');
+    await controller.getPublicItemPopularity(undefined, undefined, '5');
 
     expect(service.getPublishedItemPopularity).toHaveBeenCalledWith(
       undefined,
@@ -46,10 +46,10 @@ describe('ShoppingListAnalyticsController', () => {
     );
   });
 
-  it('forwards optional demographic dimension filters', () => {
+  it('forwards optional demographic dimension filters', async () => {
     service.getPublishedDemographicPatterns.mockResolvedValue([]);
 
-    controller.getPublicDemographicPatterns(
+    await controller.getPublicDemographicPatterns(
       '2026-04-01',
       '2026-04-30',
       'gender',
