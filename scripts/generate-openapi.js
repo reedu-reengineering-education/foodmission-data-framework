@@ -14,6 +14,11 @@ async function generateOpenApiSpec() {
   try {
     console.log('🚀 Starting OpenAPI spec generation...');
 
+    const apiVersion =
+      process.env.API_VERSION || process.env.npm_package_version || '1.0.0';
+    const apiRelease =
+      process.env.API_RELEASE || process.env.OTEL_SERVICE_VERSION || apiVersion;
+
     // Import the AppModule (using dynamic import for ES modules)
     const { AppModule } = await import('../dist/src/app.module.js');
 
@@ -23,10 +28,13 @@ async function generateOpenApiSpec() {
 
     // Configure Swagger/OpenAPI (same as main.ts)
     const config = new DocumentBuilder()
-      .setTitle('FOODMISSION Data Framework API')
+      .setTitle('Foodmission Data Framework API')
       .setDescription(
         `
         A comprehensive backend system for managing food-related data and operations.
+        
+        **API Version:** ${apiVersion}
+        **Release:** ${apiRelease}
         
         ## Features
         - **Authentication**: Secure JWT-based authentication via Keycloak
@@ -51,7 +59,7 @@ async function generateOpenApiSpec() {
         API requests are rate-limited to prevent abuse. Check response headers for rate limit information.
       `,
       )
-      .setVersion('1.0.0')
+      .setVersion(apiVersion)
       .setContact(
         'FOODMISSION Team',
         'https://github.com/reedu-reengineering-education/foodmission-data-framework',
@@ -75,7 +83,11 @@ async function generateOpenApiSpec() {
       )
       .addTag(
         'food-products',
-        'Food product catalog with OpenFoodFacts integration for nutritional data',
+        'Branded/barcoded food products with OpenFoodFacts nutritional metadata',
+      )
+      .addTag(
+        'generic-foods',
+        'Generic food entries (e.g., "apple", "rice") used when no branded product is needed',
       )
       .addTag(
         'users',
@@ -85,9 +97,44 @@ async function generateOpenApiSpec() {
         'health',
         'Application health checks, readiness probes, and monitoring metrics',
       )
-      .addServer('http://localhost:3000/', 'Development server')
-      .addServer('https://api.foodmission.dev/', 'Production server')
-      .addServer('https://staging-api.foodmission.dev/', 'Staging server')
+      .addTag('missions', 'Mission management - Create and manage user missions')
+      .addTag('challenges', 'Challenge management - Create and manage user challenges')
+      .addTag('auth-admin', 'Admin-only authentication and user administration')
+      .addTag('user-groups', 'User group creation, membership, and invitations')
+      .addTag('shopping-lists', 'Shopping list lifecycle management')
+      .addTag(
+        'shopping-list-items',
+        'Shopping list item operations and item status updates',
+      )
+      .addTag(
+        'pantry',
+        'Pantry tracking for available ingredients and household stock',
+      )
+      .addTag('meals', 'Meal management and meal composition')
+      .addTag('meal-items', 'Meal item operations for foods within a meal')
+      .addTag('meal-logs', 'Meal logging and nutrition tracking entries')
+      .addTag('recipes', 'Recipe management and recommendation endpoints')
+      .addTag(
+        'food-waste',
+        'Food waste registration, analytics, and reduction insights',
+      )
+      .addTag(
+        'knowledge',
+        'Knowledge base content, quizzes, and progress tracking',
+      )
+      .addTag(
+        'analytics-meal-log',
+        'Anonymized meal-log analytics, reports, and batch workflows',
+      )
+      .addTag('catalog', 'Reference datasets and dropdown options')
+      .addTag('monitoring', 'Prometheus metrics and operational observability')
+      .addTag(
+        'performance',
+        'Performance diagnostics for cache and database behavior',
+      )
+      .addTag('webhooks', 'Inbound webhook handlers and event processing')
+      .addServer('http://localhost:3000', 'Local development server')
+      .addServer('https://api.foodmission.eu', 'Production server')
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {

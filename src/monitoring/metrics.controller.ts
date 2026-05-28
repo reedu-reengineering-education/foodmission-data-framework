@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { MetricsService } from './metrics.service';
 
-@ApiTags('Monitoring')
+@ApiTags('monitoring')
 @Controller('metrics')
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}

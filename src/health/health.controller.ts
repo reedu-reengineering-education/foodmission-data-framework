@@ -11,7 +11,7 @@ import { KeycloakHealthIndicator } from './keycloak.health';
 import { RedisHealthIndicator } from './redis.health';
 import { HealthExceptionFilter } from './health-exception.filter';
 
-@ApiTags('Health')
+@ApiTags('health')
 @Controller('health')
 @UseFilters(HealthExceptionFilter)
 export class HealthController {

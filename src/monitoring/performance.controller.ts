@@ -4,7 +4,7 @@ import { PerformanceService } from './performance.service';
 import { CacheService } from '../cache/cache.service';
 import { Public } from 'nest-keycloak-connect';
 
-@ApiTags('Performance')
+@ApiTags('performance')
 @Controller('performance')
 export class PerformanceController {
   constructor(

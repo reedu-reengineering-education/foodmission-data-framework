@@ -26,7 +26,7 @@ import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 
-@ApiTags('Analytics - Meal Log')
+@ApiTags('analytics-meal-log')
 @Controller('analytics/meal-log')
 export class MealLogAnalyticsController {
   constructor(private readonly analyticsService: MealLogAnalyticsService) {}
