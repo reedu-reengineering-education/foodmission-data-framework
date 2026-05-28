@@ -562,7 +562,8 @@ describe('ShoppingListAnalyticsService', () => {
           crossDimMinUsers: 20,
         },
       });
-      expect(result.patterns.avgItemsPerEntity).toBe(5);
+      expect(result.patterns.avgItemsPerList).toBe(5);
+      expect(result.patterns).not.toHaveProperty('avgItemsPerEntity');
       expect(result.patterns.avgFoodProductPct).toBe(60);
       expect(result.patterns).not.toHaveProperty('avgPantryPct');
       expect(result).not.toHaveProperty('nutrition');
@@ -581,7 +582,8 @@ describe('ShoppingListAnalyticsService', () => {
       const result = await service.getPublishedSummary();
 
       expect(result.topItems).toHaveLength(0);
-      expect(result.patterns.avgItemsPerEntity).toBeNull();
+      expect(result.patterns.avgItemsPerList).toBeNull();
+      expect(result.patterns).not.toHaveProperty('avgItemsPerEntity');
       expect(result).not.toHaveProperty('nutrition');
       expect(result.sustainability.avgCarbonFootprint).toBeNull();
     });

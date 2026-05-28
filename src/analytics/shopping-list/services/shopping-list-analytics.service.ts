@@ -160,8 +160,8 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       id: row.id,
       date: row.date,
       userCount: row.userCount,
-      totalEntities: row.totalLists,
-      avgItemsPerEntity: row.avgItemsPerList,
+      totalLists: row.totalLists,
+      avgItemsPerList: row.avgItemsPerList,
       avgListsPerUser: row.avgListsPerUser,
       foodProductPct: row.foodProductPct,
       genericFoodPct: row.genericFoodPct,
@@ -247,18 +247,15 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       dimensionName: row.dimensionName,
       dimensionValue: row.dimensionValue,
       userCount: row.userCount,
-      totalEntities: row.totalLists,
-      avgItemsPerEntity: row.avgItemsPerList,
+      totalLists: row.totalLists,
+      avgItemsPerList: row.avgItemsPerList,
+      avgListsPerUser: row.avgListsPerUser,
       foodProductPct: row.foodProductPct,
       genericFoodPct: row.genericFoodPct,
       metadata: {
         valueUnit: 'percentage',
         entityUnit: 'list',
       },
-      // Legacy fields kept.
-      totalLists: row.totalLists,
-      avgItemsPerList: row.avgItemsPerList,
-      avgListsPerUser: row.avgListsPerUser,
     }));
   }
 
@@ -283,18 +280,15 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       dim2Name: row.dim2Name,
       dim2Value: row.dim2Value,
       userCount: row.userCount,
-      totalEntities: row.totalLists,
-      avgItemsPerEntity: row.avgItemsPerList,
+      totalLists: row.totalLists,
+      avgItemsPerList: row.avgItemsPerList,
+      avgListsPerUser: row.avgListsPerUser,
       foodProductPct: row.foodProductPct,
       genericFoodPct: row.genericFoodPct,
       metadata: {
         valueUnit: 'percentage',
         entityUnit: 'list',
       },
-      // Legacy fields kept.
-      totalLists: row.totalLists,
-      avgItemsPerList: row.avgItemsPerList,
-      avgListsPerUser: row.avgListsPerUser,
     }));
   }
 
@@ -411,9 +405,9 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       })),
       patterns: {
         dataPoints: patterns.length,
-        avgItemsPerEntity:
+        avgItemsPerList:
           patterns.length > 0
-            ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
+            ? safeAvg(patterns.map((p) => p.avgItemsPerList))
             : null,
         avgFoodProductPct:
           patterns.length > 0
