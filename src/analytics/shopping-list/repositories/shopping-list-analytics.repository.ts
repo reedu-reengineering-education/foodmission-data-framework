@@ -6,6 +6,7 @@ import {
   AnalyticsBatchStatus,
 } from '@prisma/client';
 import { DemographicDimension } from '../../common/analytics-utils';
+import { buildStatusUpdateFields } from '../../common/batch-lifecycle';
 
 @Injectable()
 export class ShoppingListAnalyticsRepository {
@@ -50,16 +51,16 @@ export class ShoppingListAnalyticsRepository {
     userId?: string,
     reason?: string,
   ): Promise<ShoppingListAnalyticsBatch> {
-    const data: Prisma.ShoppingListAnalyticsBatchUpdateInput = { status };
-
-    if (status === AnalyticsBatchStatus.PUBLISHED) {
-      data.publishedAt = new Date();
-      data.publishedBy = userId;
-    } else if (status === AnalyticsBatchStatus.REJECTED) {
-      data.rejectedAt = new Date();
-      data.rejectedBy = userId;
-      data.rejectionReason = reason;
-    }
+    const data: Prisma.ShoppingListAnalyticsBatchUpdateInput = {
+      status,
+      ...buildStatusUpdateFields(
+        status,
+        AnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.REJECTED,
+        userId,
+        reason,
+      ),
+    };
 
     return this.prisma.shoppingListAnalyticsBatch.update({
       where: { id },

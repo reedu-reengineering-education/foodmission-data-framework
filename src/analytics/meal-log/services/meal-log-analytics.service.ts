@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
-import { runBatchGeneration } from '../../common/batch-runner';
+import { runBatchGeneration, runBatchInsertSteps } from '../../common/batch-runner';
 import {
   DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
@@ -62,84 +62,121 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
         return batch.id;
       },
       async (batchId, result) => {
-        if (result.dailyNutrition.length > 0) {
-          await this.repository.insertDailyNutrition(
-            result.dailyNutrition.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.foodPopularity.length > 0) {
-          await this.repository.insertFoodPopularity(
-            result.foodPopularity.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.mealPatterns.length > 0) {
-          await this.repository.insertMealPatterns(
-            result.mealPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.sustainability.length > 0) {
-          await this.repository.insertSustainability(
-            result.sustainability.map((r) => ({
-              ...r,
-              batchId,
-              nutriScoreDistribution:
-                r.nutriScoreDistribution ?? Prisma.JsonNull,
-              ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.mealClassification.length > 0) {
-          await this.repository.insertMealClassification(
-            result.mealClassification.map((r) => ({
-              ...r,
-              batchId,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.mealRecords.length > 0) {
-          await this.repository.insertMealRecords(
-            result.mealRecords.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.demographicNutrition.length > 0) {
-          await this.repository.insertDemographicNutrition(
-            result.demographicNutrition.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.demographicClassification.length > 0) {
-          await this.repository.insertDemographicClassification(
-            result.demographicClassification.map((r) => ({
-              ...r,
-              batchId,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.demographicPatterns.length > 0) {
-          await this.repository.insertDemographicPatterns(
-            result.demographicPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.crossDimNutrition.length > 0) {
-          await this.repository.insertCrossDimNutrition(
-            result.crossDimNutrition.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.crossDimClassification.length > 0) {
-          await this.repository.insertCrossDimClassification(
-            result.crossDimClassification.map((r) => ({
-              ...r,
-              batchId,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.crossDimPatterns.length > 0) {
-          await this.repository.insertCrossDimPatterns(
-            result.crossDimPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
+        await runBatchInsertSteps([
+          {
+            name: 'dailyNutrition',
+            shouldRun: result.dailyNutrition.length > 0,
+            run: () =>
+              this.repository.insertDailyNutrition(
+                result.dailyNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'foodPopularity',
+            shouldRun: result.foodPopularity.length > 0,
+            run: () =>
+              this.repository.insertFoodPopularity(
+                result.foodPopularity.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'mealPatterns',
+            shouldRun: result.mealPatterns.length > 0,
+            run: () =>
+              this.repository.insertMealPatterns(
+                result.mealPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'sustainability',
+            shouldRun: result.sustainability.length > 0,
+            run: () =>
+              this.repository.insertSustainability(
+                result.sustainability.map((r) => ({
+                  ...r,
+                  batchId,
+                  nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+                  ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'mealClassification',
+            shouldRun: result.mealClassification.length > 0,
+            run: () =>
+              this.repository.insertMealClassification(
+                result.mealClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'mealRecords',
+            shouldRun: result.mealRecords.length > 0,
+            run: () =>
+              this.repository.insertMealRecords(
+                result.mealRecords.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicNutrition',
+            shouldRun: result.demographicNutrition.length > 0,
+            run: () =>
+              this.repository.insertDemographicNutrition(
+                result.demographicNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicClassification',
+            shouldRun: result.demographicClassification.length > 0,
+            run: () =>
+              this.repository.insertDemographicClassification(
+                result.demographicClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'demographicPatterns',
+            shouldRun: result.demographicPatterns.length > 0,
+            run: () =>
+              this.repository.insertDemographicPatterns(
+                result.demographicPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'crossDimNutrition',
+            shouldRun: result.crossDimNutrition.length > 0,
+            run: () =>
+              this.repository.insertCrossDimNutrition(
+                result.crossDimNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'crossDimClassification',
+            shouldRun: result.crossDimClassification.length > 0,
+            run: () =>
+              this.repository.insertCrossDimClassification(
+                result.crossDimClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'crossDimPatterns',
+            shouldRun: result.crossDimPatterns.length > 0,
+            run: () =>
+              this.repository.insertCrossDimPatterns(
+                result.crossDimPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+        ]);
         this.logger.log(
           `Batch ${batchId}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
         );

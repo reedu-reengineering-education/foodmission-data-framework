@@ -3,7 +3,6 @@ import { PrismaService } from '../../../database/prisma.service';
 import { TypeOfMeal } from '@prisma/client';
 import {
   DEMOGRAPHIC_DIMENSIONS,
-  DemographicDimension,
   K_ANONYMITY_THRESHOLD,
   K_ANONYMITY_CROSS_DIM_THRESHOLD,
   safeAvg,
@@ -13,8 +12,10 @@ import {
   distribution,
   FoodFrequencyRow,
   AGE_GROUP_SQL,
-  applyKAnonymity,
   aggregateFoodFrequency,
+  makeApplyK,
+  groupBy,
+  buildCrossDimPairs,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -358,7 +359,7 @@ export class MealLogAnalyticsAggregator {
     const meals = this.buildMealAggregates(rawData);
     this.logger.log(`Built ${meals.length} meal aggregates`);
 
-    let suppressedGroups = 0;
+    const suppressedGroups = { value: 0 };
 
     const dailyNutrition = this.aggregateDailyNutrition(meals);
     const foodPopularity = this.aggregateFoodPopularity(meals);
@@ -375,15 +376,7 @@ export class MealLogAnalyticsAggregator {
     const crossDimPatterns = this.aggregateCrossDimPatterns(meals);
 
     // Apply k-anonymity: suppress groups with < K unique users
-    const applyK = <T extends { userCount?: number; uniqueUsers?: number }>(
-      rows: T[],
-      field: 'userCount' | 'uniqueUsers' = 'userCount',
-      threshold = K_ANONYMITY_THRESHOLD,
-    ): T[] => {
-      const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
-      suppressedGroups += suppressed;
-      return filtered;
-    };
+    const applyK = makeApplyK(suppressedGroups);
 
     const filteredNutrition = applyK(dailyNutrition);
     const filteredPopularity = applyK(foodPopularity, 'uniqueUsers');
@@ -411,7 +404,7 @@ export class MealLogAnalyticsAggregator {
       filteredCrossDimPatterns.length;
 
     this.logger.log(
-      `Aggregation done: ${totalRecords} records, ${suppressedGroups} suppressed (k<${K_ANONYMITY_THRESHOLD} single-dim / k<${K_ANONYMITY_CROSS_DIM_THRESHOLD} cross-dim)`,
+      `Aggregation done: ${totalRecords} records, ${suppressedGroups.value} suppressed (k<${K_ANONYMITY_THRESHOLD} single-dim / k<${K_ANONYMITY_CROSS_DIM_THRESHOLD} cross-dim)`,
     );
 
     return {
@@ -428,7 +421,7 @@ export class MealLogAnalyticsAggregator {
       crossDimClassification: filteredCrossDimClassification,
       crossDimPatterns: filteredCrossDimPatterns,
       totalRecords,
-      suppressedGroups,
+      suppressedGroups: suppressedGroups.value,
     };
   }
 
@@ -614,7 +607,7 @@ export class MealLogAnalyticsAggregator {
   // ============================================================
 
   private aggregateDailyNutrition(meals: MealAggregate[]): DailyNutritionRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -660,7 +653,7 @@ export class MealLogAnalyticsAggregator {
   }
 
   private aggregateMealPatterns(meals: MealAggregate[]): MealPatternsRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -693,7 +686,7 @@ export class MealLogAnalyticsAggregator {
   }
 
   private aggregateSustainability(meals: MealAggregate[]): SustainabilityRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -743,7 +736,7 @@ export class MealLogAnalyticsAggregator {
   private aggregateMealClassification(
     meals: MealAggregate[],
   ): MealClassificationRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -838,7 +831,7 @@ export class MealLogAnalyticsAggregator {
     const rows: DemographicNutritionRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -880,7 +873,7 @@ export class MealLogAnalyticsAggregator {
     const rows: DemographicClassificationRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -930,7 +923,7 @@ export class MealLogAnalyticsAggregator {
     const rows: DemographicPatternsRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -972,31 +965,13 @@ export class MealLogAnalyticsAggregator {
   // Cross-dimensional breakdown aggregators (K=20)
   // ============================================================
 
-  /**
-   * Returns all 10 unique sorted pairs from the 5 demographic dimensions.
-   * Pair is [dim1, dim2] where dim1 < dim2 alphabetically.
-   */
-  private buildCrossDimPairs(): [DemographicDimension, DemographicDimension][] {
-    const pairs: [DemographicDimension, DemographicDimension][] = [];
-    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
-      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
-        const a = DEMOGRAPHIC_DIMENSIONS[i];
-        const b = DEMOGRAPHIC_DIMENSIONS[j];
-        // Enforce alphabetical order for dim1Name < dim2Name
-        const [d1, d2] = a < b ? [a, b] : [b, a];
-        pairs.push([d1, d2]);
-      }
-    }
-    return pairs;
-  }
-
   private aggregateCrossDimNutrition(
     meals: MealAggregate[],
   ): CrossDimNutritionRow[] {
     const rows: CrossDimNutritionRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1040,8 +1015,8 @@ export class MealLogAnalyticsAggregator {
   ): CrossDimClassificationRow[] {
     const rows: CrossDimClassificationRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1093,8 +1068,8 @@ export class MealLogAnalyticsAggregator {
   ): CrossDimPatternsRow[] {
     const rows: CrossDimPatternsRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1135,14 +1110,4 @@ export class MealLogAnalyticsAggregator {
     return rows;
   }
 
-  private groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
-    const map = new Map<string, T[]>();
-    for (const item of items) {
-      const key = keyFn(item);
-      const group = map.get(key) ?? [];
-      group.push(item);
-      map.set(key, group);
-    }
-    return map;
-  }
 }

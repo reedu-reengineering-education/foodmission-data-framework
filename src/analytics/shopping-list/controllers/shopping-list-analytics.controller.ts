@@ -1,45 +1,32 @@
 import {
-  BadRequestException,
   Controller,
   Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
   Query,
-  Body,
-  ParseUUIDPipe,
-  ParseEnumPipe,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiQuery,
-  ApiParam,
-  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
-import { AnalyticsBatchStatus } from '@prisma/client';
+import { ShoppingListAnalyticsBatch } from '@prisma/client';
 import {
   DemographicDimension,
-  DemographicDimensionEnum,
   parseLimit,
   parseDate,
 } from '../../common/analytics-utils';
-import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
-import { Public, Roles } from 'nest-keycloak-connect';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
+import { Public } from 'nest-keycloak-connect';
+import { BaseAnalyticsAdminController } from '../../common/base-analytics-admin.controller';
+import { DimQuery } from '../../common/decorators/dim-query.decorator';
+import { DateRangeQuery } from '../../common/decorators/date-range-query.decorator';
 
 @ApiTags('Analytics - Shopping List')
 @Controller('analytics/shopping-list')
-export class ShoppingListAnalyticsController {
-  constructor(
-    private readonly analyticsService: ShoppingListAnalyticsService,
-  ) {}
+export class ShoppingListAnalyticsController extends BaseAnalyticsAdminController<ShoppingListAnalyticsBatch> {
+  constructor(protected readonly analyticsService: ShoppingListAnalyticsService) {
+    super();
+  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -53,18 +40,7 @@ export class ShoppingListAnalyticsController {
       'Items ranked by frequency of addition to shopping lists. ' +
       'Only items added by ≥5 unique users are shown (k-anonymity).',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Item popularity rankings' })
   getPublicItemPopularity(
@@ -86,8 +62,7 @@ export class ShoppingListAnalyticsController {
     description:
       'Unified contract endpoint with consistent itemName/itemGroup/itemType fields and metadata.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Unified popularity rows' })
   getPublicPopularity(
@@ -110,18 +85,7 @@ export class ShoppingListAnalyticsController {
       'Food categories (e.g. "Dairy", "Vegetables") ranked by how often items from them appear ' +
       'in shopping lists. Only categories added by ≥5 unique users are shown (k-anonymity).',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Category popularity rankings' })
   getPublicCategoryPopularity(
@@ -144,18 +108,7 @@ export class ShoppingListAnalyticsController {
       'Daily aggregates of list structure: average items per list, lists per user, ' +
       'and split between food-product vs. generic-food items. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiResponse({ status: 200, description: 'List pattern aggregates' })
   getPublicListPatterns(
     @Query('from') from?: string,
@@ -172,8 +125,7 @@ export class ShoppingListAnalyticsController {
   @ApiOperation({
     summary: 'Unified behavior patterns for shopping list analytics',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiResponse({ status: 200, description: 'Unified pattern aggregates' })
   getPublicPatterns(@Query('from') from?: string, @Query('to') to?: string) {
     return this.analyticsService.getPublishedPatterns(
@@ -192,18 +144,7 @@ export class ShoppingListAnalyticsController {
       'Applies to food-product items only (scores unavailable for generic foods). ' +
       'k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiResponse({ status: 200, description: 'Sustainability aggregates' })
   getPublicSustainability(
     @Query('from') from?: string,
@@ -220,8 +161,7 @@ export class ShoppingListAnalyticsController {
   @ApiOperation({
     summary: 'Unified classification metrics for shopping list analytics',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiResponse({
     status: 200,
     description: 'Unified classification aggregates',
@@ -244,18 +184,7 @@ export class ShoppingListAnalyticsController {
       'Which food groups (e.g. "Potatoes and tubers", "Meat") dominate shopping lists, ' +
       'including average quantities and predominant units. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Food group distribution' })
   getPublicFoodGroups(
@@ -278,18 +207,7 @@ export class ShoppingListAnalyticsController {
       'List behaviour patterns (items/list, lists/user, item type split) segmented by one demographic dimension. ' +
       'Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'dimension',
     required: false,
@@ -303,10 +221,7 @@ export class ShoppingListAnalyticsController {
   getPublicDemographicPatterns(
     @Query('from') from?: string,
     @Query('to') to?: string,
-    @Query(
-      'dimension',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dimension')
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
@@ -326,18 +241,7 @@ export class ShoppingListAnalyticsController {
       '(e.g. ageGroup=25_34 AND gender=FEMALE). dim1Name < dim2Name alphabetically. ' +
       'Stricter k-anonymity (k≥20) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'dim1',
     required: false,
@@ -357,15 +261,9 @@ export class ShoppingListAnalyticsController {
   getPublicCrossDimPatterns(
     @Query('from') from?: string,
     @Query('to') to?: string,
-    @Query(
-      'dim1',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dim1')
     dim1?: DemographicDimension,
-    @Query(
-      'dim2',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dim2')
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
@@ -381,18 +279,7 @@ export class ShoppingListAnalyticsController {
   @ApiOperation({
     summary: 'High-level summary across all shopping list analytics dimensions',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiResponse({ status: 200, description: 'Summary across all dimensions' })
   async getPublicSummary(
     @Query('from') from?: string,
@@ -412,18 +299,7 @@ export class ShoppingListAnalyticsController {
       'Vegetarian/vegan/ultra-processed/NOVA breakdown of food_product items segmented by one ' +
       'demographic dimension. Each row has exactly one non-null dimension field. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    example: '2026-01-01',
-  })
-  @ApiQuery({
-    name: 'to',
-    required: false,
-    type: String,
-    example: '2026-02-25',
-  })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'dimension',
     required: false,
@@ -437,10 +313,7 @@ export class ShoppingListAnalyticsController {
   getPublicDemographicClassification(
     @Query('from') from?: string,
     @Query('to') to?: string,
-    @Query(
-      'dimension',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dimension')
     dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
@@ -490,15 +363,9 @@ export class ShoppingListAnalyticsController {
   getPublicCrossDimClassification(
     @Query('from') from?: string,
     @Query('to') to?: string,
-    @Query(
-      'dim1',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dim1')
     dim1?: DemographicDimension,
-    @Query(
-      'dim2',
-      new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-    )
+    @DimQuery('dim2')
     dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
@@ -509,143 +376,4 @@ export class ShoppingListAnalyticsController {
     );
   }
 
-  // ============================================================
-  // Admin Endpoints — requires auth + admin role
-  // ============================================================
-
-  @Post('batches/generate')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({
-    summary: 'Manually trigger shopping list analytics aggregation',
-  })
-  @ApiQuery({
-    name: 'periodStart',
-    required: true,
-    type: String,
-    example: '2026-02-18',
-  })
-  @ApiQuery({
-    name: 'periodEnd',
-    required: true,
-    type: String,
-    example: '2026-02-25',
-  })
-  @ApiResponse({ status: 201, description: 'Batch ID' })
-  async generateBatch(
-    @Query('periodStart') periodStart?: string,
-    @Query('periodEnd') periodEnd?: string,
-  ) {
-    if (!periodStart || !periodEnd) {
-      throw new BadRequestException('periodStart and periodEnd are required');
-    }
-    const batchId = await this.analyticsService.generateBatch(
-      parseDate(periodStart, 'periodStart')!,
-      parseDate(periodEnd, 'periodEnd')!,
-    );
-    return { batchId };
-  }
-
-  @Post('batches/run-daily')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({
-    summary: 'Manually trigger the daily aggregation job (yesterday)',
-  })
-  @ApiResponse({ status: 201, description: 'Batch ID for yesterday' })
-  async runDaily() {
-    const batchId = await this.analyticsService.runDailyAggregation();
-    return { batchId };
-  }
-
-  @Get('batches')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'List all shopping list analytics batches' })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: AnalyticsBatchStatus,
-  })
-  @ApiResponse({ status: 200, description: 'List of batches' })
-  async listBatches(
-    @Query(
-      'status',
-      new ParseEnumPipe(AnalyticsBatchStatus, { optional: true }),
-    )
-    status?: AnalyticsBatchStatus,
-  ) {
-    return this.analyticsService.listBatches(status);
-  }
-
-  @Get('batches/:id')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({
-    summary: 'Get batch details with all aggregated data for review',
-  })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch with aggregated data' })
-  async getBatch(@Param('id', ParseUUIDPipe) id: string) {
-    return this.analyticsService.getBatch(id);
-  }
-
-  @Patch('batches/:id/approve')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Approve a staging batch for publication' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch approved' })
-  async approveBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-  ) {
-    return this.analyticsService.approveBatch(id, adminUserId);
-  }
-
-  @Patch('batches/:id/publish')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Publish an approved batch (makes data public)' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch published' })
-  async publishBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-  ) {
-    return this.analyticsService.publishBatch(id, adminUserId);
-  }
-
-  @Patch('batches/:id/reject')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Reject a staging batch' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch rejected' })
-  async rejectBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-    @Body('reason') reason: string,
-  ) {
-    return this.analyticsService.rejectBatch(id, adminUserId, reason);
-  }
-
-  @Delete('batches/:id')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a staging or rejected batch' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 204, description: 'Batch deleted' })
-  async deleteBatch(@Param('id', ParseUUIDPipe) id: string) {
-    await this.analyticsService.deleteBatch(id);
-  }
 }

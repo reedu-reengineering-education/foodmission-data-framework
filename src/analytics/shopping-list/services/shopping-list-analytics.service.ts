@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
 import { Prisma, ShoppingListAnalyticsBatch } from '@prisma/client';
-import { runBatchGeneration } from '../../common/batch-runner';
+import { runBatchGeneration, runBatchInsertSteps } from '../../common/batch-runner';
 import {
   DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
@@ -55,66 +55,94 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
         return batch.id;
       },
       async (batchId, result) => {
-        if (result.itemPopularity.length > 0) {
-          await this.repository.insertItemPopularity(
-            result.itemPopularity.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.categoryPopularity.length > 0) {
-          await this.repository.insertCategoryPopularity(
-            result.categoryPopularity.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.listPatterns.length > 0) {
-          await this.repository.insertListPatterns(
-            result.listPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.sustainability.length > 0) {
-          await this.repository.insertSustainability(
-            result.sustainability.map((r) => ({
-              ...r,
-              batchId,
-              nutriScoreDistribution:
-                r.nutriScoreDistribution ?? Prisma.JsonNull,
-              ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.foodGroups.length > 0) {
-          await this.repository.insertFoodGroups(
-            result.foodGroups.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.demographicPatterns.length > 0) {
-          await this.repository.insertDemographicPatterns(
-            result.demographicPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.demographicClassification.length > 0) {
-          await this.repository.insertDemographicClassification(
-            result.demographicClassification.map((r) => ({
-              ...r,
-              batchId,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
-        if (result.crossDimPatterns.length > 0) {
-          await this.repository.insertCrossDimPatterns(
-            result.crossDimPatterns.map((r) => ({ ...r, batchId })),
-          );
-        }
-        if (result.crossDimClassification.length > 0) {
-          await this.repository.insertCrossDimClassification(
-            result.crossDimClassification.map((r) => ({
-              ...r,
-              batchId,
-              novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-            })),
-          );
-        }
+        await runBatchInsertSteps([
+          {
+            name: 'itemPopularity',
+            shouldRun: result.itemPopularity.length > 0,
+            run: () =>
+              this.repository.insertItemPopularity(
+                result.itemPopularity.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'categoryPopularity',
+            shouldRun: result.categoryPopularity.length > 0,
+            run: () =>
+              this.repository.insertCategoryPopularity(
+                result.categoryPopularity.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'listPatterns',
+            shouldRun: result.listPatterns.length > 0,
+            run: () =>
+              this.repository.insertListPatterns(
+                result.listPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'sustainability',
+            shouldRun: result.sustainability.length > 0,
+            run: () =>
+              this.repository.insertSustainability(
+                result.sustainability.map((r) => ({
+                  ...r,
+                  batchId,
+                  nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+                  ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'foodGroups',
+            shouldRun: result.foodGroups.length > 0,
+            run: () =>
+              this.repository.insertFoodGroups(
+                result.foodGroups.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicPatterns',
+            shouldRun: result.demographicPatterns.length > 0,
+            run: () =>
+              this.repository.insertDemographicPatterns(
+                result.demographicPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicClassification',
+            shouldRun: result.demographicClassification.length > 0,
+            run: () =>
+              this.repository.insertDemographicClassification(
+                result.demographicClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'crossDimPatterns',
+            shouldRun: result.crossDimPatterns.length > 0,
+            run: () =>
+              this.repository.insertCrossDimPatterns(
+                result.crossDimPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'crossDimClassification',
+            shouldRun: result.crossDimClassification.length > 0,
+            run: () =>
+              this.repository.insertCrossDimClassification(
+                result.crossDimClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+        ]);
         this.logger.log(
           `Batch ${batchId}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
         );
@@ -373,7 +401,7 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       classification,
       categoryPopularity,
     ] = await Promise.all([
-      this.getPublishedPopularity(from, to, 5),
+      this.getPublishedPopularity(from, to, 20),
       this.getPublishedPatterns(from, to),
       this.getPublishedSustainability(from, to),
       this.getPublishedClassification(from, to),

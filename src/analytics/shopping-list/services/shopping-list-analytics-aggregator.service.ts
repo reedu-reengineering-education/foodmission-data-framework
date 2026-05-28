@@ -11,8 +11,9 @@ import {
   distribution,
   FoodFrequencyRow,
   AGE_GROUP_SQL,
-  applyKAnonymity,
   aggregateFoodFrequency,
+  makeApplyK,
+  buildCrossDimPairs,
 } from '../../common/analytics-utils';
 
 // ============================================================
@@ -223,7 +224,7 @@ export class ShoppingListAnalyticsAggregator {
     const listAggs = this.buildListAggregates(rawData);
     this.logger.log(`Built ${listAggs.size} list aggregates`);
 
-    let suppressedGroups = 0;
+    const suppressedGroups = { value: 0 };
 
     const itemPopularity = this.aggregateItemPopularity(rawData);
     const categoryPopularity = this.aggregateCategoryPopularity(rawData);
@@ -238,19 +239,7 @@ export class ShoppingListAnalyticsAggregator {
       this.aggregateCrossDimClassification(rawData);
 
     // k-anonymity filter (K=5)
-    const applyK = <T extends { userCount?: number; uniqueUsers?: number }>(
-      rows: T[],
-      field: 'userCount' | 'uniqueUsers' = 'userCount',
-      threshold = K_ANONYMITY_THRESHOLD,
-    ): T[] => {
-      const { rows: filtered, suppressed } = applyKAnonymity(
-        rows,
-        field,
-        threshold,
-      );
-      suppressedGroups += suppressed;
-      return filtered;
-    };
+    const applyK = makeApplyK(suppressedGroups);
 
     const filteredItemPopularity = applyK(itemPopularity, 'uniqueUsers');
     const filteredCategoryPopularity = applyK(
@@ -285,7 +274,7 @@ export class ShoppingListAnalyticsAggregator {
       filteredCrossDimClassification.length;
 
     this.logger.log(
-      `Aggregation done: ${totalRecords} records, ${suppressedGroups} suppressed ` +
+      `Aggregation done: ${totalRecords} records, ${suppressedGroups.value} suppressed ` +
         `(k<${K_ANONYMITY_THRESHOLD} single-dim / k<${K_ANONYMITY_CROSS_DIM_THRESHOLD} cross-dim)`,
     );
 
@@ -300,7 +289,7 @@ export class ShoppingListAnalyticsAggregator {
       crossDimPatterns: filteredCrossDimPatterns,
       crossDimClassification: filteredCrossDimClassification,
       totalRecords,
-      suppressedGroups,
+      suppressedGroups: suppressedGroups.value,
     };
   }
 
@@ -675,13 +664,7 @@ export class ShoppingListAnalyticsAggregator {
   ): CrossDimPatternsRow[] {
     const result: CrossDimPatternsRow[] = [];
 
-    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
-      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
-        // Ensure dim1Name < dim2Name alphabetically
-        const [dim1, dim2] = [
-          DEMOGRAPHIC_DIMENSIONS[i],
-          DEMOGRAPHIC_DIMENSIONS[j],
-        ].sort() as [DemographicDimension, DemographicDimension];
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
 
         const dim1Field = DIM_TO_LIST_FIELD[dim1];
         const dim2Field = DIM_TO_LIST_FIELD[dim2];
@@ -738,7 +721,6 @@ export class ShoppingListAnalyticsAggregator {
             genericFoodPct: totalItems > 0 ? (gfItems / totalItems) * 100 : 0,
           });
         }
-      }
     }
 
     return result;
@@ -826,12 +808,7 @@ export class ShoppingListAnalyticsAggregator {
   ): CrossDimClassificationRow[] {
     const result: CrossDimClassificationRow[] = [];
 
-    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
-      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
-        const [dim1, dim2] = [
-          DEMOGRAPHIC_DIMENSIONS[i],
-          DEMOGRAPHIC_DIMENSIONS[j],
-        ].sort() as [DemographicDimension, DemographicDimension];
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
 
         const dim1Field = DIM_TO_ROW_FIELD[dim1];
         const dim2Field = DIM_TO_ROW_FIELD[dim2];
@@ -901,7 +878,6 @@ export class ShoppingListAnalyticsAggregator {
             novaDistribution: distribution(novaValues.map(String)),
           });
         }
-      }
     }
 
     return result;

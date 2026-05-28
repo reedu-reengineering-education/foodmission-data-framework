@@ -6,6 +6,7 @@ import {
   Prisma,
 } from '@prisma/client';
 import { DemographicDimension } from '../../common/analytics-utils';
+import { buildStatusUpdateFields } from '../../common/batch-lifecycle';
 
 @Injectable()
 export class MealLogAnalyticsRepository {
@@ -49,16 +50,16 @@ export class MealLogAnalyticsRepository {
     userId?: string,
     reason?: string,
   ): Promise<MealLogAnalyticsBatch> {
-    const data: Prisma.MealLogAnalyticsBatchUpdateInput = { status };
-
-    if (status === AnalyticsBatchStatus.PUBLISHED) {
-      data.publishedAt = new Date();
-      data.publishedBy = userId;
-    } else if (status === AnalyticsBatchStatus.REJECTED) {
-      data.rejectedAt = new Date();
-      data.rejectedBy = userId;
-      data.rejectionReason = reason;
-    }
+    const data: Prisma.MealLogAnalyticsBatchUpdateInput = {
+      status,
+      ...buildStatusUpdateFields(
+        status,
+        AnalyticsBatchStatus.PUBLISHED,
+        AnalyticsBatchStatus.REJECTED,
+        userId,
+        reason,
+      ),
+    };
 
     return this.prisma.mealLogAnalyticsBatch.update({ where: { id }, data });
   }

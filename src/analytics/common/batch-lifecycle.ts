@@ -20,6 +20,37 @@ export interface IBatchRepository<
   supersedeBatchesForPeriod(from: Date, to: Date, excludeId: string): Promise<void>;
 }
 
+export interface BatchStatusUpdateFields {
+  publishedAt?: Date;
+  publishedBy?: string;
+  rejectedAt?: Date;
+  rejectedBy?: string;
+  rejectionReason?: string;
+}
+
+export function buildStatusUpdateFields<TStatus extends string>(
+  status: TStatus,
+  publishedStatus: TStatus,
+  rejectedStatus: TStatus,
+  userId?: string,
+  reason?: string,
+): BatchStatusUpdateFields {
+  if (status === publishedStatus) {
+    return {
+      publishedAt: new Date(),
+      publishedBy: userId,
+    };
+  }
+  if (status === rejectedStatus) {
+    return {
+      rejectedAt: new Date(),
+      rejectedBy: userId,
+      rejectionReason: reason,
+    };
+  }
+  return {};
+}
+
 export async function getAnalyticsBatch<
   TStatus extends string,
   TBatch extends { id: string; status: TStatus },

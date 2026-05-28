@@ -258,6 +258,50 @@ export function applyKAnonymity<
   return { rows: filtered, suppressed };
 }
 
+export interface SuppressedCounter {
+  value: number;
+}
+
+export function makeApplyK(counter: SuppressedCounter) {
+  return <T extends { userCount?: number; uniqueUsers?: number }>(
+    rows: T[],
+    field: 'userCount' | 'uniqueUsers' = 'userCount',
+    threshold = K_ANONYMITY_THRESHOLD,
+  ): T[] => {
+    const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
+    counter.value += suppressed;
+    return filtered;
+  };
+}
+
+export function groupBy<T>(
+  items: T[],
+  keyFn: (item: T) => string,
+): Map<string, T[]> {
+  const map = new Map<string, T[]>();
+  for (const item of items) {
+    const key = keyFn(item);
+    const group = map.get(key) ?? [];
+    group.push(item);
+    map.set(key, group);
+  }
+  return map;
+}
+
+export function buildCrossDimPairs<T extends string>(
+  dimensions: readonly T[],
+): [T, T][] {
+  const pairs: [T, T][] = [];
+  for (let i = 0; i < dimensions.length; i++) {
+    for (let j = i + 1; j < dimensions.length; j++) {
+      const a = dimensions[i];
+      const b = dimensions[j];
+      pairs.push(a < b ? [a, b] : [b, a]);
+    }
+  }
+  return pairs;
+}
+
 // ============================================================
 // Food frequency aggregation helper
 // ============================================================

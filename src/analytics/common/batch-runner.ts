@@ -8,6 +8,19 @@ export interface IAnalyticsAggregator<TResult> {
   aggregate(periodStart: Date, periodEnd: Date): Promise<TResult>;
 }
 
+export interface BatchInsertStep {
+  name: string;
+  run: () => Promise<unknown>;
+  shouldRun?: boolean;
+}
+
+export async function runBatchInsertSteps(steps: BatchInsertStep[]): Promise<void> {
+  for (const step of steps) {
+    if (step.shouldRun === false) continue;
+    await step.run();
+  }
+}
+
 /**
  * Generic batch generation orchestration.
  *
