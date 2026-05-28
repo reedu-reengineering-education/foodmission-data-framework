@@ -1,4 +1,5 @@
 import { DocumentBuilder } from '@nestjs/swagger';
+import { execSync } from 'child_process';
 
 type SwaggerServer = {
   url: string;
@@ -90,11 +91,19 @@ const getShortGitSha = (): string | undefined => {
     process.env.GITHUB_SHA ||
     process.env.VERCEL_GIT_COMMIT_SHA;
 
-  if (!fullSha) {
-    return undefined;
+  if (fullSha) {
+    return fullSha.slice(0, 7);
   }
 
-  return fullSha.slice(0, 7);
+  try {
+    const gitSha = execSync('git rev-parse --short HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return gitSha || undefined;
+  } catch {
+    return undefined;
+  }
 };
 
 export const getSwaggerMetadata = (): { apiVersion: string; apiRelease: string } => {
