@@ -1,12 +1,13 @@
 import './otel-logging.bootstrap';
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
+import { createSwaggerConfig, getSwaggerMetadata } from './docs/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -43,189 +44,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
-  const apiVersion =
-    process.env.API_VERSION || process.env.npm_package_version || '1.0.0';
-  const apiRelease =
-    process.env.API_RELEASE || process.env.OTEL_SERVICE_VERSION || apiVersion;
-
   // Configure Swagger/OpenAPI
-  const config = new DocumentBuilder()
-    .setTitle('Foodmission Data Framework API')
-    .setDescription(
-      `
-      A comprehensive backend system for managing food-related data and operations.
-
-      **API Version:** ${apiVersion}
-      **Release:** ${apiRelease}
-      
-      ## Features
-      - **Authentication**: Secure JWT-based authentication via Keycloak
-      - **Food Management**: CRUD operations for food items with categorization
-      - **OpenFoodFacts Integration**: Automatic nutritional data retrieval
-      - **User Management**: User profiles and dietary preferences
-      - **Health Monitoring**: Comprehensive health checks and metrics
-      
-      ## Getting Started
-      1. Obtain a JWT token from the authentication endpoints
-      2. Include the token in the Authorization header: \`Bearer <token>\`
-      3. Use the interactive documentation below to explore available endpoints
-      
-      ## Authentication
-      This API uses stateless JWT authentication via Keycloak. 
-      
-      1. Get Keycloak configuration from \`/auth/info\`
-      2. Authenticate directly with Keycloak using OAuth2/OIDC
-      3. Include JWT tokens in the Authorization header: \`Bearer <token>\`
-      
-      ## Rate Limiting
-      API requests are rate-limited to prevent abuse. Check response headers for rate limit information.
-      
-      ## Error Handling
-      All endpoints follow a consistent error response format. When an error occurs, the API returns a JSON object with the following structure:
-      
-      - **statusCode**: HTTP status code (e.g., 400, 401, 404, 500)
-      - **message**: Human-readable error message or array of validation errors
-      - **error**: Error code/type (e.g., 'VALIDATION_ERROR', 'RESOURCE_NOT_FOUND')
-      - **timestamp**: ISO 8601 timestamp when the error occurred
-      - **path**: API path where the error occurred
-      - **traceId**: Unique identifier for request tracing
-      - **details**: Optional object containing additional error information (e.g., validation errors array)
-      
-      ### Common Error Responses
-      
-      - **400 Bad Request**: Invalid input data or validation failed. The \`details.errors\` field contains an array of validation error messages.
-      - **401 Unauthorized**: Authentication required or invalid/expired JWT token.
-      - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.
-      - **404 Not Found**: The requested resource does not exist.
-      - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
-      - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
-      - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
-      - **500 Internal Server Error**: An unexpected server error occurred. The trace ID can be used for support.
-      
-      ### Example Error Response
-      
-      \`\`\`json
-      {
-        "statusCode": 400,
-        "message": "Validation failed",
-        "error": "VALIDATION_ERROR",
-        "timestamp": "2024-01-15T10:30:00.000Z",
-        "path": "/api/v1/food-products",
-        "traceId": "abc123def456",
-        "details": {
-          "errors": [
-            "name should not be empty",
-            "categoryId must be a valid UUID"
-          ]
-        }
-      }
-      \`\`\`
-      
-      ## Support
-      For support and documentation, visit our [GitHub repository](https://github.com/reedu-reengineering-education/foodmission-data-framework).
-    `,
-    )
-    .setVersion(apiVersion)
-    .setContact(
-      'FOODMISSION Team',
-      'https://github.com/reedu-reengineering-education/foodmission-data-framework',
-      'support@foodmission.dev',
-    )
-    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token obtained from Keycloak authentication',
-        in: 'header',
-      },
-      'JWT-auth',
-    )
-    .addOAuth2(
-      {
-        type: 'oauth2',
-        flows: {
-          authorizationCode: {
-            authorizationUrl: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/auth`,
-            tokenUrl: `${process.env.KEYCLOAK_BASE_URL}/realms/${process.env.KEYCLOAK_REALM}/protocol/openid-connect/token`,
-            scopes: {
-              openid: 'OpenID Connect scope',
-              profile: 'Access to user profile information',
-              email: 'Access to user email',
-              roles: 'Access to user roles',
-            },
-          },
-        },
-      },
-      'keycloak-oauth2',
-    )
-    .addTag(
-      'auth',
-      'Authentication and authorization endpoints for Keycloak integration',
-    )
-    .addTag(
-      'food-products',
-      'Branded/barcoded food products with OpenFoodFacts nutritional metadata',
-    )
-    .addTag(
-      'generic-foods',
-      'Generic food entries (e.g., "apple", "rice") used when no branded product is needed',
-    )
-    .addTag('users', 'User management (only admin)')
-    .addTag(
-      'health',
-      'Application health checks, readiness probes, and monitoring metrics',
-    )
-    .addTag(
-      'catalog',
-      'Reference datasets and dropdown options (regions, countries, profile enums)',
-    )
-    .addTag(
-      'challenges',
-      'Challenge management - Create and manage user challenges',
-    )
-    .addTag('missions', 'Mission management - Create and manage user missions')
-    .addTag('auth-admin', 'Admin-only authentication and user administration')
-    .addTag('user-groups', 'User group creation, membership, and invitations')
-    .addTag('shopping-lists', 'Shopping list lifecycle management')
-    .addTag(
-      'shopping-list-items',
-      'Shopping list item operations and item status updates',
-    )
-    .addTag(
-      'pantry',
-      'Pantry tracking for available ingredients and household stock',
-    )
-    .addTag('meals', 'Meal management and meal composition')
-    .addTag('meal-items', 'Meal item operations for foods within a meal')
-    .addTag('meal-logs', 'Meal logging and nutrition tracking entries')
-    .addTag('recipes', 'Recipe management and recommendation endpoints')
-    .addTag(
-      'food-waste',
-      'Food waste registration, analytics, and reduction insights',
-    )
-    .addTag(
-      'knowledge',
-      'Knowledge base content, quizzes, and progress tracking',
-    )
-    .addTag(
-      'analytics-meal-log',
-      'Anonymized meal-log analytics, reports, and batch workflows',
-    )
-    .addTag('monitoring', 'Prometheus metrics and operational observability')
-    .addTag(
-      'performance',
-      'Performance diagnostics for cache and database behavior',
-    )
-    .addTag('webhooks', 'Inbound webhook handlers and event processing')
-    .addServer('http://localhost:3000', 'Local development server')
-    .addServer('https://api.foodmission.eu', 'Production server')
-    .build();
-
-  // Set global prefix for API routes BEFORE creating Swagger document
-  app.setGlobalPrefix('api/v1');
+  const config = createSwaggerConfig({ includeOAuth2: true });
+  const { apiVersion, apiRelease } = getSwaggerMetadata();
 
   const document = SwaggerModule.createDocument(app, config, {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
@@ -244,7 +65,7 @@ async function bootstrap() {
       tryItOutEnabled: true,
       displayOperationId: false,
       displayRequestDuration: true,
-      oauth2RedirectUrl: `http://localhost:3000/api/docs/oauth2-redirect.html`, // TODO: get url from environment or app
+      oauth2RedirectUrl: '/api/docs/oauth2-redirect.html',
       initOAuth: {
         clientId: process.env.KEYCLOAK_CLIENT_ID,
         realm: process.env.KEYCLOAK_REALM,
