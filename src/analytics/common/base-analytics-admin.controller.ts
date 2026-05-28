@@ -38,6 +38,7 @@ interface AnalyticsAdminService<TBatch> {
     adminUserId: string,
     reason: string,
   ): Promise<TBatch>;
+  supersedeBatch(batchId: string, adminUserId: string): Promise<TBatch>;
   deleteBatch(batchId: string): Promise<void>;
 }
 
@@ -162,6 +163,20 @@ export abstract class BaseAnalyticsAdminController<TBatch> {
     @Body('reason') reason: string,
   ) {
     return this.analyticsService.rejectBatch(id, adminUserId, reason);
+  }
+
+  @Patch('batches/:id/supersede')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Mark a published batch as superseded' })
+  @ApiParam({ name: 'id', description: 'Batch UUID' })
+  @ApiResponse({ status: 200, description: 'Batch superseded' })
+  async supersedeBatch(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') adminUserId: string,
+  ) {
+    return this.analyticsService.supersedeBatch(id, adminUserId);
   }
 
   @Delete('batches/:id')

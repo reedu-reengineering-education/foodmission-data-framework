@@ -172,16 +172,10 @@ describe('ShoppingListAnalyticsService', () => {
       } as any);
     });
 
-    it('supersedes existing published batches for the period after publishing', async () => {
+    it('does not auto-supersede existing published batches', async () => {
       await service.runDailyAggregation();
 
-      expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
-      // supersede is called after updateBatchStatus (publish)
-      const supersedeOrder =
-        repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
-      const publishOrder =
-        repository.updateBatchStatus.mock.invocationCallOrder[0];
-      expect(publishOrder).toBeLessThan(supersedeOrder);
+      expect(repository.supersedeBatchesForPeriod).not.toHaveBeenCalled();
     });
 
     it('auto-publishes the generated batch as system user', async () => {
@@ -291,6 +285,41 @@ describe('ShoppingListAnalyticsService', () => {
       } as any);
 
       await expect(service.publishBatch('b1', 'admin-1')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+  });
+
+  describe('supersedeBatch', () => {
+    it('supersedes a PUBLISHED batch', async () => {
+      const batch = {
+        id: 'b1',
+        status: 'PUBLISHED',
+      };
+      const superseded = {
+        ...batch,
+        status: 'SUPERSEDED',
+      };
+      repository.findBatchById.mockResolvedValue(batch as any);
+      repository.updateBatchStatus.mockResolvedValue(superseded as any);
+
+      const result = await service.supersedeBatch('b1', 'admin-1');
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'b1',
+        'SUPERSEDED',
+        'admin-1',
+      );
+      expect(result.status).toBe('SUPERSEDED');
+    });
+
+    it('throws BadRequestException when batch is not PUBLISHED', async () => {
+      repository.findBatchById.mockResolvedValue({
+        id: 'b1',
+        status: 'APPROVED',
+      } as any);
+
+      await expect(service.supersedeBatch('b1', 'admin-1')).rejects.toThrow(
         BadRequestException,
       );
     });

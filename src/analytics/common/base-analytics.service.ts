@@ -6,8 +6,8 @@ import {
   approveAnalyticsBatch,
   publishAnalyticsBatch,
   rejectAnalyticsBatch,
+  supersedeAnalyticsBatch,
   deleteAnalyticsBatch,
-  autoPublishAndSupersede,
 } from './batch-lifecycle';
 
 export abstract class BaseAnalyticsService<
@@ -28,13 +28,10 @@ export abstract class BaseAnalyticsService<
     today.setUTCHours(0, 0, 0, 0);
 
     const batchId = await this.generateBatch(yesterday, today);
-    await autoPublishAndSupersede(
-      this.repository,
+    await this.repository.updateBatchStatus(
       batchId,
       AnalyticsBatchStatus.PUBLISHED,
       'system',
-      yesterday,
-      today,
     );
     return batchId;
   }
@@ -79,6 +76,16 @@ export abstract class BaseAnalyticsService<
       reason,
       AnalyticsBatchStatus.STAGING,
       AnalyticsBatchStatus.REJECTED,
+    );
+  }
+
+  async supersedeBatch(batchId: string, adminUserId: string): Promise<TBatch> {
+    return supersedeAnalyticsBatch(
+      this.repository,
+      batchId,
+      adminUserId,
+      AnalyticsBatchStatus.PUBLISHED,
+      AnalyticsBatchStatus.SUPERSEDED,
     );
   }
 

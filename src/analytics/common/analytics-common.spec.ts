@@ -23,6 +23,7 @@ import {
   approveAnalyticsBatch,
   publishAnalyticsBatch,
   rejectAnalyticsBatch,
+  supersedeAnalyticsBatch,
   deleteAnalyticsBatch,
   autoPublishAndSupersede,
 } from './batch-lifecycle';
@@ -718,6 +719,56 @@ describe('rejectAnalyticsBatch', () => {
         'reason',
         'STAGING',
         'REJECTED',
+      ),
+    ).rejects.toThrow(NotFoundException);
+  });
+});
+
+// ============================================================
+// batch-lifecycle — supersedeAnalyticsBatch
+// ============================================================
+
+describe('supersedeAnalyticsBatch', () => {
+  it('transitions a PUBLISHED batch to SUPERSEDED', async () => {
+    const repo = makeRepo(makeBatch('b1', 'PUBLISHED'));
+
+    const result = await supersedeAnalyticsBatch(
+      repo,
+      'b1',
+      'admin',
+      'PUBLISHED',
+      'SUPERSEDED',
+    );
+
+    expect(repo.updateBatchStatus).toHaveBeenCalledWith(
+      'b1',
+      'SUPERSEDED',
+      'admin',
+    );
+    expect(result.status).toBe('SUPERSEDED');
+  });
+
+  it('throws BadRequestException when batch is not PUBLISHED', async () => {
+    const repo = makeRepo(makeBatch('b1', 'APPROVED'));
+
+    await expect(
+      supersedeAnalyticsBatch(repo, 'b1', 'admin', 'PUBLISHED', 'SUPERSEDED'),
+    ).rejects.toThrow(BadRequestException);
+    await expect(
+      supersedeAnalyticsBatch(repo, 'b1', 'admin', 'PUBLISHED', 'SUPERSEDED'),
+    ).rejects.toThrow('can only supersede PUBLISHED batches');
+  });
+
+  it('throws NotFoundException when batch does not exist', async () => {
+    const repo = makeRepo(null);
+
+    await expect(
+      supersedeAnalyticsBatch(
+        repo,
+        'missing',
+        'admin',
+        'PUBLISHED',
+        'SUPERSEDED',
       ),
     ).rejects.toThrow(NotFoundException);
   });

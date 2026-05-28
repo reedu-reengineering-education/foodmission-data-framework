@@ -70,16 +70,10 @@ describe('MealLogAnalyticsService', () => {
       } as any);
     });
 
-    it('supersedes existing published batches for the period after publishing', async () => {
+    it('does not auto-supersede existing published batches', async () => {
       await service.runDailyAggregation();
 
-      expect(repository.supersedeBatchesForPeriod).toHaveBeenCalledTimes(1);
-      // supersede is called after updateBatchStatus (publish)
-      const supersedeOrder =
-        repository.supersedeBatchesForPeriod.mock.invocationCallOrder[0];
-      const publishOrder =
-        repository.updateBatchStatus.mock.invocationCallOrder[0];
-      expect(publishOrder).toBeLessThan(supersedeOrder);
+      expect(repository.supersedeBatchesForPeriod).not.toHaveBeenCalled();
     });
 
     it('auto-publishes the generated batch as system user', async () => {
@@ -255,6 +249,36 @@ describe('MealLogAnalyticsService', () => {
 
       await expect(service.publishBatch('missing', 'admin1')).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('supersedeBatch', () => {
+    it('should supersede a PUBLISHED batch', async () => {
+      const batch = { id: 'b1', status: 'PUBLISHED' };
+      const superseded = {
+        ...batch,
+        status: 'SUPERSEDED',
+      };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+      repository.updateBatchStatus.mockResolvedValueOnce(superseded as any);
+
+      const result = await service.supersedeBatch('b1', 'admin1');
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'b1',
+        'SUPERSEDED',
+        'admin1',
+      );
+      expect(result).toEqual(superseded);
+    });
+
+    it('should throw BadRequestException for non-PUBLISHED batch', async () => {
+      const batch = { id: 'b1', status: 'APPROVED' };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+
+      await expect(service.supersedeBatch('b1', 'admin1')).rejects.toThrow(
+        BadRequestException,
       );
     });
   });

@@ -128,6 +128,25 @@ export async function rejectAnalyticsBatch<
   return repo.updateBatchStatus(batchId, rejectedStatus, adminUserId, reason);
 }
 
+export async function supersedeAnalyticsBatch<
+  TStatus extends string,
+  TBatch extends { id: string; status: TStatus },
+>(
+  repo: IBatchRepository<TStatus, TBatch>,
+  batchId: string,
+  adminUserId: string,
+  publishedStatus: TStatus,
+  supersededStatus: TStatus,
+): Promise<TBatch> {
+  const batch = await getAnalyticsBatch(repo, batchId);
+  if (batch.status !== publishedStatus) {
+    throw new BadRequestException(
+      `Batch is ${String(batch.status)}, can only supersede PUBLISHED batches`,
+    );
+  }
+  return repo.updateBatchStatus(batchId, supersededStatus, adminUserId);
+}
+
 export async function deleteAnalyticsBatch<
   TStatus extends string,
   TBatch extends { id: string; status: TStatus },
