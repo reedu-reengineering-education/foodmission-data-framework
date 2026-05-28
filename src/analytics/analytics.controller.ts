@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Controller,
-  Patch,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -19,12 +19,38 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { parseDate } from './common/analytics-utils';
 import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service';
 
+interface AnalyticsRunPayload {
+  mealLogBatchId: string;
+  shoppingListBatchId: string;
+}
+
 @ApiTags('Analytics')
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly batchCoordinator: AnalyticsBatchCoordinator) {}
 
-  @Post('batches/generate-all')
+  private encodeRunId(payload: AnalyticsRunPayload): string {
+    return Buffer.from(JSON.stringify(payload)).toString('base64url');
+  }
+
+  private decodeRunId(runId: string): AnalyticsRunPayload {
+    try {
+      const parsed = JSON.parse(
+        Buffer.from(runId, 'base64url').toString('utf-8'),
+      ) as Partial<AnalyticsRunPayload>;
+      if (!parsed.mealLogBatchId || !parsed.shoppingListBatchId) {
+        throw new Error('missing ids');
+      }
+      return {
+        mealLogBatchId: parsed.mealLogBatchId,
+        shoppingListBatchId: parsed.shoppingListBatchId,
+      };
+    } catch {
+      throw new BadRequestException('Invalid runId');
+    }
+  }
+
+  @Post('runs/generate')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
@@ -47,7 +73,7 @@ export class AnalyticsController {
     status: 201,
     description: 'Batch IDs for all generated analytics sources',
   })
-  async generateAllBatches(
+  async generateRun(
     @Query('periodStart') periodStart?: string,
     @Query('periodEnd') periodEnd?: string,
   ) {
@@ -55,36 +81,32 @@ export class AnalyticsController {
       throw new BadRequestException('periodStart and periodEnd are required');
     }
 
-    return this.batchCoordinator.generateForAll(
+    const generated = await this.batchCoordinator.generateForAll(
       parseDate(periodStart, 'periodStart')!,
       parseDate(periodEnd, 'periodEnd')!,
     );
+    return {
+      ...generated,
+      runId: this.encodeRunId(generated),
+    };
   }
 
-  @Patch('batches/approve-all')
+  @Post('runs/:runId/approve')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
   @ApiOperation({
-    summary: 'Approve Meal Log and Shopping List analytics batches together',
+    summary: 'Approve all analytics batches associated with a run',
   })
-  @ApiQuery({ name: 'mealLogBatchId', required: true, type: String })
-  @ApiQuery({ name: 'shoppingListBatchId', required: true, type: String })
   @ApiResponse({
     status: 200,
-    description: 'Approved batch records for both analytics sources',
+    description: 'Approved batch records for all run domains',
   })
-  async approveAllBatches(
-    @Query('mealLogBatchId') mealLogBatchId?: string,
-    @Query('shoppingListBatchId') shoppingListBatchId?: string,
+  async approveRun(
+    @Param('runId') runId: string,
     @CurrentUser('id') adminUserId?: string,
   ) {
-    if (!mealLogBatchId || !shoppingListBatchId) {
-      throw new BadRequestException(
-        'mealLogBatchId and shoppingListBatchId are required',
-      );
-    }
-
+    const { mealLogBatchId, shoppingListBatchId } = this.decodeRunId(runId);
     return this.batchCoordinator.approveForAll(
       mealLogBatchId,
       shoppingListBatchId,
@@ -92,30 +114,22 @@ export class AnalyticsController {
     );
   }
 
-  @Patch('batches/publish-all')
+  @Post('runs/:runId/publish')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
   @ApiOperation({
-    summary: 'Publish Meal Log and Shopping List analytics batches together',
+    summary: 'Publish all analytics batches associated with a run',
   })
-  @ApiQuery({ name: 'mealLogBatchId', required: true, type: String })
-  @ApiQuery({ name: 'shoppingListBatchId', required: true, type: String })
   @ApiResponse({
     status: 200,
-    description: 'Published batch records for both analytics sources',
+    description: 'Published batch records for all run domains',
   })
-  async publishAllBatches(
-    @Query('mealLogBatchId') mealLogBatchId?: string,
-    @Query('shoppingListBatchId') shoppingListBatchId?: string,
+  async publishRun(
+    @Param('runId') runId: string,
     @CurrentUser('id') adminUserId?: string,
   ) {
-    if (!mealLogBatchId || !shoppingListBatchId) {
-      throw new BadRequestException(
-        'mealLogBatchId and shoppingListBatchId are required',
-      );
-    }
-
+    const { mealLogBatchId, shoppingListBatchId } = this.decodeRunId(runId);
     return this.batchCoordinator.publishForAll(
       mealLogBatchId,
       shoppingListBatchId,

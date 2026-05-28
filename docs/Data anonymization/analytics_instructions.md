@@ -5,33 +5,40 @@ instructions:
 Use this endpoint when you want to generate Meal Log and Shopping List analytics for the same period in one admin action:
 
 ```
-{{baseUrl}}/api/v1/analytics/batches/generate-all?periodStart=2026-04-18&periodEnd=2026-04-25
+POST {{baseUrl}}/api/v1/analytics/runs/generate?periodStart=2026-04-18&periodEnd=2026-04-25
 ```
 
-The endpoint requires admin authentication and returns both staging batch IDs:
+The endpoint requires admin authentication and returns both staging batch IDs plus a run ID:
 
 ```json
 {
   "mealLogBatchId": "meal-log-batch-id",
-  "shoppingListBatchId": "shopping-list-batch-id"
+  "shoppingListBatchId": "shopping-list-batch-id",
+  "runId": "base64url-run-id"
 }
 ```
 
 Generation runs sequentially: Meal Log first, then Shopping List.
 
-Approve both generated staging batches together:
+Approve all batches in that run:
 
 ```
-{{baseUrl}}/api/v1/analytics/batches/approve-all?mealLogBatchId=:mealLogBatchId&shoppingListBatchId=:shoppingListBatchId
+POST {{baseUrl}}/api/v1/analytics/runs/:runId/approve
 ```
 
-Publish both approved batches together:
+Publish all approved batches in that run:
 
 ```
-{{baseUrl}}/api/v1/analytics/batches/publish-all?mealLogBatchId=:mealLogBatchId&shoppingListBatchId=:shoppingListBatchId
+POST {{baseUrl}}/api/v1/analytics/runs/:runId/publish
 ```
 
-Both endpoints use the same lifecycle rules as the source-specific routes: approval requires `STAGING` batches and publishing requires `APPROVED` batches.
+Both endpoints use the same lifecycle rules as source-specific routes: approval requires `STAGING` batches and publishing requires `APPROVED` batches.
+No automatic superseding happens during daily runs anymore. If you need to supersede a batch, do it manually via source-specific admin endpoint:
+
+```
+PATCH {{baseUrl}}/api/v1/analytics/meal-log/batches/:id/supersede
+PATCH {{baseUrl}}/api/v1/analytics/shopping-list/batches/:id/supersede
+```
 
 ---
 
