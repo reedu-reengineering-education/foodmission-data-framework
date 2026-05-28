@@ -1,13 +1,13 @@
 import 'reflect-metadata';
-import { DECORATORS } from '@nestjs/swagger/dist/constants';
 import {
   ApiOpenFoodFactsSearchQuery,
   ApiPaginationQuery,
 } from './api-query-params.decorator';
 
 describe('ApiQueryParamsDecorators', () => {
+  const SWAGGER_API_PARAMETERS_METADATA = 'swagger/apiParameters';
   const getQueryMetadata = (target: any, method: string) =>
-    Reflect.getMetadata(DECORATORS.API_PARAMETERS, target[method]) || [];
+    Reflect.getMetadata(SWAGGER_API_PARAMETERS_METADATA, target[method]) || [];
 
   describe('ApiOpenFoodFactsSearchQuery', () => {
     it('should register all expected query params with correct types', () => {
