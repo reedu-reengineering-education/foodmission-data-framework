@@ -4,8 +4,7 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'monday'
+      interval: 'daily'
       time: '09:00'
     open-pull-requests-limit: 3
     reviewers:
@@ -20,11 +19,6 @@ updates:
       - 'dependencies'
       - 'automated'
     groups:
-      # Group minor and patch updates together
-      minor-and-patch:
-        update-types:
-          - 'minor'
-          - 'patch'
       # Group development dependencies
       dev-dependencies:
         dependency-type: 'development'
