@@ -48,6 +48,7 @@ async function loadSampleIds() {
 
 async function seedShoppingLists() {
   await loadSampleIds();
+  const runTag = Date.now().toString(36);
 
   console.log('Fetching users...');
   const users = await prisma.user.findMany({ select: { id: true } });
@@ -67,7 +68,6 @@ async function seedShoppingLists() {
   );
 
   for (const user of users) {
-    const usedTitles = new Set<string>();
 
     for (let dayOffset = 0; dayOffset < daysToSeed; dayOffset++) {
       const date = new Date();
@@ -77,21 +77,9 @@ async function seedShoppingLists() {
       const listsThisDay = Math.random() > 0.4 ? listsPerDay : 1;
 
       for (let listIndex = 0; listIndex < listsThisDay; listIndex++) {
-        // Pick a unique title per user
-        let title: string;
-        let attempts = 0;
-        do {
-          const base =
-            LIST_TITLES[Math.floor(Math.random() * LIST_TITLES.length)];
-          title =
-            usedTitles.size < LIST_TITLES.length
-              ? base
-              : `${base} ${dayOffset + 1}`;
-          attempts++;
-        } while (usedTitles.has(title) && attempts < 20);
-
-        if (usedTitles.has(title)) continue; // skip if we can't get a unique title
-        usedTitles.add(title);
+        const base = LIST_TITLES[Math.floor(Math.random() * LIST_TITLES.length)];
+        // Keep titles readable while guaranteeing uniqueness across repeated seeding runs.
+        const title = `${base} ${date.toISOString().slice(0, 10)} #${listIndex + 1} ${runTag}`;
 
         // 3-8 items per list
         const itemCount = Math.floor(Math.random() * 6) + 3;
