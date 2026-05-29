@@ -53,7 +53,6 @@ RUN npm ci --only=production && npm cache clean --force
 COPY --from=builder --chown=nestjs:nodejs /workspace/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /workspace/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /workspace/prisma ./prisma
-COPY --from=builder --chown=nestjs:nodejs /workspace/prisma/seeds/data ./dist/prisma/seeds/data
 
 # Switch to non-root user
 USER nestjs

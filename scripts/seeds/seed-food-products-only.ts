@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
 import { PrismaClient } from '@prisma/client';
-import { seedOpenFoodFactsFromJson } from '../prisma/seeds/openfoodfacts';
+import { seedOpenFoodFactsFromJson } from './dev/openfoodfacts';
 
 const prisma = new PrismaClient();
 

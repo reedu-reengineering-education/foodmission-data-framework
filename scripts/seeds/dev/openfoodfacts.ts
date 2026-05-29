@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const JSON_PATH = path.join(DATA_DIR, 'openfoodfacts-foods.json');
 
 type OffRow = Record<string, unknown>;

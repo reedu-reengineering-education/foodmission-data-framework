@@ -1,4 +1,4 @@
-import { seedFoodKeeper } from '../../../prisma/seeds/foodkeeper';
+import { seedFoodKeeper } from '../../../scripts/seeds/prod/foodkeeper';
 import {
   createTestPrismaClient,
   runMigrations,
