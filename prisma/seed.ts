@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { parseArgs } from 'node:util';
 import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
@@ -9,7 +10,10 @@ import { seedPantries } from '../scripts/seeds/dev/pantry';
 import { seedPantryItems } from '../scripts/seeds/dev/pantryItem';
 import { seedUserGroups } from '../scripts/seeds/dev/userGroups';
 import { seedVirtualMembers } from '../scripts/seeds/dev/groupMembers';
-import { seedKnowledge, seedUserKnowledgeProgress } from '../scripts/seeds/dev/knowledge';
+import {
+  seedKnowledge,
+  seedUserKnowledgeProgress,
+} from '../scripts/seeds/dev/knowledge';
 import { seedChallenges } from '../scripts/seeds/dev/challenges';
 import { seedMissions } from '../scripts/seeds/dev/missions';
 import { seedRecipes } from '../scripts/seeds/prod/themealdb';
@@ -28,13 +32,6 @@ const {
 const prisma = new PrismaClient();
 
 async function seedProduction() {
-  const offResult = await seedOpenFoodFactsFromJson(prisma);
-  if (offResult.skipped) {
-    console.log(
-      '   ⏭️  OFF JSON not found; no OpenFoodFacts rows will be loaded into food_products.',
-    );
-  }
-
   const genericFoods = await seedGenericFoods(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
@@ -45,10 +42,6 @@ async function seedProduction() {
   console.log('✅ Production seeding completed!');
   console.log('📊 Summary:');
   const summaryRows: { label: string; value: string | number }[] = [
-    {
-      label: 'openFoodFactsJson',
-      value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
-    },
     { label: 'genericFoods', value: genericFoods.length },
     {
       label: 'recipes',
@@ -111,9 +104,7 @@ async function seedDevelopment() {
   const summaryRows: { label: string; value: string | number }[] = [
     {
       label: 'openFoodFactsJson',
-      value: offResult.skipped
-        ? 'skipped'
-        : `${offResult.count} rows upserted`,
+      value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
     { label: 'users', value: users.length },
