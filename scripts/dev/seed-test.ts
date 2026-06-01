@@ -12,11 +12,11 @@ import { PrismaClient } from '@prisma/client';
 import {
   TEST_SEED_FOOD_PRODUCTS,
   TEST_SEED_USERS,
-} from '../prisma/seeds/seed-fixtures';
+} from '../seeds/dev/seed-fixtures';
 import {
   upsertSeedFoodByBarcode,
   upsertSeedUser,
-} from '../prisma/seeds/seed-helpers';
+} from '../seeds/dev/seed-helpers';
 
 const prisma = new PrismaClient();
 

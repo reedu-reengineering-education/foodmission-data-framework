@@ -1,5 +1,5 @@
 import { PrismaClient, GroupRole, UserGroup } from '@prisma/client';
-import { generateInviteCode } from '../../src/common/utils/invite-code';
+import { generateInviteCode } from '../../../src/common/utils/invite-code';
 
 export interface UserGroupSeedData {
   name: string;
