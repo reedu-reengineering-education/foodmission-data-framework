@@ -75,13 +75,13 @@ describe('KnowledgeService', () => {
 
   describe('create', () => {
     it('should create a knowledge item', async () => {
-      repository.create.mockResolvedValueOnce(mockKnowledge as any);
+      repository.create.mockResolvedValueOnce(mockKnowledge);
       const dto = {
         title: 'Test Quiz',
         content: { questions: [] },
       };
 
-      const result = await service.create(dto as any, 'user-1');
+      const result = await service.create(dto, 'user-1');
 
       expect(result.title).toBe('Test Quiz');
       expect(repository.create).toHaveBeenCalledWith(
@@ -99,7 +99,7 @@ describe('KnowledgeService', () => {
       const knowledge2 = { ...mockKnowledge, id: 'k-2' };
 
       repository.findWithPagination.mockResolvedValueOnce({
-        data: [knowledge1, knowledge2] as any,
+        data: [knowledge1, knowledge2],
         total: 2,
         page: 1,
         limit: 10,
@@ -109,7 +109,7 @@ describe('KnowledgeService', () => {
       const progress1 = { ...mockProgress, knowledgeId: 'k-1' };
       progressRepository.findManyByKnowledgeIds.mockResolvedValueOnce([
         progress1,
-      ] as any);
+      ]);
 
       const result = await service.findAll('user-1', { page: 1, limit: 10 });
 
@@ -156,9 +156,9 @@ describe('KnowledgeService', () => {
 
   describe('findOne', () => {
     it('should return knowledge with progress', async () => {
-      repository.findById.mockResolvedValueOnce(mockKnowledge as any);
+      repository.findById.mockResolvedValueOnce(mockKnowledge);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(
-        mockProgress as any,
+        mockProgress,
       );
 
       const result = await service.findOne('knowledge-1', 'user-1');
@@ -185,10 +185,8 @@ describe('KnowledgeService', () => {
         userId: 'other-user',
         available: true,
       };
-      repository.findById.mockResolvedValueOnce(otherUserKnowledge as any);
-      progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(
-        null as any,
-      );
+      repository.findById.mockResolvedValueOnce(otherUserKnowledge);
+      progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(null);
 
       const result = await service.findOne('knowledge-1', 'user-1');
       expect(result.id).toBe('knowledge-1');
@@ -200,7 +198,7 @@ describe('KnowledgeService', () => {
         userId: 'other-user',
         available: false,
       };
-      repository.findById.mockResolvedValueOnce(otherUserPrivate as any);
+      repository.findById.mockResolvedValueOnce(otherUserPrivate);
 
       await expect(service.findOne('knowledge-1', 'user-1')).rejects.toThrow(
         ForbiddenException,
@@ -210,9 +208,9 @@ describe('KnowledgeService', () => {
 
   describe('update', () => {
     it('should update knowledge item', async () => {
-      repository.findById.mockResolvedValueOnce(mockKnowledge as any);
+      repository.findById.mockResolvedValueOnce(mockKnowledge);
       const updated = { ...mockKnowledge, title: 'Updated' };
-      repository.update.mockResolvedValueOnce(updated as any);
+      repository.update.mockResolvedValueOnce(updated);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(null);
 
       const result = await service.update(
@@ -231,7 +229,7 @@ describe('KnowledgeService', () => {
 
   describe('remove', () => {
     it('should delete knowledge item', async () => {
-      repository.findById.mockResolvedValueOnce(mockKnowledge as any);
+      repository.findById.mockResolvedValueOnce(mockKnowledge);
       repository.delete.mockResolvedValueOnce(undefined);
 
       await service.remove('knowledge-1', 'user-1');

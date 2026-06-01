@@ -45,7 +45,7 @@ describe('sanitizeShoppingListItemFilters', () => {
   });
 
   it('should pass through unit', () => {
-    const result = sanitizeShoppingListItemFilters({ unit: Unit.KG } as any);
+    const result = sanitizeShoppingListItemFilters({ unit: Unit.KG });
     expect(result.unit).toBe(Unit.KG);
   });
 });

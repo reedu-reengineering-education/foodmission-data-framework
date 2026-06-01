@@ -216,7 +216,9 @@ describe('ShoppingListService', () => {
     it('should throw ConflictException when updating to duplicate title', async () => {
       const listId = 'list-1';
       const userId = 'user-1';
-      const updateDto: UpdateShoppingListDto = { title: 'Family-Shopping-List' };
+      const updateDto: UpdateShoppingListDto = {
+        title: 'Family-Shopping-List',
+      };
       const prismaError = new PrismaClientKnownRequestError(
         'Unique constraint failed',
         {

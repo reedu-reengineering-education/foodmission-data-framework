@@ -536,7 +536,11 @@ export class MealLogAnalyticsController {
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
   @ApiOperation({ summary: 'List all analytics batches' })
-  @ApiQuery({ name: 'status', required: false, enum: MealLogAnalyticsBatchStatus })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: MealLogAnalyticsBatchStatus,
+  })
   @ApiResponse({ status: 200, description: 'List of batches' })
   async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
     return this.analyticsService.listBatches(status);

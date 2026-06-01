@@ -129,7 +129,7 @@ describe('MealLogsService', () => {
         code: 'P2002',
         clientVersion: '4.0.0',
         meta: { target: ['mealId'] },
-      } as any),
+      }),
     );
 
     await expect(
@@ -150,7 +150,7 @@ describe('MealLogsService', () => {
       new PrismaClientKnownRequestError('missing', {
         code: 'P2025',
         clientVersion: '4.0.0',
-      } as any),
+      }),
     );
 
     await expect(
@@ -178,7 +178,7 @@ describe('MealLogsService', () => {
       eatenOut: false,
       page: 2,
       limit: 5,
-    } as any);
+    });
 
     expect(mockMealLogRepository.findWithPagination).toHaveBeenCalledWith({
       skip: 5,

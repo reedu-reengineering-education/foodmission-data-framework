@@ -23,7 +23,7 @@ export class CacheService {
       const value = await this.cacheManager.get<T>(key);
       if (value !== undefined && value !== null) {
         this.logger.debug(`Cache hit for key: ${key}`);
-        return value as T;
+        return value;
       } else {
         this.logger.debug(`Cache miss for key: ${key}`);
         return undefined;

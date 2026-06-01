@@ -9,7 +9,8 @@ describe('FoodProductService cache behavior', () => {
   beforeEach(async () => {
     const setup = await compileFoodProductServiceTestingModule();
     service = setup.service;
-    repository = setup.repository as unknown as jest.Mocked<FoodProductRepository>;
+    repository =
+      setup.repository as unknown as jest.Mocked<FoodProductRepository>;
   });
 
   it('findOne reads from repository', async () => {

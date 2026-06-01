@@ -110,7 +110,9 @@ describe('Shopping Lists (e2e)', () => {
     const listId = createdList.body.id;
 
     await request(app.getHttpServer()).get('/shopping-lists').expect(200);
-    await request(app.getHttpServer()).get(`/shopping-lists/${listId}`).expect(200);
+    await request(app.getHttpServer())
+      .get(`/shopping-lists/${listId}`)
+      .expect(200);
 
     await request(app.getHttpServer())
       .patch(`/shopping-lists/${listId}`)
@@ -137,7 +139,9 @@ describe('Shopping Lists (e2e)', () => {
     });
     const itemId = item.id;
 
-    await request(app.getHttpServer()).get(`/shopping-lists/${listId}/items`).expect(200);
+    await request(app.getHttpServer())
+      .get(`/shopping-lists/${listId}/items`)
+      .expect(200);
 
     await request(app.getHttpServer())
       .patch(`/shopping-lists/${listId}/items/${itemId}`)
@@ -148,7 +152,8 @@ describe('Shopping Lists (e2e)', () => {
       .delete(`/shopping-lists/${listId}/items/${itemId}`)
       .expect(200);
 
-    await request(app.getHttpServer()).delete(`/shopping-lists/${listId}`).expect(200);
+    await request(app.getHttpServer())
+      .delete(`/shopping-lists/${listId}`)
+      .expect(200);
   });
 });
-

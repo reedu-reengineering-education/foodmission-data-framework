@@ -59,7 +59,7 @@ export class KnowledgeProgressService {
         },
       );
 
-      return progress as ProgressResponseDto;
+      return progress;
     } catch (error) {
       throw handlePrismaError(
         error,
@@ -79,12 +79,12 @@ export class KnowledgeProgressService {
       userId,
       knowledgeId,
     );
-    return progress as ProgressResponseDto | null;
+    return progress;
   }
 
   async getAllUserProgress(userId: string): Promise<ProgressResponseDto[]> {
     const progress = await this.progressRepository.findByUserId(userId);
-    return progress as ProgressResponseDto[];
+    return progress;
   }
 
   async getUserProgressPaginated(

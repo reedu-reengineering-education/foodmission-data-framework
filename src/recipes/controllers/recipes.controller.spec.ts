@@ -49,7 +49,7 @@ describe('RecipeController', () => {
   it('create should delegate with user id', async () => {
     service.create.mockResolvedValueOnce(mockRecipe as any);
     const dto = { title: 'R' };
-    const result = await controller.create(dto as any, 'user-1');
+    const result = await controller.create(dto, 'user-1');
 
     expect(result).toEqual(mockRecipe);
     expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
@@ -86,7 +86,7 @@ describe('RecipeController', () => {
       title: 'New',
     } as any);
     const dto = { title: 'New' };
-    const result = await controller.update('recipe-1', dto as any, 'user-1');
+    const result = await controller.update('recipe-1', dto, 'user-1');
     expect(result.title).toBe('New');
     expect(service.update).toHaveBeenCalledWith('recipe-1', dto, 'user-1');
   });

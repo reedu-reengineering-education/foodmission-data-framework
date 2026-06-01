@@ -66,7 +66,7 @@ describe('KnowledgeProgressService', () => {
   describe('updateProgress', () => {
     it('should update or create progress', async () => {
       knowledgeRepository.findById.mockResolvedValueOnce(mockKnowledge as any);
-      progressRepository.upsert.mockResolvedValueOnce(mockProgress as any);
+      progressRepository.upsert.mockResolvedValueOnce(mockProgress);
 
       const dto = { completed: false, progress: { score: 5 } };
       const result = await service.updateProgress('user-1', 'knowledge-1', dto);
@@ -95,7 +95,7 @@ describe('KnowledgeProgressService', () => {
     it('should return progress if exists', async () => {
       knowledgeRepository.findById.mockResolvedValueOnce(mockKnowledge as any);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(
-        mockProgress as any,
+        mockProgress,
       );
 
       const result = await service.getProgress('user-1', 'knowledge-1');
@@ -144,9 +144,7 @@ describe('KnowledgeProgressService', () => {
         mockProgress,
         { ...mockProgress, id: 'progress-2' },
       ];
-      progressRepository.findByUserId.mockResolvedValueOnce(
-        progressList as any,
-      );
+      progressRepository.findByUserId.mockResolvedValueOnce(progressList);
 
       const result = await service.getAllUserProgress('user-1');
 
@@ -163,12 +161,12 @@ describe('KnowledgeProgressService', () => {
         page: 1,
         limit: 10,
         totalPages: 1,
-      } as any);
+      });
 
       const result = await service.getUserProgressPaginated('user-1', {
         page: 1,
         limit: 10,
-      } as any);
+      });
 
       expect(result.data).toEqual([mockProgress]);
       expect(result.total).toBe(1);

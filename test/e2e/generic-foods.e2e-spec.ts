@@ -83,13 +83,16 @@ describe('GenericFoods endpoints (e2e)', () => {
     expect(res.body.total).toBeGreaterThanOrEqual(2);
   });
 
-  itIfDb('GET /generic-foods supports search and foodGroup filters', async () => {
-    const res = await request(app.getHttpServer())
-      .get('/generic-foods?search=Apple&foodGroup=Fruit')
-      .expect(200);
-    expect(res.body.items).toHaveLength(1);
-    expect(res.body.items[0].foodName).toContain('Apple');
-  });
+  itIfDb(
+    'GET /generic-foods supports search and foodGroup filters',
+    async () => {
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods?search=Apple&foodGroup=Fruit')
+        .expect(200);
+      expect(res.body.items).toHaveLength(1);
+      expect(res.body.items[0].foodName).toContain('Apple');
+    },
+  );
 
   itIfDb('GET /generic-foods supports paginated search', async () => {
     const res = await request(app.getHttpServer())

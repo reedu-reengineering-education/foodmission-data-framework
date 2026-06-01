@@ -1,8 +1,5 @@
 import { seedFoodKeeper } from '../../../scripts/seeds/prod/foodkeeper';
-import {
-  createTestPrismaClient,
-  runMigrations,
-} from './prisma-e2e-helpers';
+import { createTestPrismaClient, runMigrations } from './prisma-e2e-helpers';
 
 export default async function globalE2eSetup(): Promise<void> {
   if (!runMigrations()) {
@@ -16,4 +13,3 @@ export default async function globalE2eSetup(): Promise<void> {
     await prisma.$disconnect();
   }
 }
-

@@ -61,7 +61,7 @@ describe('MealItemService', () => {
         foodProductId: TEST_IDS.FOOD_PRODUCT,
         quantity: 1,
         unit: Unit.G,
-      } as any,
+      },
       TEST_IDS.USER,
     );
 
@@ -105,7 +105,7 @@ describe('MealItemService', () => {
 
     const result = await service.update(
       TEST_IDS.MEAL_ITEM,
-      { quantity: 3 } as any,
+      { quantity: 3 },
       TEST_IDS.USER,
     );
 
