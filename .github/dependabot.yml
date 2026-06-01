@@ -7,17 +7,10 @@ updates:
       interval: 'daily'
       time: '09:00'
     open-pull-requests-limit: 3
-    reviewers:
-      - 'foodmission-team'
-    assignees:
-      - 'foodmission-team'
     commit-message:
       prefix: 'chore'
       prefix-development: 'chore'
       include: 'scope'
-    labels:
-      - 'dependencies'
-      - 'automated'
     groups:
       # Group development dependencies
       dev-dependencies:
@@ -56,17 +49,9 @@ updates:
       interval: 'weekly'
       day: 'tuesday'
       time: '09:00'
-    reviewers:
-      - 'foodmission-team'
-    assignees:
-      - 'foodmission-team'
     commit-message:
       prefix: 'chore'
       include: 'scope'
-    labels:
-      - 'docker'
-      - 'dependencies'
-      - 'automated'
     groups:
       docker-updates:
         patterns:
@@ -79,17 +64,9 @@ updates:
       interval: 'weekly'
       day: 'wednesday'
       time: '09:00'
-    reviewers:
-      - 'foodmission-team'
-    assignees:
-      - 'foodmission-team'
     commit-message:
       prefix: 'chore'
       include: 'scope'
-    labels:
-      - 'github-actions'
-      - 'dependencies'
-      - 'automated'
     groups:
       github-actions:
         patterns:
