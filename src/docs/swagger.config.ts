@@ -136,7 +136,7 @@ export const createSwaggerConfig = () => {
 
   const builder = new DocumentBuilder()
     .setTitle('Foodmission Data Framework API')
-    .setDescription(buildOpenApiDescription(apiVersion, apiRelease))
+    .setDescription(buildOpenApiDescription(apiRelease))
     .setVersion(apiVersion)
     .setContact(
       'FOODMISSION Team',

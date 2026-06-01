@@ -1,11 +1,9 @@
 export function buildOpenApiDescription(
-  apiVersion: string,
   apiRelease: string,
 ): string {
   return `
 A comprehensive backend system for managing food-related data and operations.
 
-**API Version:** ${apiVersion}
 **Release:** ${apiRelease}
 
 ## Features
