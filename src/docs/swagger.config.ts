@@ -100,6 +100,10 @@ const getShortGitSha = (): string | undefined => {
     return fullSha.slice(0, 7);
   }
 
+  if (process.env.NODE_ENV === 'production') {
+    return undefined;
+  }
+
   try {
     const gitSha = execSync('git rev-parse --short HEAD', {
       encoding: 'utf8',
