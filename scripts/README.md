@@ -25,7 +25,7 @@ the FOODMISSION Data Framework.
 
 ### OpenAPI
 
-Shared config and document builders live in `src/docs/` (`swagger.config.ts`, `swagger.document.ts`).
+Shared config and document builders live in `src/docs/` (`swagger.config.ts`, `swagger.document.ts`, `swagger.generate.ts`, `swagger.artifacts.ts`).
 
 - **`generate-openapi-spec.ts`** — writes `docs/openapi.json` and `docs/openapi.yaml` (`npm run docs:generate`)
 
