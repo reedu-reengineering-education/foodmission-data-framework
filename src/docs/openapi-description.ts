@@ -15,17 +15,14 @@ export function buildOpenApiDescription(
       - **User Management**: User profiles and dietary preferences
       - **Health Monitoring**: Comprehensive health checks and metrics
       
-      ## Getting Started
-      1. Obtain a JWT token from the authentication endpoints
-      2. Include the token in the Authorization header: \`Bearer <token>\`
-      3. Use the interactive documentation below to explore available endpoints
-      
       ## Authentication
       This API uses stateless JWT authentication via Keycloak.
-      
+
       1. Get Keycloak configuration from \`/auth/info\`
-      2. Authenticate directly with Keycloak using OAuth2/OIDC
-      3. Include JWT tokens in the Authorization header: \`Bearer <token>\`
+      2. Authenticate with Keycloak using OAuth2/OIDC to obtain a JWT
+      3. Include the token in the Authorization header: \`Bearer <token>\`
+
+      Then use the interactive docs below to explore the available endpoints.
       
       ## Rate Limiting
       API requests are rate-limited to prevent abuse. Check response headers for rate limit information.
@@ -40,17 +37,6 @@ export function buildOpenApiDescription(
       - **path**: API path where the error occurred
       - **traceId**: Unique identifier for request tracing
       - **details**: Optional object containing additional error information (e.g., validation errors array)
-      
-      ### Common Error Responses
-      
-      - **400 Bad Request**: Invalid input data or validation failed. The \`details.errors\` field contains an array of validation error messages.
-      - **401 Unauthorized**: Authentication required or invalid/expired JWT token.
-      - **403 Forbidden**: Authenticated but insufficient permissions for the requested resource.
-      - **404 Not Found**: The requested resource does not exist.
-      - **409 Conflict**: Resource already exists or state conflict (e.g., duplicate email).
-      - **422 Unprocessable Entity**: Request is well-formed but semantically incorrect (business validation failed).
-      - **429 Too Many Requests**: Rate limit exceeded. Check response headers for retry information.
-      - **500 Internal Server Error**: An unexpected server error occurred. The trace ID can be used for support.
       
       ### Example Error Response
       
