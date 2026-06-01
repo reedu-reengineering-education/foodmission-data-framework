@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'foodkeeper-data.json');
 
 interface FoodKeeperCategory {

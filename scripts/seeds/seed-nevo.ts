@@ -3,8 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const CSV_PATH = path.join(
-  __dirname,
-  '..',
+  process.cwd(),
   'prisma',
   'seeds',
   'data',

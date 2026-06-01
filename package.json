@@ -8,10 +8,6 @@
     "node": ">=24.0.0",
     "npm": ">=10.0.0"
   },
-  "overrides": {
-    "file-type": "^21.3.1",
-    "@isaacs/brace-expansion": "^5.0.1"
-  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -35,13 +31,14 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
-    "db:seed": "prisma db seed",
-    "db:seed:prod": "ts-node scripts/seed-prod.ts",
-    "db:seed:dev": "ts-node scripts/seed-dev.ts",
-    "db:seed:test": "ts-node scripts/seed-test.ts",
-    "db:seed:foods": "ts-node scripts/seed-food-products-only.ts",
-    "db:seed:meal-logs": "ts-node scripts/dev/seed-meal-logs.ts",
+    "db:seed": "prisma db seed -- --environment development",
+    "db:seed:prod": "prisma db seed -- --environment production",
+    "db:seed:test": "ts-node scripts/dev/seed-test.ts",
+    "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",
+    "db:seed:meal-logs": "ts-node scripts/seeds/dev/seed-meal-logs.ts",
+    "db:seed:shopping-lists": "ts-node scripts/seeds/dev/seed-shopping-lists.ts",
     "db:clean:meal-logs": "ts-node scripts/dev/clean-meal-logs.ts",
+    "db:clean:shopping-lists": "ts-node scripts/dev/clean-shopping-lists.ts",
     "db:clean:analytics": "ts-node scripts/dev/clean-analytics.ts",
     "db:backup": "./scripts/db-backup.sh",
     "db:backup:full": "./scripts/db-backup.sh full",
