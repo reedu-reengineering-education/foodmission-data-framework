@@ -84,14 +84,14 @@ export class KnowledgeRepository implements BaseRepository<
 
   async create(data: CreateKnowledgeData): Promise<Knowledge> {
     return this.prisma.knowledge.create({
-      data: data as Prisma.KnowledgeUncheckedCreateInput,
+      data: data,
     });
   }
 
   async update(id: string, data: UpdateKnowledgeData): Promise<Knowledge> {
     return this.prisma.knowledge.update({
       where: { id },
-      data: data as Prisma.KnowledgeUncheckedUpdateInput,
+      data: data,
     });
   }
 

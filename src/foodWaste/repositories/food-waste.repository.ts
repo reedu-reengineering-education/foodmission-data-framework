@@ -112,7 +112,7 @@ export class FoodWasteRepository implements BaseRepository<
         foodProduct: true,
         genericFood: true,
         pantryItem: true,
-      } as Prisma.FoodWasteInclude,
+      },
     });
   }
 
@@ -122,24 +122,24 @@ export class FoodWasteRepository implements BaseRepository<
   ): Promise<FoodWaste> {
     const client = tx ?? this.prisma;
     return await client.foodWaste.create({
-      data: data as Prisma.FoodWasteUncheckedCreateInput,
+      data: data,
       include: {
         foodProduct: true,
         genericFood: true,
         pantryItem: true,
-      } as Prisma.FoodWasteInclude,
+      },
     });
   }
 
   async update(id: string, data: UpdateFoodWasteData): Promise<FoodWaste> {
     return await this.prisma.foodWaste.update({
       where: { id },
-      data: data as Prisma.FoodWasteUncheckedUpdateInput,
+      data: data,
       include: {
         foodProduct: true,
         genericFood: true,
         pantryItem: true,
-      } as Prisma.FoodWasteInclude,
+      },
     });
   }
 
@@ -224,7 +224,8 @@ export class FoodWasteRepository implements BaseRepository<
 
         // Use foodProductId if available, otherwise use genericFoodId
         const key = record.foodProductId || record.genericFoodId!;
-        const name = record.foodProduct?.name || record.genericFood?.foodName || 'Unknown';
+        const name =
+          record.foodProduct?.name || record.genericFood?.foodName || 'Unknown';
 
         if (!acc[key]) {
           acc[key] = {

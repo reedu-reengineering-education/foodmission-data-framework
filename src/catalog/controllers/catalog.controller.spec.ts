@@ -36,7 +36,7 @@ describe('CatalogController', () => {
         dietaryPreferences: [],
         shoppingResponsibilities: [],
       },
-    } as any);
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CatalogController],
@@ -68,9 +68,9 @@ describe('CatalogController', () => {
       page: 1,
       limit: 10,
       totalPages: 0,
-    } as any);
+    });
 
-    controller.countries({ page: 1, limit: 10, search: 'nl' } as any);
+    controller.countries({ page: 1, limit: 10, search: 'nl' });
     expect(service.listCountries).toHaveBeenCalledWith({
       page: 1,
       limit: 10,

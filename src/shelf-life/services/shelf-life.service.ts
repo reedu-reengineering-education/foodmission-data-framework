@@ -11,6 +11,11 @@ export interface ExpiryCalculationResult {
   storageType: StorageType | null;
 }
 
+export interface ResolvedExpiryResult {
+  expiryDate: Date | undefined;
+  source: 'auto_foodkeeper' | undefined;
+}
+
 @Injectable()
 export class ShelfLifeService {
   private readonly logger = new Logger(ShelfLifeService.name);
@@ -91,6 +96,63 @@ export class ShelfLifeService {
 
   async searchByFoodName(foodName: string): Promise<FoodShelfLife | null> {
     return this.shelfLifeRepository.findBestMatch(foodName);
+  }
+
+  /**
+   * Resolves an expiry date using a three-tier fallback chain:
+   *  1. FK-linked shelf life record (shelfLifeId) — most precise
+   *  2. Name-based fuzzy search (foodName)
+   *  3. Category-based match (categoryHints)
+   *
+   * Returns undefined expiry when none of the tiers produce a result.
+   * When shelfLifeId is provided the fallback tiers are skipped.
+   */
+  async resolveExpiryDate(params: {
+    shelfLifeId?: string | null;
+    foodName?: string | null;
+    categoryHints?: string[];
+  }): Promise<ResolvedExpiryResult> {
+    const { shelfLifeId, foodName, categoryHints = [] } = params;
+
+    if (shelfLifeId) {
+      const shelfLife = await this.shelfLifeRepository.findById(shelfLifeId);
+      if (shelfLife) {
+        const date = this.dateFromShelfLife(shelfLife);
+        if (date) return { expiryDate: date, source: 'auto_foodkeeper' };
+      }
+      return { expiryDate: undefined, source: undefined };
+    }
+
+    if (foodName) {
+      try {
+        const result = await this.calculateExpiryDate(foodName);
+        if (result.expiryDate) {
+          return { expiryDate: result.expiryDate, source: 'auto_foodkeeper' };
+        }
+      } catch (err) {
+        if (!(err instanceof NotFoundException)) throw err;
+      }
+    }
+
+    if (categoryHints.length > 0) {
+      const shelfLife =
+        await this.shelfLifeRepository.findByCategoryHints(categoryHints);
+      if (shelfLife) {
+        const date = this.dateFromShelfLife(shelfLife);
+        if (date) return { expiryDate: date, source: 'auto_foodkeeper' };
+      }
+    }
+
+    return { expiryDate: undefined, source: undefined };
+  }
+
+  private dateFromShelfLife(shelfLife: FoodShelfLife): Date | null {
+    const storageType = this.inferStorageType(shelfLife);
+    const days = this.getDaysForStorageType(shelfLife, storageType);
+    if (days === null) return null;
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
   }
 
   async findAll(options?: {

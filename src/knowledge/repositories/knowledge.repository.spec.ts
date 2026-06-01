@@ -70,7 +70,7 @@ describe('KnowledgeRepository', () => {
         mockKnowledge,
       );
 
-      const result = await repository.create(data as any);
+      const result = await repository.create(data);
 
       expect(result).toEqual(mockKnowledge);
       expect(prisma.knowledge.create).toHaveBeenCalledWith({

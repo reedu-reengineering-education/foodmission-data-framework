@@ -503,6 +503,33 @@ export class MealLogAnalyticsController extends BaseAnalyticsAdminController<Mea
       parseDate(from, 'from'),
       parseDate(to, 'to'),
     );
+    return { batchId };
+  }
+
+  @Post('batches/run-daily')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Manually trigger the daily aggregation job' })
+  @ApiResponse({ status: 201, description: 'Batch ID for yesterday' })
+  async runDaily() {
+    const batchId = await this.analyticsService.runDailyAggregation();
+    return { batchId };
+  }
+
+  @Get('batches')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @Roles('admin')
+  @ApiOperation({ summary: 'List all analytics batches' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: MealLogAnalyticsBatchStatus,
+  })
+  @ApiResponse({ status: 200, description: 'List of batches' })
+  async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
+    return this.analyticsService.listBatches(status);
   }
 
 }

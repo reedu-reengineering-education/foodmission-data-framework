@@ -94,7 +94,9 @@ describe('FoodProducts endpoints (e2e)', () => {
       .get('/food-products?page=1&limit=10')
       .expect(200);
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data[0]).toEqual(expect.objectContaining({ id: expect.any(String) }));
+    expect(res.body.data[0]).toEqual(
+      expect.objectContaining({ id: expect.any(String) }),
+    );
     expect(res.body.total).toBeGreaterThanOrEqual(2);
     expect(res.body.page).toBe(1);
     expect(res.body.limit).toBe(10);
@@ -104,7 +106,9 @@ describe('FoodProducts endpoints (e2e)', () => {
     const res = await request(app.getHttpServer())
       .get('/food-products?search=Apple')
       .expect(200);
-    expect(res.body.data.every((p: any) => p.name.includes('Apple'))).toBe(true);
+    expect(res.body.data.every((p: any) => p.name.includes('Apple'))).toBe(
+      true,
+    );
   });
 
   itIfDb('GET /food-products/:id returns one product', async () => {
@@ -114,29 +118,37 @@ describe('FoodProducts endpoints (e2e)', () => {
     expect(res.body.name).toBe('Apple');
   });
 
-  itIfDb('GET /food-products/barcode/:barcode returns one product', async () => {
-    const res = await request(app.getHttpServer())
-      .get('/food-products/barcode/1111111111111')
-      .expect(200);
-    expect(res.body.barcode).toBe('1111111111111');
-  });
+  itIfDb(
+    'GET /food-products/barcode/:barcode returns one product',
+    async () => {
+      const res = await request(app.getHttpServer())
+        .get('/food-products/barcode/1111111111111')
+        .expect(200);
+      expect(res.body.barcode).toBe('1111111111111');
+    },
+  );
 
-  itIfDb('GET /food-products/search/openfoodfacts delegates to OFF service', async () => {
-    openFoodFactsMock.searchProducts.mockResolvedValue({
-      products: [{ barcode: '333', name: 'OFF Product' }],
-      totalCount: 1,
-      page: 1,
-      pageSize: 10,
-      totalPages: 1,
-    });
+  itIfDb(
+    'GET /food-products/search/openfoodfacts delegates to OFF service',
+    async () => {
+      openFoodFactsMock.searchProducts.mockResolvedValue({
+        products: [{ barcode: '333', name: 'OFF Product' }],
+        totalCount: 1,
+        page: 1,
+        pageSize: 10,
+        totalPages: 1,
+      });
 
-    const res = await request(app.getHttpServer())
-      .get('/food-products/search/openfoodfacts?query=food&page=1&pageSize=10')
-      .expect(200);
+      const res = await request(app.getHttpServer())
+        .get(
+          '/food-products/search/openfoodfacts?query=food&page=1&pageSize=10',
+        )
+        .expect(200);
 
-    expect(openFoodFactsMock.searchProducts).toHaveBeenCalled();
-    expect(res.body.products).toHaveLength(1);
-  });
+      expect(openFoodFactsMock.searchProducts).toHaveBeenCalled();
+      expect(res.body.products).toHaveLength(1);
+    },
+  );
 
   itIfDb('POST /food-products creates a new product', async () => {
     const res = await request(app.getHttpServer())
@@ -215,7 +227,9 @@ describe('FoodProducts endpoints (e2e)', () => {
       });
 
       const res = await request(app.getHttpServer())
-        .get('/food-products/00000000-0000-0000-0000-000000000201/openfoodfacts')
+        .get(
+          '/food-products/00000000-0000-0000-0000-000000000201/openfoodfacts',
+        )
         .expect(200);
 
       expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
@@ -228,6 +242,8 @@ describe('FoodProducts endpoints (e2e)', () => {
   );
 
   itIfDb('returns 400 for invalid UUID on /food-products/:id', async () => {
-    await request(app.getHttpServer()).get('/food-products/not-a-uuid').expect(400);
+    await request(app.getHttpServer())
+      .get('/food-products/not-a-uuid')
+      .expect(400);
   });
 });

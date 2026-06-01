@@ -39,9 +39,9 @@ describe('MealsController', () => {
   });
 
   it('create should delegate to service with user id', async () => {
-    service.create.mockResolvedValueOnce(mockMeal as any);
+    service.create.mockResolvedValueOnce(mockMeal);
     const dto = { name: 'New' };
-    const result = await controller.create(dto as any, 'user-1');
+    const result = await controller.create(dto, 'user-1');
     expect(result).toEqual(mockMeal);
     expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
   });
@@ -53,14 +53,14 @@ describe('MealsController', () => {
       total: 1,
     } as any);
 
-    const result = await controller.findAll('user-1', query as any);
+    const result = await controller.findAll('user-1', query);
 
     expect(result).toEqual({ data: [mockMeal], total: 1 });
     expect(service.findAll).toHaveBeenCalledWith('user-1', query);
   });
 
   it('findOne should fetch a meal by id', async () => {
-    service.findOne.mockResolvedValueOnce(mockMeal as any);
+    service.findOne.mockResolvedValueOnce(mockMeal);
     const result = await controller.findOne('meal-1', 'user-1');
     expect(result).toEqual(mockMeal);
     expect(service.findOne).toHaveBeenCalledWith('meal-1', 'user-1');
@@ -70,9 +70,9 @@ describe('MealsController', () => {
     service.update.mockResolvedValueOnce({
       ...mockMeal,
       name: 'Updated',
-    } as any);
+    });
     const dto = { name: 'Updated' };
-    const result = await controller.update('meal-1', dto as any, 'user-1');
+    const result = await controller.update('meal-1', dto, 'user-1');
 
     expect(result.name).toBe('Updated');
     expect(service.update).toHaveBeenCalledWith('meal-1', dto, 'user-1');

@@ -1,23 +1,25 @@
 import { PrismaClient } from '@prisma/client';
+import { seedRecipes } from './prod/themealdb';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const CSV_PATH = path.join(__dirname, 'data', 'nevo', 'NEVO2025_v9.0.csv');
+const CSV_PATH = path.join(
+  __dirname,
+  '..',
+  'prisma',
+  'seeds',
+  'data',
+  'nevo',
+  'NEVO2025_v9.0.csv',
+);
 
-/**
- * Column indices in the pipe-delimited NEVO CSV.
- * Dutch-only columns (2: Voedingsmiddelgroep, 5: Dutch food name, 9: Opmerking) are skipped.
- */
 const COL = {
   NEVO_VERSION: 0,
-  // 1 = Voedingsmiddelgroep (Dutch) — skipped
   FOOD_GROUP: 2,
   NEVO_CODE: 3,
-  // 4 = Voedingsmiddelnaam/Dutch food name — skipped
   FOOD_NAME: 5,
   SYNONYM: 6,
   QUANTITY: 7,
-  // 8 = Opmerking (Dutch remark) — skipped
   CONTAINS_TRACES_OF: 9,
   IS_FORTIFIED_WITH: 10,
   ENERCJ: 11,
@@ -158,11 +160,8 @@ const COL = {
   FAMSTXR: 146,
   FAUN: 147,
 } as const;
+const REQUIRED_COLUMN_COUNT = COL.FAUN + 1;
 
-/**
- * Parse a NEVO numeric value.
- * NEVO uses comma as decimal separator, empty or non-numeric values return null.
- */
 function parseFloat_(raw: string): number | null {
   const cleaned = raw.replace(/"/g, '').trim();
   if (cleaned === '' || cleaned === '-') return null;
@@ -185,31 +184,33 @@ function parseInt_(raw: string): number {
   return parseInt(cleaned, 10);
 }
 
-export async function seedGenericFoods(prisma: PrismaClient) {
-  console.log('🥗 Seeding generic foods from NEVO2025...');
+async function main() {
+  const prisma = new PrismaClient();
+
+  console.log('🔒 Running production NEVO create-only seed (no updates)');
 
   if (!fs.existsSync(CSV_PATH)) {
-    console.warn(
-      `⚠️  NEVO CSV not found at ${CSV_PATH}, skipping generic foods seed.`,
-    );
-    return [];
+    console.warn(`⚠️  NEVO CSV not found at ${CSV_PATH}, nothing to do.`);
+    await prisma.$disconnect();
+    return;
   }
 
   const content = fs.readFileSync(CSV_PATH, 'utf-8');
   const lines = content.split('\n').filter((line) => line.trim() !== '');
-
-  // Skip header row
   const dataLines = lines.slice(1);
-  console.log(`   Found ${dataLines.length} food entries in NEVO CSV`);
+  console.log(`   Found ${dataLines.length} entries in NEVO CSV`);
 
-  const results: { nevoCode: number; foodName: string }[] = [];
-
+  let created = 0;
   for (const line of dataLines) {
     const cols = line.split('|');
-    if (cols.length < 12) continue; // Skip malformed rows
-
+    if (cols.length < REQUIRED_COLUMN_COUNT) continue;
     const nevoCode = parseInt_(cols[COL.NEVO_CODE]);
     if (isNaN(nevoCode)) continue;
+
+    const exists = await prisma.genericFood.findUnique({
+      where: { nevoCode },
+    });
+    if (exists) continue; // skip existing — create-only
 
     const data = {
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
@@ -219,12 +220,8 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       quantity: parseStringOrNull(cols[COL.QUANTITY]),
       containsTracesOf: parseStringOrNull(cols[COL.CONTAINS_TRACES_OF]),
       isFortifiedWith: parseStringOrNull(cols[COL.IS_FORTIFIED_WITH]),
-
-      // Energy
       energyKj: parseFloat_(cols[COL.ENERCJ]),
       energyKcal: parseFloat_(cols[COL.ENERCC]),
-
-      // Macronutrients
       water: parseFloat_(cols[COL.WATER]),
       proteins: parseFloat_(cols[COL.PROT]),
       proteinsPlant: parseFloat_(cols[COL.PROTPL]),
@@ -241,8 +238,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       alcohol: parseFloat_(cols[COL.ALC]),
       organicAcids: parseFloat_(cols[COL.OA]),
       ash: parseFloat_(cols[COL.ASH]),
-
-      // Fatty acids summary
       fattyAcidsTotal: parseFloat_(cols[COL.FACID]),
       saturatedFat: parseFloat_(cols[COL.FASAT]),
       monoUnsaturatedFat: parseFloat_(cols[COL.FAMSCIS]),
@@ -250,8 +245,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       omega3Fat: parseFloat_(cols[COL.FAPUN3]),
       omega6Fat: parseFloat_(cols[COL.FAPUN6]),
       transFat: parseFloat_(cols[COL.FATRS]),
-
-      // Minerals
       chloride: parseFloat_(cols[COL.CHORL]),
       sodium: parseFloat_(cols[COL.NA]),
       potassium: parseFloat_(cols[COL.K]),
@@ -265,8 +258,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       selenium: parseFloat_(cols[COL.SE]),
       zinc: parseFloat_(cols[COL.ZN]),
       iodine: parseFloat_(cols[COL.ID]),
-
-      // Vitamins
       vitaminARae: parseFloat_(cols[COL.VITA_RAE]),
       vitaminARe: parseFloat_(cols[COL.VITA_RE]),
       retinol: parseFloat_(cols[COL.RETOL]),
@@ -298,8 +289,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       folateFood: parseFloat_(cols[COL.FOLFD]),
       folicAcid: parseFloat_(cols[COL.FOLAC]),
       vitaminC: parseFloat_(cols[COL.VITC]),
-
-      // Individual saturated fatty acids
       fa4_0: parseFloat_(cols[COL.F4_0]),
       fa6_0: parseFloat_(cols[COL.F6_0]),
       fa8_0: parseFloat_(cols[COL.F8_0]),
@@ -321,8 +310,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fa25_0: parseFloat_(cols[COL.F25_0]),
       fa26_0: parseFloat_(cols[COL.F26_0]),
       saturatedFatRemainder: parseFloat_(cols[COL.FASATXR]),
-
-      // Individual cis-monounsaturated fatty acids
       fa10_1cis: parseFloat_(cols[COL.F10_1CIS]),
       fa12_1cis: parseFloat_(cols[COL.F12_1CIS]),
       fa14_1cis: parseFloat_(cols[COL.F14_1CIS]),
@@ -332,8 +319,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fa22_1cis: parseFloat_(cols[COL.F22_1CIS]),
       fa24_1cis: parseFloat_(cols[COL.F24_1CIS]),
       monoUnsaturatedFatRemainder: parseFloat_(cols[COL.FAMSCXR]),
-
-      // Individual polyunsaturated fatty acids
       fa18_2cn6: parseFloat_(cols[COL.F18_2CN6]),
       fa18_2cn9: parseFloat_(cols[COL.F18_2CN9]),
       fa18_2ct: parseFloat_(cols[COL.F18_2CT]),
@@ -359,8 +344,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fa22_6cn3: parseFloat_(cols[COL.F22_6CN3]),
       fa24_2cn6: parseFloat_(cols[COL.F24_2CN6]),
       polyUnsaturatedFatRemainder: parseFloat_(cols[COL.FAPUXR]),
-
-      // Individual trans fatty acids
       fa10_1trans: parseFloat_(cols[COL.F10_1TRS]),
       fa12_1trans: parseFloat_(cols[COL.F12_1TRS]),
       fa14_1trans: parseFloat_(cols[COL.F14_1TRS]),
@@ -373,22 +356,47 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fa22_1trans: parseFloat_(cols[COL.F22_1TRS]),
       fa24_1trans: parseFloat_(cols[COL.F24_1TRS]),
       transFatRemainder: parseFloat_(cols[COL.FAMSTXR]),
-
-      // Other
       fattyAcidsUnidentified: parseFloat_(cols[COL.FAUN]),
-    };
+    } as any;
 
-    const record = await prisma.genericFood.upsert({
-      where: { nevoCode },
-      update: data,
-      create: { nevoCode, ...data },
-    });
-
-    if (record) {
-      results.push({ nevoCode, foodName: data.foodName });
+    try {
+      await prisma.genericFood.create({ data: { nevoCode, ...data } });
+      created += 1;
+    } catch (err: any) {
+      // If a concurrent process created the same nevoCode, skip
+      if (err && err.code === 'P2002') {
+        continue;
+      }
+      console.error(
+        'Error creating NEVO record',
+        nevoCode,
+        err?.message || err,
+      );
     }
   }
 
-  console.log(`   ✅ Processed ${results.length} generic foods`);
-  return results;
+  console.log(`   ✅ Created ${created} new NEVO generic foods`);
+
+  try {
+    console.log(
+      '\n🍽️  Seeding recipes linked to generic foods / NEVO (skip existing)...',
+    );
+    const result = await seedRecipes(prisma, { skipExisting: true });
+    if (result.errors && result.errors > 0) {
+      console.error(
+        `   ❌ Recipe seeding completed with ${result.errors} errors`,
+      );
+      process.exitCode = 1;
+    }
+  } catch (err) {
+    console.error('   ❌ Failed to seed recipes:', err);
+    process.exitCode = 1;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
+
+main().catch((err) => {
+  console.error('Seed failed', err);
+  process.exitCode = 1;
+});

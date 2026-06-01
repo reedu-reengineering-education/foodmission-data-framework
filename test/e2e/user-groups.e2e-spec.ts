@@ -85,8 +85,11 @@ describe('User Groups (e2e)', () => {
     const groupId = created.body.id;
 
     await request(app.getHttpServer()).get('/user-groups').expect(200);
-    await request(app.getHttpServer()).get(`/user-groups/${groupId}`).expect(200);
-    await request(app.getHttpServer()).delete(`/user-groups/${groupId}`).expect(200);
+    await request(app.getHttpServer())
+      .get(`/user-groups/${groupId}`)
+      .expect(200);
+    await request(app.getHttpServer())
+      .delete(`/user-groups/${groupId}`)
+      .expect(200);
   });
 });
-

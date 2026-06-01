@@ -106,7 +106,6 @@ describe('Catalog (e2e)', () => {
     expect(String(res.body.limit)).toBe('10');
   });
 
-
   it('GET /catalog/regions (paginated without filters)', async () => {
     const res = await request(app.getHttpServer())
       .get('/catalog/regions?page=1&limit=10')

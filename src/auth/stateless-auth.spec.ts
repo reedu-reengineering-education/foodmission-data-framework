@@ -21,7 +21,7 @@ describe('Stateless Authentication', () => {
     };
 
     const authService = { register: jest.fn(), login: jest.fn() } as any;
-    controller = new AuthController(userProfileService as any, authService);
+    controller = new AuthController(userProfileService, authService);
   });
 
   afterEach(() => {

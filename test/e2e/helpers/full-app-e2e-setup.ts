@@ -66,4 +66,3 @@ afterAll(async () => {
   if (app) await app.close();
   if (prisma) await prisma.$disconnect();
 });
-

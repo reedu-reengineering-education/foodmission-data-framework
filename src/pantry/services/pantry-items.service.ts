@@ -15,7 +15,6 @@ import {
   PantryItemWithRelations,
 } from '../repositories/pantry-items.repository';
 import { plainToClass, plainToInstance } from 'class-transformer';
-import { PrismaService } from '../../database/prisma.service';
 import {
   MultiplePantryItemResponseDto,
   PantryItemResponseDto,
@@ -27,8 +26,16 @@ import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopp
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
-import { Prisma, Unit, WasteReason, DetectionMethod } from '@prisma/client';
+import {
+  Prisma,
+  Unit,
+  WasteReason,
+  DetectionMethod,
+  GenericFood,
+} from '@prisma/client';
 import { ShelfLifeService } from '../../shelf-life/services/shelf-life.service';
+import { FoodProductWithRelations } from '../../common/types/prisma-relations';
+import { buildCategoryHints } from '../../common/utils/food-tag.utils';
 import { ExpiredPantryItemDto } from '../dto/expired-pantry-item.dto';
 
 @Injectable()
@@ -36,7 +43,6 @@ export class PantryItemService {
   private readonly logger = new Logger(PantryItemService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly pantryService: PantryService,
     private readonly genericFoodRepository: GenericFoodRepository,
@@ -62,6 +68,13 @@ export class PantryItemService {
       });
       return await this.create(createPantryItemDto, userId, tx);
     } catch (err) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof ForbiddenException
+      ) {
+        throw err;
+      }
       throw new BadRequestException(
         'Failed to create pantry item from shopping list: ' +
           (err instanceof Error ? err.message : err),
@@ -83,52 +96,45 @@ export class PantryItemService {
       const { foodProductId, genericFoodId } = createDto;
       this.validateFoodRefInput(foodProductId, genericFoodId);
 
-      await this.ensureUniqueAndExists(
+      const validatedEntity = await this.ensureUniqueAndExists(
         resolvedPantryId,
         foodProductId,
         genericFoodId,
         tx,
       );
 
-      let resolvedFoodName: string | null = null;
-      let linkedShelfLifeId: string | null = null;
-      if (foodProductId) {
-        const food = await this.foodProductRepository.findById(foodProductId);
-        resolvedFoodName = food?.name ?? null;
-        linkedShelfLifeId = food?.shelfLifeId ?? null;
-      } else if (genericFoodId) {
-        const genericFood =
-          await this.genericFoodRepository.findById(genericFoodId);
-        resolvedFoodName = genericFood?.foodName ?? null;
-        linkedShelfLifeId = genericFood?.shelfLifeId ?? null;
-      }
-
-      let expiryDate: Date | undefined;
-      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined;
-
-      if (linkedShelfLifeId) {
-        const shelfLife = await this.prisma.foodShelfLife.findUnique({
-          where: { id: linkedShelfLifeId },
-        });
-        if (shelfLife) {
-          const storageType = this.shelfLifeService.inferStorageType(shelfLife);
-          const days = this.shelfLifeService.getDaysForStorageType(
-            shelfLife,
-            storageType,
-          );
-          if (days !== null) {
-            expiryDate = new Date();
-            expiryDate.setDate(expiryDate.getDate() + days);
-            expiryDateSource = 'auto_foodkeeper';
+      const { foodName, shelfLifeId, categoryHints } = foodProductId
+        ? {
+            foodName:
+              (validatedEntity as FoodProductWithRelations).name ?? null,
+            shelfLifeId:
+              (validatedEntity as FoodProductWithRelations).shelfLifeId ?? null,
+            categoryHints: buildCategoryHints(
+              (validatedEntity as FoodProductWithRelations).categories ?? [],
+            ),
           }
-        }
-      } else if (resolvedFoodName) {
-        const calcResult =
-          await this.shelfLifeService.calculateExpiryDate(resolvedFoodName);
-        if (calcResult.expiryDate) {
-          expiryDate = calcResult.expiryDate;
-          expiryDateSource = 'auto_foodkeeper';
-        }
+        : {
+            foodName: (validatedEntity as GenericFood).foodName ?? null,
+            shelfLifeId: (validatedEntity as GenericFood).shelfLifeId ?? null,
+            categoryHints: (validatedEntity as GenericFood).foodGroup
+              ? [(validatedEntity as GenericFood).foodGroup.toLowerCase()]
+              : [],
+          };
+      const { expiryDate: autoExpiry, source: autoSource } =
+        await this.shelfLifeService.resolveExpiryDate({
+          shelfLifeId,
+          foodName,
+          categoryHints,
+        });
+
+      let expiryDate: Date | undefined = autoExpiry;
+      let expiryDateSource: 'manual' | 'auto_foodkeeper' | undefined =
+        autoSource;
+
+      if (!expiryDate && foodName && !createDto.expiryDate) {
+        this.logger.warn(
+          `No shelf life data for "${foodName}"; expiry date will not be auto-calculated.`,
+        );
       }
 
       // Manual expiry date always takes precedence
@@ -170,6 +176,7 @@ export class PantryItemService {
       );
     }
   }
+
   private validateFoodRefInput(foodProductId?: string, genericFoodId?: string) {
     if (!foodProductId && !genericFoodId) {
       throw new BadRequestException(
@@ -218,9 +225,8 @@ export class PantryItemService {
       }
       return genericFood;
     }
-    throw new BadRequestException(
-      'Either foodProductId or genericFoodId is required.',
-    );
+
+    throw new Error('Either foodProductId or genericFoodId is required');
   }
 
   async findAll(

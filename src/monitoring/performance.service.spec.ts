@@ -30,14 +30,24 @@ describe('PerformanceService', () => {
 
   describe('recordQueryPerformance', () => {
     it('should record query performance metrics', () => {
-      service.recordQueryPerformance('findMany', 'food-products', 0.05, 'success');
+      service.recordQueryPerformance(
+        'findMany',
+        'food-products',
+        0.05,
+        'success',
+      );
 
       // Verify that metrics are recorded (in a real test, you'd check the metrics registry)
       expect(loggingService.warn).not.toHaveBeenCalled();
     });
 
     it('should log warning for slow queries', () => {
-      service.recordQueryPerformance('findMany', 'food-products', 1.5, 'success');
+      service.recordQueryPerformance(
+        'findMany',
+        'food-products',
+        1.5,
+        'success',
+      );
 
       expect(loggingService.warn).toHaveBeenCalledWith(
         'Slow query detected: findMany on food-products took 1.5s',

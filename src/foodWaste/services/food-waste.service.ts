@@ -110,7 +110,9 @@ export class FoodWasteService {
     try {
       const food = await this.foodProductRepository.findById(foodProductId);
       if (!food) {
-        this.logger.warn(`Food product not found for carbon calculation: ${foodProductId}`);
+        this.logger.warn(
+          `Food product not found for carbon calculation: ${foodProductId}`,
+        );
         return this.getDefaultCarbonEstimate(quantity, unit);
       }
 
@@ -446,8 +448,13 @@ export class FoodWasteService {
     const waste = await this.getOwnedFoodWasteOrThrow(id, userId);
 
     // If food product ID is being changed, validate it exists
-    if (updateDto.foodProductId && updateDto.foodProductId !== waste.foodProductId) {
-      const food = await this.foodProductRepository.findById(updateDto.foodProductId);
+    if (
+      updateDto.foodProductId &&
+      updateDto.foodProductId !== waste.foodProductId
+    ) {
+      const food = await this.foodProductRepository.findById(
+        updateDto.foodProductId,
+      );
       if (!food) {
         throw new NotFoundException('Food product not found');
       }

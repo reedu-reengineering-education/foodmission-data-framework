@@ -171,9 +171,9 @@ describe('MealsService', () => {
     mockMealRepository.findWithPagination.mockResolvedValue(paginationResult);
 
     await service.findAll(userId, {
-      mealCategory: 'ANIMAL_PROTEIN' as any,
-      mealCourse: 'MAIN_DISH' as any,
-      dietaryPreference: 'VEGAN' as any,
+      mealCategory: 'ANIMAL_PROTEIN',
+      mealCourse: 'MAIN_DISH',
+      dietaryPreference: 'VEGAN',
       page: 1,
       limit: 10,
     });

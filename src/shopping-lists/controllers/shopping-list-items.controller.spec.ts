@@ -87,7 +87,7 @@ describe('ShoppingListItemsController', () => {
 
   describe('findById', () => {
     it('should call service with id, userId, and shoppingListId', async () => {
-      service.findById.mockResolvedValueOnce(mockItemResponse as any);
+      service.findById.mockResolvedValueOnce(mockItemResponse);
 
       const result = await controller.findById(
         shoppingListId,
@@ -107,7 +107,7 @@ describe('ShoppingListItemsController', () => {
   describe('update', () => {
     it('should call service with id, dto, userId, and shoppingListId', async () => {
       const updateDto = { quantity: 3 };
-      service.update = jest.fn().mockResolvedValue(mockItemResponse as any);
+      service.update = jest.fn().mockResolvedValue(mockItemResponse);
 
       const result = await controller.update(
         shoppingListId,

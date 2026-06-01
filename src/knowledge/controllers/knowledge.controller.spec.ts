@@ -81,12 +81,12 @@ describe('KnowledgeController', () => {
 
   describe('create', () => {
     it('should create knowledge with user id', async () => {
-      service.create.mockResolvedValueOnce(mockKnowledge as any);
+      service.create.mockResolvedValueOnce(mockKnowledge);
       const dto = {
         title: 'Test Quiz',
         content: { questions: [] },
       };
-      const result = await controller.create(dto as any, 'user-1');
+      const result = await controller.create(dto, 'user-1');
 
       expect(result).toEqual(mockKnowledge);
       expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
@@ -102,9 +102,9 @@ describe('KnowledgeController', () => {
         page: 1,
         limit: 10,
         totalPages: 1,
-      } as any);
+      });
 
-      const result = await controller.findAll('user-1', query as any);
+      const result = await controller.findAll('user-1', query);
 
       expect(result.data).toContain(mockKnowledge);
       expect(service.findAll).toHaveBeenCalledWith('user-1', query);
@@ -119,12 +119,12 @@ describe('KnowledgeController', () => {
         page: 1,
         limit: 10,
         totalPages: 1,
-      } as any);
+      });
 
       const result = await controller.getAllProgress('user-1', {
         page: 1,
         limit: 10,
-      } as any);
+      });
       expect(result.data).toEqual([mockProgress]);
       expect(progressService.getUserProgressPaginated).toHaveBeenCalledWith(
         'user-1',
@@ -135,7 +135,7 @@ describe('KnowledgeController', () => {
 
   describe('findOne', () => {
     it('should retrieve knowledge by id', async () => {
-      service.findOne.mockResolvedValueOnce(mockKnowledge as any);
+      service.findOne.mockResolvedValueOnce(mockKnowledge);
       const result = await controller.findOne('knowledge-1', 'user-1');
       expect(result).toEqual(mockKnowledge);
       expect(service.findOne).toHaveBeenCalledWith('knowledge-1', 'user-1');
@@ -145,13 +145,9 @@ describe('KnowledgeController', () => {
   describe('update', () => {
     it('should call service with id, dto, and user', async () => {
       const updated = { ...mockKnowledge, title: 'Updated' };
-      service.update.mockResolvedValueOnce(updated as any);
+      service.update.mockResolvedValueOnce(updated);
       const dto = { title: 'Updated' };
-      const result = await controller.update(
-        'knowledge-1',
-        dto as any,
-        'user-1',
-      );
+      const result = await controller.update('knowledge-1', dto, 'user-1');
       expect(result.title).toBe('Updated');
       expect(service.update).toHaveBeenCalledWith('knowledge-1', dto, 'user-1');
     });
@@ -167,7 +163,7 @@ describe('KnowledgeController', () => {
 
   describe('progress endpoints', () => {
     it('getProgress should retrieve user progress', async () => {
-      progressService.getProgress.mockResolvedValueOnce(mockProgress as any);
+      progressService.getProgress.mockResolvedValueOnce(mockProgress);
       const result = await controller.getProgress('knowledge-1', 'user-1');
       expect(result).toEqual(mockProgress);
       expect(progressService.getProgress).toHaveBeenCalledWith(
@@ -178,10 +174,10 @@ describe('KnowledgeController', () => {
 
     it('updateProgress should update progress', async () => {
       const dto = { completed: true, progress: { score: 10 } };
-      progressService.updateProgress.mockResolvedValueOnce(mockProgress as any);
+      progressService.updateProgress.mockResolvedValueOnce(mockProgress);
       const result = await controller.updateProgress(
         'knowledge-1',
-        dto as any,
+        dto,
         'user-1',
       );
       expect(result).toEqual(mockProgress);
