@@ -1,13 +1,12 @@
 import './otel-logging.bootstrap';
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
-import { createSwaggerConfig, getSwaggerMetadata } from './docs/swagger.config';
+import { OPENAPI_DOCS_PATH, OPENAPI_GLOBAL_PREFIX, registerOpenApi } from './docs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -42,59 +41,14 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix(OPENAPI_GLOBAL_PREFIX);
 
-  // Configure Swagger/OpenAPI
-  const config = createSwaggerConfig({ includeOAuth2: true });
-  const { apiVersion, apiRelease } = getSwaggerMetadata();
-
-  const document = SwaggerModule.createDocument(app, config, {
-    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
-    deepScanRoutes: true,
-  });
-
-  SwaggerModule.setup('api/docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-      tagsSorter: 'alpha',
-      operationsSorter: 'alpha',
-      docExpansion: 'none',
-      filter: true,
-      showRequestHeaders: true,
-      showCommonExtensions: true,
-      tryItOutEnabled: true,
-      displayOperationId: false,
-      displayRequestDuration: true,
-      oauth2RedirectUrl: '/api/docs/oauth2-redirect.html',
-      initOAuth: {
-        clientId: process.env.KEYCLOAK_CLIENT_ID,
-        realm: process.env.KEYCLOAK_REALM,
-        appName: 'FOODMISSION API Documentation',
-        scopes: ['openid', 'profile', 'email', 'roles'],
-        useBasicAuthenticationWithAccessCodeGrant: false,
-      },
-    },
-    customSiteTitle: `Foodmission API Documentation (v${apiVersion}, ${apiRelease})`,
-    customfavIcon: '/favicon.ico',
-    customJs: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js',
-    ],
-    customCssUrl: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
-    ],
-    customCss: `
-      .swagger-ui .topbar { display: none }
-      .swagger-ui .info { margin: 50px 0 }
-      .swagger-ui .info .title { color: #2c3e50 }
-      .swagger-ui .scheme-container { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0 }
-    `,
-  });
+  registerOpenApi(app);
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
   console.log(
-    `Swagger documentation available at: ${await app.getUrl()}/api/docs`,
+    `Swagger documentation available at: ${await app.getUrl()}/${OPENAPI_DOCS_PATH}`,
   );
   if (process.env.NODE_ENV === 'development') {
     Logger.log(
