@@ -13,7 +13,6 @@ const DEFAULT_SWAGGER_SERVERS: SwaggerServer[] = [
   { url: 'https://api.foodmission.eu', description: 'Production server' },
 ];
 
-/** Tag names must match `@ApiTags(...)` on controllers. */
 const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   {
     name: 'auth',
@@ -86,12 +85,7 @@ const getApiVersion = (): string =>
   process.env.API_VERSION || process.env.npm_package_version || DEFAULT_API_VERSION;
 
 const getShortGitSha = (): string | undefined => {
-  const fullSha =
-    process.env.API_GIT_SHA ||
-    process.env.GIT_SHA ||
-    process.env.COMMIT_SHA ||
-    process.env.GITHUB_SHA ||
-    process.env.VERCEL_GIT_COMMIT_SHA;
+  const fullSha = process.env.API_GIT_SHA || process.env.GITHUB_SHA;
 
   if (fullSha) {
     return fullSha.slice(0, 7);
@@ -122,7 +116,6 @@ const computeSwaggerMetadata = (): SwaggerMetadata => {
   return { apiVersion, apiRelease };
 };
 
-// Memoized so the git SHA lookup (execSync) runs at most once per process.
 export const getSwaggerMetadata = (): SwaggerMetadata =>
   (cachedMetadata ??= computeSwaggerMetadata());
 
@@ -134,46 +127,26 @@ const parseServersFromEnv = (): SwaggerServer[] => {
 
   try {
     const parsed = JSON.parse(rawServers) as SwaggerServer[];
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      const valid = parsed.filter(
-        (server) => server?.url && typeof server.url === 'string',
-      );
-      if (valid.length > 0) {
-        return valid.map((server) => ({
-          url: server.url,
-          description: server.description || 'API server',
-        }));
-      }
+    const valid = (Array.isArray(parsed) ? parsed : []).filter(
+      (server) => typeof server?.url === 'string',
+    );
+    if (valid.length > 0) {
+      return valid.map((server) => ({
+        url: server.url,
+        description: server.description || 'API server',
+      }));
     }
   } catch {
-    // Fallback to plain list parsing.
+    return DEFAULT_SWAGGER_SERVERS;
   }
 
-  const servers = rawServers
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .map((value) => {
-      const [url, description] = value.split('|');
-      return {
-        url: url.trim(),
-        description: (description || 'API server').trim(),
-      };
-    });
-
-  return servers.length > 0 ? servers : DEFAULT_SWAGGER_SERVERS;
+  return DEFAULT_SWAGGER_SERVERS;
 };
 
-export type SwaggerConfigOptions = {
-  includeOAuth2?: boolean;
-};
-
-export const createSwaggerConfig = (
-  options: SwaggerConfigOptions = {},
-) => {
+export const createSwaggerConfig = () => {
   const { apiVersion, apiRelease } = getSwaggerMetadata();
 
-  let builder = new DocumentBuilder()
+  const builder = new DocumentBuilder()
     .setTitle('Foodmission Data Framework API')
     .setDescription(buildOpenApiDescription(apiVersion, apiRelease))
     .setVersion(apiVersion)
@@ -193,10 +166,8 @@ export const createSwaggerConfig = (
         in: 'header',
       },
       'JWT-auth',
-    );
-
-  if (options.includeOAuth2) {
-    builder = builder.addOAuth2(
+    )
+    .addOAuth2(
       {
         type: 'oauth2',
         flows: {
@@ -214,14 +185,13 @@ export const createSwaggerConfig = (
       },
       'keycloak-oauth2',
     );
-  }
 
   for (const tag of TAG_DESCRIPTIONS) {
-    builder = builder.addTag(tag.name, tag.description);
+    builder.addTag(tag.name, tag.description);
   }
 
   for (const server of parseServersFromEnv()) {
-    builder = builder.addServer(server.url, server.description);
+    builder.addServer(server.url, server.description);
   }
 
   return builder.build();

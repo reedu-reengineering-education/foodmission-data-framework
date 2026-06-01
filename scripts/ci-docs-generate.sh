@@ -1,5 +1,4 @@
 #!/bin/bash
-# CI-friendly OpenAPI generation (env defaults are applied in src/docs).
 
 set -euo pipefail
 

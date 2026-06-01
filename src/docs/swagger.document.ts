@@ -5,11 +5,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import * as yaml from 'js-yaml';
 import { AppModule } from '../app.module';
-import {
-  createSwaggerConfig,
-  getSwaggerMetadata,
-  type SwaggerConfigOptions,
-} from './swagger.config';
+import { createSwaggerConfig, getSwaggerMetadata } from './swagger.config';
 
 export const OPENAPI_GLOBAL_PREFIX = 'api/v1';
 export const OPENAPI_DOCS_PATH = 'api/docs';
@@ -21,7 +17,6 @@ const documentOptions = {
 
 type OpenApiDocument = ReturnType<typeof createOpenApiDocument>;
 
-/** Apply mock env defaults so the app can boot for offline doc generation. */
 function ensureOpenApiGenerationEnv(): void {
   if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'test';
@@ -32,11 +27,8 @@ function ensureOpenApiGenerationEnv(): void {
   process.env.KEYCLOAK_CLIENT_ID ??= 'mock-client-id';
 }
 
-function createOpenApiDocument(
-  app: INestApplication,
-  options: SwaggerConfigOptions = {},
-) {
-  const config = createSwaggerConfig(options);
+function createOpenApiDocument(app: INestApplication) {
+  const config = createSwaggerConfig();
   return SwaggerModule.createDocument(app, config, documentOptions);
 }
 
@@ -99,13 +91,11 @@ function writeOpenApiArtifacts(document: OpenApiDocument, outputDir: string): vo
   );
 }
 
-/** Build the OpenAPI document and mount the Swagger UI on a running app. */
 export function registerOpenApi(app: INestApplication): void {
-  const document = createOpenApiDocument(app, { includeOAuth2: true });
+  const document = createOpenApiDocument(app);
   setupOpenApiDocs(app, document);
 }
 
-/** Boot a standalone app, write the spec files, and return the document. */
 export async function generateOpenApiFiles(
   outputDir: string,
 ): Promise<OpenApiDocument> {
@@ -117,7 +107,7 @@ export async function generateOpenApiFiles(
   });
   app.setGlobalPrefix(OPENAPI_GLOBAL_PREFIX);
 
-  const document = createOpenApiDocument(app, { includeOAuth2: true });
+  const document = createOpenApiDocument(app);
   writeOpenApiArtifacts(document, outputDir);
   await app.close();
 
