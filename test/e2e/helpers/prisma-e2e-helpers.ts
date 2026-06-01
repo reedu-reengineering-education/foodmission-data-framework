@@ -89,4 +89,3 @@ export async function cleanupTestFixtures(
   await prisma.foodProduct.delete({ where: { id: fixtures.foodProductId } });
   await prisma.user.delete({ where: { id: fixtures.userId } });
 }
-

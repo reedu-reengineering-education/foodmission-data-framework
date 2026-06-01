@@ -60,7 +60,7 @@ describe('FoodWasteController', () => {
       mockFoodWasteService.create.mockResolvedValue(TEST_FOOD_WASTE);
 
       const result = await controller.create(
-        TEST_CREATE_FOOD_WASTE_DTO as any,
+        TEST_CREATE_FOOD_WASTE_DTO,
         'user-1',
       );
 
@@ -78,7 +78,7 @@ describe('FoodWasteController', () => {
 
       const result = await controller.findAll(
         'user-1',
-        TEST_QUERY_FOOD_WASTE_DTO as any,
+        TEST_QUERY_FOOD_WASTE_DTO,
       );
 
       expect(service.findAll).toHaveBeenCalledWith(
@@ -119,7 +119,7 @@ describe('FoodWasteController', () => {
 
       const result = await controller.update(
         'food-waste-1',
-        TEST_UPDATE_FOOD_WASTE_DTO as any,
+        TEST_UPDATE_FOOD_WASTE_DTO,
         'user-1',
       );
 

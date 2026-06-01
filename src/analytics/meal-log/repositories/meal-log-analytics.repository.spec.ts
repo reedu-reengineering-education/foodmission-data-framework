@@ -38,7 +38,9 @@ describe('MealLogAnalyticsRepository', () => {
       ],
     }).compile();
 
-    repository = module.get<MealLogAnalyticsRepository>(MealLogAnalyticsRepository);
+    repository = module.get<MealLogAnalyticsRepository>(
+      MealLogAnalyticsRepository,
+    );
   });
 
   afterEach(() => {
@@ -49,11 +51,7 @@ describe('MealLogAnalyticsRepository', () => {
     it('sets published metadata when status is PUBLISHED', async () => {
       prisma.mealLogAnalyticsBatch.update.mockResolvedValueOnce({ id: 'b1' });
 
-      await repository.updateBatchStatus(
-        'b1',
-        'PUBLISHED' as any,
-        'admin-1',
-      );
+      await repository.updateBatchStatus('b1', 'PUBLISHED', 'admin-1');
 
       expect(prisma.mealLogAnalyticsBatch.update).toHaveBeenCalledWith({
         where: { id: 'b1' },
@@ -70,7 +68,7 @@ describe('MealLogAnalyticsRepository', () => {
 
       await repository.updateBatchStatus(
         'b1',
-        'REJECTED' as any,
+        'REJECTED',
         'admin-1',
         'invalid data',
       );
@@ -93,7 +91,9 @@ describe('MealLogAnalyticsRepository', () => {
 
       await repository.getPublishedNutrition();
 
-      expect(prisma.mealLogAnalyticsDailyNutrition.findMany).toHaveBeenCalledWith(
+      expect(
+        prisma.mealLogAnalyticsDailyNutrition.findMany,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             batch: { status: 'PUBLISHED' },
@@ -109,7 +109,9 @@ describe('MealLogAnalyticsRepository', () => {
 
       await repository.getPublishedNutrition(from, to, 'DINNER');
 
-      expect(prisma.mealLogAnalyticsDailyNutrition.findMany).toHaveBeenCalledWith(
+      expect(
+        prisma.mealLogAnalyticsDailyNutrition.findMany,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             batch: {
@@ -130,7 +132,9 @@ describe('MealLogAnalyticsRepository', () => {
 
       await repository.getPublishedFoodPopularity(undefined, undefined, 7);
 
-      expect(prisma.mealLogAnalyticsFoodPopularity.findMany).toHaveBeenCalledWith(
+      expect(
+        prisma.mealLogAnalyticsFoodPopularity.findMany,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { batch: { status: 'PUBLISHED' } },
           take: 7,
@@ -149,7 +153,7 @@ describe('MealLogAnalyticsRepository', () => {
         undefined,
         undefined,
         'DINNER',
-        'country' as any,
+        'country',
       );
 
       expect(
@@ -168,17 +172,21 @@ describe('MealLogAnalyticsRepository', () => {
 
   describe('getPublishedCrossDimNutrition', () => {
     it('applies dim1 and dim2 filters when provided', async () => {
-      prisma.mealLogAnalyticsCrossDimNutrition.findMany.mockResolvedValueOnce([]);
+      prisma.mealLogAnalyticsCrossDimNutrition.findMany.mockResolvedValueOnce(
+        [],
+      );
 
       await repository.getPublishedCrossDimNutrition(
         undefined,
         undefined,
         'LUNCH',
-        'ageGroup' as any,
-        'gender' as any,
+        'ageGroup',
+        'gender',
       );
 
-      expect(prisma.mealLogAnalyticsCrossDimNutrition.findMany).toHaveBeenCalledWith(
+      expect(
+        prisma.mealLogAnalyticsCrossDimNutrition.findMany,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             batch: { status: 'PUBLISHED' },

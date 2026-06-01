@@ -127,11 +127,7 @@ export class MealLogAnalyticsRepository {
     return filter;
   }
 
-  async getPublishedNutrition(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  async getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsDailyNutrition.findMany({
@@ -182,11 +178,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedMealPatterns(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  async getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsMealPatterns.findMany({
@@ -273,11 +265,7 @@ export class MealLogAnalyticsRepository {
     });
   }
 
-  async getPublishedMealRecords(
-    from?: Date,
-    to?: Date,
-    typeOfMeal?: string,
-  ) {
+  async getPublishedMealRecords(from?: Date, to?: Date, typeOfMeal?: string) {
     const batchFilter = this.publishedBatchFilter(from, to);
 
     return this.prisma.mealLogAnalyticsMealRecord.findMany({
@@ -319,13 +307,17 @@ export class MealLogAnalyticsRepository {
   async insertDemographicNutrition(
     data: Prisma.MealLogAnalyticsDemographicNutritionCreateManyInput[],
   ) {
-    return this.prisma.mealLogAnalyticsDemographicNutrition.createMany({ data });
+    return this.prisma.mealLogAnalyticsDemographicNutrition.createMany({
+      data,
+    });
   }
 
   async insertDemographicClassification(
     data: Prisma.MealLogAnalyticsDemographicClassificationCreateManyInput[],
   ) {
-    return this.prisma.mealLogAnalyticsDemographicClassification.createMany({ data });
+    return this.prisma.mealLogAnalyticsDemographicClassification.createMany({
+      data,
+    });
   }
 
   async insertDemographicPatterns(
@@ -347,7 +339,9 @@ export class MealLogAnalyticsRepository {
   async insertCrossDimClassification(
     data: Prisma.MealLogAnalyticsCrossDimClassificationCreateManyInput[],
   ) {
-    return this.prisma.mealLogAnalyticsCrossDimClassification.createMany({ data });
+    return this.prisma.mealLogAnalyticsCrossDimClassification.createMany({
+      data,
+    });
   }
 
   async insertCrossDimPatterns(

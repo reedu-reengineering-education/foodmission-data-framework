@@ -27,7 +27,8 @@ export class FoodWasteResponseDto {
   pantryItemId?: string;
 
   @ApiPropertyOptional({
-    description: 'The food product ID (if waste is linked to a specific food product)',
+    description:
+      'The food product ID (if waste is linked to a specific food product)',
     example: 'uuid-food-product-id',
   })
   @Expose()

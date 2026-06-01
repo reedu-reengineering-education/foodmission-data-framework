@@ -66,7 +66,10 @@ export async function createControllerE2eTestApp(params: {
   return { app, moduleFixture };
 }
 
-export async function seedAuthUser(prisma: PrismaClient, authUser: E2EAuthUser) {
+export async function seedAuthUser(
+  prisma: PrismaClient,
+  authUser: E2EAuthUser,
+) {
   await prisma.user.upsert({
     where: { id: authUser.id },
     update: { keycloakId: authUser.sub, email: authUser.email },
@@ -79,4 +82,3 @@ export async function seedAuthUser(prisma: PrismaClient, authUser: E2EAuthUser) 
     },
   });
 }
-

@@ -141,7 +141,10 @@ describe('Cache E2E', () => {
       const keys1 = cacheService.generateInvalidationKeys('food-products');
       expect(keys1).toEqual(['food-products:list', 'food-products:count']);
 
-      const keys2 = cacheService.generateInvalidationKeys('food-products', '123');
+      const keys2 = cacheService.generateInvalidationKeys(
+        'food-products',
+        '123',
+      );
       expect(keys2).toEqual([
         'food-products:list',
         'food-products:count',

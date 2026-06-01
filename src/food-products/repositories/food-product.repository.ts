@@ -22,15 +22,12 @@ export type FoodProductCreateInput = CreateFoodProductDto & {
 };
 
 @Injectable()
-export class FoodProductRepository
-  implements
-    BaseRepository<
-      FoodProduct,
-      FoodProductCreateInput,
-      UpdateFoodProductDto,
-      Prisma.FoodProductWhereInput
-    >
-{
+export class FoodProductRepository implements BaseRepository<
+  FoodProduct,
+  FoodProductCreateInput,
+  UpdateFoodProductDto,
+  Prisma.FoodProductWhereInput
+> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(

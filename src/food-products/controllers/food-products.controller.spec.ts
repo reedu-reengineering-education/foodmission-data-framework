@@ -74,14 +74,20 @@ describe('FoodProductController', () => {
   describe('findByBarcode', () => {
     it('passes includeOpenFoodFacts=false by default', async () => {
       service.findByBarcode.mockResolvedValue(foodDto);
-      await controller.findByBarcode(TEST_FOOD.barcode!, undefined);
-      expect(service.findByBarcode).toHaveBeenCalledWith(TEST_FOOD.barcode, false);
+      await controller.findByBarcode(TEST_FOOD.barcode, undefined);
+      expect(service.findByBarcode).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+        false,
+      );
     });
 
     it('passes includeOpenFoodFacts=true when query is "true"', async () => {
       service.findByBarcode.mockResolvedValue(foodDto);
-      await controller.findByBarcode(TEST_FOOD.barcode!, 'true');
-      expect(service.findByBarcode).toHaveBeenCalledWith(TEST_FOOD.barcode, true);
+      await controller.findByBarcode(TEST_FOOD.barcode, 'true');
+      expect(service.findByBarcode).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+        true,
+      );
     });
   });
 
@@ -89,14 +95,20 @@ describe('FoodProductController', () => {
     it('create forwards dto and user id', async () => {
       service.create.mockResolvedValue(foodDto);
       const dto = { name: 'New product' };
-      const result = await controller.create(dto as any, 'user-1');
+      const result = await controller.create(dto, 'user-1');
       expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
       expect(result).toEqual(foodDto);
     });
 
     it('findAll forwards query', async () => {
-      const paginated = { data: [], total: 0, page: 1, limit: 10, totalPages: 0 };
-      service.findAll.mockResolvedValue(paginated as any);
+      const paginated = {
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+      service.findAll.mockResolvedValue(paginated);
       const query = { page: 2 } as any;
       const result = await controller.findAll(query);
       expect(service.findAll).toHaveBeenCalledWith(query);
@@ -105,7 +117,13 @@ describe('FoodProductController', () => {
 
     it('searchOpenFoodFacts forwards search dto', async () => {
       const search = { q: 'apple' } as any;
-      const offResult = { products: [], totalCount: 0, page: 1, pageSize: 20, totalPages: 0 };
+      const offResult = {
+        products: [],
+        totalCount: 0,
+        page: 1,
+        pageSize: 20,
+        totalPages: 0,
+      };
       service.searchOpenFoodFacts.mockResolvedValue(offResult as any);
       const result = await controller.searchOpenFoodFacts(search);
       expect(service.searchOpenFoodFacts).toHaveBeenCalledWith(search);
@@ -115,7 +133,7 @@ describe('FoodProductController', () => {
     it('importFromOpenFoodFacts forwards barcode and user id', async () => {
       service.importFromOpenFoodFacts.mockResolvedValue(foodDto);
       const result = await controller.importFromOpenFoodFacts(
-        TEST_FOOD.barcode!,
+        TEST_FOOD.barcode,
         'user-1',
       );
       expect(service.importFromOpenFoodFacts).toHaveBeenCalledWith(
@@ -128,7 +146,7 @@ describe('FoodProductController', () => {
     it('update forwards id and dto', async () => {
       service.update.mockResolvedValue(foodDto);
       const dto = { name: 'Updated' };
-      const result = await controller.update(TEST_FOOD.id, dto as any);
+      const result = await controller.update(TEST_FOOD.id, dto);
       expect(service.update).toHaveBeenCalledWith(TEST_FOOD.id, dto);
       expect(result).toEqual(foodDto);
     });
@@ -142,7 +160,7 @@ describe('FoodProductController', () => {
 
   describe('getOpenFoodFactsInfo', () => {
     it('returns null without calling OFF when product has no barcode', async () => {
-      service.findOne.mockResolvedValue({ ...foodDto, barcode: null } as any);
+      service.findOne.mockResolvedValue({ ...foodDto, barcode: null });
       const result = await controller.getOpenFoodFactsInfo(TEST_FOOD.id);
       expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id);
       expect(service.getOpenFoodFactsInfo).not.toHaveBeenCalled();
@@ -155,7 +173,9 @@ describe('FoodProductController', () => {
       service.getOpenFoodFactsInfo.mockResolvedValue(offPayload as any);
       const result = await controller.getOpenFoodFactsInfo(TEST_FOOD.id);
       expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id);
-      expect(service.getOpenFoodFactsInfo).toHaveBeenCalledWith(TEST_FOOD.barcode);
+      expect(service.getOpenFoodFactsInfo).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+      );
       expect(result).toEqual(offPayload);
     });
   });

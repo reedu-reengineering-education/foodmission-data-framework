@@ -229,7 +229,10 @@ export class RecommendationsService {
     // Build lookup maps for pantry item names
     const pantryItemByFoodId = new Map<string, PantryItemWithRelations>();
     const pantryItemByCategoryId = new Map<string, PantryItemWithRelations>();
-    const pantryItemByNormalizedName = new Map<string, PantryItemWithRelations>();
+    const pantryItemByNormalizedName = new Map<
+      string,
+      PantryItemWithRelations
+    >();
     for (const item of pantryItems) {
       if (item.foodProductId) pantryItemByFoodId.set(item.foodProductId, item);
       if (item.genericFoodId)
@@ -262,10 +265,10 @@ export class RecommendationsService {
               expiringFoodIds.has(ingredient.foodProductId)) ||
             (ingredient.genericFoodId &&
               expiringCategoryIds.has(ingredient.genericFoodId)) ||
-              (nameMatchedPantryItem?.foodProductId &&
-                expiringFoodIds.has(nameMatchedPantryItem.foodProductId)) ||
-              (nameMatchedPantryItem?.genericFoodId &&
-                expiringCategoryIds.has(nameMatchedPantryItem.genericFoodId)),
+            (nameMatchedPantryItem?.foodProductId &&
+              expiringFoodIds.has(nameMatchedPantryItem.foodProductId)) ||
+            (nameMatchedPantryItem?.genericFoodId &&
+              expiringCategoryIds.has(nameMatchedPantryItem.genericFoodId)),
           );
 
           const pantryItem = ingredient.foodProductId

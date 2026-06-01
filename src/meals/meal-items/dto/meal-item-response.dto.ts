@@ -25,7 +25,8 @@ export class MealItemResponseDto {
   itemType: 'food_product' | 'generic_food';
 
   @ApiPropertyOptional({
-    description: 'UUID of the specific food product (if itemType is "food_product")',
+    description:
+      'UUID of the specific food product (if itemType is "food_product")',
     example: '550e8400-e29b-41d4-a716-446655440002',
     nullable: true,
   })

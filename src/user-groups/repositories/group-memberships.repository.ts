@@ -38,7 +38,7 @@ export class GroupMembershipRepository {
   constructor(private prisma: PrismaService) {}
 
   private toJsonInput(value?: object): Prisma.InputJsonValue | undefined {
-    return value !== undefined ? (value as Prisma.InputJsonValue) : undefined;
+    return value !== undefined ? value : undefined;
   }
 
   isVirtual(membership: GroupMembershipWithUser): boolean {

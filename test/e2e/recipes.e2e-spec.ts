@@ -98,7 +98,9 @@ describe('Recipes endpoints (e2e)', () => {
       .expect(200);
 
     expect(Array.isArray(res.body.data)).toBe(true);
-    expect(res.body.data.every((r: any) => r.userId === authUser.id)).toBe(true);
+    expect(res.body.data.every((r: any) => r.userId === authUser.id)).toBe(
+      true,
+    );
   });
 
   it('PATCH /recipes/:id updates a recipe', async () => {
@@ -120,9 +122,12 @@ describe('Recipes endpoints (e2e)', () => {
       data: { title: 'To Delete', userId: authUser.id, isPublic: false },
     });
 
-    await request(app.getHttpServer()).delete(`/recipes/${created.id}`).expect(200);
+    await request(app.getHttpServer())
+      .delete(`/recipes/${created.id}`)
+      .expect(200);
 
-    await request(app.getHttpServer()).get(`/recipes/${created.id}`).expect(404);
+    await request(app.getHttpServer())
+      .get(`/recipes/${created.id}`)
+      .expect(404);
   });
 });
-
