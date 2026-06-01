@@ -48,10 +48,7 @@ describe('RecipesService', () => {
     const recipe = buildRecipe({ id: 'r1', userId, title: 'Test Recipe' });
     mockRecipeRepository.create.mockResolvedValue(recipe);
 
-    const result = await service.create(
-      { title: 'Test Recipe' } as any,
-      userId,
-    );
+    const result = await service.create({ title: 'Test Recipe' }, userId);
 
     expect(result.id).toBe('r1');
     expect(mockRecipeRepository.create).toHaveBeenCalledWith({
@@ -110,13 +107,13 @@ describe('RecipesService', () => {
       category: 'Chicken',
       cuisineType: 'Italian',
       tags: [' quick '],
-      allergens: ['TREE_NUTS' as any],
+      allergens: ['TREE_NUTS'],
       dietaryLabels: [' vegan '],
       difficulty: 'easy',
       search: 'pasta',
       page: 2,
       limit: 5,
-    } as any);
+    });
 
     expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith({
       skip: 5,
@@ -141,7 +138,7 @@ describe('RecipesService', () => {
         code: 'P2002',
         clientVersion: '4.0.0',
         meta: { target: ['title'] },
-      } as any),
+      }),
     );
 
     await expect(
@@ -158,7 +155,7 @@ describe('RecipesService', () => {
       new PrismaClientKnownRequestError('missing', {
         code: 'P2025',
         clientVersion: '4.0.0',
-      } as any),
+      }),
     );
 
     await expect(
@@ -193,7 +190,7 @@ describe('RecipesService', () => {
         ingredients: [{ name: 'chicken', measure: '500g' }],
       };
 
-      const result = await service.create(dto as any, userId);
+      const result = await service.create(dto, userId);
 
       expect(result.externalId).toBe('52772');
       expect(result.cuisineType).toBe('Japanese');
@@ -210,10 +207,7 @@ describe('RecipesService', () => {
       mockRecipeRepository.create.mockResolvedValue(recipe);
 
       // Note: no mealId required - recipes are standalone content
-      const result = await service.create(
-        { title: 'Simple Salad' } as any,
-        userId,
-      );
+      const result = await service.create({ title: 'Simple Salad' }, userId);
 
       expect(result.id).toBe('r1');
       expect(mockRecipeRepository.create).toHaveBeenCalledWith({
@@ -271,7 +265,7 @@ describe('RecipesService', () => {
         isPublic: true,
         page: 1,
         limit: 10,
-      } as any);
+      });
 
       expect(mockRecipeRepository.findWithPagination).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -383,7 +377,7 @@ describe('RecipesService', () => {
         ],
       };
 
-      const result = await service.create(createDto as any, userId);
+      const result = await service.create(createDto, userId);
 
       expect(result.ingredients).toBeDefined();
       expect(result.ingredients).toHaveLength(2);
@@ -440,7 +434,7 @@ describe('RecipesService', () => {
         {
           title: 'Updated Recipe',
           ingredients: [{ name: 'New Ingredient', measure: '100g' }],
-        } as any,
+        },
         userId,
       );
 
@@ -503,7 +497,7 @@ describe('RecipesService', () => {
               foodProductId: 'food-1',
             },
           ],
-        } as any,
+        },
         userId,
       );
 

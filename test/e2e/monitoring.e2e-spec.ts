@@ -29,4 +29,3 @@ describe('Monitoring (e2e)', () => {
     expect(res.text.length).toBeGreaterThan(0);
   });
 });
-

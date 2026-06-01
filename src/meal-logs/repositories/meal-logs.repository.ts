@@ -80,22 +80,22 @@ export class MealLogsRepository implements BaseRepository<
   async findById(id: string): Promise<MealLog | null> {
     return this.prisma.mealLog.findUnique({
       where: { id },
-      include: { meal: true } as Prisma.MealLogInclude,
+      include: { meal: true },
     });
   }
 
   async create(data: CreateMealLogData): Promise<MealLog> {
     return this.prisma.mealLog.create({
-      data: data as Prisma.MealLogUncheckedCreateInput,
-      include: { meal: true } as Prisma.MealLogInclude,
+      data: data,
+      include: { meal: true },
     });
   }
 
   async update(id: string, data: UpdateMealLogData): Promise<MealLog> {
     return this.prisma.mealLog.update({
       where: { id },
-      data: data as Prisma.MealLogUncheckedUpdateInput,
-      include: { meal: true } as Prisma.MealLogInclude,
+      data: data,
+      include: { meal: true },
     });
   }
 

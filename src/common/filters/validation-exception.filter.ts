@@ -52,7 +52,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     // - message as an array (ValidationPipe/class-validator)
     // - message as a string (e.g. ParseUUIDPipe)
     if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-      const message = (exceptionResponse as any).message;
+      const message = exceptionResponse.message;
       if (Array.isArray(message) && message.length > 0) {
         return true;
       }

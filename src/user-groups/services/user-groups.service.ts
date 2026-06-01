@@ -2,9 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { GroupRole } from '@prisma/client';
 import { UserGroupRepository } from '../repositories/user-groups.repository';
-import {
-  GroupMembershipRepository,
-} from '../repositories/group-memberships.repository';
+import { GroupMembershipRepository } from '../repositories/group-memberships.repository';
 import { CreateUserGroupDto } from '../dto/create-user-group.dto';
 import { UpdateUserGroupDto } from '../dto/update-user-group.dto';
 import { CreateMemberDto } from '../dto/create-member.dto';

@@ -359,7 +359,11 @@ export class ShoppingListItemService {
         throw new BadRequestException('foodProductId is required');
       }
       await this.validateFoodProductExists(foodProductId);
-      await this.checkForDuplicateItem(shoppingListId, foodProductId, undefined);
+      await this.checkForDuplicateItem(
+        shoppingListId,
+        foodProductId,
+        undefined,
+      );
       return;
     }
 
@@ -394,6 +398,6 @@ export class ShoppingListItemService {
   ): Partial<UpdateShoppingListItemDto> {
     return Object.fromEntries(
       Object.entries(updateDto).filter(([, value]) => value !== undefined),
-    ) as Partial<UpdateShoppingListItemDto>;
+    );
   }
 }

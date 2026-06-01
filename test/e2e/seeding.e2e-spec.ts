@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { seedFoods } from '../../prisma/seeds/foodProducts';
-import { seedUsers } from '../../prisma/seeds/users';
-import { seedRecipes } from '../../prisma/seeds/themealdb';
+import { seedFoods } from '../../scripts/seeds/dev/foodProducts';
+import { seedUsers } from '../../scripts/seeds/dev/users';
+import { seedRecipes } from '../../scripts/seeds/prod/themealdb';
 
 jest.setTimeout(10 * 60 * 1000);
 

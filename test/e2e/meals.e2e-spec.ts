@@ -102,9 +102,6 @@ describe('Meals endpoints (e2e)', () => {
       .delete(`/meals/${created.id}`)
       .expect(200);
 
-    await request(app.getHttpServer())
-      .get(`/meals/${created.id}`)
-      .expect(404);
+    await request(app.getHttpServer()).get(`/meals/${created.id}`).expect(404);
   });
 });
-

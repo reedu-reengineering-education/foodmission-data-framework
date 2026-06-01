@@ -138,7 +138,7 @@ export class RecipesRepository implements BaseRepository<
               })),
             }
           : undefined,
-      } as Prisma.RecipeUncheckedCreateInput,
+      },
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
@@ -171,7 +171,7 @@ export class RecipesRepository implements BaseRepository<
                   })),
                 }
               : undefined,
-          } as Prisma.RecipeUncheckedUpdateInput,
+          },
           include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
         });
       });
@@ -179,7 +179,7 @@ export class RecipesRepository implements BaseRepository<
 
     return this.prisma.recipe.update({
       where: { id },
-      data: recipeData as Prisma.RecipeUncheckedUpdateInput,
+      data: recipeData,
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }

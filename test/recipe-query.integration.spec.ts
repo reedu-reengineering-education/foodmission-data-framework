@@ -13,7 +13,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { seedRecipes } from '../prisma/seeds/themealdb';
+import { seedRecipes } from '../scripts/seeds/prod/themealdb';
 
 const testDbUrl =
   process.env.DATABASE_URL ||

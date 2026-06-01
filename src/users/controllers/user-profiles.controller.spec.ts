@@ -115,7 +115,7 @@ describe('UserProfilesController', () => {
         ...updateDto,
       });
 
-      const result = await controller.updateProfile('user-1', updateDto as any);
+      const result = await controller.updateProfile('user-1', updateDto);
 
       expect(result.country).toBe('DE');
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
@@ -133,7 +133,7 @@ describe('UserProfilesController', () => {
     it('should return user if no changes provided', async () => {
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
 
-      const result = await controller.updateProfile('user-1', {} as any);
+      const result = await controller.updateProfile('user-1', {});
 
       expect(result).toEqual(mockUserProfile);
       expect(service.updateProfile).not.toHaveBeenCalled();
@@ -153,7 +153,7 @@ describe('UserProfilesController', () => {
         zip: '10115',
       });
 
-      await controller.updateProfile('user-1', updateDto as any);
+      await controller.updateProfile('user-1', updateDto);
 
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', {
         country: 'DE',
@@ -170,14 +170,16 @@ describe('UserProfilesController', () => {
         settings: updateDto.settings,
       });
 
-      const result = await controller.updateProfile('user-1', updateDto as any);
+      const result = await controller.updateProfile('user-1', updateDto);
 
       expect(result.settings).toEqual(updateDto.settings);
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
     });
 
     it('should update preferences', async () => {
-      const updateDto = { preferences: { newsletter: false, timezone: 'Europe/Berlin' } };
+      const updateDto = {
+        preferences: { newsletter: false, timezone: 'Europe/Berlin' },
+      };
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
       service.updateProfile.mockResolvedValue({
@@ -185,7 +187,7 @@ describe('UserProfilesController', () => {
         preferences: updateDto.preferences,
       });
 
-      const result = await controller.updateProfile('user-1', updateDto as any);
+      const result = await controller.updateProfile('user-1', updateDto);
 
       expect(result.preferences).toEqual(updateDto.preferences);
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);

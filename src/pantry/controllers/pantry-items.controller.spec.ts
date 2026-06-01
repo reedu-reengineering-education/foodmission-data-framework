@@ -84,7 +84,7 @@ describe('PantryItemsController', () => {
     it('should call service and return result', async () => {
       mockPantryItemsService.create.mockResolvedValue(mockResponse);
 
-      const result = await controller.create(pantryId, body as any, userId);
+      const result = await controller.create(pantryId, body, userId);
 
       expect(result).toEqual(mockResponse);
       expect(service.create).toHaveBeenCalledWith(
@@ -108,7 +108,7 @@ describe('PantryItemsController', () => {
 
       mockPantryItemsService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll(pantryId, query as any, userId);
+      const result = await controller.findAll(pantryId, query, userId);
 
       expect(result).toEqual(mockResponse);
       expect(service.findAll).toHaveBeenCalledWith(query, userId, pantryId);

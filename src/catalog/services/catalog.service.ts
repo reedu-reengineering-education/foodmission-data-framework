@@ -254,7 +254,6 @@ export class CatalogService {
     const q = normalizeSearch(input.search);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
 
-
     const allRegions = this.getAllRegions();
     const all = countryCode
       ? allRegions.filter((r) => r.meta?.countryCode === countryCode)

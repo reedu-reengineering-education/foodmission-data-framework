@@ -49,9 +49,9 @@ describe('MealLogsController', () => {
   });
 
   it('create should delegate to service', async () => {
-    service.create.mockResolvedValueOnce(mockLog as any);
+    service.create.mockResolvedValueOnce(mockLog);
     const dto = { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER };
-    const result = await controller.create(dto as any, 'user-1');
+    const result = await controller.create(dto, 'user-1');
 
     expect(result).toEqual(mockLog);
     expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
@@ -72,16 +72,16 @@ describe('MealLogsController', () => {
   });
 
   it('findOne should fetch by id', async () => {
-    service.findOne.mockResolvedValueOnce(mockLog as any);
+    service.findOne.mockResolvedValueOnce(mockLog);
     const result = await controller.findOne('log-1', 'user-1');
     expect(result).toEqual(mockLog);
     expect(service.findOne).toHaveBeenCalledWith('log-1', 'user-1');
   });
 
   it('update should send dto', async () => {
-    service.update.mockResolvedValueOnce({ ...mockLog, eatenOut: true } as any);
+    service.update.mockResolvedValueOnce({ ...mockLog, eatenOut: true });
     const dto = { eatenOut: true };
-    const result = await controller.update('log-1', dto as any, 'user-1');
+    const result = await controller.update('log-1', dto, 'user-1');
 
     expect(result.eatenOut).toBe(true);
     expect(service.update).toHaveBeenCalledWith('log-1', dto, 'user-1');
