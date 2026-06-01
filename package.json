@@ -119,7 +119,7 @@
     "@types/iso-3166-2": "^1.0.4",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^24.5.0",
+    "@types/node": "^25.9.1",
     "@types/pg": "^8.20.0",
     "@types/sanitize-html": "^2.16.1",
     "@types/supertest": "^7.2.0",
