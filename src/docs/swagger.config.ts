@@ -8,9 +8,18 @@ type SwaggerServer = {
 };
 
 const DEFAULT_API_VERSION = '1.0.0';
-const DEFAULT_SWAGGER_SERVERS: SwaggerServer[] = [
-  { url: 'http://localhost:3000', description: 'Local development server' },
-  { url: 'https://api.foodmission.eu', description: 'Production server' },
+const DEFAULT_LOCAL_SERVER_URL = 'http://localhost:3000';
+const DEFAULT_PROD_SERVER_URL = 'https://api.foodmission.eu';
+
+const getSwaggerServers = (): SwaggerServer[] => [
+  {
+    url: process.env.SWAGGER_LOCAL_SERVER_URL || DEFAULT_LOCAL_SERVER_URL,
+    description: 'Local development server',
+  },
+  {
+    url: process.env.SWAGGER_PROD_SERVER_URL || DEFAULT_PROD_SERVER_URL,
+    description: 'Production server',
+  },
 ];
 
 const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
@@ -82,10 +91,10 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
 ];
 
 const getApiVersion = (): string =>
-  process.env.API_VERSION || process.env.npm_package_version || DEFAULT_API_VERSION;
+  process.env.npm_package_version || DEFAULT_API_VERSION;
 
 const getShortGitSha = (): string | undefined => {
-  const fullSha = process.env.API_GIT_SHA || process.env.GITHUB_SHA;
+  const fullSha = process.env.GITHUB_SHA;
 
   if (fullSha) {
     return fullSha.slice(0, 7);
@@ -108,8 +117,7 @@ let cachedMetadata: SwaggerMetadata | undefined;
 
 const computeSwaggerMetadata = (): SwaggerMetadata => {
   const apiVersion = getApiVersion();
-  const releaseBase =
-    process.env.API_RELEASE || process.env.OTEL_SERVICE_VERSION || apiVersion;
+  const releaseBase = process.env.OTEL_SERVICE_VERSION || apiVersion;
   const shortSha = getShortGitSha();
   const apiRelease = shortSha ? `${releaseBase}+${shortSha}` : releaseBase;
 
@@ -118,30 +126,6 @@ const computeSwaggerMetadata = (): SwaggerMetadata => {
 
 export const getSwaggerMetadata = (): SwaggerMetadata =>
   (cachedMetadata ??= computeSwaggerMetadata());
-
-const parseServersFromEnv = (): SwaggerServer[] => {
-  const rawServers = process.env.API_DOC_SERVERS?.trim();
-  if (!rawServers) {
-    return DEFAULT_SWAGGER_SERVERS;
-  }
-
-  try {
-    const parsed = JSON.parse(rawServers) as SwaggerServer[];
-    const valid = (Array.isArray(parsed) ? parsed : []).filter(
-      (server) => typeof server?.url === 'string',
-    );
-    if (valid.length > 0) {
-      return valid.map((server) => ({
-        url: server.url,
-        description: server.description || 'API server',
-      }));
-    }
-  } catch {
-    return DEFAULT_SWAGGER_SERVERS;
-  }
-
-  return DEFAULT_SWAGGER_SERVERS;
-};
 
 export const createSwaggerConfig = () => {
   const { apiVersion, apiRelease } = getSwaggerMetadata();
@@ -190,7 +174,7 @@ export const createSwaggerConfig = () => {
     builder.addTag(tag.name, tag.description);
   }
 
-  for (const server of parseServersFromEnv()) {
+  for (const server of getSwaggerServers()) {
     builder.addServer(server.url, server.description);
   }
 
