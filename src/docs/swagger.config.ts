@@ -90,8 +90,26 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   { name: 'webhooks', description: 'Inbound webhook handlers and event processing' },
 ];
 
-const getApiVersion = (): string =>
-  process.env.npm_package_version || DEFAULT_API_VERSION;
+const getPackageVersion = (): string =>
+  process.env.npm_package_version ||
+  process.env.APP_VERSION ||
+  DEFAULT_API_VERSION;
+
+const getPullRequestLabel = (): string | undefined => {
+  const prNumber =
+    process.env.GITHUB_EVENT_PULL_REQUEST_NUMBER ?? process.env.PR_NUMBER;
+
+  if (prNumber) {
+    return `pr-${prNumber}`;
+  }
+
+  const refMatch = process.env.GITHUB_REF?.match(/^refs\/pull\/(\d+)\//);
+  if (refMatch) {
+    return `pr-${refMatch[1]}`;
+  }
+
+  return undefined;
+};
 
 const getShortGitSha = (): string | undefined => {
   const fullSha = process.env.GITHUB_SHA;
@@ -120,10 +138,16 @@ type SwaggerMetadata = { apiVersion: string; apiRelease: string };
 let cachedMetadata: SwaggerMetadata | undefined;
 
 const computeSwaggerMetadata = (): SwaggerMetadata => {
-  const apiVersion = getApiVersion();
-  const releaseBase = process.env.OTEL_SERVICE_VERSION || apiVersion;
+  const packageVersion = getPackageVersion();
+  const prLabel = getPullRequestLabel();
   const shortSha = getShortGitSha();
+  const otelVersion = process.env.OTEL_SERVICE_VERSION;
+  const releaseBase =
+    otelVersion && !/^pr-\d+$/i.test(otelVersion)
+      ? otelVersion
+      : packageVersion;
   const apiRelease = shortSha ? `${releaseBase}+${shortSha}` : releaseBase;
+  const apiVersion = prLabel ?? packageVersion;
 
   return { apiVersion, apiRelease };
 };
