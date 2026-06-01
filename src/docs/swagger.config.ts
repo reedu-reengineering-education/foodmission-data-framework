@@ -95,22 +95,6 @@ const getPackageVersion = (): string =>
   process.env.APP_VERSION ||
   DEFAULT_API_VERSION;
 
-const getPullRequestLabel = (): string | undefined => {
-  const prNumber =
-    process.env.GITHUB_EVENT_PULL_REQUEST_NUMBER ?? process.env.PR_NUMBER;
-
-  if (prNumber) {
-    return `pr-${prNumber}`;
-  }
-
-  const refMatch = process.env.GITHUB_REF?.match(/^refs\/pull\/(\d+)\//);
-  if (refMatch) {
-    return `pr-${refMatch[1]}`;
-  }
-
-  return undefined;
-};
-
 const getShortGitSha = (): string | undefined => {
   const fullSha = process.env.GITHUB_SHA;
 
@@ -133,13 +117,12 @@ const getShortGitSha = (): string | undefined => {
   }
 };
 
-type SwaggerMetadata = { apiVersion: string; apiRelease: string };
+type SwaggerMetadata = { packageVersion: string; apiRelease: string };
 
 let cachedMetadata: SwaggerMetadata | undefined;
 
 const computeSwaggerMetadata = (): SwaggerMetadata => {
   const packageVersion = getPackageVersion();
-  const prLabel = getPullRequestLabel();
   const shortSha = getShortGitSha();
   const otelVersion = process.env.OTEL_SERVICE_VERSION;
   const releaseBase =
@@ -147,21 +130,20 @@ const computeSwaggerMetadata = (): SwaggerMetadata => {
       ? otelVersion
       : packageVersion;
   const apiRelease = shortSha ? `${releaseBase}+${shortSha}` : releaseBase;
-  const apiVersion = prLabel ?? packageVersion;
 
-  return { apiVersion, apiRelease };
+  return { packageVersion, apiRelease };
 };
 
 export const getSwaggerMetadata = (): SwaggerMetadata =>
   (cachedMetadata ??= computeSwaggerMetadata());
 
 export const createSwaggerConfig = () => {
-  const { apiVersion, apiRelease } = getSwaggerMetadata();
+  const { packageVersion, apiRelease } = getSwaggerMetadata();
 
   const builder = new DocumentBuilder()
     .setTitle('Foodmission Data Framework API')
     .setDescription(buildOpenApiDescription(apiRelease))
-    .setVersion(apiVersion)
+    .setVersion(packageVersion)
     .setContact(
       'FOODMISSION Team',
       'https://github.com/reedu-reengineering-education/foodmission-data-framework',
