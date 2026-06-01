@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
@@ -19,23 +19,20 @@ const documentOptions = {
   deepScanRoutes: true as const,
 };
 
-export function ensureOpenApiGenerationEnv(): void {
+type OpenApiDocument = ReturnType<typeof createOpenApiDocument>;
+
+/** Apply mock env defaults so the app can boot for offline doc generation. */
+function ensureOpenApiGenerationEnv(): void {
   if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = 'test';
   }
-  process.env.DATABASE_URL ??=
-    'postgresql://mock:mock@localhost:5432/mock_db';
+  process.env.DATABASE_URL ??= 'postgresql://mock:mock@localhost:5432/mock_db';
   process.env.KEYCLOAK_BASE_URL ??= 'http://localhost:8080';
   process.env.KEYCLOAK_REALM ??= 'mock-realm';
   process.env.KEYCLOAK_CLIENT_ID ??= 'mock-client-id';
 }
 
-export function registerOpenApi(app: INestApplication): void {
-  const document = createOpenApiDocument(app, { includeOAuth2: true });
-  setupOpenApiDocs(app, document);
-}
-
-export function createOpenApiDocument(
+function createOpenApiDocument(
   app: INestApplication,
   options: SwaggerConfigOptions = {},
 ) {
@@ -43,10 +40,7 @@ export function createOpenApiDocument(
   return SwaggerModule.createDocument(app, config, documentOptions);
 }
 
-export function setupOpenApiDocs(
-  app: INestApplication,
-  document: ReturnType<typeof createOpenApiDocument>,
-): void {
+function setupOpenApiDocs(app: INestApplication, document: OpenApiDocument): void {
   const { apiVersion, apiRelease } = getSwaggerMetadata();
 
   SwaggerModule.setup(OPENAPI_DOCS_PATH, app, document, {
@@ -88,10 +82,7 @@ export function setupOpenApiDocs(
   });
 }
 
-export function writeOpenApiArtifacts(
-  document: ReturnType<typeof createOpenApiDocument>,
-  outputDir: string,
-): void {
+function writeOpenApiArtifacts(document: OpenApiDocument, outputDir: string): void {
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true });
   }
@@ -108,23 +99,22 @@ export function writeOpenApiArtifacts(
   );
 }
 
+/** Build the OpenAPI document and mount the Swagger UI on a running app. */
+export function registerOpenApi(app: INestApplication): void {
+  const document = createOpenApiDocument(app, { includeOAuth2: true });
+  setupOpenApiDocs(app, document);
+}
+
+/** Boot a standalone app, write the spec files, and return the document. */
 export async function generateOpenApiFiles(
   outputDir: string,
-): Promise<ReturnType<typeof createOpenApiDocument>> {
+): Promise<OpenApiDocument> {
   ensureOpenApiGenerationEnv();
 
   const app = await NestFactory.create(AppModule, {
     logger: false,
     abortOnError: false,
   });
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
   app.setGlobalPrefix(OPENAPI_GLOBAL_PREFIX);
 
   const document = createOpenApiDocument(app, { includeOAuth2: true });

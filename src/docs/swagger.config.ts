@@ -108,18 +108,23 @@ const getShortGitSha = (): string | undefined => {
   }
 };
 
-export const getSwaggerMetadata = (): { apiVersion: string; apiRelease: string } => {
+type SwaggerMetadata = { apiVersion: string; apiRelease: string };
+
+let cachedMetadata: SwaggerMetadata | undefined;
+
+const computeSwaggerMetadata = (): SwaggerMetadata => {
   const apiVersion = getApiVersion();
   const releaseBase =
     process.env.API_RELEASE || process.env.OTEL_SERVICE_VERSION || apiVersion;
   const shortSha = getShortGitSha();
   const apiRelease = shortSha ? `${releaseBase}+${shortSha}` : releaseBase;
 
-  return {
-    apiVersion,
-    apiRelease,
-  };
+  return { apiVersion, apiRelease };
 };
+
+// Memoized so the git SHA lookup (execSync) runs at most once per process.
+export const getSwaggerMetadata = (): SwaggerMetadata =>
+  (cachedMetadata ??= computeSwaggerMetadata());
 
 const parseServersFromEnv = (): SwaggerServer[] => {
   const rawServers = process.env.API_DOC_SERVERS?.trim();
