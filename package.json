@@ -58,8 +58,7 @@
     "docker:up": "docker compose -f docker-compose.yml up -d",
     "docker:down": "docker compose -f docker-compose.yml down",
     "docker:logs": "docker compose -f docker-compose.yml logs -f",
-    "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
-    "docs:generate:ci": "./scripts/ci-docs-generate.sh"
+    "docs:generate": "ts-node scripts/generate-openapi-spec.ts"
   },
   "dependencies": {
     "@cacheable/memory": "^2.0.9",

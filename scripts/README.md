@@ -28,7 +28,6 @@ the FOODMISSION Data Framework.
 Shared config and document builders live in `src/docs/` (`swagger.config.ts`, `swagger.document.ts`).
 
 - **`generate-openapi-spec.ts`** — writes `docs/openapi.json` and `docs/openapi.yaml` (`npm run docs:generate`)
-- **`ci-docs-generate.sh`** — sets mock env and runs generation in CI (`npm run docs:generate:ci`)
 
 Interactive Swagger UI: run the API and open `/api/docs` (see root `README.md` § API Documentation).
 
