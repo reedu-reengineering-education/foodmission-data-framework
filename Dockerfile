@@ -32,10 +32,8 @@ RUN npm run build
 # Stage 2: Production stage
 FROM node:24-alpine AS production
 
-ARG APP_VERSION=
 ARG GITHUB_REF=
 ARG GITHUB_SHA=
-ENV APP_VERSION=${APP_VERSION}
 ENV GITHUB_REF=${GITHUB_REF}
 ENV GITHUB_SHA=${GITHUB_SHA}
 

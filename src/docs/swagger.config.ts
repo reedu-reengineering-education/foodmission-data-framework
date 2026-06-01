@@ -1,5 +1,7 @@
 import { DocumentBuilder } from '@nestjs/swagger';
 import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { buildOpenApiDescription } from './openapi-description';
 
 type SwaggerServer = {
@@ -7,20 +9,29 @@ type SwaggerServer = {
   description: string;
 };
 
-const DEFAULT_API_VERSION = '1.0.0';
-const DEFAULT_LOCAL_SERVER_URL = 'http://localhost:3000';
-const DEFAULT_PROD_SERVER_URL = 'https://api.foodmission.eu';
+const LOCAL_SERVER_ORIGIN = 'http://localhost';
+const DEFAULT_PORT = '3000';
+const API_HOST = 'api.foodmission.eu';
+const PROD_SERVER_URL = `https://${API_HOST}`;
 
-const getSwaggerServers = (): SwaggerServer[] => [
-  {
-    url: process.env.SWAGGER_LOCAL_SERVER_URL || DEFAULT_LOCAL_SERVER_URL,
-    description: 'Local development server',
-  },
-  {
-    url: process.env.SWAGGER_PROD_SERVER_URL || DEFAULT_PROD_SERVER_URL,
-    description: 'Production server',
-  },
-];
+const getPullRequestNumber = (): string | undefined =>
+  process.env.GITHUB_EVENT_PULL_REQUEST_NUMBER ??
+  process.env.PR_NUMBER ??
+  process.env.GITHUB_REF?.match(/^refs\/pull\/(\d+)\//)?.[1];
+
+const getSwaggerServers = (): SwaggerServer[] => {
+  const prNumber = getPullRequestNumber();
+  const currentUrl = prNumber
+    ? `https://pr-${prNumber}.${API_HOST}`
+    : `${LOCAL_SERVER_ORIGIN}:${process.env.PORT || DEFAULT_PORT}`;
+
+  return [
+    { url: currentUrl, description: 'Current server' },
+    ...(PROD_SERVER_URL !== currentUrl
+      ? [{ url: PROD_SERVER_URL, description: 'Production server' }]
+      : []),
+  ];
+};
 
 const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   {
@@ -90,10 +101,16 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   { name: 'webhooks', description: 'Inbound webhook handlers and event processing' },
 ];
 
+const readPackageVersionFromManifest = (): string => {
+  const packageJsonPath = join(process.cwd(), 'package.json');
+  const { version } = JSON.parse(
+    readFileSync(packageJsonPath, 'utf8'),
+  ) as { version: string };
+  return version;
+};
+
 const getPackageVersion = (): string =>
-  process.env.npm_package_version ||
-  process.env.APP_VERSION ||
-  DEFAULT_API_VERSION;
+  process.env.npm_package_version || readPackageVersionFromManifest();
 
 const getShortGitSha = (): string | undefined => {
   const fullSha = process.env.GITHUB_SHA;

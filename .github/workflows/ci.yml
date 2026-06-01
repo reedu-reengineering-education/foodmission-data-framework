@@ -269,10 +269,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read package version
-        id: package
-        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v6
@@ -294,7 +290,6 @@ jobs:
           push: true
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            APP_VERSION=${{ steps.package.outputs.version }}
             GITHUB_REF=${{ github.ref }}
             GITHUB_SHA=${{ github.sha }}
           cache-from: type=gha,scope=build-${{ matrix.arch }}
