@@ -1,4 +1,4 @@
-import { seedFoodKeeper } from '../../../prisma/seeds/foodkeeper';
+import { seedFoodKeeper } from '../../../scripts/seeds/prod/foodkeeper';
 import { createTestPrismaClient, runMigrations } from './prisma-e2e-helpers';
 
 export default async function globalE2eSetup(): Promise<void> {
