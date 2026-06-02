@@ -32,6 +32,11 @@ RUN npm run build
 # Stage 2: Production stage
 FROM node:24-alpine AS production
 
+ARG GITHUB_REF=
+ARG GITHUB_SHA=
+ENV GITHUB_REF=${GITHUB_REF}
+ENV GITHUB_SHA=${GITHUB_SHA}
+
 # Upgrade Alpine packages to fix security vulnerabilities (e.g., zlib)
 RUN apk update && apk upgrade --no-cache
 

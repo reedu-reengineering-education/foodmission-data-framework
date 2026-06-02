@@ -289,6 +289,9 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: true
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GITHUB_REF=${{ github.ref }}
+            GITHUB_SHA=${{ github.sha }}
           cache-from: type=gha,scope=build-${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=build-${{ matrix.arch }}
           target: production

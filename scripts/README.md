@@ -25,9 +25,11 @@ the FOODMISSION Data Framework.
 
 ### OpenAPI
 
-- `generate-openapi.js` - Generate OpenAPI JSON
-- `generate-openapi-spec.ts` - Generate OpenAPI artifacts (JSON/YAML)
-- `ci-docs-generate.sh` - CI docs generation helper
+Shared config and document builders live in `src/docs/` (`swagger.config.ts`, `swagger.document.ts`, `swagger.generate.ts`, `swagger.artifacts.ts`).
+
+- **`generate-openapi-spec.ts`** — writes `docs/openapi.json` and `docs/openapi.yaml` (`npm run docs:generate`)
+
+Interactive Swagger UI: run the API and open `/api/docs` (see root `README.md` § API Documentation).
 
 ### Development and CI Utilities
 
@@ -71,7 +73,6 @@ npm run db:restore
 
 # OpenAPI
 npm run docs:generate
-npm run openapi:generate
 ```
 
 ## Documentation
