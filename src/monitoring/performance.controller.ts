@@ -3,9 +3,11 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PerformanceService } from './performance.service';
 import { CacheService } from '../cache/cache.service';
 import { Public } from 'nest-keycloak-connect';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @ApiTags('performance')
 @Controller('performance')
+@SkipThrottle()
 export class PerformanceController {
   constructor(
     private readonly performanceService: PerformanceService,

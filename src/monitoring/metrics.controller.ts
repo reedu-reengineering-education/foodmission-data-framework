@@ -1,10 +1,12 @@
 import { Controller, Get, Header } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
+import { SkipThrottle } from '@nestjs/throttler';
 import { MetricsService } from './metrics.service';
 
 @ApiTags('monitoring')
 @Controller('metrics')
+@SkipThrottle()
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
