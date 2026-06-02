@@ -1,42 +1,12 @@
 import { DocumentBuilder } from '@nestjs/swagger';
 import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { buildOpenApiDescription } from './openapi-description';
-
-type SwaggerServer = {
-  url: string;
-  description: string;
-};
-
-const LOCAL_SERVER_ORIGIN = 'http://localhost';
-const DEFAULT_PORT = '3000';
-const API_HOST = 'api.foodmission.eu';
-const PROD_SERVER_URL = `https://${API_HOST}`;
-
-const getPullRequestNumber = (): string | undefined =>
-  process.env.GITHUB_EVENT_PULL_REQUEST_NUMBER ??
-  process.env.PR_NUMBER ??
-  process.env.GITHUB_REF?.match(/^refs\/pull\/(\d+)\//)?.[1];
-
-const getSwaggerServers = (): SwaggerServer[] => {
-  const prNumber = getPullRequestNumber();
-  const currentUrl = prNumber
-    ? `https://pr-${prNumber}.${API_HOST}`
-    : `${LOCAL_SERVER_ORIGIN}:${process.env.PORT || DEFAULT_PORT}`;
-
-  return [
-    { url: currentUrl, description: 'Current server' },
-    ...(PROD_SERVER_URL !== currentUrl
-      ? [{ url: PROD_SERVER_URL, description: 'Production server' }]
-      : []),
-  ];
-};
 
 const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   {
     name: 'auth',
-    description: 'Authentication and authorization endpoints for Keycloak integration',
+    description:
+      'Authentication and authorization endpoints for Keycloak integration',
   },
   {
     name: 'auth-admin',
@@ -44,7 +14,8 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   },
   {
     name: 'users',
-    description: 'User profile management and dietary preferences configuration',
+    description:
+      'User profile management and dietary preferences configuration',
   },
   {
     name: 'user-groups',
@@ -52,20 +23,32 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
   },
   {
     name: 'food-products',
-    description: 'Branded/barcoded food products with OpenFoodFacts nutritional metadata',
+    description:
+      'Branded/barcoded food products with OpenFoodFacts nutritional metadata',
   },
   {
     name: 'generic-foods',
-    description: 'Generic food entries (e.g., "apple", "rice") used when no branded product is needed',
+    description:
+      'Generic food entries (e.g., "apple", "rice") used when no branded product is needed',
   },
   { name: 'catalog', description: 'Reference datasets and dropdown options' },
-  { name: 'recipes', description: 'Recipe management and recommendation endpoints' },
+  {
+    name: 'recipes',
+    description: 'Recipe management and recommendation endpoints',
+  },
   { name: 'meals', description: 'Meal management and meal composition' },
-  { name: 'meal-items', description: 'Meal item operations for foods within a meal' },
-  { name: 'meal-logs', description: 'Meal logging and nutrition tracking entries' },
+  {
+    name: 'meal-items',
+    description: 'Meal item operations for foods within a meal',
+  },
+  {
+    name: 'meal-logs',
+    description: 'Meal logging and nutrition tracking entries',
+  },
   {
     name: 'pantry',
-    description: 'Pantry tracking for available ingredients and household stock',
+    description:
+      'Pantry tracking for available ingredients and household stock',
   },
   { name: 'shopping-lists', description: 'Shopping list lifecycle management' },
   {
@@ -84,33 +67,32 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     name: 'challenges',
     description: 'Challenge management - Create and manage user challenges',
   },
-  { name: 'missions', description: 'Mission management - Create and manage user missions' },
+  {
+    name: 'missions',
+    description: 'Mission management - Create and manage user missions',
+  },
   {
     name: 'health',
-    description: 'Application health checks, readiness probes, and monitoring metrics',
+    description:
+      'Application health checks, readiness probes, and monitoring metrics',
   },
   {
     name: 'analytics-meal-log',
     description: 'Anonymized meal-log analytics, reports, and batch workflows',
   },
-  { name: 'monitoring', description: 'Prometheus metrics and operational observability' },
+  {
+    name: 'monitoring',
+    description: 'Prometheus metrics and operational observability',
+  },
   {
     name: 'performance',
     description: 'Performance diagnostics for cache and database behavior',
   },
-  { name: 'webhooks', description: 'Inbound webhook handlers and event processing' },
+  {
+    name: 'webhooks',
+    description: 'Inbound webhook handlers and event processing',
+  },
 ];
-
-const readPackageVersionFromManifest = (): string => {
-  const packageJsonPath = join(process.cwd(), 'package.json');
-  const { version } = JSON.parse(
-    readFileSync(packageJsonPath, 'utf8'),
-  ) as { version: string };
-  return version;
-};
-
-const getPackageVersion = (): string =>
-  process.env.npm_package_version || readPackageVersionFromManifest();
 
 const getShortGitSha = (): string | undefined => {
   const fullSha = process.env.GITHUB_SHA;
@@ -134,33 +116,32 @@ const getShortGitSha = (): string | undefined => {
   }
 };
 
-type SwaggerMetadata = { packageVersion: string; apiRelease: string };
+type SwaggerMetadata = { apiRelease: string };
 
 let cachedMetadata: SwaggerMetadata | undefined;
 
 const computeSwaggerMetadata = (): SwaggerMetadata => {
-  const packageVersion = getPackageVersion();
-  const shortSha = getShortGitSha();
   const otelVersion = process.env.OTEL_SERVICE_VERSION;
-  const releaseBase =
-    otelVersion && !/^pr-\d+$/i.test(otelVersion)
-      ? otelVersion
-      : packageVersion;
-  const apiRelease = shortSha ? `${releaseBase}+${shortSha}` : releaseBase;
+  if (otelVersion && process.env.NODE_ENV === 'production') {
+    return { apiRelease: otelVersion };
+  }
 
-  return { packageVersion, apiRelease };
+  const shortSha = getShortGitSha();
+  const apiRelease = shortSha ? `dev+${shortSha}` : 'dev';
+
+  return { apiRelease };
 };
 
 export const getSwaggerMetadata = (): SwaggerMetadata =>
   (cachedMetadata ??= computeSwaggerMetadata());
 
 export const createSwaggerConfig = () => {
-  const { packageVersion, apiRelease } = getSwaggerMetadata();
+  const { apiRelease } = getSwaggerMetadata();
 
   const builder = new DocumentBuilder()
     .setTitle('Foodmission Data Framework API')
     .setDescription(buildOpenApiDescription(apiRelease))
-    .setVersion(packageVersion)
+    .setVersion(apiRelease)
     .setContact(
       'FOODMISSION Team',
       'https://github.com/reedu-reengineering-education/foodmission-data-framework',
@@ -199,10 +180,6 @@ export const createSwaggerConfig = () => {
 
   for (const tag of TAG_DESCRIPTIONS) {
     builder.addTag(tag.name, tag.description);
-  }
-
-  for (const server of getSwaggerServers()) {
-    builder.addServer(server.url, server.description);
   }
 
   return builder.build();

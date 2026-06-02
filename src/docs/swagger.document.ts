@@ -17,8 +17,11 @@ export function createOpenApiDocument(app: INestApplication) {
   return SwaggerModule.createDocument(app, config, documentOptions);
 }
 
-function setupOpenApiDocs(app: INestApplication, document: OpenApiDocument): void {
-  const { packageVersion, apiRelease } = getSwaggerMetadata();
+function setupOpenApiDocs(
+  app: INestApplication,
+  document: OpenApiDocument,
+): void {
+  const { apiRelease } = getSwaggerMetadata();
 
   SwaggerModule.setup(OPENAPI_DOCS_PATH, app, document, {
     useGlobalPrefix: false,
@@ -42,7 +45,7 @@ function setupOpenApiDocs(app: INestApplication, document: OpenApiDocument): voi
         useBasicAuthenticationWithAccessCodeGrant: false,
       },
     },
-    customSiteTitle: `Foodmission API Documentation (v${packageVersion}, ${apiRelease})`,
+    customSiteTitle: `Foodmission API Documentation (v${apiRelease})`,
     customfavIcon: '/favicon.ico',
     customJs: [
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
