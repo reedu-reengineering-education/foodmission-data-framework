@@ -31,6 +31,7 @@ describe('ShoppingListAnalyticsService', () => {
       getPublishedListPatterns: jest.fn(),
       getPublishedSustainability: jest.fn(),
       getPublishedFoodGroups: jest.fn(),
+      getPublishedKpis: jest.fn(),
       getPublishedDemographicPatterns: jest.fn(),
       getPublishedDemographicClassification: jest.fn(),
       getPublishedCrossDimPatterns: jest.fn(),
@@ -558,6 +559,11 @@ describe('ShoppingListAnalyticsService', () => {
           p75UltraProcessedPct: 100,
         } as any,
       ]);
+      repository.getPublishedKpis.mockResolvedValue({
+        uniqueItemsTracked: 42,
+        categoryCount: 7,
+        foodGroupCount: 5,
+      });
 
       const result = await service.getPublishedSummary();
 
@@ -600,6 +606,11 @@ describe('ShoppingListAnalyticsService', () => {
       expect(result.sustainability.avgSustainabilityScore).toBeNull();
       expect(result.classification.avgVegetarianPct).toBe(60);
       expect(result.classification.avgUltraProcessedPct).toBe(30);
+      expect(result.kpis).toEqual({
+        uniqueItemsTracked: 42,
+        categoryCount: 7,
+        foodGroupCount: 5,
+      });
     });
 
     it('returns nulls when there is no published data', async () => {
@@ -607,6 +618,11 @@ describe('ShoppingListAnalyticsService', () => {
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
+      repository.getPublishedKpis.mockResolvedValue({
+        uniqueItemsTracked: 0,
+        categoryCount: 0,
+        foodGroupCount: 0,
+      });
 
       const result = await service.getPublishedSummary();
 
@@ -633,6 +649,11 @@ describe('ShoppingListAnalyticsService', () => {
         } as any,
       ]);
       repository.getPublishedSustainability.mockResolvedValue([]);
+      repository.getPublishedKpis.mockResolvedValue({
+        uniqueItemsTracked: 0,
+        categoryCount: 0,
+        foodGroupCount: 0,
+      });
 
       const result = await service.getPublishedSummary();
 
@@ -645,6 +666,11 @@ describe('ShoppingListAnalyticsService', () => {
       repository.getPublishedCategoryPopularity.mockResolvedValue([]);
       repository.getPublishedListPatterns.mockResolvedValue([]);
       repository.getPublishedSustainability.mockResolvedValue([]);
+      repository.getPublishedKpis.mockResolvedValue({
+        uniqueItemsTracked: 0,
+        categoryCount: 0,
+        foodGroupCount: 0,
+      });
 
       const from = new Date('2026-04-01');
       const to = new Date('2026-04-30');

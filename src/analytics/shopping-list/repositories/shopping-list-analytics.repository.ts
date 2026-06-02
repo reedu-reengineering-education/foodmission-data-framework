@@ -271,6 +271,33 @@ export class ShoppingListAnalyticsRepository {
     });
   }
 
+  async getPublishedKpis(from?: Date, to?: Date) {
+    const batchFilter = this.publishedBatchFilter(from, to);
+    const [uniqueItemsTracked, categoryCount, foodGroupCount] =
+      await Promise.all([
+        this.prisma.shoppingListAnalyticsItemPopularity
+          .groupBy({
+            by: ['foodName'],
+            where: { batch: batchFilter },
+          })
+          .then((rows) => rows.length),
+        this.prisma.shoppingListAnalyticsCategoryPopularity
+          .groupBy({
+            by: ['category'],
+            where: { batch: batchFilter },
+          })
+          .then((rows) => rows.length),
+        this.prisma.shoppingListAnalyticsFoodGroups
+          .groupBy({
+            by: ['foodGroup'],
+            where: { batch: batchFilter },
+          })
+          .then((rows) => rows.length),
+      ]);
+
+    return { uniqueItemsTracked, categoryCount, foodGroupCount };
+  }
+
   getPublishedDemographicPatterns(
     from?: Date,
     to?: Date,

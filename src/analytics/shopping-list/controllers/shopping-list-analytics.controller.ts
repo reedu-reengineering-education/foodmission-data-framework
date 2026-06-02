@@ -278,9 +278,16 @@ export class ShoppingListAnalyticsController extends BaseAnalyticsAdminControlle
   @Get('public/summary')
   @ApiOperation({
     summary: 'High-level summary across all shopping list analytics dimensions',
+    description:
+      'Includes aggregate KPI counts (`uniqueItemsTracked`, `categoryCount`, `foodGroupCount`) ' +
+      'computed from the full filtered published dataset (not affected by popularity pagination limits).',
   })
   @DateRangeQuery()
-  @ApiResponse({ status: 200, description: 'Summary across all dimensions' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Summary across all dimensions, including backend-computed shopping-list KPI counts',
+  })
   async getPublicSummary(
     @Query('from') from?: string,
     @Query('to') to?: string,

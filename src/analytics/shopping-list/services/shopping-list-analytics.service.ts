@@ -400,12 +400,14 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
       sustainability,
       classification,
       categoryPopularity,
+      kpis,
     ] = await Promise.all([
       this.getPublishedPopularity(from, to, 20),
       this.getPublishedPatterns(from, to),
       this.getPublishedSustainability(from, to),
       this.getPublishedClassification(from, to),
       this.repository.getPublishedCategoryPopularity(from, to, 5),
+      this.repository.getPublishedKpis(from, to),
     ]);
 
     return {
@@ -469,6 +471,7 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
             .filter((v): v is number => v !== null),
         ),
       },
+      kpis,
       // Backward-compatibility fields kept for legacy clients.
       topCategories: categoryPopularity.map((c) => ({
         category: c.category,
