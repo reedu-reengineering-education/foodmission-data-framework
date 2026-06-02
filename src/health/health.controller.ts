@@ -1,6 +1,7 @@
 import { Controller, Get, UseFilters } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
+import { SkipThrottle } from '@nestjs/throttler';
 import {
   HealthCheckService,
   HealthCheck,
@@ -14,6 +15,7 @@ import { HealthExceptionFilter } from './health-exception.filter';
 @ApiTags('health')
 @Controller('health')
 @UseFilters(HealthExceptionFilter)
+@SkipThrottle()
 export class HealthController {
   constructor(
     private health: HealthCheckService,

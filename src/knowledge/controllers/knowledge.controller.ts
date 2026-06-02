@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -55,7 +55,6 @@ export class KnowledgeController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Create a knowledge/quiz item' })
   @ApiBody({ type: CreateKnowledgeDto })
   @ApiResponse({
@@ -182,7 +181,6 @@ export class KnowledgeController {
   @Patch(':id/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiOperation({ summary: 'Patch user progress for a knowledge item' })
   @ApiParam({ name: 'id', format: 'uuid', description: 'Knowledge ID' })
   @ApiBody({ type: UpdateProgressDto })

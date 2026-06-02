@@ -3,6 +3,10 @@ import { Request, Response, NextFunction } from 'express';
 import { LoggingService } from '../logging/logging.service';
 import { trace } from '@opentelemetry/api';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  getRequestUrl,
+  shouldSkipObservabilityRoute,
+} from '../utils/observability-route-filter';
 
 export interface RequestWithLogging extends Request {
   startTime?: number;
@@ -15,6 +19,12 @@ export class LoggingMiddleware implements NestMiddleware {
   constructor(private readonly loggingService: LoggingService) {}
 
   use(req: RequestWithLogging, res: Response, next: NextFunction): void {
+    const requestUrl = getRequestUrl(req);
+    const skipObservabilityLogging = shouldSkipObservabilityRoute(
+      requestUrl,
+      req.headers['user-agent'] || '',
+    );
+
     // Get trace ID from OpenTelemetry (or generate fallback)
     const traceId = this.getTraceId();
     const requestId = uuidv4();
@@ -35,7 +45,7 @@ export class LoggingMiddleware implements NestMiddleware {
     this.loggingService.setRequestContext({
       requestId,
       method: req.method,
-      url: req.url,
+      url: requestUrl,
       userAgent: req.headers['user-agent'],
       ip: req.ip || req.connection?.remoteAddress,
     });
@@ -43,19 +53,24 @@ export class LoggingMiddleware implements NestMiddleware {
     // Extract user context from JWT if available
     this.extractUserContext(req);
 
+    if (skipObservabilityLogging) {
+      next();
+      return;
+    }
+
     // Log incoming request
-    this.logIncomingRequest(req);
+    this.logIncomingRequest(req, requestUrl);
 
     // Override res.end to log response
     const originalEnd = res.end;
-    res.end = function (chunk?: any, encoding?: any, cb?: any) {
+    res.end = ((chunk?: any, encoding?: any, cb?: any) => {
       // Log outgoing response
       const responseTime = Date.now() - (req.startTime || Date.now());
-      this.logOutgoingResponse(req, res, responseTime);
+      this.logOutgoingResponse(req, res, responseTime, requestUrl);
 
       // Call original end method
-      originalEnd.call(res, chunk, encoding, cb);
-    }.bind(this);
+      return originalEnd.call(res, chunk, encoding, cb);
+    }) as typeof res.end;
 
     next();
   }
@@ -102,13 +117,16 @@ export class LoggingMiddleware implements NestMiddleware {
     }
   }
 
-  private logIncomingRequest(req: RequestWithLogging): void {
-    const message = `Incoming ${req.method} ${req.url}`;
+  private logIncomingRequest(
+    req: RequestWithLogging,
+    requestUrl: string,
+  ): void {
+    const message = `Incoming ${req.method} ${requestUrl}`;
 
     this.loggingService.http(message, {
       type: 'request',
       method: req.method,
-      url: req.url,
+      url: requestUrl,
       query: req.query,
       headers: this.sanitizeHeaders(req.headers),
       body: this.sanitizeBody(req.body),
@@ -121,13 +139,14 @@ export class LoggingMiddleware implements NestMiddleware {
     req: RequestWithLogging,
     res: Response,
     responseTime: number,
+    requestUrl: string,
   ): void {
-    const message = `Outgoing ${req.method} ${req.url} ${res.statusCode} - ${responseTime}ms`;
+    const message = `Outgoing ${req.method} ${requestUrl} ${res.statusCode} - ${responseTime}ms`;
 
     this.loggingService.http(message, {
       type: 'response',
       method: req.method,
-      url: req.url,
+      url: requestUrl,
       statusCode: res.statusCode,
       responseTime,
       contentLength: res.get('content-length'),
@@ -138,7 +157,7 @@ export class LoggingMiddleware implements NestMiddleware {
     // Log slow requests as warnings
     if (responseTime > 5000) {
       this.loggingService.warn(
-        `Slow request detected: ${req.method} ${req.url} took ${responseTime}ms`,
+        `Slow request detected: ${req.method} ${requestUrl} took ${responseTime}ms`,
         'LoggingMiddleware',
       );
     }
@@ -148,7 +167,7 @@ export class LoggingMiddleware implements NestMiddleware {
       const level = res.statusCode >= 500 ? 'error' : 'warn';
       this.loggingService.logWithMeta(level, `HTTP ${res.statusCode} error`, {
         method: req.method,
-        url: req.url,
+        url: requestUrl,
         statusCode: res.statusCode,
         responseTime,
         traceId: req.traceId,

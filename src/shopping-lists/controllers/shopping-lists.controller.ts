@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { Roles } from 'nest-keycloak-connect';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { ShoppingListService } from '../services/shopping-lists.service';
 import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
 import {
@@ -41,7 +41,7 @@ export class ShoppingListsController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  
   @ApiOperation({
     summary: 'Create a new Shopping List',
     description:

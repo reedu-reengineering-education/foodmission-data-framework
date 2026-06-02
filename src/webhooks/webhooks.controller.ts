@@ -9,6 +9,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -27,6 +28,7 @@ import {
 } from './dto/keycloak-event.dto';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { RawBodyRequest } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request } from 'express';
 
 @ApiTags('webhooks')
@@ -42,6 +44,13 @@ export class WebhooksController {
    */
   @Post('keycloak/events')
   @Public() // Keycloak webhooks don't use JWT authentication
+  @UseGuards(ThrottlerGuard)
+  // Allow retry bursts from Keycloak while keeping abuse protection in place
+  @Throttle({
+    short: { limit: 30, ttl: 1_000 },
+    medium: { limit: 300, ttl: 60_000 },
+    long: { limit: 3_000, ttl: 900_000 },
+  })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Receive Keycloak events',
