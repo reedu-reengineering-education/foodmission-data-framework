@@ -1,36 +1,29 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { MetricsService } from './metrics.service';
-import { LoggingService } from '../common/logging/logging.service';
+import {
+  getRequestUrl,
+  shouldSkipObservabilityRoute,
+} from '../common/utils/observability-route-filter';
 
 @Injectable()
 export class MonitoringMiddleware implements NestMiddleware {
-  constructor(
-    private readonly metricsService: MetricsService,
-    private readonly loggingService: LoggingService,
-  ) {}
+  constructor(private readonly metricsService: MetricsService) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
-    const startTime = Date.now();
+    const requestUrl = getRequestUrl(req);
+    if (shouldSkipObservabilityRoute(requestUrl, req.get('User-Agent') || '')) {
+      next();
+      return;
+    }
+
     const startHrTime = process.hrtime();
 
     // Extract route pattern for metrics (remove dynamic segments)
     const route = this.extractRoutePattern(req);
 
-    // Log request start
-    this.loggingService.http(req.url, {
-      timestamp: new Date().toISOString(),
-      method: req.method,
-      url: req.url,
-      route,
-      userAgent: req.get('User-Agent'),
-      ip: req.ip,
-    });
-
     // Capture response metrics when response finishes
     res.once('finish', () => {
-      const endTime = Date.now();
-      const duration = (endTime - startTime) / 1000; // Convert to seconds
       const hrDuration = process.hrtime(startHrTime);
       const durationInSeconds = hrDuration[0] + hrDuration[1] / 1e9;
 
@@ -40,18 +33,6 @@ export class MonitoringMiddleware implements NestMiddleware {
         route,
         res.statusCode,
         durationInSeconds,
-      );
-
-      // Log response
-      this.loggingService.http(
-        `${req.method} ${route} ${res.statusCode} - ${duration}ms`,
-        {
-          statusCode: res.statusCode,
-          duration: duration,
-          contentLength: res.get('Content-Length'),
-          method: req.method,
-          route: route,
-        },
       );
     });
 
