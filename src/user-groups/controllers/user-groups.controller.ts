@@ -17,7 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -33,6 +33,7 @@ import {
   MemberResponseDto,
 } from '../dto';
 
+
 @ApiTags('user-groups')
 @Controller('user-groups')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
@@ -42,7 +43,6 @@ export class UserGroupController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new group',
     description:
@@ -146,7 +146,6 @@ export class UserGroupController {
   @Post('join')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Join a group by invite code',
     description: 'Joins an existing group using the invite code.',
@@ -207,7 +206,6 @@ export class UserGroupController {
   @Post(':id/regenerate-code')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiOperation({
     summary: 'Regenerate invite code',
     description:
@@ -252,7 +250,6 @@ export class UserGroupController {
   @Post(':id/members')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Add a virtual member',
     description:

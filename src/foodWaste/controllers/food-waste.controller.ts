@@ -21,7 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -48,7 +48,6 @@ export class FoodWasteController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a food waste entry',
     description:
@@ -235,7 +234,6 @@ export class FoodWasteController {
   @Patch(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Update food waste entry',
     description:
@@ -261,7 +259,6 @@ export class FoodWasteController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Delete food waste entry',
     description:

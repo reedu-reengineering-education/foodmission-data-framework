@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -42,7 +42,7 @@ export class RecipeController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  
   @ApiOperation({ summary: 'Create a recipe' })
   @ApiBody({ type: CreateRecipeDto })
   @ApiResponse({

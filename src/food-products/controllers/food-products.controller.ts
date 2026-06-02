@@ -26,7 +26,7 @@ import {
 import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { ApiOpenFoodFactsSearchQuery } from '../../common/decorators/api-query-params.decorator';
 import { Public, Roles } from 'nest-keycloak-connect';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { FoodProductService } from '../services/food-product.service';
 import { CreateFoodProductDto } from '../dto/create-food-product.dto';
 import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
@@ -60,7 +60,6 @@ export class FoodProductController {
   @Post()
   @CacheEvict(['food-products:list', 'food-products:count'])
   @Roles('admin')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new food product',
     description:
@@ -109,7 +108,6 @@ export class FoodProductController {
 
   @Get('search/openfoodfacts')
   @Public()
-  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiOperation({
     summary: 'Search OpenFoodFacts database',
     description:
@@ -149,7 +147,6 @@ export class FoodProductController {
 
   @Post('import/openfoodfacts/:barcode')
   @Roles('user', 'admin')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Import food product from OpenFoodFacts',
     description:

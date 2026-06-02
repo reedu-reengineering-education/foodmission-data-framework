@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { PantryItemService } from '../services/pantry-items.service';
 import { Roles } from 'nest-keycloak-connect';
@@ -57,7 +57,6 @@ export class PantryItemsController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Add a new item to a pantry',
     description:
@@ -223,7 +222,6 @@ export class PantryItemsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.CREATED)
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Record multiple expired items as food waste',
     description:

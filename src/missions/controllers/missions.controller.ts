@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { MissionsResponseDto } from '../dto/response-missions.dto';
 import { MissionsService } from '../services/missions.service';
@@ -40,7 +40,7 @@ export class MissionsController {
   @Post()
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  
   @ApiOperation({
     summary: 'Create a new Mission',
     description: 'Creates a new mission as an Admin',

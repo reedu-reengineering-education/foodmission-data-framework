@@ -25,19 +25,22 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
         return {
           throttlers: [
             {
-              name: 'default',
-              ttl: 60000, // 1 minute
-              limit: 100, // 100 requests per minute
-            },
-            {
+              // Short burst protection against rapid-fire requests
               name: 'short',
-              ttl: 1000, // 1 second
-              limit: 10, // 10 requests per second
+              ttl: 1_000,
+              limit: 5,
             },
             {
+              // Main per-minute fairness limit for normal API traffic
+              name: 'medium',
+              ttl: 60_000,
+              limit: 100,
+            },
+            {
+              // Longer anti-abuse window (15 minutes) to slow sustained high-volume usage
               name: 'long',
-              ttl: 900000, // 15 minutes
-              limit: 1000, // 1000 requests per 15 minutes
+              ttl: 900_000,
+              limit: 600,
             },
           ],
           skipIf: () => {

@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { ChallengesService } from '../services/challenges.service';
@@ -41,7 +41,6 @@ export class ChallengesController {
   @Post()
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Create a new Challenge',
     description:
