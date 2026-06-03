@@ -1,40 +1,29 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
+import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
+import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
+import { runBatchGeneration, runBatchInsertSteps } from '../../common/batch-runner';
 import {
-  MealLogAnalyticsAggregator,
+  DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
-} from './meal-log-analytics-aggregator.service';
-import { MealLogAnalyticsBatchStatus, Prisma } from '@prisma/client';
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  K_ANONYMITY_THRESHOLD,
+  safeAvg,
+  normalizeDimPair,
+  toAnalyticsNutritionDto,
+  toAnalyticsFoodPopularityDto,
+} from '../../common/analytics-utils';
+import { BaseAnalyticsService } from '../../common/base-analytics.service';
 
 @Injectable()
-export class MealLogAnalyticsService {
+export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyticsBatch> {
   private readonly logger = new Logger(MealLogAnalyticsService.name);
 
   constructor(
-    private readonly repository: MealLogAnalyticsRepository,
+    protected readonly repository: MealLogAnalyticsRepository,
     private readonly aggregator: MealLogAnalyticsAggregator,
-  ) {}
-
-  /**
-   * Daily cron: aggregate yesterday's data into staging.
-   * Runs at 2:00 AM every day.
-   */
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  async runDailyAggregation(): Promise<string> {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return this.generateBatch(yesterday, today);
+  ) {
+    super();
   }
 
   /**
@@ -44,113 +33,156 @@ export class MealLogAnalyticsService {
     this.logger.log(
       `Generating batch: ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );
-
-    const result = await this.aggregator.aggregate(periodStart, periodEnd);
-
-    const batch = await this.repository.createBatch({
+    return runBatchGeneration(
       periodStart,
       periodEnd,
-      recordCount: result.totalRecords,
-      metadata: {
-        suppressedGroups: result.suppressedGroups,
-        dailyNutritionRows: result.dailyNutrition.length,
-        foodPopularityRows: result.foodPopularity.length,
-        mealPatternsRows: result.mealPatterns.length,
-        sustainabilityRows: result.sustainability.length,
-        mealClassificationRows: result.mealClassification.length,
-        mealRecordsRows: result.mealRecords.length,
-        demographicNutritionRows: result.demographicNutrition.length,
-        demographicClassificationRows: result.demographicClassification.length,
-        demographicPatternsRows: result.demographicPatterns.length,
-        crossDimNutritionRows: result.crossDimNutrition.length,
-        crossDimClassificationRows: result.crossDimClassification.length,
-        crossDimPatternsRows: result.crossDimPatterns.length,
+      this.aggregator,
+      async (result) => {
+        const batch = await this.repository.createBatch({
+          periodStart,
+          periodEnd,
+          recordCount: result.totalRecords,
+          metadata: {
+            suppressedGroups: result.suppressedGroups,
+            dailyNutritionRows: result.dailyNutrition.length,
+            foodPopularityRows: result.foodPopularity.length,
+            mealPatternsRows: result.mealPatterns.length,
+            sustainabilityRows: result.sustainability.length,
+            mealClassificationRows: result.mealClassification.length,
+            mealRecordsRows: result.mealRecords.length,
+            demographicNutritionRows: result.demographicNutrition.length,
+            demographicClassificationRows:
+              result.demographicClassification.length,
+            demographicPatternsRows: result.demographicPatterns.length,
+            crossDimNutritionRows: result.crossDimNutrition.length,
+            crossDimClassificationRows: result.crossDimClassification.length,
+            crossDimPatternsRows: result.crossDimPatterns.length,
+          },
+        });
+        return batch.id;
       },
-    });
-
-    if (result.dailyNutrition.length > 0) {
-      await this.repository.insertDailyNutrition(
-        result.dailyNutrition.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.foodPopularity.length > 0) {
-      await this.repository.insertFoodPopularity(
-        result.foodPopularity.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.mealPatterns.length > 0) {
-      await this.repository.insertMealPatterns(
-        result.mealPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.sustainability.length > 0) {
-      await this.repository.insertSustainability(
-        result.sustainability.map((r) => ({
-          ...r,
-          batchId: batch.id,
-          nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
-          ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
-        })),
-      );
-    }
-    if (result.mealClassification.length > 0) {
-      await this.repository.insertMealClassification(
-        result.mealClassification.map((r) => ({
-          ...r,
-          batchId: batch.id,
-          novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-        })),
-      );
-    }
-    if (result.mealRecords.length > 0) {
-      await this.repository.insertMealRecords(
-        result.mealRecords.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.demographicNutrition.length > 0) {
-      await this.repository.insertDemographicNutrition(
-        result.demographicNutrition.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.demographicClassification.length > 0) {
-      await this.repository.insertDemographicClassification(
-        result.demographicClassification.map((r) => ({
-          ...r,
-          batchId: batch.id,
-          novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-        })),
-      );
-    }
-    if (result.demographicPatterns.length > 0) {
-      await this.repository.insertDemographicPatterns(
-        result.demographicPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.crossDimNutrition.length > 0) {
-      await this.repository.insertCrossDimNutrition(
-        result.crossDimNutrition.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-    if (result.crossDimClassification.length > 0) {
-      await this.repository.insertCrossDimClassification(
-        result.crossDimClassification.map((r) => ({
-          ...r,
-          batchId: batch.id,
-          novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
-        })),
-      );
-    }
-    if (result.crossDimPatterns.length > 0) {
-      await this.repository.insertCrossDimPatterns(
-        result.crossDimPatterns.map((r) => ({ ...r, batchId: batch.id })),
-      );
-    }
-
-    this.logger.log(
-      `Batch ${batch.id}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
+      async (batchId, result) => {
+        await runBatchInsertSteps([
+          {
+            name: 'dailyNutrition',
+            shouldRun: result.dailyNutrition.length > 0,
+            run: () =>
+              this.repository.insertDailyNutrition(
+                result.dailyNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'foodPopularity',
+            shouldRun: result.foodPopularity.length > 0,
+            run: () =>
+              this.repository.insertFoodPopularity(
+                result.foodPopularity.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'mealPatterns',
+            shouldRun: result.mealPatterns.length > 0,
+            run: () =>
+              this.repository.insertMealPatterns(
+                result.mealPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'sustainability',
+            shouldRun: result.sustainability.length > 0,
+            run: () =>
+              this.repository.insertSustainability(
+                result.sustainability.map((r) => ({
+                  ...r,
+                  batchId,
+                  nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+                  ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'mealClassification',
+            shouldRun: result.mealClassification.length > 0,
+            run: () =>
+              this.repository.insertMealClassification(
+                result.mealClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'mealRecords',
+            shouldRun: result.mealRecords.length > 0,
+            run: () =>
+              this.repository.insertMealRecords(
+                result.mealRecords.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicNutrition',
+            shouldRun: result.demographicNutrition.length > 0,
+            run: () =>
+              this.repository.insertDemographicNutrition(
+                result.demographicNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'demographicClassification',
+            shouldRun: result.demographicClassification.length > 0,
+            run: () =>
+              this.repository.insertDemographicClassification(
+                result.demographicClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'demographicPatterns',
+            shouldRun: result.demographicPatterns.length > 0,
+            run: () =>
+              this.repository.insertDemographicPatterns(
+                result.demographicPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'crossDimNutrition',
+            shouldRun: result.crossDimNutrition.length > 0,
+            run: () =>
+              this.repository.insertCrossDimNutrition(
+                result.crossDimNutrition.map((r) => ({ ...r, batchId })),
+              ),
+          },
+          {
+            name: 'crossDimClassification',
+            shouldRun: result.crossDimClassification.length > 0,
+            run: () =>
+              this.repository.insertCrossDimClassification(
+                result.crossDimClassification.map((r) => ({
+                  ...r,
+                  batchId,
+                  novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
+                })),
+              ),
+          },
+          {
+            name: 'crossDimPatterns',
+            shouldRun: result.crossDimPatterns.length > 0,
+            run: () =>
+              this.repository.insertCrossDimPatterns(
+                result.crossDimPatterns.map((r) => ({ ...r, batchId })),
+              ),
+          },
+        ]);
+        this.logger.log(
+          `Batch ${batchId}: ${result.totalRecords} records, ${result.suppressedGroups} suppressed`,
+        );
+      },
+      (batchId) => this.repository.deleteBatch(batchId),
     );
-
-    return batch.id;
   }
 
   // ============================================================
@@ -158,15 +190,82 @@ export class MealLogAnalyticsService {
   // ============================================================
 
   async getPublishedNutrition(from?: Date, to?: Date, typeOfMeal?: string) {
-    return this.repository.getPublishedNutrition(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedNutrition(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map(toAnalyticsNutritionDto);
   }
 
   async getPublishedFoodPopularity(from?: Date, to?: Date, limit = 20) {
-    return this.repository.getPublishedFoodPopularity(from, to, limit);
+    const rows = await this.repository.getPublishedFoodPopularity(
+      from,
+      to,
+      limit,
+    );
+    return rows.map(toAnalyticsFoodPopularityDto);
+  }
+
+  async getPublishedPopularity(from?: Date, to?: Date, limit = 20) {
+    const rows = await this.repository.getPublishedFoodPopularity(
+      from,
+      to,
+      limit,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      itemName: row.foodName,
+      itemGroup: row.foodGroup,
+      itemType: row.itemType,
+      frequency: row.frequency,
+      uniqueUsers: row.uniqueUsers,
+      avgQuantity: row.avgQuantity,
+      predominantUnit: row.predominantUnit,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      foodName: row.foodName,
+      foodGroup: row.foodGroup,
+    }));
   }
 
   async getPublishedMealPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
-    return this.repository.getPublishedMealPatterns(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedMealPatterns(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
+  }
+
+  async getPublishedPatterns(from?: Date, to?: Date, typeOfMeal?: string) {
+    return this.getPublishedMealPatterns(from, to, typeOfMeal);
   }
 
   async getPublishedSustainability(
@@ -174,7 +273,26 @@ export class MealLogAnalyticsService {
     to?: Date,
     typeOfMeal?: string,
   ) {
-    return this.repository.getPublishedSustainability(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedSustainability(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      avgSustainabilityScore: row.avgSustainabilityScore,
+      avgCarbonFootprint: row.avgCarbonFootprint,
+      nutriScoreDistribution: row.nutriScoreDistribution,
+      ecoScoreDistribution: row.ecoScoreDistribution,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+    }));
   }
 
   async getPublishedMealClassification(
@@ -182,7 +300,32 @@ export class MealLogAnalyticsService {
     to?: Date,
     typeOfMeal?: string,
   ) {
-    return this.repository.getPublishedMealClassification(from, to, typeOfMeal);
+    const rows = await this.repository.getPublishedMealClassification(
+      from,
+      to,
+      typeOfMeal,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedMealRecords(from?: Date, to?: Date, typeOfMeal?: string) {
@@ -195,12 +338,38 @@ export class MealLogAnalyticsService {
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicNutrition(
+    const rows = await this.repository.getPublishedDemographicNutrition(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      entityCount: row.mealCount,
+      avgCalories: row.avgCalories,
+      avgProteins: row.avgProteins,
+      avgFat: row.avgFat,
+      avgCarbs: row.avgCarbs,
+      avgFiber: row.avgFiber,
+      avgSodium: row.avgSodium,
+      avgSugar: row.avgSugar,
+      avgSaturatedFat: row.avgSaturatedFat,
+      p25Calories: row.p25Calories,
+      p50Calories: row.p50Calories,
+      p75Calories: row.p75Calories,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      mealCount: row.mealCount,
+    }));
   }
 
   async getPublishedDemographicClassification(
@@ -209,12 +378,35 @@ export class MealLogAnalyticsService {
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicClassification(
+    const rows = await this.repository.getPublishedDemographicClassification(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedDemographicPatterns(
@@ -223,12 +415,37 @@ export class MealLogAnalyticsService {
     typeOfMeal?: string,
     dimension?: string,
   ) {
-    return this.repository.getPublishedDemographicPatterns(
+    const rows = await this.repository.getPublishedDemographicPatterns(
       from,
       to,
       typeOfMeal,
       dimension as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dimensionName: row.dimensionName,
+      dimensionValue: row.dimensionValue,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
   }
 
   async getPublishedCrossDimNutrition(
@@ -238,13 +455,42 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
-    return this.repository.getPublishedCrossDimNutrition(
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    const rows = await this.repository.getPublishedCrossDimNutrition(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      entityCount: row.mealCount,
+      avgCalories: row.avgCalories,
+      avgProteins: row.avgProteins,
+      avgFat: row.avgFat,
+      avgCarbs: row.avgCarbs,
+      avgFiber: row.avgFiber,
+      avgSodium: row.avgSodium,
+      avgSugar: row.avgSugar,
+      avgSaturatedFat: row.avgSaturatedFat,
+      p25Calories: row.p25Calories,
+      p50Calories: row.p50Calories,
+      p75Calories: row.p75Calories,
+      metadata: {
+        valueUnit: 'per_meal',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      mealCount: row.mealCount,
+    }));
   }
 
   async getPublishedCrossDimClassification(
@@ -254,13 +500,39 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
-    return this.repository.getPublishedCrossDimClassification(
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    const rows = await this.repository.getPublishedCrossDimClassification(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      vegetarianPct: row.vegetarianPct,
+      veganPct: row.veganPct,
+      avgUltraProcessedPct: row.avgUltraProcessedPct,
+      p25UltraProcessedPct: row.p25UltraProcessedPct,
+      p50UltraProcessedPct: row.p50UltraProcessedPct,
+      p75UltraProcessedPct: row.p75UltraProcessedPct,
+      novaDistribution: row.novaDistribution,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      vegetarianCount: row.vegetarianCount,
+      veganCount: row.veganCount,
+    }));
   }
 
   async getPublishedCrossDimPatterns(
@@ -270,39 +542,124 @@ export class MealLogAnalyticsService {
     dim1?: string,
     dim2?: string,
   ) {
-    return this.repository.getPublishedCrossDimPatterns(
+    const [d1, d2] = normalizeDimPair(dim1, dim2);
+    const rows = await this.repository.getPublishedCrossDimPatterns(
       from,
       to,
       typeOfMeal,
-      dim1 as DemographicDimension | undefined,
-      dim2 as DemographicDimension | undefined,
+      d1 as DemographicDimension | undefined,
+      d2 as DemographicDimension | undefined,
     );
+    return rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      dim1Name: row.dim1Name,
+      dim1Value: row.dim1Value,
+      dim2Name: row.dim2Name,
+      dim2Value: row.dim2Value,
+      userCount: row.userCount,
+      totalEntities: row.totalMeals,
+      avgItemsPerEntity: row.avgItemsPerMeal,
+      pantryPct: row.mealsFromPantryPct,
+      eatenOutPct: row.mealsEatenOutPct,
+      metadata: {
+        valueUnit: 'percentage',
+        entityUnit: 'meal',
+      },
+      // Legacy fields kept.
+      typeOfMeal: row.typeOfMeal,
+      totalMeals: row.totalMeals,
+      mealsFromPantryCount: row.mealsFromPantryCount,
+      mealsFromPantryPct: row.mealsFromPantryPct,
+      mealsEatenOutCount: row.mealsEatenOutCount,
+      mealsEatenOutPct: row.mealsEatenOutPct,
+      avgItemsPerMeal: row.avgItemsPerMeal,
+      avgMealHour: row.avgMealHour,
+      mealHourStdDev: row.mealHourStdDev,
+    }));
   }
 
   async getPublishedSummary(from?: Date, to?: Date) {
     const [nutrition, popularity, patterns, sustainability, classification] =
       await Promise.all([
-        this.repository.getPublishedNutrition(from, to),
-        this.repository.getPublishedFoodPopularity(from, to, 5),
-        this.repository.getPublishedMealPatterns(from, to),
-        this.repository.getPublishedSustainability(from, to),
-        this.repository.getPublishedMealClassification(from, to),
+        this.getPublishedNutrition(from, to),
+        this.getPublishedPopularity(from, to, 5),
+        this.getPublishedPatterns(from, to),
+        this.getPublishedSustainability(from, to),
+        this.getPublishedMealClassification(from, to),
       ]);
 
-    const derivedFrom = from ?? nutrition.at(0)?.date ?? null;
-    const derivedTo = to ?? nutrition.at(-1)?.date ?? null;
-
     return {
-      period: { from: derivedFrom, to: derivedTo },
+      period: { from: from ?? null, to: to ?? null },
+      metadata: {
+        capabilities: {
+          supportsNutrition: true,
+          supportsDemographicNutrition: true,
+          supportsCrossDimNutrition: true,
+          supportsClassification: true,
+          supportsRecords: true,
+          supportedDimensions: DEMOGRAPHIC_DIMENSIONS,
+          privacyThresholds: {
+            singleDimMinUsers: K_ANONYMITY_THRESHOLD,
+            crossDimMinUsers: K_ANONYMITY_CROSS_DIM_THRESHOLD,
+          },
+        },
+      },
+      topItems: popularity.map((f) => ({
+        itemName: f.itemName,
+        itemGroup: f.itemGroup,
+        itemType: f.itemType,
+        frequency: f.frequency,
+        uniqueUsers: f.uniqueUsers,
+      })),
+      patterns: {
+        dataPoints: patterns.length,
+        avgItemsPerEntity:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
+            : null,
+        avgPantryPct:
+          patterns.length > 0
+            ? safeAvg(patterns.map((p) => p.pantryPct))
+            : null,
+      },
       nutrition: {
         dataPoints: nutrition.length,
         latestAvgCalories: nutrition.at(-1)?.avgCalories ?? null,
         latestAvgProteins: nutrition.at(-1)?.avgProteins ?? null,
         latestAvgFat: nutrition.at(-1)?.avgFat ?? null,
         latestAvgCarbs: nutrition.at(-1)?.avgCarbs ?? null,
+        metadata: {
+          valueUnit: 'per_meal',
+          entityUnit: 'meal',
+        },
       },
+      sustainability: {
+        dataPoints: sustainability.length,
+        avgSustainabilityScore: safeAvg(
+          sustainability
+            .map((s) => s.avgSustainabilityScore)
+            .filter((v): v is number => v !== null),
+        ),
+        avgCarbonFootprint: safeAvg(
+          sustainability
+            .map((s) => s.avgCarbonFootprint)
+            .filter((v): v is number => v !== null),
+        ),
+      },
+      classification: {
+        dataPoints: classification.length,
+        avgVegetarianPct: safeAvg(classification.map((c) => c.vegetarianPct)),
+        avgVeganPct: safeAvg(classification.map((c) => c.veganPct)),
+        avgUltraProcessedPct: safeAvg(
+          classification
+            .map((c) => c.avgUltraProcessedPct)
+            .filter((v): v is number => v !== null),
+        ),
+      },
+      // Backward-compatibility fields kept for legacy clients.
       topFoods: popularity.map((f) => ({
-        name: f.foodName,
+        name: f.itemName,
         frequency: f.frequency,
         uniqueUsers: f.uniqueUsers,
       })),
@@ -310,34 +667,12 @@ export class MealLogAnalyticsService {
         dataPoints: patterns.length,
         avgPantryUsagePct:
           patterns.length > 0
-            ? patterns.reduce((s, p) => s + p.mealsFromPantryPct, 0) /
-              patterns.length
+            ? safeAvg(patterns.map((p) => p.pantryPct))
             : null,
         avgItemsPerMeal:
           patterns.length > 0
-            ? patterns.reduce((s, p) => s + p.avgItemsPerMeal, 0) /
-              patterns.length
+            ? safeAvg(patterns.map((p) => p.avgItemsPerEntity))
             : null,
-      },
-      sustainability: {
-        dataPoints: sustainability.length,
-        avgSustainabilityScore: this.safeAvg(
-          sustainability
-            .map((s) => s.avgSustainabilityScore)
-            .filter((v): v is number => v !== null),
-        ),
-      },
-      classification: {
-        dataPoints: classification.length,
-        avgVegetarianPct: this.safeAvg(
-          classification.map((c) => c.vegetarianPct),
-        ),
-        avgVeganPct: this.safeAvg(classification.map((c) => c.veganPct)),
-        avgUltraProcessedPct: this.safeAvg(
-          classification
-            .map((c) => c.avgUltraProcessedPct)
-            .filter((v): v is number => v !== null),
-        ),
       },
     };
   }
@@ -345,81 +680,4 @@ export class MealLogAnalyticsService {
   // ============================================================
   // Admin — batch management
   // ============================================================
-
-  async listBatches(status?: MealLogAnalyticsBatchStatus) {
-    return this.repository.findBatches(status);
-  }
-
-  async getBatch(batchId: string) {
-    const batch = await this.repository.findBatchById(batchId);
-    if (!batch) {
-      throw new NotFoundException(`Batch ${batchId} not found`);
-    }
-    return batch;
-  }
-
-  async approveBatch(batchId: string, adminUserId: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== MealLogAnalyticsBatchStatus.STAGING) {
-      throw new Error(
-        `Batch is ${batch.status}, can only approve STAGING batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
-      MealLogAnalyticsBatchStatus.APPROVED,
-      adminUserId,
-    );
-  }
-
-  async publishBatch(batchId: string, adminUserId: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== MealLogAnalyticsBatchStatus.APPROVED) {
-      throw new Error(
-        `Batch is ${batch.status}, can only publish APPROVED batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
-      MealLogAnalyticsBatchStatus.PUBLISHED,
-      adminUserId,
-    );
-  }
-
-  async rejectBatch(batchId: string, adminUserId: string, reason: string) {
-    const batch = await this.getBatch(batchId);
-    if (batch.status !== MealLogAnalyticsBatchStatus.STAGING) {
-      throw new BadRequestException(
-        `Batch is ${batch.status}, can only reject STAGING batches`,
-      );
-    }
-    return this.repository.updateBatchStatus(
-      batchId,
-      MealLogAnalyticsBatchStatus.REJECTED,
-      adminUserId,
-      reason,
-    );
-  }
-
-  async deleteBatch(batchId: string) {
-    const batch = await this.getBatch(batchId);
-    if (
-      batch.status === MealLogAnalyticsBatchStatus.PUBLISHED ||
-      batch.status === MealLogAnalyticsBatchStatus.APPROVED
-    ) {
-      throw new BadRequestException(
-        `Cannot delete ${batch.status} batch. Reject it first.`,
-      );
-    }
-    await this.repository.deleteBatch(batchId);
-  }
-
-  // ============================================================
-  // Helpers
-  // ============================================================
-
-  private safeAvg(values: number[]): number | null {
-    if (values.length === 0) return null;
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  }
 }

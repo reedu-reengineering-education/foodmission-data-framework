@@ -1,8 +1,8 @@
 import { MealLogAnalyticsService } from './meal-log-analytics.service';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
-import { MealLogAnalyticsBatchStatus } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
+// Prisma enum export unavailable in this workspace; use literal statuses in tests.
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('MealLogAnalyticsService', () => {
   let service: MealLogAnalyticsService;
@@ -17,12 +17,89 @@ describe('MealLogAnalyticsService', () => {
       getPublishedMealClassification: jest.fn(),
       findBatchById: jest.fn(),
       updateBatchStatus: jest.fn(),
+      createBatch: jest.fn(),
+      deleteBatch: jest.fn(),
+      supersedeBatchesForPeriod: jest.fn().mockResolvedValue(undefined),
+      insertDailyNutrition: jest.fn(),
+      insertFoodPopularity: jest.fn(),
+      insertMealPatterns: jest.fn(),
+      insertSustainability: jest.fn(),
+      insertMealClassification: jest.fn(),
+      insertMealRecords: jest.fn(),
     } as unknown as jest.Mocked<MealLogAnalyticsRepository>;
 
     service = new MealLogAnalyticsService(
       repository,
       {} as MealLogAnalyticsAggregator,
     );
+  });
+
+  // ============================================================
+  // runDailyAggregation
+  // ============================================================
+
+  describe('runDailyAggregation', () => {
+    const emptyAggResult = {
+      dailyNutrition: [],
+      foodPopularity: [],
+      mealPatterns: [],
+      sustainability: [],
+      mealClassification: [],
+      mealRecords: [],
+      demographicNutrition: [],
+      demographicClassification: [],
+      demographicPatterns: [],
+      crossDimNutrition: [],
+      crossDimClassification: [],
+      crossDimPatterns: [],
+      totalRecords: 0,
+      suppressedGroups: 0,
+    };
+    let aggregatorMock: jest.Mocked<MealLogAnalyticsAggregator>;
+
+    beforeEach(() => {
+      aggregatorMock = {
+        aggregate: jest.fn().mockResolvedValue(emptyAggResult),
+      } as unknown as jest.Mocked<MealLogAnalyticsAggregator>;
+      // rebuild service with a real aggregator mock
+      service = new MealLogAnalyticsService(repository, aggregatorMock);
+      repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
+      repository.updateBatchStatus.mockResolvedValue({
+        id: 'daily-batch',
+        status: 'PUBLISHED',
+      } as any);
+    });
+
+    it('does not auto-supersede existing published batches', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.supersedeBatchesForPeriod).not.toHaveBeenCalled();
+    });
+
+    it('auto-publishes the generated batch as system user', async () => {
+      await service.runDailyAggregation();
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'daily-batch',
+        'PUBLISHED',
+        'system',
+      );
+    });
+
+    it('returns the batch id', async () => {
+      const id = await service.runDailyAggregation();
+
+      expect(id).toBe('daily-batch');
+    });
+
+    it('uses yesterday midnight UTC as periodStart', async () => {
+      await service.runDailyAggregation();
+
+      const { periodStart } = repository.createBatch.mock.calls[0][0];
+      expect(periodStart.getUTCHours()).toBe(0);
+      expect(periodStart.getUTCMinutes()).toBe(0);
+      expect(periodStart.getUTCSeconds()).toBe(0);
+    });
   });
 
   it('getPublishedSummary computes derived values and handles nulls', async () => {
@@ -60,27 +137,52 @@ describe('MealLogAnalyticsService', () => {
 
     const result = await service.getPublishedSummary();
 
-    expect(result.period.from).toEqual(new Date('2026-04-01T00:00:00.000Z'));
-    expect(result.period.to).toEqual(new Date('2026-04-21T00:00:00.000Z'));
+    expect(result.period.from).toBeNull();
+    expect(result.period.to).toBeNull();
+    expect(result.metadata.capabilities).toMatchObject({
+      supportsNutrition: true,
+      supportsDemographicNutrition: true,
+      supportsCrossDimNutrition: true,
+      supportsClassification: true,
+      supportsRecords: true,
+      supportedDimensions: [
+        'ageGroup',
+        'country',
+        'educationLevel',
+        'gender',
+        'region',
+      ],
+      privacyThresholds: {
+        singleDimMinUsers: 5,
+        crossDimMinUsers: 20,
+      },
+    });
     expect(result.nutrition.latestAvgCalories).toBe(120);
     expect(result.nutrition.latestAvgProteins).toBe(15);
-    expect(result.topFoods).toEqual([
-      { name: 'Apple', frequency: 8, uniqueUsers: 5 },
+    expect(result.topItems).toEqual([
+      {
+        itemName: 'Apple',
+        itemGroup: undefined,
+        itemType: undefined,
+        frequency: 8,
+        uniqueUsers: 5,
+      },
     ]);
-    expect(result.mealPatterns.avgPantryUsagePct).toBe(50);
-    expect(result.mealPatterns.avgItemsPerMeal).toBe(3);
+    expect(result.patterns.avgPantryPct).toBe(50);
+    expect(result.patterns.avgItemsPerEntity).toBe(3);
     expect(result.sustainability.avgSustainabilityScore).toBe(50);
     expect(result.classification.avgVegetarianPct).toBe(30);
     expect(result.classification.avgVeganPct).toBe(20);
     expect(result.classification.avgUltraProcessedPct).toBe(60);
+    expect(result.nutrition).not.toHaveProperty('latestAvgCaloriesPer100g');
   });
 
   describe('approveBatch', () => {
     it('should approve a STAGING batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+      const batch = { id: 'b1', status: 'STAGING' };
       const approved = {
         ...batch,
-        status: MealLogAnalyticsBatchStatus.APPROVED,
+        status: 'APPROVED',
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(approved as any);
@@ -89,18 +191,18 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        MealLogAnalyticsBatchStatus.APPROVED,
+        'APPROVED',
         'admin1',
       );
       expect(result).toEqual(approved);
     });
 
-    it('should throw Error for non-STAGING batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.PUBLISHED };
+    it('should throw BadRequestException for non-STAGING batch', async () => {
+      const batch = { id: 'b1', status: 'PUBLISHED' };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.approveBatch('b1', 'admin1')).rejects.toThrow(
-        'Batch is PUBLISHED, can only approve STAGING batches',
+        BadRequestException,
       );
     });
 
@@ -115,10 +217,10 @@ describe('MealLogAnalyticsService', () => {
 
   describe('publishBatch', () => {
     it('should publish an APPROVED batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.APPROVED };
+      const batch = { id: 'b1', status: 'APPROVED' };
       const published = {
         ...batch,
-        status: MealLogAnalyticsBatchStatus.PUBLISHED,
+        status: 'PUBLISHED',
       };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
       repository.updateBatchStatus.mockResolvedValueOnce(published as any);
@@ -127,18 +229,18 @@ describe('MealLogAnalyticsService', () => {
 
       expect(repository.updateBatchStatus).toHaveBeenCalledWith(
         'b1',
-        MealLogAnalyticsBatchStatus.PUBLISHED,
+        'PUBLISHED',
         'admin1',
       );
       expect(result).toEqual(published);
     });
 
-    it('should throw Error for non-APPROVED batch', async () => {
-      const batch = { id: 'b1', status: MealLogAnalyticsBatchStatus.STAGING };
+    it('should throw BadRequestException for non-APPROVED batch', async () => {
+      const batch = { id: 'b1', status: 'STAGING' };
       repository.findBatchById.mockResolvedValueOnce(batch as any);
 
       await expect(service.publishBatch('b1', 'admin1')).rejects.toThrow(
-        'Batch is STAGING, can only publish APPROVED batches',
+        BadRequestException,
       );
     });
 
@@ -147,6 +249,36 @@ describe('MealLogAnalyticsService', () => {
 
       await expect(service.publishBatch('missing', 'admin1')).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('supersedeBatch', () => {
+    it('should supersede a PUBLISHED batch', async () => {
+      const batch = { id: 'b1', status: 'PUBLISHED' };
+      const superseded = {
+        ...batch,
+        status: 'SUPERSEDED',
+      };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+      repository.updateBatchStatus.mockResolvedValueOnce(superseded as any);
+
+      const result = await service.supersedeBatch('b1', 'admin1');
+
+      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
+        'b1',
+        'SUPERSEDED',
+        'admin1',
+      );
+      expect(result).toEqual(superseded);
+    });
+
+    it('should throw BadRequestException for non-PUBLISHED batch', async () => {
+      const batch = { id: 'b1', status: 'APPROVED' };
+      repository.findBatchById.mockResolvedValueOnce(batch as any);
+
+      await expect(service.supersedeBatch('b1', 'admin1')).rejects.toThrow(
+        BadRequestException,
       );
     });
   });

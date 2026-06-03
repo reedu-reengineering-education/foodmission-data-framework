@@ -1,35 +1,23 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Param,
-  Query,
-  Body,
-  ParseUUIDPipe,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-  ApiParam,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { MealLogAnalyticsService } from '../services/meal-log-analytics.service';
-import { MealLogAnalyticsBatchStatus } from '@prisma/client';
-import { DataBaseAuthGuard } from '../../../common/guards/database-auth.guards';
-import { Public, Roles } from 'nest-keycloak-connect';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
+import { MealLogAnalyticsBatch } from '@prisma/client';
+import {
+  DemographicDimension,
+  parseLimit,
+  parseDate,
+} from '../../common/analytics-utils';
+import { Public } from 'nest-keycloak-connect';
+import { BaseAnalyticsAdminController } from '../../common/base-analytics-admin.controller';
+import { DimQuery } from '../../common/decorators/dim-query.decorator';
+import { DateRangeQuery } from '../../common/decorators/date-range-query.decorator';
 
 @ApiTags('analytics-meal-log')
 @Controller('analytics/meal-log')
-export class MealLogAnalyticsController {
-  constructor(private readonly analyticsService: MealLogAnalyticsService) {}
+export class MealLogAnalyticsController extends BaseAnalyticsAdminController<MealLogAnalyticsBatch> {
+  constructor(protected readonly analyticsService: MealLogAnalyticsService) {
+    super();
+  }
 
   // ============================================================
   // Public Endpoints — no auth required
@@ -66,8 +54,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -78,8 +66,7 @@ export class MealLogAnalyticsController {
     summary: 'Most consumed foods and food categories',
     description: 'Ranked by frequency. Only foods consumed by ≥5 unique users.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Food popularity rankings' })
   async getPublicFoodPopularity(
@@ -88,9 +75,31 @@ export class MealLogAnalyticsController {
     @Query('limit') limit?: string,
   ) {
     return this.analyticsService.getPublishedFoodPopularity(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
-      limit ? parseInt(limit, 10) : 20,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
+    );
+  }
+
+  @Public()
+  @Get('public/popularity')
+  @ApiOperation({
+    summary: 'Unified popularity metrics for meal log analytics',
+    description:
+      'Unified contract endpoint with consistent itemName/itemGroup/itemType fields and metadata.',
+  })
+  @DateRangeQuery()
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiResponse({ status: 200, description: 'Unified popularity rows' })
+  getPublicPopularity(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.analyticsService.getPublishedPopularity(
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
+      parseLimit(limit),
     );
   }
 
@@ -99,8 +108,7 @@ export class MealLogAnalyticsController {
   @ApiOperation({
     summary: 'Meal behavior patterns (timing, pantry usage, items per meal)',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -113,8 +121,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -124,8 +132,7 @@ export class MealLogAnalyticsController {
   @ApiOperation({
     summary: 'Sustainability, carbon footprint & nutri/eco-score distributions',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -138,8 +145,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedSustainability(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -149,8 +156,7 @@ export class MealLogAnalyticsController {
   @ApiOperation({
     summary: 'Vegetarian/vegan rates, ultra-processed %, NOVA distribution',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -163,8 +169,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -175,8 +181,7 @@ export class MealLogAnalyticsController {
     summary:
       'Individual meal records — anonymized microdata (one row per meal log)',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -189,8 +194,8 @@ export class MealLogAnalyticsController {
     @Query('typeOfMeal') typeOfMeal?: string,
   ) {
     return this.analyticsService.getPublishedMealRecords(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
     );
   }
@@ -231,11 +236,12 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @DimQuery('dimension')
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -249,8 +255,7 @@ export class MealLogAnalyticsController {
     description:
       'Classification metrics segmented by one demographic dimension. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -269,11 +274,12 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @DimQuery('dimension')
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -287,8 +293,7 @@ export class MealLogAnalyticsController {
     description:
       'Meal behavior patterns segmented by one demographic dimension. k-anonymity (k≥5) enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -307,11 +312,12 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dimension') dimension?: string,
+    @DimQuery('dimension')
+    dimension?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedDemographicPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dimension,
     );
@@ -365,12 +371,14 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @DimQuery('dim1')
+    dim1?: DemographicDimension,
+    @DimQuery('dim2')
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimNutrition(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -386,8 +394,7 @@ export class MealLogAnalyticsController {
       'Vegetarian/vegan rates, ultra-processed % and NOVA distribution for two demographic dimensions combined. ' +
       'Stricter k-anonymity (k≥20) is enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -411,12 +418,14 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @DimQuery('dim1')
+    dim1?: DemographicDimension,
+    @DimQuery('dim2')
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimClassification(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -432,8 +441,7 @@ export class MealLogAnalyticsController {
       'Meal behavior patterns (pantry usage, eaten out, timing, items per meal) for two demographic dimensions combined. ' +
       'Stricter k-anonymity (k≥20) is enforced.',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiQuery({
     name: 'typeOfMeal',
     required: false,
@@ -457,12 +465,14 @@ export class MealLogAnalyticsController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('typeOfMeal') typeOfMeal?: string,
-    @Query('dim1') dim1?: string,
-    @Query('dim2') dim2?: string,
+    @DimQuery('dim1')
+    dim1?: DemographicDimension,
+    @DimQuery('dim2')
+    dim2?: DemographicDimension,
   ) {
     return this.analyticsService.getPublishedCrossDimPatterns(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
       typeOfMeal,
       dim1,
       dim2,
@@ -474,143 +484,15 @@ export class MealLogAnalyticsController {
   @ApiOperation({
     summary: 'High-level summary across all dimensions',
   })
-  @ApiQuery({ name: 'from', required: false, type: String })
-  @ApiQuery({ name: 'to', required: false, type: String })
+  @DateRangeQuery()
   @ApiResponse({ status: 200, description: 'Summary across all dimensions' })
   async getPublicSummary(
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
     return this.analyticsService.getPublishedSummary(
-      from ? new Date(from) : undefined,
-      to ? new Date(to) : undefined,
+      parseDate(from, 'from'),
+      parseDate(to, 'to'),
     );
-  }
-
-  // ============================================================
-  // Admin Endpoints — requires auth + admin role
-  // ============================================================
-
-  @Post('batches/generate')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Manually trigger analytics aggregation' })
-  @ApiQuery({
-    name: 'periodStart',
-    required: true,
-    type: String,
-    example: '2026-02-18',
-  })
-  @ApiQuery({
-    name: 'periodEnd',
-    required: true,
-    type: String,
-    example: '2026-02-25',
-  })
-  @ApiResponse({ status: 201, description: 'Batch ID' })
-  async generateBatch(
-    @Query('periodStart') periodStart: string,
-    @Query('periodEnd') periodEnd: string,
-  ) {
-    const batchId = await this.analyticsService.generateBatch(
-      new Date(periodStart),
-      new Date(periodEnd),
-    );
-    return { batchId };
-  }
-
-  @Post('batches/run-daily')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Manually trigger the daily aggregation job' })
-  @ApiResponse({ status: 201, description: 'Batch ID for yesterday' })
-  async runDaily() {
-    const batchId = await this.analyticsService.runDailyAggregation();
-    return { batchId };
-  }
-
-  @Get('batches')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'List all analytics batches' })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: MealLogAnalyticsBatchStatus,
-  })
-  @ApiResponse({ status: 200, description: 'List of batches' })
-  async listBatches(@Query('status') status?: MealLogAnalyticsBatchStatus) {
-    return this.analyticsService.listBatches(status);
-  }
-
-  @Get('batches/:id')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({
-    summary: 'Get batch details with all aggregated data for review',
-  })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch with aggregated data' })
-  async getBatch(@Param('id', ParseUUIDPipe) id: string) {
-    return this.analyticsService.getBatch(id);
-  }
-
-  @Patch('batches/:id/approve')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Approve a staging batch for publication' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch approved' })
-  async approveBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-  ) {
-    return this.analyticsService.approveBatch(id, adminUserId);
-  }
-
-  @Patch('batches/:id/publish')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Publish an approved batch (makes data public)' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch published' })
-  async publishBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-  ) {
-    return this.analyticsService.publishBatch(id, adminUserId);
-  }
-
-  @Patch('batches/:id/reject')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @ApiOperation({ summary: 'Reject a staging batch' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 200, description: 'Batch rejected' })
-  async rejectBatch(
-    @Param('id', ParseUUIDPipe) id: string,
-    @CurrentUser('id') adminUserId: string,
-    @Body('reason') reason: string,
-  ) {
-    return this.analyticsService.rejectBatch(id, adminUserId, reason);
-  }
-
-  @Delete('batches/:id')
-  @UseGuards(DataBaseAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  @Roles('admin')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a staging or rejected batch' })
-  @ApiParam({ name: 'id', description: 'Batch UUID' })
-  @ApiResponse({ status: 204, description: 'Batch deleted' })
-  async deleteBatch(@Param('id', ParseUUIDPipe) id: string) {
-    await this.analyticsService.deleteBatch(id);
   }
 }

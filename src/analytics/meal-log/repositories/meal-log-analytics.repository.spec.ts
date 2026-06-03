@@ -1,12 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '../../../database/prisma.service';
 import { MealLogAnalyticsRepository } from './meal-log-analytics.repository';
 
 describe('MealLogAnalyticsRepository', () => {
   let repository: MealLogAnalyticsRepository;
   let prisma: any;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     prisma = {
       mealLogAnalyticsBatch: {
         update: jest.fn(),
@@ -23,24 +21,9 @@ describe('MealLogAnalyticsRepository', () => {
       mealLogAnalyticsCrossDimNutrition: {
         findMany: jest.fn(),
       },
-      mealLogAnalyticsMealRecord: {
-        findMany: jest.fn(),
-      },
     };
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        MealLogAnalyticsRepository,
-        {
-          provide: PrismaService,
-          useValue: prisma,
-        },
-      ],
-    }).compile();
-
-    repository = module.get<MealLogAnalyticsRepository>(
-      MealLogAnalyticsRepository,
-    );
+    repository = new MealLogAnalyticsRepository(prisma);
   });
 
   afterEach(() => {
@@ -48,8 +31,8 @@ describe('MealLogAnalyticsRepository', () => {
   });
 
   describe('updateBatchStatus', () => {
-    it('sets published metadata when status is PUBLISHED', async () => {
-      prisma.mealLogAnalyticsBatch.update.mockResolvedValueOnce({ id: 'b1' });
+    it('sets publication metadata when publishing', async () => {
+      prisma.mealLogAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
 
       await repository.updateBatchStatus('b1', 'PUBLISHED', 'admin-1');
 
@@ -63,8 +46,8 @@ describe('MealLogAnalyticsRepository', () => {
       });
     });
 
-    it('sets rejection metadata when status is REJECTED', async () => {
-      prisma.mealLogAnalyticsBatch.update.mockResolvedValueOnce({ id: 'b1' });
+    it('sets rejection metadata when rejecting', async () => {
+      prisma.mealLogAnalyticsBatch.update.mockResolvedValue({ id: 'b1' });
 
       await repository.updateBatchStatus(
         'b1',
@@ -102,7 +85,7 @@ describe('MealLogAnalyticsRepository', () => {
       );
     });
 
-    it('adds date range and typeOfMeal filters when provided', async () => {
+    it('adds overlap date range and typeOfMeal filters when provided', async () => {
       prisma.mealLogAnalyticsDailyNutrition.findMany.mockResolvedValueOnce([]);
       const from = new Date('2026-04-01');
       const to = new Date('2026-04-30');
@@ -116,8 +99,8 @@ describe('MealLogAnalyticsRepository', () => {
           where: expect.objectContaining({
             batch: {
               status: 'PUBLISHED',
-              periodStart: { gte: from },
-              periodEnd: { lte: to },
+              periodEnd: { gt: from },
+              periodStart: { lt: to },
             },
             typeOfMeal: 'DINNER',
           }),
@@ -144,7 +127,7 @@ describe('MealLogAnalyticsRepository', () => {
   });
 
   describe('getPublishedDemographicNutrition', () => {
-    it('applies dynamic dimension filter when provided', async () => {
+    it('applies dimension filter when provided', async () => {
       prisma.mealLogAnalyticsDemographicNutrition.findMany.mockResolvedValueOnce(
         [],
       );
@@ -163,7 +146,7 @@ describe('MealLogAnalyticsRepository', () => {
           where: expect.objectContaining({
             batch: { status: 'PUBLISHED' },
             typeOfMeal: 'DINNER',
-            country: { not: null },
+            dimensionName: 'country',
           }),
         }),
       );
@@ -193,23 +176,6 @@ describe('MealLogAnalyticsRepository', () => {
             typeOfMeal: 'LUNCH',
             dim1Name: 'ageGroup',
             dim2Name: 'gender',
-          }),
-        }),
-      );
-    });
-  });
-
-  describe('getPublishedMealRecords', () => {
-    it('applies typeOfMeal filter and published batch filter', async () => {
-      prisma.mealLogAnalyticsMealRecord.findMany.mockResolvedValueOnce([]);
-
-      await repository.getPublishedMealRecords(undefined, undefined, 'SNACK');
-
-      expect(prisma.mealLogAnalyticsMealRecord.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            batch: { status: 'PUBLISHED' },
-            typeOfMeal: 'SNACK',
           }),
         }),
       );

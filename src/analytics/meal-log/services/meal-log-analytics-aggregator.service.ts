@@ -1,12 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import { TypeOfMeal } from '@prisma/client';
-
-/** k-anonymity threshold: suppress groups with fewer than K unique users */
-const K_ANONYMITY_THRESHOLD = 5;
-
-/** k-anonymity threshold for cross-dimensional groups (two dimensions combined) */
-const K_ANONYMITY_CROSS_DIM_THRESHOLD = 20;
+import {
+  DEMOGRAPHIC_DIMENSIONS,
+  K_ANONYMITY_THRESHOLD,
+  K_ANONYMITY_CROSS_DIM_THRESHOLD,
+  safeAvg,
+  percentile,
+  stdDev,
+  mode,
+  distribution,
+  FoodFrequencyRow,
+  AGE_GROUP_SQL,
+  aggregateFoodFrequency,
+  makeApplyK,
+  groupBy,
+  buildCrossDimPairs,
+} from '../../common/analytics-utils';
 
 // ============================================================
 // Raw SQL row type — joined from meal_logs, Meal, MealItem, Food, FoodCategory
@@ -126,16 +136,7 @@ export interface DailyNutritionRow {
   p75Calories: number | null;
 }
 
-export interface FoodPopularityRow {
-  date: Date;
-  foodName: string;
-  foodGroup: string | null;
-  itemType: string;
-  frequency: number;
-  uniqueUsers: number;
-  avgQuantity: number;
-  predominantUnit: string;
-}
+export type FoodPopularityRow = FoodFrequencyRow;
 
 export interface MealPatternsRow {
   date: Date;
@@ -200,32 +201,14 @@ export interface MealRecordRow {
 }
 
 // ============================================================
-// Demographic dimension types
+// Row types returned by the aggregator
 // ============================================================
-
-export type DemographicDimension =
-  | 'ageGroup'
-  | 'gender'
-  | 'educationLevel'
-  | 'region'
-  | 'country';
-
-export const DEMOGRAPHIC_DIMENSIONS: DemographicDimension[] = [
-  'ageGroup',
-  'gender',
-  'educationLevel',
-  'region',
-  'country',
-];
 
 export interface DemographicNutritionRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   mealCount: number;
   avgCalories: number | null;
@@ -244,11 +227,8 @@ export interface DemographicNutritionRow {
 export interface DemographicClassificationRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   totalMeals: number;
   vegetarianCount: number;
@@ -265,11 +245,8 @@ export interface DemographicClassificationRow {
 export interface DemographicPatternsRow {
   date: Date;
   typeOfMeal: TypeOfMeal;
-  ageGroup: string | null;
-  gender: string | null;
-  educationLevel: string | null;
-  region: string | null;
-  country: string | null;
+  dimensionName: string;
+  dimensionValue: string;
   userCount: number;
   totalMeals: number;
   mealsFromPantryCount: number;
@@ -382,7 +359,7 @@ export class MealLogAnalyticsAggregator {
     const meals = this.buildMealAggregates(rawData);
     this.logger.log(`Built ${meals.length} meal aggregates`);
 
-    let suppressedGroups = 0;
+    const suppressedGroups = { value: 0 };
 
     const dailyNutrition = this.aggregateDailyNutrition(meals);
     const foodPopularity = this.aggregateFoodPopularity(meals);
@@ -399,40 +376,19 @@ export class MealLogAnalyticsAggregator {
     const crossDimPatterns = this.aggregateCrossDimPatterns(meals);
 
     // Apply k-anonymity: suppress groups with < K unique users
-    const filter = <T extends { userCount?: number; uniqueUsers?: number }>(
-      rows: T[],
-      field: 'userCount' | 'uniqueUsers' = 'userCount',
-    ): T[] =>
-      rows.filter((r) => {
-        const count = r[field] as number;
-        if (count < K_ANONYMITY_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
+    const applyK = makeApplyK(suppressedGroups);
 
-    // Stricter K=20 filter for cross-dimensional groups
-    const filterCross = <T extends { userCount: number }>(rows: T[]): T[] =>
-      rows.filter((r) => {
-        if (r.userCount < K_ANONYMITY_CROSS_DIM_THRESHOLD) {
-          suppressedGroups++;
-          return false;
-        }
-        return true;
-      });
-
-    const filteredNutrition = filter(dailyNutrition);
-    const filteredPopularity = filter(foodPopularity, 'uniqueUsers');
-    const filteredPatterns = filter(mealPatterns);
-    const filteredSustainability = filter(sustainability);
-    const filteredClassification = filter(mealClassification);
-    const filteredDemographicNutrition = filter(demographicNutrition);
-    const filteredDemographicClassification = filter(demographicClassification);
-    const filteredDemographicPatterns = filter(demographicPatterns);
-    const filteredCrossDimNutrition = filterCross(crossDimNutrition);
-    const filteredCrossDimClassification = filterCross(crossDimClassification);
-    const filteredCrossDimPatterns = filterCross(crossDimPatterns);
+    const filteredNutrition = applyK(dailyNutrition);
+    const filteredPopularity = applyK(foodPopularity, 'uniqueUsers');
+    const filteredPatterns = applyK(mealPatterns);
+    const filteredSustainability = applyK(sustainability);
+    const filteredClassification = applyK(mealClassification);
+    const filteredDemographicNutrition = applyK(demographicNutrition);
+    const filteredDemographicClassification = applyK(demographicClassification);
+    const filteredDemographicPatterns = applyK(demographicPatterns);
+    const filteredCrossDimNutrition = applyK(crossDimNutrition, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimClassification = applyK(crossDimClassification, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimPatterns = applyK(crossDimPatterns, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
 
     const totalRecords =
       filteredNutrition.length +
@@ -448,7 +404,7 @@ export class MealLogAnalyticsAggregator {
       filteredCrossDimPatterns.length;
 
     this.logger.log(
-      `Aggregation done: ${totalRecords} records, ${suppressedGroups} suppressed (k<${K_ANONYMITY_THRESHOLD} single-dim / k<${K_ANONYMITY_CROSS_DIM_THRESHOLD} cross-dim)`,
+      `Aggregation done: ${totalRecords} records, ${suppressedGroups.value} suppressed (k<${K_ANONYMITY_THRESHOLD} single-dim / k<${K_ANONYMITY_CROSS_DIM_THRESHOLD} cross-dim)`,
     );
 
     return {
@@ -465,7 +421,7 @@ export class MealLogAnalyticsAggregator {
       crossDimClassification: filteredCrossDimClassification,
       crossDimPatterns: filteredCrossDimPatterns,
       totalRecords,
-      suppressedGroups,
+      suppressedGroups: suppressedGroups.value,
     };
   }
 
@@ -487,16 +443,7 @@ export class MealLogAnalyticsAggregator {
         ml."mealFromPantry"  AS "mealFromPantry",
         ml."eatenOut"        AS "eatenOut",
         u."createdAt"        AS "userCreatedAt",
-        CASE
-          WHEN u."yearOfBirth" IS NULL THEN NULL
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 18 THEN 'under_18'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 25 THEN '18_24'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 35 THEN '25_34'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 45 THEN '35_44'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 55 THEN '45_54'
-          WHEN (EXTRACT(YEAR FROM NOW()) - u."yearOfBirth") < 65 THEN '55_64'
-          ELSE '65_plus'
-        END                  AS "userAgeGroup",
+        ${AGE_GROUP_SQL} AS "userAgeGroup",
         u."gender"::text     AS "userGender",
         u."educationLevel"::text AS "userEducationLevel",
         u."region"           AS "userRegion",
@@ -660,7 +607,7 @@ export class MealLogAnalyticsAggregator {
   // ============================================================
 
   private aggregateDailyNutrition(meals: MealAggregate[]): DailyNutritionRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -675,71 +622,38 @@ export class MealLogAnalyticsAggregator {
         typeOfMeal: typeOfMeal as TypeOfMeal,
         userCount: uniqueUsers,
         mealCount: group.length,
-        avgCalories: this.avg(calories),
-        avgProteins: this.avg(group.map((m) => m.totalProteins)),
-        avgFat: this.avg(group.map((m) => m.totalFat)),
-        avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-        avgFiber: this.avg(group.map((m) => m.totalFiber)),
-        avgSodium: this.avg(group.map((m) => m.totalSodium)),
-        avgSugar: this.avg(group.map((m) => m.totalSugar)),
-        avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-        p25Calories: this.percentile(calories, 25),
-        p50Calories: this.percentile(calories, 50),
-        p75Calories: this.percentile(calories, 75),
+        avgCalories: safeAvg(calories),
+        avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+        avgFat: safeAvg(group.map((m) => m.totalFat)),
+        avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+        avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+        avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+        avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+        avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+        p25Calories: percentile(calories, 25),
+        p50Calories: percentile(calories, 50),
+        p75Calories: percentile(calories, 75),
       };
     });
   }
 
   private aggregateFoodPopularity(meals: MealAggregate[]): FoodPopularityRow[] {
-    const foodMap = new Map<
-      string,
-      {
-        date: string;
-        foodName: string;
-        foodGroup: string | null;
-        itemType: string;
-        users: Set<string>;
-        quantities: number[];
-        units: string[];
-      }
-    >();
-
-    for (const meal of meals) {
-      const dateStr = meal.timestamp.toISOString().split('T')[0];
-      for (const food of meal.foods) {
-        const key = `${dateStr}|${food.name}|${food.itemType}`;
-        if (!foodMap.has(key)) {
-          foodMap.set(key, {
-            date: dateStr,
-            foodName: food.name,
-            foodGroup: food.foodGroup,
-            itemType: food.itemType,
-            users: new Set(),
-            quantities: [],
-            units: [],
-          });
-        }
-        const entry = foodMap.get(key)!;
-        entry.users.add(meal.userId);
-        entry.quantities.push(food.quantity);
-        entry.units.push(food.unit);
-      }
-    }
-
-    return Array.from(foodMap.values()).map((entry) => ({
-      date: new Date(entry.date),
-      foodName: entry.foodName,
-      foodGroup: entry.foodGroup,
-      itemType: entry.itemType,
-      frequency: entry.quantities.length,
-      uniqueUsers: entry.users.size,
-      avgQuantity: this.avg(entry.quantities) ?? 0,
-      predominantUnit: this.mode(entry.units),
-    }));
+    const entries = meals.flatMap((meal) =>
+      meal.foods.map((food) => ({
+        date: meal.timestamp,
+        userId: meal.userId,
+        foodName: food.name,
+        foodGroup: food.foodGroup,
+        itemType: food.itemType,
+        quantity: food.quantity,
+        unit: food.unit,
+      })),
+    );
+    return aggregateFoodFrequency(entries);
   }
 
   private aggregateMealPatterns(meals: MealAggregate[]): MealPatternsRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -764,54 +678,65 @@ export class MealLogAnalyticsAggregator {
         mealsEatenOutCount: eatenOutMeals.length,
         mealsEatenOutPct:
           group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-        avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-        avgMealHour: this.avg(hours),
-        mealHourStdDev: this.stdDev(hours),
+        avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+        avgMealHour: safeAvg(hours),
+        mealHourStdDev: stdDev(hours),
       };
     });
   }
 
   private aggregateSustainability(meals: MealAggregate[]): SustainabilityRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
 
-    return Array.from(grouped.entries()).map(([key, group]) => {
-      const [dateStr, typeOfMeal] = key.split('|');
-      const uniqueUsers = new Set(group.map((m) => m.userId)).size;
+    return Array.from(grouped.entries())
+      .map(([key, group]) => {
+        const [dateStr, typeOfMeal] = key.split('|');
+        const uniqueUsers = new Set(group.map((m) => m.userId)).size;
 
-      const susScores = group
-        .map((m) => m.sustainabilityScore)
-        .filter((s): s is number => s !== null);
-      const carbonScores = group
-        .map((m) => m.totalCarbonFootprint)
-        .filter((c) => c > 0);
+        const susScores = group
+          .map((m) => m.sustainabilityScore)
+          .filter((s): s is number => s !== null);
+        const carbonScores = group
+          .map((m) => m.totalCarbonFootprint)
+          .filter((c) => c > 0);
 
-      // Build score distributions
-      const nutriGrades = group.flatMap((m) => m.nutriScoreGrades);
-      const ecoGrades = group.flatMap((m) => m.ecoScoreGrades);
+        // Build score distributions
+        const nutriGrades = group.flatMap((m) => m.nutriScoreGrades);
+        const ecoGrades = group.flatMap((m) => m.ecoScoreGrades);
 
-      return {
-        date: new Date(dateStr),
-        typeOfMeal: typeOfMeal as TypeOfMeal,
-        userCount: uniqueUsers,
-        avgSustainabilityScore:
-          susScores.length > 0 ? this.avg(susScores) : null,
-        avgCarbonFootprint:
-          carbonScores.length > 0 ? this.avg(carbonScores) : null,
-        nutriScoreDistribution:
-          nutriGrades.length > 0 ? this.distribution(nutriGrades) : null,
-        ecoScoreDistribution:
-          ecoGrades.length > 0 ? this.distribution(ecoGrades) : null,
-      };
-    });
+        if (
+          susScores.length === 0 &&
+          carbonScores.length === 0 &&
+          nutriGrades.length === 0 &&
+          ecoGrades.length === 0
+        ) {
+          return null;
+        }
+
+        return {
+          date: new Date(dateStr),
+          typeOfMeal: typeOfMeal as TypeOfMeal,
+          userCount: uniqueUsers,
+          avgSustainabilityScore:
+            susScores.length > 0 ? safeAvg(susScores) : null,
+          avgCarbonFootprint:
+            carbonScores.length > 0 ? safeAvg(carbonScores) : null,
+          nutriScoreDistribution:
+            nutriGrades.length > 0 ? distribution(nutriGrades) : null,
+          ecoScoreDistribution:
+            ecoGrades.length > 0 ? distribution(ecoGrades) : null,
+        };
+      })
+      .filter((row): row is SustainabilityRow => row !== null);
   }
 
   private aggregateMealClassification(
     meals: MealAggregate[],
   ): MealClassificationRow[] {
-    const grouped = this.groupBy(meals, (m) => {
+    const grouped = groupBy(meals, (m) => {
       const dateStr = m.timestamp.toISOString().split('T')[0];
       return `${dateStr}|${m.typeOfMeal}`;
     });
@@ -831,7 +756,7 @@ export class MealLogAnalyticsAggregator {
 
       // NOVA distribution across all items
       const allNova = group.flatMap((m) => m.novaGroups);
-      const novaDistribution = this.distribution(allNova.map((g) => String(g)));
+      const novaDistribution = distribution(allNova.map((g) => String(g)));
 
       return {
         date: new Date(dateStr),
@@ -842,12 +767,11 @@ export class MealLogAnalyticsAggregator {
         vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
         veganCount,
         veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-        avgUltraProcessedPct: this.avg(ultraPcts),
-        p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-        p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-        p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-        novaDistribution:
-          Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+        avgUltraProcessedPct: safeAvg(ultraPcts),
+        p25UltraProcessedPct: percentile(ultraPcts, 25),
+        p50UltraProcessedPct: percentile(ultraPcts, 50),
+        p75UltraProcessedPct: percentile(ultraPcts, 75),
+        novaDistribution: novaDistribution,
       };
     });
   }
@@ -859,15 +783,13 @@ export class MealLogAnalyticsAggregator {
   private aggregateMealRecords(meals: MealAggregate[]): MealRecordRow[] {
     return meals.map((m) => {
       const nutriScoreGrade =
-        m.nutriScoreGrades.length > 0 ? this.mode(m.nutriScoreGrades) : null;
+        m.nutriScoreGrades.length > 0 ? mode(m.nutriScoreGrades) : null;
 
       const ecoScoreGrade =
-        m.ecoScoreGrades.length > 0 ? this.mode(m.ecoScoreGrades) : null;
+        m.ecoScoreGrades.length > 0 ? mode(m.ecoScoreGrades) : null;
 
       const novaGroupMode =
-        m.novaGroups.length > 0
-          ? Number(this.mode(m.novaGroups.map(String)))
-          : null;
+        m.novaGroups.length > 0 ? Number(mode(m.novaGroups.map(String))) : null;
       const ultraProcessedPct =
         m.novaGroups.length > 0
           ? (m.novaGroups.filter((g) => g === 4).length / m.novaGroups.length) *
@@ -903,36 +825,13 @@ export class MealLogAnalyticsAggregator {
   // Demographic breakdown aggregators
   // ============================================================
 
-  /**
-   * Returns the 4 dimension columns for a row where only `activeDim` is set.
-   * Users who haven't provided the demographic value appear under '__null__'.
-   */
-  private buildDemographicDimensions(
-    activeDim: DemographicDimension,
-    dimValue: string,
-  ): {
-    ageGroup: string | null;
-    gender: string | null;
-    educationLevel: string | null;
-    region: string | null;
-    country: string | null;
-  } {
-    return {
-      ageGroup: activeDim === 'ageGroup' ? dimValue : null,
-      gender: activeDim === 'gender' ? dimValue : null,
-      educationLevel: activeDim === 'educationLevel' ? dimValue : null,
-      region: activeDim === 'region' ? dimValue : null,
-      country: activeDim === 'country' ? dimValue : null,
-    };
-  }
-
   private aggregateDemographicNutrition(
     meals: MealAggregate[],
   ): DemographicNutritionRow[] {
     const rows: DemographicNutritionRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -946,20 +845,21 @@ export class MealLogAnalyticsAggregator {
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           mealCount: group.length,
-          avgCalories: this.avg(calories),
-          avgProteins: this.avg(group.map((m) => m.totalProteins)),
-          avgFat: this.avg(group.map((m) => m.totalFat)),
-          avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-          avgFiber: this.avg(group.map((m) => m.totalFiber)),
-          avgSodium: this.avg(group.map((m) => m.totalSodium)),
-          avgSugar: this.avg(group.map((m) => m.totalSugar)),
-          avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-          p25Calories: this.percentile(calories, 25),
-          p50Calories: this.percentile(calories, 50),
-          p75Calories: this.percentile(calories, 75),
+          avgCalories: safeAvg(calories),
+          avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+          avgFat: safeAvg(group.map((m) => m.totalFat)),
+          avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+          avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+          avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+          avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+          avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+          p25Calories: percentile(calories, 25),
+          p50Calories: percentile(calories, 50),
+          p75Calories: percentile(calories, 75),
         });
       }
     }
@@ -973,7 +873,7 @@ export class MealLogAnalyticsAggregator {
     const rows: DemographicClassificationRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -992,26 +892,24 @@ export class MealLogAnalyticsAggregator {
         });
 
         const allNova = group.flatMap((m) => m.novaGroups);
-        const novaDistribution = this.distribution(
-          allNova.map((g) => String(g)),
-        );
+        const novaDistribution = distribution(allNova.map((g) => String(g)));
 
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           totalMeals: group.length,
           vegetarianCount: vegCount,
           vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
           veganCount,
           veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-          avgUltraProcessedPct: this.avg(ultraPcts),
-          p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-          p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-          p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-          novaDistribution:
-            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+          avgUltraProcessedPct: safeAvg(ultraPcts),
+          p25UltraProcessedPct: percentile(ultraPcts, 25),
+          p50UltraProcessedPct: percentile(ultraPcts, 50),
+          p75UltraProcessedPct: percentile(ultraPcts, 75),
+          novaDistribution: novaDistribution,
         });
       }
     }
@@ -1025,7 +923,7 @@ export class MealLogAnalyticsAggregator {
     const rows: DemographicPatternsRow[] = [];
 
     for (const dim of DEMOGRAPHIC_DIMENSIONS) {
-      const grouped = this.groupBy(meals, (m) => {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const val = m[dim] ?? '__null__';
         return `${dateStr}|${m.typeOfMeal}|${val}`;
@@ -1043,7 +941,8 @@ export class MealLogAnalyticsAggregator {
         rows.push({
           date: new Date(dateStr),
           typeOfMeal: typeOfMeal as TypeOfMeal,
-          ...this.buildDemographicDimensions(dim, dimValue),
+          dimensionName: dim,
+          dimensionValue: dimValue,
           userCount: uniqueUsers,
           totalMeals: group.length,
           mealsFromPantryCount: pantryMeals.length,
@@ -1052,9 +951,9 @@ export class MealLogAnalyticsAggregator {
           mealsEatenOutCount: eatenOutMeals.length,
           mealsEatenOutPct:
             group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-          avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-          avgMealHour: this.avg(hours),
-          mealHourStdDev: this.stdDev(hours),
+          avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+          avgMealHour: safeAvg(hours),
+          mealHourStdDev: stdDev(hours),
         });
       }
     }
@@ -1066,31 +965,13 @@ export class MealLogAnalyticsAggregator {
   // Cross-dimensional breakdown aggregators (K=20)
   // ============================================================
 
-  /**
-   * Returns all 10 unique sorted pairs from the 5 demographic dimensions.
-   * Pair is [dim1, dim2] where dim1 < dim2 alphabetically.
-   */
-  private buildCrossDimPairs(): [DemographicDimension, DemographicDimension][] {
-    const pairs: [DemographicDimension, DemographicDimension][] = [];
-    for (let i = 0; i < DEMOGRAPHIC_DIMENSIONS.length; i++) {
-      for (let j = i + 1; j < DEMOGRAPHIC_DIMENSIONS.length; j++) {
-        const a = DEMOGRAPHIC_DIMENSIONS[i];
-        const b = DEMOGRAPHIC_DIMENSIONS[j];
-        // Enforce alphabetical order for dim1Name < dim2Name
-        const [d1, d2] = a < b ? [a, b] : [b, a];
-        pairs.push([d1, d2]);
-      }
-    }
-    return pairs;
-  }
-
   private aggregateCrossDimNutrition(
     meals: MealAggregate[],
   ): CrossDimNutritionRow[] {
     const rows: CrossDimNutritionRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1111,17 +992,17 @@ export class MealLogAnalyticsAggregator {
           dim2Value,
           userCount: uniqueUsers,
           mealCount: group.length,
-          avgCalories: this.avg(calories),
-          avgProteins: this.avg(group.map((m) => m.totalProteins)),
-          avgFat: this.avg(group.map((m) => m.totalFat)),
-          avgCarbs: this.avg(group.map((m) => m.totalCarbs)),
-          avgFiber: this.avg(group.map((m) => m.totalFiber)),
-          avgSodium: this.avg(group.map((m) => m.totalSodium)),
-          avgSugar: this.avg(group.map((m) => m.totalSugar)),
-          avgSaturatedFat: this.avg(group.map((m) => m.totalSaturatedFat)),
-          p25Calories: this.percentile(calories, 25),
-          p50Calories: this.percentile(calories, 50),
-          p75Calories: this.percentile(calories, 75),
+          avgCalories: safeAvg(calories),
+          avgProteins: safeAvg(group.map((m) => m.totalProteins)),
+          avgFat: safeAvg(group.map((m) => m.totalFat)),
+          avgCarbs: safeAvg(group.map((m) => m.totalCarbs)),
+          avgFiber: safeAvg(group.map((m) => m.totalFiber)),
+          avgSodium: safeAvg(group.map((m) => m.totalSodium)),
+          avgSugar: safeAvg(group.map((m) => m.totalSugar)),
+          avgSaturatedFat: safeAvg(group.map((m) => m.totalSaturatedFat)),
+          p25Calories: percentile(calories, 25),
+          p50Calories: percentile(calories, 50),
+          p75Calories: percentile(calories, 75),
         });
       }
     }
@@ -1134,8 +1015,8 @@ export class MealLogAnalyticsAggregator {
   ): CrossDimClassificationRow[] {
     const rows: CrossDimClassificationRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1155,9 +1036,7 @@ export class MealLogAnalyticsAggregator {
         });
 
         const allNova = group.flatMap((m) => m.novaGroups);
-        const novaDistribution = this.distribution(
-          allNova.map((g) => String(g)),
-        );
+        const novaDistribution = distribution(allNova.map((g) => String(g)));
 
         rows.push({
           date: new Date(dateStr),
@@ -1172,12 +1051,11 @@ export class MealLogAnalyticsAggregator {
           vegetarianPct: group.length > 0 ? (vegCount / group.length) * 100 : 0,
           veganCount,
           veganPct: group.length > 0 ? (veganCount / group.length) * 100 : 0,
-          avgUltraProcessedPct: this.avg(ultraPcts),
-          p25UltraProcessedPct: this.percentile(ultraPcts, 25),
-          p50UltraProcessedPct: this.percentile(ultraPcts, 50),
-          p75UltraProcessedPct: this.percentile(ultraPcts, 75),
-          novaDistribution:
-            Object.keys(novaDistribution).length > 0 ? novaDistribution : null,
+          avgUltraProcessedPct: safeAvg(ultraPcts),
+          p25UltraProcessedPct: percentile(ultraPcts, 25),
+          p50UltraProcessedPct: percentile(ultraPcts, 50),
+          p75UltraProcessedPct: percentile(ultraPcts, 75),
+          novaDistribution: novaDistribution,
         });
       }
     }
@@ -1190,8 +1068,8 @@ export class MealLogAnalyticsAggregator {
   ): CrossDimPatternsRow[] {
     const rows: CrossDimPatternsRow[] = [];
 
-    for (const [dim1, dim2] of this.buildCrossDimPairs()) {
-      const grouped = this.groupBy(meals, (m) => {
+    for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const grouped = groupBy(meals, (m) => {
         const dateStr = m.timestamp.toISOString().split('T')[0];
         const v1 = m[dim1] ?? '__null__';
         const v2 = m[dim2] ?? '__null__';
@@ -1222,9 +1100,9 @@ export class MealLogAnalyticsAggregator {
           mealsEatenOutCount: eatenOutMeals.length,
           mealsEatenOutPct:
             group.length > 0 ? (eatenOutMeals.length / group.length) * 100 : 0,
-          avgItemsPerMeal: this.avg(group.map((m) => m.itemCount)) ?? 0,
-          avgMealHour: this.avg(hours),
-          mealHourStdDev: this.stdDev(hours),
+          avgItemsPerMeal: safeAvg(group.map((m) => m.itemCount)) ?? 0,
+          avgMealHour: safeAvg(hours),
+          mealHourStdDev: stdDev(hours),
         });
       }
     }
@@ -1232,62 +1110,4 @@ export class MealLogAnalyticsAggregator {
     return rows;
   }
 
-  private groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
-    const map = new Map<string, T[]>();
-    for (const item of items) {
-      const key = keyFn(item);
-      const group = map.get(key) ?? [];
-      group.push(item);
-      map.set(key, group);
-    }
-    return map;
-  }
-
-  private avg(values: number[]): number | null {
-    if (values.length === 0) return null;
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  }
-
-  private percentile(values: number[], p: number): number | null {
-    if (values.length === 0) return null;
-    const sorted = [...values].sort((a, b) => a - b);
-    const index = (p / 100) * (sorted.length - 1);
-    const lower = Math.floor(index);
-    const upper = Math.ceil(index);
-    if (lower === upper) return sorted[lower];
-    return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower);
-  }
-
-  private stdDev(values: number[]): number | null {
-    if (values.length < 2) return null;
-    const mean = this.avg(values)!;
-    const squaredDiffs = values.map((v) => (v - mean) ** 2);
-    return Math.sqrt(
-      squaredDiffs.reduce((a, b) => a + b, 0) / (values.length - 1),
-    );
-  }
-
-  private mode(values: string[]): string {
-    const counts = new Map<string, number>();
-    for (const v of values) {
-      counts.set(v, (counts.get(v) ?? 0) + 1);
-    }
-    let maxCount = 0;
-    let maxValue = values[0];
-    for (const [value, count] of counts) {
-      if (count > maxCount) {
-        maxCount = count;
-        maxValue = value;
-      }
-    }
-    return maxValue;
-  }
-
-  private distribution(values: string[]): Record<string, number> {
-    const counts: Record<string, number> = {};
-    for (const v of values) {
-      counts[v] = (counts[v] ?? 0) + 1;
-    }
-    return counts;
-  }
 }
