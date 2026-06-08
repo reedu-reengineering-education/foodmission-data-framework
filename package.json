@@ -107,16 +107,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
-    "@nestjs/cli": "^11.0.17",
+    "@nestjs/cli": "^11.0.22",
     "@nestjs/schematics": "^11.0.10",
-    "@nestjs/testing": "^11.1.24",
+    "@nestjs/testing": "^11.1.25",
     "@types/cache-manager": "^5.0.0",
     "@types/express": "^5.0.6",
     "@types/helmet": "^4.0.0",
     "@types/iso-3166-2": "^1.0.4",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.2",
     "@types/pg": "^8.20.0",
     "@types/sanitize-html": "^2.16.1",
     "@types/supertest": "^7.2.0",
@@ -133,7 +133,7 @@
     "ts-loader": "^9.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.1"
   },
   "volta": {
     "node": "24.0.0"
