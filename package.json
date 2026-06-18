@@ -40,6 +40,7 @@
     "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",
     "db:seed:meal-logs": "ts-node scripts/seeds/dev/seed-meal-logs.ts",
     "db:seed:shopping-lists": "ts-node scripts/seeds/dev/seed-shopping-lists.ts",
+    "db:seed:recipes-logs": "ts-node scripts/seeds/dev/seed-recipe-logs.ts",
     "db:clean:meal-logs": "ts-node scripts/dev/clean-meal-logs.ts",
     "db:clean:shopping-lists": "ts-node scripts/dev/clean-shopping-lists.ts",
     "db:clean:analytics": "ts-node scripts/dev/clean-analytics.ts",

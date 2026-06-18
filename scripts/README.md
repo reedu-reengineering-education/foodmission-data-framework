@@ -43,6 +43,7 @@ Interactive Swagger UI: run the API and open `/api/docs` (see root `README.md` Â
 The `scripts/dev/` folder contains meal-log analytics development utilities:
 
 - `seed-meal-logs.ts` - Generate synthetic meal-log data for analytics testing
+- `seed-recipe-logs.ts` - Generate recipe analytics seed data (recipes + ingredient + usage patterns)
 - `clean-meal-logs.ts` - Remove generated meal-log records
 - `clean-analytics.ts` - Remove generated analytics batch/output records
 
@@ -64,6 +65,7 @@ npm run db:seed:foods
 
 # Meal-log analytics dev scripts
 npm run db:seed:meal-logs
+npm run db:seed:recipes-logs
 npm run db:clean:meal-logs
 npm run db:clean:analytics
 

@@ -9,6 +9,9 @@ import { ShoppingListAnalyticsController } from './shopping-list/controllers/sho
 import { ShoppingListAnalyticsService } from './shopping-list/services/shopping-list-analytics.service';
 import { ShoppingListAnalyticsAggregator } from './shopping-list/services/shopping-list-analytics-aggregator.service';
 import { ShoppingListAnalyticsRepository } from './shopping-list/repositories/shopping-list-analytics.repository';
+import { RecipeAnalyticsController } from './recipes/controllers/recipe-analytics.controller';
+import { RecipeAnalyticsService } from './recipes/services/recipe-analytics.service';
+import { RecipeAnalyticsRepository } from './recipes/repositories/recipe-analytics.repository';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service';
 
@@ -18,6 +21,7 @@ import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service
     AnalyticsController,
     MealLogAnalyticsController,
     ShoppingListAnalyticsController,
+    RecipeAnalyticsController,
   ],
   providers: [
     MealLogAnalyticsService,
@@ -26,9 +30,15 @@ import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service
     ShoppingListAnalyticsService,
     ShoppingListAnalyticsAggregator,
     ShoppingListAnalyticsRepository,
+    RecipeAnalyticsService,
+    RecipeAnalyticsRepository,
     UsersRepository,
     AnalyticsBatchCoordinator,
   ],
-  exports: [MealLogAnalyticsService, ShoppingListAnalyticsService],
+  exports: [
+    MealLogAnalyticsService,
+    ShoppingListAnalyticsService,
+    RecipeAnalyticsService,
+  ],
 })
 export class AnalyticsModule {}
