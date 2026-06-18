@@ -147,3 +147,44 @@ Shopping List analytics intentionally does not expose nutrition or per-100g nutr
 ```
 npm run db:clean:shopping-lists
 ```
+
+---
+
+## Recipe Analytics
+
+1. Run normal seed for DB (if not already done)
+
+```
+npm run db:seed
+```
+
+2. Run recipe logs seed (creates 135 recipes across ~95 days + linked cooking usage meals)
+
+```
+npm run db:seed:recipes-logs
+```
+
+3. Public endpoints are available directly (no batch publish step required):
+
+```
+{{baseUrl}}/api/v1/analytics/recipes/public/summary
+{{baseUrl}}/api/v1/analytics/recipes/public/diet-trend
+{{baseUrl}}/api/v1/analytics/recipes/public/diet-distribution
+{{baseUrl}}/api/v1/analytics/recipes/public/nutrition
+{{baseUrl}}/api/v1/analytics/recipes/public/sustainability
+{{baseUrl}}/api/v1/analytics/recipes/public/top-ingredients
+{{baseUrl}}/api/v1/analytics/recipes/public/ingredient-categories
+{{baseUrl}}/api/v1/analytics/recipes/public/diversity
+{{baseUrl}}/api/v1/analytics/recipes/public/cuisine-trends
+{{baseUrl}}/api/v1/analytics/recipes/public/cooking-patterns
+{{baseUrl}}/api/v1/analytics/recipes/public/difficulty
+{{baseUrl}}/api/v1/analytics/recipes/public/usage
+```
+
+4. Supported query params (all recipe public routes):
+
+```
+?from=2026-03-01&to=2026-06-01
+```
+
+`from` and `to` are optional ISO date values.
