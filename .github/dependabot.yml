@@ -41,6 +41,9 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@prisma/client'
         update-types: ['version-update:semver-major']
+      # 2.0.0-alpha.3 changes guard precedence; pin alpha.2 until validated
+      - dependency-name: 'nest-keycloak-connect'
+        versions: ['2.0.0-alpha.3']
 
   # Enable version updates for Docker
   - package-ecosystem: 'docker'
