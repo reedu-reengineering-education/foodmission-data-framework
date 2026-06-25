@@ -14,7 +14,7 @@ fi
 
 # Start services
 echo "📦 Starting Docker services..."
-docker compose -f docker-compose.yml up -d postgres valkey
+docker compose -f docker-compose.yml up -d postgres cache
 
 # Wait for PostgreSQL to be ready
 echo "⏳ Waiting for PostgreSQL to be ready..."

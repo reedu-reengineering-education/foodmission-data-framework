@@ -13,12 +13,12 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const redisUrl = configService.get<string>('REDIS_URL');
+        const cacheUrl = configService.get<string>('CACHE_URL');
         const nodeEnv = configService.get<string>('NODE_ENV');
 
-        if (nodeEnv === 'production' && !redisUrl) {
+        if (nodeEnv === 'production' && !cacheUrl) {
           new Logger('SecurityModule').warn(
-            'REDIS_URL is not set in production. Rate limiting will be enforced per instance, not globally across all instances.',
+            'CACHE_URL is not set in production. Rate limiting will be enforced per instance, not globally across all instances.',
           );
         }
 
@@ -47,9 +47,9 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
             // Skip rate limiting in test environment
             return nodeEnv === 'test';
           },
-          // Redis storage for multi-instance support, fallback to in-memory if REDIS_URL is not set
-          storage: redisUrl
-            ? new ThrottlerStorageRedisService(redisUrl)
+          // Shared cache storage for multi-instance rate limiting; in-memory if CACHE_URL is not set
+          storage: cacheUrl
+            ? new ThrottlerStorageRedisService(cacheUrl)
             : undefined,
         };
       },

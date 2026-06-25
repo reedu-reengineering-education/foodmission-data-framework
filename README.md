@@ -15,7 +15,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 - **OpenFoodFacts Integration**: Automatic nutritional data retrieval from external API
 - **User Management**: User profiles, preferences, and dietary restrictions
 - **Authentication & Authorization**: Keycloak integration with JWT tokens and role-based access control
-- **Caching**: Redis-based caching for improved performance
+- **Caching**: Cache-backed caching for improved performance
 - **API Documentation**: Comprehensive OpenAPI/Swagger documentation
 - **Testing**: Unit, integration, and end-to-end tests with high coverage
 - **Monitoring**: Health checks, metrics, and structured logging
@@ -84,8 +84,8 @@ Configure your `.env` file:
 DATABASE_URL="postgresql://postgres:password@localhost:5432/foodmission_db?schema=public"
 DATABASE_URL_TEST="postgresql://postgres:password@localhost:5432/foodmission_test_db?schema=public"
 
-# Redis
-REDIS_URL="redis://localhost:6379"
+# Cache
+CACHE_URL="redis://localhost:6379"
 
 # Keycloak
 KEYCLOAK_BASE_URL="http://localhost:8080"
@@ -219,7 +219,7 @@ curl http://localhost:3000/api/v1/auth/admin-only \
 ### 4. Start Services
 
 ```bash
-# Start database and Redis services
+# Start database and cache services
 npm run docker:up
 
 # Generate Prisma client
@@ -397,7 +397,7 @@ docker-compose up -d
 The `docker-compose.yml` file includes:
 
 - **PostgreSQL**: Database server with test database initialization
-- **Redis**: Cache and session store
+- **Cache**: Ephemeral cache store (Valkey)
 - **Keycloak**: Authentication and authorization server
 
 For production deployments, create a custom docker-compose file or use container orchestration platforms with appropriate environment configurations.
@@ -422,7 +422,7 @@ The project uses GitHub Actions for automated CI/CD:
 
 #### Development
 
-- Local database and Redis
+- Local database and cache
 - Hot reloading enabled
 - Debug logging
 - Mock external services
@@ -437,7 +437,7 @@ The project uses GitHub Actions for automated CI/CD:
 #### Production
 
 - High-availability database cluster
-- Redis cluster for caching
+- Shared cache cluster for rate limiting and caching
 - Full monitoring and alerting
 - Security hardening
 
@@ -468,8 +468,8 @@ The project uses GitHub Actions for automated CI/CD:
     ┌──────────────────────┼──────────────────────┐
     │                      │                      │
 ┌───▼────┐         ┌──────▼──────┐        ┌──────▼──────┐
-│PostgreSQL│       │    Redis    │        │  Keycloak   │
-│Database  │       │   Cache     │        │    Auth     │
+│PostgreSQL│       │    Cache    │        │  Keycloak   │
+│Database  │       │   (Valkey)  │        │    Auth     │
 └──────────┘       └─────────────┘        └─────────────┘
 ```
 

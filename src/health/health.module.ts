@@ -6,7 +6,7 @@ import { HealthController } from './health.controller';
 import { DatabaseModule } from '../database/database.module';
 import { DatabaseHealthIndicator } from './database.health';
 import { KeycloakHealthIndicator } from './keycloak.health';
-import { RedisHealthIndicator } from './redis.health';
+import { CacheHealthIndicator } from './cache.health';
 
 @Module({
   imports: [TerminusModule, HttpModule, ConfigModule, DatabaseModule],
@@ -14,7 +14,7 @@ import { RedisHealthIndicator } from './redis.health';
   providers: [
     DatabaseHealthIndicator,
     KeycloakHealthIndicator,
-    RedisHealthIndicator,
+    CacheHealthIndicator,
   ],
 })
 export class HealthModule {}

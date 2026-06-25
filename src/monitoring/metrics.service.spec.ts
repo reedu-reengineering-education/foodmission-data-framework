@@ -125,21 +125,21 @@ describe('MetricsService', () => {
 
   describe('recordCacheHit', () => {
     it('should record cache hit', async () => {
-      service.recordCacheHit('redis');
+      service.recordCacheHit('cache');
 
       const metrics = await service.getMetrics();
 
-      expect(metrics).toContain('cache_hits_total{cache_type="redis"} 1');
+      expect(metrics).toContain('cache_hits_total{cache_type="cache"} 1');
     });
   });
 
   describe('recordCacheMiss', () => {
     it('should record cache miss', async () => {
-      service.recordCacheMiss('redis');
+      service.recordCacheMiss('cache');
 
       const metrics = await service.getMetrics();
 
-      expect(metrics).toContain('cache_misses_total{cache_type="redis"} 1');
+      expect(metrics).toContain('cache_misses_total{cache_type="cache"} 1');
     });
   });
 
