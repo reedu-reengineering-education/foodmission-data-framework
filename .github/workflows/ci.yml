@@ -177,10 +177,10 @@ jobs:
         ports:
           - 5432:5432
 
-      redis:
-        image: redis:7-alpine
+      cache:
+        image: valkey/valkey:9.1.0
         options: >-
-          --health-cmd "redis-cli ping"
+          --health-cmd "valkey-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -189,7 +189,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://testuser:testpass@localhost:5432/foodmission_test
-      REDIS_URL: redis://localhost:6379
+      CACHE_URL: redis://localhost:6379
       KEYCLOAK_BASE_URL: http://localhost:8080
       KEYCLOAK_AUTH_SERVER_URL: http://localhost:8080
       KEYCLOAK_REALM: test-realm

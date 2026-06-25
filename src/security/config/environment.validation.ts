@@ -36,10 +36,10 @@ export const environmentValidationSchema = Joi.object({
     })
     .description('Keycloak client secret (required in production)'),
 
-  REDIS_URL: Joi.string()
+  CACHE_URL: Joi.string()
     .uri()
     .optional()
-    .description('Redis connection URL for caching'),
+    .description('Cache connection URL'),
 
   ALLOWED_ORIGINS: Joi.string()
     .optional()

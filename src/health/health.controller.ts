@@ -9,7 +9,7 @@ import {
 } from '@nestjs/terminus';
 import { DatabaseHealthIndicator } from './database.health';
 import { KeycloakHealthIndicator } from './keycloak.health';
-import { RedisHealthIndicator } from './redis.health';
+import { CacheHealthIndicator } from './cache.health';
 import { HealthExceptionFilter } from './health-exception.filter';
 
 @ApiTags('health')
@@ -21,7 +21,7 @@ export class HealthController {
     private health: HealthCheckService,
     private db: DatabaseHealthIndicator,
     private keycloak: KeycloakHealthIndicator,
-    private redis: RedisHealthIndicator,
+    private cache: CacheHealthIndicator,
   ) {}
 
   @Get('ready')
@@ -41,8 +41,8 @@ export class HealthController {
       () => this.db.isHealthy('database'),
       () => this.keycloak.isHealthy('keycloak'),
     ];
-    if (this.redis.isConfigured) {
-      checks.push(() => this.redis.isHealthy('redis'));
+    if (this.cache.isConfigured) {
+      checks.push(() => this.cache.isHealthy('cache'));
     }
     const result = await this.health.check(checks);
     delete (result as any).details;

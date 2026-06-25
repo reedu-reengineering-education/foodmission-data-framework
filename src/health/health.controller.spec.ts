@@ -3,7 +3,7 @@ import { HealthCheckService, HealthCheckResult } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 import { DatabaseHealthIndicator } from './database.health';
 import { KeycloakHealthIndicator } from './keycloak.health';
-import { RedisHealthIndicator } from './redis.health';
+import { CacheHealthIndicator } from './cache.health';
 
 describe('HealthController', () => {
   let controller: HealthController;
@@ -34,7 +34,7 @@ describe('HealthController', () => {
       isHealthy: jest.fn(),
     };
 
-    const mockRedisHealth = {
+    const mockCacheHealth = {
       isHealthy: jest.fn(),
       isConfigured: false,
     };
@@ -55,8 +55,8 @@ describe('HealthController', () => {
           useValue: mockKeycloakHealth,
         },
         {
-          provide: RedisHealthIndicator,
-          useValue: mockRedisHealth,
+          provide: CacheHealthIndicator,
+          useValue: mockCacheHealth,
         },
       ],
     }).compile();
