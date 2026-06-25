@@ -1,0 +1,102 @@
+// ============================================================
+// Shopping - Shopping lists and pantry management
+// ============================================================
+
+enum Unit {
+  PIECES
+  G
+  KG
+  ML
+  L
+  CUPS
+}
+
+model ShoppingList {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items ShoppingListItem[]
+
+  @@unique([userId, title])
+  @@index([userId])
+  @@map("shopping_lists")
+}
+
+model ShoppingListItem {
+  id             String   @id @default(uuid())
+  quantity       Int      @default(1)
+  unit           Unit     @default(PIECES)
+  notes          String?
+  checked        Boolean  @default(false)
+  shoppingListId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Polymorphic reference
+  itemType         String  @default("food_product") // "food_product" | "generic_food"
+  foodProductId    String?
+  genericFoodId    String?
+
+  // Relations
+  shoppingList ShoppingList  @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  foodProduct  FoodProduct?  @relation(fields: [foodProductId], references: [id], onDelete: SetNull)
+  genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
+
+  @@unique([shoppingListId, foodProductId])
+  @@unique([shoppingListId, genericFoodId])
+  @@index([shoppingListId])
+  @@index([foodProductId])
+  @@index([genericFoodId])
+  @@map("shopping_list_items")
+}
+
+model Pantry {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items PantryItem[]
+
+  @@index([userId])
+  @@map("pantries")
+}
+
+model PantryItem {
+  id               String    @id @default(uuid())
+  quantity         Int       @default(1)
+  unit             Unit      @default(PIECES)
+  notes            String?
+  location         String?
+  expiryDate       DateTime?
+  expiryDateSource String? // "manual" | "auto_foodkeeper"
+  pantryId         String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Polymorphic reference
+  itemType         String  @default("food_product") // "food_product" | "generic_food"
+  foodProductId    String?
+  genericFoodId    String?
+
+  // Relations
+  pantry       Pantry        @relation(fields: [pantryId], references: [id], onDelete: Cascade)
+  foodProduct  FoodProduct?  @relation(fields: [foodProductId], references: [id], onDelete: SetNull)
+  genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
+  foodWaste    FoodWaste[]
+
+  @@unique([pantryId, foodProductId])
+  @@unique([pantryId, genericFoodId])
+  @@index([pantryId])
+  @@index([foodProductId])
+  @@index([genericFoodId])
+  @@index([expiryDate])
+  @@map("pantry_items")
+}

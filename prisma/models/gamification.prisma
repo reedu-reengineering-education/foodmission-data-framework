@@ -1,0 +1,100 @@
+// ============================================================
+// Gamification - Missions, challenges, and knowledge
+// ============================================================
+
+model Mission {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  available   Boolean  @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  content     Json     @default("{}") // Flexible JSON for mission-specific content
+
+  // Relations
+  missionProgresses MissionProgress[]
+
+  @@map("missions")
+}
+
+model MissionProgress {
+  userId    String
+  missionId String
+  completed Boolean @default(false)
+  progress  Float
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, missionId])
+  @@map("mission_progress")
+}
+
+model Challenge {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  available   Boolean  @default(false)
+  startDate   DateTime
+  endDate     DateTime
+  content     Json     @default("{}") // Flexible JSON for challenge-specific content
+
+  // Relations
+  challengeProgresses ChallengeProgress[]
+
+  @@map("challenges")
+}
+
+model ChallengeProgress {
+  userId      String
+  challengeId String
+  completed   Boolean @default(false)
+  progress    Float
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, challengeId])
+  @@map("challenge_progress")
+}
+
+model Knowledge {
+  id          String   @id @default(uuid())
+  userId      String // Creator/owner of the knowledge item
+  title       String
+  description String?
+  available   Boolean  @default(true)
+  content     Json // Stores quiz data: { questions: [{ question, options, correctAnswer }] }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userProgress UserKnowledgeProgress[]
+
+  @@index([userId])
+  @@index([available])
+  @@map("knowledge")
+}
+
+model UserKnowledgeProgress {
+  id             String   @id @default(uuid())
+  userId         String
+  knowledgeId    String
+  completed      Boolean  @default(false)
+  progress       Json     @default("{}") // Stores: { currentQuestionIndex, answers, score }
+  lastAccessedAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  knowledge Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, knowledgeId])
+  @@index([userId])
+  @@index([knowledgeId])
+  @@map("user_knowledge_progress")
+}

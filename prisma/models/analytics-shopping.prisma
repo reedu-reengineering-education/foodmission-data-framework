@@ -1,0 +1,265 @@
+// ============================================================
+// Analytics - Shopping Lists
+// ============================================================
+
+model ShoppingListAnalyticsBatch {
+  id              String                           @id @default(uuid())
+  periodStart     DateTime
+  periodEnd       DateTime
+  status          AnalyticsBatchStatus             @default(STAGING)
+  generatedAt     DateTime                         @default(now())
+  publishedAt     DateTime?
+  publishedBy     String?
+  rejectedAt      DateTime?
+  rejectedBy      String?
+  rejectionReason String?
+  recordCount     Int                              @default(0)
+  metadata        Json?
+
+  itemPopularity            ShoppingListAnalyticsItemPopularity[]
+  categoryPopularity        ShoppingListAnalyticsCategoryPopularity[]
+  listPatterns              ShoppingListAnalyticsListPatterns[]
+  sustainability            ShoppingListAnalyticsSustainability[]
+  foodGroups                ShoppingListAnalyticsFoodGroups[]
+  demographicPatterns       ShoppingListAnalyticsDemographicPatterns[]
+  demographicClassification ShoppingListAnalyticsDemographicClassification[]
+  crossDimPatterns          ShoppingListAnalyticsCrossDimPatterns[]
+  crossDimClassification    ShoppingListAnalyticsCrossDimClassification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([periodStart, periodEnd])
+  @@map("shopping_list_analytics_batches")
+}
+
+model ShoppingListAnalyticsItemPopularity {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  foodName        String
+  foodGroup       String?
+  itemType        String
+  frequency       Int
+  uniqueUsers     Int
+  avgQuantity     Float
+  predominantUnit String
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, foodName, itemType])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_item_popularity")
+}
+
+model ShoppingListAnalyticsCategoryPopularity {
+  id          String                     @id @default(uuid())
+  batchId     String
+  batch       ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date        DateTime                   @db.Date
+  category    String
+  frequency   Int
+  uniqueUsers Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, category])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_category_popularity")
+}
+
+model ShoppingListAnalyticsListPatterns {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date])
+  @@index([date])
+  @@map("shopping_list_analytics_list_patterns")
+}
+
+model ShoppingListAnalyticsSustainability {
+  id                     String                     @id @default(uuid())
+  batchId                String
+  batch                  ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date                   DateTime                   @db.Date
+  userCount              Int
+  itemCount              Int
+  avgCarbonFootprint     Float?
+  nutriScoreDistribution Json?
+  ecoScoreDistribution   Json?
+  novaDistribution       Json?
+  vegetarianItemPct      Float?
+  veganItemPct           Float?
+  avgUltraProcessedPct   Float?
+  p25UltraProcessedPct   Float?
+  p50UltraProcessedPct   Float?
+  p75UltraProcessedPct   Float?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date])
+  @@index([date])
+  @@map("shopping_list_analytics_sustainability")
+}
+
+model ShoppingListAnalyticsFoodGroups {
+  id              String                     @id @default(uuid())
+  batchId         String
+  batch           ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date            DateTime                   @db.Date
+  foodGroup       String
+  frequency       Int
+  uniqueUsers     Int
+  avgQuantity     Float
+  predominantUnit String
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, foodGroup])
+  @@index([date])
+  @@index([frequency])
+  @@map("shopping_list_analytics_food_groups")
+}
+
+// ============================================================
+// Analytics — Shopping List Demographic Breakdown Tables
+//
+// Each row represents one (date, dimensionName, dimensionValue) combination
+// for EXACTLY ONE demographic dimension (ageGroup | gender | educationLevel | region | country).
+// Using dimensionName/dimensionValue instead of 5 nullable columns ensures the
+// unique constraint is enforceable: PostgreSQL treats NULLs as distinct in
+// UNIQUE indexes, so a nullable-column composite key cannot prevent duplicates.
+// k-anonymity (K=5) enforced before insertion. Rows where the user has no
+// demographic data for a dimension are skipped (not stored).
+// ============================================================
+
+model ShoppingListAnalyticsDemographicPatterns {
+  id             String                     @id @default(uuid())
+  batchId        String
+  batch          ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date           DateTime                   @db.Date
+
+  dimensionName  String
+  dimensionValue String
+
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dimensionName, dimensionValue])
+  @@index([dimensionName])
+  @@index([date])
+  @@map("shopping_list_analytics_demographic_patterns")
+}
+
+// ============================================================
+// Analytics — Shopping List Demographic Classification
+// Vegetarian / vegan / ultra-processed / NOVA breakdown by one dimension.
+// k-anonymity (K=5) enforced.
+// ============================================================
+
+model ShoppingListAnalyticsDemographicClassification {
+  id             String                     @id @default(uuid())
+  batchId        String
+  batch          ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date           DateTime                   @db.Date
+
+  dimensionName  String
+  dimensionValue String
+
+  userCount            Int
+  itemCount            Int
+  vegetarianItemPct    Float?
+  veganItemPct         Float?
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dimensionName, dimensionValue])
+  @@index([dimensionName])
+  @@index([date])
+  @@map("shopping_list_analytics_demographic_classification")
+}
+
+// ============================================================
+// Analytics — Shopping List Cross-Dimensional Tables (K=20)
+// dim1Name < dim2Name alphabetically.
+// ============================================================
+
+model ShoppingListAnalyticsCrossDimPatterns {
+  id        String                     @id @default(uuid())
+  batchId   String
+  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date      DateTime                   @db.Date
+
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount       Int
+  totalLists      Int
+  avgItemsPerList Float
+  avgListsPerUser Float
+  foodProductPct  Float
+  genericFoodPct  Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("shopping_list_analytics_cross_dim_patterns")
+}
+
+model ShoppingListAnalyticsCrossDimClassification {
+  id        String                     @id @default(uuid())
+  batchId   String
+  batch     ShoppingListAnalyticsBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  date      DateTime                   @db.Date
+
+  dim1Name  String
+  dim1Value String
+  dim2Name  String
+  dim2Value String
+
+  userCount            Int
+  itemCount            Int
+  vegetarianItemPct    Float?
+  veganItemPct         Float?
+  avgUltraProcessedPct Float?
+  p25UltraProcessedPct Float?
+  p50UltraProcessedPct Float?
+  p75UltraProcessedPct Float?
+  novaDistribution     Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([batchId, date, dim1Name, dim1Value, dim2Name, dim2Value])
+  @@index([dim1Name, dim2Name])
+  @@index([date])
+  @@map("shopping_list_analytics_cross_dim_classification")
+}
