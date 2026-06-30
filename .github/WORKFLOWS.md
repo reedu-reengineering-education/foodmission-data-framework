@@ -6,7 +6,7 @@ This directory contains the GitHub Actions workflows for the FOODMISSION Data Fr
 
 ### 1. CI Pipeline (`ci.yml`)
 
-**Triggers:** Push to main/develop, Pull requests to main/develop
+**Triggers:** Push to main, tags (`v*.*.*`), Pull requests to main, Published releases
 
 **Jobs:**
 
@@ -20,26 +20,8 @@ This directory contains the GitHub Actions workflows for the FOODMISSION Data Fr
 - Parallel job execution for faster feedback
 - Test coverage reporting with Codecov
 - Multi-platform Docker builds (amd64, arm64)
-- SBOM (Software Bill of Materials) generation
 
-### 2. Deployment Pipeline (`deploy.yml`)
-
-**Triggers:** Push to main/develop, Manual workflow dispatch
-
-**Jobs:**
-
-- **Deploy to Staging**: Automatic deployment from develop branch
-- **Deploy to Production**: Automatic deployment from main branch (requires staging success)
-
-**Key Features:**
-
-- Environment-specific configurations
-- Database migration execution
-- Smoke tests after deployment
-- Automatic rollback on failure
-- Kubernetes deployment with health checks
-
-### 3. Security Scanning (`security.yml`)
+### 2. Security Scanning (`security.yml`)
 
 **Triggers:** Push, Pull requests, Daily schedule, Manual dispatch
 
@@ -50,24 +32,6 @@ This directory contains the GitHub Actions workflows for the FOODMISSION Data Fr
 - **Secret Detection**: TruffleHog secret scanning
 - **License Compliance**: License checker for dependencies
 - **SAST**: CodeQL and Semgrep static analysis
-
-### 4. Release Management (`release.yml`)
-
-**Triggers:** Git tags (v\*), Manual workflow dispatch
-
-**Jobs:**
-
-- **Create Release**: Generate changelog, create GitHub release
-- **Build Artifacts**: Source archives, Docker images with release tags
-- **Deploy Release**: Production deployment for stable releases
-
-### 5. Performance Testing (`performance.yml`)
-
-**Triggers:** Push, Pull requests to main, Weekly schedule, Manual dispatch
-
-**Jobs:**
-
-- **Memory Profiling**: Memory usage analysis and leak detection
 
 ## Configuration Files
 
@@ -112,20 +76,6 @@ SONAR_TOKEN                  # SonarCloud token for code quality analysis
 CODECOV_TOKEN               # Codecov token for coverage reporting
 ```
 
-#### Environment Secrets (Staging)
-
-```bash
-KUBE_CONFIG_STAGING         # Base64 encoded kubeconfig for staging cluster
-DATABASE_URL_STAGING        # PostgreSQL connection string for staging
-```
-
-#### Environment Secrets (Production)
-
-```bash
-KUBE_CONFIG_PRODUCTION      # Base64 encoded kubeconfig for production cluster
-DATABASE_URL_PRODUCTION     # PostgreSQL connection string for production
-```
-
 ### Environment Variables
 
 The workflows use the following environment variables:
@@ -145,52 +95,22 @@ The workflows use the following environment variables:
 
 ### Quality Assurance
 
-- **Comprehensive testing**: Unit, integration, e2e, performance
+- **Comprehensive testing**: Unit, integration, e2e
 - **Code quality metrics**: SonarCloud integration
 - **Automated formatting**: Prettier and ESLint enforcement
 - **Commit message standards**: Conventional commits validation
 
-### Performance
-
-- **Load testing**: k6-based performance testing
-- **Memory profiling**: Memory leak detection
-- **Performance regression detection**: Automated performance monitoring
-
-### Deployment
-
-- **Environment promotion**: Staging → Production workflow
-- **Database migrations**: Automated schema updates
-- **Health checks**: Post-deployment verification
-- **Rollback capability**: Automatic failure recovery
-
 ## Usage Examples
-
-### Manual Deployment
-
-```bash
-# Trigger manual deployment to staging
-gh workflow run deploy.yml -f environment=staging
-
-# Trigger manual deployment to production
-gh workflow run deploy.yml -f environment=production
-```
 
 ### Creating a Release
 
 ```bash
-# Create and push a tag to trigger release workflow
+# Create and push a tag to trigger a versioned image build
 git tag v1.0.0
 git push origin v1.0.0
 
 # Or use GitHub CLI
 gh release create v1.0.0 --generate-notes
-```
-
-### Running Performance Tests
-
-```bash
-# Trigger performance tests manually
-gh workflow run performance.yml
 ```
 
 ## Monitoring and Observability
@@ -203,7 +123,7 @@ gh workflow run performance.yml
 
 ### Application Monitoring
 
-- **Health checks**: Kubernetes liveness/readiness probes
+- **Health checks**: Application health endpoints
 - **Metrics**: Prometheus metrics collection
 - **Logging**: Structured logging with trace IDs
 - **Alerting**: Set up alerts for critical failures
@@ -246,8 +166,7 @@ Configure branch protection rules:
 
 #### Deployment Failures
 
-- Verify Kubernetes cluster connectivity
-- Check resource quotas and limits
+- Check Docker image build logs
 - Review image pull permissions
 - Validate configuration files
 

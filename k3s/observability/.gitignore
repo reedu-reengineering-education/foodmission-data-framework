@@ -1,4 +1,0 @@
-# Ignore Helm dependency charts (auto-generated)
-charts/
-*.tgz
-Chart.lock

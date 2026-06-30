@@ -18,14 +18,9 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 - ✅ **Coverage Reporting**: Codecov integration
 - ✅ **SBOM Generation**: Software Bill of Materials for security compliance
 
-#### Deployment Pipeline (`deploy.yml`)
+#### Deployment Pipeline
 
-- ✅ **Environment-Specific Deployments**: Staging and production environments
-- ✅ **Kubernetes Integration**: Automated deployment with kubectl
-- ✅ **Database Migrations**: Automated schema updates during deployment
-- ✅ **Smoke Tests**: Post-deployment health checks
-- ✅ **Rollback Capability**: Automatic rollback on deployment failure
-- ✅ **Manual Deployment**: Workflow dispatch for manual deployments
+> No deployment workflow is currently configured. Docker images are built and published to ghcr.io via `ci.yml`.
 
 #### Security Scanning (`security.yml`)
 
@@ -38,18 +33,11 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 
 #### Release Management (`release.yml`)
 
-- ✅ **Automated Releases**: Tag-based release creation
-- ✅ **Changelog Generation**: Automatic changelog from git commits
-- ✅ **Release Artifacts**: Source archives and Docker images
-- ✅ **Production Deployment**: Automated production deployment for stable releases
-- ✅ **Release Validation**: Post-deployment testing
+> No release workflow is currently configured. Tag-based Docker images are produced by `ci.yml`.
 
-#### Performance Testing (`performance.yml`)
+#### Performance Testing
 
-- ✅ **Load Testing**: k6-based performance testing with various load patterns
-- ✅ **Memory Profiling**: Memory usage analysis and leak detection
-- ✅ **Performance Regression**: Automated performance monitoring
-- ✅ **Scheduled Testing**: Weekly performance tests
+> No dedicated performance testing workflow is currently configured.
 
 #### Code Quality (`code-quality.yml`)
 
@@ -102,14 +90,11 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 
 #### Performance Testing
 
-- ✅ **Load Testing**: k6 performance tests with realistic scenarios
-- ✅ **Memory Profiling**: Memory leak detection and analysis
-- ✅ **Performance Regression**: Automated performance monitoring
-- ✅ **Threshold Validation**: Performance SLA enforcement
+> No dedicated performance testing workflow is currently configured.
 
 #### Observability
 
-- ✅ **Health Checks**: Kubernetes liveness and readiness probes
+- ✅ **Health Checks**: Application health endpoints (`/health`)
 - ✅ **Metrics Collection**: Prometheus metrics integration
 - ✅ **Structured Logging**: Trace ID tracking
 - ✅ **Error Tracking**: Comprehensive error monitoring
@@ -138,15 +123,13 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 - **Database**: PostgreSQL 15+ with Prisma ORM
 - **Cache**: Valkey 9+
 - **Container**: Docker with multi-stage builds
-- **Orchestration**: Kubernetes deployment ready
+- **Deployment**: Managed via [foodmission-infra](https://github.com/reedu-reengineering-education/foodmission-infra)
 
 ### CI/CD Features
 
 - **Parallel Execution**: Independent jobs run concurrently
 - **Conditional Execution**: Smart job triggering based on changes
 - **Multi-Platform**: Docker builds for amd64 and arm64
-- **Environment Promotion**: Staging → Production workflow
-- **Rollback Capability**: Automatic failure recovery
 
 ### Security Compliance
 

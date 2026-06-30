@@ -842,20 +842,6 @@ npm run test:debug -- food.service.spec.ts
 # Set breakpoints and run "Debug Jest Tests" configuration
 ```
 
-### Production Debugging
-
-#### Log Analysis
-
-```bash
-# View application logs
-kubectl logs -f deployment/foodmission-api -n foodmission
-
-# Search for specific errors
-kubectl logs deployment/foodmission-api -n foodmission | grep "ERROR"
-
-# View logs with trace ID
-kubectl logs deployment/foodmission-api -n foodmission | grep "req-12345"
-```
 
 #### Health Checks
 
@@ -868,18 +854,6 @@ curl http://localhost:3000/api/v1/health/database
 curl http://localhost:3000/api/v1/health/openfoodfacts
 ```
 
-#### Performance Monitoring
-
-```bash
-# View metrics
-curl http://localhost:3000/api/v1/metrics
-
-# Check memory usage
-kubectl top pods -n foodmission
-
-# Check database performance
-kubectl exec -it deployment/foodmission-api -n foodmission -- npm run db:studio
-```
 
 ## Performance Optimization
 
