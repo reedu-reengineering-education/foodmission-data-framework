@@ -20,7 +20,7 @@ A comprehensive, production-ready backend system for managing food-related data 
 - **Testing**: Unit, integration, and end-to-end tests with high coverage
 - **Monitoring**: Health checks, metrics, and structured logging
 - **Security**: Input validation, rate limiting, and security headers
-- **DevOps Ready**: Docker containerization, Kubernetes manifests, and CI/CD pipelines
+- **DevOps Ready**: Docker containerization and CI/CD pipelines
 
 ## 📋 Table of Contents
 
@@ -402,12 +402,15 @@ The `docker-compose.yml` file includes:
 
 For production deployments, create a custom docker-compose file or use container orchestration platforms with appropriate environment configurations.
 
+### Deployment
+
+Infrastructure and deployment configuration is managed separately in the [foodmission-infra](https://github.com/reedu-reengineering-education/foodmission-infra) repository. This includes Kubernetes manifests, Helm charts, and environment-specific configurations for staging and production.
+
 ### CI/CD Pipeline
 
 The project uses GitHub Actions for automated CI/CD:
 
 - **Continuous Integration**: Automated testing, linting, and security scanning
-- **Continuous Deployment**: Automated deployment to staging and production
 - **Quality Gates**: Code coverage and security requirements
 
 #### Pipeline Stages
@@ -415,8 +418,7 @@ The project uses GitHub Actions for automated CI/CD:
 1. **Code Quality**: ESLint, Prettier, TypeScript compilation
 2. **Security**: Dependency scanning, SAST analysis
 3. **Testing**: Unit, integration, and e2e tests
-4. **Build**: Docker image creation and registry push
-5. **Deploy**: Automated deployment to environments
+4. **Build**: Docker image creation and push to GitHub Container Registry
 
 ### Environment Configuration
 
@@ -426,20 +428,6 @@ The project uses GitHub Actions for automated CI/CD:
 - Hot reloading enabled
 - Debug logging
 - Mock external services
-
-#### Staging
-
-- Shared database instance
-- Production-like configuration
-- Integration with external services
-- Performance monitoring
-
-#### Production
-
-- High-availability database cluster
-- Redis cluster for caching
-- Full monitoring and alerting
-- Security hardening
 
 ## 🏗 Architecture
 
