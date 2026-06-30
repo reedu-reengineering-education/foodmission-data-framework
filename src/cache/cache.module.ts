@@ -14,11 +14,11 @@ import { CacheableMemory } from '@cacheable/memory';
     NestCacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const redisUrl = configService.get<string>('REDIS_URL');
+        const cacheUrl = configService.get<string>('CACHE_URL');
 
         const stores: Keyv[] = [];
-        if (redisUrl) {
-          stores.push(new Keyv(new KeyvRedis(redisUrl)));
+        if (cacheUrl) {
+          stores.push(new Keyv(new KeyvRedis(cacheUrl)));
         }
         stores.push(
           new Keyv({

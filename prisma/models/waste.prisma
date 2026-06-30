@@ -1,0 +1,47 @@
+// ============================================================
+// Waste - Food waste tracking
+// ============================================================
+
+enum WasteReason {
+  EXPIRED
+  SPOILED
+  OVERCOOKED
+  UNWANTED
+  PORTION_TOO_LARGE
+  OTHER
+}
+
+enum DetectionMethod {
+  AUTOMATIC
+  MANUAL
+}
+
+model FoodWaste {
+  id              String          @id @default(uuid())
+  userId          String
+  pantryItemId    String?
+  foodProductId   String?
+  genericFoodId   String?
+  quantity        Float
+  unit            Unit
+  wasteReason     WasteReason
+  detectionMethod DetectionMethod
+  notes           String?
+  costEstimate    Float?
+  carbonFootprint Float?
+  wastedAt        DateTime
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  foodProduct FoodProduct? @relation(fields: [foodProductId], references: [id], onDelete: Restrict)
+  genericFood GenericFood? @relation(fields: [genericFoodId], references: [id], onDelete: Restrict)
+  pantryItem  PantryItem?  @relation(fields: [pantryItemId], references: [id], onDelete: SetNull)
+
+  @@index([userId, wastedAt])
+  @@index([foodProductId])
+  @@index([genericFoodId])
+  @@index([detectionMethod])
+  @@index([wasteReason])
+  @@map("food_waste")
+}

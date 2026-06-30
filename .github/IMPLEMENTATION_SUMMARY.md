@@ -10,7 +10,7 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 
 #### CI Pipeline (`ci.yml`)
 
-- ✅ **Automated Testing**: Unit, integration, and e2e tests with PostgreSQL and Redis services
+- ✅ **Automated Testing**: Unit, integration, and e2e tests with PostgreSQL and cache services
 - ✅ **Linting and Type Checking**: ESLint, TypeScript compilation, Prettier formatting
 - ✅ **Security Scanning**: npm audit, CodeQL analysis
 - ✅ **Docker Image Building**: Multi-platform builds (amd64, arm64) with caching
@@ -121,7 +121,7 @@ This document summarizes the comprehensive GitHub Actions CI/CD pipeline impleme
 
 - **Node.js**: 24+
 - **Database**: PostgreSQL 15+ with Prisma ORM
-- **Cache**: Redis 7+
+- **Cache**: Valkey 9+
 - **Container**: Docker with multi-stage builds
 - **Deployment**: Managed via [foodmission-infra](https://github.com/reedu-reengineering-education/foodmission-infra)
 

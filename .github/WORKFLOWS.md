@@ -12,8 +12,8 @@ This directory contains the GitHub Actions workflows for the FOODMISSION Data Fr
 
 - **Lint and Type Check**: ESLint, TypeScript compilation, Prettier formatting
 - **Security Scan**: npm audit, CodeQL analysis
-- **Test**: Unit tests and e2e tests with PostgreSQL and Redis services
-- **Build and Push**: Multi-arch Docker image building and pushing to GitHub Container Registry
+- **Test**: Unit tests, integration tests, e2e tests with PostgreSQL and cache services
+- **Build and Push**: Docker image building and pushing to GitHub Container Registry
 
 **Key Features:**
 

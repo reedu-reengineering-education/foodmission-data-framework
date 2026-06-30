@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: foodmission_db
     ports:
-      - '5432:5432'
+      - '5434:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
@@ -17,15 +17,15 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
+  cache:
     image: valkey/valkey:9.1.0
-    container_name: foodmission-redis
+    container_name: foodmission-cache
     ports:
       - '6379:6379'
-    volumes:
-      - redis_data:/data
+    # Match production: ephemeral cache, no persistence
+    command: ['valkey-server', '--save', '']
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ['CMD', 'valkey-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -82,5 +82,4 @@ services:
 
 volumes:
   postgres_data:
-  redis_data:
   mailpit_data:
