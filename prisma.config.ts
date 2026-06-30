@@ -5,7 +5,7 @@ import { defineConfig } from 'prisma/config';
 const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  schema: path.join('prisma', 'schema.prisma'),
+  schema: path.join('prisma'),
   migrations: {
     path: path.join('prisma', 'migrations'),
     seed: isProd

@@ -1,0 +1,198 @@
+// ============================================================
+// Meals - Meals, recipes, and meal logs
+// ============================================================
+
+enum TypeOfMeal {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  DRINKS
+  OTHER
+}
+
+enum MealCategory {
+  ANIMAL_PROTEIN // Meat, Poultry, Eggs
+  SEAFOOD
+  PLANT_PROTEIN // Beans, Legumes, Plant-based meats
+  STARCH_GRAIN // Pasta, Rice, Potatoes
+  VEGGIES_FRUIT // Fruits & Veggies
+  DAIRY
+  MIXED_OTHER
+}
+
+enum MealCourse {
+  MAIN_DISH // The anchor of the meal
+  SIDE_SNACK // Anything eaten with a main or between meals
+  DESSERT // Sweets and treats
+  BEVERAGE // All liquids
+  SAUCE_OTHER // Sauces, dressings, or "Other"
+}
+
+enum Allergens {
+  GLUTEN // Wheat, barley, rye
+  DAIRY // Milk, cheese, butter, lactose
+  PEANUTS // Specifically groundnuts
+  TREE_NUTS // Almonds, walnuts, cashews, etc.
+  SHELLFISH // Shrimp, crab, lobster
+  FISH // Finfish (some are allergic to fish but not shellfish)
+  EGGS // Very common in baking/sauces
+  SOY // Found in many processed foods and plant proteins
+  SESAME // Increasingly recognized as a major allergen
+  SULFITES // Common in wine and dried fruits
+  MUSTARD // Common in European labeling requirements
+  NIGHTSHADES // (Optional) Peppers, potatoes, tomatoes (common sensitivity)
+  OTHER
+}
+
+enum DietaryLabel {
+  VEGAN
+  VEGETARIAN
+  PESCATARIAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  NUT_FREE
+  HALAL
+  KOSHER
+}
+
+model Meal {
+  id                  String         @id @default(uuid())
+  name                String
+  calories            Int?
+  proteins            Int?
+  nutritionalInfo     Json?
+  sustainabilityScore Float?
+  price               Float?
+  barcode             String?        @unique
+  userId              String
+  recipeId            String? // Optional link to a recipe this meal is based on
+  mealCategories      MealCategory[] @default([])
+  mealCourse          MealCourse?
+  dietaryLabels       DietaryLabel[] @default([])
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  // Relations
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe   Recipe?    @relation(fields: [recipeId], references: [id], onDelete: SetNull)
+  items    MealItem[]
+  mealLogs MealLog[]
+
+  @@index([userId])
+  @@index([recipeId])
+  @@map("meals")
+}
+
+model MealItem {
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+  unit      Unit     @default(PIECES)
+  notes     String?
+  mealId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Polymorphic reference
+  itemType         String  @default("food_product") // "food_product" | "generic_food"
+  foodProductId    String?
+  genericFoodId    String?
+
+  // Relations
+  meal         Meal          @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  foodProduct  FoodProduct?  @relation(fields: [foodProductId], references: [id], onDelete: SetNull)
+  genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
+
+  @@unique([mealId, foodProductId])
+  @@unique([mealId, genericFoodId])
+  @@index([mealId])
+  @@index([foodProductId])
+  @@index([genericFoodId])
+  @@map("meal_items")
+}
+
+model Recipe {
+  id                  String      @id @default(uuid())
+  userId              String? // Nullable for system recipes (TheMealDB, etc.)
+  title               String
+  description         String?
+  instructions        String?
+  prepTime            Int?
+  cookTime            Int?
+  servings            Int?
+  difficulty          String?
+  tags                String[]
+  nutritionalInfo     Json?
+  sustainabilityScore Float?
+  price               Float?
+  allergens           Allergens[]
+  rating              Float       @default(0)
+  ratingCount         Int         @default(0)
+  externalId          String?     @unique // TheMealDB idMeal
+  imageUrl            String?
+  videoUrl            String?
+  cuisineType         String? // Japanese, Italian, Mexican, etc.
+  category            String? // Chicken, Seafood, Dessert, etc.
+  isPublic            Boolean     @default(false)
+  dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  // Relations
+  user        User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  meals       Meal[]
+  ingredients RecipeIngredient[]
+
+  @@index([userId])
+  @@index([isPublic])
+  @@index([category])
+  @@index([cuisineType])
+  @@index([isPublic, category])
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id        String   @id @default(uuid())
+  recipeId  String
+  name      String // Original ingredient name from recipe
+  measure   String? // Amount/measurement string
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // Polymorphic reference
+  itemType         String  @default("generic_food") // "food_product" | "generic_food"
+  foodProductId    String?
+  genericFoodId    String?
+
+  // Relations
+  recipe       Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  foodProduct  FoodProduct?  @relation(fields: [foodProductId], references: [id], onDelete: SetNull)
+  genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
+
+  @@index([recipeId])
+  @@index([foodProductId])
+  @@index([genericFoodId])
+  @@map("recipe_ingredients")
+}
+
+model MealLog {
+  id             String     @id @default(uuid())
+  userId         String
+  mealId         String
+  typeOfMeal     TypeOfMeal
+  timestamp      DateTime   @default(now())
+  mealFromPantry Boolean    @default(false)
+  eatenOut       Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  @@index([userId, timestamp])
+  @@index([typeOfMeal])
+  @@index([userId, typeOfMeal])
+  @@map("meal_logs")
+}

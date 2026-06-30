@@ -1,0 +1,130 @@
+// ============================================================
+// Users - User profiles and groups
+// ============================================================
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNSPECIFIED
+  PREFER_NOT_TO_SAY
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+enum AnnualIncomeLevel {
+  BELOW_10000
+  FROM_10000_TO_19999
+  FROM_20000_TO_34999
+  FROM_35000_TO_49999
+  FROM_50000_TO_74999
+  FROM_75000_TO_99999
+  ABOVE_100000
+}
+
+enum EducationLevel {
+  NO_FORMAL_EDUCATION
+  PRIMARY
+  SECONDARY
+  VOCATIONAL
+  BACHELORS
+  MASTERS
+  DOCTORATE
+}
+
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id                          String             @id @default(uuid())
+  keycloakId                  String             @unique
+  email                       String             @unique
+  firstName                   String?
+  lastName                    String?
+  username                    String?            @unique
+  yearOfBirth                 Int?
+  country                     String?
+  region                      String?
+  zip                         String?
+  language                    String?
+  preferences                 Json               @default("{}") // Flexible JSON for app-specific preferences
+  settings                    Json               @default("{}") // Flexible JSON for app-specific settings
+  gender                      Gender?
+  annualIncome                AnnualIncomeLevel?
+  educationLevel              EducationLevel?
+  weightKg                    Float?
+  heightCm                    Float?
+  activityLevel               ActivityLevel?
+  healthGoals                 Json?              @default("{}")
+  nutritionTargets            Json?              @default("{}")
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  autoAddCheckedItemsToPantry Boolean            @default(true)
+
+  // Relations
+  shoppingList      ShoppingList[]
+  pantry            Pantry?
+  recipes           Recipe[]
+  meals             Meal[]
+  mealLogs          MealLog[]
+  knowledge         Knowledge[]
+  foodWaste         FoodWaste[]
+  knowledgeProgress UserKnowledgeProgress[]
+  challengeProgress ChallengeProgress[]
+  missionProgress   MissionProgress[]
+  groupMemberships  GroupMembership[]
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model UserGroup {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  inviteCode  String   @unique
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  memberships GroupMembership[]
+
+  @@index([inviteCode])
+  @@index([createdBy])
+  @@map("user_groups")
+}
+
+model GroupMembership {
+  id            String             @id @default(uuid())
+  groupId       String
+  userId        String?
+  role          GroupRole          @default(MEMBER)
+  nickname      String?
+  age           Int?
+  gender        Gender?
+  preferences   Json               @default("{}")
+  activityLevel ActivityLevel?
+  annualIncome  AnnualIncomeLevel?
+  createdBy     String?
+  joinedAt      DateTime           @default(now())
+  updatedAt     DateTime?          @updatedAt
+
+  // Relations
+  user  User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group UserGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+  @@index([groupId])
+  @@index([createdBy])
+  @@map("group_memberships")
+}
