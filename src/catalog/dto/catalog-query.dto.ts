@@ -2,7 +2,10 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsIn, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
-import { TransformTrimToUndefined } from '../../common/decorators/transformers';
+import {
+  TransformTrimLowercaseToUndefined,
+  TransformTrimToUndefined,
+} from '../../common/decorators/transformers';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 export class CatalogPaginatedQueryDto extends PaginationQueryDto {
@@ -14,7 +17,7 @@ export class CatalogPaginatedQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsString()
   @IsIn([...SUPPORTED_LOCALES])
-  @TransformTrimToUndefined()
+  @TransformTrimLowercaseToUndefined()
   lang?: string;
 
   @ApiPropertyOptional({

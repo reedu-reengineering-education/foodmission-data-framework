@@ -79,6 +79,19 @@ describe('Catalog lang query validation (e2e)', () => {
     expect(res.body).toEqual(paginatedResponse);
   });
 
+  it('GET /catalog/regions accepts uppercase lang and normalizes it', async () => {
+    await request(app.getHttpServer())
+      .get('/catalog/regions?page=1&limit=10&countryCode=US&lang=DE')
+      .expect(200);
+
+    expect(catalogServiceMock.listRegions).toHaveBeenCalledWith({
+      page: 1,
+      limit: 10,
+      countryCode: 'US',
+      lang: 'de',
+    });
+  });
+
   it('GET /catalog/regions rejects unsupported lang values', async () => {
     const res = await request(app.getHttpServer())
       .get('/catalog/regions?page=1&limit=10&countryCode=US&lang=xx')
