@@ -5,9 +5,12 @@ import {
   collectLeafKeys,
   extractPlaceholders,
   getValueByPath,
+  isErrnoWithCode,
   localeNamespaceFilePath,
   readJsonFile,
-  resolveLocaleLayout,
+  resolveLocaleWorkItems,
+  sameStringArray,
+  toError,
 } from './utils';
 
 function formatPreview(keys: string[]): string {
@@ -21,19 +24,15 @@ function main(): void {
   let namespaceFiles: string[] = [];
 
   try {
-    const layout = resolveLocaleLayout();
-    locales = layout.locales;
-    namespaceFiles = layout.namespaceFiles;
+    const workItems = resolveLocaleWorkItems(DEFAULT_LOCALE);
+    locales = workItems.locales;
+    namespaceFiles = workItems.namespaceFiles;
   } catch (error) {
-    console.error(`❌ ${(error as Error).message}`);
+    console.error(`❌ ${toError(error).message}`);
     process.exit(1);
   }
 
   for (const locale of locales) {
-    if (locale === DEFAULT_LOCALE) {
-      continue;
-    }
-
     for (const namespaceFile of namespaceFiles) {
       const baseFilePath = localeNamespaceFilePath(
         DEFAULT_LOCALE,
@@ -48,7 +47,7 @@ function main(): void {
         baseJson = readJsonFile(baseFilePath);
       } catch (error) {
         errors.push(
-          `${DEFAULT_LOCALE}/${namespaceFile}: Invalid JSON (${(error as Error).message})`,
+          `${DEFAULT_LOCALE}/${namespaceFile}: Invalid JSON (${toError(error).message})`,
         );
         continue;
       }
@@ -56,13 +55,14 @@ function main(): void {
       try {
         localeJson = readJsonFile(localeFilePath);
       } catch (error) {
-        const message = (error as Error).message;
-        if (message.includes('ENOENT')) {
+        if (isErrnoWithCode(error, 'ENOENT')) {
           errors.push(`${locale}/${namespaceFile}: Missing namespace file`);
           continue;
         }
 
-        errors.push(`${locale}/${namespaceFile}: Invalid JSON (${message})`);
+        errors.push(
+          `${locale}/${namespaceFile}: Invalid JSON (${toError(error).message})`,
+        );
         continue;
       }
 
@@ -102,10 +102,7 @@ function main(): void {
         const basePlaceholders = extractPlaceholders(baseValue);
         const localePlaceholders = extractPlaceholders(localeValue);
 
-        if (
-          JSON.stringify(basePlaceholders) !==
-          JSON.stringify(localePlaceholders)
-        ) {
+        if (!sameStringArray(basePlaceholders, localePlaceholders)) {
           errors.push(
             `${locale}/${namespaceFile}: Placeholder mismatch at "${key}" -> base [${basePlaceholders.join(', ')}], locale [${localePlaceholders.join(', ')}]`,
           );

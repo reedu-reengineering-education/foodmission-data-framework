@@ -13,6 +13,23 @@ export interface LocaleLayout {
   namespaceFiles: string[];
 }
 
+export interface LocaleWorkItems {
+  locales: string[];
+  namespaceFiles: string[];
+}
+
+export function toError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
+export function isErrnoWithCode(error: unknown, code: string): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { code?: string }).code === code
+  );
+}
+
 function isObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -72,6 +89,20 @@ export function extractPlaceholders(value: string): string[] {
   return Array.from(placeholders).sort();
 }
 
+export function sameStringArray(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; i += 1) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function listLocaleDirectories(root: string): string[] {
   return fs
     .readdirSync(root, { withFileTypes: true })
@@ -113,6 +144,16 @@ export function resolveLocaleLayout(): LocaleLayout {
     locales,
     baseLocalePath,
     namespaceFiles,
+  };
+}
+
+export function resolveLocaleWorkItems(
+  baseLocale: string = DEFAULT_LOCALE,
+): LocaleWorkItems {
+  const layout = resolveLocaleLayout();
+  return {
+    locales: layout.locales.filter((locale) => locale !== baseLocale),
+    namespaceFiles: layout.namespaceFiles,
   };
 }
 

@@ -3,9 +3,11 @@
 import { DEFAULT_LOCALE } from '../../src/i18n/constants';
 import {
   collectLeafKeys,
+  isErrnoWithCode,
   localeNamespaceFilePath,
   readJsonFile,
-  resolveLocaleLayout,
+  resolveLocaleWorkItems,
+  toError,
 } from './utils';
 
 function main(): void {
@@ -13,19 +15,15 @@ function main(): void {
   let namespaceFiles: string[] = [];
 
   try {
-    const layout = resolveLocaleLayout();
-    locales = layout.locales;
-    namespaceFiles = layout.namespaceFiles;
+    const workItems = resolveLocaleWorkItems(DEFAULT_LOCALE);
+    locales = workItems.locales;
+    namespaceFiles = workItems.namespaceFiles;
   } catch (error) {
-    console.error(`❌ ${(error as Error).message}`);
+    console.error(`❌ ${toError(error).message}`);
     process.exit(1);
   }
 
   for (const locale of locales) {
-    if (locale === DEFAULT_LOCALE) {
-      continue;
-    }
-
     console.log(`\n📄 Locale: ${locale}`);
     console.log('--------------------------------------------------');
 
@@ -38,14 +36,21 @@ function main(): void {
       );
       const localeFilePath = localeNamespaceFilePath(locale, namespaceFile);
 
-      const baseKeys = new Set(collectLeafKeys(readJsonFile(baseFilePath)));
+      let baseKeys: Set<string>;
+      try {
+        baseKeys = new Set(collectLeafKeys(readJsonFile(baseFilePath)));
+      } catch (error) {
+        console.error(
+          `  ${DEFAULT_LOCALE}/${namespaceFile}: failed to read base namespace (${toError(error).message})`,
+        );
+        process.exit(1);
+      }
 
       let localeKeys: Set<string>;
       try {
         localeKeys = new Set(collectLeafKeys(readJsonFile(localeFilePath)));
       } catch (error) {
-        const message = (error as Error).message;
-        if (message.includes('ENOENT')) {
+        if (isErrnoWithCode(error, 'ENOENT')) {
           localeMissingTotal += baseKeys.size;
           console.log(
             `  ${namespaceFile}: missing file (${baseKeys.size} keys)`,
@@ -53,7 +58,10 @@ function main(): void {
           continue;
         }
 
-        throw error;
+        console.error(
+          `  ${locale}/${namespaceFile}: failed to read namespace (${toError(error).message})`,
+        );
+        process.exit(1);
       }
 
       const missing = Array.from(baseKeys).filter(
