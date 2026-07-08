@@ -7,6 +7,7 @@ import {
   GroupRole,
   MealCategory,
   MealCourse,
+  DietaryLabel,
   TypeOfMeal,
   Unit,
 } from '@prisma/client';
@@ -14,6 +15,7 @@ import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { SHOPPING_RESPONSIBILITY_ENTRIES } from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
   CatalogListResponseDto,
@@ -36,8 +38,13 @@ export class CatalogService {
     regionsAll?: CatalogValueDto[];
   } = {};
 
-  private readonly languageDisplayNames = new Map<string, Intl.DisplayNames>();
-  private readonly regionDisplayNames = new Map<string, Intl.DisplayNames>();
+  private readonly displayNamesByType: Record<
+    'language' | 'region',
+    Map<string, Intl.DisplayNames>
+  > = {
+    language: new Map<string, Intl.DisplayNames>(),
+    region: new Map<string, Intl.DisplayNames>(),
+  };
 
   private resolveLanguage(langOverride?: string): string {
     const candidate = (
@@ -55,38 +62,22 @@ export class CatalogService {
     return DEFAULT_LOCALE;
   }
 
-  private getDisplayNamesForLocale(lang: string): Intl.DisplayNames | null {
-    const normalizedLang = this.resolveLanguage(lang);
-    const cached = this.languageDisplayNames.get(normalizedLang);
-    if (cached) {
-      return cached;
-    }
-
-    try {
-      const instance = new Intl.DisplayNames([normalizedLang], {
-        type: 'language',
-      });
-      this.languageDisplayNames.set(normalizedLang, instance);
-      return instance;
-    } catch {
-      return null;
-    }
-  }
-
-  private getRegionDisplayNamesForLocale(
+  private getDisplayNamesForLocale(
     lang: string,
+    type: 'language' | 'region',
   ): Intl.DisplayNames | null {
     const normalizedLang = this.resolveLanguage(lang);
-    const cached = this.regionDisplayNames.get(normalizedLang);
+    const cache = this.displayNamesByType[type];
+    const cached = cache.get(normalizedLang);
     if (cached) {
       return cached;
     }
 
     try {
       const instance = new Intl.DisplayNames([normalizedLang], {
-        type: 'region',
+        type,
       });
-      this.regionDisplayNames.set(normalizedLang, instance);
+      cache.set(normalizedLang, instance);
       return instance;
     } catch {
       return null;
@@ -98,7 +89,7 @@ export class CatalogService {
     lang: string,
     fallback: string,
   ): string {
-    const displayNames = this.getDisplayNamesForLocale(lang);
+    const displayNames = this.getDisplayNamesForLocale(lang, 'language');
     const localized = displayNames?.of(languageCode.toLowerCase());
 
     if (typeof localized === 'string' && localized.trim().length > 0) {
@@ -113,7 +104,7 @@ export class CatalogService {
     lang: string,
     fallback: string,
   ): string {
-    const regionDisplayNames = this.getRegionDisplayNamesForLocale(lang);
+    const regionDisplayNames = this.getDisplayNamesForLocale(lang, 'region');
     const localized = regionDisplayNames?.of(countryCode.toUpperCase());
 
     if (typeof localized === 'string' && localized.trim().length > 0) {
@@ -147,6 +138,15 @@ export class CatalogService {
         titleCaseFromEnum(code),
       ),
     }));
+  }
+
+  private enumSection(
+    values: string[],
+    section: string,
+  ): CatalogListResponseDto {
+    return {
+      data: this.mapEnumCatalogValues(values, section),
+    };
   }
 
   private getAllCountries(): CatalogValueDto[] {
@@ -199,84 +199,47 @@ export class CatalogService {
   }
 
   listGenders(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(Object.values(Gender), 'genders'),
-    };
+    return this.enumSection(Object.values(Gender), 'genders');
   }
 
   listActivityLevels(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(
-        Object.values(ActivityLevel),
-        'activityLevels',
-      ),
-    };
+    return this.enumSection(Object.values(ActivityLevel), 'activityLevels');
   }
 
   listEducationLevels(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(
-        Object.values(EducationLevel),
-        'educationLevels',
-      ),
-    };
+    return this.enumSection(Object.values(EducationLevel), 'educationLevels');
   }
 
   listAnnualIncomeLevels(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(
-        Object.values(AnnualIncomeLevel),
-        'annualIncomeLevels',
-      ),
-    };
+    return this.enumSection(
+      Object.values(AnnualIncomeLevel),
+      'annualIncomeLevels',
+    );
   }
 
   listUnits(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(Object.values(Unit), 'units'),
-    };
+    return this.enumSection(Object.values(Unit), 'units');
   }
 
   listTypeOfMeals(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(Object.values(TypeOfMeal), 'typeOfMeals'),
-    };
+    return this.enumSection(Object.values(TypeOfMeal), 'typeOfMeals');
   }
 
   listMealCategories(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(
-        Object.values(MealCategory),
-        'mealCategories',
-      ),
-    };
+    return this.enumSection(Object.values(MealCategory), 'mealCategories');
   }
 
   listMealCourses(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(Object.values(MealCourse), 'mealCourses'),
-    };
+    return this.enumSection(Object.values(MealCourse), 'mealCourses');
   }
 
   listGroupRoles(): CatalogListResponseDto {
-    return {
-      data: this.mapEnumCatalogValues(Object.values(GroupRole), 'groupRoles'),
-    };
+    return this.enumSection(Object.values(GroupRole), 'groupRoles');
   }
 
   listDietaryPreferences(): CatalogListResponseDto {
-    const values = [
-      'VEGAN',
-      'VEGETARIAN',
-      'PESCATARIAN',
-      'GLUTEN_FREE',
-      'DAIRY_FREE',
-      'NUT_FREE',
-      'HALAL',
-      'KOSHER',
-    ];
     return {
-      data: values.map((code) => ({
+      data: Object.values(DietaryLabel).map((code) => ({
         code,
         label: this.translateCatalogKey(
           `dietaryPreferences.${code}`,
@@ -287,44 +250,12 @@ export class CatalogService {
   }
 
   listShoppingResponsibilities(): CatalogListResponseDto {
-    const data: CatalogValueDto[] = [
-      {
-        code: 'NO_SPECIFIC',
-        label: this.translateCatalogKey(
-          'shoppingResponsibilities.NO_SPECIFIC',
-          'No specific answer',
-        ),
-      },
-      {
-        code: 'MOSTLY_ME',
-        label: this.translateCatalogKey(
-          'shoppingResponsibilities.MOSTLY_ME',
-          'Mostly me',
-        ),
-      },
-      {
-        code: 'SHARED_EQUALLY',
-        label: this.translateCatalogKey(
-          'shoppingResponsibilities.SHARED_EQUALLY',
-          'Shared equally',
-        ),
-      },
-      {
-        code: 'MOSTLY_SOMEONE_ELSE',
-        label: this.translateCatalogKey(
-          'shoppingResponsibilities.MOSTLY_SOMEONE_ELSE',
-          'Mostly someone else',
-        ),
-      },
-      {
-        code: 'SOMEONE_ELSE',
-        label: this.translateCatalogKey(
-          'shoppingResponsibilities.SOMEONE_ELSE',
-          'Someone else',
-        ),
-      },
-    ];
-    return { data };
+    return {
+      data: SHOPPING_RESPONSIBILITY_ENTRIES.map((entry) => ({
+        code: entry.code,
+        label: this.translateCatalogKey(entry.key, entry.fallback),
+      })),
+    };
   }
 
   listLanguages(input: {
