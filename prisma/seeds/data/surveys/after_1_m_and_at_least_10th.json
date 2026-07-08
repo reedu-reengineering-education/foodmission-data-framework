@@ -1,0 +1,97 @@
+{
+  "title": "after 1 m and at least 10th",
+  "description": "Survey: after 1 m and at least 10th",
+  "questions": [
+    {
+      "id": "after 1 m and at least 10th_0",
+      "text": "When preparing food. It is easy for me to accomplish my desired results",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_1",
+      "text": "In preparing food. I can solve most problems with enough effort.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_2",
+      "text": "I am comfortable preparing food.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_3",
+      "text": "For me, cooking is just something to get through as quickly as possible",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_4",
+      "text": "I prefer to spend my time on more important things than food",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_5",
+      "text": "My social responsibilities prevent me from having the time to prepare meals.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    },
+    {
+      "id": "after 1 m and at least 10th_6",
+      "text": "My job responsibilities prevent me from having the time to prepare meals.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 8
+    }
+  ]
+}

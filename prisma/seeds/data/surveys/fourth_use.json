@@ -1,0 +1,149 @@
+{
+  "title": "fourth use",
+  "description": "Survey: fourth use",
+  "questions": [
+    {
+      "id": "fourth use_0",
+      "text": "I do not eat meat / I am trying to reduce my meat consumption.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_1",
+      "text": "I am trying to have minimal daily food waste.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_2",
+      "text": "I read labels to check the environmental impact of a product before buying it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_3",
+      "text": "I read nutritional information to assess the nutritional quality of a product before buying it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_4",
+      "text": "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_5",
+      "text": "I try to include a variety of foods in my diet.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_6",
+      "text": "I think it is easy for me to follow a vegetarian diet in the future.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_7",
+      "text": "Organic products are widely available and convenient to buy.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_8",
+      "text": "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_9",
+      "text": "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    },
+    {
+      "id": "fourth use_10",
+      "text": "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 2
+    }
+  ]
+}

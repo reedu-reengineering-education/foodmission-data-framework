@@ -1,0 +1,593 @@
+{
+  "title": "end",
+  "description": "Survey: end",
+  "questions": [
+    {
+      "id": "end_0",
+      "text": "I do not eat meat / I am trying to reduce my meat consumption.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_1",
+      "text": "I am trying to have minimal daily food waste.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_2",
+      "text": "I read labels to check the environmental impact of a product before buying it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_3",
+      "text": "I read nutritional information to assess the nutritional quality of a product before buying it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_4",
+      "text": "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_5",
+      "text": "I try to include a variety of foods in my diet.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_6",
+      "text": "I think it is easy for me to follow a vegetarian diet in the future.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_7",
+      "text": "Organic products are widely available and convenient to buy.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_8",
+      "text": "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_9",
+      "text": "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_10",
+      "text": "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_11",
+      "text": "I have a positive opinion about diets that are both healthy and environmentally friendly.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_12",
+      "text": "I know how to select products that have a low environmental impact.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_13",
+      "text": "I understand the environmental benefits of eco-labels of food products.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_14",
+      "text": "I know what a healthy diet means.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_15",
+      "text": "It is beneficial to eat nutrient-dense food.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_16",
+      "text": "I know that healthy eating can prevent certain diseases.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_17",
+      "text": "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_18",
+      "text": "I feel guilty when my food choices harm the environment.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_19",
+      "text": "When preparing food. It is easy for me to accomplish my desired results",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_20",
+      "text": "In preparing food. I can solve most problems with enough effort.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_21",
+      "text": "I am comfortable preparing food.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_22",
+      "text": "For me, cooking is just something to get through as quickly as possible",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_23",
+      "text": "I prefer to spend my time on more important things than food",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_24",
+      "text": "My social responsibilities prevent me from having the time to prepare meals.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_25",
+      "text": "My job responsibilities prevent me from having the time to prepare meals.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_26",
+      "text": "I reflect about my health a lot",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_27",
+      "text": "I am concerned about environmental problems because of the consequences for: - Marine life",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_28",
+      "text": "I am concerned about environmental problems because of the consequences for: - My lifestyle",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_29",
+      "text": "I am concerned about environmental problems because of the consequences for: - People in my country",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_30",
+      "text": "The FOODMISSION app is accurate.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_31",
+      "text": "The FOODMISSION app is trustworthy.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_32",
+      "text": "The FOODMISSION app is true.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_33",
+      "text": "I can use the FOODMISSION app in the way I want.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_34",
+      "text": "I can make choices regarding how to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_35",
+      "text": "I can direct my own usage experience while using the FOODMISSION app.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_36",
+      "text": "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_37",
+      "text": "Using the FOODMISSION app causes me to make some changes in my behavior.",
+      "type": "likert",
+      "answers": [
+        "extremely unimportant",
+        "unimportant",
+        "somewhat unimportant",
+        "neither important or unimportant",
+        "somewhat important",
+        "important",
+        "extremely important"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_38",
+      "text": "It gives me pleasure to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "Not at all",
+        "A little",
+        "Fifty fifty",
+        "Fairly well",
+        "Very well"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_39",
+      "text": "Using the FOODMISSION app has the potential to inspire users.",
+      "type": "likert",
+      "answers": [
+        "Not at all",
+        "A little",
+        "Fifty fifty",
+        "Fairly well",
+        "Very well"
+      ],
+      "source_survey": 9
+    },
+    {
+      "id": "end_40",
+      "text": "Using the FOODMISSION app has the potential to influence user behavior.",
+      "type": "likert",
+      "answers": [
+        "Not at all",
+        "A little",
+        "Fifty fifty",
+        "Fairly well",
+        "Very well"
+      ],
+      "source_survey": 9
+    }
+  ]
+}
