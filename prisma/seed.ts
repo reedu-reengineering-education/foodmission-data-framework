@@ -20,6 +20,7 @@ import { seedRecipes } from '../scripts/seeds/prod/themealdb';
 import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
 import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
+import { seedSurveys } from '../scripts/seeds/prod/surveys';
 
 const {
   values: { environment },
@@ -36,6 +37,7 @@ async function seedProduction() {
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
+  const surveys = await seedSurveys(prisma);
   const foodCount = await prisma.foodProduct.count();
 
   console.log('=====================================');
@@ -43,6 +45,10 @@ async function seedProduction() {
   console.log('📊 Summary:');
   const summaryRows: { label: string; value: string | number }[] = [
     { label: 'genericFoods', value: genericFoods.length },
+    {
+      label: 'surveys',
+      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions, ${surveys.answerOptionsCreated} answers`,
+    },
     {
       label: 'recipes',
       value: `${recipes.created} created, ${recipes.skipped} skipped`,
@@ -96,6 +102,9 @@ async function seedDevelopment() {
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
 
+  // --- Surveys ---
+  const surveys = await seedSurveys(prisma);
+
   const foodCount = await prisma.foodProduct.count();
 
   console.log('=====================================');
@@ -118,6 +127,10 @@ async function seedDevelopment() {
     { label: 'knowledgeProgress', value: knowledgeProgress.length },
     { label: 'challenges', value: challenges.length },
     { label: 'missions', value: missions.length },
+    {
+      label: 'surveys',
+      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions, ${surveys.answerOptionsCreated} answers`,
+    },
     {
       label: 'recipes',
       value: `${recipes.created} created, ${recipes.skipped} skipped`,
