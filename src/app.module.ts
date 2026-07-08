@@ -26,7 +26,7 @@ import { DEFAULT_LOCALE } from './i18n/constants';
       loader: I18nJsonLoader,
       loaderOptions: {
         path: join(__dirname, 'i18n/'),
-        watch: process.env.NODE_ENV !== 'production',
+        watch: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
       },
       resolvers: [
         {
