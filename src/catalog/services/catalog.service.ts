@@ -14,7 +14,7 @@ import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
-import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
   CatalogListResponseDto,
@@ -44,14 +44,87 @@ export class CatalogService {
     regionsAll?: CatalogValueDto[];
   } = {};
 
-  private getCurrentLanguage(): string {
-    const lang = I18nContext.current()?.lang?.trim();
-    return lang || DEFAULT_LOCALE;
+  private readonly displayNames = new Map<string, Intl.DisplayNames>();
+
+  private resolveLanguage(langOverride?: string): string {
+    const candidate = (
+      langOverride ??
+      I18nContext.current()?.lang ??
+      DEFAULT_LOCALE
+    )
+      .trim()
+      .toLowerCase();
+
+    if ((SUPPORTED_LOCALES as readonly string[]).includes(candidate)) {
+      return candidate;
+    }
+
+    return DEFAULT_LOCALE;
   }
 
-  private translateCatalogKey(path: string, fallback: string): string {
+  private getDisplayNamesForLocale(lang: string): Intl.DisplayNames | null {
+    const normalizedLang = this.resolveLanguage(lang);
+    const cached = this.displayNames.get(normalizedLang);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const instance = new Intl.DisplayNames([normalizedLang], {
+        type: 'language',
+      });
+      this.displayNames.set(normalizedLang, instance);
+      return instance;
+    } catch {
+      return null;
+    }
+  }
+
+  private localizeLanguageLabel(
+    languageCode: string,
+    lang: string,
+    fallback: string,
+  ): string {
+    const displayNames = this.getDisplayNamesForLocale(lang);
+    const localized = displayNames?.of(languageCode.toLowerCase());
+
+    if (typeof localized === 'string' && localized.trim().length > 0) {
+      return localized;
+    }
+
+    return fallback;
+  }
+
+  private localizeCountryLabel(
+    countryCode: string,
+    lang: string,
+    fallback: string,
+  ): string {
+    try {
+      const regionDisplayNames = new Intl.DisplayNames(
+        [this.resolveLanguage(lang)],
+        {
+          type: 'region',
+        },
+      );
+      const localized = regionDisplayNames.of(countryCode.toUpperCase());
+      if (typeof localized === 'string' && localized.trim().length > 0) {
+        return localized;
+      }
+    } catch {
+      // Fallback to canonical country name if locale lookup is unavailable.
+    }
+
+    return fallback;
+  }
+
+  private translateCatalogKey(
+    path: string,
+    fallback: string,
+    langOverride?: string,
+  ): string {
     const translated = this.i18n.translate(`catalog.${path}`, {
-      lang: this.getCurrentLanguage(),
+      lang: this.resolveLanguage(langOverride),
       defaultValue: fallback,
     });
 
@@ -253,21 +326,38 @@ export class CatalogService {
     page: number;
     limit: number;
     search?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const allCodes = ISO6391.getAllCodes();
-    const all: CatalogValueDto[] = allCodes
-      .map((code) => ({ code, label: ISO6391.getName(code) }))
+    const all = allCodes
+      .map((code) => {
+        const canonicalLabel = ISO6391.getName(code);
+        return {
+          code,
+          canonicalLabel,
+          label: this.localizeLanguageLabel(code, lang, canonicalLabel),
+        };
+      })
       .filter((x) => x.label);
 
     const filtered = q
       ? all.filter(
-          (x) => x.label.toLowerCase().includes(q) || x.code.includes(q),
+          (x) =>
+            x.label.toLowerCase().includes(q) ||
+            x.canonicalLabel.toLowerCase().includes(q) ||
+            x.code.includes(q),
         )
       : all;
 
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
+
     const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
+    const data = filtered.slice(skip, skip + take).map((x) => ({
+      code: x.code,
+      label: x.label,
+    }));
     const total = filtered.length;
     const totalPages = Math.ceil(total / input.limit);
     return { data, total, page: input.page, limit: input.limit, totalPages };
@@ -277,18 +367,34 @@ export class CatalogService {
     page: number;
     limit: number;
     search?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const all = this.getAllCountries();
+
+    const localized = all.map((x) => ({
+      code: x.code,
+      canonicalLabel: x.label,
+      label: this.localizeCountryLabel(x.code, lang, x.label),
+    }));
+
     const filtered = q
-      ? all.filter(
+      ? localized.filter(
           (x) =>
-            x.label.toLowerCase().includes(q) || x.code.toLowerCase() === q,
+            x.label.toLowerCase().includes(q) ||
+            x.canonicalLabel.toLowerCase().includes(q) ||
+            x.code.toLowerCase() === q,
         )
-      : all;
+      : localized;
+
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
 
     const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
+    const data = filtered.slice(skip, skip + take).map((x) => ({
+      code: x.code,
+      label: x.label,
+    }));
     const total = filtered.length;
     const totalPages = Math.ceil(total / input.limit);
     return { data, total, page: input.page, limit: input.limit, totalPages };
@@ -299,8 +405,10 @@ export class CatalogService {
     limit: number;
     search?: string;
     countryCode?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
 
     const allRegions = this.getAllRegions();
@@ -308,16 +416,29 @@ export class CatalogService {
       ? allRegions.filter((r) => r.meta?.countryCode === countryCode)
       : allRegions;
 
+    const localized = all.map((x) => ({
+      ...x,
+      canonicalLabel: x.label,
+      label: this.translateCatalogKey(`regions.${x.code}`, x.label, lang),
+    }));
+
     const filtered = q
-      ? all.filter(
+      ? localized.filter(
           (x) =>
             x.label.toLowerCase().includes(q) ||
+            x.canonicalLabel.toLowerCase().includes(q) ||
             x.code.toLowerCase().includes(q),
         )
-      : all;
+      : localized;
+
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
 
     const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
+    const data = filtered.slice(skip, skip + take).map((x) => ({
+      code: x.code,
+      label: x.label,
+      meta: x.meta,
+    }));
     const total = filtered.length;
     const totalPages = Math.ceil(total / input.limit);
     return { data, total, page: input.page, limit: input.limit, totalPages };
