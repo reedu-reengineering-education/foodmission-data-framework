@@ -208,4 +208,48 @@ describe('CatalogService', () => {
       expect.objectContaining({ lang: 'de' }),
     );
   });
+
+  it('returns localized region label when translation key resolves', () => {
+    i18n.translate.mockImplementation(
+      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
+        if (key === 'catalog.regions.US-CA' && opts?.lang === 'de') {
+          return 'Kalifornien';
+        }
+
+        return opts?.defaultValue ?? '';
+      },
+    );
+
+    const res = service.listRegions({
+      page: 1,
+      limit: 80,
+      countryCode: 'US',
+      search: 'california',
+      lang: 'de',
+    });
+
+    expect(res.data.some((r) => r.code === 'US-CA' && r.label === 'Kalifornien')).toBe(true);
+  });
+
+  it('supports canonical region search when labels are localized', () => {
+    i18n.translate.mockImplementation(
+      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
+        if (key === 'catalog.regions.US-CA' && opts?.lang === 'de') {
+          return 'Kalifornien';
+        }
+
+        return opts?.defaultValue ?? '';
+      },
+    );
+
+    const res = service.listRegions({
+      page: 1,
+      limit: 80,
+      countryCode: 'US',
+      search: 'california',
+      lang: 'de',
+    });
+
+    expect(res.data.some((r) => r.code === 'US-CA')).toBe(true);
+  });
 });
