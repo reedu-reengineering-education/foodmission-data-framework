@@ -1,0 +1,92 @@
+{
+  "_meta": {
+    "locale": "el",
+    "status": "done",
+    "todo": "Community translation completed"
+  },
+  "genders": {
+    "MALE": "Άνδρας",
+    "FEMALE": "Γυναίκα",
+    "OTHER": "Άλλο",
+    "UNSPECIFIED": "Μη καθορισμένο",
+    "PREFER_NOT_TO_SAY": "Προτιμώ να μην απαντήσω"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Καθιστική",
+    "LIGHT": "Ελαφριά",
+    "MODERATE": "Μέτρια",
+    "ACTIVE": "Έντονη",
+    "VERY_ACTIVE": "Πολύ έντονη"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Κάτω από 10.000",
+    "FROM_10000_TO_19999": "Από 10.000 έως 19.999",
+    "FROM_20000_TO_34999": "Από 20.000 έως 34.999",
+    "FROM_35000_TO_49999": "Από 35.000 έως 49.999",
+    "FROM_50000_TO_74999": "Από 50.000 έως 74.999",
+    "FROM_75000_TO_99999": "Από 75.000 έως 99.999",
+    "ABOVE_100000": "Πάνω από 100.000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Χωρίς επίσημη εκπαίδευση",
+    "PRIMARY": "Πρωτοβάθμια εκπαίδευση",
+    "SECONDARY": "Δευτεροβάθμια εκπαίδευση",
+    "VOCATIONAL": "Επαγγελματική κατάρτιση",
+    "BACHELORS": "Πτυχίο",
+    "MASTERS": "Μεταπτυχιακό",
+    "DOCTORATE": "Διδακτορικό"
+  },
+  "units": {
+    "PIECES": "Τεμάχια",
+    "G": "γρ.",
+    "KG": "κιλά",
+    "ML": "ml",
+    "L": "λ.",
+    "CUPS": "Φλιτζάνια"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Πρωινό",
+    "LUNCH": "Μεσημεριανό",
+    "DINNER": "Βραδινό",
+    "SNACK": "Σνακ",
+    "DRINKS": "Ποτά",
+    "OTHER": "Άλλο"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Ζωική πρωτεΐνη",
+    "SEAFOOD": "Θαλασσινά",
+    "PLANT_PROTEIN": "Φυτική πρωτεΐνη",
+    "STARCH_GRAIN": "Άμυλο και δημητριακά",
+    "VEGGIES_FRUIT": "Λαχανικά και φρούτα",
+    "DAIRY": "Γαλακτοκομικά",
+    "MIXED_OTHER": "Μικτό ή άλλο"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Κυρίως πιάτο",
+    "SIDE_SNACK": "Συνοδευτικό ή σνακ",
+    "DESSERT": "Επιδόρπιο",
+    "BEVERAGE": "Ρόφημα",
+    "SAUCE_OTHER": "Σάλτσα ή άλλο"
+  },
+  "groupRoles": {
+    "ADMIN": "Διαχειριστής",
+    "MEMBER": "Μέλος"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegan",
+    "VEGETARIAN": "Χορτοφάγος",
+    "PESCATARIAN": "Ψαροφαγία",
+    "GLUTEN_FREE": "Χωρίς γλουτένη",
+    "DAIRY_FREE": "Χωρίς γαλακτοκομικά",
+    "NUT_FREE": "Χωρίς ξηρούς καρπούς",
+    "HALAL": "Χαλάλ",
+    "KOSHER": "Κοσέρ"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Δεν υπάρχει συγκεκριμένη απάντηση",
+    "MOSTLY_ME": "Κυρίως εγώ",
+    "SHARED_EQUALLY": "Μοιρασμένη εξίσου",
+    "MOSTLY_SOMEONE_ELSE": "Κυρίως κάποιος άλλος",
+    "SOMEONE_ELSE": "Κάποιος άλλος"
+  }
+}

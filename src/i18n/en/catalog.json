@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "locale": "en",
+    "status": "base"
+  },
+  "genders": {
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "OTHER": "Other",
+    "UNSPECIFIED": "Unspecified",
+    "PREFER_NOT_TO_SAY": "Prefer not to say"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Sedentary",
+    "LIGHT": "Light",
+    "MODERATE": "Moderate",
+    "ACTIVE": "Active",
+    "VERY_ACTIVE": "Very active"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Below 10000",
+    "FROM_10000_TO_19999": "From 10000 to 19999",
+    "FROM_20000_TO_34999": "From 20000 to 34999",
+    "FROM_35000_TO_49999": "From 35000 to 49999",
+    "FROM_50000_TO_74999": "From 50000 to 74999",
+    "FROM_75000_TO_99999": "From 75000 to 99999",
+    "ABOVE_100000": "Above 100000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "No formal education",
+    "PRIMARY": "Primary",
+    "SECONDARY": "Secondary",
+    "VOCATIONAL": "Vocational",
+    "BACHELORS": "Bachelors",
+    "MASTERS": "Masters",
+    "DOCTORATE": "Doctorate"
+  },
+  "units": {
+    "PIECES": "Pieces",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Cups"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Breakfast",
+    "LUNCH": "Lunch",
+    "DINNER": "Dinner",
+    "SNACK": "Snack",
+    "DRINKS": "Drinks",
+    "OTHER": "Other"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Animal protein",
+    "SEAFOOD": "Seafood",
+    "PLANT_PROTEIN": "Plant protein",
+    "STARCH_GRAIN": "Starch and grain",
+    "VEGGIES_FRUIT": "Vegetables and fruit",
+    "DAIRY": "Dairy",
+    "MIXED_OTHER": "Mixed or other"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Main dish",
+    "SIDE_SNACK": "Side or snack",
+    "DESSERT": "Dessert",
+    "BEVERAGE": "Beverage",
+    "SAUCE_OTHER": "Sauce or other"
+  },
+  "groupRoles": {
+    "ADMIN": "Admin",
+    "MEMBER": "Member"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegan",
+    "VEGETARIAN": "Vegetarian",
+    "PESCATARIAN": "Pescatarian",
+    "GLUTEN_FREE": "Gluten free",
+    "DAIRY_FREE": "Dairy free",
+    "NUT_FREE": "Nut free",
+    "HALAL": "Halal",
+    "KOSHER": "Kosher"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "No specific answer",
+    "MOSTLY_ME": "Mostly me",
+    "SHARED_EQUALLY": "Shared equally",
+    "MOSTLY_SOMEONE_ELSE": "Mostly someone else",
+    "SOMEONE_ELSE": "Someone else"
+  }
+}

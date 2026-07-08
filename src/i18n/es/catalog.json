@@ -1,0 +1,92 @@
+{
+  "_meta": {
+    "locale": "es",
+    "status": "done",
+    "todo": "Community translation completed"
+  },
+  "genders": {
+    "MALE": "Masculino",
+    "FEMALE": "Femenino",
+    "OTHER": "Otro",
+    "UNSPECIFIED": "Sin especificar",
+    "PREFER_NOT_TO_SAY": "Prefiero no decirlo"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Sedentario",
+    "LIGHT": "Ligero",
+    "MODERATE": "Moderado",
+    "ACTIVE": "Activo",
+    "VERY_ACTIVE": "Muy activo"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Menos de 10 000",
+    "FROM_10000_TO_19999": "De 10 000 a 19 999",
+    "FROM_20000_TO_34999": "De 20 000 a 34 999",
+    "FROM_35000_TO_49999": "De 35 000 a 49 999",
+    "FROM_50000_TO_74999": "De 50 000 a 74 999",
+    "FROM_75000_TO_99999": "De 75 000 a 99 999",
+    "ABOVE_100000": "Más de 100 000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Sin educación formal",
+    "PRIMARY": "Primaria",
+    "SECONDARY": "Secundaria",
+    "VOCATIONAL": "Formación profesional",
+    "BACHELORS": "Licenciatura o grado",
+    "MASTERS": "Maestría o máster",
+    "DOCTORATE": "Doctorado"
+  },
+  "units": {
+    "PIECES": "Unidades",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Tazas"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Desayuno",
+    "LUNCH": "Almuerzo",
+    "DINNER": "Cena",
+    "SNACK": "Merienda o snack",
+    "DRINKS": "Bebidas",
+    "OTHER": "Otro"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Proteína animal",
+    "SEAFOOD": "Pescados y mariscos",
+    "PLANT_PROTEIN": "Proteína vegetal",
+    "STARCH_GRAIN": "Almidones y cereales",
+    "VEGGIES_FRUIT": "Verduras y frutas",
+    "DAIRY": "Lácteos",
+    "MIXED_OTHER": "Mixto u otro"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Plato principal",
+    "SIDE_SNACK": "Guarnición o snack",
+    "DESSERT": "Postre",
+    "BEVERAGE": "Bebida",
+    "SAUCE_OTHER": "Salsa u otro"
+  },
+  "groupRoles": {
+    "ADMIN": "Administrador",
+    "MEMBER": "Miembro"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegano",
+    "VEGETARIAN": "Vegetariano",
+    "PESCATARIAN": "Pescetariano",
+    "GLUTEN_FREE": "Sin gluten",
+    "DAIRY_FREE": "Sin lácteos",
+    "NUT_FREE": "Sin frutos secos",
+    "HALAL": "Halal",
+    "KOSHER": "Kosher"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Sin respuesta específica",
+    "MOSTLY_ME": "Principalmente yo",
+    "SHARED_EQUALLY": "Repartido a partes iguales",
+    "MOSTLY_SOMEONE_ELSE": "Principalmente otra persona",
+    "SOMEONE_ELSE": "Otra persona"
+  }
+}
