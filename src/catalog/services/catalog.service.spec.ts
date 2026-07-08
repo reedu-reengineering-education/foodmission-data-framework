@@ -228,7 +228,9 @@ describe('CatalogService', () => {
       lang: 'de',
     });
 
-    expect(res.data.some((r) => r.code === 'US-CA' && r.label === 'Kalifornien')).toBe(true);
+    expect(
+      res.data.some((r) => r.code === 'US-CA' && r.label === 'Kalifornien'),
+    ).toBe(true);
   });
 
   it('supports canonical region search when labels are localized', () => {
