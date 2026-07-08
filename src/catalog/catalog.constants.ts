@@ -1,3 +1,4 @@
+// Used in the app, then saved in preferences
 export const SHOPPING_RESPONSIBILITY_ENTRIES = [
   {
     code: 'NO_SPECIFIC',
