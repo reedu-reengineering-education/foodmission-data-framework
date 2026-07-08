@@ -44,7 +44,8 @@ export class CatalogService {
     regionsAll?: CatalogValueDto[];
   } = {};
 
-  private readonly displayNames = new Map<string, Intl.DisplayNames>();
+  private readonly languageDisplayNames = new Map<string, Intl.DisplayNames>();
+  private readonly regionDisplayNames = new Map<string, Intl.DisplayNames>();
 
   private resolveLanguage(langOverride?: string): string {
     const candidate = (
@@ -64,7 +65,7 @@ export class CatalogService {
 
   private getDisplayNamesForLocale(lang: string): Intl.DisplayNames | null {
     const normalizedLang = this.resolveLanguage(lang);
-    const cached = this.displayNames.get(normalizedLang);
+    const cached = this.languageDisplayNames.get(normalizedLang);
     if (cached) {
       return cached;
     }
@@ -73,7 +74,27 @@ export class CatalogService {
       const instance = new Intl.DisplayNames([normalizedLang], {
         type: 'language',
       });
-      this.displayNames.set(normalizedLang, instance);
+      this.languageDisplayNames.set(normalizedLang, instance);
+      return instance;
+    } catch {
+      return null;
+    }
+  }
+
+  private getRegionDisplayNamesForLocale(
+    lang: string,
+  ): Intl.DisplayNames | null {
+    const normalizedLang = this.resolveLanguage(lang);
+    const cached = this.regionDisplayNames.get(normalizedLang);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const instance = new Intl.DisplayNames([normalizedLang], {
+        type: 'region',
+      });
+      this.regionDisplayNames.set(normalizedLang, instance);
       return instance;
     } catch {
       return null;
@@ -100,19 +121,11 @@ export class CatalogService {
     lang: string,
     fallback: string,
   ): string {
-    try {
-      const regionDisplayNames = new Intl.DisplayNames(
-        [this.resolveLanguage(lang)],
-        {
-          type: 'region',
-        },
-      );
-      const localized = regionDisplayNames.of(countryCode.toUpperCase());
-      if (typeof localized === 'string' && localized.trim().length > 0) {
-        return localized;
-      }
-    } catch {
-      // Fallback to canonical country name if locale lookup is unavailable.
+    const regionDisplayNames = this.getRegionDisplayNamesForLocale(lang);
+    const localized = regionDisplayNames?.of(countryCode.toUpperCase());
+
+    if (typeof localized === 'string' && localized.trim().length > 0) {
+      return localized;
     }
 
     return fallback;
