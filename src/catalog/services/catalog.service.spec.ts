@@ -1,5 +1,5 @@
 import { CatalogService } from './catalog.service';
-import { I18nService } from 'nestjs-i18n';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 describe('CatalogService', () => {
@@ -13,6 +13,10 @@ describe('CatalogService', () => {
       }),
     };
     service = new CatalogService(i18n as unknown as I18nService);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('lists genders from Prisma enum', () => {
@@ -122,6 +126,49 @@ describe('CatalogService', () => {
       expect.objectContaining({
         lang: DEFAULT_LOCALE,
       }),
+    );
+  });
+
+  it('uses locale from i18n context when available', () => {
+    jest.spyOn(I18nContext, 'current').mockReturnValue({
+      lang: 'de',
+    } as unknown as I18nContext);
+
+    service.listGenders();
+
+    expect(i18n.translate).toHaveBeenCalledWith(
+      'catalog.genders.MALE',
+      expect.objectContaining({
+        lang: 'de',
+      }),
+    );
+  });
+
+  it('returns translated label when i18n resolves localized value', () => {
+    jest.spyOn(I18nContext, 'current').mockReturnValue({
+      lang: 'de',
+    } as unknown as I18nContext);
+
+    i18n.translate.mockImplementation(
+      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
+        if (key === 'catalog.genders.MALE' && opts?.lang === 'de') {
+          return 'Mann';
+        }
+
+        return opts?.defaultValue ?? '';
+      },
+    );
+
+    const res = service.listGenders();
+    expect(res.data.find((x) => x.code === 'MALE')?.label).toBe('Mann');
+  });
+
+  it('falls back to default label when i18n returns non-string value', () => {
+    i18n.translate.mockReturnValue({ unexpected: true });
+
+    const res = service.listShoppingResponsibilities();
+    expect(res.data.find((x) => x.code === 'MOSTLY_ME')?.label).toBe(
+      'Mostly me',
     );
   });
 });
