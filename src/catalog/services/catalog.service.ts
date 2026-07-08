@@ -13,7 +13,6 @@ import {
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { I18nContext, I18nService } from 'nestjs-i18n';
-import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
@@ -21,19 +20,12 @@ import {
   CatalogStartupResponseDto,
   PaginatedCatalogListResponseDto,
 } from '../dto/catalog-response.dto';
-
-function titleCaseFromEnum(value: string): string {
-  return value
-    .toLowerCase()
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
-
-function normalizeSearch(s?: string): string | undefined {
-  const v = (s ?? '').trim();
-  return v.length ? v.toLowerCase() : undefined;
-}
+import {
+  filterLocalizedItems,
+  normalizeSearch,
+  titleCaseFromEnum,
+  toPaginatedResponse,
+} from './catalog.service.helpers';
 
 @Injectable()
 export class CatalogService {
@@ -355,25 +347,16 @@ export class CatalogService {
       })
       .filter((x) => x.label);
 
-    const filtered = q
-      ? all.filter(
-          (x) =>
-            x.label.toLowerCase().includes(q) ||
-            x.canonicalLabel.toLowerCase().includes(q) ||
-            x.code.includes(q),
-        )
-      : all;
+    const filtered = filterLocalizedItems(all, q, (item, query) =>
+      item.code.includes(query),
+    );
 
     filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take).map((x) => ({
-      code: x.code,
-      label: x.label,
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
     }));
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
   }
 
   listCountries(input: {
@@ -392,25 +375,18 @@ export class CatalogService {
       label: this.localizeCountryLabel(x.code, lang, x.label),
     }));
 
-    const filtered = q
-      ? localized.filter(
-          (x) =>
-            x.label.toLowerCase().includes(q) ||
-            x.canonicalLabel.toLowerCase().includes(q) ||
-            x.code.toLowerCase() === q,
-        )
-      : localized;
+    const filtered = filterLocalizedItems(
+      localized,
+      q,
+      (item, query) => item.code.toLowerCase() === query,
+    );
 
     filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take).map((x) => ({
-      code: x.code,
-      label: x.label,
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
     }));
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
   }
 
   listRegions(input: {
@@ -435,26 +411,17 @@ export class CatalogService {
       label: this.translateCatalogKey(`regions.${x.code}`, x.label, lang),
     }));
 
-    const filtered = q
-      ? localized.filter(
-          (x) =>
-            x.label.toLowerCase().includes(q) ||
-            x.canonicalLabel.toLowerCase().includes(q) ||
-            x.code.toLowerCase().includes(q),
-        )
-      : localized;
+    const filtered = filterLocalizedItems(localized, q, (item, query) =>
+      item.code.toLowerCase().includes(query),
+    );
 
     filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take).map((x) => ({
-      code: x.code,
-      label: x.label,
-      meta: x.meta,
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
+      meta: item.meta,
     }));
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
   }
 
   startup(): CatalogStartupResponseDto {
