@@ -5,6 +5,7 @@ import { CatalogController } from '../../src/catalog/controllers/catalog.control
 import { CatalogService } from '../../src/catalog/services/catalog.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../src/common/guards/database-auth.guards';
+import { I18nService } from 'nestjs-i18n';
 import { createTestApp, closeTestApp } from './helpers/app-e2e-helpers';
 
 describe('Catalog (e2e)', () => {
@@ -13,7 +14,16 @@ describe('Catalog (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       controllers: [CatalogController],
-      providers: [CatalogService],
+      providers: [
+        CatalogService,
+        {
+          provide: I18nService,
+          useValue: {
+            translate: (_key: string, opts?: { defaultValue?: string }) =>
+              opts?.defaultValue ?? '',
+          },
+        },
+      ],
     })
       .overrideGuard(ThrottlerGuard)
       .useValue({ canActivate: () => true })
