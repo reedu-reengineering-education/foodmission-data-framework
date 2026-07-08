@@ -1,0 +1,92 @@
+{
+  "_meta": {
+    "locale": "no",
+    "status": "done",
+    "todo": "Community translation completed"
+  },
+  "genders": {
+    "MALE": "Mann",
+    "FEMALE": "Kvinne",
+    "OTHER": "Annet",
+    "UNSPECIFIED": "Uspesifisert",
+    "PREFER_NOT_TO_SAY": "Ønsker ikke å oppgi"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Stillesittende",
+    "LIGHT": "Litt aktiv",
+    "MODERATE": "Moderat aktiv",
+    "ACTIVE": "Aktiv",
+    "VERY_ACTIVE": "Svært aktiv"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Under 10 000",
+    "FROM_10000_TO_19999": "Fra 10 000 til 19 999",
+    "FROM_20000_TO_34999": "Fra 20 000 til 34 999",
+    "FROM_35000_TO_49999": "Fra 35 000 til 49 999",
+    "FROM_50000_TO_74999": "Fra 50 000 til 74 999",
+    "FROM_75000_TO_99999": "Fra 75 000 til 99 999",
+    "ABOVE_100000": "Over 100 000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Ingen formell utdanning",
+    "PRIMARY": "Grunnskole",
+    "SECONDARY": "Videregående skole",
+    "VOCATIONAL": "Yrkesfaglig utdanning",
+    "BACHELORS": "Bachelorgrad",
+    "MASTERS": "Mastergrad",
+    "DOCTORATE": "Doktorgrad"
+  },
+  "units": {
+    "PIECES": "Stykker",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Kopper"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Frokost",
+    "LUNCH": "Lunsj",
+    "DINNER": "Middag",
+    "SNACK": "Mellommåltid / Snack",
+    "DRINKS": "Drikke",
+    "OTHER": "Annet"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Animalsk protein",
+    "SEAFOOD": "Sjømat",
+    "PLANT_PROTEIN": "Plante-protein",
+    "STARCH_GRAIN": "Stivelse og korn",
+    "VEGGIES_FRUIT": "Grønnsaker og frukt",
+    "DAIRY": "Meieriprodukter",
+    "MIXED_OTHER": "Blandet eller annet"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Hovedrett",
+    "SIDE_SNACK": "Tilbehør eller snack",
+    "DESSERT": "Dessert",
+    "BEVERAGE": "Drikkevare",
+    "SAUCE_OTHER": "Saus eller annet"
+  },
+  "groupRoles": {
+    "ADMIN": "Administrator",
+    "MEMBER": "Medlem"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegansk",
+    "VEGETARIAN": "Vegetarisk",
+    "PESCATARIAN": "Pescetarisk",
+    "GLUTEN_FREE": "Glutenfri",
+    "DAIRY_FREE": "Laktosefri / Melkefri",
+    "NUT_FREE": "Nøttefri",
+    "HALAL": "Halal",
+    "KOSHER": "Kosher"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Ikke noe spesifikt svar",
+    "MOSTLY_ME": "Stort sett meg",
+    "SHARED_EQUALLY": "Delt likt",
+    "MOSTLY_SOMEONE_ELSE": "Stort sett noen andre",
+    "SOMEONE_ELSE": "Noen andre"
+  }
+}
