@@ -22,10 +22,18 @@ import {
   CatalogPaginatedQueryDto,
 } from '../dto/catalog-query.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('catalog')
 @Controller('catalog')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class CatalogController {
   constructor(private readonly catalogService: CatalogService) {}
 
