@@ -12,7 +12,9 @@ import {
 } from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
   CatalogListResponseDto,
@@ -35,10 +37,39 @@ function normalizeSearch(s?: string): string | undefined {
 
 @Injectable()
 export class CatalogService {
+  constructor(private readonly i18n: I18nService) {}
+
   private cached: {
     countries?: CatalogValueDto[];
     regionsAll?: CatalogValueDto[];
   } = {};
+
+  private getCurrentLanguage(): string {
+    const lang = I18nContext.current()?.lang?.trim();
+    return lang || DEFAULT_LOCALE;
+  }
+
+  private translateCatalogKey(path: string, fallback: string): string {
+    const translated = this.i18n.translate(`catalog.${path}`, {
+      lang: this.getCurrentLanguage(),
+      defaultValue: fallback,
+    });
+
+    return typeof translated === 'string' ? translated : fallback;
+  }
+
+  private mapEnumCatalogValues<T extends string>(
+    values: T[],
+    section: string,
+  ): CatalogValueDto[] {
+    return values.map((code) => ({
+      code,
+      label: this.translateCatalogKey(
+        `${section}.${code}`,
+        titleCaseFromEnum(code),
+      ),
+    }));
+  }
 
   private getAllCountries(): CatalogValueDto[] {
     if (this.cached.countries) return this.cached.countries;
@@ -91,82 +122,67 @@ export class CatalogService {
 
   listGenders(): CatalogListResponseDto {
     return {
-      data: Object.values(Gender).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(Object.values(Gender), 'genders'),
     };
   }
 
   listActivityLevels(): CatalogListResponseDto {
     return {
-      data: Object.values(ActivityLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(
+        Object.values(ActivityLevel),
+        'activityLevels',
+      ),
     };
   }
 
   listEducationLevels(): CatalogListResponseDto {
     return {
-      data: Object.values(EducationLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(
+        Object.values(EducationLevel),
+        'educationLevels',
+      ),
     };
   }
 
   listAnnualIncomeLevels(): CatalogListResponseDto {
     return {
-      data: Object.values(AnnualIncomeLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(
+        Object.values(AnnualIncomeLevel),
+        'annualIncomeLevels',
+      ),
     };
   }
 
   listUnits(): CatalogListResponseDto {
     return {
-      data: Object.values(Unit).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(Object.values(Unit), 'units'),
     };
   }
 
   listTypeOfMeals(): CatalogListResponseDto {
     return {
-      data: Object.values(TypeOfMeal).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(Object.values(TypeOfMeal), 'typeOfMeals'),
     };
   }
 
   listMealCategories(): CatalogListResponseDto {
     return {
-      data: Object.values(MealCategory).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(
+        Object.values(MealCategory),
+        'mealCategories',
+      ),
     };
   }
 
   listMealCourses(): CatalogListResponseDto {
     return {
-      data: Object.values(MealCourse).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(Object.values(MealCourse), 'mealCourses'),
     };
   }
 
   listGroupRoles(): CatalogListResponseDto {
     return {
-      data: Object.values(GroupRole).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
+      data: this.mapEnumCatalogValues(Object.values(GroupRole), 'groupRoles'),
     };
   }
 
@@ -184,18 +200,51 @@ export class CatalogService {
     return {
       data: values.map((code) => ({
         code,
-        label: titleCaseFromEnum(code),
+        label: this.translateCatalogKey(
+          `dietaryPreferences.${code}`,
+          titleCaseFromEnum(code),
+        ),
       })),
     };
   }
 
   listShoppingResponsibilities(): CatalogListResponseDto {
     const data: CatalogValueDto[] = [
-      { code: 'NO_SPECIFIC', label: 'No specific answer' },
-      { code: 'MOSTLY_ME', label: 'Mostly me' },
-      { code: 'SHARED_EQUALLY', label: 'Shared equally' },
-      { code: 'MOSTLY_SOMEONE_ELSE', label: 'Mostly someone else' },
-      { code: 'SOMEONE_ELSE', label: 'Someone else' },
+      {
+        code: 'NO_SPECIFIC',
+        label: this.translateCatalogKey(
+          'shoppingResponsibilities.NO_SPECIFIC',
+          'No specific answer',
+        ),
+      },
+      {
+        code: 'MOSTLY_ME',
+        label: this.translateCatalogKey(
+          'shoppingResponsibilities.MOSTLY_ME',
+          'Mostly me',
+        ),
+      },
+      {
+        code: 'SHARED_EQUALLY',
+        label: this.translateCatalogKey(
+          'shoppingResponsibilities.SHARED_EQUALLY',
+          'Shared equally',
+        ),
+      },
+      {
+        code: 'MOSTLY_SOMEONE_ELSE',
+        label: this.translateCatalogKey(
+          'shoppingResponsibilities.MOSTLY_SOMEONE_ELSE',
+          'Mostly someone else',
+        ),
+      },
+      {
+        code: 'SOMEONE_ELSE',
+        label: this.translateCatalogKey(
+          'shoppingResponsibilities.SOMEONE_ELSE',
+          'Someone else',
+        ),
+      },
     ];
     return { data };
   }

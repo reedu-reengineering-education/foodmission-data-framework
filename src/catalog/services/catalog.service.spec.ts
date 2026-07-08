@@ -1,10 +1,18 @@
 import { CatalogService } from './catalog.service';
+import { I18nService } from 'nestjs-i18n';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 describe('CatalogService', () => {
   let service: CatalogService;
+  let i18n: { translate: jest.Mock };
 
   beforeEach(() => {
-    service = new CatalogService();
+    i18n = {
+      translate: jest.fn((_: string, opts?: { defaultValue?: string }) => {
+        return opts?.defaultValue ?? '';
+      }),
+    };
+    service = new CatalogService(i18n as unknown as I18nService);
   });
 
   it('lists genders from Prisma enum', () => {
@@ -104,5 +112,16 @@ describe('CatalogService', () => {
     const codes = res.data.map((x) => x.code);
     expect(codes).toContain('MAIN_DISH');
     expect(codes).toContain('SIDE_SNACK');
+  });
+
+  it('uses default locale when current i18n context has no language', () => {
+    service.listGenders();
+
+    expect(i18n.translate).toHaveBeenCalledWith(
+      'catalog.genders.MALE',
+      expect.objectContaining({
+        lang: DEFAULT_LOCALE,
+      }),
+    );
   });
 });
