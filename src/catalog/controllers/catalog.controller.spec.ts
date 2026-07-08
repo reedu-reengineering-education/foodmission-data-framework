@@ -70,11 +70,55 @@ describe('CatalogController', () => {
       totalPages: 0,
     });
 
-    controller.countries({ page: 1, limit: 10, search: 'nl' });
+    controller.countries({ page: 1, limit: 10, search: 'nl', lang: 'de' });
     expect(service.listCountries).toHaveBeenCalledWith({
       page: 1,
       limit: 10,
       search: 'nl',
+      lang: 'de',
+    });
+  });
+
+  it('languages should delegate to service with query including lang', () => {
+    service.listLanguages.mockReturnValue({
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    });
+
+    controller.languages({ page: 1, limit: 10, search: 'ger', lang: 'de' });
+    expect(service.listLanguages).toHaveBeenCalledWith({
+      page: 1,
+      limit: 10,
+      search: 'ger',
+      lang: 'de',
+    });
+  });
+
+  it('regions should delegate to service with query including lang', () => {
+    service.listRegions.mockReturnValue({
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    });
+
+    controller.regions({
+      page: 1,
+      limit: 10,
+      countryCode: 'DE',
+      search: 'ber',
+      lang: 'de',
+    });
+    expect(service.listRegions).toHaveBeenCalledWith({
+      page: 1,
+      limit: 10,
+      countryCode: 'DE',
+      search: 'ber',
+      lang: 'de',
     });
   });
 });

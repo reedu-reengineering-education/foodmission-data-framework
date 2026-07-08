@@ -55,6 +55,17 @@ describe('CatalogService', () => {
     expect(nl.data.some((c) => c.code === 'NL')).toBe(true);
   });
 
+  it('supports canonical country search when labels are localized', () => {
+    const res = service.listCountries({
+      page: 1,
+      limit: 20,
+      search: 'germany',
+      lang: 'de',
+    });
+
+    expect(res.data.some((c) => c.code === 'DE')).toBe(true);
+  });
+
   it('filters regions by countryCode and paginates', () => {
     const nl = service.listRegions({ page: 1, limit: 10, countryCode: 'NL' });
     expect(nl.data.length).toBeGreaterThan(0);
@@ -95,6 +106,17 @@ describe('CatalogService', () => {
     expect(page1.data.map((l) => l.code)).not.toEqual(
       page2.data.map((l) => l.code),
     );
+  });
+
+  it('supports canonical language search when labels are localized', () => {
+    const res = service.listLanguages({
+      page: 1,
+      limit: 20,
+      search: 'german',
+      lang: 'de',
+    });
+
+    expect(res.data.some((l) => l.code === 'de')).toBe(true);
   });
 
   it('lists dietary preferences from Prisma enum', () => {
@@ -169,6 +191,21 @@ describe('CatalogService', () => {
     const res = service.listShoppingResponsibilities();
     expect(res.data.find((x) => x.code === 'MOSTLY_ME')?.label).toBe(
       'Mostly me',
+    );
+  });
+
+  it('uses explicit lang override for region translations', () => {
+    i18n.translate.mockImplementation(
+      (_key: string, opts?: { defaultValue?: string; lang?: string }) => {
+        return opts?.defaultValue ?? '';
+      },
+    );
+
+    service.listRegions({ page: 1, limit: 5, countryCode: 'DE', lang: 'de' });
+
+    expect(i18n.translate).toHaveBeenCalledWith(
+      expect.stringMatching(/^catalog\.regions\./),
+      expect.objectContaining({ lang: 'de' }),
     );
   });
 });
