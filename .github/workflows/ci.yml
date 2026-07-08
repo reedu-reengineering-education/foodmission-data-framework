@@ -39,6 +39,9 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Validate translation files
+        run: npm run i18n:validate
+
       - name: Get changed files (PR only)
         id: changed-files
         if: github.event_name == 'pull_request'
