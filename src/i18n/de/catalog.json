@@ -29,7 +29,6 @@
   },
   "educationLevels": {
     "NO_FORMAL_EDUCATION": "Keine formale Schulbildung",
-    "PRIMARY": "Grundschule",
     "SECONDARY": "Sekundarstufe",
     "VOCATIONAL": "Berufsausbildung",
     "BACHELORS": "Bachelor",
