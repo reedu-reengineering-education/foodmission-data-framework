@@ -45,7 +45,8 @@ export class SurveysController {
   @Public()
   @ApiOperation({
     summary: 'Get all surveys',
-    description: 'Retrieve all available surveys with their questions and answer options. No authentication required.',
+    description:
+      'Retrieve all available surveys with their questions and answer options. No authentication required.',
   })
   @ApiResponse({
     status: 200,
@@ -61,7 +62,8 @@ export class SurveysController {
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Get survey by ID',
-    description: 'Retrieve a specific survey by its ID, including all questions and answer options. No authentication required.',
+    description:
+      'Retrieve a specific survey by its ID, including all questions and answer options. No authentication required.',
   })
   @ApiResponse({
     status: 200,
@@ -80,7 +82,8 @@ export class SurveysController {
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Submit survey responses',
-    description: 'Submit user responses to a survey. Each response must contain a valid question ID and answer ID. A user can only submit one response per survey.',
+    description:
+      'Submit user responses to a survey. Each response must contain a valid question ID and answer ID. A user can only submit one response per survey.',
   })
   @ApiBody({ type: SubmitSurveyResponseDto })
   @ApiResponse({
@@ -89,7 +92,8 @@ export class SurveysController {
     type: SurveyResponseDto,
   })
   @ApiBadRequestResponse({
-    description: 'Invalid request - missing questions, invalid question/answer IDs, or validation errors',
+    description:
+      'Invalid request - missing questions, invalid question/answer IDs, or validation errors',
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
   @ApiConflictResponse({
@@ -111,14 +115,17 @@ export class SurveysController {
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: "Get user's survey response",
-    description: "Retrieve the current user's responses to a specific survey if they have responded.",
+    description:
+      "Retrieve the current user's responses to a specific survey if they have responded.",
   })
   @ApiResponse({
     status: 200,
     description: 'User survey response retrieved successfully',
     type: SurveyResponseDto,
   })
-  @ApiNotFoundResponse({ description: 'No response found for this user and survey' })
+  @ApiNotFoundResponse({
+    description: 'No response found for this user and survey',
+  })
   async getUserSurveyResponse(
     @Param('id') surveyId: string,
     @CurrentUser() user: any,
@@ -150,7 +157,8 @@ export class SurveysController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Create survey (admin only)',
-    description: 'Create a new survey with questions and answer options. Requires admin role.',
+    description:
+      'Create a new survey with questions and answer options. Requires admin role.',
   })
   @ApiBody({ type: CreateSurveyDto })
   @ApiResponse({
@@ -159,7 +167,8 @@ export class SurveysController {
     type: SurveyDto,
   })
   @ApiBadRequestResponse({
-    description: 'Invalid request - missing title, questions, or answer options',
+    description:
+      'Invalid request - missing title, questions, or answer options',
   })
   async createSurvey(@Body() dto: CreateSurveyDto): Promise<SurveyDto> {
     return this.surveysService.createSurvey(dto);
@@ -193,7 +202,8 @@ export class SurveysController {
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Delete survey (admin only)',
-    description: 'Delete a survey and all its associated data. Requires admin role.',
+    description:
+      'Delete a survey and all its associated data. Requires admin role.',
   })
   @ApiResponse({ status: 204, description: 'Survey deleted successfully' })
   @ApiNotFoundResponse({ description: 'Survey not found' })
@@ -209,7 +219,8 @@ export class SurveysController {
   @ApiParam({ name: 'surveyId', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Add question to survey (admin only)',
-    description: 'Add a new question with answer options to an existing survey. Requires admin role.',
+    description:
+      'Add a new question to an existing survey. Requires admin role.',
   })
   @ApiResponse({ status: 201, description: 'Question added successfully' })
   @ApiNotFoundResponse({ description: 'Survey not found' })
@@ -217,7 +228,7 @@ export class SurveysController {
   async addQuestion(
     @Param('surveyId') surveyId: string,
     @Body()
-    dto: { text: string; type: string; answerOptions: Array<{ text: string }> },
+    dto: { text: string; type: string },
   ) {
     return this.surveysService.addQuestion(surveyId, dto);
   }

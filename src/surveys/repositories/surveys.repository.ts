@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateSurveyDto, UpdateSurveyDto, SubmitSurveyResponseDto } from '../dto/survey.dto';
+import {
+  CreateSurveyDto,
+  UpdateSurveyDto,
+  SubmitSurveyResponseDto,
+} from '../dto/survey.dto';
 
 @Injectable()
 export class SurveysRepository {
@@ -11,11 +15,6 @@ export class SurveysRepository {
     return this.prisma.survey.findMany({
       include: {
         questions: {
-          include: {
-            answerOptions: {
-              orderBy: { order: 'asc' },
-            },
-          },
           orderBy: { order: 'asc' },
         },
       },
@@ -28,11 +27,6 @@ export class SurveysRepository {
       where: { id },
       include: {
         questions: {
-          include: {
-            answerOptions: {
-              orderBy: { order: 'asc' },
-            },
-          },
           orderBy: { order: 'asc' },
         },
       },
@@ -50,22 +44,11 @@ export class SurveysRepository {
             text: question.text,
             type: question.type,
             order: qIndex,
-            answerOptions: {
-              create: question.answerOptions.map((answer, aIndex) => ({
-                text: answer.text,
-                order: aIndex,
-              })),
-            },
           })),
         },
       },
       include: {
         questions: {
-          include: {
-            answerOptions: {
-              orderBy: { order: 'asc' },
-            },
-          },
           orderBy: { order: 'asc' },
         },
       },
@@ -78,11 +61,6 @@ export class SurveysRepository {
       data,
       include: {
         questions: {
-          include: {
-            answerOptions: {
-              orderBy: { order: 'asc' },
-            },
-          },
           orderBy: { order: 'asc' },
         },
       },
@@ -96,7 +74,7 @@ export class SurveysRepository {
   }
 
   // Question Operations
-  async createQuestion(surveyId: string, questionText: string, type: string, answerOptions: Array<{ text: string }>) {
+  async createQuestion(surveyId: string, questionText: string, type: string) {
     const questionCount = await this.prisma.question.count({
       where: { surveyId },
     });
@@ -107,17 +85,6 @@ export class SurveysRepository {
         type,
         order: questionCount,
         surveyId,
-        answerOptions: {
-          create: answerOptions.map((answer, index) => ({
-            text: answer.text,
-            order: index,
-          })),
-        },
-      },
-      include: {
-        answerOptions: {
-          orderBy: { order: 'asc' },
-        },
       },
     });
   }
@@ -126,11 +93,6 @@ export class SurveysRepository {
     return this.prisma.question.update({
       where: { id: questionId },
       data: { text, type },
-      include: {
-        answerOptions: {
-          orderBy: { order: 'asc' },
-        },
-      },
     });
   }
 
@@ -149,24 +111,12 @@ export class SurveysRepository {
       include: {
         questionResponses: {
           include: {
-            question: {
-              include: {
-                answerOptions: {
-                  orderBy: { order: 'asc' },
-                },
-              },
-            },
-            selectedAnswer: true,
+            question: true,
           },
         },
         survey: {
           include: {
             questions: {
-              include: {
-                answerOptions: {
-                  orderBy: { order: 'asc' },
-                },
-              },
               orderBy: { order: 'asc' },
             },
           },
@@ -175,7 +125,11 @@ export class SurveysRepository {
     });
   }
 
-  async submitSurveyResponse(userId: string, surveyId: string, data: SubmitSurveyResponseDto) {
+  async submitSurveyResponse(
+    userId: string,
+    surveyId: string,
+    data: SubmitSurveyResponseDto,
+  ) {
     // Create or update survey response
     const surveyResponse = await this.prisma.surveyResponse.upsert({
       where: {
@@ -198,7 +152,7 @@ export class SurveysRepository {
       data: data.responses.map((response) => ({
         surveyResponseId: surveyResponse.id,
         questionId: response.questionId,
-        selectedAnswerId: response.selectedAnswerId,
+        value: response.value,
       })),
     });
 
@@ -213,25 +167,13 @@ export class SurveysRepository {
         survey: {
           include: {
             questions: {
-              include: {
-                answerOptions: {
-                  orderBy: { order: 'asc' },
-                },
-              },
               orderBy: { order: 'asc' },
             },
           },
         },
         questionResponses: {
           include: {
-            question: {
-              include: {
-                answerOptions: {
-                  orderBy: { order: 'asc' },
-                },
-              },
-            },
-            selectedAnswer: true,
+            question: true,
           },
         },
       },

@@ -24,7 +24,6 @@ model Question {
   surveyId String
   survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
 
-  answerOptions     AnswerOption[]
   questionResponses QuestionResponse[]
 
   createdAt DateTime @default(now())
@@ -32,23 +31,6 @@ model Question {
 
   @@index([surveyId])
   @@map("questions")
-}
-
-model AnswerOption {
-  id    String @id @default(cuid())
-  text  String
-  order Int // Order of answer option for display
-
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  questionResponses QuestionResponse[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([questionId])
-  @@map("answer_options")
 }
 
 model SurveyResponse {
@@ -70,15 +52,13 @@ model SurveyResponse {
 }
 
 model QuestionResponse {
-  id        String @id @default(cuid())
-  questionId String
-  selectedAnswerId String
-  
-  surveyResponse   SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+  id               String @id @default(cuid())
+  questionId       String
+  value            Int    // Likert scale value 1–5
   surveyResponseId String
 
-  question    Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  selectedAnswer AnswerOption @relation(fields: [selectedAnswerId], references: [id], onDelete: Cascade)
+  surveyResponse SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+  question       Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,6 +66,5 @@ model QuestionResponse {
   @@unique([surveyResponseId, questionId])
   @@index([surveyResponseId])
   @@index([questionId])
-  @@index([selectedAnswerId])
   @@map("question_responses")
 }

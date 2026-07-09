@@ -18,7 +18,13 @@ export async function seedSurveys(prisma: PrismaClient) {
   try {
     console.log('🌱 Seeding surveys...');
 
-    const surveysPath = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'surveys');
+    const surveysPath = path.join(
+      process.cwd(),
+      'prisma',
+      'seeds',
+      'data',
+      'surveys',
+    );
     const surveyFiles = fs
       .readdirSync(surveysPath)
       .filter((file) => file.endsWith('.json') && file !== 'surveys.json')
@@ -27,7 +33,6 @@ export async function seedSurveys(prisma: PrismaClient) {
     const results = {
       surveysCreated: 0,
       questionsCreated: 0,
-      answerOptionsCreated: 0,
     };
 
     for (const file of surveyFiles) {
@@ -58,28 +63,18 @@ export async function seedSurveys(prisma: PrismaClient) {
       // Create questions for this survey
       for (let qIndex = 0; qIndex < surveyData.questions.length; qIndex++) {
         const questionData = surveyData.questions[qIndex];
-        const answers = Array.isArray(questionData.answers)
-          ? questionData.answers
-          : [];
 
         // Create question
-        const question = await prisma.question.create({
+        await prisma.question.create({
           data: {
             text: questionData.text,
             type: questionData.type,
             order: qIndex,
             surveyId: survey.id,
-            answerOptions: {
-              create: answers.map((answer, aIndex) => ({
-                text: answer,
-                order: aIndex,
-              })),
-            },
           },
         });
 
         results.questionsCreated++;
-        results.answerOptionsCreated += answers.length;
       }
     }
 
@@ -87,7 +82,6 @@ export async function seedSurveys(prisma: PrismaClient) {
     console.log('📊 Summary:');
     console.log(`  - Surveys: ${results.surveysCreated}`);
     console.log(`  - Questions: ${results.questionsCreated}`);
-    console.log(`  - Answer Options: ${results.answerOptionsCreated}`);
 
     return results;
   } catch (error) {

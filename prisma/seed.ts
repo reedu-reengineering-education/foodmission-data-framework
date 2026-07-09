@@ -47,7 +47,7 @@ async function seedProduction() {
     { label: 'genericFoods', value: genericFoods.length },
     {
       label: 'surveys',
-      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions, ${surveys.answerOptionsCreated} answers`,
+      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
     },
     {
       label: 'recipes',
@@ -129,7 +129,7 @@ async function seedDevelopment() {
     { label: 'missions', value: missions.length },
     {
       label: 'surveys',
-      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions, ${surveys.answerOptionsCreated} answers`,
+      value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
     },
     {
       label: 'recipes',

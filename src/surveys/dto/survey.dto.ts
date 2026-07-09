@@ -1,18 +1,21 @@
-import { IsString, IsOptional, IsArray, ValidateNested, MinLength, Min, ArrayMinSize } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsArray,
+  IsInt,
+  ValidateNested,
+  MinLength,
+  Min,
+  Max,
+  ArrayMinSize,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-
-export class AnswerOptionDto {
-  id: string;
-  text: string;
-  order: number;
-}
 
 export class QuestionDto {
   id: string;
   text: string;
   type: string;
   order: number;
-  answerOptions: AnswerOptionDto[];
 }
 
 export class SurveyDto {
@@ -49,18 +52,6 @@ export class CreateQuestionDto {
   @IsString()
   @MinLength(1, { message: 'Question type cannot be empty' })
   type: string; // e.g., "likert"
-
-  @IsArray()
-  @ArrayMinSize(1, { message: 'Question must have at least one answer option' })
-  @ValidateNested({ each: true })
-  @Type(() => CreateAnswerOptionDto)
-  answerOptions: CreateAnswerOptionDto[];
-}
-
-export class CreateAnswerOptionDto {
-  @IsString()
-  @MinLength(1, { message: 'Answer option text cannot be empty' })
-  text: string;
 }
 
 export class UpdateSurveyDto {
@@ -86,9 +77,10 @@ export class SubmitQuestionResponseDto {
   @MinLength(1, { message: 'Question ID cannot be empty' })
   questionId: string;
 
-  @IsString()
-  @MinLength(1, { message: 'Answer ID cannot be empty' })
-  selectedAnswerId: string;
+  @IsInt()
+  @Min(1, { message: 'Value must be at least 1' })
+  @Max(5, { message: 'Value must be at most 5' })
+  value: number;
 }
 
 export class SurveyResponseDto {
@@ -103,7 +95,6 @@ export class SurveyResponseDto {
 export class QuestionResponseDto {
   id: string;
   questionId: string;
-  selectedAnswerId: string;
+  value: number;
   question?: QuestionDto;
-  selectedAnswer?: AnswerOptionDto;
 }

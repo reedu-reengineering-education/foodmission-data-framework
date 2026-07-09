@@ -18,10 +18,6 @@ describe('SurveysController', () => {
         type: 'likert',
         order: 0,
         surveyId: 'survey-1',
-        answerOptions: [
-          { id: 'a-1', text: 'Strongly disagree', order: 0, questionId: 'q-1', createdAt: new Date(), updatedAt: new Date() },
-          { id: 'a-2', text: 'Agree', order: 1, questionId: 'q-1', createdAt: new Date(), updatedAt: new Date() },
-        ],
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -90,10 +86,6 @@ describe('SurveysController', () => {
           {
             text: 'Q1?',
             type: 'likert',
-            answerOptions: [
-              { text: 'Yes' },
-              { text: 'No' },
-            ],
           },
         ],
       };
@@ -136,7 +128,6 @@ describe('SurveysController', () => {
       const questionDto = {
         text: 'New question?',
         type: 'likert',
-        answerOptions: [{ text: 'Yes' }, { text: 'No' }],
       };
 
       const newQuestion = {
@@ -145,10 +136,6 @@ describe('SurveysController', () => {
         type: 'likert',
         order: 1,
         surveyId: 'survey-1',
-        answerOptions: [
-          { id: 'a-3', text: 'Yes', order: 0, questionId: 'q-2', createdAt: new Date(), updatedAt: new Date() },
-          { id: 'a-4', text: 'No', order: 1, questionId: 'q-2', createdAt: new Date(), updatedAt: new Date() },
-        ],
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -168,7 +155,7 @@ describe('SurveysController', () => {
         responses: [
           {
             questionId: 'q-1',
-            selectedAnswerId: 'a-1',
+            value: 4,
           },
         ],
       };
@@ -181,7 +168,7 @@ describe('SurveysController', () => {
           {
             id: 'qr-1',
             questionId: 'q-1',
-            selectedAnswerId: 'a-1',
+            value: 4,
           },
         ],
         createdAt: new Date(),
@@ -190,12 +177,20 @@ describe('SurveysController', () => {
 
       service.submitSurveyResponse.mockResolvedValue(mockResponse);
 
-      const result = await controller.submitSurveyResponse('survey-1', submitDto, mockUser);
+      const result = await controller.submitSurveyResponse(
+        'survey-1',
+        submitDto,
+        mockUser,
+      );
 
       expect(result).toEqual(mockResponse);
-      expect(service.submitSurveyResponse).toHaveBeenCalledWith('user-1', 'survey-1', {
-        responses: submitDto.responses,
-      });
+      expect(service.submitSurveyResponse).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+        {
+          responses: submitDto.responses,
+        },
+      );
     });
   });
 
@@ -212,10 +207,16 @@ describe('SurveysController', () => {
 
       service.getUserSurveyResponse.mockResolvedValue(mockResponse);
 
-      const result = await controller.getUserSurveyResponse('survey-1', mockUser);
+      const result = await controller.getUserSurveyResponse(
+        'survey-1',
+        mockUser,
+      );
 
       expect(result).toEqual(mockResponse);
-      expect(service.getUserSurveyResponse).toHaveBeenCalledWith('user-1', 'survey-1');
+      expect(service.getUserSurveyResponse).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+      );
     });
   });
 

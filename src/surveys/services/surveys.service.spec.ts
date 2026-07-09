@@ -1,21 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { SurveysService } from './surveys.service';
 import { SurveysRepository } from '../repositories/surveys.repository';
-import { CreateSurveyDto, UpdateSurveyDto, SubmitSurveyResponseDto } from '../dto/survey.dto';
+import {
+  CreateSurveyDto,
+  UpdateSurveyDto,
+  SubmitSurveyResponseDto,
+} from '../dto/survey.dto';
 
 describe('SurveysService', () => {
   let service: SurveysService;
   let repository: jest.Mocked<SurveysRepository>;
-
-  const mockAnswerOption = {
-    id: 'a-1',
-    text: 'Strongly disagree',
-    order: 0,
-    questionId: 'q-1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
 
   const mockQuestion = {
     id: 'q-1',
@@ -23,7 +22,6 @@ describe('SurveysService', () => {
     type: 'likert',
     order: 0,
     surveyId: 'survey-1',
-    answerOptions: [mockAnswerOption],
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -61,7 +59,7 @@ describe('SurveysService', () => {
     }).compile();
 
     service = module.get<SurveysService>(SurveysService);
-    repository = module.get(SurveysRepository) as jest.Mocked<SurveysRepository>;
+    repository = module.get(SurveysRepository);
   });
 
   it('should be defined', () => {
@@ -115,7 +113,6 @@ describe('SurveysService', () => {
           {
             text: 'Q1?',
             type: 'likert',
-            answerOptions: [{ text: 'Yes' }, { text: 'No' }],
           },
         ],
       };
@@ -158,11 +155,17 @@ describe('SurveysService', () => {
       };
 
       repository.getSurveyById.mockResolvedValue(mockSurvey);
-      repository.updateSurvey.mockResolvedValue({ ...mockSurvey, ...updateDto });
+      repository.updateSurvey.mockResolvedValue({
+        ...mockSurvey,
+        ...updateDto,
+      });
 
       const result = await service.updateSurvey('survey-1', updateDto);
 
-      expect(repository.updateSurvey).toHaveBeenCalledWith('survey-1', updateDto);
+      expect(repository.updateSurvey).toHaveBeenCalledWith(
+        'survey-1',
+        updateDto,
+      );
     });
 
     it('should throw NotFoundException when survey does not exist', async () => {
@@ -201,7 +204,6 @@ describe('SurveysService', () => {
         type: 'likert',
         order: 1,
         surveyId: 'survey-1',
-        answerOptions: [mockAnswerOption],
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -212,7 +214,6 @@ describe('SurveysService', () => {
       const result = await service.addQuestion('survey-1', {
         text: 'New question?',
         type: 'likert',
-        answerOptions: [{ text: 'Strongly disagree' }],
       });
 
       expect(result).toEqual(newQuestion);
@@ -226,7 +227,6 @@ describe('SurveysService', () => {
         service.addQuestion('nonexistent', {
           text: 'Q?',
           type: 'likert',
-          answerOptions: [{ text: 'Yes' }],
         }),
       ).rejects.toThrow(NotFoundException);
     });
@@ -238,7 +238,7 @@ describe('SurveysService', () => {
         responses: [
           {
             questionId: 'q-1',
-            selectedAnswerId: 'a-1',
+            value: 4,
           },
         ],
       };
@@ -251,10 +251,9 @@ describe('SurveysService', () => {
           {
             id: 'qr-1',
             questionId: 'q-1',
-            selectedAnswerId: 'a-1',
+            value: 4,
             surveyResponseId: 'response-1',
             question: mockQuestion,
-            selectedAnswer: mockAnswerOption,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -268,10 +267,18 @@ describe('SurveysService', () => {
       repository.getSurveyResponse.mockResolvedValueOnce(null); // No existing response
       repository.submitSurveyResponse.mockResolvedValue(mockResponseData);
 
-      const result = await service.submitSurveyResponse('user-1', 'survey-1', submitDto);
+      const result = await service.submitSurveyResponse(
+        'user-1',
+        'survey-1',
+        submitDto,
+      );
 
       expect(result).toBeDefined();
-      expect(repository.submitSurveyResponse).toHaveBeenCalledWith('user-1', 'survey-1', submitDto);
+      expect(repository.submitSurveyResponse).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+        submitDto,
+      );
     });
 
     it('should throw ConflictException when user already responded to survey', async () => {
@@ -279,7 +286,7 @@ describe('SurveysService', () => {
         responses: [
           {
             questionId: 'q-1',
-            selectedAnswerId: 'a-1',
+            value: 3,
           },
         ],
       };
@@ -307,25 +314,7 @@ describe('SurveysService', () => {
         responses: [
           {
             questionId: 'invalid-q',
-            selectedAnswerId: 'a-1',
-          },
-        ],
-      };
-
-      repository.getSurveyById.mockResolvedValue(mockSurvey);
-      repository.getSurveyResponse.mockResolvedValue(null);
-
-      await expect(
-        service.submitSurveyResponse('user-1', 'survey-1', submitDto),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw BadRequestException when response contains invalid answer', async () => {
-      const submitDto: SubmitSurveyResponseDto = {
-        responses: [
-          {
-            questionId: 'q-1',
-            selectedAnswerId: 'invalid-a',
+            value: 3,
           },
         ],
       };
