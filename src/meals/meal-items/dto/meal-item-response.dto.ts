@@ -39,11 +39,12 @@ export class MealItemResponseDto {
   })
   genericFoodId: string | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Quantity of the item',
     example: 2,
+    nullable: true,
   })
-  quantity: number;
+  quantity: number | null;
 
   @ApiProperty({
     description: 'Unit of measurement',

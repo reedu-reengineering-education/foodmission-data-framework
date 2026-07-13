@@ -7,9 +7,9 @@ export class MealResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ description: 'Meal name' })
+  @ApiPropertyOptional({ description: 'Meal name', nullable: true })
   @Expose()
-  name: string;
+  name?: string | null;
 
   @ApiPropertyOptional({
     description: 'Optional recipe this meal is based on',

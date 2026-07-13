@@ -82,7 +82,7 @@ export class MealItemService {
         foodProductId: foodProductId || null,
         genericFoodId: genericFoodId || null,
         itemType,
-        quantity,
+        quantity: quantity ?? null,
         unit,
         notes: notes || null,
       });

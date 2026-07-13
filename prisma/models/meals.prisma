@@ -58,7 +58,7 @@ enum DietaryLabel {
 
 model Meal {
   id                  String         @id @default(uuid())
-  name                String
+  name                String?
   calories            Int?
   proteins            Int?
   nutritionalInfo     Json?
@@ -86,7 +86,7 @@ model Meal {
 
 model MealItem {
   id        String   @id @default(uuid())
-  quantity  Int      @default(1)
+  quantity  Int?
   unit      Unit     @default(PIECES)
   notes     String?
   mealId    String

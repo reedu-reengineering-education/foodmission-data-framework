@@ -326,4 +326,30 @@ describe('MealLogAnalyticsAggregator', () => {
 
     expect(result.sustainability).toHaveLength(0);
   });
+
+  it('skips items with unknown quantity from analytics computations', async () => {
+    const rows = Array.from({ length: 5 }, (_, i) =>
+      makeRawRow({
+        mealLogId: `null-qty-log-${i}`,
+        mealId: `null-qty-meal-${i}`,
+        userId: `null-qty-user-${i}`,
+        itemId: `null-qty-item-${i}`,
+        itemQuantity: null,
+        itemType: 'food_product',
+        foodName: 'Apple',
+        foodEnergyKcal: 100,
+      }),
+    );
+
+    prisma.$queryRaw.mockResolvedValue(rows);
+
+    const result = await aggregator.aggregate(periodStart, periodEnd);
+
+    expect(result.foodPopularity).toHaveLength(0);
+    expect(result.mealRecords).toHaveLength(5);
+    expect(result.mealRecords.every((r) => r.itemCount === 0)).toBe(true);
+    expect(result.mealRecords.every((r) => r.totalCalories === null)).toBe(
+      true,
+    );
+  });
 });

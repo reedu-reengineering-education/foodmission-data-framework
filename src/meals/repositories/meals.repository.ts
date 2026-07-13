@@ -25,7 +25,7 @@ type MealOrderByWithRelationInput = Prisma.MealOrderByWithRelationInput;
 type MealInclude = Prisma.MealInclude;
 
 export interface CreateMealData {
-  name: string;
+  name?: string | null;
   recipeId?: string;
   calories?: number;
   proteins?: number;

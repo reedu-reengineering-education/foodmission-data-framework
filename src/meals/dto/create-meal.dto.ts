@@ -14,9 +14,13 @@ import {
 import { DietaryLabel, MealCategory, MealCourse } from '@prisma/client';
 
 export class CreateMealDto {
-  @ApiProperty({ description: 'Meal name', example: 'Grilled chicken salad' })
+  @ApiPropertyOptional({
+    description: 'Meal name',
+    example: 'Grilled chicken salad',
+  })
+  @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiPropertyOptional({
     description: 'Optional recipe this meal is based on',

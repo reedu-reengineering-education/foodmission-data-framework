@@ -1,9 +1,10 @@
 # Meal-Log anonymization & aggregation for testing
 
 1. run all the seeds normally (you shoudl have ~400 users, ~20 foods and 2000 nevo categories)
-2. after that run the "seed-meal-log.ts" 
+2. after that run the "seed-meal-log.ts"
+
 ```
-npx tsx scripts/seed-meal-logs.ts
+npx tsx scripts/seeds/dev/seed-meal-logs.ts
 ```
 
 It should create 3 meals a day for 7 days for all 400 users.
