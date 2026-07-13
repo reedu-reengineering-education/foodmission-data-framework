@@ -124,8 +124,10 @@ jobs:
             p/security-audit
             p/secrets
             p/owasp-top-ten
-            p/nodejs
-          generateSarif: '1'
+          args: >-
+            --sarif
+            --output semgrep.sarif
+            .
 
       - name: Upload Semgrep results
         uses: github/codeql-action/upload-sarif@v4
