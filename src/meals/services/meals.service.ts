@@ -20,7 +20,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 type MealDtoSource = {
   id: string;
-  name: string;
+  name: string | null;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -56,7 +56,9 @@ export class MealsService {
     createMealDto: CreateMealDto,
     userId: string,
   ): Promise<MealResponseDto> {
-    this.logger.log(`Creating meal ${createMealDto.name} for user ${userId}`);
+    this.logger.log(
+      `Creating meal ${createMealDto.name ?? '[unnamed]'} for user ${userId}`,
+    );
 
     if (createMealDto.barcode) {
       const existing = await this.mealRepository.findByBarcode(
@@ -69,7 +71,7 @@ export class MealsService {
 
     try {
       const meal = await this.mealRepository.create({
-        name: createMealDto.name,
+        ...(createMealDto.name !== undefined ? { name: createMealDto.name } : {}),
         ...this.mapMealWriteInput(createMealDto),
         userId,
       });

@@ -57,14 +57,14 @@ export class CreateMealItemDto {
   @IsNotEmpty()
   genericFoodId?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Quantity of the item',
     example: 2,
-    default: 1,
   })
+  @IsOptional()
   @IsInt()
   @Min(1)
-  quantity: number = 1;
+  quantity?: number;
 
   @ApiProperty({
     description: 'Unit of measurement',

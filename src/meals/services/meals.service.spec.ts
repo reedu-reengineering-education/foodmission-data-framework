@@ -50,10 +50,10 @@ describe('MealsService', () => {
     ).rejects.toThrow(ConflictException);
   });
 
-  it('should create meal when data valid', async () => {
+  it('should create meal when data valid without name', async () => {
     const meal = {
       id: 'm1',
-      name: 'Meal',
+      name: null,
       userId,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -61,11 +61,10 @@ describe('MealsService', () => {
     mockMealRepository.findByBarcode.mockResolvedValue(null);
     mockMealRepository.create.mockResolvedValue(meal);
 
-    const result = await service.create({ name: 'Meal' }, userId);
+    const result = await service.create({}, userId);
 
     expect(result.id).toBe('m1');
     expect(mockMealRepository.create).toHaveBeenCalledWith({
-      name: 'Meal',
       userId,
     });
   });

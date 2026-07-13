@@ -73,6 +73,30 @@ describe('MealItemService', () => {
     );
   });
 
+  it('creates meal item with null quantity when omitted', async () => {
+    mealRepository.findById.mockResolvedValue(meal);
+    foodProductRepository.findById.mockResolvedValue({
+      id: TEST_IDS.FOOD_PRODUCT,
+    });
+    mealItemRepository.findByMealAndFoodProduct.mockResolvedValue(null);
+    mealItemRepository.create.mockResolvedValue(existingItem);
+
+    await service.create(
+      {
+        mealId: TEST_IDS.MEAL,
+        foodProductId: TEST_IDS.FOOD_PRODUCT,
+        unit: Unit.G,
+      },
+      TEST_IDS.USER,
+    );
+
+    expect(mealItemRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        quantity: null,
+      }),
+    );
+  });
+
   it('wraps duplicate genericFood conflict as database operation error', async () => {
     mealRepository.findById.mockResolvedValue(meal);
     genericFoodRepository.findById.mockResolvedValue({

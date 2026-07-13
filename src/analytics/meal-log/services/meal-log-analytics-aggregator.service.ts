@@ -36,7 +36,7 @@ interface RawMealRow {
   userCountry: string | null;
   mealFromPantry: boolean;
   eatenOut: boolean;
-  mealName: string;
+  mealName: string | null;
   sustainabilityScore: number | null;
   // Item
   itemId: string | null;
@@ -386,9 +386,21 @@ export class MealLogAnalyticsAggregator {
     const filteredDemographicNutrition = applyK(demographicNutrition);
     const filteredDemographicClassification = applyK(demographicClassification);
     const filteredDemographicPatterns = applyK(demographicPatterns);
-    const filteredCrossDimNutrition = applyK(crossDimNutrition, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
-    const filteredCrossDimClassification = applyK(crossDimClassification, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
-    const filteredCrossDimPatterns = applyK(crossDimPatterns, 'userCount', K_ANONYMITY_CROSS_DIM_THRESHOLD);
+    const filteredCrossDimNutrition = applyK(
+      crossDimNutrition,
+      'userCount',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
+    const filteredCrossDimClassification = applyK(
+      crossDimClassification,
+      'userCount',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
+    const filteredCrossDimPatterns = applyK(
+      crossDimPatterns,
+      'userCount',
+      K_ANONYMITY_CROSS_DIM_THRESHOLD,
+    );
 
     const totalRecords =
       filteredNutrition.length +
@@ -547,8 +559,11 @@ export class MealLogAnalyticsAggregator {
 
       if (!row.itemId) continue;
 
+      // Quantity is optional for meal items; skip unknown quantities from analytics.
+      if (row.itemQuantity === null) continue;
+
       meal.itemCount++;
-      const quantity = row.itemQuantity ?? 1;
+      const quantity = row.itemQuantity;
       // For gram-based items, scale per-100g values
       const scale = row.itemUnit === 'G' ? quantity / 100 : 1;
 
@@ -1109,5 +1124,4 @@ export class MealLogAnalyticsAggregator {
 
     return rows;
   }
-
 }
