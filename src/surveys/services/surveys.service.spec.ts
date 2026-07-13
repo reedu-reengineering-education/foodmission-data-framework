@@ -166,6 +166,8 @@ describe('SurveysService', () => {
         'survey-1',
         updateDto,
       );
+
+      expect(result.title).toBe('Updated Survey');
     });
 
     it('should throw NotFoundException when survey does not exist', async () => {

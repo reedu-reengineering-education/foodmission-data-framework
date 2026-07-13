@@ -1,4 +1,3 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { SurveysController } from './surveys.controller';
 import { SurveysService } from '../services/surveys.service';
 import { CreateSurveyDto, SubmitSurveyResponseDto } from '../dto/survey.dto';
@@ -31,7 +30,7 @@ describe('SurveysController', () => {
     email: 'test@example.com',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const mockSurveysService = {
       getAllSurveys: jest.fn(),
       getSurveyById: jest.fn(),
