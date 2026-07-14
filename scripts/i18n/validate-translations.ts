@@ -8,6 +8,7 @@ import {
   isErrnoWithCode,
   localeNamespaceFilePath,
   readJsonFile,
+  resolveLocaleLayout,
   resolveLocaleWorkItems,
   sameStringArray,
   toError,
@@ -18,19 +19,46 @@ function formatPreview(keys: string[]): string {
   return keys.length > 10 ? `${preview} ...` : preview;
 }
 
-function main(): void {
-  const errors: string[] = [];
-  let locales: string[] = [];
-  let namespaceFiles: string[] = [];
+function validateBaseLocale(errors: string[]): string[] {
+  const { namespaceFiles } = resolveLocaleLayout();
 
-  try {
-    const workItems = resolveLocaleWorkItems(DEFAULT_LOCALE);
-    locales = workItems.locales;
-    namespaceFiles = workItems.namespaceFiles;
-  } catch (error) {
-    console.error(`❌ ${toError(error).message}`);
-    process.exit(1);
+  for (const namespaceFile of namespaceFiles) {
+    const baseFilePath = localeNamespaceFilePath(DEFAULT_LOCALE, namespaceFile);
+
+    let baseJson;
+    try {
+      baseJson = readJsonFile(baseFilePath);
+    } catch (error) {
+      errors.push(
+        `${DEFAULT_LOCALE}/${namespaceFile}: Invalid JSON (${toError(error).message})`,
+      );
+      continue;
+    }
+
+    for (const key of collectLeafKeys(baseJson)) {
+      const value = getValueByPath(baseJson, key);
+
+      if (typeof value !== 'string') {
+        errors.push(
+          `${DEFAULT_LOCALE}/${namespaceFile}: Non-string value at "${key}"`,
+        );
+        continue;
+      }
+
+      if (value.trim().length === 0) {
+        errors.push(
+          `${DEFAULT_LOCALE}/${namespaceFile}: Empty value at "${key}"`,
+        );
+      }
+    }
   }
+
+  return namespaceFiles;
+}
+
+function validateLocaleParity(errors: string[]): void {
+  const workItems = resolveLocaleWorkItems(DEFAULT_LOCALE);
+  const { locales, namespaceFiles } = workItems;
 
   for (const locale of locales) {
     for (const namespaceFile of namespaceFiles) {
@@ -110,16 +138,44 @@ function main(): void {
       }
     }
   }
+}
 
-  if (errors.length > 0) {
-    console.error('❌ Translation validation failed:\n');
-    errors.forEach((error) => console.error(`- ${error}`));
+function main(): void {
+  const validateAllLocales = process.argv.includes('--all-locales');
+  const errors: string[] = [];
+
+  try {
+    const namespaceFiles = validateBaseLocale(errors);
+
+    if (validateAllLocales) {
+      validateLocaleParity(errors);
+    }
+
+    if (errors.length > 0) {
+      console.error('❌ Translation validation failed:\n');
+      errors.forEach((error) => console.error(`- ${error}`));
+      process.exit(1);
+    }
+
+    if (validateAllLocales) {
+      const { locales } = resolveLocaleWorkItems(DEFAULT_LOCALE);
+      console.log(
+        `✅ Translation validation passed for ${locales.length + 1} locales and ${namespaceFiles.length} namespace files.`,
+      );
+      return;
+    }
+
+    console.log(
+      `✅ Base locale (${DEFAULT_LOCALE}) validation passed for ${namespaceFiles.length} namespace files.`,
+    );
+    console.log(
+      'ℹ️  Other locales are not checked in CI; missing keys fall back to English at runtime.',
+    );
+    console.log('ℹ️  Run `npm run i18n:validate:locales` to check full locale parity.');
+  } catch (error) {
+    console.error(`❌ ${toError(error).message}`);
     process.exit(1);
   }
-
-  console.log(
-    `✅ Translation validation passed for ${locales.length} locales and ${namespaceFiles.length} namespace files.`,
-  );
 }
 
 main();
