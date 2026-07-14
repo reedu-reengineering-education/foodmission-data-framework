@@ -336,13 +336,12 @@ export class CatalogService {
       ? allRegions.filter((r) => r.meta?.countryCode === countryCode)
       : allRegions;
 
-    const localized = all.map((x) => ({
+    const searchable = all.map((x) => ({
       ...x,
       canonicalLabel: x.label,
-      label: this.translateCatalogKey(`regions.${x.code}`, x.label, lang),
     }));
 
-    const filtered = filterLocalizedItems(localized, q, (item, query) =>
+    const filtered = filterLocalizedItems(searchable, q, (item, query) =>
       item.code.toLowerCase().includes(query),
     );
 

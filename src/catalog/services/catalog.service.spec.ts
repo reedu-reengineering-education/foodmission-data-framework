@@ -194,32 +194,7 @@ describe('CatalogService', () => {
     );
   });
 
-  it('uses explicit lang override for region translations', () => {
-    i18n.translate.mockImplementation(
-      (_key: string, opts?: { defaultValue?: string; lang?: string }) => {
-        return opts?.defaultValue ?? '';
-      },
-    );
-
-    service.listRegions({ page: 1, limit: 5, countryCode: 'DE', lang: 'de' });
-
-    expect(i18n.translate).toHaveBeenCalledWith(
-      expect.stringMatching(/^catalog\.regions\./),
-      expect.objectContaining({ lang: 'de' }),
-    );
-  });
-
-  it('returns localized region label when translation key resolves', () => {
-    i18n.translate.mockImplementation(
-      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
-        if (key === 'catalog.regions.US-CA' && opts?.lang === 'de') {
-          return 'Kalifornien';
-        }
-
-        return opts?.defaultValue ?? '';
-      },
-    );
-
+  it('returns region labels from ISO dataset without i18n lookup', () => {
     const res = service.listRegions({
       page: 1,
       limit: 80,
@@ -228,22 +203,16 @@ describe('CatalogService', () => {
       lang: 'de',
     });
 
+    expect(i18n.translate).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^catalog\.regions\./),
+      expect.anything(),
+    );
     expect(
-      res.data.some((r) => r.code === 'US-CA' && r.label === 'Kalifornien'),
+      res.data.some((r) => r.code === 'US-CA' && r.label === 'California'),
     ).toBe(true);
   });
 
-  it('supports canonical region search when labels are localized', () => {
-    i18n.translate.mockImplementation(
-      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
-        if (key === 'catalog.regions.US-CA' && opts?.lang === 'de') {
-          return 'Kalifornien';
-        }
-
-        return opts?.defaultValue ?? '';
-      },
-    );
-
+  it('finds regions by canonical label when lang is set', () => {
     const res = service.listRegions({
       page: 1,
       limit: 80,
