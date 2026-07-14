@@ -1,8 +1,7 @@
 {
-  "_meta": {
+  "meta": {
     "locale": "pl",
-    "status": "done",
-    "todo": "Community translation completed"
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
   },
   "genders": {
     "MALE": "Mężczyzna",
@@ -15,7 +14,7 @@
     "SEDENTARY": "Siedzący",
     "LIGHT": "Lekka aktywność",
     "MODERATE": "Umiarkowana aktywność",
-    "ACTIVE": "Aktywny",
+    "ACTIVE": "ablabla",
     "VERY_ACTIVE": "Bardzo aktywny"
   },
   "annualIncomeLevels": {

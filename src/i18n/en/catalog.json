@@ -1,7 +1,6 @@
 {
-  "_meta": {
-    "locale": "en",
-    "status": "base"
+  "meta": {
+    "locale": "en"
   },
   "genders": {
     "MALE": "Male",

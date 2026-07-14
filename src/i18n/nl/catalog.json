@@ -1,8 +1,7 @@
 {
-  "_meta": {
+  "meta": {
     "locale": "nl",
-    "status": "done",
-    "todo": "Community translation completed"
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
   },
   "genders": {
     "MALE": "Man",
@@ -15,7 +14,7 @@
     "SEDENTARY": "Zittend",
     "LIGHT": "Licht actief",
     "MODERATE": "Gemiddeld actief",
-    "ACTIVE": "Actief",
+    "ACTIVE": "ablabla",
     "VERY_ACTIVE": "Zeer actief"
   },
   "annualIncomeLevels": {

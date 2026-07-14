@@ -1,8 +1,7 @@
 {
-  "_meta": {
+  "meta": {
     "locale": "sl",
-    "status": "done",
-    "todo": "Community translation completed"
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
   },
   "genders": {
     "MALE": "Moški",
@@ -15,7 +14,7 @@
     "SEDENTARY": "Sedeče",
     "LIGHT": "Lahka aktivnost",
     "MODERATE": "Zmerna aktivnost",
-    "ACTIVE": "Aktivno",
+    "ACTIVE": "ablabla",
     "VERY_ACTIVE": "Zelo aktivno"
   },
   "annualIncomeLevels": {

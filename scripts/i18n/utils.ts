@@ -48,7 +48,7 @@ export function collectLeafKeys(obj: JsonObject, prefix = ''): string[] {
   for (const [key, value] of Object.entries(obj)) {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
-    if (fullKey.startsWith('_meta')) {
+    if (fullKey === 'meta' || fullKey.startsWith('meta.')) {
       continue;
     }
 
@@ -162,4 +162,62 @@ export function localeNamespaceFilePath(
   namespaceFile: string,
 ): string {
   return path.join(localesPath, locale, namespaceFile);
+}
+
+export function namespaceFromFile(namespaceFile: string): string {
+  return namespaceFile.replace(/\.json$/i, '');
+}
+
+export function setValueByPath(
+  obj: JsonObject,
+  dottedPath: string,
+  value: string,
+): void {
+  const parts = dottedPath.split('.');
+  let current: JsonObject = obj;
+
+  for (let i = 0; i < parts.length - 1; i += 1) {
+    const part = parts[i];
+    const next = current[part];
+    if (!isObject(next)) {
+      current[part] = {};
+    }
+    current = current[part] as JsonObject;
+  }
+
+  current[parts[parts.length - 1]] = value;
+}
+
+export function writeJsonFile(filePath: string, obj: JsonObject): void {
+  fs.writeFileSync(filePath, `${JSON.stringify(obj, null, 2)}\n`, 'utf8');
+}
+
+export function readLocaleNamespace(
+  locale: string,
+  namespaceFile: string,
+): JsonObject {
+  return readJsonFile(localeNamespaceFilePath(locale, namespaceFile));
+}
+
+export function getStringAtPath(
+  obj: JsonObject,
+  dottedPath: string,
+): string | undefined {
+  const value = getValueByPath(obj, dottedPath);
+  return typeof value === 'string' ? value : undefined;
+}
+
+export function ensureMetaBlock(
+  obj: JsonObject,
+  locale: string,
+  lastImportedAt?: string,
+): void {
+  const meta: JsonObject = isObject(obj.meta) ? { ...obj.meta } : {};
+  meta.locale = locale;
+  if (lastImportedAt !== undefined) {
+    meta.lastImportedAt = lastImportedAt;
+  } else if (!('lastImportedAt' in meta)) {
+    delete meta.lastImportedAt;
+  }
+  obj.meta = meta;
 }
