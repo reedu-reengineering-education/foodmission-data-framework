@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import * as XLSX from 'xlsx';
 import {
   DEFAULT_LOCALE,
-  TRANSLATION_TARGET_LOCALES,
+  SUPPORTED_LOCALES,
 } from '../../src/i18n/constants';
 import {
   collectLeafKeys,
@@ -16,12 +16,21 @@ import {
   resolveLocaleLayout,
   sameStringArray,
   setValueByPath,
+  toError,
   writeJsonFile,
   type JsonObject,
 } from './utils';
 
-/** Export/import columns: one sheet per locale. */
-export const LOCALE_SHEET_HEADERS = ['key', 'en', 'translation'] as const;
+export const DEFAULT_HANDOFF_PATH = path.join('translations', 'handoff.xlsx');
+
+const LOCALE_SHEET_HEADERS = ['key', 'en', 'translation'] as const;
+
+const TRANSLATION_TARGET_LOCALES = SUPPORTED_LOCALES.filter(
+  (locale) => locale !== DEFAULT_LOCALE,
+);
+const TARGET_LOCALE_SET = new Set<string>(
+  TRANSLATION_TARGET_LOCALES as readonly string[],
+);
 
 export type LocaleSheetRow = {
   key: string;
@@ -29,7 +38,7 @@ export type LocaleSheetRow = {
   translation: string;
 };
 
-export type SpreadsheetRow = {
+type SpreadsheetRow = {
   locale: string;
   namespace: string;
   key: string;
@@ -70,26 +79,48 @@ export interface ExportReport {
   >;
 }
 
+type ImportSkipReason =
+  | 'blank_cell'
+  | 'unknown_namespace'
+  | 'unknown_key'
+  | 'invalid_locale'
+  | 'placeholder_mismatch'
+  | 'english_locale';
+
 export interface ImportReport {
   importedAt: string;
   inputPath: string;
   dryRun: boolean;
   updated: string[];
-  skipped: {
-    blank_cell: string[];
-    unknown_namespace: string[];
-    unknown_key: string[];
-    invalid_locale: string[];
-    placeholder_mismatch: string[];
-    english_locale: string[];
-  };
+  skipped: Record<ImportSkipReason, string[]>;
   stillMissing: string[];
   metaUpdated: string[];
 }
 
-const targetLocaleSet = new Set<string>(
-  TRANSLATION_TARGET_LOCALES as readonly string[],
-);
+export function parseCsvList(value: string | undefined): string[] | undefined {
+  if (!value?.trim()) {
+    return undefined;
+  }
+
+  return value
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+export function runScript(main: () => void): void {
+  try {
+    main();
+  } catch (error) {
+    console.error(`❌ ${toError(error).message}`);
+    process.exit(1);
+  }
+}
+
+export function writeReportFile(reportPath: string, data: unknown): void {
+  fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+  fs.writeFileSync(reportPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+}
 
 export function toFullKey(namespace: string, key: string): string {
   return `${namespace}.${key}`;
@@ -118,15 +149,8 @@ export function parseFullKey(
   return undefined;
 }
 
-export function parseCsvList(value: string | undefined): string[] | undefined {
-  if (!value?.trim()) {
-    return undefined;
-  }
-
-  return value
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean);
+function rowId(locale: string, namespace: string, key: string): string {
+  return `${locale}/${namespace}.${key}`;
 }
 
 export function resolveTargetLocales(requested?: string[]): string[] {
@@ -135,9 +159,9 @@ export function resolveTargetLocales(requested?: string[]): string[] {
     : [...TRANSLATION_TARGET_LOCALES];
 
   for (const locale of locales) {
-    if (!targetLocaleSet.has(locale)) {
+    if (!TARGET_LOCALE_SET.has(locale)) {
       throw new Error(
-        `Unsupported target locale "${locale}". Supported: ${[...targetLocaleSet].join(', ')}`,
+        `Unsupported target locale "${locale}". Supported: ${[...TARGET_LOCALE_SET].join(', ')}`,
       );
     }
   }
@@ -164,8 +188,135 @@ export function resolveNamespaces(requested?: string[]): string[] {
   return requested;
 }
 
-function rowId(row: Pick<SpreadsheetRow, 'locale' | 'namespace' | 'key'>): string {
-  return `${row.locale}/${row.namespace}.${row.key}`;
+function sheetFromRows(rows: LocaleSheetRow[]): XLSX.WorkSheet {
+  return XLSX.utils.json_to_sheet(rows, {
+    header: [...LOCALE_SHEET_HEADERS],
+  });
+}
+
+export function writeSpreadsheet(
+  sheets: Record<string, LocaleSheetRow[]>,
+  outputPath: string,
+  format: 'xlsx' | 'csv',
+): void {
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+
+  if (format === 'csv') {
+    const baseName = path.basename(outputPath, path.extname(outputPath));
+    const dir = path.dirname(outputPath);
+
+    for (const [locale, rows] of Object.entries(sheets)) {
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheetFromRows(rows), locale);
+      XLSX.writeFile(workbook, path.join(dir, `${baseName}.${locale}.csv`), {
+        bookType: 'csv',
+      });
+    }
+    return;
+  }
+
+  const workbook = XLSX.utils.book_new();
+  for (const [locale, rows] of Object.entries(sheets)) {
+    XLSX.utils.book_append_sheet(workbook, sheetFromRows(rows), locale);
+  }
+  XLSX.writeFile(workbook, outputPath, { bookType: 'xlsx' });
+}
+
+function parseLocaleSheetRows(
+  rawRows: Record<string, unknown>[],
+  locale: string,
+  sheetLabel: string,
+  knownNamespaces: readonly string[],
+): SpreadsheetRow[] {
+  return rawRows.map((raw, index) => {
+    const fullKey = String(raw.key ?? '').trim();
+    const en = String(raw.en ?? '').trim();
+    const translation = String(raw.translation ?? '').trim();
+
+    if (!fullKey) {
+      throw new Error(
+        `Invalid row ${index + 2} in "${sheetLabel}": key is required`,
+      );
+    }
+
+    const parsed = parseFullKey(fullKey, knownNamespaces);
+    if (!parsed) {
+      throw new Error(
+        `Invalid row ${index + 2} in "${sheetLabel}": unknown key prefix in "${fullKey}"`,
+      );
+    }
+
+    return {
+      locale,
+      namespace: parsed.namespace,
+      key: parsed.key,
+      en,
+      translation,
+    };
+  });
+}
+
+function readSpreadsheet(filePath: string): SpreadsheetRow[] {
+  const knownNamespaces = resolveNamespaces();
+
+  if (filePath.endsWith('.csv')) {
+    const localeMatch = path.basename(filePath).match(/\.([a-z]{2})\.csv$/i);
+    if (!localeMatch) {
+      throw new Error(
+        'CSV import expects one locale per file (e.g. handoff.de.csv). Import each file separately or use xlsx.',
+      );
+    }
+
+    const locale = localeMatch[1].toLowerCase();
+    if (!TARGET_LOCALE_SET.has(locale)) {
+      throw new Error(`Unsupported locale in filename: ${locale}`);
+    }
+
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    if (!sheetName) {
+      throw new Error('CSV file has no data');
+    }
+
+    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+      workbook.Sheets[sheetName],
+      { defval: '' },
+    );
+
+    return parseLocaleSheetRows(
+      rawRows,
+      locale,
+      path.basename(filePath),
+      knownNamespaces,
+    );
+  }
+
+  const workbook = XLSX.readFile(filePath);
+  if (workbook.SheetNames.length === 0) {
+    throw new Error('Spreadsheet has no sheets');
+  }
+
+  const rows: SpreadsheetRow[] = [];
+
+  for (const sheetName of workbook.SheetNames) {
+    const locale = sheetName.trim().toLowerCase();
+    if (!TARGET_LOCALE_SET.has(locale)) {
+      throw new Error(
+        `Unknown sheet "${sheetName}". Expected a target locale code (${[...TARGET_LOCALE_SET].join(', ')}).`,
+      );
+    }
+
+    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+      workbook.Sheets[sheetName],
+      { defval: '' },
+    );
+
+    rows.push(
+      ...parseLocaleSheetRows(rawRows, locale, sheetName, knownNamespaces),
+    );
+  }
+
+  return rows;
 }
 
 export function buildExportSheets(options: ExportOptions): {
@@ -191,11 +342,17 @@ export function buildExportSheets(options: ExportOptions): {
 
     const enJson = readLocaleNamespace(DEFAULT_LOCALE, namespaceFile);
     const keys = collectLeafKeys(enJson).sort();
+    const localeJsonByLocale = new Map(
+      options.locales.map((locale) => [
+        locale,
+        readLocaleNamespace(locale, namespaceFile),
+      ]),
+    );
     const perLocale: ExportReport['perNamespace'][string]['perLocale'] = {};
     let emptyTranslations = 0;
 
     for (const locale of options.locales) {
-      const localeJson = readLocaleNamespace(locale, namespaceFile);
+      const localeJson = localeJsonByLocale.get(locale)!;
       let localeEmpty = 0;
       let localeSameAsEn = 0;
 
@@ -254,146 +411,12 @@ export function buildExportSheets(options: ExportOptions): {
   };
 }
 
-export function writeSpreadsheet(
-  sheets: Record<string, LocaleSheetRow[]>,
-  outputPath: string,
-  format: 'xlsx' | 'csv',
-): void {
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-
-  if (format === 'csv') {
-    const baseName = path.basename(outputPath, path.extname(outputPath));
-    const dir = path.dirname(outputPath);
-
-    for (const [locale, rows] of Object.entries(sheets)) {
-      const csvPath = path.join(dir, `${baseName}.${locale}.csv`);
-      const worksheet = XLSX.utils.json_to_sheet(rows, {
-        header: [...LOCALE_SHEET_HEADERS],
-      });
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, locale);
-      XLSX.writeFile(workbook, csvPath, { bookType: 'csv' });
-    }
-
-    return;
-  }
-
-  const workbook = XLSX.utils.book_new();
-
-  for (const [locale, rows] of Object.entries(sheets)) {
-    const worksheet = XLSX.utils.json_to_sheet(rows, {
-      header: [...LOCALE_SHEET_HEADERS],
-    });
-    XLSX.utils.book_append_sheet(workbook, worksheet, locale);
-  }
-
-  XLSX.writeFile(workbook, outputPath, { bookType: 'xlsx' });
-}
-
-function parseLocaleSheetRows(
-  rawRows: Record<string, unknown>[],
-  locale: string,
-  sheetLabel: string,
-  knownNamespaces: readonly string[],
-): SpreadsheetRow[] {
-  return rawRows.map((raw, index) => {
-    const fullKey = String(raw.key ?? '').trim();
-    const en = String(raw.en ?? '').trim();
-    const translation = String(raw.translation ?? '').trim();
-
-    if (!fullKey) {
-      throw new Error(
-        `Invalid row ${index + 2} in "${sheetLabel}": key is required`,
-      );
-    }
-
-    const parsed = parseFullKey(fullKey, knownNamespaces);
-    if (!parsed) {
-      throw new Error(
-        `Invalid row ${index + 2} in "${sheetLabel}": unknown key prefix in "${fullKey}"`,
-      );
-    }
-
-    return {
-      locale,
-      namespace: parsed.namespace,
-      key: parsed.key,
-      en,
-      translation,
-    };
-  });
-}
-
-export function readSpreadsheet(filePath: string): SpreadsheetRow[] {
-  const knownNamespaces = resolveNamespaces();
-
-  if (filePath.endsWith('.csv')) {
-    const localeMatch = path.basename(filePath).match(/\.([a-z]{2})\.csv$/i);
-    if (!localeMatch) {
-      throw new Error(
-        'CSV import expects one locale per file (e.g. handoff.de.csv). Import each file separately or use xlsx.',
-      );
-    }
-
-    const locale = localeMatch[1].toLowerCase();
-    if (!targetLocaleSet.has(locale)) {
-      throw new Error(`Unsupported locale in filename: ${locale}`);
-    }
-
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    if (!sheetName) {
-      throw new Error('CSV file has no data');
-    }
-
-    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
-      workbook.Sheets[sheetName],
-      { defval: '' },
-    );
-
-    return parseLocaleSheetRows(
-      rawRows,
-      locale,
-      path.basename(filePath),
-      knownNamespaces,
-    );
-  }
-
-  const workbook = XLSX.readFile(filePath);
-  if (workbook.SheetNames.length === 0) {
-    throw new Error('Spreadsheet has no sheets');
-  }
-
-  const rows: SpreadsheetRow[] = [];
-
-  for (const sheetName of workbook.SheetNames) {
-    const locale = sheetName.trim().toLowerCase();
-    if (!targetLocaleSet.has(locale)) {
-      throw new Error(
-        `Unknown sheet "${sheetName}". Expected a target locale code (${[...targetLocaleSet].join(', ')}).`,
-      );
-    }
-
-    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
-      workbook.Sheets[sheetName],
-      { defval: '' },
-    );
-
-    rows.push(
-      ...parseLocaleSheetRows(rawRows, locale, sheetName, knownNamespaces),
-    );
-  }
-
-  return rows;
-}
-
 export function importTranslations(options: ImportOptions): ImportReport {
   const { namespaceFiles } = resolveLocaleLayout();
   const namespaceFilesByName = new Map(
     namespaceFiles.map((file) => [namespaceFromFile(file), file]),
   );
 
-  const rows = readSpreadsheet(options.file);
   const report: ImportReport = {
     importedAt: new Date().toISOString(),
     inputPath: options.file,
@@ -417,10 +440,7 @@ export function importTranslations(options: ImportOptions): ImportReport {
 
   const loadEn = (namespace: string): JsonObject => {
     if (!enCache.has(namespace)) {
-      const file = namespaceFilesByName.get(namespace);
-      if (!file) {
-        throw new Error(`Unknown namespace "${namespace}"`);
-      }
+      const file = namespaceFilesByName.get(namespace)!;
       enCache.set(namespace, readLocaleNamespace(DEFAULT_LOCALE, file));
     }
     return enCache.get(namespace)!;
@@ -429,24 +449,21 @@ export function importTranslations(options: ImportOptions): ImportReport {
   const loadLocale = (locale: string, namespace: string): JsonObject => {
     const cacheKey = `${locale}:${namespace}`;
     if (!localeCache.has(cacheKey)) {
-      const file = namespaceFilesByName.get(namespace);
-      if (!file) {
-        throw new Error(`Unknown namespace "${namespace}"`);
-      }
+      const file = namespaceFilesByName.get(namespace)!;
       localeCache.set(cacheKey, readLocaleNamespace(locale, file));
     }
     return localeCache.get(cacheKey)!;
   };
 
-  for (const row of rows) {
-    const id = rowId(row);
+  for (const row of readSpreadsheet(options.file)) {
+    const id = rowId(row.locale, row.namespace, row.key);
 
     if (row.locale === DEFAULT_LOCALE) {
       report.skipped.english_locale.push(id);
       continue;
     }
 
-    if (!targetLocaleSet.has(row.locale)) {
+    if (!TARGET_LOCALE_SET.has(row.locale)) {
       report.skipped.invalid_locale.push(id);
       continue;
     }
@@ -456,8 +473,7 @@ export function importTranslations(options: ImportOptions): ImportReport {
       continue;
     }
 
-    const enJson = loadEn(row.namespace);
-    const enValue = getStringAtPath(enJson, row.key);
+    const enValue = getStringAtPath(loadEn(row.namespace), row.key);
     if (enValue === undefined) {
       report.skipped.unknown_key.push(id);
       continue;
@@ -478,20 +494,17 @@ export function importTranslations(options: ImportOptions): ImportReport {
       continue;
     }
 
-    const localeJson = loadLocale(row.locale, row.namespace);
-    setValueByPath(localeJson, row.key, row.translation);
+    setValueByPath(loadLocale(row.locale, row.namespace), row.key, row.translation);
     touchedFiles.add(`${row.locale}:${row.namespace}`);
     report.updated.push(id);
   }
 
   if (!options.dryRun) {
-    const importedAt = report.importedAt;
-
     for (const touched of touchedFiles) {
       const [locale, namespace] = touched.split(':');
       const namespaceFile = namespaceFilesByName.get(namespace)!;
       const localeJson = loadLocale(locale, namespace);
-      ensureMetaBlock(localeJson, locale, importedAt);
+      ensureMetaBlock(localeJson, locale, report.importedAt);
       writeJsonFile(localeNamespaceFilePath(locale, namespaceFile), localeJson);
       report.metaUpdated.push(`${locale}/${namespaceFile}`);
     }
@@ -511,6 +524,13 @@ export function importTranslations(options: ImportOptions): ImportReport {
   }
 
   return report;
+}
+
+function printPreview(items: string[], limit: number): void {
+  items.slice(0, limit).forEach((entry) => console.log(`    ${entry}`));
+  if (items.length > limit) {
+    console.log(`    ... and ${items.length - limit} more`);
+  }
 }
 
 export function printExportReport(report: ExportReport): void {
@@ -541,19 +561,7 @@ export function printExportReport(report: ExportReport): void {
 }
 
 export function printImportReport(report: ImportReport): void {
-  console.log('\nImport summary');
-  console.log(`  File: ${report.inputPath}`);
-  console.log(`  Dry run: ${report.dryRun ? 'yes' : 'no'}`);
-  console.log(`  Updated: ${report.updated.length}`);
-
-  if (report.updated.length > 0) {
-    report.updated.slice(0, 20).forEach((entry) => console.log(`    ${entry}`));
-    if (report.updated.length > 20) {
-      console.log(`    ... and ${report.updated.length - 20} more`);
-    }
-  }
-
-  const skipLabels: Array<[keyof ImportReport['skipped'], string]> = [
+  const skipLabels: Array<[ImportSkipReason, string]> = [
     ['blank_cell', 'Skipped (blank cell)'],
     ['unknown_namespace', 'Skipped (unknown namespace)'],
     ['unknown_key', 'Skipped (unknown key)'],
@@ -562,20 +570,22 @@ export function printImportReport(report: ImportReport): void {
     ['english_locale', 'Skipped (english locale)'],
   ];
 
+  console.log('\nImport summary');
+  console.log(`  File: ${report.inputPath}`);
+  console.log(`  Dry run: ${report.dryRun ? 'yes' : 'no'}`);
+  console.log(`  Updated: ${report.updated.length}`);
+
+  if (report.updated.length > 0) {
+    printPreview(report.updated, 20);
+  }
+
   for (const [key, label] of skipLabels) {
-    const items = report.skipped[key];
-    console.log(`  ${label}: ${items.length}`);
-    items.slice(0, 10).forEach((entry) => console.log(`    ${entry}`));
-    if (items.length > 10) {
-      console.log(`    ... and ${items.length - 10} more`);
-    }
+    console.log(`  ${label}: ${report.skipped[key].length}`);
+    printPreview(report.skipped[key], 10);
   }
 
   console.log(`  Still missing after import: ${report.stillMissing.length}`);
-  report.stillMissing.slice(0, 20).forEach((entry) => console.log(`    ${entry}`));
-  if (report.stillMissing.length > 20) {
-    console.log(`    ... and ${report.stillMissing.length - 20} more`);
-  }
+  printPreview(report.stillMissing, 20);
 
   if (report.metaUpdated.length > 0) {
     console.log(`  meta.lastImportedAt updated:`);
