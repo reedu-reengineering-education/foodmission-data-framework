@@ -1,0 +1,96 @@
+{
+  "title": "after 1 m and at least 9th use",
+  "description": "Survey: after 1 m and at least 9th use",
+  "questions": [
+    {
+      "id": "after 1 m and at least 9th use_0",
+      "text": "The FOODMISSION app is accurate.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    },
+    {
+      "id": "after 1 m and at least 9th use_1",
+      "text": "The FOODMISSION app is trustworthy.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    },
+    {
+      "id": "after 1 m and at least 9th use_2",
+      "text": "The FOODMISSION app is true.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    },
+    {
+      "id": "after 1 m and at least 9th use_3",
+      "text": "I can use the FOODMISSION app in the way I want.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    },
+    {
+      "id": "after 1 m and at least 9th use_4",
+      "text": "I can make choices regarding how to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    },
+    {
+      "id": "after 1 m and at least 9th use_5",
+      "text": "I can direct my own usage experience while using the FOODMISSION app.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 7
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "title": "third use",
+  "description": "Survey: third use",
+  "questions": [
+    {
+      "id": "third use_0",
+      "text": "The FOODMISSION app is accurate.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    },
+    {
+      "id": "third use_1",
+      "text": "The FOODMISSION app is trustworthy.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    },
+    {
+      "id": "third use_2",
+      "text": "The FOODMISSION app is true.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    },
+    {
+      "id": "third use_3",
+      "text": "I can use the FOODMISSION app in the way I want.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    },
+    {
+      "id": "third use_4",
+      "text": "I can make choices regarding how to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    },
+    {
+      "id": "third use_5",
+      "text": "I can direct my own usage experience while using the FOODMISSION app.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 1
+    }
+  ]
+}

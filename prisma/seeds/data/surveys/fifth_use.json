@@ -1,0 +1,149 @@
+{
+  "title": "fifth use",
+  "description": "Survey: fifth use",
+  "questions": [
+    {
+      "id": "fifth use_0",
+      "text": "I have a positive opinion about plant-based diets.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_1",
+      "text": "I believe that organic production is better for the environment than conventional farming.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_2",
+      "text": "I believe that reducing food waste is important for protecting the environment.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_3",
+      "text": "I have a positive opinion about diets that are both healthy and environmentally friendly.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_4",
+      "text": "I know how to select products that have a low environmental impact.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_5",
+      "text": "I understand the environmental benefits of eco-labels of food products.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_6",
+      "text": "I know what a healthy diet means.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_7",
+      "text": "It is beneficial to eat nutrient-dense food.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_8",
+      "text": "I know that healthy eating can prevent certain diseases.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_9",
+      "text": "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    },
+    {
+      "id": "fifth use_10",
+      "text": "I feel guilty when my food choices harm the environment.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Neither agree nor disagree",
+        "Agree",
+        "Strongly agree"
+      ],
+      "source_survey": 3
+    }
+  ]
+}

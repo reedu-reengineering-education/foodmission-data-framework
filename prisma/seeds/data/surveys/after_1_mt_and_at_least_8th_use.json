@@ -1,0 +1,71 @@
+{
+  "title": "after 1 mt and at least 8th use",
+  "description": "Survey: after 1 mt and at least 8th use",
+  "questions": [
+    {
+      "id": "after 1 mt and at least 8th use_0",
+      "text": "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 6
+    },
+    {
+      "id": "after 1 mt and at least 8th use_1",
+      "text": "Using the FOODMISSION app causes me to make some changes in my behavior.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 6
+    },
+    {
+      "id": "after 1 mt and at least 8th use_2",
+      "text": "It gives me pleasure to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 6
+    },
+    {
+      "id": "after 1 mt and at least 8th use_3",
+      "text": "Using the FOODMISSION app has the potential to inspire users.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 6
+    },
+    {
+      "id": "after 1 mt and at least 8th use_4",
+      "text": "Using the FOODMISSION app has the potential to influence user behavior.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 6
+    }
+  ]
+}

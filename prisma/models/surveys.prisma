@@ -1,0 +1,70 @@
+// ============================================================
+// Surveys - User surveys and questions
+// ============================================================
+
+model Survey {
+  id          String   @id @default(cuid())
+  title       String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  questions       Question[]
+  surveyResponses SurveyResponse[]
+
+  @@map("surveys")
+}
+
+model Question {
+  id    String @id @default(cuid())
+  text  String
+  type  String // e.g., "likert"
+  order Int    // Order of question in survey
+
+  surveyId String
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  questionResponses QuestionResponse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([surveyId])
+  @@map("questions")
+}
+
+model SurveyResponse {
+  id       String @id @default(cuid())
+  userId   String
+  surveyId String
+  
+  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  questionResponses QuestionResponse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, surveyId])
+  @@index([userId])
+  @@index([surveyId])
+  @@map("survey_responses")
+}
+
+model QuestionResponse {
+  id               String @id @default(cuid())
+  questionId       String
+  value            Int    // Likert scale value 1–5
+  surveyResponseId String
+
+  surveyResponse SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+  question       Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([surveyResponseId, questionId])
+  @@index([surveyResponseId])
+  @@index([questionId])
+  @@map("question_responses")
+}

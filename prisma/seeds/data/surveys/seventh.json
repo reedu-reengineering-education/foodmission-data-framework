@@ -1,0 +1,126 @@
+{
+  "title": "seventh",
+  "description": "Survey: seventh",
+  "questions": [
+    {
+      "id": "seventh_0",
+      "text": "When making decisions, I think carefully about how my choices may influence the future.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_1",
+      "text": "What happens now is more important to me than what might happen in the future.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_2",
+      "text": "I think two years is a relatively short time to wait for something.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_3",
+      "text": "I find it difficult to foresee the impact of my actions in the future.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_4",
+      "text": "I reflect about my health a lot",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_5",
+      "text": "I am concerned about environmental problems because of the consequences for: - Marine life",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_6",
+      "text": "I am concerned about environmental problems because of the consequences for: - My lifestyle",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    },
+    {
+      "id": "seventh_7",
+      "text": "I am concerned about environmental problems because of the consequences for: - People in my country",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Disagree",
+        "Somewhat disagree",
+        "Neither disagree or agree",
+        "Somewhat Agree",
+        "Agree",
+        "Strongly Agree"
+      ],
+      "source_survey": 5
+    }
+  ]
+}

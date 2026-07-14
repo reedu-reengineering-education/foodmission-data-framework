@@ -1,0 +1,71 @@
+{
+  "title": "second use",
+  "description": "Survey: second use",
+  "questions": [
+    {
+      "id": "second use_0",
+      "text": "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 0
+    },
+    {
+      "id": "second use_1",
+      "text": "Using the FOODMISSION app causes me to make some changes in my behavior.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 0
+    },
+    {
+      "id": "second use_2",
+      "text": "It gives me pleasure to use the FOODMISSION app",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 0
+    },
+    {
+      "id": "second use_3",
+      "text": "Using the FOODMISSION app has the potential to inspire users.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 0
+    },
+    {
+      "id": "second use_4",
+      "text": "Using the FOODMISSION app has the potential to influence user behavior.",
+      "type": "likert",
+      "answers": [
+        "Strongly disagree",
+        "Somewhat disagree",
+        "Neither agree nor disagree",
+        "Somewhat agree",
+        "Strongly agree"
+      ],
+      "source_survey": 0
+    }
+  ]
+}
