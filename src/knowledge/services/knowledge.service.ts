@@ -17,6 +17,10 @@ import { Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
+import {
+  KnowledgeI18nService,
+  KnowledgeQuizContent,
+} from '../../i18n/knowledge-i18n.service';
 
 @Injectable()
 export class KnowledgeService {
@@ -25,6 +29,7 @@ export class KnowledgeService {
   constructor(
     private readonly knowledgeRepository: KnowledgeRepository,
     private readonly progressRepository: KnowledgeProgressRepository,
+    private readonly knowledgeI18n: KnowledgeI18nService,
   ) {}
 
   private getOwnedKnowledgeOrThrow(knowledgeId: string, userId: string) {
@@ -61,7 +66,7 @@ export class KnowledgeService {
     userId: string,
     query: QueryKnowledgeDto,
   ): Promise<MultipleKnowledgeResponseDto> {
-    const { page = 1, limit = 10, available, search } = query;
+    const { page = 1, limit = 10, available, search, lang } = query;
     const skip = (page - 1) * limit;
 
     const globalOrOwned: Prisma.KnowledgeWhereInput = {
@@ -89,7 +94,6 @@ export class KnowledgeService {
           AND: [globalOrOwned, ...(searchFilter ? [searchFilter] : [])],
         };
       } else {
-        // available === false: only return private items owned by the user
         where = {
           AND: [
             { userId },
@@ -112,7 +116,6 @@ export class KnowledgeService {
         orderBy: { createdAt: 'desc' },
       });
 
-      // Bulk load user progress for all knowledge items to avoid N+1 queries
       const knowledgeIds = result.data.map((k) => k.id);
       const progressList = await this.progressRepository.findManyByKnowledgeIds(
         userId,
@@ -122,7 +125,7 @@ export class KnowledgeService {
 
       const dataWithProgress = result.data.map((knowledge) => {
         const progress = progressMap.get(knowledge.id);
-        return this.toResponse(knowledge, progress);
+        return this.toResponse(knowledge, progress, lang);
       });
 
       return plainToInstance(
@@ -141,13 +144,16 @@ export class KnowledgeService {
     }
   }
 
-  async findOne(id: string, userId: string): Promise<KnowledgeResponseDto> {
+  async findOne(
+    id: string,
+    userId: string,
+    lang?: string,
+  ): Promise<KnowledgeResponseDto> {
     const knowledge = await this.knowledgeRepository.findById(id);
     if (!knowledge) {
       throw new NotFoundException('Knowledge not found');
     }
 
-    // Allow reads for either the owner or when the item is public/available.
     if (knowledge.userId !== userId && !knowledge.available) {
       throw new ForbiddenException('Knowledge not accessible');
     }
@@ -156,7 +162,7 @@ export class KnowledgeService {
       userId,
       id,
     );
-    return this.toResponse(knowledge, progress);
+    return this.toResponse(knowledge, progress ?? undefined, lang);
   }
 
   async update(
@@ -167,17 +173,12 @@ export class KnowledgeService {
     await this.getOwnedKnowledgeOrThrow(id, userId);
 
     try {
-      const updated = await this.knowledgeRepository.update(id, {
-        ...updateKnowledgeDto,
-        content: updateKnowledgeDto.content
-          ? (updateKnowledgeDto.content as unknown as Prisma.InputJsonValue)
-          : undefined,
-      });
+      const updated = await this.knowledgeRepository.update(id, updateKnowledgeDto);
       const progress = await this.progressRepository.findByUserAndKnowledge(
         userId,
         id,
       );
-      return this.toResponse(updated, progress);
+      return this.toResponse(updated, progress ?? undefined);
     } catch (error) {
       throw handlePrismaError(error, 'update knowledge', 'Knowledge');
     }
@@ -193,11 +194,57 @@ export class KnowledgeService {
     }
   }
 
-  private toResponse(knowledge: any, userProgress?: any): KnowledgeResponseDto {
+  private toResponse(
+    knowledge: {
+      id: string;
+      slug?: string | null;
+      userId: string;
+      title: string;
+      description?: string | null;
+      available: boolean;
+      content: unknown;
+      createdAt: Date;
+      updatedAt: Date;
+    },
+    userProgress?: {
+      completed: boolean;
+      progress?: unknown;
+      lastAccessedAt: Date;
+    },
+    lang?: string,
+  ): KnowledgeResponseDto {
+    const slug = knowledge.slug ?? undefined;
+    const fallbackContent = knowledge.content as KnowledgeQuizContent;
+
+    let title = knowledge.title;
+    let description = knowledge.description ?? undefined;
+    let content = fallbackContent;
+
+    if (slug) {
+      const localizedCopy = this.knowledgeI18n.getKnowledgeCopy(
+        slug,
+        {
+          title: knowledge.title,
+          description: knowledge.description ?? '',
+        },
+        lang,
+      );
+      title = localizedCopy.title;
+      description = localizedCopy.description || undefined;
+      content = this.knowledgeI18n.getKnowledgeQuizContent(
+        slug,
+        fallbackContent,
+        lang,
+      );
+    }
+
     const response = plainToInstance(
       KnowledgeResponseDto,
       {
         ...knowledge,
+        title,
+        description,
+        content,
         userProgress: userProgress
           ? {
               completed: userProgress.completed,

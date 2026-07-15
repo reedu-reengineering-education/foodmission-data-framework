@@ -3,24 +3,27 @@ import { KnowledgeService } from './knowledge.service';
 import { KnowledgeRepository } from '../repositories/knowledge.repository';
 import { KnowledgeProgressRepository } from '../repositories/knowledge-progress.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { KnowledgeI18nService } from '../../i18n/knowledge-i18n.service';
 
 describe('KnowledgeService', () => {
   let service: KnowledgeService;
   let repository: jest.Mocked<KnowledgeRepository>;
   let progressRepository: jest.Mocked<KnowledgeProgressRepository>;
+  let knowledgeI18n: jest.Mocked<KnowledgeI18nService>;
 
   const mockKnowledge = {
     id: 'knowledge-1',
+    slug: 'nutrition-basics',
     userId: 'user-1',
-    title: 'Test Quiz',
-    description: 'Test Description',
+    title: 'Nutrition Basics',
+    description: 'A short quiz about basic nutrition facts and macros.',
     available: true,
     content: {
       questions: [
         {
-          question: 'Test?',
-          options: ['A', 'B'],
-          correctAnswer: 'A',
+          question: 'Which macronutrient is the primary source of energy?',
+          options: ['Vitamins', 'Carbohydrates', 'Water', 'Minerals'],
+          correctAnswer: 'Carbohydrates',
         },
       ],
     },
@@ -53,6 +56,11 @@ describe('KnowledgeService', () => {
       findManyByKnowledgeIds: jest.fn(),
     };
 
+    const mockKnowledgeI18n = {
+      getKnowledgeCopy: jest.fn((slug, fallbacks) => fallbacks),
+      getKnowledgeQuizContent: jest.fn((_slug, fallbackContent) => fallbackContent),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         KnowledgeService,
@@ -61,12 +69,14 @@ describe('KnowledgeService', () => {
           provide: KnowledgeProgressRepository,
           useValue: mockProgressRepository,
         },
+        { provide: KnowledgeI18nService, useValue: mockKnowledgeI18n },
       ],
     }).compile();
 
     service = module.get<KnowledgeService>(KnowledgeService);
     repository = module.get(KnowledgeRepository);
     progressRepository = module.get(KnowledgeProgressRepository);
+    knowledgeI18n = module.get(KnowledgeI18nService);
   });
 
   afterEach(() => {
@@ -83,7 +93,7 @@ describe('KnowledgeService', () => {
 
       const result = await service.create(dto, 'user-1');
 
-      expect(result.title).toBe('Test Quiz');
+      expect(result.title).toBe('Nutrition Basics');
       expect(repository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Test Quiz',
@@ -119,6 +129,35 @@ describe('KnowledgeService', () => {
         'user-1',
         ['k-1', 'k-2'],
       );
+    });
+
+    it('should apply i18n overlay when lang is provided', async () => {
+      repository.findWithPagination.mockResolvedValueOnce({
+        data: [mockKnowledge],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      });
+      progressRepository.findManyByKnowledgeIds.mockResolvedValueOnce([]);
+      knowledgeI18n.getKnowledgeCopy.mockReturnValueOnce({
+        title: 'Ernährungsgrundlagen',
+        description: 'German description',
+      });
+      knowledgeI18n.getKnowledgeQuizContent.mockReturnValueOnce({
+        questions: [
+          {
+            question: 'German question?',
+            options: ['A', 'B'],
+            correctAnswer: 'A',
+          },
+        ],
+      });
+
+      const result = await service.findAll('user-1', { page: 1, limit: 10, lang: 'de' });
+
+      expect(result.data[0].title).toBe('Ernährungsgrundlagen');
+      expect(result.data[0].content.questions[0].question).toBe('German question?');
     });
 
     it('should filter by search term', async () => {
@@ -207,22 +246,21 @@ describe('KnowledgeService', () => {
   });
 
   describe('update', () => {
-    it('should update knowledge item', async () => {
+    it('should update knowledge availability', async () => {
       repository.findById.mockResolvedValueOnce(mockKnowledge);
-      const updated = { ...mockKnowledge, title: 'Updated' };
+      const updated = { ...mockKnowledge, available: false };
       repository.update.mockResolvedValueOnce(updated);
       progressRepository.findByUserAndKnowledge.mockResolvedValueOnce(null);
 
       const result = await service.update(
         'knowledge-1',
-        { title: 'Updated' },
+        { available: false },
         'user-1',
       );
 
-      expect(result.title).toBe('Updated');
+      expect(result.available).toBe(false);
       expect(repository.update).toHaveBeenCalledWith('knowledge-1', {
-        title: 'Updated',
-        content: undefined,
+        available: false,
       });
     });
   });

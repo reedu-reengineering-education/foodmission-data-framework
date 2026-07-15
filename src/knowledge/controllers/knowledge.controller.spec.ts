@@ -12,6 +12,7 @@ describe('KnowledgeController', () => {
 
   const mockKnowledge = {
     id: 'knowledge-1',
+    slug: 'nutrition-basics',
     userId: 'user-1',
     title: 'Test Quiz',
     description: 'Test Description',
@@ -79,23 +80,15 @@ describe('KnowledgeController', () => {
     jest.clearAllMocks();
   });
 
-  describe('create', () => {
-    it('should create knowledge with user id', async () => {
-      service.create.mockResolvedValueOnce(mockKnowledge);
-      const dto = {
-        title: 'Test Quiz',
-        content: { questions: [] },
-      };
-      const result = await controller.create(dto, 'user-1');
-
-      expect(result).toEqual(mockKnowledge);
-      expect(service.create).toHaveBeenCalledWith(dto, 'user-1');
-    });
-  });
-
   describe('findAll', () => {
-    it('should pass filters and user id to service', async () => {
-      const query = { page: 1, limit: 10, available: true, search: 'test' };
+    it('should pass filters, lang, and user id to service', async () => {
+      const query = {
+        page: 1,
+        limit: 10,
+        available: true,
+        search: 'test',
+        lang: 'de',
+      };
       service.findAll.mockResolvedValueOnce({
         data: [mockKnowledge],
         total: 1,
@@ -134,21 +127,23 @@ describe('KnowledgeController', () => {
   });
 
   describe('findOne', () => {
-    it('should retrieve knowledge by id', async () => {
+    it('should retrieve knowledge by id and pass lang', async () => {
       service.findOne.mockResolvedValueOnce(mockKnowledge);
-      const result = await controller.findOne('knowledge-1', 'user-1');
+      const result = await controller.findOne('knowledge-1', 'user-1', {
+        lang: 'de',
+      });
       expect(result).toEqual(mockKnowledge);
-      expect(service.findOne).toHaveBeenCalledWith('knowledge-1', 'user-1');
+      expect(service.findOne).toHaveBeenCalledWith('knowledge-1', 'user-1', 'de');
     });
   });
 
   describe('update', () => {
     it('should call service with id, dto, and user', async () => {
-      const updated = { ...mockKnowledge, title: 'Updated' };
+      const updated = { ...mockKnowledge, available: false };
       service.update.mockResolvedValueOnce(updated);
-      const dto = { title: 'Updated' };
+      const dto = { available: false };
       const result = await controller.update('knowledge-1', dto, 'user-1');
-      expect(result.title).toBe('Updated');
+      expect(result.available).toBe(false);
       expect(service.update).toHaveBeenCalledWith('knowledge-1', dto, 'user-1');
     });
   });

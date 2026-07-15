@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import { getKnowledgeSeedCopy } from './knowledge-seed-copy';
 import {
   findUserByKeycloakId,
   warnSeedSkippedMissingOwner,
@@ -7,56 +8,28 @@ import {
 } from './seed-helpers';
 
 export interface KnowledgeSeedData {
+  slug: string;
   ownerKeycloakId: string;
-  title: string;
-  description?: string;
   available?: boolean;
-  content: any;
 }
 
 export const knowledgeData: KnowledgeSeedData[] = [
   {
+    slug: 'nutrition-basics',
     ownerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
-    title: 'Nutrition Basics',
-    description: 'A short quiz about basic nutrition facts and macros.',
     available: true,
-    content: {
-      questions: [
-        {
-          question: 'Which macronutrient is the primary source of energy?',
-          options: ['Vitamins', 'Carbohydrates', 'Water', 'Minerals'],
-          correctAnswer: 'Carbohydrates',
-        },
-        {
-          question: 'Which vitamin is fat-soluble?',
-          options: ['Vitamin C', 'Vitamin B12', 'Vitamin A', 'Vitamin B6'],
-          correctAnswer: 'Vitamin A',
-        },
-      ],
-    },
   },
   {
+    slug: 'food-safety-101',
     ownerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
-    title: 'Food Safety 101',
-    description: 'Basic food safety practices to avoid contamination.',
     available: true,
-    content: {
-      questions: [
-        {
-          question:
-            'What temperature range is considered the "danger zone" for bacterial growth?',
-          options: ['0-4°C', '5-60°C', '61-90°C', 'below 0°C'],
-          correctAnswer: '5-60°C',
-        },
-      ],
-    },
   },
 ];
 
 export interface UserKnowledgeProgressSeedData {
   userKeycloakId: string;
-  knowledgeTitle: string;
-  knowledgeOwnerKeycloakId?: string; // optional if knowledge belongs to same user
+  knowledgeSlug: string;
+  knowledgeOwnerKeycloakId?: string;
   completed?: boolean;
   progress?: any;
 }
@@ -64,14 +37,14 @@ export interface UserKnowledgeProgressSeedData {
 export const userKnowledgeProgressData: UserKnowledgeProgressSeedData[] = [
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser1,
-    knowledgeTitle: 'Nutrition Basics',
+    knowledgeSlug: 'nutrition-basics',
     knowledgeOwnerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     completed: false,
     progress: { currentQuestionIndex: 1, answers: [0], score: 0 },
   },
   {
     userKeycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
-    knowledgeTitle: 'Food Safety 101',
+    knowledgeSlug: 'food-safety-101',
     knowledgeOwnerKeycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
     completed: true,
     progress: { currentQuestionIndex: 1, answers: [1], score: 1 },
@@ -89,39 +62,32 @@ export async function seedKnowledge(prisma: PrismaClient) {
     if (!owner) {
       warnSeedSkippedMissingOwner(
         k.ownerKeycloakId,
-        `knowledge "${k.title}"`,
+        `knowledge "${k.slug}"`,
       );
       continue;
     }
 
-    // Attempt to find existing knowledge with same title for same owner
-    const existing = await prisma.knowledge.findFirst({
-      where: { userId: owner.id, title: k.title },
+    const copy = getKnowledgeSeedCopy(k.slug);
+
+    const upserted = await prisma.knowledge.upsert({
+      where: { slug: k.slug },
+      update: {
+        title: copy.title,
+        description: copy.description,
+        available: k.available ?? true,
+        content: { questions: copy.questions },
+      },
+      create: {
+        slug: k.slug,
+        userId: owner.id,
+        title: copy.title,
+        description: copy.description,
+        available: k.available ?? true,
+        content: { questions: copy.questions },
+      },
     });
 
-    if (existing) {
-      // Update content/description/available if changed
-      const updated = await prisma.knowledge.update({
-        where: { id: existing.id },
-        data: {
-          description: k.description,
-          available: k.available ?? true,
-          content: k.content,
-        },
-      });
-      created.push(updated);
-    } else {
-      const createdKnowledge = await prisma.knowledge.create({
-        data: {
-          userId: owner.id,
-          title: k.title,
-          description: k.description ?? '',
-          available: k.available ?? true,
-          content: k.content,
-        },
-      });
-      created.push(createdKnowledge);
-    }
+    created.push(upserted);
   }
 
   console.log(`✅ Created/updated ${created.length} knowledge items`);
@@ -138,7 +104,7 @@ export async function seedUserKnowledgeProgress(prisma: PrismaClient) {
     if (!user) {
       warnSeedSkippedMissingUser(
         p.userKeycloakId,
-        `progress for "${p.knowledgeTitle}"`,
+        `progress for "${p.knowledgeSlug}"`,
       );
       continue;
     }
@@ -148,17 +114,17 @@ export async function seedUserKnowledgeProgress(prisma: PrismaClient) {
     if (!owner) {
       warnSeedSkippedMissingOwner(
         ownerKeycloak,
-        `progress for "${p.knowledgeTitle}"`,
+        `progress for "${p.knowledgeSlug}"`,
       );
       continue;
     }
 
-    const knowledge = await prisma.knowledge.findFirst({
-      where: { userId: owner.id, title: p.knowledgeTitle },
+    const knowledge = await prisma.knowledge.findUnique({
+      where: { slug: p.knowledgeSlug },
     });
     if (!knowledge) {
       console.warn(
-        `⚠️  Knowledge "${p.knowledgeTitle}" not found for owner ${ownerKeycloak}, skipping`,
+        `⚠️  Knowledge "${p.knowledgeSlug}" not found, skipping progress seed`,
       );
       continue;
     }

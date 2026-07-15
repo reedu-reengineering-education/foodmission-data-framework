@@ -44,6 +44,10 @@ export class KnowledgeResponseDto {
   @Expose()
   id: string;
 
+  @ApiProperty({ description: 'Stable slug for i18n lookup', example: 'nutrition-basics' })
+  @Expose()
+  slug: string;
+
   @ApiProperty({ description: 'Owner user id', format: 'uuid' })
   @Expose()
   userId: string;

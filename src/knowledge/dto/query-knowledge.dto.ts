@@ -1,12 +1,13 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, IntersectionType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import {
   TransformBooleanString,
   TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 
-export class QueryKnowledgeDto {
+class QueryKnowledgeFilterDto {
   @ApiPropertyOptional({ description: 'Page number', example: 1, default: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -35,7 +36,7 @@ export class QueryKnowledgeDto {
   available?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Search in title or description',
+    description: 'Search in title or description (English DB copy only)',
     example: 'nutrition',
   })
   @IsOptional()
@@ -43,3 +44,8 @@ export class QueryKnowledgeDto {
   @TransformTrimToUndefined()
   search?: string;
 }
+
+export class QueryKnowledgeDto extends IntersectionType(
+  LangQueryDto,
+  QueryKnowledgeFilterDto,
+) {}

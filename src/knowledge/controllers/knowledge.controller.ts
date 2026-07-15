@@ -6,7 +6,6 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
-  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -25,9 +24,10 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { KnowledgeService } from '../services/knowledge.service';
 import { KnowledgeProgressService } from '../services/knowledge-progress.service';
-import { CreateKnowledgeDto } from '../dto/create-knowledge.dto';
 import { UpdateKnowledgeDto } from '../dto/update-knowledge.dto';
 import {
   MultipleKnowledgeResponseDto,
@@ -46,29 +46,37 @@ import { MultipleProgressResponseDto } from '../dto/progress-list-response.dto';
 @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 @Controller('knowledge')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated knowledge copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class KnowledgeController {
   constructor(
     private readonly knowledgeService: KnowledgeService,
     private readonly progressService: KnowledgeProgressService,
   ) {}
 
-  @Post()
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Create a knowledge/quiz item' })
-  @ApiBody({ type: CreateKnowledgeDto })
-  @ApiResponse({
-    status: 201,
-    description: 'Knowledge created successfully',
-    type: KnowledgeResponseDto,
-  })
-  @ApiCrudErrorResponses()
-  create(
-    @Body() createKnowledgeDto: CreateKnowledgeDto,
-    @CurrentUser('id') userId: string,
-  ): Promise<KnowledgeResponseDto> {
-    return this.knowledgeService.create(createKnowledgeDto, userId);
-  }
+  // Curated knowledge is seeded/migrated only — API create disabled until product needs user-created quizzes.
+  // @Post()
+  // @Roles('user', 'admin')
+  // @ApiBearerAuth('JWT-auth')
+  // @ApiOperation({ summary: 'Create a knowledge/quiz item' })
+  // @ApiBody({ type: CreateKnowledgeDto })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'Knowledge created successfully',
+  //   type: KnowledgeResponseDto,
+  // })
+  // @ApiCrudErrorResponses()
+  // create(
+  //   @Body() createKnowledgeDto: CreateKnowledgeDto,
+  //   @CurrentUser('id') userId: string,
+  // ): Promise<KnowledgeResponseDto> {
+  //   return this.knowledgeService.create(createKnowledgeDto, userId);
+  // }
 
   @Get()
   @Roles('user', 'admin')
@@ -122,14 +130,15 @@ export class KnowledgeController {
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
   ): Promise<KnowledgeResponseDto> {
-    return this.knowledgeService.findOne(id, userId);
+    return this.knowledgeService.findOne(id, userId, query.lang);
   }
 
   @Patch(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update knowledge item' })
+  @ApiOperation({ summary: 'Update knowledge availability' })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiResponse({
     status: 200,
@@ -159,7 +168,6 @@ export class KnowledgeController {
     return this.knowledgeService.remove(id, userId);
   }
 
-  // Progress endpoints
   @Get(':id/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "de"
+  },
+  "items": {
+    "nutrition-basics": {
+      "title": "Ernährungsgrundlagen",
+      "description": "Ein kurzes Quiz über grundlegende Ernährungsfakten und Makronährstoffe.",
+      "questions": [
+        {
+          "question": "Welcher Makronährstoff ist die primäre Energiequelle?",
+          "options": ["Vitamine", "Kohlenhydrate", "Wasser", "Mineralstoffe"],
+          "correctAnswer": "Kohlenhydrate"
+        },
+        {
+          "question": "Welches Vitamin ist fettlöslich?",
+          "options": ["Vitamin C", "Vitamin B12", "Vitamin A", "Vitamin B6"],
+          "correctAnswer": "Vitamin A"
+        }
+      ]
+    },
+    "food-safety-101": {
+      "title": "Lebensmittelsicherheit 101",
+      "description": "Grundlegende Lebensmittelsicherheitspraktiken zur Vermeidung von Kontamination.",
+      "questions": [
+        {
+          "question": "Welcher Temperaturbereich gilt als \"Gefahrenzone\" für bakterielles Wachstum?",
+          "options": ["0-4°C", "5-60°C", "61-90°C", "unter 0°C"],
+          "correctAnswer": "5-60°C"
+        }
+      ]
+    }
+  }
+}

@@ -42,6 +42,10 @@ export function readJsonFile(filePath: string): JsonObject {
   return parsed;
 }
 
+function isArray(value: unknown): value is unknown[] {
+  return Array.isArray(value);
+}
+
 export function collectLeafKeys(obj: JsonObject, prefix = ''): string[] {
   const keys: string[] = [];
 
@@ -49,6 +53,18 @@ export function collectLeafKeys(obj: JsonObject, prefix = ''): string[] {
     const fullKey = prefix ? `${prefix}.${key}` : key;
 
     if (fullKey === 'meta' || fullKey.startsWith('meta.')) {
+      continue;
+    }
+
+    if (isArray(value)) {
+      value.forEach((item, index) => {
+        const arrayKey = `${fullKey}.${index}`;
+        if (isObject(item)) {
+          keys.push(...collectLeafKeys(item, arrayKey));
+        } else if (typeof item === 'string') {
+          keys.push(arrayKey);
+        }
+      });
       continue;
     }
 
@@ -68,6 +84,15 @@ export function getValueByPath(obj: JsonObject, dottedPath: string): unknown {
   let current: unknown = obj;
 
   for (const part of parts) {
+    if (isArray(current)) {
+      const index = Number(part);
+      if (!Number.isInteger(index) || index < 0 || index >= current.length) {
+        return undefined;
+      }
+      current = current[index];
+      continue;
+    }
+
     if (!isObject(current) || !(part in current)) {
       return undefined;
     }
@@ -174,18 +199,66 @@ export function setValueByPath(
   value: string,
 ): void {
   const parts = dottedPath.split('.');
-  let current: JsonObject = obj;
+  let current: JsonObject | unknown[] = obj;
 
   for (let i = 0; i < parts.length - 1; i += 1) {
     const part = parts[i];
-    const next = current[part];
-    if (!isObject(next)) {
-      current[part] = {};
+    const nextPart = parts[i + 1];
+    const nextIsArrayIndex = /^\d+$/.test(nextPart);
+
+    if (isArray(current)) {
+      const index = Number(part);
+      if (!Number.isInteger(index) || index < 0) {
+        throw new Error(`Invalid array index in path "${dottedPath}"`);
+      }
+      while (current.length <= index) {
+        current.push({});
+      }
+      const next = current[index];
+      if (nextIsArrayIndex) {
+        if (!isArray(next)) {
+          current[index] = [];
+        }
+        current = current[index] as unknown[];
+      } else if (!isObject(next)) {
+        current[index] = {};
+        current = current[index] as JsonObject;
+      } else {
+        current = next;
+      }
+      continue;
     }
-    current = current[part] as JsonObject;
+
+    const record = current as JsonObject;
+    const next = record[part];
+    if (nextIsArrayIndex) {
+      if (!isArray(next)) {
+        record[part] = [];
+      }
+      current = record[part] as unknown[];
+    } else if (!isObject(next)) {
+      record[part] = {};
+      current = record[part] as JsonObject;
+    } else {
+      current = next;
+    }
   }
 
-  current[parts[parts.length - 1]] = value;
+  const lastPart = parts[parts.length - 1];
+
+  if (isArray(current)) {
+    const index = Number(lastPart);
+    if (!Number.isInteger(index) || index < 0) {
+      throw new Error(`Invalid array index in path "${dottedPath}"`);
+    }
+    while (current.length <= index) {
+      current.push('');
+    }
+    current[index] = value;
+    return;
+  }
+
+  (current as JsonObject)[lastPart] = value;
 }
 
 export function writeJsonFile(filePath: string, obj: JsonObject): void {
