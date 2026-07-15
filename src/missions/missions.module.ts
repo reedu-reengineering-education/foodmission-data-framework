@@ -4,6 +4,7 @@ import { DatabaseModule } from '../database/database.module';
 
 import { CommonModule } from '../common/common.module';
 import { UsersRepository } from '../users/repositories/users.repository';
+import { QuestsModule } from '../quests/quests.module';
 import { MissionsController } from './controllers/missions.controller';
 import { MissionsService } from './services/missions.service';
 import { MissionsRepository } from './repositories/missions.repository';
@@ -12,7 +13,7 @@ import { MissionProgressService } from './services/mission-progress.service';
 import { MissionProgressRepository } from './repositories/mission-progress.repository';
 
 @Module({
-  imports: [DatabaseModule, HttpModule, CommonModule],
+  imports: [DatabaseModule, HttpModule, CommonModule, QuestsModule],
   controllers: [MissionsController, MissionProgressController],
   providers: [
     MissionsService,

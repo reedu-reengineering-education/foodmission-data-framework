@@ -3,6 +3,7 @@ import { MissionsService } from './missions.service';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
+import { QuestsService } from '../../quests/services/quests.service';
 import {
   NotFoundException,
   ConflictException,
@@ -60,6 +61,16 @@ describe('MissionsService', () => {
         {
           provide: GamificationI18nService,
           useValue: mockGamificationI18n,
+        },
+        {
+          provide: QuestsService,
+          useValue: {
+            transformToResponseDto: jest.fn((quest) => ({
+              id: quest.id,
+              slug: quest.slug,
+              title: quest.title,
+            })),
+          },
         },
       ],
     }).compile();

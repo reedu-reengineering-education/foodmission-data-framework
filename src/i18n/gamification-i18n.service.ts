@@ -65,6 +65,25 @@ export class GamificationI18nService {
     };
   }
 
+  getQuestCopy(
+    slug: string,
+    fallbacks: GamificationCopy,
+    langOverride?: string,
+  ): GamificationCopy {
+    return {
+      title: this.translateField(
+        `quests.${slug}.title`,
+        fallbacks.title,
+        langOverride,
+      ),
+      description: this.translateField(
+        `quests.${slug}.description`,
+        fallbacks.description,
+        langOverride,
+      ),
+    };
+  }
+
   getMissionCopyOrThrow(slug: string): GamificationCopy {
     const copy = this.getMissionCopy(slug, { title: '', description: '' }, 'en');
 
@@ -87,6 +106,18 @@ export class GamificationI18nService {
     if (!copy.title.trim() || !copy.description.trim()) {
       throw new BadRequestException(
         `Missing English gamification copy for challenge slug "${slug}". Add gamification.challenges.${slug} to src/i18n/en/gamification.json.`,
+      );
+    }
+
+    return copy;
+  }
+
+  getQuestCopyOrThrow(slug: string): GamificationCopy {
+    const copy = this.getQuestCopy(slug, { title: '', description: '' }, 'en');
+
+    if (!copy.title.trim() || !copy.description.trim()) {
+      throw new BadRequestException(
+        `Missing English gamification copy for quest slug "${slug}". Add gamification.quests.${slug} to src/i18n/en/gamification.json.`,
       );
     }
 

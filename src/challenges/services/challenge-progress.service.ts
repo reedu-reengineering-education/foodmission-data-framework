@@ -4,6 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { ProgressStatus } from '@prisma/client';
 import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
@@ -73,10 +74,17 @@ export class ChallengeProgressService {
       throw new ForbiddenException('No permission');
     }
 
+    const payload: UpdateChallengeProgressDto = { ...updateDto };
+    if (updateDto.completed === true && updateDto.status === undefined) {
+      payload.status = ProgressStatus.ACHIEVED;
+    } else if (updateDto.completed === false && updateDto.status === undefined) {
+      payload.status = ProgressStatus.ACTIVE;
+    }
+
     const updated = await this.challengeProgressRepository.update(
       userId,
       challengeId,
-      updateDto,
+      payload,
     );
 
     return this.transformToResponseDto(updated);
@@ -87,6 +95,7 @@ export class ChallengeProgressService {
     userId: string;
     completed: boolean;
     progress: number;
+    status: import('@prisma/client').ProgressStatus;
     challenge?: { slug: string; title: string; description: string };
   }): ChallengeProgressResponseDto {
     const challenge = progress.challenge;
@@ -103,6 +112,7 @@ export class ChallengeProgressService {
       completed: progress.completed,
       progress: progress.progress,
       challengeTitle: copy.title,
+      status: progress.status,
     };
   }
 }

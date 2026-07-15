@@ -80,6 +80,7 @@ model User {
   knowledgeProgress UserKnowledgeProgress[]
   challengeProgress ChallengeProgress[]
   missionProgress   MissionProgress[]
+  questProgress     QuestProgress[]
   groupMemberships  GroupMembership[]
 
   @@index([email])

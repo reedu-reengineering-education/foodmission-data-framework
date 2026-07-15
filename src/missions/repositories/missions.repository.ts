@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ChallengeScope, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateMissionData {
@@ -17,6 +18,19 @@ export interface UpdateMissionData {
   startDate?: Date;
   endDate?: Date;
 }
+
+const missionDetailInclude = {
+  missionProgresses: true,
+  quests: {
+    orderBy: { sortOrder: 'asc' as const },
+    include: {
+      challenges: {
+        where: { challengeScope: ChallengeScope.QUEST_ONE_TIME },
+        orderBy: { startDate: 'asc' as const },
+      },
+    },
+  },
+} satisfies Prisma.MissionInclude;
 
 @Injectable()
 export class MissionsRepository {
@@ -48,7 +62,7 @@ export class MissionsRepository {
   async findById(id: string) {
     return this.prisma.mission.findUnique({
       where: { id },
-      include: { missionProgresses: true },
+      include: missionDetailInclude,
     });
   }
 

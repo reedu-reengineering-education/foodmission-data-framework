@@ -16,6 +16,7 @@ import {
 } from '../scripts/seeds/dev/knowledge';
 import { seedChallenges } from '../scripts/seeds/dev/challenges';
 import { seedMissions } from '../scripts/seeds/dev/missions';
+import { seedQuests } from '../scripts/seeds/dev/quests';
 import { seedRecipes } from '../scripts/seeds/prod/themealdb';
 import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
@@ -91,8 +92,9 @@ async function seedDevelopment() {
   const virtualMembers = await seedVirtualMembers(prisma);
   const knowledge = await seedKnowledge(prisma);
   const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
-  const challenges = await seedChallenges(prisma);
   const missions = await seedMissions(prisma);
+  const quests = await seedQuests(prisma);
+  const challenges = await seedChallenges(prisma);
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
   const recipes = await seedRecipes(prisma);
@@ -125,8 +127,9 @@ async function seedDevelopment() {
     { label: 'virtualMembers', value: virtualMembers.length },
     { label: 'knowledge', value: knowledge.length },
     { label: 'knowledgeProgress', value: knowledgeProgress.length },
-    { label: 'challenges', value: challenges.length },
     { label: 'missions', value: missions.length },
+    { label: 'quests', value: quests.length },
+    { label: 'challenges', value: challenges.length },
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,

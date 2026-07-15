@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ChallengeScope, ProgressStatus } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 
@@ -9,6 +10,8 @@ export interface CreateChallengeData {
   available: boolean;
   startDate: Date;
   endDate: Date;
+  questId?: string;
+  challengeScope?: ChallengeScope;
 }
 
 @Injectable()
@@ -26,11 +29,14 @@ export class ChallengesRepository {
         available: data.available,
         startDate: data.startDate,
         endDate: data.endDate,
+        questId: data.questId,
+        challengeScope: data.challengeScope ?? ChallengeScope.DAILY_STANDALONE,
         challengeProgresses: {
           create: allUsers.map((user) => ({
             userId: user.id,
             progress: 0,
             completed: false,
+            status: ProgressStatus.ACTIVE,
           })),
         },
       },
@@ -40,6 +46,13 @@ export class ChallengesRepository {
 
   async findAll() {
     return this.prisma.challenge.findMany({
+      include: { challengeProgresses: true },
+    });
+  }
+
+  async findDailyStandalone() {
+    return this.prisma.challenge.findMany({
+      where: { challengeScope: ChallengeScope.DAILY_STANDALONE },
       include: { challengeProgresses: true },
     });
   }

@@ -21,6 +21,8 @@ describe('ChallengesService', () => {
     title: 'Test Challenge',
     description: 'Test Description',
     available: true,
+    questId: null,
+    challengeScope: 'DAILY_STANDALONE',
     startDate: new Date(),
     endDate: new Date(),
     challengeProgresses: [{ userId: 'u1', progress: 50 }],
@@ -46,6 +48,7 @@ describe('ChallengesService', () => {
           provide: ChallengesRepository,
           useValue: {
             create: jest.fn(),
+            findDailyStandalone: jest.fn(),
             findAll: jest.fn(),
             findById: jest.fn(),
             update: jest.fn(),
@@ -93,6 +96,8 @@ describe('ChallengesService', () => {
         available: createDto.available,
         startDate: createDto.startDate,
         endDate: createDto.endDate,
+        questId: undefined,
+        challengeScope: 'DAILY_STANDALONE',
       });
       expect(result).toMatchObject({
         id: 'c1',
@@ -166,18 +171,20 @@ describe('ChallengesService', () => {
   });
 
   describe('getAll', () => {
-    it('should return all challenges transformed', async () => {
-      (repository.findAll as jest.Mock).mockResolvedValue([mockChallenge]);
+    it('should return daily standalone challenges transformed', async () => {
+      (repository.findDailyStandalone as jest.Mock).mockResolvedValue([
+        mockChallenge,
+      ]);
 
       const result = await service.getAll();
 
-      expect(repository.findAll).toHaveBeenCalled();
+      expect(repository.findDailyStandalone).toHaveBeenCalled();
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({ id: 'c1', slug: 'bring-your-own-bag' });
     });
 
     it('should return empty array when no challenges', async () => {
-      (repository.findAll as jest.Mock).mockResolvedValue([]);
+      (repository.findDailyStandalone as jest.Mock).mockResolvedValue([]);
 
       const result = await service.getAll();
 

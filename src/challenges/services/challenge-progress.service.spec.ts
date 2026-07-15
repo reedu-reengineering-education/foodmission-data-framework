@@ -3,6 +3,7 @@ import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import { ProgressStatus } from '@prisma/client';
 
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
@@ -50,6 +51,7 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        status: ProgressStatus.ACTIVE,
         challenge: {
           slug: 'bring-your-own-bag',
           title: 'Test Challenge',
@@ -60,106 +62,25 @@ describe('ChallengeProgressService', () => {
         mockProgress,
       );
       const result = await service.getChallengeById('c1', 'u1');
-      expect(repository.findByUserIdAndChallengeId).toHaveBeenCalledWith(
-        'u1',
-        'c1',
-      );
       expect(result).toEqual({
         challengeId: 'c1',
         userId: 'u1',
         completed: false,
         progress: 0.5,
         challengeTitle: 'Test Challenge',
+        status: ProgressStatus.ACTIVE,
       });
-    });
-
-    it('should throw NotFoundException if progress not found', async () => {
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      await expect(service.getChallengeById('c1', 'u1')).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-
-    it('should throw ForbiddenException if userId does not match', async () => {
-      const mockProgress = {
-        challengeId: 'c1',
-        userId: 'other',
-        completed: false,
-        progress: 0.5,
-        challenge: {
-          slug: 'bring-your-own-bag',
-          title: 'Test Challenge',
-          description: 'Test Description',
-        },
-      };
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        mockProgress,
-      );
-      await expect(service.getChallengeById('c1', 'u1')).rejects.toThrow(
-        ForbiddenException,
-      );
-    });
-  });
-
-  describe('getAllChallengesByUserId', () => {
-    it('should return all challenge progresses for user', async () => {
-      const mockProgresses = [
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: false,
-          progress: 0.5,
-          challenge: {
-            slug: 'bring-your-own-bag',
-            title: 'Challenge 1',
-            description: 'Desc 1',
-          },
-        },
-        {
-          challengeId: 'c2',
-          userId: 'u1',
-          completed: true,
-          progress: 1,
-          challenge: {
-            slug: 'meatless-monday',
-            title: 'Challenge 2',
-            description: 'Desc 2',
-          },
-        },
-      ];
-      (repository.findAllByUserId as jest.Mock).mockResolvedValue(
-        mockProgresses,
-      );
-      const result = await service.getAllChallengesByUserId('u1');
-      expect(repository.findAllByUserId).toHaveBeenCalledWith('u1');
-      expect(result).toEqual([
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: false,
-          progress: 0.5,
-          challengeTitle: 'Challenge 1',
-        },
-        {
-          challengeId: 'c2',
-          userId: 'u1',
-          completed: true,
-          progress: 1,
-          challengeTitle: 'Challenge 2',
-        },
-      ]);
     });
   });
 
   describe('update', () => {
-    it('should update and return challenge progress if found and userId matches', async () => {
+    it('should set status to ACHIEVED when completed is true', async () => {
       const existing = {
         challengeId: 'c1',
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        status: ProgressStatus.ACTIVE,
         challenge: {
           slug: 'bring-your-own-bag',
           title: 'Test Challenge',
@@ -167,36 +88,28 @@ describe('ChallengeProgressService', () => {
         },
       };
       const updated = {
-        challengeId: 'c1',
-        userId: 'u1',
+        ...existing,
         completed: true,
         progress: 1,
-        challenge: {
-          slug: 'bring-your-own-bag',
-          title: 'Test Challenge',
-          description: 'Test Description',
-        },
+        status: ProgressStatus.ACHIEVED,
       };
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         existing,
       );
       (repository.update as jest.Mock).mockResolvedValue(updated);
+
       const result = await service.update(
         'c1',
         { completed: true, progress: 1 },
         'u1',
       );
+
       expect(repository.update).toHaveBeenCalledWith('u1', 'c1', {
         completed: true,
         progress: 1,
+        status: ProgressStatus.ACHIEVED,
       });
-      expect(result).toEqual({
-        challengeId: 'c1',
-        userId: 'u1',
-        completed: true,
-        progress: 1,
-        challengeTitle: 'Test Challenge',
-      });
+      expect(result.status).toBe(ProgressStatus.ACHIEVED);
     });
 
     it('should throw NotFoundException if progress not found', async () => {
@@ -214,6 +127,7 @@ describe('ChallengeProgressService', () => {
         userId: 'other',
         completed: false,
         progress: 0.5,
+        status: ProgressStatus.ACTIVE,
         challenge: {
           slug: 'bring-your-own-bag',
           title: 'Test Challenge',

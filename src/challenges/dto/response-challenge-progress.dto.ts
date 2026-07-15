@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ProgressStatus } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class ChallengeProgressResponseDto {
@@ -21,4 +22,8 @@ export class ChallengeProgressResponseDto {
   @ApiProperty({ example: 'Bring Your Own Bag' })
   @Expose()
   challengeTitle: string;
+
+  @ApiProperty({ enum: ProgressStatus, example: ProgressStatus.ACTIVE })
+  @Expose()
+  status: ProgressStatus;
 }

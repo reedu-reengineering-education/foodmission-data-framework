@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDateString, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { ChallengeScope } from '@prisma/client';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Matches,
+} from 'class-validator';
 
 export class CreateChallengeDto {
   @ApiProperty({
@@ -37,4 +47,21 @@ export class CreateChallengeDto {
   @IsDateString()
   @IsNotEmpty()
   endDate: Date;
+
+  @ApiProperty({
+    required: false,
+    description: 'Quest id when creating a one-time quest challenge',
+  })
+  @IsOptional()
+  @IsUUID()
+  questId?: string;
+
+  @ApiProperty({
+    required: false,
+    enum: ChallengeScope,
+    example: ChallengeScope.DAILY_STANDALONE,
+  })
+  @IsOptional()
+  @IsEnum(ChallengeScope)
+  challengeScope?: ChallengeScope;
 }

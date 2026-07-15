@@ -12,6 +12,8 @@ import {
 } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
+import { QuestResponseDto } from '../../quests/dto/response-quest.dto';
+import { QuestsService } from '../../quests/services/quests.service';
 import { MissionsResponseDto } from '../dto/response-missions.dto';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { CreateMissionsDto } from '../dto/create-missions.dto';
@@ -26,6 +28,7 @@ export class MissionsService {
     private readonly missionRepository: MissionsRepository,
     private readonly prisma: PrismaService,
     private readonly gamificationI18n: GamificationI18nService,
+    private readonly questsService: QuestsService,
   ) {}
 
   async create(
@@ -134,6 +137,9 @@ export class MissionsService {
         mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) ||
         0,
       available: mission.available,
+      quests: mission.quests?.map((quest) =>
+        this.questsService.transformToResponseDto(quest),
+      ),
     };
   }
 }

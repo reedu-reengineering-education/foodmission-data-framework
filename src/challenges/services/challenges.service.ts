@@ -6,6 +6,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { ChallengeScope } from '@prisma/client';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
@@ -27,6 +28,30 @@ export class ChallengesService {
     createChallengeDto: CreateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     try {
+      const challengeScope =
+        createChallengeDto.challengeScope ??
+        (createChallengeDto.questId
+          ? ChallengeScope.QUEST_ONE_TIME
+          : ChallengeScope.DAILY_STANDALONE);
+
+      if (
+        challengeScope === ChallengeScope.QUEST_ONE_TIME &&
+        !createChallengeDto.questId
+      ) {
+        throw new BadRequestException(
+          'questId is required for QUEST_ONE_TIME challenges',
+        );
+      }
+
+      if (
+        challengeScope === ChallengeScope.DAILY_STANDALONE &&
+        createChallengeDto.questId
+      ) {
+        throw new BadRequestException(
+          'questId must not be set for DAILY_STANDALONE challenges',
+        );
+      }
+
       const copy = this.gamificationI18n.getChallengeCopyOrThrow(
         createChallengeDto.slug,
       );
@@ -37,6 +62,8 @@ export class ChallengesService {
         available: createChallengeDto.available,
         startDate: createChallengeDto.startDate,
         endDate: createChallengeDto.endDate,
+        questId: createChallengeDto.questId,
+        challengeScope,
       });
       return this.transformToResponseDto(challenge);
     } catch (error) {
@@ -69,6 +96,16 @@ export class ChallengesService {
   }
 
   async getAll(): Promise<ChallengeResponseDto[]> {
+    this.logger.log('Getting daily standalone challenges');
+
+    const challenges = await this.challengesRepository.findDailyStandalone();
+
+    return challenges.map((challenge) =>
+      this.transformToResponseDto(challenge),
+    );
+  }
+
+  async getAllForAdmin(): Promise<ChallengeResponseDto[]> {
     this.logger.log('Getting all challenges');
 
     const challenges = await this.challengesRepository.findAll();
@@ -122,6 +159,8 @@ export class ChallengesService {
       title: copy.title,
       description: copy.description,
       available: challenge.available,
+      questId: challenge.questId,
+      challengeScope: challenge.challengeScope,
       progress:
         challenge.challengeProgresses?.find(
           (cp) => cp.userId === challenge.userId,

@@ -67,10 +67,12 @@ describe('ChallengesRepository', () => {
           available: dto.available,
           startDate: dto.startDate,
           endDate: dto.endDate,
+          questId: undefined,
+          challengeScope: 'DAILY_STANDALONE',
           challengeProgresses: {
             create: [
-              { userId: 'u1', progress: 0, completed: false },
-              { userId: 'u2', progress: 0, completed: false },
+              { userId: 'u1', progress: 0, completed: false, status: 'ACTIVE' },
+              { userId: 'u2', progress: 0, completed: false, status: 'ACTIVE' },
             ],
           },
         },

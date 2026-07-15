@@ -26,6 +26,38 @@ describe('GamificationI18nService', () => {
     service = module.get(GamificationI18nService);
   });
 
+  describe('getQuestCopy', () => {
+    it('returns German translation when lang=de', () => {
+      const copy = service.getQuestCopy(
+        'avoid-single-use-plastic',
+        {
+          title: 'Avoid single-use plastic',
+          description: 'Skip disposable plastic items in your daily routine',
+        },
+        'de',
+      );
+
+      expect(copy.title).toBe('Einwegplastik vermeiden');
+      expect(copy.description).toBe(
+        'Verzichten Sie im Alltag auf Wegwerfplastik',
+      );
+    });
+  });
+
+  describe('getQuestCopyOrThrow', () => {
+    it('returns English copy for a known slug', () => {
+      const copy = service.getQuestCopyOrThrow('avoid-single-use-plastic');
+
+      expect(copy.title).toBe('Avoid single-use plastic');
+    });
+
+    it('throws when English copy is missing', () => {
+      expect(() => service.getQuestCopyOrThrow('unknown-quest')).toThrow(
+        BadRequestException,
+      );
+    });
+  });
+
   describe('getMissionCopy', () => {
     it('returns German translation when lang=de', () => {
       const copy = service.getMissionCopy(

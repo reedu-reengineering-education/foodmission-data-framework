@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { ProgressStatus } from '@prisma/client';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class UpdateChallengeProgressDto {
   @ApiPropertyOptional({
@@ -19,4 +20,12 @@ export class UpdateChallengeProgressDto {
   @IsOptional()
   @IsBoolean()
   completed?: boolean;
+
+  @ApiPropertyOptional({
+    enum: ProgressStatus,
+    example: ProgressStatus.ACHIEVED,
+  })
+  @IsOptional()
+  @IsEnum(ProgressStatus)
+  status?: ProgressStatus;
 }

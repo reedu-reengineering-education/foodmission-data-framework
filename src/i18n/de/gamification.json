@@ -8,5 +8,11 @@
       "description": "Verzichten Sie 30 Tage lang auf Einwegplastik"
     }
   },
+  "quests": {
+    "avoid-single-use-plastic": {
+      "title": "Einwegplastik vermeiden",
+      "description": "Verzichten Sie im Alltag auf Wegwerfplastik"
+    }
+  },
   "challenges": {}
 }

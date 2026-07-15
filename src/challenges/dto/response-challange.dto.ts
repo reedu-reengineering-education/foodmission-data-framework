@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChallengeProgress } from '@prisma/client';
+import { ChallengeProgress, ChallengeScope } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class ChallengeResponseDto {
@@ -37,6 +37,20 @@ export class ChallengeResponseDto {
   })
   @Expose()
   available: boolean;
+
+  @ApiProperty({
+    description: 'Parent quest id for one-time quest challenges',
+    required: false,
+  })
+  @Expose()
+  questId?: string | null;
+
+  @ApiProperty({
+    enum: ChallengeScope,
+    example: ChallengeScope.DAILY_STANDALONE,
+  })
+  @Expose()
+  challengeScope: ChallengeScope;
 
   @ApiProperty({
     description: 'The challenge progress',

@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
 import { MissionProgress } from '@prisma/client';
+import { QuestResponseDto } from '../../quests/dto/response-quest.dto';
 
 export class MissionsResponseDto {
   @ApiProperty({
@@ -59,4 +60,12 @@ export class MissionsResponseDto {
   })
   @Expose()
   endDate: Date;
+
+  @ApiPropertyOptional({
+    description: 'Nested quests with optional one-time challenges',
+    type: [QuestResponseDto],
+  })
+  @Expose()
+  @Type(() => QuestResponseDto)
+  quests?: QuestResponseDto[];
 }

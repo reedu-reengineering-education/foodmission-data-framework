@@ -64,11 +64,12 @@ export class ChallengesController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get all challenges',
-    description: 'Retrieves all challenges. Admin only.',
+    summary: 'Get daily standalone challenges',
+    description:
+      'Retrieves daily standalone challenges (quest one-time challenges are nested under missions/quests).',
   })
   @ApiResponse({
     status: 200,

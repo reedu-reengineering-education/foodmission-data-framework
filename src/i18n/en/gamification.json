@@ -44,6 +44,24 @@
       "description": "Decrease personal carbon emissions by 50% over 6 months"
     }
   },
+  "quests": {
+    "avoid-single-use-plastic": {
+      "title": "Avoid single-use plastic",
+      "description": "Skip disposable plastic items in your daily routine"
+    },
+    "reusable-shopping-habit": {
+      "title": "Build a reusable shopping habit",
+      "description": "Use reusable bags and containers for one week straight"
+    },
+    "three-days-no-meat": {
+      "title": "Three days without meat",
+      "description": "Eat plant-based meals for three days this week"
+    },
+    "try-plant-protein-meals": {
+      "title": "Try plant protein meals",
+      "description": "Cook five meals using legumes, tofu, or other plant proteins"
+    }
+  },
   "challenges": {
     "bring-your-own-bag": {
       "title": "Bring Your Own Bag",
@@ -84,6 +102,14 @@
     "green-commute": {
       "title": "Green Commute",
       "description": "Use public transportation or walk to work"
+    },
+    "refuse-plastic-bottle": {
+      "title": "Refuse a plastic bottle",
+      "description": "Decline a single-use plastic bottle today"
+    },
+    "no-meat-today": {
+      "title": "No meat today",
+      "description": "Choose plant-based options for all meals today"
     }
   }
 }

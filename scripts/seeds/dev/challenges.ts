@@ -104,6 +104,7 @@ export async function seedChallenges(prisma: PrismaClient) {
     const challenge = await prisma.challenge.upsert({
       where: { slug: challengeInfo.slug },
       update: {
+        challengeScope: 'DAILY_STANDALONE',
         title: copy.title,
         description: copy.description,
         available: challengeInfo.available,
@@ -112,6 +113,7 @@ export async function seedChallenges(prisma: PrismaClient) {
       },
       create: {
         slug: challengeInfo.slug,
+        challengeScope: 'DAILY_STANDALONE',
         title: copy.title,
         description: copy.description,
         available: challengeInfo.available,
