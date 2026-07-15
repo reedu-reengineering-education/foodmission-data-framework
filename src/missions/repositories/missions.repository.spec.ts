@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ChallengeScope } from '@prisma/client';
 import { MissionsRepository } from './missions.repository';
 import { PrismaService } from '../../database/prisma.service';
 
@@ -76,13 +77,24 @@ describe('MissionsRepository', () => {
   });
 
   describe('findById', () => {
-    it('should call prisma.mission.findUnique with include missionProgresses', async () => {
-      const mockReturn = { id: 'm1', missionProgresses: [] };
+    it('should call prisma.mission.findUnique with mission detail include', async () => {
+      const mockReturn = { id: 'm1', missionProgresses: [], quests: [] };
       (prisma.mission.findUnique as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findById('m1');
       expect(prisma.mission.findUnique).toHaveBeenCalledWith({
         where: { id: 'm1' },
-        include: { missionProgresses: true },
+        include: {
+          missionProgresses: true,
+          quests: {
+            orderBy: { sortOrder: 'asc' },
+            include: {
+              challenges: {
+                where: { challengeScope: ChallengeScope.QUEST_ONE_TIME },
+                orderBy: { startDate: 'asc' },
+              },
+            },
+          },
+        },
       });
       expect(result).toBe(mockReturn);
     });

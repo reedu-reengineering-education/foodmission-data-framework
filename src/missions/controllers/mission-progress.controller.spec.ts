@@ -42,8 +42,8 @@ describe('MissionProgressController', () => {
     it('should call service.getMissionById and return result', async () => {
       const mockResult = { missionId: 'm1' };
       (service.getMissionById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getMissionById('m1', 'u1');
-      expect(service.getMissionById).toHaveBeenCalledWith('m1', 'u1');
+      const result = await controller.getMissionById('m1', 'u1', { lang: 'de' });
+      expect(service.getMissionById).toHaveBeenCalledWith('m1', 'u1', 'de');
       expect(result).toBe(mockResult);
     });
   });

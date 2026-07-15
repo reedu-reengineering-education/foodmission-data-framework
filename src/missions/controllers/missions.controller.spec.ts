@@ -67,8 +67,18 @@ describe('MissionsController', () => {
     it('should call service.getMissionById and return result', async () => {
       const mockResult = { id: 'm1' };
       (service.getMissionById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getMissionById('m1');
-      expect(service.getMissionById).toHaveBeenCalledWith('m1');
+      const result = await controller.getMissionById('m1', { lang: 'de' });
+      expect(service.getMissionById).toHaveBeenCalledWith('m1', 'de');
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('getAllMissions', () => {
+    it('should call service.getAllMissions with lang', async () => {
+      const mockResult = [{ id: 'm1' }];
+      (service.getAllMissions as jest.Mock).mockResolvedValue(mockResult);
+      const result = await controller.getAllMissions({ lang: 'de' });
+      expect(service.getAllMissions).toHaveBeenCalledWith('de');
       expect(result).toBe(mockResult);
     });
   });
