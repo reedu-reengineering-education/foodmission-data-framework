@@ -237,6 +237,23 @@ describe('MissionsService', () => {
     });
   });
 
+  describe('getAllMissions', () => {
+    it('passes lang to gamification i18n lookup', async () => {
+      (repository.findAll as jest.Mock).mockResolvedValue([mockMission]);
+
+      await service.getAllMissions('de');
+
+      expect(gamificationI18n.getMissionCopy).toHaveBeenCalledWith(
+        'plastic-free-month',
+        {
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
+        'de',
+      );
+    });
+  });
+
   describe('remove', () => {
     it('should call repository.delete', async () => {
       (repository.delete as jest.Mock).mockResolvedValue(undefined);

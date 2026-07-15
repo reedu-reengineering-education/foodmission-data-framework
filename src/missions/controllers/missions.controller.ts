@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,9 +15,12 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
@@ -32,6 +36,13 @@ import { MissionProgressService } from '../services/mission-progress.service';
 @ApiTags('missions')
 @Controller('missions')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated mission copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class MissionsController {
   constructor(
     private readonly missionService: MissionsService,
@@ -62,6 +73,54 @@ export class MissionsController {
     return this.missionService.create(createMissionDto);
   }
 
+  @Get('progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all mission progresses for the current user',
+    description: 'Retrieves all mission progresses for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of mission progresses retrieved successfully',
+    type: [MissionProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAll(
+    @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
+  ): Promise<MissionProgressResponseDto[]> {
+    return this.missionProgressService.getAllMissionsByUserId(userId, query.lang);
+  }
+
+  @Get()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all missions',
+    description:
+      'Retrieves all missions for the authenticated user. Only the mission owner can access them.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Missions retrieved successfully',
+    type: [MissionsResponseDto],
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No permission',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No missions found',
+  })
+  @ApiCrudErrorResponses()
+  async getAllMissions(
+    @Query() query: LangQueryDto,
+  ): Promise<MissionsResponseDto[]> {
+    return this.missionService.getAllMissions(query.lang);
+  }
+
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -87,34 +146,9 @@ export class MissionsController {
   @ApiCrudErrorResponses()
   async getMissionById(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query() query: LangQueryDto,
   ): Promise<MissionsResponseDto> {
-    return this.missionService.getMissionById(id);
-  }
-
-  @Get()
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all missions',
-    description:
-      'Retrieves all missions for the authenticated user. Only the mission owner can access them.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Missions retrieved successfully',
-    type: [MissionsResponseDto],
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No permission',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'No missions found',
-  })
-  @ApiCrudErrorResponses()
-  async getAllMissions(): Promise<MissionsResponseDto[]> {
-    return this.missionService.getAllMissions();
+    return this.missionService.getMissionById(id, query.lang);
   }
 
   @Patch(':id')
@@ -168,22 +202,4 @@ export class MissionsController {
     return this.missionService.remove(id);
   }
 
-  @Get('progress')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all mission progresses for the current user',
-    description: 'Retrieves all mission progresses for the authenticated user.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of mission progresses retrieved successfully',
-    type: [MissionProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAll(
-    @CurrentUser('id') userId: string,
-  ): Promise<MissionProgressResponseDto[]> {
-    return this.missionProgressService.getAllMissionsByUserId(userId);
-  }
 }

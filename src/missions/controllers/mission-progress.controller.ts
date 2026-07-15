@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -12,9 +13,12 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
@@ -27,6 +31,13 @@ import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto
 @ApiTags('missions')
 @Controller('missions/:missionId/progress')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated mission copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class MissionProgressController {
   constructor(
     private readonly missionProgressService: MissionProgressService,
@@ -58,8 +69,13 @@ export class MissionProgressController {
   async getMissionById(
     @Param('missionId', ParseUUIDPipe) missionId: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
   ): Promise<MissionProgressResponseDto> {
-    return this.missionProgressService.getMissionById(missionId, userId);
+    return this.missionProgressService.getMissionById(
+      missionId,
+      userId,
+      query.lang,
+    );
   }
 
   @Patch()

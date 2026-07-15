@@ -63,7 +63,10 @@ export class MissionsService {
       handleServiceError(error, 'Failed to create mission');
     }
   }
-  async getMissionById(missionId: string): Promise<MissionsResponseDto> {
+  async getMissionById(
+    missionId: string,
+    lang?: string,
+  ): Promise<MissionsResponseDto> {
     this.logger.log(`Getting mission ${missionId}`);
 
     const mission = await this.missionRepository.findById(missionId);
@@ -71,10 +74,10 @@ export class MissionsService {
     if (!mission) {
       throw new NotFoundException('Mission not found');
     }
-    return this.transformToResponseDto(mission);
+    return this.transformToResponseDto(mission, lang);
   }
 
-  async getAllMissions(): Promise<MissionsResponseDto[]> {
+  async getAllMissions(lang?: string): Promise<MissionsResponseDto[]> {
     this.logger.log(`Getting All missions`);
 
     const missions = await this.missionRepository.findAll();
@@ -82,7 +85,7 @@ export class MissionsService {
     if (!missions || missions.length === 0) {
       throw new NotFoundException('No missions found');
     }
-    return missions.map((mission) => this.transformToResponseDto(mission));
+    return missions.map((mission) => this.transformToResponseDto(mission, lang));
   }
 
   async update(
@@ -120,11 +123,18 @@ export class MissionsService {
     }
   }
 
-  private transformToResponseDto(mission: any): MissionsResponseDto {
-    const copy = this.gamificationI18n.getMissionCopy(mission.slug, {
-      title: mission.title,
-      description: mission.description,
-    });
+  private transformToResponseDto(
+    mission: any,
+    lang?: string,
+  ): MissionsResponseDto {
+    const copy = this.gamificationI18n.getMissionCopy(
+      mission.slug,
+      {
+        title: mission.title,
+        description: mission.description,
+      },
+      lang,
+    );
 
     return {
       id: mission.id,
@@ -138,7 +148,7 @@ export class MissionsService {
         0,
       available: mission.available,
       quests: mission.quests?.map((quest) =>
-        this.questsService.transformToResponseDto(quest),
+        this.questsService.transformToResponseDto(quest, lang),
       ),
     };
   }

@@ -130,11 +130,15 @@ export class QuestsService {
     }
   }
 
-  transformToResponseDto(quest: any): QuestResponseDto {
-    const copy = this.gamificationI18n.getQuestCopy(quest.slug, {
-      title: quest.title,
-      description: quest.description,
-    });
+  transformToResponseDto(quest: any, lang?: string): QuestResponseDto {
+    const copy = this.gamificationI18n.getQuestCopy(
+      quest.slug,
+      {
+        title: quest.title,
+        description: quest.description,
+      },
+      lang,
+    );
 
     return {
       id: quest.id,
@@ -148,18 +152,23 @@ export class QuestsService {
       streakEnabled: quest.streakEnabled,
       progressTrackingType: quest.progressTrackingType,
       challenges: quest.challenges?.map((challenge: any) =>
-        this.transformChallengeToResponseDto(challenge),
+        this.transformChallengeToResponseDto(challenge, lang),
       ),
     };
   }
 
   private transformChallengeToResponseDto(
     challenge: any,
+    lang?: string,
   ): QuestChallengeResponseDto {
-    const copy = this.gamificationI18n.getChallengeCopy(challenge.slug, {
-      title: challenge.title,
-      description: challenge.description,
-    });
+    const copy = this.gamificationI18n.getChallengeCopy(
+      challenge.slug,
+      {
+        title: challenge.title,
+        description: challenge.description,
+      },
+      lang,
+    );
 
     return {
       id: challenge.id,

@@ -21,6 +21,7 @@ export class MissionProgressService {
   async getMissionById(
     missionId: string,
     userId: string,
+    lang?: string,
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Getting mission ${missionId} for user: ${userId}`);
 
@@ -38,18 +39,19 @@ export class MissionProgressService {
       throw new ForbiddenException('No permission');
     }
 
-    return this.transformToResponseDto(progress);
+    return this.transformToResponseDto(progress, lang);
   }
 
   async getAllMissionsByUserId(
     userId: string,
+    lang?: string,
   ): Promise<MissionProgressResponseDto[]> {
     this.logger.log(`Getting all missions for user: ${userId}`);
 
     const progresses =
       await this.missionProgressRepository.findAllByUserId(userId);
 
-    return progresses.map((p) => this.transformToResponseDto(p));
+    return progresses.map((p) => this.transformToResponseDto(p, lang));
   }
 
   async update(
@@ -82,19 +84,26 @@ export class MissionProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: {
-    missionId: string;
-    userId: string;
-    completed: boolean;
-    progress: number;
-    mission?: { slug: string; title: string; description: string };
-  }): MissionProgressResponseDto {
+  private transformToResponseDto(
+    progress: {
+      missionId: string;
+      userId: string;
+      completed: boolean;
+      progress: number;
+      mission?: { slug: string; title: string; description: string };
+    },
+    lang?: string,
+  ): MissionProgressResponseDto {
     const mission = progress.mission;
     const copy = mission
-      ? this.gamificationI18n.getMissionCopy(mission.slug, {
-          title: mission.title,
-          description: mission.description,
-        })
+      ? this.gamificationI18n.getMissionCopy(
+          mission.slug,
+          {
+            title: mission.title,
+            description: mission.description,
+          },
+          lang,
+        )
       : { title: '', description: '' };
 
     return {
