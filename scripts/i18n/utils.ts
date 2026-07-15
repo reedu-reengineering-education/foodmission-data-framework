@@ -168,12 +168,24 @@ export function namespaceFromFile(namespaceFile: string): string {
   return namespaceFile.replace(/\.json$/i, '');
 }
 
+const UNSAFE_PATH_PARTS = new Set(['__proto__', 'constructor', 'prototype']);
+
+function assertSafePathPart(part: string): void {
+  if (UNSAFE_PATH_PARTS.has(part)) {
+    throw new Error(`Unsafe path segment: ${part}`);
+  }
+}
+
 export function setValueByPath(
   obj: JsonObject,
   dottedPath: string,
   value: string,
 ): void {
   const parts = dottedPath.split('.');
+  for (const part of parts) {
+    assertSafePathPart(part);
+  }
+
   let current: JsonObject = obj;
 
   for (let i = 0; i < parts.length - 1; i += 1) {
