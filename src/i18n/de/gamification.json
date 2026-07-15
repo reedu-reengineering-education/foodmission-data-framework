@@ -12,7 +12,24 @@
     "avoid-single-use-plastic": {
       "title": "Einwegplastik vermeiden",
       "description": "Verzichten Sie im Alltag auf Wegwerfplastik"
+    },
+    "reusable-shopping-habit": {
+      "title": "Wiederverwendbare Einkaufsgewohnheit aufbauen",
+      "description": "Nutzen Sie eine Woche lang durchgehend wiederverwendbare Taschen und Behälter"
+    },
+    "three-days-no-meat": {
+      "title": "Drei Tage ohne Fleisch",
+      "description": "Essen Sie diese Woche drei Tage lang pflanzliche Mahlzeiten"
+    },
+    "try-plant-protein-meals": {
+      "title": "Pflanzliche Proteinmahlzeiten ausprobieren",
+      "description": "Bereiten Sie fünf Mahlzeiten mit Hülsenfrüchten, Tofu oder anderen pflanzlichen Proteinen zu"
     }
   },
-  "challenges": {}
+  "challenges": {
+    "refuse-plastic-bottle": {
+      "title": "Plastikflasche ablehnen",
+      "description": "Lehnen Sie heute eine Einweg-Plastikflasche ab"
+    }
+  }
 }
