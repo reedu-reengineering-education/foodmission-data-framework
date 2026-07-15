@@ -11,6 +11,7 @@ import {
   handleServiceError,
 } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { MissionsResponseDto } from '../dto/response-missions.dto';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { CreateMissionsDto } from '../dto/create-missions.dto';
@@ -24,14 +25,23 @@ export class MissionsService {
   constructor(
     private readonly missionRepository: MissionsRepository,
     private readonly prisma: PrismaService,
+    private readonly gamificationI18n: GamificationI18nService,
   ) {}
 
   async create(
     createMissionDto: CreateMissionsDto,
   ): Promise<MissionsResponseDto> {
     try {
+      const copy = this.gamificationI18n.getMissionCopyOrThrow(
+        createMissionDto.slug,
+      );
       const mission = await this.missionRepository.create({
-        ...createMissionDto,
+        slug: createMissionDto.slug,
+        title: copy.title,
+        description: copy.description,
+        available: createMissionDto.available,
+        startDate: createMissionDto.startDate,
+        endDate: createMissionDto.endDate,
       });
       return this.transformToResponseDto(mission);
     } catch (error) {
@@ -108,10 +118,16 @@ export class MissionsService {
   }
 
   private transformToResponseDto(mission: any): MissionsResponseDto {
-    return {
-      id: mission.id,
+    const copy = this.gamificationI18n.getMissionCopy(mission.slug, {
       title: mission.title,
       description: mission.description,
+    });
+
+    return {
+      id: mission.id,
+      slug: mission.slug,
+      title: copy.title,
+      description: copy.description,
       startDate: mission.startDate,
       endDate: mission.endDate,
       progress:

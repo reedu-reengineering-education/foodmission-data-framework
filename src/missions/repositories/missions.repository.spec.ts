@@ -39,9 +39,9 @@ describe('MissionsRepository', () => {
   describe('create', () => {
     it('should call prisma.mission.create with missionProgresses for all users', async () => {
       const data = {
-        userId: 'u1',
-        title: 't',
-        description: 'd',
+        slug: 'plastic-free-month',
+        title: 'Plastic-Free Month',
+        description: 'Eliminate single-use plastics from your life for 30 days',
         available: true,
         startDate: new Date(),
         endDate: new Date(),
@@ -56,6 +56,7 @@ describe('MissionsRepository', () => {
       });
       expect(prisma.mission.create).toHaveBeenCalledWith({
         data: {
+          slug: data.slug,
           title: data.title,
           description: data.description,
           available: data.available,

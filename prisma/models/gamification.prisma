@@ -4,6 +4,7 @@
 
 model Mission {
   id          String   @id @default(uuid())
+  slug        String   @unique
   title       String
   description String
   available   Boolean  @default(false)
@@ -33,6 +34,7 @@ model MissionProgress {
 
 model Challenge {
   id          String   @id @default(uuid())
+  slug        String   @unique
   title       String
   description String
   available   Boolean  @default(false)

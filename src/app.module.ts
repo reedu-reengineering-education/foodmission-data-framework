@@ -18,6 +18,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
 import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { DEFAULT_LOCALE } from './i18n/constants';
+import { I18nSupportModule } from './i18n/i18n-support.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DEFAULT_LOCALE } from './i18n/constants';
         },
       ],
     }),
+    I18nSupportModule,
     InfrastructureModule,
     LoggingModule,
     MonitoringModule,

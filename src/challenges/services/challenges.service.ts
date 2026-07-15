@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -17,14 +18,26 @@ import { ChallengesRepository } from '../repositories/challenges.repository';
 export class ChallengesService {
   private readonly logger = new Logger(ChallengesService.name);
 
-  constructor(private readonly challengesRepository: ChallengesRepository) {}
+  constructor(
+    private readonly challengesRepository: ChallengesRepository,
+    private readonly gamificationI18n: GamificationI18nService,
+  ) {}
 
   async create(
     createChallengeDto: CreateChallengeDto,
   ): Promise<ChallengeResponseDto> {
     try {
-      const challenge =
-        await this.challengesRepository.create(createChallengeDto);
+      const copy = this.gamificationI18n.getChallengeCopyOrThrow(
+        createChallengeDto.slug,
+      );
+      const challenge = await this.challengesRepository.create({
+        slug: createChallengeDto.slug,
+        title: copy.title,
+        description: copy.description,
+        available: createChallengeDto.available,
+        startDate: createChallengeDto.startDate,
+        endDate: createChallengeDto.endDate,
+      });
       return this.transformToResponseDto(challenge);
     } catch (error) {
       if (
@@ -98,10 +111,16 @@ export class ChallengesService {
   }
 
   private transformToResponseDto(challenge: any): ChallengeResponseDto {
-    return {
-      id: challenge.id,
+    const copy = this.gamificationI18n.getChallengeCopy(challenge.slug, {
       title: challenge.title,
       description: challenge.description,
+    });
+
+    return {
+      id: challenge.id,
+      slug: challenge.slug,
+      title: copy.title,
+      description: copy.description,
       available: challenge.available,
       progress:
         challenge.challengeProgresses?.find(

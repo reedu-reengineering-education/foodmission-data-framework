@@ -11,6 +11,13 @@ export class ChallengeResponseDto {
   id: string;
 
   @ApiProperty({
+    description: 'Stable challenge slug used for i18n lookup',
+    example: 'bring-your-own-bag',
+  })
+  @Expose()
+  slug: string;
+
+  @ApiProperty({
     description: 'The challenge title',
     example: 'Bring Your Own Bag',
   })

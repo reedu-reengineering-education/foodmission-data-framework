@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "de"
+  },
+  "missions": {
+    "plastic-free-month": {
+      "title": "Plastikfreier Monat",
+      "description": "Verzichten Sie 30 Tage lang auf Einwegplastik"
+    }
+  },
+  "challenges": {}
+}

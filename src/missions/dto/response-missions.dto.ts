@@ -11,6 +11,13 @@ export class MissionsResponseDto {
   id: string;
 
   @ApiProperty({
+    description: 'Stable mission slug used for i18n lookup',
+    example: 'plastic-free-month',
+  })
+  @Expose()
+  slug: string;
+
+  @ApiProperty({
     description: 'The mission title',
     example: 'Plastic-Free Month',
   })

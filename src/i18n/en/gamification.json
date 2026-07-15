@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "missions": {
+    "plastic-free-month": {
+      "title": "Plastic-Free Month",
+      "description": "Eliminate single-use plastics from your life for 30 days"
+    },
+    "sustainable-home-makeover": {
+      "title": "Sustainable Home Makeover",
+      "description": "Replace 10 household items with eco-friendly alternatives"
+    },
+    "zero-waste-warrior": {
+      "title": "Zero Waste Warrior",
+      "description": "Reduce your household waste to less than 1kg per week for a month"
+    },
+    "plant-based-journey": {
+      "title": "Plant-Based Journey",
+      "description": "Transition to a fully plant-based diet over 8 weeks"
+    },
+    "green-transportation-champion": {
+      "title": "Green Transportation Champion",
+      "description": "Use only eco-friendly transport methods for 60 days"
+    },
+    "community-garden-hero": {
+      "title": "Community Garden Hero",
+      "description": "Start and maintain a community garden plot for a season"
+    },
+    "energy-independence-quest": {
+      "title": "Energy Independence Quest",
+      "description": "Reduce household energy consumption by 30% over 3 months"
+    },
+    "water-conservation-master": {
+      "title": "Water Conservation Master",
+      "description": "Cut water usage by 40% through sustainable practices"
+    },
+    "office-sustainability-initiative": {
+      "title": "Office Sustainability Initiative",
+      "description": "Implement 5 eco-friendly practices in your workplace"
+    },
+    "carbon-footprint-reducer": {
+      "title": "Carbon Footprint Reducer",
+      "description": "Decrease personal carbon emissions by 50% over 6 months"
+    }
+  },
+  "challenges": {
+    "bring-your-own-bag": {
+      "title": "Bring Your Own Bag",
+      "description": "Use a reusable shopping bag for your groceries today"
+    },
+    "meatless-monday": {
+      "title": "Meatless Monday",
+      "description": "Go vegetarian for the entire day"
+    },
+    "water-bottle-warrior": {
+      "title": "Water Bottle Warrior",
+      "description": "Drink only from your reusable water bottle today"
+    },
+    "zero-waste-shopping": {
+      "title": "Zero Waste Shopping",
+      "description": "Buy products with minimal or no packaging"
+    },
+    "local-hero": {
+      "title": "Local Hero",
+      "description": "Purchase at least 3 locally sourced products"
+    },
+    "bike-to-work": {
+      "title": "Bike to Work",
+      "description": "Use your bicycle instead of driving today"
+    },
+    "energy-saver": {
+      "title": "Energy Saver",
+      "description": "Unplug all unused devices for the day"
+    },
+    "compost-champion": {
+      "title": "Compost Champion",
+      "description": "Start composting your organic waste today"
+    },
+    "digital-detox-hour": {
+      "title": "Digital Detox Hour",
+      "description": "Spend one hour without any electronic devices"
+    },
+    "green-commute": {
+      "title": "Green Commute",
+      "description": "Use public transportation or walk to work"
+    }
+  }
+}

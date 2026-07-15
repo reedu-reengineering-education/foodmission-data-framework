@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengesService } from './challenges.service';
 import { ChallengesRepository } from '../repositories/challenges.repository';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import {
   NotFoundException,
   ConflictException,
@@ -12,9 +13,11 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 describe('ChallengesService', () => {
   let service: ChallengesService;
   let repository: ChallengesRepository;
+  let gamificationI18n: GamificationI18nService;
 
   const mockChallenge = {
     id: 'c1',
+    slug: 'bring-your-own-bag',
     title: 'Test Challenge',
     description: 'Test Description',
     available: true,
@@ -23,7 +26,19 @@ describe('ChallengesService', () => {
     challengeProgresses: [{ userId: 'u1', progress: 50 }],
   };
 
+  const mockGamificationI18n = {
+    getChallengeCopy: jest.fn((_slug, fallbacks) => fallbacks),
+    getChallengeCopyOrThrow: jest.fn(() => ({
+      title: 'Bring Your Own Bag',
+      description: 'Use a reusable shopping bag for your groceries today',
+    })),
+    getMissionCopy: jest.fn(),
+    getMissionCopyOrThrow: jest.fn(),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChallengesService,
@@ -37,11 +52,18 @@ describe('ChallengesService', () => {
             delete: jest.fn(),
           },
         },
+        {
+          provide: GamificationI18nService,
+          useValue: mockGamificationI18n,
+        },
       ],
     }).compile();
 
     service = module.get<ChallengesService>(ChallengesService);
     repository = module.get<ChallengesRepository>(ChallengesRepository);
+    gamificationI18n = module.get<GamificationI18nService>(
+      GamificationI18nService,
+    );
   });
 
   it('should be defined', () => {
@@ -50,8 +72,7 @@ describe('ChallengesService', () => {
 
   describe('create', () => {
     const createDto = {
-      title: 'Test',
-      description: 'Desc',
+      slug: 'bring-your-own-bag',
       available: true,
       startDate: new Date(),
       endDate: new Date(),
@@ -62,8 +83,22 @@ describe('ChallengesService', () => {
 
       const result = await service.create(createDto);
 
-      expect(repository.create).toHaveBeenCalledWith(createDto);
-      expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
+      expect(gamificationI18n.getChallengeCopyOrThrow).toHaveBeenCalledWith(
+        'bring-your-own-bag',
+      );
+      expect(repository.create).toHaveBeenCalledWith({
+        slug: 'bring-your-own-bag',
+        title: 'Bring Your Own Bag',
+        description: 'Use a reusable shopping bag for your groceries today',
+        available: createDto.available,
+        startDate: createDto.startDate,
+        endDate: createDto.endDate,
+      });
+      expect(result).toMatchObject({
+        id: 'c1',
+        slug: 'bring-your-own-bag',
+        title: 'Test Challenge',
+      });
     });
 
     it('should rethrow ConflictException', async () => {
@@ -114,7 +149,11 @@ describe('ChallengesService', () => {
       const result = await service.getChallengeById('c1');
 
       expect(repository.findById).toHaveBeenCalledWith('c1');
-      expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
+      expect(result).toMatchObject({
+        id: 'c1',
+        slug: 'bring-your-own-bag',
+        title: 'Test Challenge',
+      });
     });
 
     it('should throw NotFoundException when not found', async () => {
@@ -134,7 +173,7 @@ describe('ChallengesService', () => {
 
       expect(repository.findAll).toHaveBeenCalled();
       expect(result).toHaveLength(1);
-      expect(result[0]).toMatchObject({ id: 'c1' });
+      expect(result[0]).toMatchObject({ id: 'c1', slug: 'bring-your-own-bag' });
     });
 
     it('should return empty array when no challenges', async () => {

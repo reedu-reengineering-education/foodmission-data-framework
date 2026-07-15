@@ -4,6 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -14,6 +15,7 @@ export class MissionProgressService {
 
   constructor(
     private readonly missionProgressRepository: MissionProgressRepository,
+    private readonly gamificationI18n: GamificationI18nService,
   ) {}
 
   async getMissionById(
@@ -80,13 +82,27 @@ export class MissionProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: any): MissionProgressResponseDto {
+  private transformToResponseDto(progress: {
+    missionId: string;
+    userId: string;
+    completed: boolean;
+    progress: number;
+    mission?: { slug: string; title: string; description: string };
+  }): MissionProgressResponseDto {
+    const mission = progress.mission;
+    const copy = mission
+      ? this.gamificationI18n.getMissionCopy(mission.slug, {
+          title: mission.title,
+          description: mission.description,
+        })
+      : { title: '', description: '' };
+
     return {
       missionId: progress.missionId,
       userId: progress.userId,
       completed: progress.completed,
       progress: progress.progress,
-      missionTitle: progress.mission?.title ?? '',
+      missionTitle: copy.title,
     };
   }
 }

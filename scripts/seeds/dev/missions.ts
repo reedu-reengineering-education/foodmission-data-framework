@@ -1,9 +1,9 @@
 // missions.seed.ts
 import { Mission, MissionProgress, PrismaClient } from '@prisma/client';
+import enGamification from '../../../src/i18n/en/gamification.json';
 
 export interface MissionSeedData {
-  title: string;
-  description: string;
+  slug: string;
   available: boolean;
   startDate: Date;
   endDate: Date;
@@ -11,77 +11,80 @@ export interface MissionSeedData {
 
 export const missionData: MissionSeedData[] = [
   {
-    title: 'Plastic-Free Month',
-    description: 'Eliminate single-use plastics from your life for 30 days',
+    slug: 'plastic-free-month',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-01-31'),
   },
   {
-    title: 'Sustainable Home Makeover',
-    description: 'Replace 10 household items with eco-friendly alternatives',
+    slug: 'sustainable-home-makeover',
     available: true,
     startDate: new Date('2026-02-01'),
     endDate: new Date('2026-04-30'),
   },
   {
-    title: 'Zero Waste Warrior',
-    description:
-      'Reduce your household waste to less than 1kg per week for a month',
+    slug: 'zero-waste-warrior',
     available: true,
     startDate: new Date('2026-03-01'),
     endDate: new Date('2026-03-31'),
   },
   {
-    title: 'Plant-Based Journey',
-    description: 'Transition to a fully plant-based diet over 8 weeks',
+    slug: 'plant-based-journey',
     available: true,
     startDate: new Date('2026-01-15'),
     endDate: new Date('2026-03-15'),
   },
   {
-    title: 'Green Transportation Champion',
-    description: 'Use only eco-friendly transport methods for 60 days',
+    slug: 'green-transportation-champion',
     available: true,
     startDate: new Date('2026-04-01'),
     endDate: new Date('2026-05-31'),
   },
   {
-    title: 'Community Garden Hero',
-    description: 'Start and maintain a community garden plot for a season',
+    slug: 'community-garden-hero',
     available: true,
     startDate: new Date('2026-03-01'),
     endDate: new Date('2026-09-30'),
   },
   {
-    title: 'Energy Independence Quest',
-    description: 'Reduce household energy consumption by 30% over 3 months',
+    slug: 'energy-independence-quest',
     available: false,
     startDate: new Date('2026-06-01'),
     endDate: new Date('2026-08-31'),
   },
   {
-    title: 'Water Conservation Master',
-    description: 'Cut water usage by 40% through sustainable practices',
+    slug: 'water-conservation-master',
     available: false,
     startDate: new Date('2026-07-01'),
     endDate: new Date('2026-09-30'),
   },
   {
-    title: 'Office Sustainability Initiative',
-    description: 'Implement 5 eco-friendly practices in your workplace',
+    slug: 'office-sustainability-initiative',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-06-30'),
   },
   {
-    title: 'Carbon Footprint Reducer',
-    description: 'Decrease personal carbon emissions by 50% over 6 months',
+    slug: 'carbon-footprint-reducer',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-06-30'),
   },
 ];
+
+function getMissionCopy(slug: string): { title: string; description: string } {
+  const copy = enGamification.missions[
+    slug as keyof typeof enGamification.missions
+  ] as { title: string; description: string } | undefined;
+
+  if (!copy) {
+    throw new Error(
+      `Missing mission copy for slug "${slug}" in src/i18n/en/gamification.json`,
+    );
+  }
+
+  return copy;
+}
 
 export async function seedMissions(prisma: PrismaClient) {
   console.log('🎯 Seeding missions and mission progress...');
@@ -95,23 +98,22 @@ export async function seedMissions(prisma: PrismaClient) {
   const missions: Mission[] = [];
   const missionProgresses: MissionProgress[] = [];
 
-  // First, create all missions
   for (const missionInfo of missionData) {
+    const copy = getMissionCopy(missionInfo.slug);
+
     const mission = await prisma.mission.upsert({
-      where: {
-        id: missionInfo.title.replace(/\s+/g, '-').toLowerCase(),
-      },
+      where: { slug: missionInfo.slug },
       update: {
-        title: missionInfo.title,
-        description: missionInfo.description,
+        title: copy.title,
+        description: copy.description,
         available: missionInfo.available,
         startDate: missionInfo.startDate,
         endDate: missionInfo.endDate,
       },
       create: {
-        id: missionInfo.title.replace(/\s+/g, '-').toLowerCase(),
-        title: missionInfo.title,
-        description: missionInfo.description,
+        slug: missionInfo.slug,
+        title: copy.title,
+        description: copy.description,
         available: missionInfo.available,
         startDate: missionInfo.startDate,
         endDate: missionInfo.endDate,
@@ -121,11 +123,9 @@ export async function seedMissions(prisma: PrismaClient) {
     missions.push(mission);
   }
 
-  // Then, create mission progress for each user
   for (const user of users) {
     for (const mission of missions) {
-      // Randomize progress and completion for variety
-      const isCompleted = Math.random() > 0.8; // 20% chance of being completed
+      const isCompleted = Math.random() > 0.8;
       const progress = isCompleted ? 100 : Math.floor(Math.random() * 85);
 
       const missionProgress = await prisma.missionProgress.upsert({

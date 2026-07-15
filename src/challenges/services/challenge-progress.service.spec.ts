@@ -1,13 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
   let repository: ChallengeProgressRepository;
 
+  const mockGamificationI18n = {
+    getChallengeCopy: jest.fn((_slug, fallbacks) => fallbacks),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChallengeProgressService,
@@ -18,6 +25,10 @@ describe('ChallengeProgressService', () => {
             findAllByUserId: jest.fn(),
             update: jest.fn(),
           },
+        },
+        {
+          provide: GamificationI18nService,
+          useValue: mockGamificationI18n,
         },
       ],
     }).compile();
@@ -39,7 +50,11 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
-        challenge: { title: 'Test Challenge' },
+        challenge: {
+          slug: 'bring-your-own-bag',
+          title: 'Test Challenge',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         mockProgress,
@@ -73,7 +88,11 @@ describe('ChallengeProgressService', () => {
         userId: 'other',
         completed: false,
         progress: 0.5,
-        challenge: { title: 'Test Challenge' },
+        challenge: {
+          slug: 'bring-your-own-bag',
+          title: 'Test Challenge',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         mockProgress,
@@ -92,14 +111,22 @@ describe('ChallengeProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
-          challenge: { title: 'Challenge 1' },
+          challenge: {
+            slug: 'bring-your-own-bag',
+            title: 'Challenge 1',
+            description: 'Desc 1',
+          },
         },
         {
           challengeId: 'c2',
           userId: 'u1',
           completed: true,
           progress: 1,
-          challenge: { title: 'Challenge 2' },
+          challenge: {
+            slug: 'meatless-monday',
+            title: 'Challenge 2',
+            description: 'Desc 2',
+          },
         },
       ];
       (repository.findAllByUserId as jest.Mock).mockResolvedValue(
@@ -133,14 +160,22 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
-        challenge: { title: 'Test Challenge' },
+        challenge: {
+          slug: 'bring-your-own-bag',
+          title: 'Test Challenge',
+          description: 'Test Description',
+        },
       };
       const updated = {
         challengeId: 'c1',
         userId: 'u1',
         completed: true,
         progress: 1,
-        challenge: { title: 'Test Challenge' },
+        challenge: {
+          slug: 'bring-your-own-bag',
+          title: 'Test Challenge',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         existing,
@@ -179,7 +214,11 @@ describe('ChallengeProgressService', () => {
         userId: 'other',
         completed: false,
         progress: 0.5,
-        challenge: { title: 'Test Challenge' },
+        challenge: {
+          slug: 'bring-your-own-bag',
+          title: 'Test Challenge',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         existing,

@@ -1,12 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 
 describe('MissionProgressService', () => {
   let service: MissionProgressService;
   let repository: MissionProgressRepository;
 
+  const mockGamificationI18n = {
+    getMissionCopy: jest.fn((_slug, fallbacks) => fallbacks),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MissionProgressService,
@@ -17,6 +24,10 @@ describe('MissionProgressService', () => {
             findAllByUserId: jest.fn(),
             update: jest.fn(),
           },
+        },
+        {
+          provide: GamificationI18nService,
+          useValue: mockGamificationI18n,
         },
       ],
     }).compile();
@@ -38,7 +49,11 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
-        mission: { title: 'Test Mission' },
+        mission: {
+          slug: 'plastic-free-month',
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         progress,
@@ -68,7 +83,11 @@ describe('MissionProgressService', () => {
         userId: 'other',
         completed: false,
         progress: 0.5,
-        mission: { title: 'Test Mission' },
+        mission: {
+          slug: 'plastic-free-month',
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         progress,
@@ -87,14 +106,22 @@ describe('MissionProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
-          mission: { title: 'Test Mission 1' },
+          mission: {
+            slug: 'plastic-free-month',
+            title: 'Test Mission 1',
+            description: 'Desc 1',
+          },
         },
         {
           missionId: 'm2',
           userId: 'u1',
           completed: true,
           progress: 1,
-          mission: { title: 'Test Mission 2' },
+          mission: {
+            slug: 'zero-waste-warrior',
+            title: 'Test Mission 2',
+            description: 'Desc 2',
+          },
         },
       ];
       (repository.findAllByUserId as jest.Mock).mockResolvedValue(progresses);
@@ -125,14 +152,22 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
-        mission: { title: 'Test Mission' },
+        mission: {
+          slug: 'plastic-free-month',
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
       };
       const updated = {
         missionId: 'm1',
         userId: 'u1',
         completed: true,
         progress: 1,
-        mission: { title: 'Test Mission' },
+        mission: {
+          slug: 'plastic-free-month',
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         existing,
@@ -167,7 +202,11 @@ describe('MissionProgressService', () => {
         userId: 'other',
         completed: false,
         progress: 0.5,
-        mission: { title: 'Test Mission' },
+        mission: {
+          slug: 'plastic-free-month',
+          title: 'Test Mission',
+          description: 'Test Description',
+        },
       };
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         existing,

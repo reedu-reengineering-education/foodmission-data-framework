@@ -39,8 +39,9 @@ describe('ChallengesRepository', () => {
   describe('create', () => {
     it('should create challenge with progress for all users', async () => {
       const dto = {
-        title: 'Test',
-        description: 'Desc',
+        slug: 'bring-your-own-bag',
+        title: 'Bring Your Own Bag',
+        description: 'Use a reusable shopping bag for your groceries today',
         available: true,
         startDate: new Date(),
         endDate: new Date(),
@@ -60,7 +61,12 @@ describe('ChallengesRepository', () => {
       });
       expect(prisma.challenge.create).toHaveBeenCalledWith({
         data: {
-          ...dto,
+          slug: dto.slug,
+          title: dto.title,
+          description: dto.description,
+          available: dto.available,
+          startDate: dto.startDate,
+          endDate: dto.endDate,
           challengeProgresses: {
             create: [
               { userId: 'u1', progress: 0, completed: false },

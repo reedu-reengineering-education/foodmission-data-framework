@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MissionsService } from './missions.service';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { GamificationI18nService } from '../../i18n/gamification-i18n.service';
 import {
   NotFoundException,
   ConflictException,
@@ -13,9 +14,11 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 describe('MissionsService', () => {
   let service: MissionsService;
   let repository: MissionsRepository;
+  let gamificationI18n: GamificationI18nService;
 
   const mockMission = {
     id: 'm1',
+    slug: 'plastic-free-month',
     title: 'Test Mission',
     description: 'Test Description',
     available: true,
@@ -24,7 +27,19 @@ describe('MissionsService', () => {
     missionProgresses: [{ userId: 'u1', progress: 50 }],
   };
 
+  const mockGamificationI18n = {
+    getMissionCopy: jest.fn((_slug, fallbacks) => fallbacks),
+    getMissionCopyOrThrow: jest.fn(() => ({
+      title: 'Plastic-Free Month',
+      description: 'Eliminate single-use plastics from your life for 30 days',
+    })),
+    getChallengeCopy: jest.fn(),
+    getChallengeCopyOrThrow: jest.fn(),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MissionsService,
@@ -42,11 +57,18 @@ describe('MissionsService', () => {
           provide: PrismaService,
           useValue: {},
         },
+        {
+          provide: GamificationI18nService,
+          useValue: mockGamificationI18n,
+        },
       ],
     }).compile();
 
     service = module.get<MissionsService>(MissionsService);
     repository = module.get<MissionsRepository>(MissionsRepository);
+    gamificationI18n = module.get<GamificationI18nService>(
+      GamificationI18nService,
+    );
   });
 
   it('should be defined', () => {
@@ -55,8 +77,7 @@ describe('MissionsService', () => {
 
   describe('create', () => {
     const createDto = {
-      title: 't',
-      description: 'd',
+      slug: 'plastic-free-month',
       available: true,
       startDate: new Date(),
       endDate: new Date(),
@@ -65,8 +86,22 @@ describe('MissionsService', () => {
     it('should call repository.create and return transformed result', async () => {
       (repository.create as jest.Mock).mockResolvedValue(mockMission);
       const result = await service.create(createDto);
-      expect(repository.create).toHaveBeenCalledWith({ ...createDto });
-      expect(result).toMatchObject({ id: 'm1', title: 'Test Mission' });
+      expect(gamificationI18n.getMissionCopyOrThrow).toHaveBeenCalledWith(
+        'plastic-free-month',
+      );
+      expect(repository.create).toHaveBeenCalledWith({
+        slug: 'plastic-free-month',
+        title: 'Plastic-Free Month',
+        description: 'Eliminate single-use plastics from your life for 30 days',
+        available: createDto.available,
+        startDate: createDto.startDate,
+        endDate: createDto.endDate,
+      });
+      expect(result).toMatchObject({
+        id: 'm1',
+        slug: 'plastic-free-month',
+        title: 'Test Mission',
+      });
     });
 
     it('should rethrow ConflictException', async () => {
@@ -111,7 +146,11 @@ describe('MissionsService', () => {
       (repository.findById as jest.Mock).mockResolvedValue(mockMission);
       const result = await service.getMissionById('m1');
       expect(repository.findById).toHaveBeenCalledWith('m1');
-      expect(result).toMatchObject({ id: 'm1', title: 'Test Mission' });
+      expect(result).toMatchObject({
+        id: 'm1',
+        slug: 'plastic-free-month',
+        title: 'Test Mission',
+      });
     });
 
     it('should throw NotFoundException if mission not found', async () => {

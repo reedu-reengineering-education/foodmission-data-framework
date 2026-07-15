@@ -1,31 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class CreateMissionsDto {
   @ApiProperty({
-    description: 'The name of the mission',
-    example: 'Plastic-Free Month',
-    maxLength: 255,
+    description:
+      'Stable mission slug matching gamification.missions.{slug} in src/i18n/en/gamification.json',
+    example: 'plastic-free-month',
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
-  title: string;
-
-  @ApiProperty({
-    description: 'The description of the mission',
-    example: 'Avoid using single-use plastics for the entire month',
-    maxLength: 255,
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message: 'slug must be lowercase kebab-case',
   })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
-  description: string;
+  slug: string;
 
   @ApiProperty({
     description: 'Whether the mission is currently available',
     example: true,
   })
+  @IsBoolean()
   @IsNotEmpty()
   available: boolean;
 

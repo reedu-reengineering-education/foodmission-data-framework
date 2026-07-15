@@ -52,8 +52,7 @@ describe('MissionsController', () => {
       const mockResult = { id: 'm1' };
       (service.create as jest.Mock).mockResolvedValue(mockResult);
       const dto = {
-        title: 't',
-        description: 'd',
+        slug: 'plastic-free-month',
         available: true,
         startDate: new Date(),
         endDate: new Date(),

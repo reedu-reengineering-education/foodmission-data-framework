@@ -1,9 +1,9 @@
 // challenges.seed.ts
 import { PrismaClient, Challenge, ChallengeProgress } from '@prisma/client';
+import enGamification from '../../../src/i18n/en/gamification.json';
 
 export interface ChallengeSeedData {
-  title: string;
-  description: string;
+  slug: string;
   available: boolean;
   startDate: Date;
   endDate: Date;
@@ -11,76 +11,80 @@ export interface ChallengeSeedData {
 
 export const challengeData: ChallengeSeedData[] = [
   {
-    title: 'Bring Your Own Bag',
-    description: 'Use a reusable shopping bag for your groceries today',
+    slug: 'bring-your-own-bag',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-12-31'),
   },
   {
-    title: 'Meatless Monday',
-    description: 'Go vegetarian for the entire day',
+    slug: 'meatless-monday',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-12-31'),
   },
   {
-    title: 'Water Bottle Warrior',
-    description: 'Drink only from your reusable water bottle today',
+    slug: 'water-bottle-warrior',
     available: true,
     startDate: new Date('2026-02-01'),
     endDate: new Date('2026-06-30'),
   },
   {
-    title: 'Zero Waste Shopping',
-    description: 'Buy products with minimal or no packaging',
+    slug: 'zero-waste-shopping',
     available: true,
     startDate: new Date('2026-01-15'),
     endDate: new Date('2026-07-15'),
   },
   {
-    title: 'Local Hero',
-    description: 'Purchase at least 3 locally sourced products',
+    slug: 'local-hero',
     available: true,
     startDate: new Date('2026-03-01'),
     endDate: new Date('2026-09-01'),
   },
   {
-    title: 'Bike to Work',
-    description: 'Use your bicycle instead of driving today',
+    slug: 'bike-to-work',
     available: true,
     startDate: new Date('2026-04-01'),
     endDate: new Date('2026-10-31'),
   },
   {
-    title: 'Energy Saver',
-    description: 'Unplug all unused devices for the day',
+    slug: 'energy-saver',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-12-31'),
   },
   {
-    title: 'Compost Champion',
-    description: 'Start composting your organic waste today',
+    slug: 'compost-champion',
     available: false,
     startDate: new Date('2026-05-01'),
     endDate: new Date('2026-11-30'),
   },
   {
-    title: 'Digital Detox Hour',
-    description: 'Spend one hour without any electronic devices',
+    slug: 'digital-detox-hour',
     available: true,
     startDate: new Date('2026-01-01'),
     endDate: new Date('2026-12-31'),
   },
   {
-    title: 'Green Commute',
-    description: 'Use public transportation or walk to work',
+    slug: 'green-commute',
     available: true,
     startDate: new Date('2026-02-15'),
     endDate: new Date('2026-08-15'),
   },
 ];
+
+function getChallengeCopy(slug: string): { title: string; description: string } {
+  const copy = enGamification.challenges[
+    slug as keyof typeof enGamification.challenges
+  ] as { title: string; description: string } | undefined;
+
+  if (!copy) {
+    throw new Error(
+      `Missing challenge copy for slug "${slug}" in src/i18n/en/gamification.json`,
+    );
+  }
+
+  return copy;
+}
 
 export async function seedChallenges(prisma: PrismaClient) {
   console.log('🏆 Seeding challenges and challenge progress...');
@@ -94,23 +98,22 @@ export async function seedChallenges(prisma: PrismaClient) {
   const challenges: Challenge[] = [];
   const challengeProgresses: ChallengeProgress[] = [];
 
-  // First, create all challenges
   for (const challengeInfo of challengeData) {
+    const copy = getChallengeCopy(challengeInfo.slug);
+
     const challenge = await prisma.challenge.upsert({
-      where: {
-        id: challengeInfo.title.replace(/\s+/g, '-').toLowerCase(),
-      },
+      where: { slug: challengeInfo.slug },
       update: {
-        title: challengeInfo.title,
-        description: challengeInfo.description,
+        title: copy.title,
+        description: copy.description,
         available: challengeInfo.available,
         startDate: challengeInfo.startDate,
         endDate: challengeInfo.endDate,
       },
       create: {
-        id: challengeInfo.title.replace(/\s+/g, '-').toLowerCase(),
-        title: challengeInfo.title,
-        description: challengeInfo.description,
+        slug: challengeInfo.slug,
+        title: copy.title,
+        description: copy.description,
         available: challengeInfo.available,
         startDate: challengeInfo.startDate,
         endDate: challengeInfo.endDate,
@@ -120,11 +123,9 @@ export async function seedChallenges(prisma: PrismaClient) {
     challenges.push(challenge);
   }
 
-  // Then, create challenge progress for each user
   for (const user of users) {
     for (const challenge of challenges) {
-      // Randomize progress and completion for variety
-      const isCompleted = Math.random() > 0.7; // 30% chance of being completed
+      const isCompleted = Math.random() > 0.7;
       const progress = isCompleted ? 100 : Math.floor(Math.random() * 90);
 
       const challengeProgress = await prisma.challengeProgress.upsert({

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateMissionData {
+  slug: string;
   title: string;
   description: string;
   available: boolean;
@@ -26,6 +27,7 @@ export class MissionsRepository {
 
     return this.prisma.mission.create({
       data: {
+        slug: data.slug,
         title: data.title,
         description: data.description,
         available: data.available,

@@ -52,8 +52,7 @@ describe('ChallengesController', () => {
       const mockResult = { id: 'c1', title: 'Test Challenge' };
       (service.create as jest.Mock).mockResolvedValue(mockResult);
       const dto = {
-        title: 'Test',
-        description: 'Desc',
+        slug: 'bring-your-own-bag',
         available: true,
         startDate: new Date(),
         endDate: new Date(),
