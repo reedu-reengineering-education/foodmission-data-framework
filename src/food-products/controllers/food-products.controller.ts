@@ -41,7 +41,6 @@ import {
 import { CacheInterceptor } from '../../cache/cache.interceptor';
 import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
-import { UserContextService } from '../../auth/user-context.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
@@ -52,18 +51,15 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 @ApiBearerAuth('JWT-auth')
 @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
 export class FoodProductController {
-  constructor(
-    private readonly foodProductService: FoodProductService,
-    private readonly userContextService: UserContextService,
-  ) {}
+  constructor(private readonly foodProductService: FoodProductService) {}
 
   @Post()
   @CacheEvict(['food-products:list', 'food-products:count'])
-  @Roles('admin')
+  @Roles('admin', 'user')
   @ApiOperation({
     summary: 'Create a new food product',
     description:
-      'Creates a new food product in the database. Requires admin role.',
+      'Creates a new food product in the database. Requires admin or user role.',
   })
   @ApiBody({ type: CreateFoodProductDto })
   @ApiResponse({
