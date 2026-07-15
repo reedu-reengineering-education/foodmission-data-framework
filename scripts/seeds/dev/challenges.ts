@@ -1,6 +1,6 @@
 // challenges.seed.ts
 import { PrismaClient, Challenge, ChallengeProgress } from '@prisma/client';
-import enGamification from '../../../src/i18n/en/gamification.json';
+import { getChallengeSeedCopy } from './gamification-seed-copy';
 
 export interface ChallengeSeedData {
   slug: string;
@@ -72,20 +72,6 @@ export const challengeData: ChallengeSeedData[] = [
   },
 ];
 
-function getChallengeCopy(slug: string): { title: string; description: string } {
-  const copy = enGamification.challenges[
-    slug as keyof typeof enGamification.challenges
-  ] as { title: string; description: string } | undefined;
-
-  if (!copy) {
-    throw new Error(
-      `Missing challenge copy for slug "${slug}" in src/i18n/en/gamification.json`,
-    );
-  }
-
-  return copy;
-}
-
 export async function seedChallenges(prisma: PrismaClient) {
   console.log('🏆 Seeding challenges and challenge progress...');
 
@@ -99,7 +85,7 @@ export async function seedChallenges(prisma: PrismaClient) {
   const challengeProgresses: ChallengeProgress[] = [];
 
   for (const challengeInfo of challengeData) {
-    const copy = getChallengeCopy(challengeInfo.slug);
+    const copy = getChallengeSeedCopy(challengeInfo.slug);
 
     const challenge = await prisma.challenge.upsert({
       where: { slug: challengeInfo.slug },

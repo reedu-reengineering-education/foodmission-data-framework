@@ -1,6 +1,6 @@
 // missions.seed.ts
 import { Mission, MissionProgress, PrismaClient } from '@prisma/client';
-import enGamification from '../../../src/i18n/en/gamification.json';
+import { getMissionSeedCopy } from './gamification-seed-copy';
 
 export interface MissionSeedData {
   slug: string;
@@ -72,20 +72,6 @@ export const missionData: MissionSeedData[] = [
   },
 ];
 
-function getMissionCopy(slug: string): { title: string; description: string } {
-  const copy = enGamification.missions[
-    slug as keyof typeof enGamification.missions
-  ] as { title: string; description: string } | undefined;
-
-  if (!copy) {
-    throw new Error(
-      `Missing mission copy for slug "${slug}" in src/i18n/en/gamification.json`,
-    );
-  }
-
-  return copy;
-}
-
 export async function seedMissions(prisma: PrismaClient) {
   console.log('🎯 Seeding missions and mission progress...');
 
@@ -99,7 +85,7 @@ export async function seedMissions(prisma: PrismaClient) {
   const missionProgresses: MissionProgress[] = [];
 
   for (const missionInfo of missionData) {
-    const copy = getMissionCopy(missionInfo.slug);
+    const copy = getMissionSeedCopy(missionInfo.slug);
 
     const mission = await prisma.mission.upsert({
       where: { slug: missionInfo.slug },

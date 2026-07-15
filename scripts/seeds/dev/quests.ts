@@ -1,5 +1,8 @@
 import { PrismaClient, ProgressTrackingType, Quest, QuestProgress } from '@prisma/client';
-import enGamification from '../../../src/i18n/en/gamification.json';
+import {
+  getChallengeSeedCopy,
+  getQuestSeedCopy,
+} from './gamification-seed-copy';
 
 export interface QuestSeedData {
   slug: string;
@@ -73,34 +76,6 @@ export const questChallengeData: QuestChallengeSeedData[] = [
   },
 ];
 
-function getQuestCopy(slug: string): { title: string; description: string } {
-  const copy = enGamification.quests[
-    slug as keyof typeof enGamification.quests
-  ] as { title: string; description: string } | undefined;
-
-  if (!copy) {
-    throw new Error(
-      `Missing quest copy for slug "${slug}" in src/i18n/en/gamification.json`,
-    );
-  }
-
-  return copy;
-}
-
-function getChallengeCopy(slug: string): { title: string; description: string } {
-  const copy = enGamification.challenges[
-    slug as keyof typeof enGamification.challenges
-  ] as { title: string; description: string } | undefined;
-
-  if (!copy) {
-    throw new Error(
-      `Missing challenge copy for slug "${slug}" in src/i18n/en/gamification.json`,
-    );
-  }
-
-  return copy;
-}
-
 export async function seedQuests(prisma: PrismaClient) {
   console.log('🧭 Seeding quests, quest progress, and quest challenges...');
 
@@ -121,7 +96,7 @@ export async function seedQuests(prisma: PrismaClient) {
       );
     }
 
-    const copy = getQuestCopy(questInfo.slug);
+    const copy = getQuestSeedCopy(questInfo.slug);
 
     const quest = await prisma.quest.upsert({
       where: { slug: questInfo.slug },
@@ -202,7 +177,7 @@ export async function seedQuests(prisma: PrismaClient) {
       );
     }
 
-    const copy = getChallengeCopy(challengeInfo.slug);
+    const copy = getChallengeSeedCopy(challengeInfo.slug);
 
     await prisma.challenge.upsert({
       where: { slug: challengeInfo.slug },
