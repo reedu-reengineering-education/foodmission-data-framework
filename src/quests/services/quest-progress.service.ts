@@ -21,6 +21,7 @@ export class QuestProgressService {
   async getQuestById(
     questId: string,
     userId: string,
+    lang?: string,
   ): Promise<QuestProgressResponseDto> {
     this.logger.log(`Getting quest progress ${questId} for user: ${userId}`);
 
@@ -37,18 +38,21 @@ export class QuestProgressService {
       throw new ForbiddenException('No permission');
     }
 
-    return this.transformToResponseDto(progress);
+    return this.transformToResponseDto(progress, lang);
   }
 
   async getAllQuestsByUserId(
     userId: string,
+    lang?: string,
   ): Promise<QuestProgressResponseDto[]> {
     this.logger.log(`Getting all quest progress for user: ${userId}`);
 
     const progresses =
       await this.questProgressRepository.findAllByUserId(userId);
 
-    return progresses.map((progress) => this.transformToResponseDto(progress));
+    return progresses.map((progress) =>
+      this.transformToResponseDto(progress, lang),
+    );
   }
 
   async update(
@@ -80,21 +84,28 @@ export class QuestProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: {
-    questId: string;
-    userId: string;
-    completed: boolean;
-    progress: number;
-    currentStreak: number;
-    longestStreak: number;
-    quest?: { slug: string; title: string; description: string };
-  }): QuestProgressResponseDto {
+  private transformToResponseDto(
+    progress: {
+      questId: string;
+      userId: string;
+      completed: boolean;
+      progress: number;
+      currentStreak: number;
+      longestStreak: number;
+      quest?: { slug: string; title: string; description: string };
+    },
+    lang?: string,
+  ): QuestProgressResponseDto {
     const quest = progress.quest;
     const copy = quest
-      ? this.gamificationI18n.getQuestCopy(quest.slug, {
-          title: quest.title,
-          description: quest.description,
-        })
+      ? this.gamificationI18n.getQuestCopy(
+          quest.slug,
+          {
+            title: quest.title,
+            description: quest.description,
+          },
+          lang,
+        )
       : { title: '', description: '' };
 
     return {

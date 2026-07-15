@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -14,6 +15,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -21,6 +23,8 @@ import { ApiCrudErrorResponses } from '../../common/decorators/api-error-respons
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { ChallengesService } from '../services/challenges.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
@@ -32,6 +36,13 @@ import { ChallengeProgressService } from '../services/challenge-progress.service
 @ApiTags('challenges')
 @Controller('challenges')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated challenge copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class ChallengesController {
   constructor(
     private readonly challengeService: ChallengesService,
@@ -63,6 +74,30 @@ export class ChallengesController {
     return this.challengeService.create(createChallengeDto);
   }
 
+  @Get('progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all challenge progresses for the current user',
+    description:
+      'Retrieves all challenge progresses for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of challenge progresses retrieved successfully',
+    type: [ChallengeProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgress(
+    @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
+  ): Promise<ChallengeProgressResponseDto[]> {
+    return this.challengeProgressService.getAllChallengesByUserId(
+      userId,
+      query.lang,
+    );
+  }
+
   @Get()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -77,8 +112,10 @@ export class ChallengesController {
     type: [ChallengeResponseDto],
   })
   @ApiCrudErrorResponses()
-  async getAll(): Promise<ChallengeResponseDto[]> {
-    return this.challengeService.getAll();
+  async getAll(
+    @Query() query: LangQueryDto,
+  ): Promise<ChallengeResponseDto[]> {
+    return this.challengeService.getAll(query.lang);
   }
 
   @Get(':id')
@@ -101,8 +138,9 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async getChallengeById(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query() query: LangQueryDto,
   ): Promise<ChallengeResponseDto> {
-    return this.challengeService.getChallengeById(id);
+    return this.challengeService.getChallengeById(id, query.lang);
   }
 
   @Patch(':id')
@@ -151,25 +189,5 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.challengeService.delete(id);
-  }
-
-  @Get('/progress')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all challenge progresses for the current user',
-    description:
-      'Retrieves all challenge progresses for the authenticated user.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of challenge progresses retrieved successfully',
-    type: [ChallengeProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAllProgress(
-    @CurrentUser('id') userId: string,
-  ): Promise<ChallengeProgressResponseDto[]> {
-    return this.challengeProgressService.getAllChallengesByUserId(userId);
   }
 }

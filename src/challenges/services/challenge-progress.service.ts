@@ -22,6 +22,7 @@ export class ChallengeProgressService {
   async getChallengeById(
     challengeId: string,
     userId: string,
+    lang?: string,
   ): Promise<ChallengeProgressResponseDto> {
     this.logger.log(`Getting challenge ${challengeId} for user: ${userId}`);
 
@@ -39,18 +40,19 @@ export class ChallengeProgressService {
       throw new ForbiddenException('No permission');
     }
 
-    return this.transformToResponseDto(progress);
+    return this.transformToResponseDto(progress, lang);
   }
 
   async getAllChallengesByUserId(
     userId: string,
+    lang?: string,
   ): Promise<ChallengeProgressResponseDto[]> {
     this.logger.log(`Getting all challenges for user: ${userId}`);
 
     const progresses =
       await this.challengeProgressRepository.findAllByUserId(userId);
 
-    return progresses.map((p) => this.transformToResponseDto(p));
+    return progresses.map((p) => this.transformToResponseDto(p, lang));
   }
 
   async update(
@@ -90,20 +92,27 @@ export class ChallengeProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: {
-    challengeId: string;
-    userId: string;
-    completed: boolean;
-    progress: number;
-    status: import('@prisma/client').ProgressStatus;
-    challenge?: { slug: string; title: string; description: string };
-  }): ChallengeProgressResponseDto {
+  private transformToResponseDto(
+    progress: {
+      challengeId: string;
+      userId: string;
+      completed: boolean;
+      progress: number;
+      status: import('@prisma/client').ProgressStatus;
+      challenge?: { slug: string; title: string; description: string };
+    },
+    lang?: string,
+  ): ChallengeProgressResponseDto {
     const challenge = progress.challenge;
     const copy = challenge
-      ? this.gamificationI18n.getChallengeCopy(challenge.slug, {
-          title: challenge.title,
-          description: challenge.description,
-        })
+      ? this.gamificationI18n.getChallengeCopy(
+          challenge.slug,
+          {
+            title: challenge.title,
+            description: challenge.description,
+          },
+          lang,
+        )
       : { title: '', description: '' };
 
     return {

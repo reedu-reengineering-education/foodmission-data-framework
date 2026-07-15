@@ -67,8 +67,8 @@ describe('ChallengesController', () => {
     it('should call service.getAll and return result', async () => {
       const mockResult = [{ id: 'c1', title: 'Test' }];
       (service.getAll as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getAll();
-      expect(service.getAll).toHaveBeenCalled();
+      const result = await controller.getAll({});
+      expect(service.getAll).toHaveBeenCalledWith(undefined);
       expect(result).toBe(mockResult);
     });
   });
@@ -77,8 +77,8 @@ describe('ChallengesController', () => {
     it('should call service.getChallengeById and return result', async () => {
       const mockResult = { id: 'c1', title: 'Test' };
       (service.getChallengeById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getChallengeById('c1');
-      expect(service.getChallengeById).toHaveBeenCalledWith('c1');
+      const result = await controller.getChallengeById('c1', { lang: 'de' });
+      expect(service.getChallengeById).toHaveBeenCalledWith('c1', 'de');
       expect(result).toBe(mockResult);
     });
   });

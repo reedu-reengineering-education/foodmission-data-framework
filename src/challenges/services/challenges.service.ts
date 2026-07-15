@@ -83,7 +83,10 @@ export class ChallengesService {
     }
   }
 
-  async getChallengeById(challengeId: string): Promise<ChallengeResponseDto> {
+  async getChallengeById(
+    challengeId: string,
+    lang?: string,
+  ): Promise<ChallengeResponseDto> {
     this.logger.log(`Getting challenge ${challengeId}`);
 
     const challenge = await this.challengesRepository.findById(challengeId);
@@ -92,26 +95,26 @@ export class ChallengesService {
       throw new NotFoundException('Challenge not found');
     }
 
-    return this.transformToResponseDto(challenge);
+    return this.transformToResponseDto(challenge, lang);
   }
 
-  async getAll(): Promise<ChallengeResponseDto[]> {
+  async getAll(lang?: string): Promise<ChallengeResponseDto[]> {
     this.logger.log('Getting daily standalone challenges');
 
     const challenges = await this.challengesRepository.findDailyStandalone();
 
     return challenges.map((challenge) =>
-      this.transformToResponseDto(challenge),
+      this.transformToResponseDto(challenge, lang),
     );
   }
 
-  async getAllForAdmin(): Promise<ChallengeResponseDto[]> {
+  async getAllForAdmin(lang?: string): Promise<ChallengeResponseDto[]> {
     this.logger.log('Getting all challenges');
 
     const challenges = await this.challengesRepository.findAll();
 
     return challenges.map((challenge) =>
-      this.transformToResponseDto(challenge),
+      this.transformToResponseDto(challenge, lang),
     );
   }
 
@@ -147,11 +150,18 @@ export class ChallengesService {
     await this.challengesRepository.delete(challengeId);
   }
 
-  private transformToResponseDto(challenge: any): ChallengeResponseDto {
-    const copy = this.gamificationI18n.getChallengeCopy(challenge.slug, {
-      title: challenge.title,
-      description: challenge.description,
-    });
+  private transformToResponseDto(
+    challenge: any,
+    lang?: string,
+  ): ChallengeResponseDto {
+    const copy = this.gamificationI18n.getChallengeCopy(
+      challenge.slug,
+      {
+        title: challenge.title,
+        description: challenge.description,
+      },
+      lang,
+    );
 
     return {
       id: challenge.id,

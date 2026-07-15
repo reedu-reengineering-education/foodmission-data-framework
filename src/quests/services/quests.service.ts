@@ -59,7 +59,7 @@ export class QuestsService {
     }
   }
 
-  async getQuestById(questId: string): Promise<QuestResponseDto> {
+  async getQuestById(questId: string, lang?: string): Promise<QuestResponseDto> {
     this.logger.log(`Getting quest ${questId}`);
 
     const quest = await this.questsRepository.findById(questId);
@@ -68,10 +68,10 @@ export class QuestsService {
       throw new NotFoundException('Quest not found');
     }
 
-    return this.transformToResponseDto(quest);
+    return this.transformToResponseDto(quest, lang);
   }
 
-  async getQuests(missionId?: string): Promise<QuestResponseDto[]> {
+  async getQuests(missionId?: string, lang?: string): Promise<QuestResponseDto[]> {
     this.logger.log(
       missionId ? `Getting quests for mission ${missionId}` : 'Getting all quests',
     );
@@ -80,7 +80,7 @@ export class QuestsService {
       ? await this.questsRepository.findByMissionId(missionId)
       : await this.questsRepository.findAll();
 
-    return quests.map((quest) => this.transformToResponseDto(quest));
+    return quests.map((quest) => this.transformToResponseDto(quest, lang));
   }
 
   async update(

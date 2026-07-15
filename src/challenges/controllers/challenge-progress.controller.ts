@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -12,6 +13,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -20,6 +22,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
@@ -27,6 +31,13 @@ import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto
 @ApiTags('challenges')
 @Controller('challenges/:challengeId/progress')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated challenge copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class ChallengeProgressController {
   constructor(
     private readonly challengeProgressService: ChallengeProgressService,
@@ -58,8 +69,13 @@ export class ChallengeProgressController {
   async getChallengeById(
     @Param('challengeId', ParseUUIDPipe) challengeId: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
   ): Promise<ChallengeProgressResponseDto> {
-    return this.challengeProgressService.getChallengeById(challengeId, userId);
+    return this.challengeProgressService.getChallengeById(
+      challengeId,
+      userId,
+      query.lang,
+    );
   }
 
   @Patch()

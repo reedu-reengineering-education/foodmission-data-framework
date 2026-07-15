@@ -48,8 +48,8 @@ describe('ChallengeProgressController', () => {
         challengeTitle: 'Test',
       };
       (service.getChallengeById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getChallengeById('c1', 'u1');
-      expect(service.getChallengeById).toHaveBeenCalledWith('c1', 'u1');
+      const result = await controller.getChallengeById('c1', 'u1', { lang: 'de' });
+      expect(service.getChallengeById).toHaveBeenCalledWith('c1', 'u1', 'de');
       expect(result).toBe(mockResult);
     });
   });

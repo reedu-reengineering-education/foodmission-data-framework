@@ -15,6 +15,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -23,6 +24,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { CreateQuestDto } from '../dto/create-quest.dto';
 import { QueryQuestsDto } from '../dto/query-quests.dto';
 import { QuestProgressResponseDto } from '../dto/response-quest-progress.dto';
@@ -34,6 +37,13 @@ import { QuestsService } from '../services/quests.service';
 @ApiTags('quests')
 @Controller('quests')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated quest copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class QuestsController {
   constructor(
     private readonly questsService: QuestsService,
@@ -71,8 +81,9 @@ export class QuestsController {
   @ApiCrudErrorResponses()
   async getAllProgress(
     @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
   ): Promise<QuestProgressResponseDto[]> {
-    return this.questProgressService.getAllQuestsByUserId(userId);
+    return this.questProgressService.getAllQuestsByUserId(userId, query.lang);
   }
 
   @Get()
@@ -88,7 +99,7 @@ export class QuestsController {
   })
   @ApiCrudErrorResponses()
   async getQuests(@Query() query: QueryQuestsDto): Promise<QuestResponseDto[]> {
-    return this.questsService.getQuests(query.missionId);
+    return this.questsService.getQuests(query.missionId, query.lang);
   }
 
   @Get(':id')
@@ -101,8 +112,9 @@ export class QuestsController {
   @ApiCrudErrorResponses()
   async getQuestById(
     @Param('id', ParseUUIDPipe) id: string,
+    @Query() query: LangQueryDto,
   ): Promise<QuestResponseDto> {
-    return this.questsService.getQuestById(id);
+    return this.questsService.getQuestById(id, query.lang);
   }
 
   @Patch(':id')

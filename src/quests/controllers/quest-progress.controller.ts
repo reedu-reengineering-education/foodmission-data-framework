@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -12,6 +13,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -20,6 +22,8 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { LangQueryDto } from '../../i18n/dto/lang-query.dto';
 import { QuestProgressResponseDto } from '../dto/response-quest-progress.dto';
 import { UpdateQuestProgressDto } from '../dto/update-quest-progress.dto';
 import { QuestProgressService } from '../services/quest-progress.service';
@@ -27,6 +31,13 @@ import { QuestProgressService } from '../services/quest-progress.service';
 @ApiTags('quests')
 @Controller('quests/:questId/progress')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated quest copy. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class QuestProgressController {
   constructor(private readonly questProgressService: QuestProgressService) {}
 
@@ -40,8 +51,9 @@ export class QuestProgressController {
   async getQuestProgress(
     @Param('questId', ParseUUIDPipe) questId: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LangQueryDto,
   ): Promise<QuestProgressResponseDto> {
-    return this.questProgressService.getQuestById(questId, userId);
+    return this.questProgressService.getQuestById(questId, userId, query.lang);
   }
 
   @Patch()
