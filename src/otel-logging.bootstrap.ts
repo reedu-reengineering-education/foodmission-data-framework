@@ -69,7 +69,9 @@ if (config.enabled) {
     });
 
     // Create and register LoggerProvider explicitly
-    const logRecordProcessor = new BatchLogRecordProcessor(logExporter);
+    const logRecordProcessor = new BatchLogRecordProcessor({
+      exporter: logExporter,
+    });
     const loggerProvider = new LoggerProvider({
       resource,
       processors: [logRecordProcessor],
