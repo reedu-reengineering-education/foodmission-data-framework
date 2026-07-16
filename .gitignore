@@ -90,7 +90,8 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
-translations/
+# Vendor spreadsheet handoff output (repo root only — not src/translations/)
+/translations/
 
 # Runtime data
 pids
