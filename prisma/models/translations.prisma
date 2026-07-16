@@ -1,0 +1,19 @@
+// ============================================================
+// Translations - Polymorphic entity field translations
+// ============================================================
+
+model EntityTranslation {
+  id         String   @id @default(uuid())
+  entityType String // "GenericFood" | "Mission" | "Challenge" | ...
+  entityId   String
+  locale     String // SUPPORTED_LOCALES (typically not "en" — English stays on parent)
+  field      String // "foodName" | "foodGroup" | "remark" | "title" | ...
+  value      String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([entityType, entityId, locale, field])
+  @@index([entityType, locale, field])
+  @@index([entityType, entityId])
+  @@map("entity_translations")
+}

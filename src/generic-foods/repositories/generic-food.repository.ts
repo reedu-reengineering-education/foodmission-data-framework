@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
-
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 @Injectable()
 export class GenericFoodRepository {
@@ -15,15 +16,23 @@ export class GenericFoodRepository {
     });
   }
 
-  async findAll(query: GenericFoodQueryDto) {
-    const { search, foodGroup, page = 1, limit = 20 } = query;
+  async findAll(
+    query: GenericFoodQueryDto,
+    localizedMatchIds?: string[],
+  ) {
+    const { search, foodGroup, page = 1, limit = 20, lang } = query;
     const skip = (page - 1) * limit;
+    const locale = (lang ?? DEFAULT_LOCALE).toLowerCase();
+    const useLocalizedSearch =
+      Boolean(search) &&
+      locale !== DEFAULT_LOCALE &&
+      Array.isArray(localizedMatchIds);
 
-    const where: any = {};
-    const conditions: any[] = [];
+    const where: Prisma.GenericFoodWhereInput = {};
+    const conditions: Prisma.GenericFoodWhereInput[] = [];
 
     if (search) {
-      conditions.push({
+      const englishMatch: Prisma.GenericFoodWhereInput = {
         OR: [
           { foodName: { contains: search, mode: 'insensitive' } },
           {
@@ -33,7 +42,17 @@ export class GenericFoodRepository {
             ],
           },
         ],
-      });
+      };
+
+      if (useLocalizedSearch && localizedMatchIds!.length > 0) {
+        conditions.push({
+          OR: [englishMatch, { id: { in: localizedMatchIds } }],
+        });
+      } else if (useLocalizedSearch && localizedMatchIds!.length === 0) {
+        conditions.push(englishMatch);
+      } else {
+        conditions.push(englishMatch);
+      }
     }
 
     if (foodGroup) {
@@ -42,7 +61,6 @@ export class GenericFoodRepository {
       });
     }
 
-    // Combine conditions with AND logic
     if (conditions.length > 0) {
       where.AND = conditions;
     }
@@ -92,7 +110,7 @@ export class GenericFoodRepository {
   }
 
   async getAllFoodGroups(search?: string): Promise<string[]> {
-    const where: any = {};
+    const where: Prisma.GenericFoodWhereInput = {};
 
     if (search) {
       where.foodGroup = { contains: search, mode: 'insensitive' };

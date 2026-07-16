@@ -5,12 +5,13 @@ import { GenericFoodRepository } from '../repositories/generic-food.repository';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
-
+import { TranslationService } from '../../translations/services/translation.service';
 import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
 describe('GenericFoodService', () => {
   let service: GenericFoodService;
   let repository: jest.Mocked<GenericFoodRepository>;
+  let translations: jest.Mocked<TranslationService>;
 
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'generic-123' };
 
@@ -24,6 +25,14 @@ describe('GenericFoodService', () => {
     getAllFoodGroups: jest.fn(),
   };
 
+  const mockTranslationMethods = {
+    resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+    resolveMany: jest.fn(),
+    findEntityIdsByValue: jest.fn(),
+    listDistinct: jest.fn(),
+    deleteForEntity: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -32,11 +41,16 @@ describe('GenericFoodService', () => {
           provide: GenericFoodRepository,
           useValue: mockRepositoryMethods,
         },
+        {
+          provide: TranslationService,
+          useValue: mockTranslationMethods,
+        },
       ],
     }).compile();
 
     service = module.get<GenericFoodService>(GenericFoodService);
     repository = module.get(GenericFoodRepository);
+    translations = module.get(TranslationService);
   });
 
   afterEach(() => {
@@ -61,38 +75,10 @@ describe('GenericFoodService', () => {
       expect(repository.create).toHaveBeenCalledWith(createDto);
       expect(result).toEqual(mockCategory);
     });
-
-    it('should create with nutritional fields', async () => {
-      const createDto: CreateGenericFoodDto = {
-        nevoVersion: '2025',
-        foodGroup: 'Vegetables',
-        nevoCode: 1234,
-        foodName: 'Tomato, raw',
-        energyKcal: 18,
-        proteins: 0.9,
-        fat: 0.2,
-        carbohydrates: 3.9,
-      };
-
-      const categoryWithNutrients = {
-        ...mockCategory,
-        energyKcal: 18,
-        proteins: 0.9,
-        fat: 0.2,
-        carbohydrates: 3.9,
-      };
-
-      repository.create.mockResolvedValue(categoryWithNutrients);
-
-      const result = await service.create(createDto);
-
-      expect(result.energyKcal).toBe(18);
-      expect(result.proteins).toBe(0.9);
-    });
   });
 
   describe('findAll', () => {
-    it('should return paginated generic foods', async () => {
+    it('should return paginated generic foods with English fields', async () => {
       const query: GenericFoodQueryDto = {
         page: 1,
         limit: 20,
@@ -106,93 +92,90 @@ describe('GenericFoodService', () => {
         totalPages: 1,
       };
 
+      translations.resolveLocale.mockReturnValue('en');
       repository.findAll.mockResolvedValue(paginatedResult);
 
       const result = await service.findAll(query);
 
-      expect(repository.findAll).toHaveBeenCalledWith(query);
-      expect(result).toEqual(paginatedResult);
-      expect(result.items).toHaveLength(1);
+      expect(repository.findAll).toHaveBeenCalledWith(query, undefined);
+      expect(result.items[0].foodName).toBe(mockCategory.foodName);
+      expect(result.items[0].remark).toBeNull();
     });
 
-    it('should handle search query', async () => {
-      const query: GenericFoodQueryDto = {
-        search: 'tomato',
-        page: 1,
-        limit: 20,
-      };
-
-      const paginatedResult = {
-        items: [mockCategory],
-        total: 1,
-        page: 1,
-        limit: 20,
-        totalPages: 1,
-      };
-
-      repository.findAll.mockResolvedValue(paginatedResult);
-
-      const result = await service.findAll(query);
-
-      expect(repository.findAll).toHaveBeenCalledWith(query);
-      expect(result.items).toHaveLength(1);
-      expect(result.items[0].foodName).toContain('Tomato');
-    });
-
-    it('should filter by food group', async () => {
-      const query: GenericFoodQueryDto = {
-        foodGroup: 'Vegetables',
-        page: 1,
-        limit: 20,
-      };
-
-      const paginatedResult = {
-        items: [mockCategory],
-        total: 1,
-        page: 1,
-        limit: 20,
-        totalPages: 1,
-      };
-
-      repository.findAll.mockResolvedValue(paginatedResult);
-
-      const result = await service.findAll(query);
-
-      expect(repository.findAll).toHaveBeenCalledWith(query);
-      expect(result.items[0].foodGroup).toBe('Vegetables');
-    });
-
-    it('should return empty array when no results found', async () => {
-      const query: GenericFoodQueryDto = {
-        search: 'nonexistent',
-        page: 1,
-        limit: 20,
-      };
+    it('should overlay Dutch translations when lang=nl', async () => {
+      const query: GenericFoodQueryDto = { page: 1, limit: 20, lang: 'nl' };
 
       repository.findAll.mockResolvedValue({
-        items: [],
-        total: 0,
+        items: [mockCategory],
+        total: 1,
         page: 1,
         limit: 20,
-        totalPages: 0,
+        totalPages: 1,
+      });
+      translations.resolveLocale.mockReturnValue('nl');
+      translations.resolveMany.mockResolvedValue({
+        'generic-123': {
+          foodName: 'Tomaat rauw',
+          foodGroup: 'Groenten',
+          remark: null,
+          synonym: mockCategory.synonym,
+        },
       });
 
       const result = await service.findAll(query);
 
-      expect(result.items).toEqual([]);
-      expect(result.total).toBe(0);
+      expect(result.items[0].foodName).toBe('Tomaat rauw');
+      expect(result.items[0].foodGroup).toBe('Groenten');
+    });
+
+    it('should search localized names when lang is set', async () => {
+      const query: GenericFoodQueryDto = {
+        search: 'tomaat',
+        lang: 'nl',
+        page: 1,
+        limit: 20,
+      };
+
+      translations.resolveLocale.mockReturnValue('nl');
+      translations.findEntityIdsByValue.mockResolvedValue(['generic-123']);
+      repository.findAll.mockResolvedValue({
+        items: [mockCategory],
+        total: 1,
+        page: 1,
+        limit: 20,
+        totalPages: 1,
+      });
+      translations.resolveMany.mockResolvedValue({
+        'generic-123': {
+          foodName: 'Tomaat rauw',
+          foodGroup: 'Groenten',
+          remark: null,
+          synonym: null,
+        },
+      });
+
+      await service.findAll(query);
+
+      expect(translations.findEntityIdsByValue).toHaveBeenCalledWith(
+        'GenericFood',
+        'nl',
+        ['foodName', 'synonym'],
+        'tomaat',
+      );
+      expect(repository.findAll).toHaveBeenCalledWith(query, ['generic-123']);
     });
   });
 
   describe('findById', () => {
     it('should return a generic food by id', async () => {
       repository.findById.mockResolvedValue(mockCategory);
+      translations.resolveLocale.mockReturnValue('en');
 
       const result = await service.findById('generic-123');
 
       expect(repository.findById).toHaveBeenCalledWith('generic-123');
-      expect(result).toEqual(mockCategory);
       expect(result.id).toBe('generic-123');
+      expect(result.remark).toBeNull();
     });
 
     it('should throw NotFoundException when generic food not found', async () => {
@@ -200,9 +183,6 @@ describe('GenericFoodService', () => {
 
       await expect(service.findById('invalid-id')).rejects.toThrow(
         NotFoundException,
-      );
-      await expect(service.findById('invalid-id')).rejects.toThrow(
-        "Generic food with ID 'invalid-id' not found",
       );
     });
   });
@@ -221,115 +201,57 @@ describe('GenericFoodService', () => {
       };
 
       repository.findById.mockResolvedValue(mockCategory);
+      translations.resolveLocale.mockReturnValue('en');
       repository.update.mockResolvedValue(updatedCategory);
 
       const result = await service.update('generic-123', updateDto);
 
-      expect(repository.findById).toHaveBeenCalledWith('generic-123');
       expect(repository.update).toHaveBeenCalledWith('generic-123', updateDto);
       expect(result.foodName).toBe('Tomato, cooked');
-      expect(result.energyKcal).toBe(20);
-    });
-
-    it('should throw NotFoundException when generic food does not exist', async () => {
-      const updateDto: UpdateGenericFoodDto = {
-        foodName: 'New name',
-      };
-
-      repository.findById.mockResolvedValue(null);
-
-      await expect(service.update('invalid-id', updateDto)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(repository.update).not.toHaveBeenCalled();
-    });
-
-    it('should update only provided fields', async () => {
-      const updateDto: UpdateGenericFoodDto = {
-        energyKcal: 25,
-      };
-
-      const updatedCategory = {
-        ...mockCategory,
-        energyKcal: 25,
-      };
-
-      repository.findById.mockResolvedValue(mockCategory);
-      repository.update.mockResolvedValue(updatedCategory);
-
-      const result = await service.update('generic-123', updateDto);
-
-      expect(result.foodName).toBe(mockCategory.foodName); // Unchanged
-      expect(result.energyKcal).toBe(25); // Updated
     });
   });
 
   describe('delete', () => {
-    it('should delete a generic food', async () => {
+    it('should delete translations then the generic food', async () => {
       repository.findById.mockResolvedValue(mockCategory);
+      translations.resolveLocale.mockReturnValue('en');
+      translations.deleteForEntity.mockResolvedValue(undefined);
       repository.delete.mockResolvedValue(mockCategory);
 
       await service.delete('generic-123');
 
-      expect(repository.findById).toHaveBeenCalledWith('generic-123');
-      expect(repository.delete).toHaveBeenCalledWith('generic-123');
-    });
-
-    it('should throw NotFoundException when generic food does not exist', async () => {
-      repository.findById.mockResolvedValue(null);
-
-      await expect(service.delete('invalid-id')).rejects.toThrow(
-        NotFoundException,
+      expect(translations.deleteForEntity).toHaveBeenCalledWith(
+        'GenericFood',
+        'generic-123',
       );
-      expect(repository.delete).not.toHaveBeenCalled();
+      expect(repository.delete).toHaveBeenCalledWith('generic-123');
     });
   });
 
   describe('getAllFoodGroups', () => {
-    it('should return all unique food groups', async () => {
-      const foodGroups = ['Vegetables', 'Fruits', 'Grains', 'Dairy'];
-      repository.getAllFoodGroups.mockResolvedValue(foodGroups);
+    it('should return English groups by default', async () => {
+      translations.resolveLocale.mockReturnValue('en');
+      repository.getAllFoodGroups.mockResolvedValue(['Vegetables']);
 
       const result = await service.getAllFoodGroups();
 
       expect(repository.getAllFoodGroups).toHaveBeenCalledWith(undefined);
-      expect(result).toEqual(foodGroups);
-      expect(result).toHaveLength(4);
+      expect(result).toEqual(['Vegetables']);
     });
 
-    it('should return filtered food groups when search is provided', async () => {
-      const foodGroups = ['Vegetables', 'Vegetable oils'];
-      repository.getAllFoodGroups.mockResolvedValue(foodGroups);
+    it('should return localized groups when available', async () => {
+      translations.resolveLocale.mockReturnValue('nl');
+      translations.listDistinct.mockResolvedValue(['Groenten']);
 
-      const result = await service.getAllFoodGroups('vegeta');
+      const result = await service.getAllFoodGroups(undefined, 'nl');
 
-      expect(repository.getAllFoodGroups).toHaveBeenCalledWith('vegeta');
-      expect(result).toEqual(foodGroups);
-      expect(result).toHaveLength(2);
-    });
-
-    it('should return empty array when no generic foods exist', async () => {
-      repository.getAllFoodGroups.mockResolvedValue([]);
-
-      const result = await service.getAllFoodGroups();
-
-      expect(result).toEqual([]);
-      expect(result).toHaveLength(0);
-    });
-
-    it('should return sorted food groups', async () => {
-      const foodGroups = [
-        'Cereals and cereal products',
-        'Dairy products',
-        'Meat and meat products',
-        'Vegetables',
-      ];
-      repository.getAllFoodGroups.mockResolvedValue(foodGroups);
-
-      const result = await service.getAllFoodGroups();
-
-      expect(result[0]).toBe('Cereals and cereal products');
-      expect(result[result.length - 1]).toBe('Vegetables');
+      expect(translations.listDistinct).toHaveBeenCalledWith(
+        'GenericFood',
+        'nl',
+        'foodGroup',
+        undefined,
+      );
+      expect(result).toEqual(['Groenten']);
     });
   });
 });

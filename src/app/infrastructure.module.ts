@@ -6,11 +6,13 @@ import { DatabaseModule } from '../database/database.module';
 import { HealthModule } from '../health/health.module';
 import { MonitoringModule } from '../monitoring/monitoring.module';
 import { SecurityModule } from '../security/security.module';
+import { TranslationsModule } from '../translations/translations.module';
 
 @Module({
   imports: [
     CommonModule,
     DatabaseModule,
+    TranslationsModule,
     CacheModule,
     SecurityModule,
     AuthModule,

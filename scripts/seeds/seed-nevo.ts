@@ -13,11 +13,14 @@ const CSV_PATH = path.join(
 
 const COL = {
   NEVO_VERSION: 0,
+  FOOD_GROUP_NL: 1,
   FOOD_GROUP: 2,
   NEVO_CODE: 3,
+  FOOD_NAME_NL: 4,
   FOOD_NAME: 5,
   SYNONYM: 6,
   QUANTITY: 7,
+  REMARK_NL: 8,
   CONTAINS_TRACES_OF: 9,
   IS_FORTIFIED_WITH: 10,
   ENERCJ: 11,
@@ -356,8 +359,75 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     } as any;
 
     try {
-      await prisma.genericFood.create({ data: { nevoCode, ...data } });
+      const record = await prisma.genericFood.create({
+        data: { nevoCode, ...data },
+      });
       created += 1;
+
+      const foodNameNl = parseStringOrNull(cols[COL.FOOD_NAME_NL]);
+      const foodGroupNl = parseStringOrNull(cols[COL.FOOD_GROUP_NL]);
+      const remarkNl = parseStringOrNull(cols[COL.REMARK_NL]);
+      const synonym = parseStringOrNull(cols[COL.SYNONYM]);
+
+      const nlRows: {
+        entityType: 'GenericFood';
+        entityId: string;
+        locale: 'nl';
+        field: string;
+        value: string;
+      }[] = [];
+
+      if (foodNameNl) {
+        nlRows.push({
+          entityType: 'GenericFood',
+          entityId: record.id,
+          locale: 'nl',
+          field: 'foodName',
+          value: foodNameNl,
+        });
+      }
+      if (foodGroupNl) {
+        nlRows.push({
+          entityType: 'GenericFood',
+          entityId: record.id,
+          locale: 'nl',
+          field: 'foodGroup',
+          value: foodGroupNl,
+        });
+      }
+      if (remarkNl) {
+        nlRows.push({
+          entityType: 'GenericFood',
+          entityId: record.id,
+          locale: 'nl',
+          field: 'remark',
+          value: remarkNl,
+        });
+      }
+      if (synonym) {
+        nlRows.push({
+          entityType: 'GenericFood',
+          entityId: record.id,
+          locale: 'nl',
+          field: 'synonym',
+          value: synonym,
+        });
+      }
+
+      for (const row of nlRows) {
+        await prisma.entityTranslation.upsert({
+          where: {
+            entityType_entityId_locale_field: {
+              entityType: row.entityType,
+              entityId: row.entityId,
+              locale: row.locale,
+              field: row.field,
+            },
+          },
+          create: row,
+          update: { value: row.value },
+        });
+      }
     } catch (err: any) {
       // If a concurrent process created the same nevoCode, skip
       if (err && err.code === 'P2002') {
@@ -371,7 +441,9 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     }
   }
 
-  console.log(`   ✅ Created ${created} new NEVO generic foods`);
+  console.log(
+    `   ✅ Created ${created} new NEVO generic foods (with nl translations)`,
+  );
   return { count: created, skipped: false };
 }
 

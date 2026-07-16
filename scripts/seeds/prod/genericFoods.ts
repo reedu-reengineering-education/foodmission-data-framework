@@ -6,18 +6,18 @@ const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NE
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
- * Dutch-only columns (2: Voedingsmiddelgroep, 5: Dutch food name, 9: Opmerking) are skipped.
+ * English metadata lands on GenericFood; Dutch name/group/remark seed EntityTranslation (nl).
  */
 const COL = {
   NEVO_VERSION: 0,
-  // 1 = Voedingsmiddelgroep (Dutch) — skipped
+  FOOD_GROUP_NL: 1,
   FOOD_GROUP: 2,
   NEVO_CODE: 3,
-  // 4 = Voedingsmiddelnaam/Dutch food name — skipped
+  FOOD_NAME_NL: 4,
   FOOD_NAME: 5,
   SYNONYM: 6,
   QUANTITY: 7,
-  // 8 = Opmerking (Dutch remark) — skipped
+  REMARK_NL: 8,
   CONTAINS_TRACES_OF: 9,
   IS_FORTIFIED_WITH: 10,
   ENERCJ: 11,
@@ -384,11 +384,74 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       create: { nevoCode, ...data },
     });
 
-    if (record) {
-      results.push({ nevoCode, foodName: data.foodName });
+    const foodNameNl = parseStringOrNull(cols[COL.FOOD_NAME_NL]);
+    const foodGroupNl = parseStringOrNull(cols[COL.FOOD_GROUP_NL]);
+    const remarkNl = parseStringOrNull(cols[COL.REMARK_NL]);
+    const synonym = parseStringOrNull(cols[COL.SYNONYM]);
+
+    const nlTranslations: {
+      entityType: 'GenericFood';
+      entityId: string;
+      locale: 'nl';
+      field: string;
+      value: string;
+    }[] = [];
+
+    if (foodNameNl) {
+      nlTranslations.push({
+        entityType: 'GenericFood',
+        entityId: record.id,
+        locale: 'nl',
+        field: 'foodName',
+        value: foodNameNl,
+      });
     }
+    if (foodGroupNl) {
+      nlTranslations.push({
+        entityType: 'GenericFood',
+        entityId: record.id,
+        locale: 'nl',
+        field: 'foodGroup',
+        value: foodGroupNl,
+      });
+    }
+    if (remarkNl) {
+      nlTranslations.push({
+        entityType: 'GenericFood',
+        entityId: record.id,
+        locale: 'nl',
+        field: 'remark',
+        value: remarkNl,
+      });
+    }
+    if (synonym) {
+      nlTranslations.push({
+        entityType: 'GenericFood',
+        entityId: record.id,
+        locale: 'nl',
+        field: 'synonym',
+        value: synonym,
+      });
+    }
+
+    for (const row of nlTranslations) {
+      await prisma.entityTranslation.upsert({
+        where: {
+          entityType_entityId_locale_field: {
+            entityType: row.entityType,
+            entityId: row.entityId,
+            locale: row.locale,
+            field: row.field,
+          },
+        },
+        create: row,
+        update: { value: row.value },
+      });
+    }
+
+    results.push({ nevoCode, foodName: data.foodName });
   }
 
-  console.log(`   ✅ Processed ${results.length} generic foods`);
+  console.log(`   ✅ Processed ${results.length} generic foods (with nl translations)`);
   return results;
 }

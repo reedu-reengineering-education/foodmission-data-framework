@@ -1,6 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
+import { IsIn, IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { TransformTrimLowercaseToUndefined } from '../../common/decorators/transformers';
 
 export class GenericFoodQueryDto {
   @ApiPropertyOptional({
@@ -12,12 +14,24 @@ export class GenericFoodQueryDto {
   search?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by food group',
+    description:
+      'Filter by food group (English canonical name; display may be localized via lang)',
     example: 'Potatoes and tubers',
   })
   @IsOptional()
   @IsString()
   foodGroup?: string;
+
+  @ApiPropertyOptional({
+    description: `Optional locale for translated foodName/foodGroup/remark. Defaults to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'nl',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
 
   @ApiPropertyOptional({
     description: 'Page number (1-based)',
