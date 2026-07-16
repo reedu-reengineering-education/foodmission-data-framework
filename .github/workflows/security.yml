@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build Docker image
         run: |
@@ -59,13 +59,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Run TruffleHog OSS for PR
         if: github.event_name == 'pull_request'
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3.95.9
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha }}
@@ -74,7 +74,7 @@ jobs:
 
       - name: Run TruffleHog OSS for Push
         if: github.event_name == 'push'
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3.95.9
         with:
           path: ./
           base: ${{ github.event.before }}
@@ -83,7 +83,7 @@ jobs:
 
       - name: Run TruffleHog OSS for Scheduled/Full Scan
         if: github.event_name == 'schedule' || github.event.before == '0000000000000000000000000000000000000000'
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3.95.9
         with:
           path: ./
           extra_args: --debug --only-verified
@@ -94,10 +94,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'npm'
@@ -119,8 +119,10 @@ jobs:
       security-events: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
+      # Action refs use semver tags (not commit SHAs) — updated via Dependabot
+      # with a 7-day cooldown. Tag-mutability risk is accepted; see dependabot.yml.
       - name: Run Semgrep
         run: |
           semgrep scan \
@@ -128,6 +130,7 @@ jobs:
             --config "p/secrets" \
             --config "p/owasp-top-ten" \
             --config "p/nodejs" \
+            --exclude-rule yaml.github-actions.security.github-actions-mutable-action-tag.github-actions-mutable-action-tag \
             --sarif \
             --output semgrep.sarif \
             .
