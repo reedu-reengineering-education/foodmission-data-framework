@@ -7,38 +7,147 @@ import {
   GroupRole,
   MealCategory,
   MealCourse,
+  DietaryLabel,
   TypeOfMeal,
   Unit,
 } from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
-import { pageLimitToSkipTake } from '../../common/utils/pagination';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { SHOPPING_RESPONSIBILITY_ENTRIES } from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
   CatalogListResponseDto,
   CatalogStartupResponseDto,
   PaginatedCatalogListResponseDto,
 } from '../dto/catalog-response.dto';
-
-function titleCaseFromEnum(value: string): string {
-  return value
-    .toLowerCase()
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
-
-function normalizeSearch(s?: string): string | undefined {
-  const v = (s ?? '').trim();
-  return v.length ? v.toLowerCase() : undefined;
-}
+import {
+  filterLocalizedItems,
+  normalizeSearch,
+  titleCaseFromEnum,
+  toPaginatedResponse,
+} from './catalog.service.helpers';
 
 @Injectable()
 export class CatalogService {
+  constructor(private readonly i18n: I18nService) {}
+
   private cached: {
     countries?: CatalogValueDto[];
     regionsAll?: CatalogValueDto[];
   } = {};
+
+  private readonly displayNamesByType: Record<
+    'language' | 'region',
+    Map<string, Intl.DisplayNames>
+  > = {
+    language: new Map<string, Intl.DisplayNames>(),
+    region: new Map<string, Intl.DisplayNames>(),
+  };
+
+  private resolveLanguage(langOverride?: string): string {
+    const candidate = (
+      langOverride ??
+      I18nContext.current()?.lang ??
+      DEFAULT_LOCALE
+    )
+      .trim()
+      .toLowerCase();
+
+    if ((SUPPORTED_LOCALES as readonly string[]).includes(candidate)) {
+      return candidate;
+    }
+
+    return DEFAULT_LOCALE;
+  }
+
+  private getDisplayNamesForLocale(
+    lang: string,
+    type: 'language' | 'region',
+  ): Intl.DisplayNames | null {
+    const normalizedLang = this.resolveLanguage(lang);
+    const cache = this.displayNamesByType[type];
+    const cached = cache.get(normalizedLang);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const instance = new Intl.DisplayNames([normalizedLang], {
+        type,
+      });
+      cache.set(normalizedLang, instance);
+      return instance;
+    } catch {
+      return null;
+    }
+  }
+
+  private localizeLanguageLabel(
+    languageCode: string,
+    lang: string,
+    fallback: string,
+  ): string {
+    const displayNames = this.getDisplayNamesForLocale(lang, 'language');
+    const localized = displayNames?.of(languageCode.toLowerCase());
+
+    if (typeof localized === 'string' && localized.trim().length > 0) {
+      return localized;
+    }
+
+    return fallback;
+  }
+
+  private localizeCountryLabel(
+    countryCode: string,
+    lang: string,
+    fallback: string,
+  ): string {
+    const regionDisplayNames = this.getDisplayNamesForLocale(lang, 'region');
+    const localized = regionDisplayNames?.of(countryCode.toUpperCase());
+
+    if (typeof localized === 'string' && localized.trim().length > 0) {
+      return localized;
+    }
+
+    return fallback;
+  }
+
+  private translateCatalogKey(
+    path: string,
+    fallback: string,
+    langOverride?: string,
+  ): string {
+    const translated = this.i18n.translate(`catalog.${path}`, {
+      lang: this.resolveLanguage(langOverride),
+      defaultValue: fallback,
+    });
+
+    return typeof translated === 'string' ? translated : fallback;
+  }
+
+  private mapEnumCatalogValues<T extends string>(
+    values: T[],
+    section: string,
+  ): CatalogValueDto[] {
+    return values.map((code) => ({
+      code,
+      label: this.translateCatalogKey(
+        `${section}.${code}`,
+        titleCaseFromEnum(code),
+      ),
+    }));
+  }
+
+  private enumSection(
+    values: string[],
+    section: string,
+  ): CatalogListResponseDto {
+    return {
+      data: this.mapEnumCatalogValues(values, section),
+    };
+  }
 
   private getAllCountries(): CatalogValueDto[] {
     if (this.cached.countries) return this.cached.countries;
@@ -90,159 +199,125 @@ export class CatalogService {
   }
 
   listGenders(): CatalogListResponseDto {
-    return {
-      data: Object.values(Gender).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(Gender), 'genders');
   }
 
   listActivityLevels(): CatalogListResponseDto {
-    return {
-      data: Object.values(ActivityLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(ActivityLevel), 'activityLevels');
   }
 
   listEducationLevels(): CatalogListResponseDto {
-    return {
-      data: Object.values(EducationLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(EducationLevel), 'educationLevels');
   }
 
   listAnnualIncomeLevels(): CatalogListResponseDto {
-    return {
-      data: Object.values(AnnualIncomeLevel).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(
+      Object.values(AnnualIncomeLevel),
+      'annualIncomeLevels',
+    );
   }
 
   listUnits(): CatalogListResponseDto {
-    return {
-      data: Object.values(Unit).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(Unit), 'units');
   }
 
   listTypeOfMeals(): CatalogListResponseDto {
-    return {
-      data: Object.values(TypeOfMeal).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(TypeOfMeal), 'typeOfMeals');
   }
 
   listMealCategories(): CatalogListResponseDto {
-    return {
-      data: Object.values(MealCategory).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(MealCategory), 'mealCategories');
   }
 
   listMealCourses(): CatalogListResponseDto {
-    return {
-      data: Object.values(MealCourse).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(MealCourse), 'mealCourses');
   }
 
   listGroupRoles(): CatalogListResponseDto {
-    return {
-      data: Object.values(GroupRole).map((code) => ({
-        code,
-        label: titleCaseFromEnum(code),
-      })),
-    };
+    return this.enumSection(Object.values(GroupRole), 'groupRoles');
   }
 
   listDietaryPreferences(): CatalogListResponseDto {
-    const values = [
-      'VEGAN',
-      'VEGETARIAN',
-      'PESCATARIAN',
-      'GLUTEN_FREE',
-      'DAIRY_FREE',
-      'NUT_FREE',
-      'HALAL',
-      'KOSHER',
-    ];
     return {
-      data: values.map((code) => ({
+      data: Object.values(DietaryLabel).map((code) => ({
         code,
-        label: titleCaseFromEnum(code),
+        label: this.translateCatalogKey(
+          `dietaryPreferences.${code}`,
+          titleCaseFromEnum(code),
+        ),
       })),
     };
   }
 
   listShoppingResponsibilities(): CatalogListResponseDto {
-    const data: CatalogValueDto[] = [
-      { code: 'NO_SPECIFIC', label: 'No specific answer' },
-      { code: 'MOSTLY_ME', label: 'Mostly me' },
-      { code: 'SHARED_EQUALLY', label: 'Shared equally' },
-      { code: 'MOSTLY_SOMEONE_ELSE', label: 'Mostly someone else' },
-      { code: 'SOMEONE_ELSE', label: 'Someone else' },
-    ];
-    return { data };
+    return {
+      data: SHOPPING_RESPONSIBILITY_ENTRIES.map((entry) => ({
+        code: entry.code,
+        label: this.translateCatalogKey(entry.key, entry.fallback),
+      })),
+    };
   }
 
   listLanguages(input: {
     page: number;
     limit: number;
     search?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const allCodes = ISO6391.getAllCodes();
-    const all: CatalogValueDto[] = allCodes
-      .map((code) => ({ code, label: ISO6391.getName(code) }))
+    const all = allCodes
+      .map((code) => {
+        const canonicalLabel = ISO6391.getName(code);
+        return {
+          code,
+          canonicalLabel,
+          label: this.localizeLanguageLabel(code, lang, canonicalLabel),
+        };
+      })
       .filter((x) => x.label);
 
-    const filtered = q
-      ? all.filter(
-          (x) => x.label.toLowerCase().includes(q) || x.code.includes(q),
-        )
-      : all;
+    const filtered = filterLocalizedItems(all, q, (item, query) =>
+      item.code.includes(query),
+    );
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
+
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
+    }));
   }
 
   listCountries(input: {
     page: number;
     limit: number;
     search?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const all = this.getAllCountries();
-    const filtered = q
-      ? all.filter(
-          (x) =>
-            x.label.toLowerCase().includes(q) || x.code.toLowerCase() === q,
-        )
-      : all;
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
+    const localized = all.map((x) => ({
+      code: x.code,
+      canonicalLabel: x.label,
+      label: this.localizeCountryLabel(x.code, lang, x.label),
+    }));
+
+    const filtered = filterLocalizedItems(
+      localized,
+      q,
+      (item, query) => item.code.toLowerCase() === query,
+    );
+
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
+
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
+    }));
   }
 
   listRegions(input: {
@@ -250,8 +325,10 @@ export class CatalogService {
     limit: number;
     search?: string;
     countryCode?: string;
+    lang?: string;
   }): PaginatedCatalogListResponseDto {
     const q = normalizeSearch(input.search);
+    const lang = this.resolveLanguage(input.lang);
     const countryCode = (input.countryCode ?? '').trim().toUpperCase();
 
     const allRegions = this.getAllRegions();
@@ -259,19 +336,22 @@ export class CatalogService {
       ? allRegions.filter((r) => r.meta?.countryCode === countryCode)
       : allRegions;
 
-    const filtered = q
-      ? all.filter(
-          (x) =>
-            x.label.toLowerCase().includes(q) ||
-            x.code.toLowerCase().includes(q),
-        )
-      : all;
+    const searchable = all.map((x) => ({
+      ...x,
+      canonicalLabel: x.label,
+    }));
 
-    const { skip, take } = pageLimitToSkipTake(input);
-    const data = filtered.slice(skip, skip + take);
-    const total = filtered.length;
-    const totalPages = Math.ceil(total / input.limit);
-    return { data, total, page: input.page, limit: input.limit, totalPages };
+    const filtered = filterLocalizedItems(searchable, q, (item, query) =>
+      item.code.toLowerCase().includes(query),
+    );
+
+    filtered.sort((a, b) => a.label.localeCompare(b.label, lang));
+
+    return toPaginatedResponse(input, filtered, (item) => ({
+      code: item.code,
+      label: item.label,
+      meta: item.meta,
+    }));
   }
 
   startup(): CatalogStartupResponseDto {

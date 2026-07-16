@@ -90,6 +90,7 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
+translations/
 
 # Runtime data
 pids

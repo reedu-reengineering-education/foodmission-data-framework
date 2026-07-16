@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  applyDecorators,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOAuth2,
@@ -22,10 +28,49 @@ import {
   CatalogPaginatedQueryDto,
 } from '../dto/catalog-query.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+
+function PublicCatalogList(summary: string) {
+  return applyDecorators(
+    Public(),
+    ApiOperation({ summary }),
+    ApiResponse({ status: 200, type: CatalogListResponseDto }),
+    ApiCrudErrorResponses(),
+  );
+}
+
+function ProtectedCatalogList(summary: string) {
+  return applyDecorators(
+    Roles('user', 'admin'),
+    ApiBearerAuth('JWT-auth'),
+    ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2'),
+    ApiOperation({ summary }),
+    ApiResponse({ status: 200, type: CatalogListResponseDto }),
+    ApiCrudErrorResponses(),
+  );
+}
+
+function PublicPaginatedCatalog(summary: string) {
+  return applyDecorators(
+    Public(),
+    ApiOperation({ summary }),
+    ApiPaginationQuery(),
+    ApiQuery({ name: 'search', required: false, type: String }),
+    ApiResponse({ status: 200, type: PaginatedCatalogListResponseDto }),
+    ApiCrudErrorResponses(),
+  );
+}
 
 @ApiTags('catalog')
 @Controller('catalog')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
+@ApiQuery({
+  name: 'lang',
+  required: false,
+  type: String,
+  enum: SUPPORTED_LOCALES,
+  description: `Optional locale override for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+})
 export class CatalogController {
   constructor(private readonly catalogService: CatalogService) {}
 
@@ -46,123 +91,73 @@ export class CatalogController {
   }
 
   @Get('genders')
-  @Public()
-  @ApiOperation({ summary: 'List genders' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List genders')
   genders(): CatalogListResponseDto {
     return this.catalogService.listGenders();
   }
 
   @Get('activity-levels')
-  @Public()
-  @ApiOperation({ summary: 'List activity levels' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List activity levels')
   activityLevels(): CatalogListResponseDto {
     return this.catalogService.listActivityLevels();
   }
 
   @Get('education-levels')
-  @Public()
-  @ApiOperation({ summary: 'List education levels' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List education levels')
   educationLevels(): CatalogListResponseDto {
     return this.catalogService.listEducationLevels();
   }
 
   @Get('annual-income-levels')
-  @Public()
-  @ApiOperation({ summary: 'List annual income levels' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List annual income levels')
   annualIncomeLevels(): CatalogListResponseDto {
     return this.catalogService.listAnnualIncomeLevels();
   }
 
   @Get('dietary-preferences')
-  @Public()
-  @ApiOperation({
-    summary: 'List dietary preferences',
-  })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List dietary preferences')
   dietaryPreferences(): CatalogListResponseDto {
     return this.catalogService.listDietaryPreferences();
   }
 
   @Get('shopping-responsibilities')
-  @Public()
-  @ApiOperation({ summary: 'List shopping responsibility options' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicCatalogList('List shopping responsibility options')
   shoppingResponsibilities(): CatalogListResponseDto {
     return this.catalogService.listShoppingResponsibilities();
   }
 
   @Get('units')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List units' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @ProtectedCatalogList('List units')
   units(): CatalogListResponseDto {
     return this.catalogService.listUnits();
   }
 
   @Get('type-of-meals')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List type of meal values' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @ProtectedCatalogList('List type of meal values')
   typeOfMeals(): CatalogListResponseDto {
     return this.catalogService.listTypeOfMeals();
   }
 
   @Get('meal-categories')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List meal categories' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @ProtectedCatalogList('List meal categories')
   mealCategories(): CatalogListResponseDto {
     return this.catalogService.listMealCategories();
   }
 
   @Get('meal-courses')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List meal courses' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @ProtectedCatalogList('List meal courses')
   mealCourses(): CatalogListResponseDto {
     return this.catalogService.listMealCourses();
   }
 
   @Get('group-roles')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOAuth2(['openid', 'profile', 'roles'], 'keycloak-oauth2')
-  @ApiOperation({ summary: 'List group roles' })
-  @ApiResponse({ status: 200, type: CatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @ProtectedCatalogList('List group roles')
   groupRoles(): CatalogListResponseDto {
     return this.catalogService.listGroupRoles();
   }
 
   @Get('languages')
-  @Public()
-  @ApiOperation({ summary: 'List languages (paginated)' })
-  @ApiPaginationQuery()
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiResponse({ status: 200, type: PaginatedCatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicPaginatedCatalog('List languages (paginated)')
   languages(
     @Query() query: CatalogPaginatedQueryDto,
   ): PaginatedCatalogListResponseDto {
@@ -170,12 +165,7 @@ export class CatalogController {
   }
 
   @Get('countries')
-  @Public()
-  @ApiOperation({ summary: 'List countries (paginated)' })
-  @ApiPaginationQuery()
-  @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiResponse({ status: 200, type: PaginatedCatalogListResponseDto })
-  @ApiCrudErrorResponses()
+  @PublicPaginatedCatalog('List countries (paginated)')
   countries(
     @Query() query: CatalogPaginatedQueryDto,
   ): PaginatedCatalogListResponseDto {

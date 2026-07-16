@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "locale": "nl",
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+  },
+  "genders": {
+    "MALE": "Man",
+    "FEMALE": "Vrouw",
+    "OTHER": "Anders",
+    "UNSPECIFIED": "Niet gespecificeerd",
+    "PREFER_NOT_TO_SAY": "Zeg ik liever niet"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Zittend",
+    "LIGHT": "Licht actief",
+    "MODERATE": "Gemiddeld actief",
+    "ACTIVE": "ablabla",
+    "VERY_ACTIVE": "Zeer actief"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Minder dan 10.000",
+    "FROM_10000_TO_19999": "Van 10.000 tot 19.999",
+    "FROM_20000_TO_34999": "Van 20.000 tot 34.999",
+    "FROM_35000_TO_49999": "Van 35.000 tot 49.999",
+    "FROM_50000_TO_74999": "Van 50.000 tot 74.999",
+    "FROM_75000_TO_99999": "Van 75.000 tot 99.999",
+    "ABOVE_100000": "Meer dan 100.000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Geen formele opleiding",
+    "PRIMARY": "Basisonderwijs",
+    "SECONDARY": "Voortgezet onderwijs",
+    "VOCATIONAL": "Middelbaar beroepsonderwijs (MBO)",
+    "BACHELORS": "Bachelor (HBO/WO)",
+    "MASTERS": "Master",
+    "DOCTORATE": "Doctoraat (PhD)"
+  },
+  "units": {
+    "PIECES": "Stuks",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Koppen"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Ontbijt",
+    "LUNCH": "Lunch",
+    "DINNER": "Avondeten",
+    "SNACK": "Snack / Tussendoortje",
+    "DRINKS": "Drankjes",
+    "OTHER": "Anders"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Dierlijke eiwitten",
+    "SEAFOOD": "Vis en schaaldieren",
+    "PLANT_PROTEIN": "Plantaardige eiwitten",
+    "STARCH_GRAIN": "Zetmeel en granen",
+    "VEGGIES_FRUIT": "Groenten en fruit",
+    "DAIRY": "Zuivel",
+    "MIXED_OTHER": "Gemengd of anders"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Hoofdgerecht",
+    "SIDE_SNACK": "Bijgerecht of snack",
+    "DESSERT": "Nagerecht / Dessert",
+    "BEVERAGE": "Drankje",
+    "SAUCE_OTHER": "Saus of anders"
+  },
+  "groupRoles": {
+    "ADMIN": "Beheerder",
+    "MEMBER": "Lid"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Veganistisch",
+    "VEGETARIAN": "Vegetarisch",
+    "PESCATARIAN": "Pescotarisch",
+    "GLUTEN_FREE": "Glutenvrij",
+    "DAIRY_FREE": "Zuivelvrij",
+    "NUT_FREE": "Notenvrij",
+    "HALAL": "Halal",
+    "KOSHER": "Kosjer"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Geen specifiek antwoord",
+    "MOSTLY_ME": "Meestal ik",
+    "SHARED_EQUALLY": "Gelijkmatig verdeeld",
+    "MOSTLY_SOMEONE_ELSE": "Meestal iemand anders",
+    "SOMEONE_ELSE": "Iemand anders"
+  }
+}

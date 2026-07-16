@@ -14,6 +14,13 @@ export const TransformTrimToUndefined = () =>
     return trimmed === '' ? undefined : trimmed;
   });
 
+export const TransformTrimLowercaseToUndefined = () =>
+  Transform(({ value }) => {
+    if (typeof value !== 'string') return value;
+    const normalized = value.trim().toLowerCase();
+    return normalized === '' ? undefined : normalized;
+  });
+
 export const TransformCSVToStringArray = () =>
   Transform(({ value }) => {
     if (Array.isArray(value)) {

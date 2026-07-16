@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "locale": "de",
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+  },
+  "genders": {
+    "MALE": "Männlich",
+    "FEMALE": "Weiblich",
+    "OTHER": "Sonstige",
+    "UNSPECIFIED": "Nicht angegeben",
+    "PREFER_NOT_TO_SAY": "Lieber nicht sagen"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Sitzend",
+    "LIGHT": "Leicht",
+    "MODERATE": "Mäßig",
+    "ACTIVE": "ablabla",
+    "VERY_ACTIVE": "Sehr aktiv"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Unter 10.000",
+    "FROM_10000_TO_19999": "10.000 bis 19.999",
+    "FROM_20000_TO_34999": "20.000 bis 34.999",
+    "FROM_35000_TO_49999": "35.000 bis 49.999",
+    "FROM_50000_TO_74999": "50.000 bis 74.999",
+    "FROM_75000_TO_99999": "75.000 bis 99.999",
+    "ABOVE_100000": "Über 100.000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Keine formale Schulbildung",
+    "PRIMARY": "Grundschule",
+    "SECONDARY": "Sekundarstufe",
+    "VOCATIONAL": "Berufsausbildung",
+    "BACHELORS": "Bachelor",
+    "MASTERS": "Master",
+    "DOCTORATE": "Doktorat"
+  },
+  "units": {
+    "PIECES": "Stück",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Tassen"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Frühstück",
+    "LUNCH": "Mittagessen",
+    "DINNER": "Abendessen",
+    "SNACK": "Snack",
+    "DRINKS": "Getränke",
+    "OTHER": "Sonstiges"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Tierisches Eiweiß",
+    "SEAFOOD": "Meeresfrüchte",
+    "PLANT_PROTEIN": "Pflanzliches Eiweiß",
+    "STARCH_GRAIN": "Stärke und Getreide",
+    "VEGGIES_FRUIT": "Gemüse und Obst",
+    "DAIRY": "Milchprodukte",
+    "MIXED_OTHER": "Gemischt oder Sonstiges"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Hauptgericht",
+    "SIDE_SNACK": "Beilage oder Snack",
+    "DESSERT": "Dessert",
+    "BEVERAGE": "Getränk",
+    "SAUCE_OTHER": "Soße oder Sonstiges"
+  },
+  "groupRoles": {
+    "ADMIN": "Admin",
+    "MEMBER": "Mitglied"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegan",
+    "VEGETARIAN": "Vegetarisch",
+    "PESCATARIAN": "Pescetarisch",
+    "GLUTEN_FREE": "Glutenfrei",
+    "DAIRY_FREE": "Milchfrei",
+    "NUT_FREE": "Nussfrei",
+    "HALAL": "Halal",
+    "KOSHER": "Koscher"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Keine genaue Angabe",
+    "MOSTLY_ME": "Hauptsächlich ich",
+    "SHARED_EQUALLY": "Gleichmäßig verteilt",
+    "MOSTLY_SOMEONE_ELSE": "Hauptsächlich jemand anderes",
+    "SOMEONE_ELSE": "Jemand anderes"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "locale": "sl",
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+  },
+  "genders": {
+    "MALE": "Moški",
+    "FEMALE": "Ženska",
+    "OTHER": "Drugo",
+    "UNSPECIFIED": "Neoznačeno",
+    "PREFER_NOT_TO_SAY": "Ne želim odgovoriti"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Sedeče",
+    "LIGHT": "Lahka aktivnost",
+    "MODERATE": "Zmerna aktivnost",
+    "ACTIVE": "ablabla",
+    "VERY_ACTIVE": "Zelo aktivno"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Manj kot 10.000",
+    "FROM_10000_TO_19999": "Od 10.000 do 19.999",
+    "FROM_20000_TO_34999": "Od 20.000 do 34.999",
+    "FROM_35000_TO_49999": "Od 35.000 do 49.999",
+    "FROM_50000_TO_74999": "Od 50.000 do 74.999",
+    "FROM_75000_TO_99999": "Od 75.000 do 99.999",
+    "ABOVE_100000": "Več kot 100.000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Brez formalne izobrazbe",
+    "PRIMARY": "Osnovna šola",
+    "SECONDARY": "Srednja šola",
+    "VOCATIONAL": "Poklicna šola",
+    "BACHELORS": "Dodiplomska izobrazba (Diploma)",
+    "MASTERS": "Podiplomska izobrazba (Magisterij)",
+    "DOCTORATE": "Doktorat"
+  },
+  "units": {
+    "PIECES": "Kosi",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Skodelice"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Zajtrk",
+    "LUNCH": "Kosilo",
+    "DINNER": "Večerja",
+    "SNACK": "Prigrizek",
+    "DRINKS": "Pijača",
+    "OTHER": "Drugo"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Živalske beljakovine",
+    "SEAFOOD": "Morski sadeži in ribe",
+    "PLANT_PROTEIN": "Rastlinske beljakovine",
+    "STARCH_GRAIN": "Škrob in žitarice",
+    "VEGGIES_FRUIT": "Zelenjava in sadje",
+    "DAIRY": "Mlečni izdelki",
+    "MIXED_OTHER": "Mešano ali drugo"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Glavna jed",
+    "SIDE_SNACK": "Priloga ali prigrizek",
+    "DESSERT": "Sladica",
+    "BEVERAGE": "Napitek",
+    "SAUCE_OTHER": "Omaka ali drugo"
+  },
+  "groupRoles": {
+    "ADMIN": "Skrbnik",
+    "MEMBER": "Član"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Vegansko",
+    "VEGETARIAN": "Vegetarijansko",
+    "PESCATARIAN": "Peskariansko",
+    "GLUTEN_FREE": "Brez glutena",
+    "DAIRY_FREE": "Brez laktoze / mlečnih izdelkov",
+    "NUT_FREE": "Brez oreščkov",
+    "HALAL": "Halal",
+    "KOSHER": "Košer"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Brez posebnega odgovora",
+    "MOSTLY_ME": "Večinoma jaz",
+    "SHARED_EQUALLY": "Porazdeljeno na pol",
+    "MOSTLY_SOMEONE_ELSE": "Večinoma nekdo drug",
+    "SOMEONE_ELSE": "Nekdo drug"
+  }
+}

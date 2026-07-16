@@ -1,4 +1,5 @@
 import { CatalogService } from './services/catalog.service';
+import { I18nService } from 'nestjs-i18n';
 import {
   parsePrismaEnum,
   readPrismaSchema,
@@ -6,7 +7,10 @@ import {
 
 describe('Catalog contract (schema.prisma)', () => {
   const schema = readPrismaSchema();
-  const service = new CatalogService();
+  const service = new CatalogService({
+    translate: (_key: string, opts?: { defaultValue?: string }) =>
+      opts?.defaultValue ?? '',
+  } as I18nService);
 
   it('matches Gender enum', () => {
     expect(service.listGenders().data.map((x) => x.code)).toEqual(

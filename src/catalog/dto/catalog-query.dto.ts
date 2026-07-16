@@ -1,10 +1,25 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { IsIn, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
-import { TransformTrimToUndefined } from '../../common/decorators/transformers';
+import {
+  TransformTrimLowercaseToUndefined,
+  TransformTrimToUndefined,
+} from '../../common/decorators/transformers';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 export class CatalogPaginatedQueryDto extends PaginationQueryDto {
+  @ApiPropertyOptional({
+    description: `Optional locale override for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
+
   @ApiPropertyOptional({
     description: 'Case-insensitive search over label/name',
     example: 'nether',

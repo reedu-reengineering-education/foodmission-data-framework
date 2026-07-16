@@ -39,6 +39,12 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      # English-only gate: other locales may lag behind new keys and fall back to
+      # English at runtime (I18nModule.fallbackLanguage + catalog defaultValue).
+      # Use `npm run i18n:validate:locales` locally when updating non-English files.
+      - name: Validate translation files
+        run: npm run i18n:validate
+
       - name: Get changed files (PR only)
         id: changed-files
         if: github.event_name == 'pull_request'

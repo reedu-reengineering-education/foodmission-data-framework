@@ -21,6 +21,7 @@ Brief description of the changes in this PR.
 - [ ] Seed data changes
 - [ ] API changes
 - [ ] New Entity
+- [ ] Translation updates (`src/i18n/**`)
 
 ## Changes Made
 
@@ -32,6 +33,7 @@ Brief description of the changes in this PR.
 
 - [ ] White box testing
 - [ ] Black box testing
+- [ ] Translation checks (`npm run i18n:validate` and `npm run i18n:missing`)
 
 - Test coverage: X%
 
@@ -63,6 +65,7 @@ Add screenshots to help explain your changes.
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published
+- [ ] Translation files preserve key parity and placeholders with `en`
 
 ## Additional Notes
 

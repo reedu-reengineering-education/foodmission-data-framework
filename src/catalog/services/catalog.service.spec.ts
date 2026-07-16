@@ -1,10 +1,22 @@
 import { CatalogService } from './catalog.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 describe('CatalogService', () => {
   let service: CatalogService;
+  let i18n: { translate: jest.Mock };
 
   beforeEach(() => {
-    service = new CatalogService();
+    i18n = {
+      translate: jest.fn((_: string, opts?: { defaultValue?: string }) => {
+        return opts?.defaultValue ?? '';
+      }),
+    };
+    service = new CatalogService(i18n as unknown as I18nService);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('lists genders from Prisma enum', () => {
@@ -41,6 +53,17 @@ describe('CatalogService', () => {
   it('supports case-insensitive country search by code', () => {
     const nl = service.listCountries({ page: 1, limit: 10, search: 'nl' });
     expect(nl.data.some((c) => c.code === 'NL')).toBe(true);
+  });
+
+  it('supports canonical country search when labels are localized', () => {
+    const res = service.listCountries({
+      page: 1,
+      limit: 20,
+      search: 'germany',
+      lang: 'de',
+    });
+
+    expect(res.data.some((c) => c.code === 'DE')).toBe(true);
   });
 
   it('filters regions by countryCode and paginates', () => {
@@ -85,6 +108,17 @@ describe('CatalogService', () => {
     );
   });
 
+  it('supports canonical language search when labels are localized', () => {
+    const res = service.listLanguages({
+      page: 1,
+      limit: 20,
+      search: 'german',
+      lang: 'de',
+    });
+
+    expect(res.data.some((l) => l.code === 'de')).toBe(true);
+  });
+
   it('lists dietary preferences from Prisma enum', () => {
     const res = service.listDietaryPreferences();
     const codes = res.data.map((x) => x.code);
@@ -104,5 +138,89 @@ describe('CatalogService', () => {
     const codes = res.data.map((x) => x.code);
     expect(codes).toContain('MAIN_DISH');
     expect(codes).toContain('SIDE_SNACK');
+  });
+
+  it('uses default locale when current i18n context has no language', () => {
+    service.listGenders();
+
+    expect(i18n.translate).toHaveBeenCalledWith(
+      'catalog.genders.MALE',
+      expect.objectContaining({
+        lang: DEFAULT_LOCALE,
+      }),
+    );
+  });
+
+  it('uses locale from i18n context when available', () => {
+    jest.spyOn(I18nContext, 'current').mockReturnValue({
+      lang: 'de',
+    } as unknown as I18nContext);
+
+    service.listGenders();
+
+    expect(i18n.translate).toHaveBeenCalledWith(
+      'catalog.genders.MALE',
+      expect.objectContaining({
+        lang: 'de',
+      }),
+    );
+  });
+
+  it('returns translated label when i18n resolves localized value', () => {
+    jest.spyOn(I18nContext, 'current').mockReturnValue({
+      lang: 'de',
+    } as unknown as I18nContext);
+
+    i18n.translate.mockImplementation(
+      (key: string, opts?: { defaultValue?: string; lang?: string }) => {
+        if (key === 'catalog.genders.MALE' && opts?.lang === 'de') {
+          return 'Mann';
+        }
+
+        return opts?.defaultValue ?? '';
+      },
+    );
+
+    const res = service.listGenders();
+    expect(res.data.find((x) => x.code === 'MALE')?.label).toBe('Mann');
+  });
+
+  it('falls back to default label when i18n returns non-string value', () => {
+    i18n.translate.mockReturnValue({ unexpected: true });
+
+    const res = service.listShoppingResponsibilities();
+    expect(res.data.find((x) => x.code === 'MOSTLY_ME')?.label).toBe(
+      'Mostly me',
+    );
+  });
+
+  it('returns region labels from ISO dataset without i18n lookup', () => {
+    const res = service.listRegions({
+      page: 1,
+      limit: 80,
+      countryCode: 'US',
+      search: 'california',
+      lang: 'de',
+    });
+
+    expect(i18n.translate).not.toHaveBeenCalledWith(
+      expect.stringMatching(/^catalog\.regions\./),
+      expect.anything(),
+    );
+    expect(
+      res.data.some((r) => r.code === 'US-CA' && r.label === 'California'),
+    ).toBe(true);
+  });
+
+  it('finds regions by canonical label when lang is set', () => {
+    const res = service.listRegions({
+      page: 1,
+      limit: 80,
+      countryCode: 'US',
+      search: 'california',
+      lang: 'de',
+    });
+
+    expect(res.data.some((r) => r.code === 'US-CA')).toBe(true);
   });
 });

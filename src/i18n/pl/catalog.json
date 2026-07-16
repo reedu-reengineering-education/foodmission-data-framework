@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "locale": "pl",
+    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+  },
+  "genders": {
+    "MALE": "Mężczyzna",
+    "FEMALE": "Kobieta",
+    "OTHER": "Inna",
+    "UNSPECIFIED": "Nie określono",
+    "PREFER_NOT_TO_SAY": "Wolę nie podawać"
+  },
+  "activityLevels": {
+    "SEDENTARY": "Siedzący",
+    "LIGHT": "Lekka aktywność",
+    "MODERATE": "Umiarkowana aktywność",
+    "ACTIVE": "ablabla",
+    "VERY_ACTIVE": "Bardzo aktywny"
+  },
+  "annualIncomeLevels": {
+    "BELOW_10000": "Poniżej 10 000",
+    "FROM_10000_TO_19999": "Od 10 000 do 19 999",
+    "FROM_20000_TO_34999": "Od 20 000 do 34 999",
+    "FROM_35000_TO_49999": "Od 35 000 do 49 999",
+    "FROM_50000_TO_74999": "Od 50 000 do 74 999",
+    "FROM_75000_TO_99999": "Od 75 000 do 99 999",
+    "ABOVE_100000": "Powyżej 100 000"
+  },
+  "educationLevels": {
+    "NO_FORMAL_EDUCATION": "Brak formalnego wykształcenia",
+    "PRIMARY": "Podstawowe",
+    "SECONDARY": "Średnie",
+    "VOCATIONAL": "Zasadnicze zawodowe",
+    "BACHELORS": "Licencjackie / Inżynierskie",
+    "MASTERS": "Magisterskie",
+    "DOCTORATE": "Doktorat"
+  },
+  "units": {
+    "PIECES": "Sztuki",
+    "G": "g",
+    "KG": "kg",
+    "ML": "ml",
+    "L": "l",
+    "CUPS": "Szklanki"
+  },
+  "typeOfMeals": {
+    "BREAKFAST": "Śniadanie",
+    "LUNCH": "Lunch / Obiad",
+    "DINNER": "Kolacja",
+    "SNACK": "Przekąska",
+    "DRINKS": "Napoje",
+    "OTHER": "Inne"
+  },
+  "mealCategories": {
+    "ANIMAL_PROTEIN": "Białko zwierzęce",
+    "SEAFOOD": "Ryby i owoce morza",
+    "PLANT_PROTEIN": "Białko roślinne",
+    "STARCH_GRAIN": "Skrobia i zboża",
+    "VEGGIES_FRUIT": "Warzywa i owoce",
+    "DAIRY": "Nabiał",
+    "MIXED_OTHER": "Mieszane lub inne"
+  },
+  "mealCourses": {
+    "MAIN_DISH": "Danie główne",
+    "SIDE_SNACK": "Dodatek lub przekąska",
+    "DESSERT": "Deser",
+    "BEVERAGE": "Napój",
+    "SAUCE_OTHER": "Sos lub inne"
+  },
+  "groupRoles": {
+    "ADMIN": "Administrator",
+    "MEMBER": "Członek"
+  },
+  "dietaryPreferences": {
+    "VEGAN": "Wegańska",
+    "VEGETARIAN": "Wegetariańska",
+    "PESCATARIAN": "Pescowegetariańska",
+    "GLUTEN_FREE": "Bezglutenowa",
+    "DAIRY_FREE": "Bez nabiału",
+    "NUT_FREE": "Bez orzechów",
+    "HALAL": "Halal",
+    "KOSHER": "Koszerna"
+  },
+  "shoppingResponsibilities": {
+    "NO_SPECIFIC": "Brak konkretnej odpowiedzi",
+    "MOSTLY_ME": "Głównie ja",
+    "SHARED_EQUALLY": "Dzielone po równo",
+    "MOSTLY_SOMEONE_ELSE": "Głównie ktoś inny",
+    "SOMEONE_ELSE": "Ktoś inny"
+  }
+}

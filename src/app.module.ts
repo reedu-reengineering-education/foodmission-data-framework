@@ -15,9 +15,26 @@ import { SecurityMiddleware } from './security/middleware/security.middleware';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SecurityModule } from './security/security.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
+import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { join } from 'path';
+import { DEFAULT_LOCALE } from './i18n/constants';
 
 @Module({
   imports: [
+    I18nModule.forRoot({
+      fallbackLanguage: DEFAULT_LOCALE,
+      loader: I18nJsonLoader,
+      loaderOptions: {
+        path: join(__dirname, 'i18n/'),
+        watch: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
+      },
+      resolvers: [
+        {
+          use: QueryResolver,
+          options: ['lang'],
+        },
+      ],
+    }),
     InfrastructureModule,
     LoggingModule,
     MonitoringModule,
