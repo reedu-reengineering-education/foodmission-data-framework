@@ -11,7 +11,7 @@ import {
   writeSpreadsheet,
 } from './translation-handoff';
 
-function main(): void {
+async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       out: { type: 'string', default: DEFAULT_HANDOFF_PATH },
@@ -39,7 +39,7 @@ function main(): void {
   };
 
   const { sheets, report } = buildExportSheets(options);
-  writeSpreadsheet(sheets, options.out, options.format);
+  await writeSpreadsheet(sheets, options.out, options.format);
 
   const reportPath = `${options.out}.report.json`;
   writeReportFile(reportPath, report);

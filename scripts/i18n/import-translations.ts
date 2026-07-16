@@ -7,7 +7,7 @@ import {
   writeReportFile,
 } from './translation-handoff';
 
-function main(): void {
+async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       file: { type: 'string', default: DEFAULT_HANDOFF_PATH },
@@ -17,7 +17,7 @@ function main(): void {
 
   const file = values.file ?? DEFAULT_HANDOFF_PATH;
 
-  const report = importTranslations({
+  const report = await importTranslations({
     file,
     dryRun: values['dry-run'] ?? false,
   });

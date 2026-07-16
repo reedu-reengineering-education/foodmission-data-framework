@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import {
   DEFAULT_LOCALE,
   SUPPORTED_LOCALES,
@@ -108,13 +108,11 @@ export function parseCsvList(value: string | undefined): string[] | undefined {
     .filter(Boolean);
 }
 
-export function runScript(main: () => void): void {
-  try {
-    main();
-  } catch (error) {
+export function runScript(main: () => void | Promise<void>): void {
+  Promise.resolve(main()).catch((error) => {
     console.error(`❌ ${toError(error).message}`);
     process.exit(1);
-  }
+  });
 }
 
 export function writeReportFile(reportPath: string, data: unknown): void {
@@ -188,17 +186,27 @@ export function resolveNamespaces(requested?: string[]): string[] {
   return requested;
 }
 
-function sheetFromRows(rows: LocaleSheetRow[]): XLSX.WorkSheet {
-  return XLSX.utils.json_to_sheet(rows, {
-    header: [...LOCALE_SHEET_HEADERS],
-  });
+function addSheetFromRows(
+  workbook: ExcelJS.Workbook,
+  sheetName: string,
+  rows: LocaleSheetRow[],
+): void {
+  const worksheet = workbook.addWorksheet(sheetName);
+  worksheet.columns = LOCALE_SHEET_HEADERS.map((header) => ({
+    header,
+    key: header,
+  }));
+
+  for (const row of rows) {
+    worksheet.addRow(row);
+  }
 }
 
-export function writeSpreadsheet(
+export async function writeSpreadsheet(
   sheets: Record<string, LocaleSheetRow[]>,
   outputPath: string,
   format: 'xlsx' | 'csv',
-): void {
+): Promise<void> {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
   if (format === 'csv') {
@@ -206,20 +214,20 @@ export function writeSpreadsheet(
     const dir = path.dirname(outputPath);
 
     for (const [locale, rows] of Object.entries(sheets)) {
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, sheetFromRows(rows), locale);
-      XLSX.writeFile(workbook, path.join(dir, `${baseName}.${locale}.csv`), {
-        bookType: 'csv',
+      const workbook = new ExcelJS.Workbook();
+      addSheetFromRows(workbook, locale, rows);
+      await workbook.csv.writeFile(path.join(dir, `${baseName}.${locale}.csv`), {
+        sheetName: locale,
       });
     }
     return;
   }
 
-  const workbook = XLSX.utils.book_new();
+  const workbook = new ExcelJS.Workbook();
   for (const [locale, rows] of Object.entries(sheets)) {
-    XLSX.utils.book_append_sheet(workbook, sheetFromRows(rows), locale);
+    addSheetFromRows(workbook, locale, rows);
   }
-  XLSX.writeFile(workbook, outputPath, { bookType: 'xlsx' });
+  await workbook.xlsx.writeFile(outputPath);
 }
 
 function parseLocaleSheetRows(
@@ -256,7 +264,35 @@ function parseLocaleSheetRows(
   });
 }
 
-function readSpreadsheet(filePath: string): SpreadsheetRow[] {
+function worksheetToRawRows(
+  worksheet: ExcelJS.Worksheet,
+): Record<string, unknown>[] {
+  const rows: Record<string, unknown>[] = [];
+  const headerRow = worksheet.getRow(1);
+  const headerValues = Array.isArray(headerRow.values) ? headerRow.values : [];
+  const headers = headerValues
+    .slice(1)
+    .map((value) => String(value ?? '').trim().toLowerCase());
+
+  for (let rowIndex = 2; rowIndex <= worksheet.rowCount; rowIndex += 1) {
+    const row = worksheet.getRow(rowIndex);
+    const rowValues = Array.isArray(row.values) ? row.values : [];
+    const values = rowValues.slice(1);
+    if (values.every((value) => String(value ?? '').trim().length === 0)) {
+      continue;
+    }
+
+    const rawRow: Record<string, unknown> = {};
+    headers.forEach((header, index) => {
+      rawRow[header] = values[index] ?? '';
+    });
+    rows.push(rawRow);
+  }
+
+  return rows;
+}
+
+async function readSpreadsheet(filePath: string): Promise<SpreadsheetRow[]> {
   const knownNamespaces = resolveNamespaces();
 
   if (filePath.endsWith('.csv')) {
@@ -272,16 +308,14 @@ function readSpreadsheet(filePath: string): SpreadsheetRow[] {
       throw new Error(`Unsupported locale in filename: ${locale}`);
     }
 
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = await workbook.csv.readFile(filePath);
+    const sheetName = worksheet.name;
     if (!sheetName) {
       throw new Error('CSV file has no data');
     }
 
-    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
-      workbook.Sheets[sheetName],
-      { defval: '' },
-    );
+    const rawRows = worksheetToRawRows(worksheet);
 
     return parseLocaleSheetRows(
       rawRows,
@@ -291,14 +325,16 @@ function readSpreadsheet(filePath: string): SpreadsheetRow[] {
     );
   }
 
-  const workbook = XLSX.readFile(filePath);
-  if (workbook.SheetNames.length === 0) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filePath);
+  if (workbook.worksheets.length === 0) {
     throw new Error('Spreadsheet has no sheets');
   }
 
   const rows: SpreadsheetRow[] = [];
 
-  for (const sheetName of workbook.SheetNames) {
+  for (const worksheet of workbook.worksheets) {
+    const sheetName = worksheet.name;
     const locale = sheetName.trim().toLowerCase();
     if (!TARGET_LOCALE_SET.has(locale)) {
       throw new Error(
@@ -306,10 +342,7 @@ function readSpreadsheet(filePath: string): SpreadsheetRow[] {
       );
     }
 
-    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
-      workbook.Sheets[sheetName],
-      { defval: '' },
-    );
+    const rawRows = worksheetToRawRows(worksheet);
 
     rows.push(
       ...parseLocaleSheetRows(rawRows, locale, sheetName, knownNamespaces),
@@ -411,7 +444,9 @@ export function buildExportSheets(options: ExportOptions): {
   };
 }
 
-export function importTranslations(options: ImportOptions): ImportReport {
+export async function importTranslations(
+  options: ImportOptions,
+): Promise<ImportReport> {
   const { namespaceFiles } = resolveLocaleLayout();
   const namespaceFilesByName = new Map(
     namespaceFiles.map((file) => [namespaceFromFile(file), file]),
@@ -455,7 +490,7 @@ export function importTranslations(options: ImportOptions): ImportReport {
     return localeCache.get(cacheKey)!;
   };
 
-  for (const row of readSpreadsheet(options.file)) {
+  for (const row of await readSpreadsheet(options.file)) {
     const id = rowId(row.locale, row.namespace, row.key);
 
     if (row.locale === DEFAULT_LOCALE) {

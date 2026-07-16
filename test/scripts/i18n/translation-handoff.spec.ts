@@ -39,7 +39,7 @@ describe('translation handoff', () => {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
-    it('exports and imports a single locale change', () => {
+    it('exports and imports a single locale change', async () => {
       const { sheets } = buildExportSheets({
         out: outPath,
         format: 'xlsx',
@@ -53,9 +53,9 @@ describe('translation handoff', () => {
           : row,
       );
 
-      writeSpreadsheet(sheets, outPath, 'xlsx');
+      await writeSpreadsheet(sheets, outPath, 'xlsx');
 
-      const report = importTranslations({ file: outPath, dryRun: true });
+      const report = await importTranslations({ file: outPath, dryRun: true });
       expect(report.updated).toContain('de/common.app.name');
       expect(report.skipped.blank_cell).toHaveLength(0);
     });
