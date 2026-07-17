@@ -79,6 +79,38 @@ model Knowledge {
   @@map("knowledge")
 }
 
+model SustainabilityDimension {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  topics SustainabilityTopic[]
+
+  @@index([sortOrder])
+  @@map("sustainability_dimensions")
+}
+
+model SustainabilityTopic {
+  id          String   @id @default(uuid())
+  dimensionId String
+  code        String   @unique
+  name        String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  dimension SustainabilityDimension @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+
+  @@index([dimensionId])
+  @@index([sortOrder])
+  @@map("sustainability_topics")
+}
+
 model UserKnowledgeProgress {
   id             String   @id @default(uuid())
   userId         String
