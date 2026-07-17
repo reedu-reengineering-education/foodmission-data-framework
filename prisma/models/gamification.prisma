@@ -111,6 +111,22 @@ model SustainabilityTopic {
   @@map("sustainability_topics")
 }
 
+model Reward {
+  id                  String   @id @default(uuid())
+  name                String   @unique
+  points              Int?
+  xp                  Int?
+  badge               String?
+  avatarItem          String?
+  petItem             String?
+  collectible         String?
+  collectibleShareable Boolean @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("rewards")
+}
+
 model UserKnowledgeProgress {
   id             String   @id @default(uuid())
   userId         String

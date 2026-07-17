@@ -22,6 +22,7 @@ import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
 import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
 import { seedSustainabilityTaxonomy } from '../scripts/seeds/shared/sustainability-taxonomy';
+import { seedStandardRewards } from '../scripts/seeds/shared/rewards';
 
 const {
   values: { environment },
@@ -35,6 +36,7 @@ const prisma = new PrismaClient();
 
 async function seedProduction() {
   const sustainabilityTaxonomy = await seedSustainabilityTaxonomy(prisma);
+  const standardRewards = await seedStandardRewards(prisma);
   const genericFoods = await seedGenericFoods(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
@@ -49,6 +51,10 @@ async function seedProduction() {
     {
       label: 'sustainabilityTaxonomy',
       value: `${sustainabilityTaxonomy.dimensions} dimensions, ${sustainabilityTaxonomy.topics} topics`,
+    },
+    {
+      label: 'standardRewards',
+      value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
     { label: 'genericFoods', value: genericFoods.length },
     {
@@ -76,6 +82,7 @@ async function seedProduction() {
 
 async function seedDevelopment() {
   const sustainabilityTaxonomy = await seedSustainabilityTaxonomy(prisma);
+  const standardRewards = await seedStandardRewards(prisma);
 
   // --- Catalog (needed for recipe ingredient linking & shelf-life matching) ---
   const offResult = await seedOpenFoodFactsFromJson(prisma);
@@ -122,6 +129,10 @@ async function seedDevelopment() {
     {
       label: 'sustainabilityTaxonomy',
       value: `${sustainabilityTaxonomy.dimensions} dimensions, ${sustainabilityTaxonomy.topics} topics`,
+    },
+    {
+      label: 'standardRewards',
+      value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
     {
       label: 'openFoodFactsJson',
