@@ -4,6 +4,7 @@ import { seedOpenFoodFactsFromJson } from './dev/openfoodfacts';
 import { seedRecipes } from './prod/themealdb';
 import { seedFoodKeeper } from './prod/foodkeeper';
 import { linkShelfLife } from './prod/link-shelf-life';
+import { seedSustainabilityTaxonomy } from './shared/sustainability-taxonomy';
 
 async function main() {
   const prisma = new PrismaClient();
@@ -11,8 +12,17 @@ async function main() {
   console.log('🔒 Running production seed (NEVO + OpenFoodFacts + Recipes)');
 
   try {
-    const genericFoods = await seedGenericFoods(prisma, { skipExisting: true });
-    console.log(`   ✅ NEVO: ${genericFoods.length} generic foods upserted`);
+    const taxonomyRes = await seedSustainabilityTaxonomy(prisma);
+    console.log(
+      `   ✅ Sustainability taxonomy: ${taxonomyRes.dimensions} dimensions, ${taxonomyRes.topics} topics`,
+    );
+
+    const nevoRes = await seedNevo(prisma);
+    if (nevoRes && nevoRes.skipped) {
+      console.log('   ⏭️  NEVO CSV not found; skipping NEVO import.');
+    } else if (nevoRes && typeof nevoRes.count === 'number') {
+      console.log(`   ✅ NEVO: ${nevoRes.count} generic foods created`);
+    }
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);
     if (offRes && offRes.skipped) {
