@@ -5,6 +5,7 @@ import { seedRecipes } from './prod/themealdb';
 import { seedFoodKeeper } from './prod/foodkeeper';
 import { linkShelfLife } from './prod/link-shelf-life';
 import { seedSustainabilityTaxonomy } from './shared/sustainability-taxonomy';
+import { seedStandardRewards } from './shared/rewards';
 
 async function main() {
   const prisma = new PrismaClient();
@@ -15,6 +16,11 @@ async function main() {
     const taxonomyRes = await seedSustainabilityTaxonomy(prisma);
     console.log(
       `   ✅ Sustainability taxonomy: ${taxonomyRes.dimensions} dimensions, ${taxonomyRes.topics} topics`,
+    );
+
+    const rewardsRes = await seedStandardRewards(prisma);
+    console.log(
+      `   ✅ Standard rewards: ${rewardsRes.seeded} seeded (${rewardsRes.total} total)`,
     );
 
     const nevoRes = await seedNevo(prisma);
