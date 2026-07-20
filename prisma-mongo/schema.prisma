@@ -91,7 +91,7 @@ model OffProduct {
   // adding index declarations here would make `db push` try to create new
   // indexes on that database rather than just modeling what's already there.
   // Text search relies on existing _keywords indexes (see keywords field
-  // above and OffMongoProductRepository.buildWhere); other unindexed
+  // above and OffMongoProductRepository.buildRawFilter); other unindexed
   // queries still rely on OpenFoodFactsService's timeout + HTTP fallback.
   @@map("products")
 }
