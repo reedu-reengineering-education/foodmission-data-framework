@@ -6,7 +6,8 @@ const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NE
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
- * English metadata lands on GenericFood; Dutch name/group/remark seed EntityTranslation (nl).
+ * English metadata lands on GenericFood; non-English strings are loaded via
+ * `npm run db:import:nevo-translations`.
  */
 const COL = {
   NEVO_VERSION: 0,
@@ -378,80 +379,15 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fattyAcidsUnidentified: parseFloat_(cols[COL.FAUN]),
     };
 
-    const record = await prisma.genericFood.upsert({
+    await prisma.genericFood.upsert({
       where: { nevoCode },
       update: data,
       create: { nevoCode, ...data },
     });
 
-    const foodNameNl = parseStringOrNull(cols[COL.FOOD_NAME_NL]);
-    const foodGroupNl = parseStringOrNull(cols[COL.FOOD_GROUP_NL]);
-    const remarkNl = parseStringOrNull(cols[COL.REMARK_NL]);
-    const synonym = parseStringOrNull(cols[COL.SYNONYM]);
-
-    const nlTranslations: {
-      entityType: 'GenericFood';
-      entityId: string;
-      locale: 'nl';
-      field: string;
-      value: string;
-    }[] = [];
-
-    if (foodNameNl) {
-      nlTranslations.push({
-        entityType: 'GenericFood',
-        entityId: record.id,
-        locale: 'nl',
-        field: 'foodName',
-        value: foodNameNl,
-      });
-    }
-    if (foodGroupNl) {
-      nlTranslations.push({
-        entityType: 'GenericFood',
-        entityId: record.id,
-        locale: 'nl',
-        field: 'foodGroup',
-        value: foodGroupNl,
-      });
-    }
-    if (remarkNl) {
-      nlTranslations.push({
-        entityType: 'GenericFood',
-        entityId: record.id,
-        locale: 'nl',
-        field: 'remark',
-        value: remarkNl,
-      });
-    }
-    if (synonym) {
-      nlTranslations.push({
-        entityType: 'GenericFood',
-        entityId: record.id,
-        locale: 'nl',
-        field: 'synonym',
-        value: synonym,
-      });
-    }
-
-    for (const row of nlTranslations) {
-      await prisma.entityTranslation.upsert({
-        where: {
-          entityType_entityId_locale_field: {
-            entityType: row.entityType,
-            entityId: row.entityId,
-            locale: row.locale,
-            field: row.field,
-          },
-        },
-        create: row,
-        update: { value: row.value },
-      });
-    }
-
     results.push({ nevoCode, foodName: data.foodName });
   }
 
-  console.log(`   ✅ Processed ${results.length} generic foods (with nl translations)`);
+  console.log(`   ✅ Processed ${results.length} generic foods`);
   return results;
 }
