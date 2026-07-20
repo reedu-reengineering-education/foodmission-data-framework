@@ -252,11 +252,6 @@ export class TranslationService {
     entityType: TranslatableEntityType,
     entityId: string,
   ): Promise<void> {
-    if (!isTranslatableEntityType(entityType)) {
-      throw new BadRequestException(
-        `Unsupported translation entityType: ${entityType}`,
-      );
-    }
     await this.prisma.entityTranslation.deleteMany({
       where: { entityType, entityId },
     });
