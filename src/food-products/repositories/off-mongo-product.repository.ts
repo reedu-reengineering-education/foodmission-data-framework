@@ -95,7 +95,9 @@ export class OffMongoProductRepository {
       and.push({ countries_tags: { $in: options.countries } });
     }
 
-    const filter: Record<string, unknown> = { product_name: { $ne: null } };
+    const filter: Record<string, unknown> = {
+      product_name: { $exists: true, $nin: [null, ''] },
+    };
     if (and.length > 0) {
       filter.$and = and;
     }
