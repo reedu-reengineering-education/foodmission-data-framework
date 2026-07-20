@@ -31,20 +31,35 @@ export class GenericFoodService {
 
   async findAll(query: GenericFoodQueryDto) {
     const locale = this.translationService.resolveLocale(query.lang);
-    let localizedMatchIds: string[] | undefined;
+    const context: {
+      localizedSearchIds?: string[];
+      localizedFoodGroupIds?: string[];
+    } = {};
 
-    if (query.search && locale !== DEFAULT_LOCALE) {
-      localizedMatchIds = await this.translationService.findEntityIdsByValue(
-        'GenericFood',
-        locale,
-        ['foodName', 'synonym'],
-        query.search,
-      );
+    if (locale !== DEFAULT_LOCALE) {
+      if (query.search) {
+        context.localizedSearchIds =
+          await this.translationService.findEntityIdsByValue(
+            'GenericFood',
+            locale,
+            ['foodName', 'synonym'],
+            query.search,
+          );
+      }
+      if (query.foodGroup) {
+        context.localizedFoodGroupIds =
+          await this.translationService.findEntityIdsByValue(
+            'GenericFood',
+            locale,
+            ['foodGroup'],
+            query.foodGroup,
+          );
+      }
     }
 
     const result = await this.genericFoodRepository.findAll(
       query,
-      localizedMatchIds,
+      Object.keys(context).length > 0 ? context : undefined,
     );
 
     const items = await this.overlayTranslations(result.items, locale);

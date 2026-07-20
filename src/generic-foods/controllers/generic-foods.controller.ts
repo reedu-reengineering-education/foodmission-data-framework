@@ -66,7 +66,8 @@ export class GenericFoodsController {
   @ApiQuery({
     name: 'foodGroup',
     required: false,
-    description: 'Food group filter (English canonical)',
+    description:
+      'Food group filter (English or translated when lang is set)',
   })
   @ApiQuery({
     name: 'lang',

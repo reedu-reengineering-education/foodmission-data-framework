@@ -216,7 +216,8 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),
-      synonym: parseStringOrNull(cols[COL.SYNONYM]),
+      // NEVO "Synoniem" is Dutch — loaded as nl synonym via db:import:nevo-translations
+      synonym: null,
       quantity: parseStringOrNull(cols[COL.QUANTITY]),
       containsTracesOf: parseStringOrNull(cols[COL.CONTAINS_TRACES_OF]),
       isFortifiedWith: parseStringOrNull(cols[COL.IS_FORTIFIED_WITH]),

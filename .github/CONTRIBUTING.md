@@ -65,16 +65,18 @@ npm run i18n:import:db
 
 Sheet columns: `key`, `en`, `translation`. Keys look like `GenericFood.{nevoCode}.foodName`.
 
-## NEVO food translations
+## NEVO food translations (deployment)
 
-After `db:seed`, load bundled food translations:
+Full runbook: [scripts/README.md](../scripts/README.md#nevo-deployment-new-database).
 
 ```bash
+npm run db:migrate:deploy   # or db:migrate locally
+npm run db:seed:prod        # English NEVO foods (+ other prod seed data)
 npm run db:import:nevo-translations -- --dry-run
 npm run db:import:nevo-translations
 ```
 
-See `db:import:nevo-translations` docs in repo scripts — not part of the `i18n:*` vendor handoff flow.
+For dev: use `db:seed` instead of `db:seed:prod`. Vendor gap-fills after import: `i18n:export:db` / `i18n:import:db`.
 
 ## Before Opening a PR
 

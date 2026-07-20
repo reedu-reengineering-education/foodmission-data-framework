@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { seedNevo } from './seed-nevo';
+import { seedGenericFoods } from './prod/genericFoods';
 import { seedOpenFoodFactsFromJson } from './dev/openfoodfacts';
 import { seedRecipes } from './prod/themealdb';
 import { seedFoodKeeper } from './prod/foodkeeper';
@@ -11,12 +11,8 @@ async function main() {
   console.log('🔒 Running production seed (NEVO + OpenFoodFacts + Recipes)');
 
   try {
-    const nevoRes = await seedNevo(prisma);
-    if (nevoRes && nevoRes.skipped) {
-      console.log('   ⏭️  NEVO CSV not found; skipping NEVO import.');
-    } else if (nevoRes && typeof nevoRes.count === 'number') {
-      console.log(`   ✅ NEVO: ${nevoRes.count} generic foods created`);
-    }
+    const genericFoods = await seedGenericFoods(prisma);
+    console.log(`   ✅ NEVO: ${genericFoods.length} generic foods upserted`);
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);
     if (offRes && offRes.skipped) {
@@ -56,6 +52,10 @@ async function main() {
     const shelfLifeLinks = await linkShelfLife(prisma);
     console.log(
       `   ✅ ShelfLife links: ${shelfLifeLinks.foodProducts} foodProducts, ${shelfLifeLinks.genericFoods} genericFoods`,
+    );
+
+    console.log(
+      '\n   ℹ️  Run npm run db:import:nevo-translations to load food name translations.',
     );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);

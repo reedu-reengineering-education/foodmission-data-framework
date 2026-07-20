@@ -1,3 +1,8 @@
+/**
+ * @deprecated Use `scripts/seeds/prod/genericFoods.ts` (upsert, English only) +
+ * `npm run db:import:nevo-translations` for locale overlays.
+ * Kept for manual create-only runs only.
+ */
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -215,7 +220,7 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),
-      synonym: parseStringOrNull(cols[COL.SYNONYM]),
+      synonym: null,
       quantity: parseStringOrNull(cols[COL.QUANTITY]),
       containsTracesOf: parseStringOrNull(cols[COL.CONTAINS_TRACES_OF]),
       isFortifiedWith: parseStringOrNull(cols[COL.IS_FORTIFIED_WITH]),
@@ -359,75 +364,8 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     } as any;
 
     try {
-      const record = await prisma.genericFood.create({
-        data: { nevoCode, ...data },
-      });
+      await prisma.genericFood.create({ data: { nevoCode, ...data } });
       created += 1;
-
-      const foodNameNl = parseStringOrNull(cols[COL.FOOD_NAME_NL]);
-      const foodGroupNl = parseStringOrNull(cols[COL.FOOD_GROUP_NL]);
-      const remarkNl = parseStringOrNull(cols[COL.REMARK_NL]);
-      const synonym = parseStringOrNull(cols[COL.SYNONYM]);
-
-      const nlRows: {
-        entityType: 'GenericFood';
-        entityId: string;
-        locale: 'nl';
-        field: string;
-        value: string;
-      }[] = [];
-
-      if (foodNameNl) {
-        nlRows.push({
-          entityType: 'GenericFood',
-          entityId: record.id,
-          locale: 'nl',
-          field: 'foodName',
-          value: foodNameNl,
-        });
-      }
-      if (foodGroupNl) {
-        nlRows.push({
-          entityType: 'GenericFood',
-          entityId: record.id,
-          locale: 'nl',
-          field: 'foodGroup',
-          value: foodGroupNl,
-        });
-      }
-      if (remarkNl) {
-        nlRows.push({
-          entityType: 'GenericFood',
-          entityId: record.id,
-          locale: 'nl',
-          field: 'remark',
-          value: remarkNl,
-        });
-      }
-      if (synonym) {
-        nlRows.push({
-          entityType: 'GenericFood',
-          entityId: record.id,
-          locale: 'nl',
-          field: 'synonym',
-          value: synonym,
-        });
-      }
-
-      for (const row of nlRows) {
-        await prisma.entityTranslation.upsert({
-          where: {
-            entityType_entityId_locale_field: {
-              entityType: row.entityType,
-              entityId: row.entityId,
-              locale: row.locale,
-              field: row.field,
-            },
-          },
-          create: row,
-          update: { value: row.value },
-        });
-      }
     } catch (err: any) {
       // If a concurrent process created the same nevoCode, skip
       if (err && err.code === 'P2002') {
@@ -441,9 +379,7 @@ export async function seedNevo(prisma: PrismaClient, csvPath?: string) {
     }
   }
 
-  console.log(
-    `   ✅ Created ${created} new NEVO generic foods (with nl translations)`,
-  );
+  console.log(`   ✅ Created ${created} new NEVO generic foods`);
   return { count: created, skipped: false };
 }
 

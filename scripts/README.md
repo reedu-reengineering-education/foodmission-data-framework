@@ -7,15 +7,45 @@ the FOODMISSION Data Framework.
 
 ### Database and Seeding
 
-- **`seed-dev.ts`** — OFF JSON + core users + extra dev users / food products from fixtures
+- **`prisma/seed.ts`** — Primary entry via `npm run db:seed` / `db:seed:prod` (uses `scripts/seeds/prod/genericFoods.ts`)
+- **`seeds/prod/genericFoods.ts`** — NEVO nutrition CSV → `generic_foods` (English only)
+- **`seeds/import-nevo-translations.ts`** — NEVO translations CSV → `entity_translations` (`npm run db:import:nevo-translations`)
 - **`seed-test.ts`** — Minimal deterministic users + barcode food products for CI (`npm run db:seed:test`)
-- **`seed-prod.ts`** — Production-oriented pipeline: NEVO (create-only) → OFF JSON → recipes → FoodKeeper → shelf-life links (`npm run db:seed:prod`)
-- **`seed-nevo.ts`** — Standalone NEVO CSV → `generic_foods` (create-only); also runnable as CLI
-- **`seed-prod-nevo.ts`** — NEVO import then recipe seeding (subset prod workflow)
-- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive — use only when you intend to replace the catalog
-- **`migration-utils.ts`** - Migration helper utilities
-- **`db-reset.sh`** - Reset local database state
-- **`init-test-db.sql`** - Test DB bootstrap SQL
+- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive
+- **`seed-prod.ts`** — Legacy prod pipeline (OFF + recipes + shelf-life); prefer `npm run db:seed:prod`
+- **`seed-nevo.ts`**, **`seed-prod-nevo.ts`** — **Deprecated** create-only duplicates; use `genericFoods.ts` + `import-nevo-translations.ts` instead
+
+### NEVO deployment (new database)
+
+English food metadata and all locale overlays are loaded in **two steps**:
+
+```bash
+# 1. Schema + English NEVO foods (nutrition + foodName/foodGroup in English)
+npm run db:migrate:deploy   # or db:migrate locally
+npm run db:seed:prod          # production seed
+# or: npm run db:seed         # development (includes dev fixtures)
+
+# 2. Non-English food name/group/remark/synonym overlays (~40k rows)
+npm run db:import:nevo-translations -- --dry-run   # optional preview
+npm run db:import:nevo-translations
+```
+
+**What each step writes**
+
+| Step | Command | Table | Locales |
+| --- | --- | --- | --- |
+| Seed | `db:seed` / `db:seed:prod` | `generic_foods` | English canonical fields only |
+| Import | `db:import:nevo-translations` | `entity_translations` | `nl`, `no`, `de`, `el`, `es`, `it`, `pl`, `sl` |
+
+**Updating translations later**
+
+- Bulk NEVO file refresh → re-run `db:import:nevo-translations`
+- Vendor spreadsheet edits → `npm run i18n:export:db` / `i18n:import:db`
+
+**Data files**
+
+- `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` — nutrition + English labels
+- `prisma/seeds/data/nevo/nevo_translations.csv` — all non-English display strings
 
 ### Backup and Restore
 

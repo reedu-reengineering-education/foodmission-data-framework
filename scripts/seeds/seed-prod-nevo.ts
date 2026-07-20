@@ -1,3 +1,4 @@
+/** @deprecated Use `genericFoods.ts` + `db:import:nevo-translations` instead. */
 import { PrismaClient } from '@prisma/client';
 import { seedRecipes } from './prod/themealdb';
 import * as fs from 'fs';

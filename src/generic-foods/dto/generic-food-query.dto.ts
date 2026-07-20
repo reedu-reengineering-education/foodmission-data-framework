@@ -15,7 +15,7 @@ export class GenericFoodQueryDto {
 
   @ApiPropertyOptional({
     description:
-      'Filter by food group (English canonical name; display may be localized via lang)',
+      'Filter by food group. Matches English canonical or translated label when lang is set.',
     example: 'Potatoes and tubers',
   })
   @IsOptional()

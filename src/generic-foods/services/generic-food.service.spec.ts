@@ -162,7 +162,48 @@ describe('GenericFoodService', () => {
         ['foodName', 'synonym'],
         'tomaat',
       );
-      expect(repository.findAll).toHaveBeenCalledWith(query, ['generic-123']);
+      expect(repository.findAll).toHaveBeenCalledWith(query, {
+        localizedSearchIds: ['generic-123'],
+      });
+    });
+
+    it('should filter by localized food group when lang is set', async () => {
+      const query: GenericFoodQueryDto = {
+        foodGroup: 'Groenten',
+        lang: 'nl',
+        page: 1,
+        limit: 20,
+      };
+
+      translations.resolveLocale.mockReturnValue('nl');
+      translations.findEntityIdsByValue.mockResolvedValue(['generic-123']);
+      repository.findAll.mockResolvedValue({
+        items: [mockCategory],
+        total: 1,
+        page: 1,
+        limit: 20,
+        totalPages: 1,
+      });
+      translations.resolveMany.mockResolvedValue({
+        'generic-123': {
+          foodName: 'Tomaat rauw',
+          foodGroup: 'Groenten',
+          remark: null,
+          synonym: null,
+        },
+      });
+
+      await service.findAll(query);
+
+      expect(translations.findEntityIdsByValue).toHaveBeenCalledWith(
+        'GenericFood',
+        'nl',
+        ['foodGroup'],
+        'Groenten',
+      );
+      expect(repository.findAll).toHaveBeenCalledWith(query, {
+        localizedFoodGroupIds: ['generic-123'],
+      });
     });
   });
 
