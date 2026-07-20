@@ -4,6 +4,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { AxiosResponse, AxiosError } from 'axios';
 import { of, throwError } from 'rxjs';
 import { OpenFoodFactsService } from './openfoodfacts.service';
+import { OffMongoProductRepository } from '../repositories/off-mongo-product.repository';
 import {
   OpenFoodFactsProduct,
   OpenFoodFactsSearchResponse,
@@ -81,13 +82,25 @@ describe('OpenFoodFactsService', () => {
     get: jest.fn(),
   };
 
+  const mockOffMongoRepository = {
+    isAvailable: false,
+    findByBarcode: jest.fn(),
+    search: jest.fn(),
+  };
+
   beforeEach(async () => {
+    mockOffMongoRepository.isAvailable = false;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OpenFoodFactsService,
         {
           provide: HttpService,
           useValue: mockHttpService,
+        },
+        {
+          provide: OffMongoProductRepository,
+          useValue: mockOffMongoRepository,
         },
       ],
     }).compile();
@@ -477,6 +490,100 @@ describe('OpenFoodFactsService', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('local OFF database first, HTTP fallback', () => {
+    it('returns a product from the local database without calling the HTTP API', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce({
+        id: '3017620422003',
+        product_name: 'Nutella',
+        product_name_en: 'Nutella',
+        brands: 'Ferrero',
+      });
+
+      const result = await service.getProductByBarcode('3017620422003');
+
+      expect(result?.name).toBe('Nutella');
+      expect(mockOffMongoRepository.findByBarcode).toHaveBeenCalledWith(
+        '3017620422003',
+      );
+      expect(httpService.get).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the HTTP API when the local database lookup errors', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.findByBarcode.mockRejectedValueOnce(
+        new Error('connection refused'),
+      );
+
+      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
+        data: mockProduct,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+      httpService.get.mockReturnValueOnce(of(mockResponse));
+
+      const result = await service.getProductByBarcode('3017620422003');
+
+      expect(result?.name).toBe('Nutella');
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns search results from the local database without calling the HTTP API', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.search.mockResolvedValueOnce({
+        items: [
+          {
+            id: '3017620422003',
+            product_name: 'Nutella',
+            brands: 'Ferrero',
+          },
+        ],
+        totalCount: 1,
+        page: 1,
+        pageSize: 20,
+      });
+
+      const result = await service.searchProducts({ query: 'nutella' });
+
+      expect(result.products).toHaveLength(1);
+      expect(result.totalCount).toBe(1);
+      expect(httpService.get).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the HTTP API when the local database search errors', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.search.mockRejectedValueOnce(
+        new Error('connection refused'),
+      );
+
+      const mockResponse: AxiosResponse<OpenFoodFactsSearchResponse> = {
+        data: mockSearchResponse,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+      httpService.get.mockReturnValueOnce(of(mockResponse));
+
+      const result = await service.searchProducts({ query: 'nutella' });
+
+      expect(result.products).toHaveLength(1);
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not fall back to HTTP when the local database genuinely has no match', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(null);
+
+      const result = await service.getProductByBarcode('0000000000000');
+
+      expect(result).toBeNull();
+      expect(httpService.get).not.toHaveBeenCalled();
     });
   });
 });

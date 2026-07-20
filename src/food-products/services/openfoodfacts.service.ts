@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, timeout, retry } from 'rxjs/operators';
+import { OffMongoProductRepository } from '../repositories/off-mongo-product.repository';
 import {
   OpenFoodFactsProduct,
   OpenFoodFactsSearchResponse,
@@ -18,13 +19,49 @@ export class OpenFoodFactsService {
   private readonly baseUrl = 'https://world.openfoodfacts.org';
   private readonly apiTimeout = 10000; // 10 seconds
   private readonly maxRetries = 3;
+  private readonly mongoTimeout = 5000; // 5 seconds
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly offMongoRepository: OffMongoProductRepository,
+  ) {}
 
   /**
-   * Get product information by barcode
+   * Get product information by barcode.
+   * Tries the local OpenFoodFacts MongoDB clone first, falling back to the
+   * live HTTP API if the clone is unconfigured, unreachable, or errors.
    */
   async getProductByBarcode(barcode: string): Promise<ProductInfo | null> {
+    if (this.offMongoRepository.isAvailable) {
+      try {
+        const doc = await this.withMongoTimeout(
+          this.offMongoRepository.findByBarcode(barcode),
+        );
+        if (doc) {
+          const productInfo = this.transformProduct({ ...doc, _id: doc.id });
+          this.logger.log(
+            `Found product in local OFF database: ${productInfo.name}`,
+          );
+          return productInfo;
+        }
+        this.logger.warn(
+          `Product not found in local OFF database for barcode: ${barcode}`,
+        );
+        return null;
+      } catch (error) {
+        this.logger.warn(
+          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API`,
+          error as Error,
+        );
+      }
+    }
+
+    return this.getProductByBarcodeHttp(barcode);
+  }
+
+  private async getProductByBarcodeHttp(
+    barcode: string,
+  ): Promise<ProductInfo | null> {
     this.logger.log(`Fetching product by barcode: ${barcode}`);
 
     const url = `${this.baseUrl}/api/v0/product/${barcode}.json`;
@@ -51,7 +88,9 @@ export class OpenFoodFactsService {
   }
 
   /**
-   * Search products by name or other criteria
+   * Search products by name or other criteria.
+   * Tries the local OpenFoodFacts MongoDB clone first, falling back to the
+   * live HTTP API if the clone is unconfigured, unreachable, or errors.
    */
   async searchProducts(options: OpenFoodFactsSearchOptions): Promise<{
     products: ProductInfo[];
@@ -60,6 +99,38 @@ export class OpenFoodFactsService {
     pageSize: number;
     totalPages: number;
   }> {
+    if (this.offMongoRepository.isAvailable) {
+      try {
+        const { items, totalCount, page, pageSize } =
+          await this.withMongoTimeout(this.offMongoRepository.search(options));
+
+        const products = items.map((doc) =>
+          this.transformProduct({ ...doc, _id: doc.id }),
+        );
+
+        this.logger.log(
+          `Found ${products.length} products in local OFF database`,
+        );
+
+        return {
+          products,
+          totalCount,
+          page,
+          pageSize,
+          totalPages: Math.max(1, Math.ceil(totalCount / pageSize)),
+        };
+      } catch (error) {
+        this.logger.warn(
+          'Local OFF database search failed, falling back to HTTP API',
+          error as Error,
+        );
+      }
+    }
+
+    return this.searchProductsHttp(options);
+  }
+
+  private async searchProductsHttp(options: OpenFoodFactsSearchOptions) {
     this.logger.log(`Searching products with options:`, options);
 
     // Build search parameters
@@ -101,6 +172,18 @@ export class OpenFoodFactsService {
 
     this.logger.log(`Found ${products.length} products`);
     return result;
+  }
+
+  private withMongoTimeout<T>(promise: Promise<T>): Promise<T> {
+    let timer: NodeJS.Timeout;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new Error('OFF Mongo lookup timed out')),
+        this.mongoTimeout,
+      );
+    });
+
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
   }
 
   /**
@@ -155,8 +238,8 @@ export class OpenFoodFactsService {
         : [],
       categories: product.categories_tags || [],
       labels: product.labels_tags || [],
-      quantity: product.quantity,
-      servingSize: product.serving_size,
+      quantity: this.toOptionalString(product.quantity),
+      servingSize: this.toOptionalString(product.serving_size),
       packaging: product.packaging_tags || [],
       origins: product.origins,
       manufacturingPlaces: product.manufacturing_places,
@@ -164,7 +247,7 @@ export class OpenFoodFactsService {
       allergens: product.allergens_tags || [],
       traces: product.traces_tags || [],
       nutritionGrade: product.nutrition_grades,
-      novaGroup: product.nova_group,
+      novaGroup: this.toOptionalNumber(product.nova_group),
       ecoscoreGrade: product.ecoscore_grade,
       carbonFootprint: product.nutriments?.[
         'carbon-footprint-from-known-ingredients_product'
@@ -191,6 +274,22 @@ export class OpenFoodFactsService {
         ? new Date(product.last_modified_t * 1000)
         : undefined,
     };
+  }
+
+  // OFF documents store some fields (quantity/serving_size/nova_group/...)
+  // inconsistently as either a string or a bare number across the corpus.
+  private toOptionalString(value: unknown): string | undefined {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return value.toString();
+    }
+    return undefined;
+  }
+
+  private toOptionalNumber(value: unknown): number | undefined {
+    if (value === null || value === undefined) return undefined;
+    const num = Number(value);
+    return Number.isNaN(num) ? undefined : num;
   }
 
   private getProductName(product: any): string {
