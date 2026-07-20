@@ -200,7 +200,6 @@ describe('GenericFoodService', () => {
         'nl',
         ['foodGroup'],
         'Groenten',
-        'equals',
       );
       expect(repository.findAll).toHaveBeenCalledWith(query, {
         localizedFoodGroupIds: ['generic-123'],

@@ -53,7 +53,6 @@ export class GenericFoodService {
             locale,
             ['foodGroup'],
             query.foodGroup,
-            'equals',
           );
       }
     }

@@ -68,7 +68,7 @@ export class GenericFoodRepository {
 
     if (foodGroup) {
       const englishFoodGroup: Prisma.GenericFoodWhereInput = {
-        foodGroup: { equals: foodGroup, mode: 'insensitive' },
+        foodGroup: { contains: foodGroup, mode: 'insensitive' },
       };
 
       if (useLocalizedFoodGroup && localizedFoodGroupIds!.length > 0) {
