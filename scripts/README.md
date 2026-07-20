@@ -38,6 +38,16 @@ Interactive Swagger UI: run the API and open `/api/docs` (see root `README.md` Â
 - `test-runner.sh` - Scripted test runner helper
 - `manage-secrets.sh` - Secrets management helper script
 
+### Translations (`scripts/i18n/`)
+
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md) for full workflows.
+
+| npm script | Purpose |
+| --- | --- |
+| `i18n:export` / `i18n:import` | Vendor handoff for UI JSON (`src/i18n/`) |
+| `i18n:export:db` / `i18n:import:db` | Vendor handoff for DB `entity_translations` |
+| `i18n:validate` / `i18n:validate:locales` / `i18n:missing` | Check UI translation files |
+
 ## `scripts/dev/` Folder
 
 The `scripts/dev/` folder contains meal-log analytics development utilities:

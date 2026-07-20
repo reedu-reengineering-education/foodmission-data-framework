@@ -32,6 +32,8 @@
     "i18n:missing": "ts-node scripts/i18n/check-missing-translations.ts",
     "i18n:export": "ts-node scripts/i18n/export-translations.ts",
     "i18n:import": "ts-node scripts/i18n/import-translations.ts",
+    "i18n:export:db": "ts-node scripts/i18n/export-entity-translations.ts",
+    "i18n:import:db": "ts-node scripts/i18n/import-entity-translations.ts",
     "test:i18n": "npm run i18n:validate:locales && npm run i18n:missing",
     "test:otel": "ts-node scripts/test-otel-setup.ts",
     "db:generate": "prisma generate",

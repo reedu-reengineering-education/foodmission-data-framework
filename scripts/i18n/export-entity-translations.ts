@@ -22,8 +22,8 @@ async function main(): Promise<void> {
       locales: { type: 'string' },
       fields: { type: 'string' },
       /**
-       * By default export all non-English locales except nl (already seeded from NEVO CSV).
-       * Pass --include-nl to also export Dutch.
+       * By default export all non-English locales except nl (usually loaded via
+       * db:import:nevo-translations). Pass --include-nl to also export Dutch.
        */
       'include-nl': { type: 'boolean', default: false },
     },

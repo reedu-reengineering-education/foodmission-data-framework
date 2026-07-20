@@ -2,7 +2,22 @@
 
 Thanks for helping improve localization coverage.
 
-## Translation Locations
+## Which script do I use?
+
+| Goal | Command | Touches |
+| --- | --- | --- |
+| Validate English UI JSON | `npm run i18n:validate` | `src/i18n/en/` |
+| Validate all UI locales | `npm run i18n:validate:locales` | `src/i18n/*/` |
+| List missing UI keys | `npm run i18n:missing` | `src/i18n/*/` |
+| Vendor handoff: **UI strings** | `npm run i18n:export` / `i18n:import` | JSON under `src/i18n/` |
+| Vendor handoff: **DB content** | `npm run i18n:export:db` / `i18n:import:db` | `entity_translations` table |
+| Bulk-load NEVO food translations after seed | `npm run db:import:nevo-translations` | NEVO CSV → `entity_translations` |
+
+- **`i18n:export` / `i18n:import`** — app UI copy (JSON files)
+- **`i18n:export:db` / `i18n:import:db`** — database strings (food names, missions, …)
+- **`db:import:nevo-translations`** — one-shot NEVO CSV load after seed (separate from vendor handoff)
+
+## Translation locations (UI JSON)
 
 - `src/i18n/en/` is the base locale.
 - Other locale folders should stay aligned with base namespace files when updated.
@@ -11,9 +26,7 @@ Thanks for helping improve localization coverage.
   - `npm run i18n:validate:locales`
   - `npm run i18n:missing`
 
-## Spreadsheet handoff (translation vendor)
-
-Export **all keys** for every target locale to Excel (one sheet per locale) or CSV (one file per locale):
+## Vendor handoff: UI strings
 
 ```bash
 npm run i18n:export
@@ -29,8 +42,6 @@ Each locale sheet/file has columns: `key`, `en`, `translation`.
 - **en** = English reference (read-only for vendor)
 - **translation** = editable; pre-filled with current value
 
-CSV mode writes one file per locale: `handoff.de.csv`, `handoff.it.csv`, …
-
 After the vendor returns the filled file:
 
 ```bash
@@ -39,7 +50,31 @@ npm run i18n:import
 npm run i18n:validate:locales
 ```
 
-Import patches existing JSON files (it does not replace them), skips blank cells, and sets `meta.lastImportedAt` on updated files. The `meta` block is internal metadata in English only and is never exported.
+Import patches existing JSON files (it does not replace them), skips blank cells, and sets `meta.lastImportedAt` on updated files.
+
+## Vendor handoff: DB strings
+
+```bash
+npm run i18n:export:db
+# optional: --locales de,it --include-nl --fields foodName,foodGroup,remark
+# csv: --format csv --out translations/entity-handoff.csv
+
+npm run i18n:import:db -- --dry-run
+npm run i18n:import:db
+```
+
+Sheet columns: `key`, `en`, `translation`. Keys look like `GenericFood.{nevoCode}.foodName`.
+
+## NEVO food translations
+
+After `db:seed`, load bundled food translations:
+
+```bash
+npm run db:import:nevo-translations -- --dry-run
+npm run db:import:nevo-translations
+```
+
+See `db:import:nevo-translations` docs in repo scripts — not part of the `i18n:*` vendor handoff flow.
 
 ## Before Opening a PR
 
