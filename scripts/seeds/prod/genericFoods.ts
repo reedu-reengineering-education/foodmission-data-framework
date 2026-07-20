@@ -6,19 +6,19 @@ const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NE
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
- * English metadata lands on GenericFood; non-English strings are loaded via
- * `npm run db:import:nevo-translations`.
+ * English metadata lands on GenericFood. Dutch columns (1, 4, 6, 8) and other
+ * locales are loaded via `npm run db:import:nevo-translations`.
  */
 const COL = {
   NEVO_VERSION: 0,
-  FOOD_GROUP_NL: 1,
+  // 1 = Voedingsmiddelgroep (Dutch) — skipped
   FOOD_GROUP: 2,
   NEVO_CODE: 3,
-  FOOD_NAME_NL: 4,
+  // 4 = Voedingsmiddelnaam/Dutch food name — skipped
   FOOD_NAME: 5,
-  SYNONYM: 6,
+  // 6 = Synoniem (Dutch) — skipped
   QUANTITY: 7,
-  REMARK_NL: 8,
+  // 8 = Opmerking (Dutch remark) — skipped
   CONTAINS_TRACES_OF: 9,
   IS_FORTIFIED_WITH: 10,
   ENERCJ: 11,
@@ -216,7 +216,6 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),
-      // NEVO "Synoniem" is Dutch — loaded as nl synonym via db:import:nevo-translations
       synonym: null,
       quantity: parseStringOrNull(cols[COL.QUANTITY]),
       containsTracesOf: parseStringOrNull(cols[COL.CONTAINS_TRACES_OF]),
