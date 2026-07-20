@@ -10,6 +10,8 @@ import {
 
 export type FieldFallbacks = Record<string, string | null | undefined>;
 
+export type TranslationValueMatch = 'contains' | 'equals';
+
 export type TranslationUpsertRow = {
   entityType: TranslatableEntityType;
   entityId: string;
@@ -183,13 +185,15 @@ export class TranslationService {
   }
 
   /**
-   * Find entity IDs whose translated field values match search (case-insensitive).
+   * Find entity IDs whose translated field values match (case-insensitive).
+   * Use `contains` for free-text search; `equals` for exact filters (e.g. foodGroup).
    */
   async findEntityIdsByValue(
     entityType: TranslatableEntityType,
     locale: string,
     fields: string[],
     search: string,
+    match: TranslationValueMatch = 'contains',
   ): Promise<string[]> {
     this.assertEntityAndFields(entityType, fields);
     const resolvedLocale = this.resolveLocale(locale);
@@ -197,12 +201,17 @@ export class TranslationService {
       return [];
     }
 
+    const valueFilter =
+      match === 'equals'
+        ? { equals: search, mode: 'insensitive' as const }
+        : { contains: search, mode: 'insensitive' as const };
+
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale: resolvedLocale,
         field: { in: fields },
-        value: { contains: search, mode: 'insensitive' },
+        value: valueFilter,
       },
       select: { entityId: true },
       distinct: ['entityId'],

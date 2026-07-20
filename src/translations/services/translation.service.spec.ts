@@ -163,4 +163,49 @@ describe('TranslationService', () => {
       });
     });
   });
+
+  describe('findEntityIdsByValue', () => {
+    it('uses contains match by default', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'id-1' },
+      ]);
+
+      await service.findEntityIdsByValue(
+        'GenericFood',
+        'nl',
+        ['foodName'],
+        'appel',
+      );
+
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { contains: 'appel', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+
+    it('supports exact match for filters', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'id-1' },
+      ]);
+
+      await service.findEntityIdsByValue(
+        'GenericFood',
+        'nl',
+        ['foodGroup'],
+        'Groenten',
+        'equals',
+      );
+
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { equals: 'Groenten', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+  });
 });

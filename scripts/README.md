@@ -13,7 +13,6 @@ the FOODMISSION Data Framework.
 - **`seed-test.ts`** — Minimal deterministic users + barcode food products for CI (`npm run db:seed:test`)
 - **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive
 - **`seed-prod.ts`** — Legacy prod pipeline (OFF + recipes + shelf-life); prefer `npm run db:seed:prod`
-- **`seed-nevo.ts`**, **`seed-prod-nevo.ts`** — **Deprecated** create-only duplicates; use `genericFoods.ts` + `import-nevo-translations.ts` instead
 
 ### NEVO deployment (new database)
 

@@ -32,6 +32,13 @@ const {
 
 const prisma = new PrismaClient();
 
+function printNevoTranslationsReminder(): void {
+  console.log(
+    '\nℹ️  NEVO food translations are not loaded by seed. Run:\n' +
+      '   npm run db:import:nevo-translations',
+  );
+}
+
 async function seedProduction() {
   const genericFoods = await seedGenericFoods(prisma);
   const recipes = await seedRecipes(prisma);
@@ -66,6 +73,7 @@ async function seedProduction() {
   for (const row of summaryRows) {
     console.log(`   - ${row.label}: ${row.value}`);
   }
+  printNevoTranslationsReminder();
 }
 
 async function seedDevelopment() {
@@ -149,6 +157,7 @@ async function seedDevelopment() {
   for (const row of summaryRows) {
     console.log(`   - ${row.label}: ${row.value}`);
   }
+  printNevoTranslationsReminder();
 }
 
 async function main() {
