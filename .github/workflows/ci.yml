@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx prisma generate
+        run: npm run db:generate
 
       # English-only gate: other locales may lag behind new keys and fall back to
       # English at runtime (I18nModule.fallbackLanguage + catalog defaultValue).

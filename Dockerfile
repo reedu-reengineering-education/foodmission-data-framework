@@ -24,7 +24,7 @@ RUN npm ci && npm cache clean --force
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN npm run db:generate
 
 # Build the application (optional for development)
 RUN npm run build

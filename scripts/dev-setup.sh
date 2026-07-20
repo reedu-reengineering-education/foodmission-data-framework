@@ -28,11 +28,11 @@ npm install
 
 # Generate Prisma client
 echo "🔧 Generating Prisma client..."
-npx prisma generate
+npm run db:generate
 
 # Run database migrations
 echo "🗄️ Running database migrations..."
-npx prisma migrate deploy
+npm run db:migrate:deploy
 
 # Seed the database
 echo "🌱 Seeding database with initial data..."
