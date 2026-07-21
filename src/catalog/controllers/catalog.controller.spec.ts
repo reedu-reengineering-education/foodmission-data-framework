@@ -34,6 +34,7 @@ describe('CatalogController', () => {
       listMotivations: jest.fn(),
       listProgressIndicatorKinds: jest.fn(),
       listProgressPrecisions: jest.fn(),
+      listWalletCurrencies: jest.fn(),
     };
 
     mockService.startup?.mockReturnValue({
@@ -53,6 +54,7 @@ describe('CatalogController', () => {
         motivations: [],
         progressIndicatorKinds: [],
         progressPrecisions: [],
+        walletCurrencies: [],
       },
     });
 

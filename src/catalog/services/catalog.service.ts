@@ -19,6 +19,7 @@ import {
   Motivation,
   ProgressIndicatorKind,
   ProgressPrecision,
+  WalletCurrency,
 } from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
@@ -297,6 +298,10 @@ export class CatalogService {
     );
   }
 
+  listWalletCurrencies(): CatalogListResponseDto {
+    return this.enumSection(Object.values(WalletCurrency), 'walletCurrencies');
+  }
+
   listDietaryPreferences(): CatalogListResponseDto {
     return {
       data: Object.values(DietaryLabel).map((code) => ({
@@ -432,6 +437,7 @@ export class CatalogService {
         motivations: this.listMotivations().data,
         progressIndicatorKinds: this.listProgressIndicatorKinds().data,
         progressPrecisions: this.listProgressPrecisions().data,
+        walletCurrencies: this.listWalletCurrencies().data,
       },
     };
   }

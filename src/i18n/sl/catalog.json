@@ -147,5 +147,9 @@
   "progressPrecisions": {
     "SOFT": "Mehko",
     "PRECISE": "Natančno"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Točke"
   }
 }

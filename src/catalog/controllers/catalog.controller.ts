@@ -212,6 +212,12 @@ export class CatalogController {
     return this.catalogService.listProgressPrecisions();
   }
 
+  @Get('wallet-currencies')
+  @PublicCatalogList('List gamification point currencies (XP, points)')
+  walletCurrencies(): CatalogListResponseDto {
+    return this.catalogService.listWalletCurrencies();
+  }
+
   @Get('languages')
   @PublicPaginatedCatalog('List languages (paginated)')
   languages(

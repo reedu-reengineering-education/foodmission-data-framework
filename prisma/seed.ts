@@ -131,7 +131,7 @@ async function seedDevelopment() {
     { label: 'missions', value: missions.length },
     {
       label: 'gamificationProfiles',
-      value: `${gamificationProfiles.wallets} wallets, ${gamificationProfiles.userIndicators} user indicators, ${gamificationProfiles.groupIndicators} group indicators`,
+      value: `${gamificationProfiles.wallets} wallets, ${gamificationProfiles.userIndicators} user indicators, ${gamificationProfiles.groupIndicators} group indicators, ${gamificationProfiles.events} events, ${gamificationProfiles.walletEntries} wallet entries`,
     },
     {
       label: 'surveys',

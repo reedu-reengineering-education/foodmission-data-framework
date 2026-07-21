@@ -143,6 +143,8 @@ model User {
   groupMemberships   GroupMembership[]
   gamificationWallet UserGamificationWallet?
   progressIndicators ProgressIndicator[]     @relation("UserProgressIndicators")
+  gamificationEvents GamificationEvent[]     @relation("UserGamificationEvents")
+  walletEntries      WalletEntry[]
 
   @@index([email])
   @@index([createdAt])
@@ -162,6 +164,7 @@ model UserGroup {
   // Relations
   memberships        GroupMembership[]
   progressIndicators ProgressIndicator[] @relation("GroupProgressIndicators")
+  gamificationEvents GamificationEvent[] @relation("GroupGamificationEvents")
 
   @@index([inviteCode])
   @@index([createdBy])

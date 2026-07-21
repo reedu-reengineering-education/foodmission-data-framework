@@ -147,5 +147,9 @@
   "progressPrecisions": {
     "SOFT": "Zacht",
     "PRECISE": "Precies"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Punten"
   }
 }

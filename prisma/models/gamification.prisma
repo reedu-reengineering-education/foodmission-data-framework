@@ -27,6 +27,11 @@ enum ProgressPrecision {
   PRECISE
 }
 
+enum WalletCurrency {
+  XP
+  POINTS
+}
+
 model Mission {
   id          String   @id @default(uuid())
   title       String
@@ -134,6 +139,47 @@ model UserGamificationWallet {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_gamification_wallets")
+}
+
+/// Append-only history of wallet balance changes (XP / points).
+model WalletEntry {
+  id           String        @id @default(uuid())
+  userId       String
+  currency     WalletCurrency
+  amount       Int // signed: credit > 0, debit < 0
+  balanceAfter Int
+  reason       String
+  eventId      String?
+  createdAt    DateTime      @default(now())
+
+  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event GamificationEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([eventId])
+  @@map("wallet_entries")
+}
+
+/// Append-only gamification activity facts (source of truth for what happened).
+model GamificationEvent {
+  id             String   @id @default(uuid())
+  userId         String
+  groupId        String?
+  eventType      String // e.g. CHALLENGE_COMPLETED, POINTS_AWARDED, LOGIN
+  subjectType    String? // QUEST | MISSION | CHALLENGE | BADGE | INDICATOR | ...
+  subjectId      String?
+  payload        Json     @default("{}")
+  idempotencyKey String?  @unique
+  createdAt      DateTime @default(now())
+
+  user         User          @relation("UserGamificationEvents", fields: [userId], references: [id], onDelete: Cascade)
+  group        UserGroup?    @relation("GroupGamificationEvents", fields: [groupId], references: [id], onDelete: SetNull)
+  walletEntries WalletEntry[]
+
+  @@index([userId, createdAt])
+  @@index([groupId, createdAt])
+  @@index([eventType, createdAt])
+  @@map("gamification_events")
 }
 
 /// Same shape for personal and group progress indicators.

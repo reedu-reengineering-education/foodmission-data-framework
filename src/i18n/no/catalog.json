@@ -147,5 +147,9 @@
   "progressPrecisions": {
     "SOFT": "Myk",
     "PRECISE": "Presis"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Poeng"
   }
 }

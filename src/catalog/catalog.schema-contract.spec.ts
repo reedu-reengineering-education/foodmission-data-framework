@@ -107,4 +107,10 @@ describe('Catalog contract (schema.prisma)', () => {
       parsePrismaEnum(schema, 'ProgressPrecision'),
     );
   });
+
+  it('matches WalletCurrency enum', () => {
+    expect(service.listWalletCurrencies().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WalletCurrency'),
+    );
+  });
 });

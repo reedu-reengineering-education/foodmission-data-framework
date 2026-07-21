@@ -147,5 +147,9 @@
   "progressPrecisions": {
     "SOFT": "Απαλό",
     "PRECISE": "Ακριβές"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Πόντοι"
   }
 }

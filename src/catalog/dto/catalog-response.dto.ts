@@ -107,6 +107,11 @@ export class CatalogStartupDataDto {
   @Expose()
   @Type(() => CatalogValueDto)
   progressPrecisions: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  walletCurrencies: CatalogValueDto[];
 }
 
 export class CatalogStartupResponseDto {
