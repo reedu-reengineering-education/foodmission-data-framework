@@ -9,6 +9,7 @@ export function levelFromXp(xp: number): number {
 
 export const GamificationEventType = {
   LOGIN: 'LOGIN',
+  ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
   POINTS_AWARDED: 'POINTS_AWARDED',
   XP_AWARDED: 'XP_AWARDED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',

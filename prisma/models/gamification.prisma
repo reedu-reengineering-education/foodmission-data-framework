@@ -183,7 +183,9 @@ model GamificationEvent {
 }
 
 /// Same shape for personal and group progress indicators.
-/// Exactly one of userId / groupId must be set (enforced in application layer).
+/// Exactly one of userId / groupId must be set:
+/// - DB: CHECK constraint `progress_indicators_owner_xor` (manual migration)
+/// - App: `assertProgressIndicatorOwner()` before create/upsert
 model ProgressIndicator {
   id               String                 @id @default(uuid())
   userId           String?

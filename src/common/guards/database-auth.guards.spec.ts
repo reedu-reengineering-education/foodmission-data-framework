@@ -18,6 +18,9 @@ describe('DataBaseAuthGuard', () => {
 
     mockUserRepository = {
       findByKeycloakId: jest.fn(),
+      findByEmail: jest.fn(),
+      update: jest.fn(),
+      touchLastLoginAt: jest.fn().mockResolvedValue({ id: 'x' }),
     } as any;
 
     mockRequest = {
@@ -97,6 +100,7 @@ describe('DataBaseAuthGuard', () => {
       expect(mockRequest.user.sub).toBe(keycloakId);
       expect(mockRequest.user.email).toBe('user@example.com');
       expect(mockRequest.user.roles).toEqual(jwtRoles);
+      expect(mockUserRepository.touchLastLoginAt).toHaveBeenCalledWith(dbUserId);
     });
 
     it('should use cached user when available', async () => {

@@ -50,7 +50,8 @@ export class UserGroupResponseDto {
   createdAt: Date;
 
   @ApiProperty({
-    description: 'Current group quest id (when Quest catalog exists)',
+    description:
+      'Opaque current quest id (string until Quest catalog exists with UUID PKs)',
     required: false,
     nullable: true,
   })

@@ -85,6 +85,7 @@ describe('UserProfilesService - deleteUserById', () => {
         segment: UserSegment.BEGINNER,
         indicatorsSeeded: 7,
         walletEnsured: true,
+        onboardingEventRecorded: true,
       }),
     };
 

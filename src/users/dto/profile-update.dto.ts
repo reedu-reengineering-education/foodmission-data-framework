@@ -6,6 +6,8 @@ import {
   IsInt,
   IsPositive,
   IsObject,
+  MaxLength,
+  ValidateIf,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -185,10 +187,16 @@ export class ProfileUpdateDto {
   segment?: UserSegment;
 
   @ApiProperty({
-    description: 'Current quest id (when Quest catalog exists)',
+    description:
+      'Opaque current quest id (string until Quest catalog exists with UUID PKs). ' +
+      'Pass null to clear. Will become UUID + FK when Quest model lands.',
     required: false,
+    nullable: true,
+    example: 'seed-quest-dev-user',
   })
   @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
+  @MaxLength(255)
   currentQuestId?: string | null;
 }

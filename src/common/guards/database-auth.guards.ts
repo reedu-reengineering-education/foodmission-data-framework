@@ -8,6 +8,9 @@ import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { UsersRepository } from '../../users/repositories/users.repository';
 
+/** Skip rewriting lastLoginAt more often than this (per process). */
+const LAST_LOGIN_TOUCH_INTERVAL_MS = 5 * 60 * 1000;
+
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {
   constructor(
@@ -15,7 +18,8 @@ export class DataBaseAuthGuard implements CanActivate {
     private usersRepository: UsersRepository,
   ) {}
 
-  private userCache = new Map<string, any>();
+  private userCache = new Map<string, { id: string; keycloakId: string }>();
+  private lastLoginTouchedAt = new Map<string, number>();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(META_PUBLIC, [
@@ -38,12 +42,13 @@ export class DataBaseAuthGuard implements CanActivate {
     console.log(`Authenticating user with Keycloak ID: ${keycloakId}`);
 
     if (this.userCache.has(keycloakId)) {
-      const cachedUser = this.userCache.get(keycloakId);
+      const cachedUser = this.userCache.get(keycloakId)!;
       request.user = {
         ...request.user,
         id: cachedUser.id,
         keycloakId: cachedUser.keycloakId,
       };
+      void this.maybeTouchLastLogin(cachedUser.id);
       return true;
     }
 
@@ -75,11 +80,32 @@ export class DataBaseAuthGuard implements CanActivate {
         keycloakId: keycloakId,
       };
 
+      void this.maybeTouchLastLogin(dbUser.id);
+
       return true;
     } catch (error) {
       throw new UnauthorizedException(
         `Failed to authenticate user: ${error.message}`,
       );
+    }
+  }
+
+  /**
+   * Throttled write so authenticated traffic updates lastLoginAt without
+   * a DB write on every request.
+   */
+  private async maybeTouchLastLogin(userId: string): Promise<void> {
+    const now = Date.now();
+    const last = this.lastLoginTouchedAt.get(userId) ?? 0;
+    if (now - last < LAST_LOGIN_TOUCH_INTERVAL_MS) {
+      return;
+    }
+    this.lastLoginTouchedAt.set(userId, now);
+    try {
+      await this.usersRepository.touchLastLoginAt(userId);
+    } catch {
+      // Do not fail the request if activity tracking write fails.
+      this.lastLoginTouchedAt.delete(userId);
     }
   }
 }

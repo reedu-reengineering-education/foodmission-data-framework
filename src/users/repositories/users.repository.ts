@@ -51,6 +51,15 @@ export class UsersRepository {
     });
   }
 
+  /** Fire-and-forget friendly: updates lastLoginAt for activity tracking. */
+  async touchLastLoginAt(id: string, at: Date = new Date()) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { lastLoginAt: at },
+      select: { id: true, lastLoginAt: true },
+    });
+  }
+
   async remove(id: string) {
     return this.prisma.user.delete({
       where: { id },

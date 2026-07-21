@@ -38,11 +38,17 @@ export class UserProfilesController {
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary:
-      'Check whether basic profile is complete (needs: username, yearOfBirth, country, region, zip, language)',
+    summary: 'Check whether basic profile is complete',
+    description:
+      'Returns a JSON boolean only — not the user profile object.\n\n' +
+      '- `true`: username, yearOfBirth, country, region, zip, and language are all set\n' +
+      '- `false`: user missing or any of those fields is unset\n\n' +
+      'For the gamification profile (wallet, indicators, events), use `GET /users/me/gamification`.\n' +
+      'To update profile / onboarding fields, use `PATCH /users/me`.',
   })
   @ApiOkResponse({
-    description: 'Whether basic profile is complete',
+    description:
+      'Whether basic profile is complete (raw JSON boolean `true` or `false`)',
     schema: { type: 'boolean' },
   })
   async getMyProfile(@CurrentUser('id') userId: string) {
@@ -58,7 +64,10 @@ export class UserProfilesController {
     summary: 'Get current user gamification profile',
     description:
       'Returns wallet balances, progress indicators, onboarding baselines, ' +
-      'current quest id, and recent events / wallet entries. Badges are empty until Badge catalog exists.',
+      'current quest id, lastLoginAt, and recent events / wallet entries. ' +
+      'Badges are empty until Badge catalog exists.\n\n' +
+      'This is separate from `GET /users/me`, which only returns a boolean ' +
+      'for basic profile completeness.',
   })
   @ApiOkResponse({ type: GamificationProfileResponseDto })
   @UsePipes(

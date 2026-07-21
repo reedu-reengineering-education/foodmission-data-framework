@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WalletCurrency } from '@prisma/client';
+import { BadRequestException } from '@nestjs/common';
+import { Prisma, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { levelFromXp } from '../gamification.constants';
 import { GamificationWalletService } from './gamification-wallet.service';
@@ -144,6 +145,15 @@ describe('GamificationWalletService', () => {
         walletEntry: {
           create: jest.fn().mockResolvedValue(createdEntry),
         },
+        $queryRaw: jest.fn().mockResolvedValue([
+          {
+            userId: 'u1',
+            level: 1,
+            xp: 0,
+            points: 0,
+            updatedAt: new Date(),
+          },
+        ]),
       };
       return fn(tx as unknown as typeof prisma);
     });
@@ -171,6 +181,46 @@ describe('GamificationWalletService', () => {
         amount: 0,
         reason: 'noop',
       }),
-    ).rejects.toThrow('non-zero');
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('replays award when create races on idempotencyKey (P2002)', async () => {
+    prisma.gamificationEvent.findUnique
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'evt-race',
+        idempotencyKey: 'award-race',
+        walletEntries: [
+          {
+            id: 'we-race',
+            currency: WalletCurrency.POINTS,
+            amount: 5,
+          },
+        ],
+      });
+    prisma.$transaction.mockRejectedValue(
+      new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+        code: 'P2002',
+        clientVersion: 'test',
+      }),
+    );
+    prisma.userGamificationWallet.upsert.mockResolvedValue({
+      userId: 'u1',
+      level: 1,
+      xp: 0,
+      points: 5,
+      updatedAt: new Date(),
+    });
+
+    const result = await service.award({
+      userId: 'u1',
+      currency: WalletCurrency.POINTS,
+      amount: 5,
+      reason: 'race',
+      idempotencyKey: 'award-race',
+    });
+
+    expect(result.replayed).toBe(true);
+    expect(result.entry.id).toBe('we-race');
   });
 });

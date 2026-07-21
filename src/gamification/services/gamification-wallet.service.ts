@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import {
   GamificationEvent,
   WalletCurrency,
@@ -49,6 +53,14 @@ export interface AwardWalletResult {
   replayed: boolean;
 }
 
+type WalletRow = {
+  userId: string;
+  level: number;
+  xp: number;
+  points: number;
+  updatedAt: Date;
+};
+
 @Injectable()
 export class GamificationWalletService {
   constructor(private readonly prisma: PrismaService) {}
@@ -73,122 +85,180 @@ export class GamificationWalletService {
       }
     }
 
-    const event = await this.prisma.gamificationEvent.create({
-      data: {
-        userId: input.userId,
-        groupId: input.groupId ?? null,
-        eventType: input.eventType,
-        subjectType: input.subjectType ?? null,
-        subjectId: input.subjectId ?? null,
-        payload: (input.payload ?? {}) as Prisma.InputJsonValue,
-        idempotencyKey: input.idempotencyKey ?? null,
-      },
-    });
-
-    return { event, replayed: false };
+    try {
+      const event = await this.prisma.gamificationEvent.create({
+        data: {
+          userId: input.userId,
+          groupId: input.groupId ?? null,
+          eventType: input.eventType,
+          subjectType: input.subjectType ?? null,
+          subjectId: input.subjectId ?? null,
+          payload: (input.payload ?? {}) as Prisma.InputJsonValue,
+          idempotencyKey: input.idempotencyKey ?? null,
+        },
+      });
+      return { event, replayed: false };
+    } catch (error) {
+      if (
+        input.idempotencyKey &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const existing = await this.prisma.gamificationEvent.findUnique({
+          where: { idempotencyKey: input.idempotencyKey },
+        });
+        if (existing) {
+          return { event: existing, replayed: true };
+        }
+      }
+      throw error;
+    }
   }
 
   /**
    * Credits/debits the wallet and appends a WalletEntry in one transaction.
+   * Locks the wallet row (FOR UPDATE) to avoid lost updates under concurrency.
    * Optionally creates (or reuses via idempotencyKey) a GamificationEvent.
    */
   async award(input: AwardWalletInput): Promise<AwardWalletResult> {
     if (input.amount === 0) {
-      throw new Error('Wallet award amount must be non-zero');
+      throw new BadRequestException('Wallet award amount must be non-zero');
     }
 
     if (input.idempotencyKey) {
-      const existingEvent = await this.prisma.gamificationEvent.findUnique({
-        where: { idempotencyKey: input.idempotencyKey },
-        include: { walletEntries: true },
-      });
-      if (existingEvent) {
-        const entry = existingEvent.walletEntries.find(
-          (e) => e.currency === input.currency && e.amount === input.amount,
-        );
-        const wallet = await this.ensureWallet(input.userId);
-        if (!entry) {
-          throw new Error(
-            `Idempotent event ${input.idempotencyKey} exists without matching wallet entry`,
-          );
-        }
-        return {
-          wallet,
-          entry,
-          event: existingEvent,
-          replayed: true,
-        };
+      const replayed = await this.tryReplayAward(input);
+      if (replayed) {
+        return replayed;
       }
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      let event: GamificationEvent | null = null;
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        let event: GamificationEvent | null = null;
 
-      if (input.eventId) {
-        event = await tx.gamificationEvent.findUniqueOrThrow({
-          where: { id: input.eventId },
+        if (input.eventId) {
+          event = await tx.gamificationEvent.findUniqueOrThrow({
+            where: { id: input.eventId },
+          });
+        } else if (input.eventType || input.idempotencyKey) {
+          event = await tx.gamificationEvent.create({
+            data: {
+              userId: input.userId,
+              groupId: input.groupId ?? null,
+              eventType: input.eventType ?? 'POINTS_AWARDED',
+              subjectType: input.subjectType ?? null,
+              subjectId: input.subjectId ?? null,
+              payload: (input.payload ?? {
+                currency: input.currency,
+                amount: input.amount,
+                reason: input.reason,
+              }) as Prisma.InputJsonValue,
+              idempotencyKey: input.idempotencyKey ?? null,
+            },
+          });
+        }
+
+        await tx.userGamificationWallet.upsert({
+          where: { userId: input.userId },
+          update: {},
+          create: { userId: input.userId, level: 1, xp: 0, points: 0 },
         });
-      } else if (input.eventType || input.idempotencyKey) {
-        event = await tx.gamificationEvent.create({
+
+        const locked = await tx.$queryRaw<WalletRow[]>`
+          SELECT "userId", "level", "xp", "points", "updatedAt"
+          FROM "user_gamification_wallets"
+          WHERE "userId" = ${input.userId}
+          FOR UPDATE
+        `;
+        const wallet = locked[0];
+        if (!wallet) {
+          throw new ConflictException(
+            `Wallet row missing for user ${input.userId} after upsert`,
+          );
+        }
+
+        const nextXp =
+          input.currency === WalletCurrency.XP
+            ? wallet.xp + input.amount
+            : wallet.xp;
+        const nextPoints =
+          input.currency === WalletCurrency.POINTS
+            ? wallet.points + input.amount
+            : wallet.points;
+
+        if (nextXp < 0 || nextPoints < 0) {
+          throw new BadRequestException('Wallet balance cannot go negative');
+        }
+
+        const balanceAfter =
+          input.currency === WalletCurrency.XP ? nextXp : nextPoints;
+
+        const entry = await tx.walletEntry.create({
           data: {
             userId: input.userId,
-            groupId: input.groupId ?? null,
-            eventType: input.eventType ?? 'POINTS_AWARDED',
-            subjectType: input.subjectType ?? null,
-            subjectId: input.subjectId ?? null,
-            payload: (input.payload ?? {
-              currency: input.currency,
-              amount: input.amount,
-              reason: input.reason,
-            }) as Prisma.InputJsonValue,
-            idempotencyKey: input.idempotencyKey ?? null,
+            currency: input.currency,
+            amount: input.amount,
+            balanceAfter,
+            reason: input.reason,
+            eventId: event?.id ?? null,
           },
         });
+
+        const updatedWallet = await tx.userGamificationWallet.update({
+          where: { userId: input.userId },
+          data: {
+            xp: nextXp,
+            points: nextPoints,
+            level: levelFromXp(nextXp),
+          },
+        });
+
+        return { wallet: updatedWallet, entry, event, replayed: false };
+      });
+    } catch (error) {
+      if (
+        input.idempotencyKey &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const replayed = await this.tryReplayAward(input);
+        if (replayed) {
+          return replayed;
+        }
       }
+      throw error;
+    }
+  }
 
-      const wallet = await tx.userGamificationWallet.upsert({
-        where: { userId: input.userId },
-        update: {},
-        create: { userId: input.userId, level: 1, xp: 0, points: 0 },
-      });
+  private async tryReplayAward(
+    input: AwardWalletInput,
+  ): Promise<AwardWalletResult | null> {
+    if (!input.idempotencyKey) {
+      return null;
+    }
 
-      const nextXp =
-        input.currency === WalletCurrency.XP
-          ? wallet.xp + input.amount
-          : wallet.xp;
-      const nextPoints =
-        input.currency === WalletCurrency.POINTS
-          ? wallet.points + input.amount
-          : wallet.points;
-
-      if (nextXp < 0 || nextPoints < 0) {
-        throw new Error('Wallet balance cannot go negative');
-      }
-
-      const balanceAfter =
-        input.currency === WalletCurrency.XP ? nextXp : nextPoints;
-
-      const entry = await tx.walletEntry.create({
-        data: {
-          userId: input.userId,
-          currency: input.currency,
-          amount: input.amount,
-          balanceAfter,
-          reason: input.reason,
-          eventId: event?.id ?? null,
-        },
-      });
-
-      const updatedWallet = await tx.userGamificationWallet.update({
-        where: { userId: input.userId },
-        data: {
-          xp: nextXp,
-          points: nextPoints,
-          level: levelFromXp(nextXp),
-        },
-      });
-
-      return { wallet: updatedWallet, entry, event, replayed: false };
+    const existingEvent = await this.prisma.gamificationEvent.findUnique({
+      where: { idempotencyKey: input.idempotencyKey },
+      include: { walletEntries: true },
     });
+    if (!existingEvent) {
+      return null;
+    }
+
+    const entry = existingEvent.walletEntries.find(
+      (e) => e.currency === input.currency && e.amount === input.amount,
+    );
+    const wallet = await this.ensureWallet(input.userId);
+    if (!entry) {
+      throw new ConflictException(
+        `Idempotent event ${input.idempotencyKey} exists without matching wallet entry`,
+      );
+    }
+    return {
+      wallet,
+      entry,
+      event: existingEvent,
+      replayed: true,
+    };
   }
 }

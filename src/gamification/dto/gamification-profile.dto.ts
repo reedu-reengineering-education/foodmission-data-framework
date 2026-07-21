@@ -145,11 +145,16 @@ export class GamificationProfileResponseDto {
 
   @ApiPropertyOptional({
     nullable: true,
-    description: 'Current quest id (Quest catalog TBD)',
+    description:
+      'Opaque current quest id (string until Quest catalog exists with UUID PKs)',
   })
   currentQuestId!: string | null;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({
+    nullable: true,
+    description:
+      'Last authenticated activity (throttled; updated by DataBaseAuthGuard)',
+  })
   lastLoginAt!: Date | null;
 
   @ApiProperty({ type: OnboardingBaselinesDto })

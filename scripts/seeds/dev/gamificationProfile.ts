@@ -9,6 +9,7 @@ import {
   SOFT_PROGRESS_INDICATOR_KINDS,
   targetForSegment,
 } from '../../../src/gamification/onboarding.utils';
+import { assertProgressIndicatorOwner } from '../../../src/gamification/progress-indicator.utils';
 
 async function upsertUserWallet(
   prisma: PrismaClient,
@@ -29,6 +30,7 @@ async function upsertSoftIndicatorsForUser(
   prisma: PrismaClient,
   user: User,
 ): Promise<number> {
+  assertProgressIndicatorOwner({ userId: user.id });
   const targetValue = targetForSegment(user.segment);
   let count = 0;
 
@@ -62,6 +64,7 @@ async function upsertSoftIndicatorsForGroup(
   group: UserGroup,
   targetValue = 25,
 ): Promise<number> {
+  assertProgressIndicatorOwner({ groupId: group.id });
   let count = 0;
 
   for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {

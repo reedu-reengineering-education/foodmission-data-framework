@@ -6,17 +6,20 @@ import {
 } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from './gamification-wallet.service';
+import { GamificationEventType } from '../gamification.constants';
 import {
   OnboardingBaselines,
   SOFT_PROGRESS_INDICATOR_KINDS,
   deriveUserSegment,
   targetForSegment,
 } from '../onboarding.utils';
+import { assertProgressIndicatorOwner } from '../progress-indicator.utils';
 
 export interface CompleteOnboardingResult {
   segment: UserSegment;
   indicatorsSeeded: number;
   walletEnsured: boolean;
+  onboardingEventRecorded: boolean;
 }
 
 @Injectable()
@@ -34,6 +37,7 @@ export class GamificationOnboardingService {
     userId: string,
     segment: UserSegment,
   ): Promise<number> {
+    assertProgressIndicatorOwner({ userId });
     const targetValue = targetForSegment(segment);
     let count = 0;
 
@@ -75,10 +79,21 @@ export class GamificationOnboardingService {
       user.id,
       segment,
     );
+
+    const { replayed } = await this.walletService.recordEvent({
+      userId: user.id,
+      eventType: GamificationEventType.ONBOARDING_COMPLETED,
+      subjectType: 'USER',
+      subjectId: user.id,
+      payload: { segment, indicatorsSeeded },
+      idempotencyKey: `onboarding-completed:${user.id}`,
+    });
+
     return {
       segment,
       indicatorsSeeded,
       walletEnsured: true,
+      onboardingEventRecorded: !replayed,
     };
   }
 }
