@@ -20,11 +20,19 @@ import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
+import {
+  GamificationProfileQueryDto,
+  GamificationProfileResponseDto,
+} from '../../gamification/dto/gamification-profile.dto';
 
 @ApiTags('users')
 @Controller('users')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) {}
+  constructor(
+    private readonly userProfilesService: UserProfilesService,
+    private readonly gamificationProfileService: GamificationProfileService,
+  ) {}
 
   @Get('me')
   @UseGuards(DataBaseAuthGuard)
@@ -41,6 +49,33 @@ export class UserProfilesController {
     const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) return false;
     return this.userProfilesService.isBasicProfileComplete(user.keycloakId);
+  }
+
+  @Get('me/gamification')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user gamification profile',
+    description:
+      'Returns wallet balances, progress indicators, onboarding baselines, ' +
+      'current quest id, and recent events / wallet entries. Badges are empty until Badge catalog exists.',
+  })
+  @ApiOkResponse({ type: GamificationProfileResponseDto })
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  )
+  async getMyGamificationProfile(
+    @CurrentUser('id') userId: string,
+    @Query() query: GamificationProfileQueryDto,
+  ): Promise<GamificationProfileResponseDto> {
+    return this.gamificationProfileService.getProfileForUserId(userId, {
+      eventsLimit: query.eventsLimit,
+      walletEntriesLimit: query.walletEntriesLimit,
+    });
   }
 
   @Patch('me')
