@@ -12,14 +12,6 @@ export type FieldFallbacks = Record<string, string | null | undefined>;
 
 export type TranslationValueMatch = 'contains' | 'equals';
 
-export type TranslationUpsertRow = {
-  entityType: TranslatableEntityType;
-  entityId: string;
-  locale: string;
-  field: string;
-  value: string;
-};
-
 @Injectable()
 export class TranslationService {
   constructor(private readonly prisma: PrismaService) {}
@@ -47,12 +39,6 @@ export class TranslationService {
           `Field '${field}' is not translatable for ${entityType}`,
         );
       }
-    }
-  }
-
-  private assertLocale(locale: string): void {
-    if (!(SUPPORTED_LOCALES as readonly string[]).includes(locale)) {
-      throw new BadRequestException(`Unsupported locale: ${locale}`);
     }
   }
 
@@ -143,45 +129,6 @@ export class TranslationService {
     }
 
     return output;
-  }
-
-  async upsertMany(rows: TranslationUpsertRow[]): Promise<number> {
-    if (rows.length === 0) return 0;
-
-    for (const row of rows) {
-      this.assertEntityAndFields(row.entityType, [row.field]);
-      this.assertLocale(row.locale);
-      if (row.locale === DEFAULT_LOCALE) {
-        throw new BadRequestException(
-          'Do not store English translations; keep English on the parent entity',
-        );
-      }
-    }
-
-    let count = 0;
-    // Sequential upserts keep seed/import simple and respect unique constraint.
-    for (const row of rows) {
-      await this.prisma.entityTranslation.upsert({
-        where: {
-          entityType_entityId_locale_field: {
-            entityType: row.entityType,
-            entityId: row.entityId,
-            locale: row.locale,
-            field: row.field,
-          },
-        },
-        create: {
-          entityType: row.entityType,
-          entityId: row.entityId,
-          locale: row.locale,
-          field: row.field,
-          value: row.value,
-        },
-        update: { value: row.value },
-      });
-      count += 1;
-    }
-    return count;
   }
 
   /**

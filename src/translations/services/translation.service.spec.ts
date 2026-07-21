@@ -8,7 +8,6 @@ describe('TranslationService', () => {
   let prisma: {
     entityTranslation: {
       findMany: jest.Mock;
-      upsert: jest.Mock;
       deleteMany: jest.Mock;
     };
   };
@@ -17,7 +16,6 @@ describe('TranslationService', () => {
     prisma = {
       entityTranslation: {
         findMany: jest.fn(),
-        upsert: jest.fn(),
         deleteMany: jest.fn(),
       },
     };
@@ -122,35 +120,6 @@ describe('TranslationService', () => {
 
       expect(result.a.foodName).toBe('Appel');
       expect(result.b.foodName).toBe('Banana');
-    });
-  });
-
-  describe('upsertMany', () => {
-    it('upserts rows and rejects English locale', async () => {
-      await expect(
-        service.upsertMany([
-          {
-            entityType: 'GenericFood',
-            entityId: 'id-1',
-            locale: 'en',
-            field: 'foodName',
-            value: 'X',
-          },
-        ]),
-      ).rejects.toThrow(BadRequestException);
-
-      prisma.entityTranslation.upsert.mockResolvedValue({});
-      const count = await service.upsertMany([
-        {
-          entityType: 'GenericFood',
-          entityId: 'id-1',
-          locale: 'nl',
-          field: 'foodName',
-          value: 'Aardappel',
-        },
-      ]);
-      expect(count).toBe(1);
-      expect(prisma.entityTranslation.upsert).toHaveBeenCalled();
     });
   });
 
