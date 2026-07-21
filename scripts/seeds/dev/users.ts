@@ -3,8 +3,15 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
   Gender,
+  Motivation,
   PrismaClient,
   User,
+  UserSegment,
+  WeeklyBeefFrequency,
+  WeeklyFoodWasteRange,
+  WeeklyMeatRange,
+  WeeklyReusableRange,
+  WeeklyUpfRange,
 } from '@prisma/client';
 import { randomInt as cryptoRandomInt } from 'crypto';
 import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
@@ -14,11 +21,16 @@ export interface UserSeedData {
   email: string;
   firstName: string;
   lastName: string;
-  preferences?: {
-    dietaryRestrictions: string[];
-    allergies: string[];
-    preferredCategories: string[];
-  };
+  preferences?: Record<string, unknown>;
+  settings?: Record<string, unknown>;
+  weeklyMeatConsumption?: WeeklyMeatRange;
+  weeklyBeefConsumption?: WeeklyBeefFrequency;
+  weeklyFoodWaste?: WeeklyFoodWasteRange;
+  weeklyUpfConsumption?: WeeklyUpfRange;
+  weeklyReusableOrRefill?: WeeklyReusableRange;
+  segment?: UserSegment;
+  currentQuestId?: string;
+  lastLoginAt?: Date;
 }
 
 export const userData: UserSeedData[] = [
@@ -31,7 +43,24 @@ export const userData: UserSeedData[] = [
       dietaryRestrictions: ['vegetarian'],
       allergies: ['nuts'],
       preferredCategories: ['Fruits', 'Vegetables', 'Dairy'],
+      foodExclusions: ['nuts', 'peanuts'],
+      motivation: Motivation.SUSTAINABLE_HABITS,
+      dailyTimeCommitmentMinutes: 10,
+      showNutriScore: true,
+      avoidUpf: true,
     },
+    settings: {
+      notificationsEnabled: true,
+      notificationPreferredTime: '09:00',
+    },
+    weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+    weeklyBeefConsumption: WeeklyBeefFrequency.LESS_THAN_ONCE_PER_WEEK,
+    weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
+    weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
+    weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
+    segment: UserSegment.INTERMEDIATE,
+    currentQuestId: 'seed-quest-dev-user',
+    lastLoginAt: new Date(),
   },
   {
     keycloakId: KEYCLOAK_DEV_USER_IDS.devUser2,
@@ -42,7 +71,24 @@ export const userData: UserSeedData[] = [
       dietaryRestrictions: ['vegan', 'gluten-free'],
       allergies: ['dairy', 'gluten'],
       preferredCategories: ['Fruits', 'Vegetables', 'Proteins'],
+      foodExclusions: ['dairy', 'gluten', 'meat'],
+      motivation: Motivation.PLANETARY_IMPACT,
+      dailyTimeCommitmentMinutes: 15,
+      showNutriScore: true,
+      avoidUpf: true,
     },
+    settings: {
+      notificationsEnabled: false,
+      notificationPreferredTime: '10:00',
+    },
+    weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+    weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+    weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
+    weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
+    weeklyReusableOrRefill: WeeklyReusableRange.SEVEN_TO_NINE,
+    segment: UserSegment.ADVANCED,
+    currentQuestId: 'seed-quest-jane',
+    lastLoginAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
   },
   {
     keycloakId: KEYCLOAK_DEV_USER_IDS.devUser3,
@@ -53,7 +99,23 @@ export const userData: UserSeedData[] = [
       dietaryRestrictions: [],
       allergies: ['shellfish'],
       preferredCategories: ['Proteins', 'Grains', 'Dairy'],
+      foodExclusions: ['shellfish'],
+      motivation: Motivation.SUSTAINABILITY_KNOWLEDGE,
+      dailyTimeCommitmentMinutes: 5,
+      showNutriScore: true,
+      avoidUpf: false,
     },
+    settings: {
+      notificationsEnabled: true,
+      notificationPreferredTime: '18:30',
+    },
+    weeklyMeatConsumption: WeeklyMeatRange.TEN_TO_FOURTEEN,
+    weeklyBeefConsumption: WeeklyBeefFrequency.ONE_TO_TWO_TIMES_PER_WEEK,
+    weeklyFoodWaste: WeeklyFoodWasteRange.THREE_TO_FOUR,
+    weeklyUpfConsumption: WeeklyUpfRange.TEN_TO_FOURTEEN,
+    weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+    segment: UserSegment.BEGINNER,
+    lastLoginAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
   },
   {
     keycloakId: KEYCLOAK_DEV_USER_IDS.devUser4,
@@ -64,7 +126,24 @@ export const userData: UserSeedData[] = [
       dietaryRestrictions: ['keto'],
       allergies: [],
       preferredCategories: ['Proteins', 'Dairy', 'Vegetables'],
+      foodExclusions: [],
+      motivation: Motivation.SUSTAINABLE_HABITS,
+      dailyTimeCommitmentMinutes: 10,
+      showNutriScore: false,
+      avoidUpf: true,
     },
+    settings: {
+      notificationsEnabled: true,
+      notificationPreferredTime: '08:00',
+    },
+    weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+    weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+    weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
+    weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
+    weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
+    segment: UserSegment.INTERMEDIATE,
+    currentQuestId: 'seed-quest-sarah',
+    lastLoginAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
   },
   {
     keycloakId: KEYCLOAK_DEV_USER_IDS.adminUser1,
@@ -81,9 +160,42 @@ export const userData: UserSeedData[] = [
         'Grains',
         'Dairy',
       ],
+      foodExclusions: [],
+      motivation: Motivation.SUSTAINABILITY_KNOWLEDGE,
+      dailyTimeCommitmentMinutes: 15,
+      showNutriScore: true,
+      avoidUpf: true,
     },
+    settings: {
+      notificationsEnabled: false,
+      notificationPreferredTime: '10:00',
+    },
+    weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+    weeklyBeefConsumption: WeeklyBeefFrequency.LESS_THAN_ONCE_PER_WEEK,
+    weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
+    weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
+    weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
+    segment: UserSegment.ADVANCED,
+    currentQuestId: 'seed-quest-admin',
+    lastLoginAt: new Date(),
   },
 ];
+
+function gamificationFieldsFromSeed(userInfo: UserSeedData) {
+  return {
+    weeklyMeatConsumption: userInfo.weeklyMeatConsumption,
+    weeklyBeefConsumption: userInfo.weeklyBeefConsumption,
+    weeklyFoodWaste: userInfo.weeklyFoodWaste,
+    weeklyUpfConsumption: userInfo.weeklyUpfConsumption,
+    weeklyReusableOrRefill: userInfo.weeklyReusableOrRefill,
+    segment: userInfo.segment,
+    currentQuestId: userInfo.currentQuestId,
+    lastLoginAt: userInfo.lastLoginAt,
+    ...(userInfo.settings !== undefined
+      ? { settings: userInfo.settings as object }
+      : {}),
+  };
+}
 
 export async function seedUsers(prisma: PrismaClient) {
   console.log('👥 Seeding users...');
@@ -91,18 +203,22 @@ export async function seedUsers(prisma: PrismaClient) {
   const users: User[] = [];
 
   for (const userInfo of userData) {
+    const gamification = gamificationFieldsFromSeed(userInfo);
+
     const user = await prisma.user.upsert({
       where: { keycloakId: userInfo.keycloakId },
       update: {
         email: userInfo.email,
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
+        ...gamification,
       },
       create: {
         keycloakId: userInfo.keycloakId,
         email: userInfo.email,
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
+        ...gamification,
       },
     });
 
@@ -110,7 +226,7 @@ export async function seedUsers(prisma: PrismaClient) {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          preferences: userInfo.preferences,
+          preferences: userInfo.preferences as object,
         },
       });
     }
@@ -216,6 +332,13 @@ export async function seedUsers(prisma: PrismaClient) {
   const activityLevels = Object.values(ActivityLevel);
   const incomeLevels = Object.values(AnnualIncomeLevel);
   const educationLevels = Object.values(EducationLevel);
+  const meatRanges = Object.values(WeeklyMeatRange);
+  const beefFrequencies = Object.values(WeeklyBeefFrequency);
+  const foodWasteRanges = Object.values(WeeklyFoodWasteRange);
+  const upfRanges = Object.values(WeeklyUpfRange);
+  const reusableRanges = Object.values(WeeklyReusableRange);
+  const segments = Object.values(UserSegment);
+  const motivations = Object.values(Motivation);
 
   for (let i = 1; i <= 400; i++) {
     const keycloakId = `seed-user-${i}`;
@@ -226,11 +349,32 @@ export async function seedUsers(prisma: PrismaClient) {
     const region = pick(regions);
     const zip = String(cryptoRandomInt(10000, 100000));
     const yearOfBirth = cryptoRandomInt(1950, 2009);
+    const segment = pick(segments);
     const profileEnums = {
       gender: pick(genders),
       activityLevel: pick(activityLevels),
       annualIncome: pick(incomeLevels),
       educationLevel: pick(educationLevels),
+      weeklyMeatConsumption: pick(meatRanges),
+      weeklyBeefConsumption: pick(beefFrequencies),
+      weeklyFoodWaste: pick(foodWasteRanges),
+      weeklyUpfConsumption: pick(upfRanges),
+      weeklyReusableOrRefill: pick(reusableRanges),
+      segment,
+      lastLoginAt: new Date(
+        Date.now() - cryptoRandomInt(0, 14) * 24 * 60 * 60 * 1000,
+      ),
+    };
+    const preferences = {
+      motivation: pick(motivations),
+      dailyTimeCommitmentMinutes: pick([5, 10, 15]),
+      showNutriScore: true,
+      avoidUpf: cryptoRandomInt(0, 2) === 1,
+      foodExclusions: [],
+    };
+    const settings = {
+      notificationsEnabled: cryptoRandomInt(0, 2) === 1,
+      notificationPreferredTime: '10:00',
     };
 
     try {
@@ -244,8 +388,10 @@ export async function seedUsers(prisma: PrismaClient) {
           country,
           region,
           zip,
+          preferences,
+          settings,
           ...profileEnums,
-        } as any,
+        },
         create: {
           keycloakId,
           email,
@@ -255,8 +401,10 @@ export async function seedUsers(prisma: PrismaClient) {
           country,
           region,
           zip,
+          preferences,
+          settings,
           ...profileEnums,
-        } as any,
+        },
       });
 
       generated.push(u);
