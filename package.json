@@ -36,6 +36,7 @@
     "test:otel": "ts-node scripts/test-otel-setup.ts",
     "db:generate": "prisma generate && npm run db:generate:off",
     "db:generate:off": "prisma generate --schema=prisma-mongo/schema.prisma",
+    "off:dump-sample": "./scripts/dump-off-sample.sh",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",

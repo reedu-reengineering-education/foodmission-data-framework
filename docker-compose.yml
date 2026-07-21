@@ -65,6 +65,21 @@ services:
       start_period: 60s
 
 
+  mongo-off:
+    image: mongo:7
+    container_name: foodmission-mongo-off
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongo_off_data:/data/db
+      - ./prisma-mongo/seed-data/init:/docker-entrypoint-initdb.d:ro
+      - ./prisma-mongo/seed-data/dump:/dump:ro
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping")']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mailpit:
     image: axllent/mailpit:latest
     container_name: foodmission-mailpit
@@ -83,3 +98,4 @@ services:
 volumes:
   postgres_data:
   mailpit_data:
+  mongo_off_data:
