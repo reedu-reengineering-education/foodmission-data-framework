@@ -77,11 +77,6 @@ export const environmentValidationSchema = Joi.object({
     })
     .description('Encryption key for sensitive data (exactly 32 characters)'),
 
-  OPENFOODFACTS_API_URL: Joi.string()
-    .uri()
-    .default('https://world.openfoodfacts.org/api/v0')
-    .description('OpenFoodFacts API base URL'),
-
   OPENFOODFACTS_USER_AGENT: Joi.string()
     .default('FOODMISSION-DataFramework/1.0.0')
     .description('User agent for OpenFoodFacts API requests'),
