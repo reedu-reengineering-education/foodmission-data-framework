@@ -87,5 +87,65 @@
     "SHARED_EQUALLY": "Delt likt",
     "MOSTLY_SOMEONE_ELSE": "Stort sett noen andre",
     "SOMEONE_ELSE": "Noen andre"
+  },
+  "weeklyMeatRanges": {
+    "ZERO_TO_FOUR": "0–4",
+    "FIVE_TO_NINE": "5–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyBeefFrequencies": {
+    "NEVER": "Aldri",
+    "LESS_THAN_ONCE_PER_WEEK": "Mindre enn én gang per uke",
+    "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 ganger per uke",
+    "THREE_PLUS_TIMES_PER_WEEK": "3+ ganger per uke"
+  },
+  "weeklyFoodWasteRanges": {
+    "ZERO": "0",
+    "ONE_TO_TWO": "1–2",
+    "THREE_TO_FOUR": "3–4",
+    "FIVE_PLUS": "5+"
+  },
+  "weeklyUpfRanges": {
+    "ZERO_TO_THREE": "0–3",
+    "FOUR_TO_NINE": "4–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyReusableRanges": {
+    "ZERO_TO_TWO": "0–2",
+    "THREE_TO_SIX": "3–6",
+    "SEVEN_TO_NINE": "7–9",
+    "TEN_PLUS": "10+"
+  },
+  "userSegments": {
+    "BEGINNER": "Nybegynner",
+    "INTERMEDIATE": "Middels",
+    "ADVANCED": "Avansert"
+  },
+  "motivations": {
+    "SUSTAINABLE_HABITS": "Få mer bærekraftige vaner",
+    "PLANETARY_IMPACT": "Påvirke planeten på en positiv måte",
+    "SUSTAINABILITY_KNOWLEDGE": "Få kunnskap om bærekraft"
+  },
+  "progressIndicatorKinds": {
+    "FOOD_CHOICES": "Matvalg",
+    "FOOD_AND_WASTE": "Mat og avfall",
+    "HEALTH": "Helse",
+    "CO2_REDUCTION": "CO₂-reduksjon",
+    "ENERGY_REDUCTION": "Energireduksjon",
+    "WATER_SAVINGS": "Vannbesparelse",
+    "LAND_USE_REDUCTION": "Reduksjon i arealbruk",
+    "PROTEIN": "Protein",
+    "FAT": "Fett",
+    "SUGAR": "Sukker",
+    "SALT": "Salt",
+    "FIBER": "Fiber",
+    "VITAMINS": "Vitaminer",
+    "CALORIES": "Kalorier"
+  },
+  "progressPrecisions": {
+    "SOFT": "Myk",
+    "PRECISE": "Presis"
   }
 }

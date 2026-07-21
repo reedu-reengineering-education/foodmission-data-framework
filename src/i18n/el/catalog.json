@@ -87,5 +87,65 @@
     "SHARED_EQUALLY": "Μοιρασμένη εξίσου",
     "MOSTLY_SOMEONE_ELSE": "Κυρίως κάποιος άλλος",
     "SOMEONE_ELSE": "Κάποιος άλλος"
+  },
+  "weeklyMeatRanges": {
+    "ZERO_TO_FOUR": "0–4",
+    "FIVE_TO_NINE": "5–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyBeefFrequencies": {
+    "NEVER": "Ποτέ",
+    "LESS_THAN_ONCE_PER_WEEK": "Λιγότερο από μία φορά την εβδομάδα",
+    "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 φορές την εβδομάδα",
+    "THREE_PLUS_TIMES_PER_WEEK": "3+ φορές την εβδομάδα"
+  },
+  "weeklyFoodWasteRanges": {
+    "ZERO": "0",
+    "ONE_TO_TWO": "1–2",
+    "THREE_TO_FOUR": "3–4",
+    "FIVE_PLUS": "5+"
+  },
+  "weeklyUpfRanges": {
+    "ZERO_TO_THREE": "0–3",
+    "FOUR_TO_NINE": "4–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyReusableRanges": {
+    "ZERO_TO_TWO": "0–2",
+    "THREE_TO_SIX": "3–6",
+    "SEVEN_TO_NINE": "7–9",
+    "TEN_PLUS": "10+"
+  },
+  "userSegments": {
+    "BEGINNER": "Αρχάριος",
+    "INTERMEDIATE": "Μεσαίος",
+    "ADVANCED": "Προχωρημένος"
+  },
+  "motivations": {
+    "SUSTAINABLE_HABITS": "Απόκτηση πιο βιώσιμων συνηθειών",
+    "PLANETARY_IMPACT": "Θετικός αντίκτυπος στον πλανήτη",
+    "SUSTAINABILITY_KNOWLEDGE": "Απόκτηση γνώσεων για τη βιωσιμότητα"
+  },
+  "progressIndicatorKinds": {
+    "FOOD_CHOICES": "Επιλογές τροφίμων",
+    "FOOD_AND_WASTE": "Τρόφιμα και απόβλητα",
+    "HEALTH": "Υγεία",
+    "CO2_REDUCTION": "Μείωση CO₂",
+    "ENERGY_REDUCTION": "Μείωση ενέργειας",
+    "WATER_SAVINGS": "Εξοικονόμηση νερού",
+    "LAND_USE_REDUCTION": "Μείωση χρήσης γης",
+    "PROTEIN": "Πρωτεΐνη",
+    "FAT": "Λίπος",
+    "SUGAR": "Ζάχαρη",
+    "SALT": "Αλάτι",
+    "FIBER": "Φυτικές ίνες",
+    "VITAMINS": "Βιταμίνες",
+    "CALORIES": "Θερμίδες"
+  },
+  "progressPrecisions": {
+    "SOFT": "Απαλό",
+    "PRECISE": "Ακριβές"
   }
 }

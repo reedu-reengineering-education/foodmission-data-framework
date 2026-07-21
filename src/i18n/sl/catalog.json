@@ -87,5 +87,65 @@
     "SHARED_EQUALLY": "Porazdeljeno na pol",
     "MOSTLY_SOMEONE_ELSE": "Večinoma nekdo drug",
     "SOMEONE_ELSE": "Nekdo drug"
+  },
+  "weeklyMeatRanges": {
+    "ZERO_TO_FOUR": "0–4",
+    "FIVE_TO_NINE": "5–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyBeefFrequencies": {
+    "NEVER": "Nikoli",
+    "LESS_THAN_ONCE_PER_WEEK": "Manj kot enkrat na teden",
+    "ONE_TO_TWO_TIMES_PER_WEEK": "1–2-krat na teden",
+    "THREE_PLUS_TIMES_PER_WEEK": "3+ krat na teden"
+  },
+  "weeklyFoodWasteRanges": {
+    "ZERO": "0",
+    "ONE_TO_TWO": "1–2",
+    "THREE_TO_FOUR": "3–4",
+    "FIVE_PLUS": "5+"
+  },
+  "weeklyUpfRanges": {
+    "ZERO_TO_THREE": "0–3",
+    "FOUR_TO_NINE": "4–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyReusableRanges": {
+    "ZERO_TO_TWO": "0–2",
+    "THREE_TO_SIX": "3–6",
+    "SEVEN_TO_NINE": "7–9",
+    "TEN_PLUS": "10+"
+  },
+  "userSegments": {
+    "BEGINNER": "Začetnik",
+    "INTERMEDIATE": "Srednje",
+    "ADVANCED": "Napredno"
+  },
+  "motivations": {
+    "SUSTAINABLE_HABITS": "Pridobiti bolj trajnostne navade",
+    "PLANETARY_IMPACT": "Pozitivno vplivati na planet",
+    "SUSTAINABILITY_KNOWLEDGE": "Pridobiti znanje o trajnosti"
+  },
+  "progressIndicatorKinds": {
+    "FOOD_CHOICES": "Izbira hrane",
+    "FOOD_AND_WASTE": "Hrana in odpadki",
+    "HEALTH": "Zdravje",
+    "CO2_REDUCTION": "Zmanjšanje CO₂",
+    "ENERGY_REDUCTION": "Zmanjšanje energije",
+    "WATER_SAVINGS": "Varčevanje z vodo",
+    "LAND_USE_REDUCTION": "Zmanjšanje rabe zemljišč",
+    "PROTEIN": "Beljakovine",
+    "FAT": "Maščobe",
+    "SUGAR": "Sladkor",
+    "SALT": "Sol",
+    "FIBER": "Vlaknine",
+    "VITAMINS": "Vitamini",
+    "CALORIES": "Kalorije"
+  },
+  "progressPrecisions": {
+    "SOFT": "Mehko",
+    "PRECISE": "Natančno"
   }
 }

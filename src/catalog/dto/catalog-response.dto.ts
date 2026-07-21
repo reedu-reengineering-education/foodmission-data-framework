@@ -62,6 +62,51 @@ export class CatalogStartupDataDto {
   @Expose()
   @Type(() => CatalogValueDto)
   shoppingResponsibilities: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  weeklyMeatRanges: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  weeklyBeefFrequencies: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  weeklyFoodWasteRanges: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  weeklyUpfRanges: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  weeklyReusableRanges: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  userSegments: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  motivations: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  progressIndicatorKinds: CatalogValueDto[];
+
+  @ApiProperty({ type: [CatalogValueDto] })
+  @Expose()
+  @Type(() => CatalogValueDto)
+  progressPrecisions: CatalogValueDto[];
 }
 
 export class CatalogStartupResponseDto {

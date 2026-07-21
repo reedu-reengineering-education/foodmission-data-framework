@@ -10,6 +10,15 @@ import {
   DietaryLabel,
   TypeOfMeal,
   Unit,
+  WeeklyMeatRange,
+  WeeklyBeefFrequency,
+  WeeklyFoodWasteRange,
+  WeeklyUpfRange,
+  WeeklyReusableRange,
+  UserSegment,
+  Motivation,
+  ProgressIndicatorKind,
+  ProgressPrecision,
 } from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
@@ -237,6 +246,57 @@ export class CatalogService {
     return this.enumSection(Object.values(GroupRole), 'groupRoles');
   }
 
+  listWeeklyMeatRanges(): CatalogListResponseDto {
+    return this.enumSection(Object.values(WeeklyMeatRange), 'weeklyMeatRanges');
+  }
+
+  listWeeklyBeefFrequencies(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(WeeklyBeefFrequency),
+      'weeklyBeefFrequencies',
+    );
+  }
+
+  listWeeklyFoodWasteRanges(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(WeeklyFoodWasteRange),
+      'weeklyFoodWasteRanges',
+    );
+  }
+
+  listWeeklyUpfRanges(): CatalogListResponseDto {
+    return this.enumSection(Object.values(WeeklyUpfRange), 'weeklyUpfRanges');
+  }
+
+  listWeeklyReusableRanges(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(WeeklyReusableRange),
+      'weeklyReusableRanges',
+    );
+  }
+
+  listUserSegments(): CatalogListResponseDto {
+    return this.enumSection(Object.values(UserSegment), 'userSegments');
+  }
+
+  listMotivations(): CatalogListResponseDto {
+    return this.enumSection(Object.values(Motivation), 'motivations');
+  }
+
+  listProgressIndicatorKinds(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(ProgressIndicatorKind),
+      'progressIndicatorKinds',
+    );
+  }
+
+  listProgressPrecisions(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(ProgressPrecision),
+      'progressPrecisions',
+    );
+  }
+
   listDietaryPreferences(): CatalogListResponseDto {
     return {
       data: Object.values(DietaryLabel).map((code) => ({
@@ -363,6 +423,15 @@ export class CatalogService {
         annualIncomeLevels: this.listAnnualIncomeLevels().data,
         dietaryPreferences: this.listDietaryPreferences().data,
         shoppingResponsibilities: this.listShoppingResponsibilities().data,
+        weeklyMeatRanges: this.listWeeklyMeatRanges().data,
+        weeklyBeefFrequencies: this.listWeeklyBeefFrequencies().data,
+        weeklyFoodWasteRanges: this.listWeeklyFoodWasteRanges().data,
+        weeklyUpfRanges: this.listWeeklyUpfRanges().data,
+        weeklyReusableRanges: this.listWeeklyReusableRanges().data,
+        userSegments: this.listUserSegments().data,
+        motivations: this.listMotivations().data,
+        progressIndicatorKinds: this.listProgressIndicatorKinds().data,
+        progressPrecisions: this.listProgressPrecisions().data,
       },
     };
   }

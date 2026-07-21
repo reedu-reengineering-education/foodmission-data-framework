@@ -156,6 +156,62 @@ export class CatalogController {
     return this.catalogService.listGroupRoles();
   }
 
+  @Get('weekly-meat-ranges')
+  @PublicCatalogList('List weekly meat consumption ranges')
+  weeklyMeatRanges(): CatalogListResponseDto {
+    return this.catalogService.listWeeklyMeatRanges();
+  }
+
+  @Get('weekly-beef-frequencies')
+  @PublicCatalogList('List weekly beef consumption frequencies')
+  weeklyBeefFrequencies(): CatalogListResponseDto {
+    return this.catalogService.listWeeklyBeefFrequencies();
+  }
+
+  @Get('weekly-food-waste-ranges')
+  @PublicCatalogList('List weekly edible food waste ranges')
+  weeklyFoodWasteRanges(): CatalogListResponseDto {
+    return this.catalogService.listWeeklyFoodWasteRanges();
+  }
+
+  @Get('weekly-upf-ranges')
+  @PublicCatalogList('List weekly UPF consumption ranges')
+  weeklyUpfRanges(): CatalogListResponseDto {
+    return this.catalogService.listWeeklyUpfRanges();
+  }
+
+  @Get('weekly-reusable-ranges')
+  @PublicCatalogList(
+    'List weekly reusable container / refill product usage ranges',
+  )
+  weeklyReusableRanges(): CatalogListResponseDto {
+    return this.catalogService.listWeeklyReusableRanges();
+  }
+
+  @Get('user-segments')
+  @PublicCatalogList('List user gamification segments')
+  userSegments(): CatalogListResponseDto {
+    return this.catalogService.listUserSegments();
+  }
+
+  @Get('motivations')
+  @PublicCatalogList('List user motivations')
+  motivations(): CatalogListResponseDto {
+    return this.catalogService.listMotivations();
+  }
+
+  @Get('progress-indicator-kinds')
+  @PublicCatalogList('List progress indicator kinds')
+  progressIndicatorKinds(): CatalogListResponseDto {
+    return this.catalogService.listProgressIndicatorKinds();
+  }
+
+  @Get('progress-precisions')
+  @PublicCatalogList('List progress indicator precision types')
+  progressPrecisions(): CatalogListResponseDto {
+    return this.catalogService.listProgressPrecisions();
+  }
+
   @Get('languages')
   @PublicPaginatedCatalog('List languages (paginated)')
   languages(

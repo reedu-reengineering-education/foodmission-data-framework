@@ -53,4 +53,58 @@ describe('Catalog contract (schema.prisma)', () => {
       parsePrismaEnum(schema, 'GroupRole'),
     );
   });
+
+  it('matches WeeklyMeatRange enum', () => {
+    expect(service.listWeeklyMeatRanges().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WeeklyMeatRange'),
+    );
+  });
+
+  it('matches WeeklyBeefFrequency enum', () => {
+    expect(service.listWeeklyBeefFrequencies().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WeeklyBeefFrequency'),
+    );
+  });
+
+  it('matches WeeklyFoodWasteRange enum', () => {
+    expect(
+      service.listWeeklyFoodWasteRanges().data.map((x) => x.code),
+    ).toEqual(parsePrismaEnum(schema, 'WeeklyFoodWasteRange'));
+  });
+
+  it('matches WeeklyUpfRange enum', () => {
+    expect(service.listWeeklyUpfRanges().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WeeklyUpfRange'),
+    );
+  });
+
+  it('matches WeeklyReusableRange enum', () => {
+    expect(
+      service.listWeeklyReusableRanges().data.map((x) => x.code),
+    ).toEqual(parsePrismaEnum(schema, 'WeeklyReusableRange'));
+  });
+
+  it('matches UserSegment enum', () => {
+    expect(service.listUserSegments().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'UserSegment'),
+    );
+  });
+
+  it('matches Motivation enum', () => {
+    expect(service.listMotivations().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'Motivation'),
+    );
+  });
+
+  it('matches ProgressIndicatorKind enum', () => {
+    expect(
+      service.listProgressIndicatorKinds().data.map((x) => x.code),
+    ).toEqual(parsePrismaEnum(schema, 'ProgressIndicatorKind'));
+  });
+
+  it('matches ProgressPrecision enum', () => {
+    expect(service.listProgressPrecisions().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'ProgressPrecision'),
+    );
+  });
 });

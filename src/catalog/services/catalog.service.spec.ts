@@ -30,6 +30,22 @@ describe('CatalogService', () => {
     const res = service.startup();
     expect(res.data.genders).toBeDefined();
     expect(res.data.activityLevels).toBeDefined();
+    expect(res.data.motivations).toBeDefined();
+    expect(res.data.userSegments).toBeDefined();
+    expect(res.data.weeklyMeatRanges).toBeDefined();
+    expect(res.data.progressIndicatorKinds).toBeDefined();
+  });
+
+  it('lists motivations from Prisma enum', () => {
+    const res = service.listMotivations();
+    const codes = res.data.map((x) => x.code);
+    expect(codes).toEqual(
+      expect.arrayContaining([
+        'SUSTAINABLE_HABITS',
+        'PLANETARY_IMPACT',
+        'SUSTAINABILITY_KNOWLEDGE',
+      ]),
+    );
   });
 
   it('paginates countries and supports search', () => {
