@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ProgressPrecision, User, UserSegment } from '@prisma/client';
+import { Prisma, ProgressPrecision, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { GamificationWalletService } from './gamification-wallet.service';
 import { GamificationEventType } from '../gamification.constants';
 import {
   OnboardingBaselines,
@@ -11,85 +10,132 @@ import {
 } from '../onboarding.utils';
 import { assertProgressIndicatorOwner } from '../progress-indicator.utils';
 
+export function onboardingCompletedIdempotencyKey(userId: string): string {
+  return `onboarding-completed:${userId}`;
+}
+
 export interface CompleteOnboardingResult {
   segment: UserSegment;
   indicatorsSeeded: number;
   walletEnsured: boolean;
   onboardingEventRecorded: boolean;
+  /** True when ONBOARDING_COMPLETED already existed — no wallet/indicator writes. */
+  skipped: boolean;
 }
 
 @Injectable()
 export class GamificationOnboardingService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly walletService: GamificationWalletService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   deriveSegment(baselines: OnboardingBaselines): UserSegment {
     return deriveUserSegment(baselines);
   }
 
-  async seedSoftIndicatorsForUser(
-    userId: string,
-    segment: UserSegment,
-  ): Promise<number> {
-    assertProgressIndicatorOwner({ userId });
-    const targetValue = targetForSegment(segment);
-    let count = 0;
-
-    for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {
-      await this.prisma.progressIndicator.upsert({
-        where: {
-          userId_kind: { userId, kind },
-        },
-        update: {
-          precision: ProgressPrecision.SOFT,
-          targetValue,
-        },
-        create: {
-          userId,
-          kind,
-          precision: ProgressPrecision.SOFT,
-          level: 1,
-          accumulatedValue: 0,
-          targetValue,
-          allTimeTotal: 0,
-        },
-      });
-      count += 1;
-    }
-
-    return count;
-  }
-
-  async ensureWallet(userId: string): Promise<void> {
-    await this.walletService.ensureWallet(userId);
-  }
-
+  /**
+   * First-time onboarding only: ensure wallet, seed soft indicators, and
+   * record ONBOARDING_COMPLETED in a single transaction.
+   * Later baseline PATCHes no-op once that event exists (targets are not rewritten).
+   */
   async applyOnboardingSideEffects(
     user: Pick<User, 'id'>,
     segment: UserSegment,
   ): Promise<CompleteOnboardingResult> {
-    await this.ensureWallet(user.id);
-    const indicatorsSeeded = await this.seedSoftIndicatorsForUser(
-      user.id,
-      segment,
-    );
+    assertProgressIndicatorOwner({ userId: user.id });
 
-    const { replayed } = await this.walletService.recordEvent({
-      userId: user.id,
-      eventType: GamificationEventType.ONBOARDING_COMPLETED,
-      subjectType: 'USER',
-      subjectId: user.id,
-      payload: { segment, indicatorsSeeded },
-      idempotencyKey: `onboarding-completed:${user.id}`,
+    const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
+
+    const existing = await this.prisma.gamificationEvent.findUnique({
+      where: { idempotencyKey },
     });
+    if (existing) {
+      return {
+        segment,
+        indicatorsSeeded: 0,
+        walletEnsured: false,
+        onboardingEventRecorded: false,
+        skipped: true,
+      };
+    }
 
-    return {
-      segment,
-      indicatorsSeeded,
-      walletEnsured: true,
-      onboardingEventRecorded: !replayed,
-    };
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const again = await tx.gamificationEvent.findUnique({
+          where: { idempotencyKey },
+        });
+        if (again) {
+          return {
+            segment,
+            indicatorsSeeded: 0,
+            walletEnsured: false,
+            onboardingEventRecorded: false,
+            skipped: true,
+          };
+        }
+
+        await tx.userGamificationWallet.upsert({
+          where: { userId: user.id },
+          update: {},
+          create: { userId: user.id, level: 1, xp: 0, points: 0 },
+        });
+
+        const targetValue = targetForSegment(segment);
+        let indicatorsSeeded = 0;
+
+        for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {
+          await tx.progressIndicator.upsert({
+            where: {
+              userId_kind: { userId: user.id, kind },
+            },
+            update: {
+              precision: ProgressPrecision.SOFT,
+              targetValue,
+            },
+            create: {
+              userId: user.id,
+              kind,
+              precision: ProgressPrecision.SOFT,
+              level: 1,
+              accumulatedValue: 0,
+              targetValue,
+              allTimeTotal: 0,
+            },
+          });
+          indicatorsSeeded += 1;
+        }
+
+        await tx.gamificationEvent.create({
+          data: {
+            userId: user.id,
+            eventType: GamificationEventType.ONBOARDING_COMPLETED,
+            subjectType: 'USER',
+            subjectId: user.id,
+            payload: { segment, indicatorsSeeded },
+            idempotencyKey,
+          },
+        });
+
+        return {
+          segment,
+          indicatorsSeeded,
+          walletEnsured: true,
+          onboardingEventRecorded: true,
+          skipped: false,
+        };
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        return {
+          segment,
+          indicatorsSeeded: 0,
+          walletEnsured: false,
+          onboardingEventRecorded: false,
+          skipped: true,
+        };
+      }
+      throw error;
+    }
   }
 }

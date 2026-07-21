@@ -82,12 +82,13 @@ describe('UserProfilesService - deleteUserById', () => {
     const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> =
       {
         deriveSegment: jest.fn().mockReturnValue(UserSegment.BEGINNER),
-        applyOnboardingSideEffects: jest.fn().mockResolvedValue({
-          segment: UserSegment.BEGINNER,
-          indicatorsSeeded: 7,
-          walletEnsured: true,
-          onboardingEventRecorded: true,
-        }),
+      applyOnboardingSideEffects: jest.fn().mockResolvedValue({
+        segment: UserSegment.BEGINNER,
+        indicatorsSeeded: 7,
+        walletEnsured: true,
+        onboardingEventRecorded: true,
+        skipped: false,
+      }),
       };
 
     const module: TestingModule = await Test.createTestingModule({

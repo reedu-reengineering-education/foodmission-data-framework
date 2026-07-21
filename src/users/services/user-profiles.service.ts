@@ -186,8 +186,10 @@ export class UserProfilesService {
   }
 
   /**
-   * When all five habit baselines are present, derive segment (unless provided),
-   * ensure wallet, and seed soft progress indicators.
+   * When all five habit baselines are present and onboarding fields were touched,
+   * derive/persist segment, then apply first-time gamification side effects
+   * (wallet + soft indicators + ONBOARDING_COMPLETED). Side effects are skipped
+   * if onboarding was already completed.
    */
   private async applyGamificationOnboardingIfReady(
     user: User,
