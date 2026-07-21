@@ -78,7 +78,7 @@ export class CatalogController {
   @Public()
   @ApiOperation({
     summary:
-      'Static values needed at regular app startup (excluding world geography)',
+      'Static values needed at regular app startup (profile + nested onboarding baselines)',
   })
   @ApiResponse({
     status: 200,

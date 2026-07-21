@@ -7,6 +7,8 @@ import {
   NotFoundException,
   Delete,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,7 +17,6 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -45,7 +46,12 @@ export class UserProfilesController {
   @Patch('me')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiOperation({
+    summary: 'Update current user profile',
+    description:
+      'When all five gamification onboarding baselines are set (in this request or already on the profile), ' +
+      'segment is derived if omitted, a wallet is ensured, and soft progress indicators are seeded.',
+  })
   @UsePipes(
     new ValidationPipe({
       whitelist: true,

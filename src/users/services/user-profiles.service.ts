@@ -11,6 +11,24 @@ import {
   EducationLevel,
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
+import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import {
+  User,
+  UserSegment,
+  WeeklyBeefFrequency,
+  WeeklyFoodWasteRange,
+  WeeklyMeatRange,
+  WeeklyReusableRange,
+  WeeklyUpfRange,
+} from '@prisma/client';
+
+const ONBOARDING_BASELINE_FIELDS = [
+  'weeklyMeatConsumption',
+  'weeklyBeefConsumption',
+  'weeklyFoodWaste',
+  'weeklyUpfConsumption',
+  'weeklyReusableOrRefill',
+] as const;
 
 export interface UserProfile {
   id: string;
@@ -52,6 +70,7 @@ export class UserProfilesService {
     private readonly usersRepository: UsersRepository,
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
+    private readonly gamificationOnboardingService: GamificationOnboardingService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -161,8 +180,74 @@ export class UserProfilesService {
       return this.formatUserProfile(user);
     }
 
-    const updatedUser = await this.usersRepository.update(user.id, updateData);
+    let updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: updateData,
+    });
+
+    updatedUser = await this.applyGamificationOnboardingIfReady(
+      updatedUser,
+      payload,
+    );
+
     return this.formatUserProfile(updatedUser);
+  }
+
+  /**
+   * When all five habit baselines are present, derive segment (unless provided),
+   * ensure wallet, and seed soft progress indicators.
+   */
+  private async applyGamificationOnboardingIfReady(
+    user: User,
+    payload: Record<string, unknown>,
+  ): Promise<User> {
+    const baselines = {
+      weeklyMeatConsumption: user.weeklyMeatConsumption,
+      weeklyBeefConsumption: user.weeklyBeefConsumption,
+      weeklyFoodWaste: user.weeklyFoodWaste,
+      weeklyUpfConsumption: user.weeklyUpfConsumption,
+      weeklyReusableOrRefill: user.weeklyReusableOrRefill,
+    };
+
+    const hasAllBaselines = ONBOARDING_BASELINE_FIELDS.every(
+      (field) => baselines[field] != null,
+    );
+    if (!hasAllBaselines) {
+      return user;
+    }
+
+    const touchedOnboarding =
+      ONBOARDING_BASELINE_FIELDS.some((field) => payload[field] !== undefined) ||
+      payload.segment !== undefined;
+    if (!touchedOnboarding) {
+      return user;
+    }
+
+    const segment =
+      (payload.segment as UserSegment | undefined) ??
+      user.segment ??
+      this.gamificationOnboardingService.deriveSegment({
+        weeklyMeatConsumption: baselines.weeklyMeatConsumption!,
+        weeklyBeefConsumption: baselines.weeklyBeefConsumption!,
+        weeklyFoodWaste: baselines.weeklyFoodWaste!,
+        weeklyUpfConsumption: baselines.weeklyUpfConsumption!,
+        weeklyReusableOrRefill: baselines.weeklyReusableOrRefill!,
+      });
+
+    let nextUser = user;
+    if (user.segment !== segment) {
+      nextUser = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { segment },
+      });
+    }
+
+    await this.gamificationOnboardingService.applyOnboardingSideEffects(
+      nextUser,
+      segment,
+    );
+
+    return nextUser;
   }
 
   async isBasicProfileComplete(keycloakId: string): Promise<boolean> {

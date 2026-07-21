@@ -30,10 +30,12 @@ describe('CatalogService', () => {
     const res = service.startup();
     expect(res.data.genders).toBeDefined();
     expect(res.data.activityLevels).toBeDefined();
-    expect(res.data.motivations).toBeDefined();
-    expect(res.data.userSegments).toBeDefined();
-    expect(res.data.weeklyMeatRanges).toBeDefined();
+    expect(res.data.onboarding).toBeDefined();
+    expect(res.data.onboarding.motivations).toBeDefined();
+    expect(res.data.onboarding.userSegments).toBeDefined();
+    expect(res.data.onboarding.weeklyMeatRanges).toBeDefined();
     expect(res.data.progressIndicatorKinds).toBeDefined();
+    expect(res.data.walletCurrencies).toBeDefined();
   });
 
   it('lists motivations from Prisma enum', () => {

@@ -1,34 +1,14 @@
 import {
   WalletCurrency,
   PrismaClient,
-  ProgressIndicatorKind,
   ProgressPrecision,
   User,
   UserGroup,
-  UserSegment,
 } from '@prisma/client';
-
-/** SOFT indicator kinds seeded for every user/group (per Gamification.md §12). */
-export const SOFT_PROGRESS_INDICATOR_KINDS: ProgressIndicatorKind[] = [
-  ProgressIndicatorKind.FOOD_CHOICES,
-  ProgressIndicatorKind.FOOD_AND_WASTE,
-  ProgressIndicatorKind.HEALTH,
-  ProgressIndicatorKind.CO2_REDUCTION,
-  ProgressIndicatorKind.ENERGY_REDUCTION,
-  ProgressIndicatorKind.WATER_SAVINGS,
-  ProgressIndicatorKind.LAND_USE_REDUCTION,
-];
-
-const DEFAULT_TARGET_BY_SEGMENT: Record<UserSegment, number> = {
-  [UserSegment.BEGINNER]: 10,
-  [UserSegment.INTERMEDIATE]: 20,
-  [UserSegment.ADVANCED]: 30,
-};
-
-function targetForSegment(segment: UserSegment | null | undefined): number {
-  if (!segment) return DEFAULT_TARGET_BY_SEGMENT[UserSegment.BEGINNER];
-  return DEFAULT_TARGET_BY_SEGMENT[segment];
-}
+import {
+  SOFT_PROGRESS_INDICATOR_KINDS,
+  targetForSegment,
+} from '../../../src/gamification/onboarding.utils';
 
 async function upsertUserWallet(
   prisma: PrismaClient,
