@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsUUID } from 'class-validator';
 
 export class UpdateUserGroupDto {
   @ApiProperty({
@@ -23,4 +23,13 @@ export class UpdateUserGroupDto {
   @IsOptional()
   @MaxLength(1000)
   description?: string;
+
+  @ApiProperty({
+    description: 'Current group quest id (when Quest catalog exists)',
+    required: false,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsUUID()
+  currentQuestId?: string | null;
 }

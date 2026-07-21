@@ -43,6 +43,54 @@ enum GroupRole {
   MEMBER
 }
 
+// Gamification onboarding baselines (weekly habits)
+enum WeeklyMeatRange {
+  ZERO_TO_FOUR
+  FIVE_TO_NINE
+  TEN_TO_FOURTEEN
+  FIFTEEN_PLUS
+}
+
+enum WeeklyBeefFrequency {
+  NEVER
+  LESS_THAN_ONCE_PER_WEEK
+  ONE_TO_TWO_TIMES_PER_WEEK
+  THREE_PLUS_TIMES_PER_WEEK
+}
+
+enum WeeklyFoodWasteRange {
+  ZERO
+  ONE_TO_TWO
+  THREE_TO_FOUR
+  FIVE_PLUS
+}
+
+enum WeeklyUpfRange {
+  ZERO_TO_THREE
+  FOUR_TO_NINE
+  TEN_TO_FOURTEEN
+  FIFTEEN_PLUS
+}
+
+enum WeeklyReusableRange {
+  ZERO_TO_TWO
+  THREE_TO_SIX
+  SEVEN_TO_NINE
+  TEN_PLUS
+}
+
+enum UserSegment {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Motivation {
+  SUSTAINABLE_HABITS
+  PLANETARY_IMPACT
+  SUSTAINABILITY_KNOWLEDGE
+}
+
 model User {
   id                          String             @id @default(uuid())
   keycloakId                  String             @unique
@@ -69,18 +117,32 @@ model User {
   updatedAt                   DateTime           @updatedAt
   autoAddCheckedItemsToPantry Boolean            @default(true)
 
+  // Gamification onboarding baselines
+  weeklyMeatConsumption  WeeklyMeatRange?
+  weeklyBeefConsumption  WeeklyBeefFrequency?
+  weeklyFoodWaste        WeeklyFoodWasteRange?
+  weeklyUpfConsumption   WeeklyUpfRange?
+  weeklyReusableOrRefill WeeklyReusableRange?
+
+  // Gamification identity / pacing
+  segment        UserSegment?
+  currentQuestId String? // FK to Quest when Quest model exists
+  lastLoginAt    DateTime?
+
   // Relations
-  shoppingList      ShoppingList[]
-  pantry            Pantry?
-  recipes           Recipe[]
-  meals             Meal[]
-  mealLogs          MealLog[]
-  knowledge         Knowledge[]
-  foodWaste         FoodWaste[]
-  knowledgeProgress UserKnowledgeProgress[]
-  challengeProgress ChallengeProgress[]
-  missionProgress   MissionProgress[]
-  groupMemberships  GroupMembership[]
+  shoppingList         ShoppingList[]
+  pantry               Pantry?
+  recipes              Recipe[]
+  meals                Meal[]
+  mealLogs             MealLog[]
+  knowledge            Knowledge[]
+  foodWaste            FoodWaste[]
+  knowledgeProgress    UserKnowledgeProgress[]
+  challengeProgress    ChallengeProgress[]
+  missionProgress      MissionProgress[]
+  groupMemberships   GroupMembership[]
+  gamificationWallet UserGamificationWallet?
+  progressIndicators ProgressIndicator[]     @relation("UserProgressIndicators")
 
   @@index([email])
   @@index([createdAt])
@@ -88,16 +150,18 @@ model User {
 }
 
 model UserGroup {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  inviteCode  String   @unique
-  createdBy   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  inviteCode     String   @unique
+  createdBy      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  currentQuestId String? // group quest in progress (FK when Quest model exists)
 
   // Relations
-  memberships GroupMembership[]
+  memberships        GroupMembership[]
+  progressIndicators ProgressIndicator[] @relation("GroupProgressIndicators")
 
   @@index([inviteCode])
   @@index([createdBy])

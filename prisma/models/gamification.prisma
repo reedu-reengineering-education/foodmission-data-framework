@@ -1,6 +1,31 @@
 // ============================================================
-// Gamification - Missions, challenges, and knowledge
+// Gamification - Missions, challenges, knowledge, wallet, indicators
 // ============================================================
+
+enum ProgressIndicatorKind {
+  // SOFT bars
+  FOOD_CHOICES
+  FOOD_AND_WASTE
+  HEALTH
+  // SOFT wheels
+  CO2_REDUCTION
+  ENERGY_REDUCTION
+  WATER_SAVINGS
+  LAND_USE_REDUCTION
+  // PRECISE nutrition
+  PROTEIN
+  FAT
+  SUGAR
+  SALT
+  FIBER
+  VITAMINS
+  CALORIES
+}
+
+enum ProgressPrecision {
+  SOFT
+  PRECISE
+}
 
 model Mission {
   id          String   @id @default(uuid())
@@ -97,4 +122,41 @@ model UserKnowledgeProgress {
   @@index([userId])
   @@index([knowledgeId])
   @@map("user_knowledge_progress")
+}
+
+model UserGamificationWallet {
+  userId    String   @id
+  level     Int      @default(1)
+  xp        Int      @default(0)
+  points    Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_gamification_wallets")
+}
+
+/// Same shape for personal and group progress indicators.
+/// Exactly one of userId / groupId must be set (enforced in application layer).
+model ProgressIndicator {
+  id               String                 @id @default(uuid())
+  userId           String?
+  groupId          String?
+  kind             ProgressIndicatorKind
+  precision        ProgressPrecision
+  level            Int                    @default(1) // 1–5
+  accumulatedValue Float                  @default(0) // current cycle
+  targetValue      Float
+  allTimeTotal     Float                  @default(0)
+  cycleStartedAt   DateTime               @default(now())
+  lastUpdatedAt    DateTime               @updatedAt
+
+  user  User?      @relation("UserProgressIndicators", fields: [userId], references: [id], onDelete: Cascade)
+  group UserGroup? @relation("GroupProgressIndicators", fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind])
+  @@unique([groupId, kind])
+  @@index([userId])
+  @@index([groupId])
+  @@map("progress_indicators")
 }

@@ -7,6 +7,7 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from '../dto/create-user.dto';
+import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 
 describe('UserProfilesController', () => {
@@ -162,12 +163,14 @@ describe('UserProfilesController', () => {
     });
 
     it('should update settings', async () => {
-      const updateDto = { settings: { notifications: true, theme: 'dark' } };
+      const updateDto = {
+        settings: { notificationsEnabled: true, notificationPreferredTime: '10:00' },
+      } as ProfileUpdateDto;
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
       service.updateProfile.mockResolvedValue({
         ...mockUserProfile,
-        settings: updateDto.settings,
+        settings: updateDto.settings as Record<string, unknown>,
       });
 
       const result = await controller.updateProfile('user-1', updateDto);
@@ -178,18 +181,45 @@ describe('UserProfilesController', () => {
 
     it('should update preferences', async () => {
       const updateDto = {
-        preferences: { newsletter: false, timezone: 'Europe/Berlin' },
-      };
+        preferences: {
+          foodExclusions: ['peanuts'],
+          motivation: 'SUSTAINABLE_HABITS',
+          showNutriScore: true,
+        },
+      } as ProfileUpdateDto;
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
       service.updateProfile.mockResolvedValue({
         ...mockUserProfile,
-        preferences: updateDto.preferences,
+        preferences: updateDto.preferences as Record<string, unknown>,
       });
 
       const result = await controller.updateProfile('user-1', updateDto);
 
       expect(result.preferences).toEqual(updateDto.preferences);
+      expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
+    });
+
+    it('should update gamification onboarding baselines', async () => {
+      const updateDto = {
+        weeklyMeatConsumption: 'ZERO_TO_FOUR',
+        weeklyBeefConsumption: 'NEVER',
+        weeklyFoodWaste: 'ONE_TO_TWO',
+        weeklyUpfConsumption: 'ZERO_TO_THREE',
+        weeklyReusableOrRefill: 'THREE_TO_SIX',
+        segment: 'BEGINNER',
+      } as ProfileUpdateDto;
+
+      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+      service.updateProfile.mockResolvedValue({
+        ...mockUserProfile,
+        ...updateDto,
+      });
+
+      const result = await controller.updateProfile('user-1', updateDto);
+
+      expect(result.weeklyMeatConsumption).toBe('ZERO_TO_FOUR');
+      expect(result.segment).toBe('BEGINNER');
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
     });
   });

@@ -35,6 +35,15 @@ export interface UserProfile {
   activityLevel?: ActivityLevel | null;
   healthGoals?: Record<string, unknown>;
   nutritionTargets?: Record<string, unknown>;
+
+  weeklyMeatConsumption?: string | null;
+  weeklyBeefConsumption?: string | null;
+  weeklyFoodWaste?: string | null;
+  weeklyUpfConsumption?: string | null;
+  weeklyReusableOrRefill?: string | null;
+  segment?: string | null;
+  currentQuestId?: string | null;
+  lastLoginAt?: Date | null;
 }
 
 @Injectable()
@@ -132,6 +141,13 @@ export class UserProfilesService {
       'nutritionTargets',
       'settings',
       'preferences',
+      'weeklyMeatConsumption',
+      'weeklyBeefConsumption',
+      'weeklyFoodWaste',
+      'weeklyUpfConsumption',
+      'weeklyReusableOrRefill',
+      'segment',
+      'currentQuestId',
     ];
 
     for (const f of extendedFields) {
@@ -190,6 +206,14 @@ export class UserProfilesService {
       activityLevel: user.activityLevel,
       healthGoals: user.healthGoals,
       nutritionTargets: user.nutritionTargets,
+      weeklyMeatConsumption: user.weeklyMeatConsumption,
+      weeklyBeefConsumption: user.weeklyBeefConsumption,
+      weeklyFoodWaste: user.weeklyFoodWaste,
+      weeklyUpfConsumption: user.weeklyUpfConsumption,
+      weeklyReusableOrRefill: user.weeklyReusableOrRefill,
+      segment: user.segment,
+      currentQuestId: user.currentQuestId,
+      lastLoginAt: user.lastLoginAt,
     };
   }
 

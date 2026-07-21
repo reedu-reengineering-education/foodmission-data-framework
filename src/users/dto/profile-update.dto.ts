@@ -1,11 +1,11 @@
 import {
   IsString,
   IsOptional,
-  IsObject,
   IsEnum,
   IsNumber,
   IsInt,
   IsPositive,
+  IsObject,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -14,6 +14,16 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from './create-user.dto';
+import {
+  UserSegment,
+  WeeklyBeefFrequency,
+  WeeklyFoodWasteRange,
+  WeeklyMeatRange,
+  WeeklyReusableRange,
+  WeeklyUpfRange,
+} from './gamification-enums.dto';
+import { UserPreferencesDto } from './user-preferences.dto';
+import { UserSettingsDto } from './user-settings.dto';
 
 export class ProfileUpdateDto {
   @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
@@ -93,29 +103,92 @@ export class ProfileUpdateDto {
   @ApiProperty({ description: 'Health goals (JSON)', required: false })
   @IsOptional()
   @IsObject()
-  healthGoals?: Record<string, any>;
+  healthGoals?: Record<string, unknown>;
 
   @ApiProperty({ description: 'Nutrition targets (JSON)', required: false })
   @IsOptional()
   @IsObject()
-  nutritionTargets?: Record<string, any>;
+  nutritionTargets?: Record<string, unknown>;
 
   @ApiProperty({
     description:
-      'User preferences (JSON) - dietary preferences, allergies, etc.',
+      'User preferences — dietary prefs, exclusions, motivation, etc. See UserPreferencesDto shape.',
     required: false,
-    example: { dietaryPreference: 'VEGETARIAN', allergies: ['peanuts'] },
+    type: UserPreferencesDto,
   })
   @IsOptional()
   @IsObject()
-  preferences?: Record<string, any>;
+  preferences?: UserPreferencesDto;
 
   @ApiProperty({
-    description: 'User settings (JSON) - app/notification settings, etc.',
+    description: 'User settings — notifications, etc. See UserSettingsDto shape.',
     required: false,
-    example: { notifications: true, theme: 'dark' },
+    type: UserSettingsDto,
   })
   @IsOptional()
   @IsObject()
-  settings?: Record<string, any>;
+  settings?: UserSettingsDto;
+
+  // Gamification onboarding baselines
+  @ApiProperty({
+    description: 'Weekly meat consumption range',
+    required: false,
+    enum: Object.values(WeeklyMeatRange),
+  })
+  @IsOptional()
+  @IsEnum(WeeklyMeatRange)
+  weeklyMeatConsumption?: WeeklyMeatRange;
+
+  @ApiProperty({
+    description: 'Weekly beef consumption frequency',
+    required: false,
+    enum: Object.values(WeeklyBeefFrequency),
+  })
+  @IsOptional()
+  @IsEnum(WeeklyBeefFrequency)
+  weeklyBeefConsumption?: WeeklyBeefFrequency;
+
+  @ApiProperty({
+    description: 'Weekly edible food thrown away',
+    required: false,
+    enum: Object.values(WeeklyFoodWasteRange),
+  })
+  @IsOptional()
+  @IsEnum(WeeklyFoodWasteRange)
+  weeklyFoodWaste?: WeeklyFoodWasteRange;
+
+  @ApiProperty({
+    description: 'Weekly ultra-processed food consumption',
+    required: false,
+    enum: Object.values(WeeklyUpfRange),
+  })
+  @IsOptional()
+  @IsEnum(WeeklyUpfRange)
+  weeklyUpfConsumption?: WeeklyUpfRange;
+
+  @ApiProperty({
+    description: 'Weekly use of reusable containers or refill products',
+    required: false,
+    enum: Object.values(WeeklyReusableRange),
+  })
+  @IsOptional()
+  @IsEnum(WeeklyReusableRange)
+  weeklyReusableOrRefill?: WeeklyReusableRange;
+
+  @ApiProperty({
+    description: 'User gamification segment',
+    required: false,
+    enum: Object.values(UserSegment),
+  })
+  @IsOptional()
+  @IsEnum(UserSegment)
+  segment?: UserSegment;
+
+  @ApiProperty({
+    description: 'Current quest id (when Quest catalog exists)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  currentQuestId?: string | null;
 }
