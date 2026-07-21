@@ -11,15 +11,12 @@ import {
   WalletEntry,
 } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import {
-  GamificationEventTypeValue,
-  levelFromXp,
-} from '../gamification.constants';
+import { levelFromXp } from '../gamification.constants';
 
 export interface RecordGamificationEventInput {
   userId: string;
   groupId?: string | null;
-  eventType: GamificationEventTypeValue | string;
+  eventType: string;
   subjectType?: string | null;
   subjectId?: string | null;
   payload?: Record<string, unknown>;

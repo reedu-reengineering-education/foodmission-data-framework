@@ -665,62 +665,61 @@ export class ShoppingListAnalyticsAggregator {
     const result: CrossDimPatternsRow[] = [];
 
     for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const dim1Field = DIM_TO_LIST_FIELD[dim1];
+      const dim2Field = DIM_TO_LIST_FIELD[dim2];
 
-        const dim1Field = DIM_TO_LIST_FIELD[dim1];
-        const dim2Field = DIM_TO_LIST_FIELD[dim2];
-
-        const groups = new Map<
-          string,
-          {
-            date: Date;
-            dim1Value: string;
-            dim2Value: string;
-            users: Set<string>;
-            lists: ListAggregate[];
-          }
-        >();
-
-        for (const la of listAggs.values()) {
-          const v1 = (la[dim1Field] as string | null) ?? '__null__';
-          const v2 = (la[dim2Field] as string | null) ?? '__null__';
-          const key = `${la.dateKey}||${v1}||${v2}`;
-          if (!groups.has(key)) {
-            groups.set(key, {
-              date: new Date(la.dateKey),
-              dim1Value: v1,
-              dim2Value: v2,
-              users: new Set(),
-              lists: [],
-            });
-          }
-          const g = groups.get(key)!;
-          g.users.add(la.userId);
-          g.lists.push(la);
+      const groups = new Map<
+        string,
+        {
+          date: Date;
+          dim1Value: string;
+          dim2Value: string;
+          users: Set<string>;
+          lists: ListAggregate[];
         }
+      >();
 
-        for (const g of groups.values()) {
-          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
-          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
-          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
-          const userCount = g.users.size;
-          const totalLists = g.lists.length;
-          const totalItems = g.lists.reduce((s, l) => s + l.totalItems, 0);
-          const fpItems = g.lists.reduce((s, l) => s + l.foodProductItems, 0);
-          const gfItems = g.lists.reduce((s, l) => s + l.genericFoodItems, 0);
-          result.push({
-            date: g.date,
-            dim1Name: dim1,
-            dim1Value,
-            dim2Name: dim2,
-            dim2Value,
-            userCount,
-            totalLists,
-            avgItemsPerList: totalLists > 0 ? totalItems / totalLists : 0,
-            avgListsPerUser: userCount > 0 ? totalLists / userCount : 0,
-            foodProductPct: totalItems > 0 ? (fpItems / totalItems) * 100 : 0,
-            genericFoodPct: totalItems > 0 ? (gfItems / totalItems) * 100 : 0,
+      for (const la of listAggs.values()) {
+        const v1 = (la[dim1Field] as string | null) ?? '__null__';
+        const v2 = (la[dim2Field] as string | null) ?? '__null__';
+        const key = `${la.dateKey}||${v1}||${v2}`;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            date: new Date(la.dateKey),
+            dim1Value: v1,
+            dim2Value: v2,
+            users: new Set(),
+            lists: [],
           });
         }
+        const g = groups.get(key)!;
+        g.users.add(la.userId);
+        g.lists.push(la);
+      }
+
+      for (const g of groups.values()) {
+        const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
+        const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
+        if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
+        const userCount = g.users.size;
+        const totalLists = g.lists.length;
+        const totalItems = g.lists.reduce((s, l) => s + l.totalItems, 0);
+        const fpItems = g.lists.reduce((s, l) => s + l.foodProductItems, 0);
+        const gfItems = g.lists.reduce((s, l) => s + l.genericFoodItems, 0);
+        result.push({
+          date: g.date,
+          dim1Name: dim1,
+          dim1Value,
+          dim2Name: dim2,
+          dim2Value,
+          userCount,
+          totalLists,
+          avgItemsPerList: totalLists > 0 ? totalItems / totalLists : 0,
+          avgListsPerUser: userCount > 0 ? totalLists / userCount : 0,
+          foodProductPct: totalItems > 0 ? (fpItems / totalItems) * 100 : 0,
+          genericFoodPct: totalItems > 0 ? (gfItems / totalItems) * 100 : 0,
+        });
+      }
     }
 
     return result;
@@ -809,75 +808,74 @@ export class ShoppingListAnalyticsAggregator {
     const result: CrossDimClassificationRow[] = [];
 
     for (const [dim1, dim2] of buildCrossDimPairs(DEMOGRAPHIC_DIMENSIONS)) {
+      const dim1Field = DIM_TO_ROW_FIELD[dim1];
+      const dim2Field = DIM_TO_ROW_FIELD[dim2];
 
-        const dim1Field = DIM_TO_ROW_FIELD[dim1];
-        const dim2Field = DIM_TO_ROW_FIELD[dim2];
-
-        const groups = new Map<
-          string,
-          {
-            date: Date;
-            dim1Value: string;
-            dim2Value: string;
-            users: Set<string>;
-            fpRows: RawShoppingListRow[];
-          }
-        >();
-
-        for (const row of rows) {
-          const v1 = (row[dim1Field] as string | null) ?? '__null__';
-          const v2 = (row[dim2Field] as string | null) ?? '__null__';
-          const dateKey = row.createdAt.toISOString().slice(0, 10);
-          const key = `${dateKey}||${v1}||${v2}`;
-          if (!groups.has(key)) {
-            groups.set(key, {
-              date: new Date(dateKey),
-              dim1Value: v1,
-              dim2Value: v2,
-              users: new Set(),
-              fpRows: [],
-            });
-          }
-          const g = groups.get(key)!;
-          g.users.add(row.userId);
-          if (row.itemType === 'food_product') g.fpRows.push(row);
+      const groups = new Map<
+        string,
+        {
+          date: Date;
+          dim1Value: string;
+          dim2Value: string;
+          users: Set<string>;
+          fpRows: RawShoppingListRow[];
         }
+      >();
 
-        for (const g of groups.values()) {
-          const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
-          const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
-          if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
-          const fpRows = g.fpRows;
-          const itemCount = fpRows.length;
-          const vegetarianItems = fpRows.filter(
-            (r) => r.isVegetarian === true,
-          ).length;
-          const veganItems = fpRows.filter((r) => r.isVegan === true).length;
-          const novaValues = fpRows
-            .map((r) => r.novaGroup)
-            .filter((v): v is number => v !== null);
-          const ultraProcessedPcts = fpRows
-            .filter((r) => r.novaGroup !== null)
-            .map((r) => (r.novaGroup === 4 ? 100 : 0));
-
-          result.push({
-            date: g.date,
-            dim1Name: dim1,
-            dim1Value,
-            dim2Name: dim2,
-            dim2Value,
-            userCount: g.users.size,
-            itemCount,
-            vegetarianItemPct:
-              itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
-            veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
-            avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
-            p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
-            p50UltraProcessedPct: percentile(ultraProcessedPcts, 50),
-            p75UltraProcessedPct: percentile(ultraProcessedPcts, 75),
-            novaDistribution: distribution(novaValues.map(String)),
+      for (const row of rows) {
+        const v1 = (row[dim1Field] as string | null) ?? '__null__';
+        const v2 = (row[dim2Field] as string | null) ?? '__null__';
+        const dateKey = row.createdAt.toISOString().slice(0, 10);
+        const key = `${dateKey}||${v1}||${v2}`;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            date: new Date(dateKey),
+            dim1Value: v1,
+            dim2Value: v2,
+            users: new Set(),
+            fpRows: [],
           });
         }
+        const g = groups.get(key)!;
+        g.users.add(row.userId);
+        if (row.itemType === 'food_product') g.fpRows.push(row);
+      }
+
+      for (const g of groups.values()) {
+        const dim1Value = g.dim1Value === '__null__' ? null : g.dim1Value;
+        const dim2Value = g.dim2Value === '__null__' ? null : g.dim2Value;
+        if (dim1Value === null || dim2Value === null) continue; // skip if either dim is missing
+        const fpRows = g.fpRows;
+        const itemCount = fpRows.length;
+        const vegetarianItems = fpRows.filter(
+          (r) => r.isVegetarian === true,
+        ).length;
+        const veganItems = fpRows.filter((r) => r.isVegan === true).length;
+        const novaValues = fpRows
+          .map((r) => r.novaGroup)
+          .filter((v): v is number => v !== null);
+        const ultraProcessedPcts = fpRows
+          .filter((r) => r.novaGroup !== null)
+          .map((r) => (r.novaGroup === 4 ? 100 : 0));
+
+        result.push({
+          date: g.date,
+          dim1Name: dim1,
+          dim1Value,
+          dim2Name: dim2,
+          dim2Value,
+          userCount: g.users.size,
+          itemCount,
+          vegetarianItemPct:
+            itemCount > 0 ? (vegetarianItems / itemCount) * 100 : null,
+          veganItemPct: itemCount > 0 ? (veganItems / itemCount) * 100 : null,
+          avgUltraProcessedPct: safeAvg(ultraProcessedPcts),
+          p25UltraProcessedPct: percentile(ultraProcessedPcts, 25),
+          p50UltraProcessedPct: percentile(ultraProcessedPcts, 50),
+          p75UltraProcessedPct: percentile(ultraProcessedPcts, 75),
+          novaDistribution: distribution(novaValues.map(String)),
+        });
+      }
     }
 
     return result;

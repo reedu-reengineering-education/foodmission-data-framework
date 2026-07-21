@@ -14,7 +14,9 @@ export interface BatchInsertStep {
   shouldRun?: boolean;
 }
 
-export async function runBatchInsertSteps(steps: BatchInsertStep[]): Promise<void> {
+export async function runBatchInsertSteps(
+  steps: BatchInsertStep[],
+): Promise<void> {
   for (const step of steps) {
     if (step.shouldRun === false) continue;
     await step.run();

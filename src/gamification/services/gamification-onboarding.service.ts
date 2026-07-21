@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ProgressPrecision,
-  User,
-  UserSegment,
-} from '@prisma/client';
+import { ProgressPrecision, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from './gamification-wallet.service';
 import { GamificationEventType } from '../gamification.constants';

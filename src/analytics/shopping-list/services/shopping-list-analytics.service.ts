@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ShoppingListAnalyticsRepository } from '../repositories/shopping-list-analytics.repository';
 import { ShoppingListAnalyticsAggregator } from './shopping-list-analytics-aggregator.service';
 import { Prisma, ShoppingListAnalyticsBatch } from '@prisma/client';
-import { runBatchGeneration, runBatchInsertSteps } from '../../common/batch-runner';
+import {
+  runBatchGeneration,
+  runBatchInsertSteps,
+} from '../../common/batch-runner';
 import {
   DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
@@ -88,8 +91,10 @@ export class ShoppingListAnalyticsService extends BaseAnalyticsService<ShoppingL
                 result.sustainability.map((r) => ({
                   ...r,
                   batchId,
-                  nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
-                  ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
+                  nutriScoreDistribution:
+                    r.nutriScoreDistribution ?? Prisma.JsonNull,
+                  ecoScoreDistribution:
+                    r.ecoScoreDistribution ?? Prisma.JsonNull,
                   novaDistribution: r.novaDistribution ?? Prisma.JsonNull,
                 })),
               ),

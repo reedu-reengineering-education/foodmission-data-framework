@@ -8,9 +8,10 @@ export type ProgressIndicatorOwner =
  * Exactly one of userId / groupId must be set (mirrors DB CHECK
  * `progress_indicators_owner_xor`).
  */
-export function assertProgressIndicatorOwner(
-  owner: { userId?: string | null; groupId?: string | null },
-): ProgressIndicatorOwner {
+export function assertProgressIndicatorOwner(owner: {
+  userId?: string | null;
+  groupId?: string | null;
+}): ProgressIndicatorOwner {
   const hasUser = Boolean(owner.userId);
   const hasGroup = Boolean(owner.groupId);
 

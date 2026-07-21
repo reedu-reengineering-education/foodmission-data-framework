@@ -123,7 +123,8 @@ export class ProfileUpdateDto {
   preferences?: UserPreferencesDto;
 
   @ApiProperty({
-    description: 'User settings — notifications, etc. See UserSettingsDto shape.',
+    description:
+      'User settings — notifications, etc. See UserSettingsDto shape.',
     required: false,
     type: UserSettingsDto,
   })

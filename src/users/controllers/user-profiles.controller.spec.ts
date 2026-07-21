@@ -9,10 +9,14 @@ import {
 } from '../dto/create-user.dto';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
   let service: jest.Mocked<UserProfilesService>;
+  let gamificationProfileService: jest.Mocked<
+    Pick<GamificationProfileService, 'getProfileForUserId'>
+  >;
 
   const mockUserProfile = {
     id: 'user-1',
@@ -46,12 +50,20 @@ describe('UserProfilesController', () => {
       deleteUserById: jest.fn(),
     };
 
+    gamificationProfileService = {
+      getProfileForUserId: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
       providers: [
         {
           provide: UserProfilesService,
           useValue: mockService,
+        },
+        {
+          provide: GamificationProfileService,
+          useValue: gamificationProfileService,
         },
       ],
     })
@@ -98,6 +110,43 @@ describe('UserProfilesController', () => {
       expect(result).toBe(false);
       expect(service.getProfileByUserId).toHaveBeenCalledWith('user-1');
       expect(service.isBasicProfileComplete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getMyGamificationProfile', () => {
+    it('should delegate to GamificationProfileService', async () => {
+      const profile = {
+        userId: 'user-1',
+        segment: null,
+        currentQuestId: null,
+        lastLoginAt: null,
+        onboardingBaselines: {
+          weeklyMeatConsumption: null,
+          weeklyBeefConsumption: null,
+          weeklyFoodWaste: null,
+          weeklyUpfConsumption: null,
+          weeklyReusableOrRefill: null,
+        },
+        wallet: null,
+        progressIndicators: [],
+        badges: [],
+        recentEvents: [],
+        recentWalletEntries: [],
+      };
+      gamificationProfileService.getProfileForUserId.mockResolvedValue(profile);
+
+      const result = await controller.getMyGamificationProfile('user-1', {
+        eventsLimit: 5,
+        walletEntriesLimit: 10,
+      });
+
+      expect(result).toEqual(profile);
+      expect(
+        gamificationProfileService.getProfileForUserId,
+      ).toHaveBeenCalledWith('user-1', {
+        eventsLimit: 5,
+        walletEntriesLimit: 10,
+      });
     });
   });
 
@@ -164,7 +213,10 @@ describe('UserProfilesController', () => {
 
     it('should update settings', async () => {
       const updateDto = {
-        settings: { notificationsEnabled: true, notificationPreferredTime: '10:00' },
+        settings: {
+          notificationsEnabled: true,
+          notificationPreferredTime: '10:00',
+        },
       } as ProfileUpdateDto;
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);

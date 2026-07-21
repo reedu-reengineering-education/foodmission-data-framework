@@ -126,37 +126,39 @@ describe('GamificationWalletService', () => {
       updatedAt: new Date(),
     };
 
-    prisma.$transaction.mockImplementation(async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-      const tx = {
-        gamificationEvent: {
-          create: jest.fn().mockResolvedValue(createdEvent),
-          findUniqueOrThrow: jest.fn(),
-        },
-        userGamificationWallet: {
-          upsert: jest.fn().mockResolvedValue({
-            userId: 'u1',
-            level: 1,
-            xp: 0,
-            points: 0,
-            updatedAt: new Date(),
-          }),
-          update: jest.fn().mockResolvedValue(updatedWallet),
-        },
-        walletEntry: {
-          create: jest.fn().mockResolvedValue(createdEntry),
-        },
-        $queryRaw: jest.fn().mockResolvedValue([
-          {
-            userId: 'u1',
-            level: 1,
-            xp: 0,
-            points: 0,
-            updatedAt: new Date(),
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          gamificationEvent: {
+            create: jest.fn().mockResolvedValue(createdEvent),
+            findUniqueOrThrow: jest.fn(),
           },
-        ]),
-      };
-      return fn(tx as unknown as typeof prisma);
-    });
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              level: 1,
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            }),
+            update: jest.fn().mockResolvedValue(updatedWallet),
+          },
+          walletEntry: {
+            create: jest.fn().mockResolvedValue(createdEntry),
+          },
+          $queryRaw: jest.fn().mockResolvedValue([
+            {
+              userId: 'u1',
+              level: 1,
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            },
+          ]),
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
 
     const result = await service.award({
       userId: 'u1',

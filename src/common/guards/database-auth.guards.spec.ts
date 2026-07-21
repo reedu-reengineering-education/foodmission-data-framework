@@ -100,7 +100,9 @@ describe('DataBaseAuthGuard', () => {
       expect(mockRequest.user.sub).toBe(keycloakId);
       expect(mockRequest.user.email).toBe('user@example.com');
       expect(mockRequest.user.roles).toEqual(jwtRoles);
-      expect(mockUserRepository.touchLastLoginAt).toHaveBeenCalledWith(dbUserId);
+      expect(mockUserRepository.touchLastLoginAt).toHaveBeenCalledWith(
+        dbUserId,
+      );
     });
 
     it('should use cached user when available', async () => {

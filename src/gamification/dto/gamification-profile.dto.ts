@@ -140,7 +140,10 @@ export class GamificationProfileResponseDto {
   @ApiProperty()
   userId!: string;
 
-  @ApiPropertyOptional({ nullable: true, enum: ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'] })
+  @ApiPropertyOptional({
+    nullable: true,
+    enum: ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'],
+  })
   segment!: string | null;
 
   @ApiPropertyOptional({

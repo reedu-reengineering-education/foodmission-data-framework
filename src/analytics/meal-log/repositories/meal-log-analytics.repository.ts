@@ -517,7 +517,11 @@ export class MealLogAnalyticsRepository {
           : {}),
         ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
+      orderBy: [
+        { date: 'asc' },
+        { typeOfMeal: 'asc' },
+        { dimensionName: 'asc' },
+      ],
       select: {
         id: true,
         date: true,
@@ -557,7 +561,11 @@ export class MealLogAnalyticsRepository {
           : {}),
         ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
+      orderBy: [
+        { date: 'asc' },
+        { typeOfMeal: 'asc' },
+        { dimensionName: 'asc' },
+      ],
       select: {
         id: true,
         date: true,
@@ -595,7 +603,11 @@ export class MealLogAnalyticsRepository {
           : {}),
         ...(dimension ? { dimensionName: dimension } : {}),
       },
-      orderBy: [{ date: 'asc' }, { typeOfMeal: 'asc' }, { dimensionName: 'asc' }],
+      orderBy: [
+        { date: 'asc' },
+        { typeOfMeal: 'asc' },
+        { dimensionName: 'asc' },
+      ],
       select: {
         id: true,
         date: true,

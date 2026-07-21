@@ -12,15 +12,7 @@ import {
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
-import {
-  User,
-  UserSegment,
-  WeeklyBeefFrequency,
-  WeeklyFoodWasteRange,
-  WeeklyMeatRange,
-  WeeklyReusableRange,
-  WeeklyUpfRange,
-} from '@prisma/client';
+import { User, UserSegment } from '@prisma/client';
 
 const ONBOARDING_BASELINE_FIELDS = [
   'weeklyMeatConsumption',
@@ -217,8 +209,9 @@ export class UserProfilesService {
     }
 
     const touchedOnboarding =
-      ONBOARDING_BASELINE_FIELDS.some((field) => payload[field] !== undefined) ||
-      payload.segment !== undefined;
+      ONBOARDING_BASELINE_FIELDS.some(
+        (field) => payload[field] !== undefined,
+      ) || payload.segment !== undefined;
     if (!touchedOnboarding) {
       return user;
     }

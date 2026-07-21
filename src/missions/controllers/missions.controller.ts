@@ -40,7 +40,6 @@ export class MissionsController {
   @Post()
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
-  
   @ApiOperation({
     summary: 'Create a new Mission',
     description: 'Creates a new mission as an Admin',

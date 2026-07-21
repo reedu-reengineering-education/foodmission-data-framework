@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Query,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ShoppingListAnalyticsService } from '../services/shopping-list-analytics.service';
 import { ShoppingListAnalyticsBatch } from '@prisma/client';
 import {
@@ -24,7 +15,9 @@ import { DateRangeQuery } from '../../common/decorators/date-range-query.decorat
 @ApiTags('Analytics - Shopping List')
 @Controller('analytics/shopping-list')
 export class ShoppingListAnalyticsController extends BaseAnalyticsAdminController<ShoppingListAnalyticsBatch> {
-  constructor(protected readonly analyticsService: ShoppingListAnalyticsService) {
+  constructor(
+    protected readonly analyticsService: ShoppingListAnalyticsService,
+  ) {
     super();
   }
 
@@ -382,5 +375,4 @@ export class ShoppingListAnalyticsController extends BaseAnalyticsAdminControlle
       dim2,
     );
   }
-
 }

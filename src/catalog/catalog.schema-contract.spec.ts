@@ -67,9 +67,9 @@ describe('Catalog contract (schema.prisma)', () => {
   });
 
   it('matches WeeklyFoodWasteRange enum', () => {
-    expect(
-      service.listWeeklyFoodWasteRanges().data.map((x) => x.code),
-    ).toEqual(parsePrismaEnum(schema, 'WeeklyFoodWasteRange'));
+    expect(service.listWeeklyFoodWasteRanges().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WeeklyFoodWasteRange'),
+    );
   });
 
   it('matches WeeklyUpfRange enum', () => {
@@ -79,9 +79,9 @@ describe('Catalog contract (schema.prisma)', () => {
   });
 
   it('matches WeeklyReusableRange enum', () => {
-    expect(
-      service.listWeeklyReusableRanges().data.map((x) => x.code),
-    ).toEqual(parsePrismaEnum(schema, 'WeeklyReusableRange'));
+    expect(service.listWeeklyReusableRanges().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'WeeklyReusableRange'),
+    );
   });
 
   it('matches UserSegment enum', () => {

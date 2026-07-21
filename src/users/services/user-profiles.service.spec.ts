@@ -79,15 +79,16 @@ describe('UserProfilesService - deleteUserById', () => {
       deleteUser: jest.fn().mockResolvedValue(undefined),
     };
 
-    const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> = {
-      deriveSegment: jest.fn().mockReturnValue(UserSegment.BEGINNER),
-      applyOnboardingSideEffects: jest.fn().mockResolvedValue({
-        segment: UserSegment.BEGINNER,
-        indicatorsSeeded: 7,
-        walletEnsured: true,
-        onboardingEventRecorded: true,
-      }),
-    };
+    const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> =
+      {
+        deriveSegment: jest.fn().mockReturnValue(UserSegment.BEGINNER),
+        applyOnboardingSideEffects: jest.fn().mockResolvedValue({
+          segment: UserSegment.BEGINNER,
+          indicatorsSeeded: 7,
+          walletEnsured: true,
+          onboardingEventRecorded: true,
+        }),
+      };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
