@@ -49,7 +49,7 @@ describe('nevo translations import', () => {
     expect(rows[0].translations.sl.foodName).toBe('Surovi krompir');
   });
 
-  it('expands one food into 18 translation rows (8 locales × 2 fields + nl remark/synonym slots skipped when blank)', () => {
+  it('produces 16 translation rows for one food (18 locale slots minus 2 blank nl remark/synonym)', () => {
     const content = fs.readFileSync(FIXTURE, 'utf-8');
     const csvRows = parseNevoTranslationsCsv(content).slice(0, 1);
     const idByNevoCode = new Map([[1, 'food-uuid-1']]);
