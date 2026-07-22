@@ -71,9 +71,7 @@ export class MealsService {
 
     try {
       const meal = await this.mealRepository.create({
-        ...(createMealDto.name !== undefined
-          ? { name: createMealDto.name }
-          : {}),
+        ...(createMealDto.name !== undefined ? { name: createMealDto.name } : {}),
         ...this.mapMealWriteInput(createMealDto),
         userId,
       });

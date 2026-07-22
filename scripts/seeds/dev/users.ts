@@ -205,31 +205,40 @@ export async function seedUsers(prisma: PrismaClient) {
   for (const userInfo of userData) {
     const gamification = gamificationFieldsFromSeed(userInfo);
 
-    const user = await prisma.user.upsert({
-      where: { keycloakId: userInfo.keycloakId },
-      update: {
-        email: userInfo.email,
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        ...gamification,
-      },
-      create: {
-        keycloakId: userInfo.keycloakId,
-        email: userInfo.email,
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        ...gamification,
-      },
-    });
+    // Match by email first so re-seed updates the row created by a real Keycloak
+    // login (sub may differ from KEYCLOAK_DEV_USER_IDS). Fall back to keycloakId.
+    const existing =
+      (await prisma.user.findUnique({ where: { email: userInfo.email } })) ??
+      (await prisma.user.findUnique({
+        where: { keycloakId: userInfo.keycloakId },
+      }));
 
-    if (userInfo.preferences) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          preferences: userInfo.preferences as object,
-        },
-      });
-    }
+    const user = existing
+      ? await prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            email: userInfo.email,
+            firstName: userInfo.firstName,
+            lastName: userInfo.lastName,
+            // Keep the live Keycloak sub if this row was created via login.
+            ...gamification,
+            ...(userInfo.preferences !== undefined
+              ? { preferences: userInfo.preferences as object }
+              : {}),
+          },
+        })
+      : await prisma.user.create({
+          data: {
+            keycloakId: userInfo.keycloakId,
+            email: userInfo.email,
+            firstName: userInfo.firstName,
+            lastName: userInfo.lastName,
+            ...gamification,
+            ...(userInfo.preferences !== undefined
+              ? { preferences: userInfo.preferences as object }
+              : {}),
+          },
+        });
 
     users.push(user);
   }
@@ -237,7 +246,7 @@ export async function seedUsers(prisma: PrismaClient) {
   console.log(`✅ Created/updated ${users.length} users with preferences`);
   if (process.env.NODE_ENV !== 'production') {
     console.log(
-      'ℹ️  Import keycloak/foodmission-realm.dev.json into Keycloak so JWT `sub` matches User.keycloakId (see keycloak/README.md).',
+      'ℹ️  Named users are matched by email on re-seed (Keycloak `sub` is preserved when already set).',
     );
   }
   const generated: User[] = [];

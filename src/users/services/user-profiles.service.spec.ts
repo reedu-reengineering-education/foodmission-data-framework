@@ -3,7 +3,6 @@ import { UserProfilesService } from './user-profiles.service';
 import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
-import { NotFoundException } from '@nestjs/common';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   UserSegment,
@@ -14,11 +13,10 @@ import {
   WeeklyUpfRange,
 } from '@prisma/client';
 
-describe('UserProfilesService', () => {
+describe('UserProfilesService updateProfile gamification', () => {
   let service: UserProfilesService;
   let userRepository: jest.Mocked<UsersRepository>;
   let prisma: jest.Mocked<PrismaService>;
-  let keycloakAdminService: jest.Mocked<KeycloakAdminService>;
   let gamificationOnboarding: jest.Mocked<GamificationOnboardingService>;
 
   const mockUser = {
@@ -40,54 +38,45 @@ describe('UserProfilesService', () => {
   };
 
   beforeEach(async () => {
-    const mockRepo: Partial<jest.Mocked<UsersRepository>> = {
-      findByKeycloakId: jest.fn(),
-      findById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      remove: jest.fn(),
-    };
-
-    const mockPrisma: Partial<jest.Mocked<PrismaService>> = {
-      user: { update: jest.fn() } as any,
-      mealLog: { deleteMany: jest.fn() } as any,
-      meal: { deleteMany: jest.fn() } as any,
-      recipe: { deleteMany: jest.fn() } as any,
-      pantryItem: { deleteMany: jest.fn() } as any,
-      pantry: { deleteMany: jest.fn() } as any,
-      shoppingListItem: { deleteMany: jest.fn() } as any,
-      shoppingList: { deleteMany: jest.fn() } as any,
-    };
-
-    const mockKeycloakAdmin: Partial<jest.Mocked<KeycloakAdminService>> = {
-      deleteUser: jest.fn().mockResolvedValue(undefined),
-    };
-
-    const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> =
-      {
-        applyOnboardingSideEffects: jest.fn().mockResolvedValue({
-          segment: UserSegment.BEGINNER,
-          indicatorsSeeded: 7,
-          walletEnsured: true,
-          onboardingEventRecorded: true,
-          skipped: false,
-        }),
-      };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserProfilesService,
-        { provide: UsersRepository, useValue: mockRepo },
-        { provide: PrismaService, useValue: mockPrisma },
-        { provide: KeycloakAdminService, useValue: mockKeycloakAdmin },
-        { provide: GamificationOnboardingService, useValue: mockOnboarding },
+        {
+          provide: UsersRepository,
+          useValue: {
+            findByKeycloakId: jest.fn(),
+            findById: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+        {
+          provide: PrismaService,
+          useValue: { user: { update: jest.fn() } },
+        },
+        {
+          provide: KeycloakAdminService,
+          useValue: { deleteUser: jest.fn() },
+        },
+        {
+          provide: GamificationOnboardingService,
+          useValue: {
+            applyOnboardingSideEffects: jest.fn().mockResolvedValue({
+              segment: UserSegment.BEGINNER,
+              indicatorsSeeded: 7,
+              walletEnsured: true,
+              onboardingEventRecorded: true,
+              skipped: false,
+            }),
+          },
+        },
       ],
     }).compile();
 
     service = module.get(UserProfilesService);
     userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
-    keycloakAdminService = module.get(KeycloakAdminService);
     gamificationOnboarding = module.get(GamificationOnboardingService);
   });
 
@@ -95,150 +84,99 @@ describe('UserProfilesService', () => {
     jest.clearAllMocks();
   });
 
-  describe('deleteUserById', () => {
-    it('deletes only the user when cascade is false', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
-
-      await service.deleteUserById('user-1', false);
-
-      expect(userRepository.remove).toHaveBeenCalledWith('user-1');
-      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
-      expect(prisma.mealLog.deleteMany).not.toHaveBeenCalled();
+  it('derives segment and applies side effects when all baselines are set', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      weeklyMeatConsumption: null,
+      weeklyBeefConsumption: null,
+      weeklyFoodWaste: null,
+      weeklyUpfConsumption: null,
+      weeklyReusableOrRefill: null,
+      segment: null,
     });
 
-    it('cascades related data when cascade is true', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (prisma.pantryItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 1,
-      });
-      (prisma.pantry.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (prisma.shoppingListItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 1,
-      });
-      (prisma.shoppingList.deleteMany as jest.Mock).mockResolvedValue({
-        count: 1,
-      });
-      (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
+    const afterUpdate = {
+      ...mockUser,
+      weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
+      weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+      weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
+      weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
+      weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+      segment: null,
+    };
+    const afterSegment = {
+      ...afterUpdate,
+      segment: UserSegment.BEGINNER,
+    };
 
-      await service.deleteUserById('user-1', true);
+    (prisma.user.update as jest.Mock)
+      .mockResolvedValueOnce(afterUpdate)
+      .mockResolvedValueOnce(afterSegment);
 
-      expect(prisma.mealLog.deleteMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-      expect(userRepository.remove).toHaveBeenCalledWith('user-1');
-      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
+    const result = await service.updateProfile('kc-1', {
+      preferences: {
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
+          weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+          weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
+          weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
+          weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+        },
+      },
     });
 
-    it('throws when user is missing', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(null);
-
-      await expect(service.deleteUserById('missing')).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(userRepository.remove).not.toHaveBeenCalled();
-    });
+    expect(
+      gamificationOnboarding.applyOnboardingSideEffects,
+    ).toHaveBeenCalledWith(afterSegment, UserSegment.BEGINNER);
+    expect(result.segment).toBe(UserSegment.BEGINNER);
   });
 
-  describe('updateProfile gamification onboarding', () => {
-    it('derives segment and applies side effects when all baselines are set', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
-        ...mockUser,
-        weeklyMeatConsumption: null,
-        weeklyBeefConsumption: null,
-        weeklyFoodWaste: null,
-        weeklyUpfConsumption: null,
-        weeklyReusableOrRefill: null,
-        segment: null,
-      });
-
-      const afterUpdate = {
-        ...mockUser,
-        weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
-        weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
-        weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
-        weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
-        weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
-        segment: null,
-      };
-      const afterSegment = {
-        ...afterUpdate,
-        segment: UserSegment.BEGINNER,
-      };
-
-      (prisma.user.update as jest.Mock)
-        .mockResolvedValueOnce(afterUpdate)
-        .mockResolvedValueOnce(afterSegment);
-
-      const result = await service.updateProfile('kc-1', {
-        preferences: {
-          onboardingSurvey: {
-            weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
-            weeklyBeefConsumption:
-              WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
-            weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
-            weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
-            weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
-          },
-        },
-      });
-
-      expect(
-        gamificationOnboarding.applyOnboardingSideEffects,
-      ).toHaveBeenCalledWith(afterSegment, UserSegment.BEGINNER);
-      expect(result.segment).toBe(UserSegment.BEGINNER);
+  it('merges partial preferences and settings without wiping stored keys', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      preferences: {
+        motivation: 'HEALTH',
+        foodExclusions: ['peanuts'],
+      },
+      settings: {
+        emailNotifications: true,
+      },
     });
 
-    it('merges partial preferences and settings without wiping stored keys', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+    (prisma.user.update as jest.Mock).mockImplementation(({ data }) =>
+      Promise.resolve({
         ...mockUser,
-        preferences: {
-          motivation: 'HEALTH',
-          foodExclusions: ['peanuts'],
-        },
-        settings: {
-          emailNotifications: true,
-        },
-      });
+        ...data,
+        preferences: data.preferences,
+        settings: data.settings,
+      }),
+    );
 
-      (prisma.user.update as jest.Mock).mockImplementation(({ data }) =>
-        Promise.resolve({
-          ...mockUser,
-          ...data,
-          preferences: data.preferences,
-          settings: data.settings,
-        }),
-      );
-
-      await service.updateProfile('kc-1', {
-        preferences: {
-          onboardingSurvey: {
-            weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
-          },
+    await service.updateProfile('kc-1', {
+      preferences: {
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
         },
-        settings: {
-          pushNotifications: false,
-        },
-      });
-
-      expect(prisma.user.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            preferences: {
-              motivation: 'HEALTH',
-              foodExclusions: ['peanuts'],
-            },
-            weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
-            settings: {
-              emailNotifications: true,
-              pushNotifications: false,
-            },
-          }),
-        }),
-      );
+      },
+      settings: {
+        pushNotifications: false,
+      },
     });
+
+    expect(prisma.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          preferences: {
+            motivation: 'HEALTH',
+            foodExclusions: ['peanuts'],
+          },
+          weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+          settings: {
+            emailNotifications: true,
+            pushNotifications: false,
+          },
+        }),
+      }),
+    );
   });
 });

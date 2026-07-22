@@ -7,7 +7,6 @@ import {
   SOFT_PROGRESS_INDICATOR_KINDS,
   targetForSegment,
 } from '../onboarding.utils';
-import { assertProgressIndicatorOwner } from '../progress-indicator.utils';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
   return `onboarding-completed:${userId}`;
@@ -38,38 +37,23 @@ export class GamificationOnboardingService {
     user: Pick<User, 'id'>,
     segment: UserSegment,
   ): Promise<CompleteOnboardingResult> {
-    assertProgressIndicatorOwner({ userId: user.id });
-
     const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
+    const skipped = {
+      segment,
+      indicatorsSeeded: 0,
+      walletEnsured: false,
+      onboardingEventRecorded: false,
+      skipped: true as const,
+    };
 
     const existing =
       await this.userEventService.findByIdempotencyKey(idempotencyKey);
     if (existing) {
-      return {
-        segment,
-        indicatorsSeeded: 0,
-        walletEnsured: false,
-        onboardingEventRecorded: false,
-        skipped: true,
-      };
+      return skipped;
     }
 
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const again = await this.userEventService.findByIdempotencyKey(
-          idempotencyKey,
-          tx,
-        );
-        if (again) {
-          return {
-            segment,
-            indicatorsSeeded: 0,
-            walletEnsured: false,
-            onboardingEventRecorded: false,
-            skipped: true,
-          };
-        }
-
         await tx.userGamificationWallet.upsert({
           where: { userId: user.id },
           update: {},
@@ -126,13 +110,7 @@ export class GamificationOnboardingService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        return {
-          segment,
-          indicatorsSeeded: 0,
-          walletEnsured: false,
-          onboardingEventRecorded: false,
-          skipped: true,
-        };
+        return skipped;
       }
       throw error;
     }

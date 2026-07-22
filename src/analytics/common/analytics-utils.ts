@@ -268,11 +268,7 @@ export function makeApplyK(counter: SuppressedCounter) {
     field: 'userCount' | 'uniqueUsers' = 'userCount',
     threshold = K_ANONYMITY_THRESHOLD,
   ): T[] => {
-    const { rows: filtered, suppressed } = applyKAnonymity(
-      rows,
-      field,
-      threshold,
-    );
+    const { rows: filtered, suppressed } = applyKAnonymity(rows, field, threshold);
     counter.value += suppressed;
     return filtered;
   };

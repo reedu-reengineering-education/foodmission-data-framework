@@ -57,7 +57,7 @@ export class GamificationWalletService {
     private readonly userEventService: UserEventService,
   ) {}
 
-  async ensureWallet(userId: string): Promise<UserGamificationWallet> {
+  private async ensureWallet(userId: string): Promise<UserGamificationWallet> {
     return this.prisma.userGamificationWallet.upsert({
       where: { userId },
       update: {},

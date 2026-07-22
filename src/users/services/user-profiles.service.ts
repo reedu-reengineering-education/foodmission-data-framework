@@ -16,7 +16,7 @@ import {
   buildUserPreferences,
   deriveUserSegment,
   extractOnboardingSurvey,
-  ONBOARDING_BASELINE_FIELDS,
+  hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
 import type { User } from '@prisma/client';
 
@@ -99,50 +99,19 @@ export class UserProfilesService {
 
     const updateData: any = {};
 
-    const forbidden = [
-      'id',
-      'keycloakId',
-      'email',
-      'username',
-      'createdAt',
-      'updatedAt',
-      'shoppingList',
-      'pantry',
-    ];
-
-    const badKeys = Object.keys(payload || {}).filter((k) =>
-      forbidden.includes(k),
-    );
-    if (badKeys.length > 0) {
-      throw new BadRequestException(
-        `Attempted to update protected fields: ${badKeys.join(', ')}`,
-      );
-    }
-
-    for (const field of ONBOARDING_BASELINE_FIELDS) {
-      if (payload[field] !== undefined) {
-        throw new BadRequestException(
-          `Use preferences.onboardingSurvey.${field} instead of top-level ${field}`,
-        );
-      }
-    }
-
-    if (payload.country !== undefined) updateData.country = payload.country;
-    if (payload.region !== undefined) updateData.region = payload.region;
-    if (payload.zip !== undefined) updateData.zip = payload.zip;
-    if (payload.language !== undefined) updateData.language = payload.language;
-
-    // Accept yearOfBirth (preferred). Persist to DB as dateOfBirth = Jan 1 of year.
     if (payload.yearOfBirth !== undefined && payload.yearOfBirth !== null) {
       const y = Number(payload.yearOfBirth);
       if (!Number.isFinite(y) || y < 1900 || y > new Date().getUTCFullYear()) {
         throw new BadRequestException('Invalid yearOfBirth');
       }
-      // Persist the numeric year into the DB field `yearOfBirth` (Int). Migration to apply by user.
       updateData.yearOfBirth = Math.trunc(y);
     }
 
-    const extendedFields = [
+    const passThroughFields = [
+      'country',
+      'region',
+      'zip',
+      'language',
       'gender',
       'annualIncome',
       'educationLevel',
@@ -151,14 +120,14 @@ export class UserProfilesService {
       'activityLevel',
       'healthGoals',
       'nutritionTargets',
+      'segment',
       'currentQuestId',
-    ];
+    ] as const;
 
-    for (const f of extendedFields) {
-      if (payload[f] === undefined) continue;
-
-      // Gender is validated at the DTO level; pass through other extended fields directly.
-      updateData[f] = payload[f];
+    for (const f of passThroughFields) {
+      if (payload[f] !== undefined) {
+        updateData[f] = payload[f];
+      }
     }
 
     if (payload.settings !== undefined) {
@@ -177,10 +146,10 @@ export class UserProfilesService {
       };
       if (prefs.onboardingSurvey !== undefined) {
         try {
-          const surveyUpdates = extractOnboardingSurvey(prefs.onboardingSurvey);
-          for (const [field, value] of Object.entries(surveyUpdates)) {
-            updateData[field] = value;
-          }
+          Object.assign(
+            updateData,
+            extractOnboardingSurvey(prefs.onboardingSurvey),
+          );
         } catch (err) {
           throw new BadRequestException(
             err instanceof Error ? err.message : 'Invalid onboardingSurvey',
@@ -209,10 +178,8 @@ export class UserProfilesService {
   }
 
   /**
-   * When all five habit baselines are present and onboarding fields were touched,
-   * derive/persist segment, then apply first-time gamification side effects
-   * (wallet + soft indicators + ONBOARDING_COMPLETED). Side effects are skipped
-   * if onboarding was already completed.
+   * When all five habit baselines are present and onboarding was touched
+   * (survey and/or segment), persist segment and apply first-time side effects.
    */
   private async applyGamificationOnboardingIfReady(
     user: User,
@@ -221,26 +188,15 @@ export class UserProfilesService {
     const surveyTouched =
       (payload.preferences as { onboardingSurvey?: unknown } | undefined)
         ?.onboardingSurvey !== undefined;
-    if (!surveyTouched) {
-      return user;
-    }
-
-    const hasAllBaselines = ONBOARDING_BASELINE_FIELDS.every(
-      (field) => user[field] != null,
-    );
-    if (!hasAllBaselines) {
+    const segmentTouched = payload.segment !== undefined;
+    if ((!surveyTouched && !segmentTouched) || !hasAllOnboardingBaselines(user)) {
       return user;
     }
 
     const segment =
+      (payload.segment as User['segment'] | undefined) ??
       user.segment ??
-      deriveUserSegment({
-        weeklyMeatConsumption: user.weeklyMeatConsumption!,
-        weeklyBeefConsumption: user.weeklyBeefConsumption!,
-        weeklyFoodWaste: user.weeklyFoodWaste!,
-        weeklyUpfConsumption: user.weeklyUpfConsumption!,
-        weeklyReusableOrRefill: user.weeklyReusableOrRefill!,
-      });
+      deriveUserSegment(user);
 
     const nextUser =
       user.segment === segment

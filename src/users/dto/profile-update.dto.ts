@@ -8,9 +8,7 @@ import {
   IsObject,
   MaxLength,
   ValidateIf,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   GenderLocal,
@@ -18,6 +16,7 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from './create-user.dto';
+import { UserSegment } from './gamification-enums.dto';
 import { UserPreferencesDto } from './user-preferences.dto';
 import { UserSettingsDto } from './user-settings.dto';
 
@@ -108,25 +107,34 @@ export class ProfileUpdateDto {
 
   @ApiProperty({
     description:
-      'User preferences — dietary prefs, exclusions, motivation, onboardingSurvey, etc.',
+      'User preferences JSON. Known keys documented on UserPreferencesDto; ' +
+      'extra keys are allowed. onboardingSurvey enums are validated in the service.',
     required: false,
     type: UserPreferencesDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => UserPreferencesDto)
-  preferences?: UserPreferencesDto;
+  @IsObject()
+  preferences?: Record<string, unknown>;
 
   @ApiProperty({
     description:
-      'User settings — notifications, etc. See UserSettingsDto shape.',
+      'User settings JSON. Known keys documented on UserSettingsDto; extra keys are allowed.',
     required: false,
     type: UserSettingsDto,
   })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => UserSettingsDto)
-  settings?: UserSettingsDto;
+  @IsObject()
+  settings?: Record<string, unknown>;
+
+  @ApiProperty({
+    description:
+      'Gamification segment. Optional — if omitted when onboarding baselines are complete, server derives it.',
+    required: false,
+    enum: Object.values(UserSegment),
+  })
+  @IsOptional()
+  @IsEnum(UserSegment)
+  segment?: UserSegment;
 
   @ApiProperty({
     description:

@@ -42,6 +42,17 @@ export const ONBOARDING_BASELINE_FIELDS = [
 
 type OnboardingBaselineField = (typeof ONBOARDING_BASELINE_FIELDS)[number];
 
+const ONBOARDING_FIELD_ENUMS: Record<
+  OnboardingBaselineField,
+  readonly string[]
+> = {
+  weeklyMeatConsumption: Object.values(WeeklyMeatRange),
+  weeklyBeefConsumption: Object.values(WeeklyBeefFrequency),
+  weeklyFoodWaste: Object.values(WeeklyFoodWasteRange),
+  weeklyUpfConsumption: Object.values(WeeklyUpfRange),
+  weeklyReusableOrRefill: Object.values(WeeklyReusableRange),
+};
+
 export interface OnboardingBaselines {
   weeklyMeatConsumption: WeeklyMeatRange;
   weeklyBeefConsumption: WeeklyBeefFrequency;
@@ -52,15 +63,11 @@ export interface OnboardingBaselines {
 
 type OnboardingSurvey = Partial<Record<OnboardingBaselineField, string>>;
 
-type OnboardingSurveyUser = {
-  weeklyMeatConsumption?: string | null;
-  weeklyBeefConsumption?: string | null;
-  weeklyFoodWaste?: string | null;
-  weeklyUpfConsumption?: string | null;
-  weeklyReusableOrRefill?: string | null;
-};
+type OnboardingSurveyUser = Partial<
+  Record<OnboardingBaselineField, string | null | undefined>
+>;
 
-/** Pick known onboardingSurvey fields into column updates (DTO validates enums). */
+/** Pick known onboardingSurvey fields into column updates; validate enum codes. */
 export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
   if (survey === null || typeof survey !== 'object' || Array.isArray(survey)) {
     throw new Error('preferences.onboardingSurvey must be an object');
@@ -69,11 +76,24 @@ export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
   const obj = survey as Record<string, unknown>;
   const result: OnboardingSurvey = {};
   for (const field of ONBOARDING_BASELINE_FIELDS) {
-    if (obj[field] !== undefined) {
-      result[field] = obj[field] as string;
+    if (obj[field] === undefined) continue;
+    const value = obj[field];
+    if (
+      typeof value !== 'string' ||
+      !ONBOARDING_FIELD_ENUMS[field].includes(value)
+    ) {
+      throw new Error(`Invalid value for ${field}`);
     }
+    result[field] = value;
   }
   return result;
+}
+
+/** True when all five habit baseline columns are set. */
+export function hasAllOnboardingBaselines(
+  user: OnboardingSurveyUser,
+): user is OnboardingBaselines {
+  return ONBOARDING_BASELINE_FIELDS.every((field) => user[field] != null);
 }
 
 /** Merge stored preferences JSON with onboardingSurvey built from columns. */

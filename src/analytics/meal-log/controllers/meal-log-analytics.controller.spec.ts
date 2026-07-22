@@ -67,7 +67,7 @@ describe('MealLogAnalyticsController', () => {
   it('passes optional batch status to the service', async () => {
     service.listBatches.mockResolvedValue([]);
 
-    await controller.listBatches('STAGING');
+    await controller.listBatches('STAGING' as any);
 
     expect(service.listBatches).toHaveBeenCalledWith('STAGING');
   });

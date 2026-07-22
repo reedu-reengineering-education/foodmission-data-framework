@@ -60,9 +60,7 @@ describe('GamificationOnboardingService', () => {
   });
 
   it('runs wallet, indicators, and event in one transaction', async () => {
-    userEventService.findByIdempotencyKey
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(null);
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
     userEventService.record.mockResolvedValue({
       event: { id: 'evt-new' } as any,
       replayed: false,

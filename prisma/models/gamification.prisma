@@ -161,9 +161,8 @@ model WalletEntry {
 }
 
 /// Same shape for personal and group progress indicators.
-/// Exactly one of userId / groupId must be set:
-/// - DB: CHECK constraint `progress_indicators_owner_xor` (manual migration)
-/// - App: `assertProgressIndicatorOwner()` before create/upsert
+/// Exactly one of userId / groupId must be set
+/// (DB CHECK `progress_indicators_owner_xor` in manual migration).
 model ProgressIndicator {
   id               String                 @id @default(uuid())
   userId           String?

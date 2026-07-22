@@ -6,11 +6,7 @@ import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
-import {
-  OPENAPI_DOCS_PATH,
-  OPENAPI_GLOBAL_PREFIX,
-  registerOpenApi,
-} from './docs';
+import { OPENAPI_DOCS_PATH, OPENAPI_GLOBAL_PREFIX, registerOpenApi } from './docs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

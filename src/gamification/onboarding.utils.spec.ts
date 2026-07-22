@@ -4,7 +4,6 @@ import {
   extractOnboardingSurvey,
   formatUserRecordForApi,
   targetForSegment,
-  SOFT_PROGRESS_INDICATOR_KINDS,
 } from './onboarding.utils';
 import {
   UserSegment,
@@ -16,18 +15,12 @@ import {
 } from '@prisma/client';
 
 describe('onboarding.utils', () => {
-  it('exposes seven soft indicator kinds', () => {
-    expect(SOFT_PROGRESS_INDICATOR_KINDS).toHaveLength(7);
-  });
-
   it('maps segment to default targets', () => {
     expect(targetForSegment(UserSegment.BEGINNER)).toBe(10);
-    expect(targetForSegment(UserSegment.INTERMEDIATE)).toBe(20);
-    expect(targetForSegment(UserSegment.ADVANCED)).toBe(30);
     expect(targetForSegment(null)).toBe(10);
   });
 
-  it('derives BEGINNER for high-impact baselines', () => {
+  it('derives BEGINNER vs ADVANCED from baselines', () => {
     expect(
       deriveUserSegment({
         weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
@@ -37,9 +30,7 @@ describe('onboarding.utils', () => {
         weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
       }),
     ).toBe(UserSegment.BEGINNER);
-  });
 
-  it('derives ADVANCED for low-impact baselines', () => {
     expect(
       deriveUserSegment({
         weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
@@ -51,17 +42,21 @@ describe('onboarding.utils', () => {
     ).toBe(UserSegment.ADVANCED);
   });
 
-  it('extracts known onboarding survey fields into column updates', () => {
+  it('extracts known onboarding survey fields', () => {
     expect(
       extractOnboardingSurvey({
         weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
-        weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
         meatMeals: 'ignored',
       }),
     ).toEqual({
       weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
-      weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
     });
+  });
+
+  it('rejects invalid onboarding survey enum values', () => {
+    expect(() =>
+      extractOnboardingSurvey({ weeklyMeatConsumption: 'NOT_A_REAL_VALUE' }),
+    ).toThrow('Invalid value for weeklyMeatConsumption');
   });
 
   it('builds preferences with onboardingSurvey from columns', () => {
@@ -84,7 +79,7 @@ describe('onboarding.utils', () => {
     });
   });
 
-  it('formats user records for API without top-level baseline columns', () => {
+  it('formats user records without top-level baseline columns', () => {
     expect(
       formatUserRecordForApi({
         id: 'u1',

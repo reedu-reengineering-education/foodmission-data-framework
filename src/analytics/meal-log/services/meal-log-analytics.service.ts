@@ -2,10 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MealLogAnalyticsRepository } from '../repositories/meal-log-analytics.repository';
 import { MealLogAnalyticsAggregator } from './meal-log-analytics-aggregator.service';
 import { MealLogAnalyticsBatch, Prisma } from '@prisma/client';
-import {
-  runBatchGeneration,
-  runBatchInsertSteps,
-} from '../../common/batch-runner';
+import { runBatchGeneration, runBatchInsertSteps } from '../../common/batch-runner';
 import {
   DEMOGRAPHIC_DIMENSIONS,
   DemographicDimension,
@@ -98,10 +95,8 @@ export class MealLogAnalyticsService extends BaseAnalyticsService<MealLogAnalyti
                 result.sustainability.map((r) => ({
                   ...r,
                   batchId,
-                  nutriScoreDistribution:
-                    r.nutriScoreDistribution ?? Prisma.JsonNull,
-                  ecoScoreDistribution:
-                    r.ecoScoreDistribution ?? Prisma.JsonNull,
+                  nutriScoreDistribution: r.nutriScoreDistribution ?? Prisma.JsonNull,
+                  ecoScoreDistribution: r.ecoScoreDistribution ?? Prisma.JsonNull,
                 })),
               ),
           },

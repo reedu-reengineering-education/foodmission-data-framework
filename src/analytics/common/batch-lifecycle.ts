@@ -17,11 +17,7 @@ export interface IBatchRepository<
     reason?: string,
   ): Promise<TBatch>;
   deleteBatch(id: string): Promise<void>;
-  supersedeBatchesForPeriod(
-    from: Date,
-    to: Date,
-    excludeId: string,
-  ): Promise<void>;
+  supersedeBatchesForPeriod(from: Date, to: Date, excludeId: string): Promise<void>;
 }
 
 export interface BatchStatusUpdateFields {

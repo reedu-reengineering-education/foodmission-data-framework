@@ -42,6 +42,7 @@ export class MealLogsController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
+  
   @ApiOperation({ summary: 'Create a meal log' })
   @ApiBody({ type: CreateMealLogDto })
   @ApiResponse({
