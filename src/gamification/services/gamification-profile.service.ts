@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { buildUserPreferences } from '../onboarding.utils';
 import {
   GamificationEventDto,
   GamificationProfileResponseDto,
   GamificationWalletDto,
-  OnboardingBaselinesDto,
   ProgressIndicatorDto,
   WalletEntryDto,
 } from '../dto/gamification-profile.dto';
@@ -53,7 +53,7 @@ export class GamificationProfileService {
       segment: user.segment,
       currentQuestId: user.currentQuestId,
       lastLoginAt: user.lastLoginAt,
-      onboardingBaselines: this.mapBaselines(user),
+      preferences: buildUserPreferences(user.preferences, user),
       wallet: user.gamificationWallet
         ? this.mapWallet(user.gamificationWallet)
         : null,
@@ -65,22 +65,6 @@ export class GamificationProfileService {
       recentWalletEntries: recentWalletEntries.map((entry) =>
         this.mapWalletEntry(entry),
       ),
-    };
-  }
-
-  private mapBaselines(user: {
-    weeklyMeatConsumption: string | null;
-    weeklyBeefConsumption: string | null;
-    weeklyFoodWaste: string | null;
-    weeklyUpfConsumption: string | null;
-    weeklyReusableOrRefill: string | null;
-  }): OnboardingBaselinesDto {
-    return {
-      weeklyMeatConsumption: user.weeklyMeatConsumption,
-      weeklyBeefConsumption: user.weeklyBeefConsumption,
-      weeklyFoodWaste: user.weeklyFoodWaste,
-      weeklyUpfConsumption: user.weeklyUpfConsumption,
-      weeklyReusableOrRefill: user.weeklyReusableOrRefill,
     };
   }
 

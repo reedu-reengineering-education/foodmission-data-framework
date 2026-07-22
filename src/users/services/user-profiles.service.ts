@@ -12,15 +12,12 @@ import {
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import {
+  buildUserPreferences,
+  extractOnboardingSurvey,
+  ONBOARDING_BASELINE_FIELDS,
+} from '../../gamification/onboarding.utils';
 import { User, UserSegment } from '@prisma/client';
-
-const ONBOARDING_BASELINE_FIELDS = [
-  'weeklyMeatConsumption',
-  'weeklyBeefConsumption',
-  'weeklyFoodWaste',
-  'weeklyUpfConsumption',
-  'weeklyReusableOrRefill',
-] as const;
 
 export interface UserProfile {
   id: string;
@@ -46,11 +43,6 @@ export interface UserProfile {
   healthGoals?: Record<string, unknown>;
   nutritionTargets?: Record<string, unknown>;
 
-  weeklyMeatConsumption?: string | null;
-  weeklyBeefConsumption?: string | null;
-  weeklyFoodWaste?: string | null;
-  weeklyUpfConsumption?: string | null;
-  weeklyReusableOrRefill?: string | null;
   segment?: string | null;
   currentQuestId?: string | null;
   lastLoginAt?: Date | null;
@@ -126,6 +118,14 @@ export class UserProfilesService {
       );
     }
 
+    for (const field of ONBOARDING_BASELINE_FIELDS) {
+      if (payload[field] !== undefined) {
+        throw new BadRequestException(
+          `Use preferences.onboardingSurvey.${field} instead of top-level ${field}`,
+        );
+      }
+    }
+
     if (payload.country !== undefined) updateData.country = payload.country;
     if (payload.region !== undefined) updateData.region = payload.region;
     if (payload.zip !== undefined) updateData.zip = payload.zip;
@@ -151,12 +151,6 @@ export class UserProfilesService {
       'healthGoals',
       'nutritionTargets',
       'settings',
-      'preferences',
-      'weeklyMeatConsumption',
-      'weeklyBeefConsumption',
-      'weeklyFoodWaste',
-      'weeklyUpfConsumption',
-      'weeklyReusableOrRefill',
       'segment',
       'currentQuestId',
     ];
@@ -166,6 +160,24 @@ export class UserProfilesService {
 
       // Gender is validated at the DTO level; pass through other extended fields directly.
       updateData[f] = payload[f];
+    }
+
+    if (payload.preferences !== undefined) {
+      const prefs = { ...payload.preferences } as Record<string, unknown>;
+      if (prefs.onboardingSurvey !== undefined) {
+        try {
+          const surveyUpdates = extractOnboardingSurvey(prefs.onboardingSurvey);
+          for (const [field, value] of Object.entries(surveyUpdates)) {
+            updateData[field] = value;
+          }
+        } catch (err) {
+          throw new BadRequestException(
+            err instanceof Error ? err.message : 'Invalid onboardingSurvey',
+          );
+        }
+        delete prefs.onboardingSurvey;
+      }
+      updateData.preferences = prefs;
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -211,9 +223,8 @@ export class UserProfilesService {
     }
 
     const touchedOnboarding =
-      ONBOARDING_BASELINE_FIELDS.some(
-        (field) => payload[field] !== undefined,
-      ) || payload.segment !== undefined;
+      (payload.preferences as { onboardingSurvey?: unknown } | undefined)
+        ?.onboardingSurvey !== undefined || payload.segment !== undefined;
     if (!touchedOnboarding) {
       return user;
     }
@@ -263,13 +274,15 @@ export class UserProfilesService {
     // After migration the DB stores the year of birth as an integer in `yearOfBirth`.
     const yearOfBirth = user.yearOfBirth ?? undefined;
 
+    const preferences = buildUserPreferences(user.preferences, user);
+
     return {
       id: user.id,
       email: user.email,
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       keycloakId: user.keycloakId,
-      preferences: user.preferences as Record<string, unknown>,
+      preferences,
       settings: user.settings as Record<string, unknown>,
       username: user.username,
       yearOfBirth,
@@ -286,11 +299,6 @@ export class UserProfilesService {
       activityLevel: user.activityLevel,
       healthGoals: user.healthGoals,
       nutritionTargets: user.nutritionTargets,
-      weeklyMeatConsumption: user.weeklyMeatConsumption,
-      weeklyBeefConsumption: user.weeklyBeefConsumption,
-      weeklyFoodWaste: user.weeklyFoodWaste,
-      weeklyUpfConsumption: user.weeklyUpfConsumption,
-      weeklyReusableOrRefill: user.weeklyReusableOrRefill,
       segment: user.segment,
       currentQuestId: user.currentQuestId,
       lastLoginAt: user.lastLoginAt,

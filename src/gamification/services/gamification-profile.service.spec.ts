@@ -96,6 +96,13 @@ describe('GamificationProfileService', () => {
     });
 
     expect(result.userId).toBe('u1');
+    expect(result.preferences?.onboardingSurvey).toEqual({
+      weeklyMeatConsumption: 'ZERO_TO_FOUR',
+      weeklyBeefConsumption: 'NEVER',
+      weeklyFoodWaste: 'ZERO',
+      weeklyUpfConsumption: 'ZERO_TO_THREE',
+      weeklyReusableOrRefill: 'TEN_PLUS',
+    });
     expect(result.wallet?.points).toBe(40);
     expect(result.progressIndicators).toHaveLength(1);
     expect(result.badges).toEqual([]);

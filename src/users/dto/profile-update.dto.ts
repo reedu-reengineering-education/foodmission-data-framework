@@ -16,14 +16,7 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from './create-user.dto';
-import {
-  UserSegment,
-  WeeklyBeefFrequency,
-  WeeklyFoodWasteRange,
-  WeeklyMeatRange,
-  WeeklyReusableRange,
-  WeeklyUpfRange,
-} from './gamification-enums.dto';
+import { UserSegment } from './gamification-enums.dto';
 import { UserPreferencesDto } from './user-preferences.dto';
 import { UserSettingsDto } from './user-settings.dto';
 
@@ -131,52 +124,6 @@ export class ProfileUpdateDto {
   @IsOptional()
   @IsObject()
   settings?: UserSettingsDto;
-
-  // Gamification onboarding baselines
-  @ApiProperty({
-    description: 'Weekly meat consumption range',
-    required: false,
-    enum: Object.values(WeeklyMeatRange),
-  })
-  @IsOptional()
-  @IsEnum(WeeklyMeatRange)
-  weeklyMeatConsumption?: WeeklyMeatRange;
-
-  @ApiProperty({
-    description: 'Weekly beef consumption frequency',
-    required: false,
-    enum: Object.values(WeeklyBeefFrequency),
-  })
-  @IsOptional()
-  @IsEnum(WeeklyBeefFrequency)
-  weeklyBeefConsumption?: WeeklyBeefFrequency;
-
-  @ApiProperty({
-    description: 'Weekly edible food thrown away',
-    required: false,
-    enum: Object.values(WeeklyFoodWasteRange),
-  })
-  @IsOptional()
-  @IsEnum(WeeklyFoodWasteRange)
-  weeklyFoodWaste?: WeeklyFoodWasteRange;
-
-  @ApiProperty({
-    description: 'Weekly ultra-processed food consumption',
-    required: false,
-    enum: Object.values(WeeklyUpfRange),
-  })
-  @IsOptional()
-  @IsEnum(WeeklyUpfRange)
-  weeklyUpfConsumption?: WeeklyUpfRange;
-
-  @ApiProperty({
-    description: 'Weekly use of reusable containers or refill products',
-    required: false,
-    enum: Object.values(WeeklyReusableRange),
-  })
-  @IsOptional()
-  @IsEnum(WeeklyReusableRange)
-  weeklyReusableOrRefill?: WeeklyReusableRange;
 
   @ApiProperty({
     description: 'User gamification segment',

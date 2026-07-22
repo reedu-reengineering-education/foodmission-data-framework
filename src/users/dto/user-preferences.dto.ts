@@ -6,9 +6,12 @@ import {
   IsOptional,
   IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Motivation } from './gamification-enums.dto';
+import { OnboardingSurveyDto } from './onboarding-survey.dto';
 
 export class UserPreferencesDto {
   @ApiProperty({ description: 'Dietary preference', required: false })
@@ -75,4 +78,15 @@ export class UserPreferencesDto {
   @IsOptional()
   @IsBoolean()
   avoidUpf?: boolean;
+
+  @ApiProperty({
+    description:
+      'Gamification onboarding habit baselines. Enum codes match GET /catalog/startup → data.onboarding.',
+    required: false,
+    type: OnboardingSurveyDto,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OnboardingSurveyDto)
+  onboardingSurvey?: OnboardingSurveyDto;
 }

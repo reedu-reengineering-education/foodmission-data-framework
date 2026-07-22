@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { UserPreferencesDto } from '../../users/dto/user-preferences.dto';
 
 export class GamificationProfileQueryDto {
   @ApiPropertyOptional({
@@ -119,23 +120,6 @@ export class WalletEntryDto {
   createdAt!: Date;
 }
 
-export class OnboardingBaselinesDto {
-  @ApiPropertyOptional({ nullable: true })
-  weeklyMeatConsumption!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  weeklyBeefConsumption!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  weeklyFoodWaste!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  weeklyUpfConsumption!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  weeklyReusableOrRefill!: string | null;
-}
-
 export class GamificationProfileResponseDto {
   @ApiProperty()
   userId!: string;
@@ -160,8 +144,12 @@ export class GamificationProfileResponseDto {
   })
   lastLoginAt!: Date | null;
 
-  @ApiProperty({ type: OnboardingBaselinesDto })
-  onboardingBaselines!: OnboardingBaselinesDto;
+  @ApiProperty({
+    type: UserPreferencesDto,
+    description:
+      'User preferences including onboardingSurvey (same shape as PATCH /users/me)',
+  })
+  preferences!: UserPreferencesDto;
 
   @ApiPropertyOptional({
     type: GamificationWalletDto,

@@ -63,7 +63,7 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Get current user gamification profile',
     description:
-      'Returns wallet balances, progress indicators, onboarding baselines, ' +
+      'Returns wallet balances, progress indicators, preferences (including onboardingSurvey), ' +
       'current quest id, lastLoginAt, and recent events / wallet entries. ' +
       'Badges are empty until Badge catalog exists.\n\n' +
       'This is separate from `GET /users/me`, which only returns a boolean ' +

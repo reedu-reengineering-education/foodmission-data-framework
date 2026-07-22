@@ -19,6 +19,7 @@ import { UsersRepository } from '../repositories/users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiCommonErrorResponses } from '../../common/decorators/api-error-responses.decorator';
+import { formatUserRecordForApi } from '../../gamification/onboarding.utils';
 
 @ApiTags('users')
 @Controller('users')
@@ -48,7 +49,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'List of all users' })
   async findAll() {
-    return this.usersRepository.findAll();
+    const users = await this.usersRepository.findAll();
+    return users.map((user) => formatUserRecordForApi(user));
   }
 
   @Get(':id')
@@ -64,7 +66,11 @@ export class UsersController {
     notFound: true,
   })
   async findOne(@Param('id') id: string) {
-    return this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id);
+    if (!user) {
+      return user;
+    }
+    return formatUserRecordForApi(user);
   }
 
   @Patch(':id')

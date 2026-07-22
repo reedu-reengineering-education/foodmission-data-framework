@@ -33,12 +33,118 @@ export function targetForSegment(
   return DEFAULT_TARGET_BY_SEGMENT[segment];
 }
 
+export const ONBOARDING_BASELINE_FIELDS = [
+  'weeklyMeatConsumption',
+  'weeklyBeefConsumption',
+  'weeklyFoodWaste',
+  'weeklyUpfConsumption',
+  'weeklyReusableOrRefill',
+] as const;
+
+export type OnboardingBaselineField =
+  (typeof ONBOARDING_BASELINE_FIELDS)[number];
+
+const ONBOARDING_FIELD_ENUMS: Record<
+  OnboardingBaselineField,
+  readonly string[]
+> = {
+  weeklyMeatConsumption: Object.values(WeeklyMeatRange),
+  weeklyBeefConsumption: Object.values(WeeklyBeefFrequency),
+  weeklyFoodWaste: Object.values(WeeklyFoodWasteRange),
+  weeklyUpfConsumption: Object.values(WeeklyUpfRange),
+  weeklyReusableOrRefill: Object.values(WeeklyReusableRange),
+};
+
 export interface OnboardingBaselines {
   weeklyMeatConsumption: WeeklyMeatRange;
   weeklyBeefConsumption: WeeklyBeefFrequency;
   weeklyFoodWaste: WeeklyFoodWasteRange;
   weeklyUpfConsumption: WeeklyUpfRange;
   weeklyReusableOrRefill: WeeklyReusableRange;
+}
+
+export type OnboardingSurvey = Partial<
+  Record<OnboardingBaselineField, string>
+>;
+
+/** Parse preferences.onboardingSurvey into column updates. */
+export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
+  if (survey === null || typeof survey !== 'object' || Array.isArray(survey)) {
+    throw new Error('preferences.onboardingSurvey must be an object');
+  }
+
+  const result: OnboardingSurvey = {};
+  const obj = survey as Record<string, unknown>;
+
+  for (const key of Object.keys(obj)) {
+    if (!ONBOARDING_BASELINE_FIELDS.includes(key as OnboardingBaselineField)) {
+      throw new Error(`Unknown onboardingSurvey field: ${key}`);
+    }
+    const field = key as OnboardingBaselineField;
+    const value = obj[key];
+    if (
+      typeof value !== 'string' ||
+      !ONBOARDING_FIELD_ENUMS[field].includes(value)
+    ) {
+      throw new Error(`Invalid value for ${field}`);
+    }
+    result[field] = value;
+  }
+
+  return result;
+}
+
+/** Build preferences.onboardingSurvey from user columns (omit nulls). */
+export function buildOnboardingSurveyFromUser(user: {
+  weeklyMeatConsumption?: string | null;
+  weeklyBeefConsumption?: string | null;
+  weeklyFoodWaste?: string | null;
+  weeklyUpfConsumption?: string | null;
+  weeklyReusableOrRefill?: string | null;
+}): OnboardingSurvey {
+  const survey: OnboardingSurvey = {};
+  for (const field of ONBOARDING_BASELINE_FIELDS) {
+    const value = user[field];
+    if (value != null) {
+      survey[field] = value;
+    }
+  }
+  return survey;
+}
+
+/** Merge stored preferences JSON with onboardingSurvey built from columns. */
+export function buildUserPreferences(
+  storedPreferences: unknown,
+  user: Parameters<typeof buildOnboardingSurveyFromUser>[0],
+): Record<string, unknown> {
+  const storedPrefs =
+    storedPreferences &&
+    typeof storedPreferences === 'object' &&
+    !Array.isArray(storedPreferences)
+      ? (storedPreferences as Record<string, unknown>)
+      : {};
+  const { onboardingSurvey: _storedSurvey, ...prefsWithoutSurvey } =
+    storedPrefs;
+  const survey = buildOnboardingSurveyFromUser(user);
+  return {
+    ...prefsWithoutSurvey,
+    ...(Object.keys(survey).length > 0 ? { onboardingSurvey: survey } : {}),
+  };
+}
+
+/** Strip onboarding columns and attach normalized preferences for API responses. */
+export function formatUserRecordForApi<T extends Record<string, unknown>>(
+  user: T,
+): Omit<T, OnboardingBaselineField> & { preferences: Record<string, unknown> } {
+  const preferences = buildUserPreferences(user.preferences, user);
+  const formatted = { ...user, preferences } as Omit<
+    T,
+    OnboardingBaselineField
+  > & { preferences: Record<string, unknown> };
+  for (const field of ONBOARDING_BASELINE_FIELDS) {
+    delete (formatted as Record<string, unknown>)[field];
+  }
+  return formatted;
 }
 
 /**

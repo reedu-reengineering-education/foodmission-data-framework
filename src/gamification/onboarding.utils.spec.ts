@@ -1,5 +1,9 @@
 import {
+  buildOnboardingSurveyFromUser,
+  buildUserPreferences,
   deriveUserSegment,
+  extractOnboardingSurvey,
+  formatUserRecordForApi,
   targetForSegment,
   SOFT_PROGRESS_INDICATOR_KINDS,
 } from './onboarding.utils';
@@ -46,5 +50,76 @@ describe('onboarding.utils', () => {
         weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
       }),
     ).toBe(UserSegment.ADVANCED);
+  });
+
+  it('extracts onboarding survey fields into column updates', () => {
+    expect(
+      extractOnboardingSurvey({
+        weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+        weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+      }),
+    ).toEqual({
+      weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+      weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+    });
+  });
+
+  it('rejects unknown onboarding survey fields', () => {
+    expect(() =>
+      extractOnboardingSurvey({ meatMeals: WeeklyMeatRange.FIVE_TO_NINE }),
+    ).toThrow('Unknown onboardingSurvey field');
+  });
+
+  it('builds onboarding survey from user columns', () => {
+    expect(
+      buildOnboardingSurveyFromUser({
+        weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+        weeklyBeefConsumption: null,
+        weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
+        weeklyUpfConsumption: null,
+        weeklyReusableOrRefill: null,
+      }),
+    ).toEqual({
+      weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+      weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
+    });
+  });
+
+  it('builds preferences with onboardingSurvey from columns', () => {
+    expect(
+      buildUserPreferences(
+        { motivation: 'HEALTH', onboardingSurvey: { stale: true } },
+        {
+          weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+          weeklyBeefConsumption: null,
+          weeklyFoodWaste: null,
+          weeklyUpfConsumption: null,
+          weeklyReusableOrRefill: null,
+        },
+      ),
+    ).toEqual({
+      motivation: 'HEALTH',
+      onboardingSurvey: {
+        weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+      },
+    });
+  });
+
+  it('formats user records for API without top-level baseline columns', () => {
+    expect(
+      formatUserRecordForApi({
+        id: 'u1',
+        weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+        preferences: { motivation: 'HEALTH' },
+      }),
+    ).toEqual({
+      id: 'u1',
+      preferences: {
+        motivation: 'HEALTH',
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+        },
+      },
+    });
   });
 });

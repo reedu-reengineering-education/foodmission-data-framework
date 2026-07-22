@@ -339,11 +339,15 @@ describe('UserProfilesService - deleteUserById', () => {
         .mockResolvedValueOnce(afterSegment);
 
       const result = await service.updateProfile('kc-1', {
-        weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
-        weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
-        weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
-        weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
-        weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
+            weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+            weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
+            weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
+            weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+          },
+        },
       });
 
       expect(gamificationOnboarding.deriveSegment).toHaveBeenCalled();
@@ -372,11 +376,15 @@ describe('UserProfilesService - deleteUserById', () => {
       (prisma.user.update as jest.Mock).mockResolvedValue(afterUpdate);
 
       await service.updateProfile('kc-1', {
-        weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
-        weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
-        weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-        weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
-        weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+            weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+            weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
+            weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
+            weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
+          },
+        },
         segment: UserSegment.ADVANCED,
       });
 

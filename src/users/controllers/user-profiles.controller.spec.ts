@@ -120,12 +120,8 @@ describe('UserProfilesController', () => {
         segment: null,
         currentQuestId: null,
         lastLoginAt: null,
-        onboardingBaselines: {
-          weeklyMeatConsumption: null,
-          weeklyBeefConsumption: null,
-          weeklyFoodWaste: null,
-          weeklyUpfConsumption: null,
-          weeklyReusableOrRefill: null,
+        preferences: {
+          onboardingSurvey: {},
         },
         wallet: null,
         progressIndicators: [],
@@ -254,23 +250,30 @@ describe('UserProfilesController', () => {
 
     it('should update gamification onboarding baselines', async () => {
       const updateDto = {
-        weeklyMeatConsumption: 'ZERO_TO_FOUR',
-        weeklyBeefConsumption: 'NEVER',
-        weeklyFoodWaste: 'ONE_TO_TWO',
-        weeklyUpfConsumption: 'ZERO_TO_THREE',
-        weeklyReusableOrRefill: 'THREE_TO_SIX',
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: 'ZERO_TO_FOUR',
+            weeklyBeefConsumption: 'NEVER',
+            weeklyFoodWaste: 'ONE_TO_TWO',
+            weeklyUpfConsumption: 'ZERO_TO_THREE',
+            weeklyReusableOrRefill: 'THREE_TO_SIX',
+          },
+        },
         segment: 'BEGINNER',
       } as ProfileUpdateDto;
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);
       service.updateProfile.mockResolvedValue({
         ...mockUserProfile,
-        ...updateDto,
+        preferences: updateDto.preferences as Record<string, unknown>,
+        segment: 'BEGINNER',
       });
 
       const result = await controller.updateProfile('user-1', updateDto);
 
-      expect(result.weeklyMeatConsumption).toBe('ZERO_TO_FOUR');
+      expect(result.preferences?.onboardingSurvey).toEqual(
+        updateDto.preferences?.onboardingSurvey,
+      );
       expect(result.segment).toBe('BEGINNER');
       expect(service.updateProfile).toHaveBeenCalledWith('kc-1', updateDto);
     });
