@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, ProgressPrecision, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { GamificationEventType } from '../gamification.constants';
+import { AppEventType, EventSource } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import {
   OnboardingBaselines,
   SOFT_PROGRESS_INDICATOR_KINDS,
@@ -25,7 +26,10 @@ export interface CompleteOnboardingResult {
 
 @Injectable()
 export class GamificationOnboardingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userEventService: UserEventService,
+  ) {}
 
   deriveSegment(baselines: OnboardingBaselines): UserSegment {
     return deriveUserSegment(baselines);
@@ -44,9 +48,9 @@ export class GamificationOnboardingService {
 
     const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
 
-    const existing = await this.prisma.gamificationEvent.findUnique({
-      where: { idempotencyKey },
-    });
+    const existing = await this.userEventService.findByIdempotencyKey(
+      idempotencyKey,
+    );
     if (existing) {
       return {
         segment,
@@ -59,9 +63,10 @@ export class GamificationOnboardingService {
 
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const again = await tx.gamificationEvent.findUnique({
-          where: { idempotencyKey },
-        });
+        const again = await this.userEventService.findByIdempotencyKey(
+          idempotencyKey,
+          tx,
+        );
         if (again) {
           return {
             segment,
@@ -103,16 +108,17 @@ export class GamificationOnboardingService {
           indicatorsSeeded += 1;
         }
 
-        await tx.gamificationEvent.create({
-          data: {
+        await this.userEventService.record(
+          {
             userId: user.id,
-            eventType: GamificationEventType.ONBOARDING_COMPLETED,
-            subjectType: 'USER',
-            subjectId: user.id,
-            payload: { segment, indicatorsSeeded },
+            eventType: AppEventType.ONBOARDING_COMPLETED,
+            source: EventSource.ONBOARDING,
+            metadata: { segment, indicatorsSeeded },
             idempotencyKey,
+            subject: { type: 'USER', id: user.id },
           },
-        });
+          tx,
+        );
 
         return {
           segment,

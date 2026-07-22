@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 import { UserPreferencesDto } from '../../users/dto/user-preferences.dto';
+import { UserEventDto } from '../../events/dto/user-event.dto';
 
 export class GamificationProfileQueryDto {
   @ApiPropertyOptional({
@@ -72,29 +73,6 @@ export class ProgressIndicatorDto {
 
   @ApiProperty()
   lastUpdatedAt!: Date;
-}
-
-export class GamificationEventDto {
-  @ApiProperty()
-  id!: string;
-
-  @ApiProperty()
-  eventType!: string;
-
-  @ApiPropertyOptional({ nullable: true })
-  subjectType!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  subjectId!: string | null;
-
-  @ApiPropertyOptional({ nullable: true })
-  groupId!: string | null;
-
-  @ApiProperty({ type: 'object', additionalProperties: true })
-  payload!: Record<string, unknown>;
-
-  @ApiProperty()
-  createdAt!: Date;
 }
 
 export class WalletEntryDto {
@@ -168,8 +146,8 @@ export class GamificationProfileResponseDto {
   })
   badges!: string[];
 
-  @ApiProperty({ type: [GamificationEventDto] })
-  recentEvents!: GamificationEventDto[];
+  @ApiProperty({ type: [UserEventDto] })
+  recentEvents!: UserEventDto[];
 
   @ApiProperty({ type: [WalletEntryDto] })
   recentWalletEntries!: WalletEntryDto[];

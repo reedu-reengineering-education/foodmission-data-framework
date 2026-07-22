@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { Prisma, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { UserEventService } from '../../events/services/user-event.service';
 import { levelFromXp } from '../gamification.constants';
 import { GamificationWalletService } from './gamification-wallet.service';
 
@@ -19,27 +20,25 @@ describe('levelFromXp', () => {
 
 describe('GamificationWalletService', () => {
   let service: GamificationWalletService;
+  let userEventService: jest.Mocked<Pick<UserEventService, 'findByIdempotencyKey' | 'record'>>;
   let prisma: {
-    gamificationEvent: {
-      findUnique: jest.Mock;
-      create: jest.Mock;
-      findUniqueOrThrow: jest.Mock;
-    };
+    userEvent: { findUniqueOrThrow: jest.Mock };
     userGamificationWallet: {
       upsert: jest.Mock;
       update: jest.Mock;
     };
-    walletEntry: {
-      create: jest.Mock;
-    };
+    walletEntry: { create: jest.Mock };
     $transaction: jest.Mock;
   };
 
   beforeEach(async () => {
+    userEventService = {
+      findByIdempotencyKey: jest.fn(),
+      record: jest.fn(),
+    };
+
     prisma = {
-      gamificationEvent: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
+      userEvent: {
         findUniqueOrThrow: jest.fn(),
       },
       userGamificationWallet: {
@@ -56,6 +55,7 @@ describe('GamificationWalletService', () => {
       providers: [
         GamificationWalletService,
         { provide: PrismaService, useValue: prisma },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -79,7 +79,7 @@ describe('GamificationWalletService', () => {
         },
       ],
     };
-    prisma.gamificationEvent.findUnique.mockResolvedValue(existingEvent);
+    userEventService.findByIdempotencyKey.mockResolvedValue(existingEvent as any);
     prisma.userGamificationWallet.upsert.mockResolvedValue({
       userId: 'u1',
       level: 1,
@@ -102,7 +102,7 @@ describe('GamificationWalletService', () => {
   });
 
   it('writes event, wallet entry, and updates balances in a transaction', async () => {
-    prisma.gamificationEvent.findUnique.mockResolvedValue(null);
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
 
     const createdEvent = {
       id: 'evt-2',
@@ -126,11 +126,15 @@ describe('GamificationWalletService', () => {
       updatedAt: new Date(),
     };
 
+    userEventService.record.mockResolvedValue({
+      event: createdEvent as any,
+      replayed: false,
+    });
+
     prisma.$transaction.mockImplementation(
       async (fn: (tx: typeof prisma) => Promise<unknown>) => {
         const tx = {
-          gamificationEvent: {
-            create: jest.fn().mockResolvedValue(createdEvent),
+          userEvent: {
             findUniqueOrThrow: jest.fn(),
           },
           userGamificationWallet: {
@@ -173,6 +177,7 @@ describe('GamificationWalletService', () => {
     expect(result.wallet.points).toBe(10);
     expect(result.entry.balanceAfter).toBe(10);
     expect(result.event?.id).toBe('evt-2');
+    expect(userEventService.record).toHaveBeenCalled();
   });
 
   it('rejects zero amount', async () => {
@@ -187,7 +192,7 @@ describe('GamificationWalletService', () => {
   });
 
   it('replays award when create races on idempotencyKey (P2002)', async () => {
-    prisma.gamificationEvent.findUnique
+    userEventService.findByIdempotencyKey
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce({
         id: 'evt-race',
@@ -199,7 +204,7 @@ describe('GamificationWalletService', () => {
             amount: 5,
           },
         ],
-      });
+      } as any);
     prisma.$transaction.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
         code: 'P2002',

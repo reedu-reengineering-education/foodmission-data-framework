@@ -1,4 +1,8 @@
 import { WalletCurrency } from '@prisma/client';
+import {
+  AppEventType,
+  type AppEventTypeValue,
+} from '../events/event-types';
 
 /** XP required per level (level = floor(xp / XP_PER_LEVEL) + 1). */
 export const XP_PER_LEVEL = 100;
@@ -7,21 +11,9 @@ export function levelFromXp(xp: number): number {
   return Math.max(1, Math.floor(Math.max(0, xp) / XP_PER_LEVEL) + 1);
 }
 
-export const GamificationEventType = {
-  LOGIN: 'LOGIN',
-  ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
-  POINTS_AWARDED: 'POINTS_AWARDED',
-  XP_AWARDED: 'XP_AWARDED',
-  CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
-  MISSION_COMPLETED: 'MISSION_COMPLETED',
-  QUEST_STARTED: 'QUEST_STARTED',
-  QUEST_COMPLETED: 'QUEST_COMPLETED',
-  INDICATOR_UPDATED: 'INDICATOR_UPDATED',
-  BADGE_EARNED: 'BADGE_EARNED',
-  MANUAL_ADJUSTMENT: 'MANUAL_ADJUSTMENT',
-} as const;
+/** @deprecated Use AppEventType from events/event-types */
+export const GamificationEventType = AppEventType;
 
-export type GamificationEventTypeValue =
-  (typeof GamificationEventType)[keyof typeof GamificationEventType];
+export type GamificationEventTypeValue = AppEventTypeValue;
 
 export { WalletCurrency };

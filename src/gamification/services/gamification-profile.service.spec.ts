@@ -7,14 +7,14 @@ describe('GamificationProfileService', () => {
   let service: GamificationProfileService;
   let prisma: {
     user: { findUnique: jest.Mock };
-    gamificationEvent: { findMany: jest.Mock };
+    userEvent: { findMany: jest.Mock };
     walletEntry: { findMany: jest.Mock };
   };
 
   beforeEach(async () => {
     prisma = {
       user: { findUnique: jest.fn() },
-      gamificationEvent: { findMany: jest.fn() },
+      userEvent: { findMany: jest.fn() },
       walletEntry: { findMany: jest.fn() },
     };
 
@@ -67,14 +67,14 @@ describe('GamificationProfileService', () => {
         },
       ],
     });
-    prisma.gamificationEvent.findMany.mockResolvedValue([
+    prisma.userEvent.findMany.mockResolvedValue([
       {
         id: 'e1',
+        userId: 'u1',
         eventType: 'POINTS_AWARDED',
-        subjectType: 'SEED',
-        subjectId: null,
+        source: 'wallet',
         groupId: null,
-        payload: { source: 'test' },
+        metadata: { source: 'test' },
         createdAt: new Date('2026-07-01T12:00:00Z'),
       },
     ]);
@@ -107,8 +107,10 @@ describe('GamificationProfileService', () => {
     expect(result.progressIndicators).toHaveLength(1);
     expect(result.badges).toEqual([]);
     expect(result.recentEvents[0].eventType).toBe('POINTS_AWARDED');
+    expect(result.recentEvents[0].source).toBe('wallet');
+    expect(result.recentEvents[0].timestamp).toBeDefined();
     expect(result.recentWalletEntries[0].amount).toBe(40);
-    expect(prisma.gamificationEvent.findMany).toHaveBeenCalledWith(
+    expect(prisma.userEvent.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ take: 5 }),
     );
   });

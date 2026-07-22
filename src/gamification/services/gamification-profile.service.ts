@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { UserEventDto } from '../../events/dto/user-event.dto';
 import { buildUserPreferences } from '../onboarding.utils';
 import {
-  GamificationEventDto,
   GamificationProfileResponseDto,
   GamificationWalletDto,
   ProgressIndicatorDto,
@@ -36,7 +36,7 @@ export class GamificationProfileService {
     }
 
     const [recentEvents, recentWalletEntries] = await Promise.all([
-      this.prisma.gamificationEvent.findMany({
+      this.prisma.userEvent.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
         take: eventsLimit,
@@ -108,26 +108,26 @@ export class GamificationProfileService {
 
   private mapEvent(event: {
     id: string;
+    userId: string;
     eventType: string;
-    subjectType: string | null;
-    subjectId: string | null;
+    source: string;
     groupId: string | null;
-    payload: unknown;
+    metadata: unknown;
     createdAt: Date;
-  }): GamificationEventDto {
+  }): UserEventDto {
     return {
       id: event.id,
+      userId: event.userId,
       eventType: event.eventType,
-      subjectType: event.subjectType,
-      subjectId: event.subjectId,
+      source: event.source,
+      timestamp: event.createdAt,
       groupId: event.groupId,
-      payload:
-        event.payload &&
-        typeof event.payload === 'object' &&
-        !Array.isArray(event.payload)
-          ? (event.payload as Record<string, unknown>)
+      metadata:
+        event.metadata &&
+        typeof event.metadata === 'object' &&
+        !Array.isArray(event.metadata)
+          ? (event.metadata as Record<string, unknown>)
           : {},
-      createdAt: event.createdAt,
     };
   }
 

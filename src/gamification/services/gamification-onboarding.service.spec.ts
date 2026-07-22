@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { GamificationEventType } from '../gamification.constants';
+import { AppEventType, EventSource } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import {
   GamificationOnboardingService,
   onboardingCompletedIdempotencyKey,
@@ -9,19 +10,20 @@ import {
 
 describe('GamificationOnboardingService', () => {
   let service: GamificationOnboardingService;
+  let userEventService: jest.Mocked<Pick<UserEventService, 'findByIdempotencyKey' | 'record'>>;
   let prisma: {
-    gamificationEvent: { findUnique: jest.Mock; create: jest.Mock };
     userGamificationWallet: { upsert: jest.Mock };
     progressIndicator: { upsert: jest.Mock };
     $transaction: jest.Mock;
   };
 
   beforeEach(async () => {
+    userEventService = {
+      findByIdempotencyKey: jest.fn(),
+      record: jest.fn(),
+    };
+
     prisma = {
-      gamificationEvent: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-      },
       userGamificationWallet: { upsert: jest.fn() },
       progressIndicator: { upsert: jest.fn() },
       $transaction: jest.fn(),
@@ -31,6 +33,7 @@ describe('GamificationOnboardingService', () => {
       providers: [
         GamificationOnboardingService,
         { provide: PrismaService, useValue: prisma },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -38,10 +41,10 @@ describe('GamificationOnboardingService', () => {
   });
 
   it('skips when ONBOARDING_COMPLETED already exists', async () => {
-    prisma.gamificationEvent.findUnique.mockResolvedValue({
+    userEventService.findByIdempotencyKey.mockResolvedValue({
       id: 'evt-1',
       idempotencyKey: onboardingCompletedIdempotencyKey('u1'),
-    });
+    } as any);
 
     const result = await service.applyOnboardingSideEffects(
       { id: 'u1' },
@@ -55,25 +58,25 @@ describe('GamificationOnboardingService', () => {
   });
 
   it('runs wallet, indicators, and event in one transaction', async () => {
-    prisma.gamificationEvent.findUnique.mockResolvedValue(null);
+    userEventService.findByIdempotencyKey
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null);
+    userEventService.record.mockResolvedValue({
+      event: { id: 'evt-new' } as any,
+      replayed: false,
+    });
 
-    prisma.$transaction.mockImplementation(
-      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-        const tx = {
-          gamificationEvent: {
-            findUnique: jest.fn().mockResolvedValue(null),
-            create: jest.fn().mockResolvedValue({ id: 'evt-new' }),
-          },
-          userGamificationWallet: {
-            upsert: jest.fn().mockResolvedValue({ userId: 'u1' }),
-          },
-          progressIndicator: {
-            upsert: jest.fn().mockResolvedValue({}),
-          },
-        };
-        return fn(tx as unknown as typeof prisma);
-      },
-    );
+    prisma.$transaction.mockImplementation(async (fn: (tx: any) => Promise<unknown>) => {
+      const tx = {
+        userGamificationWallet: {
+          upsert: jest.fn().mockResolvedValue({ userId: 'u1' }),
+        },
+        progressIndicator: {
+          upsert: jest.fn().mockResolvedValue({}),
+        },
+      };
+      return fn(tx);
+    });
 
     const result = await service.applyOnboardingSideEffects(
       { id: 'u1' },
@@ -88,7 +91,7 @@ describe('GamificationOnboardingService', () => {
   });
 
   it('treats concurrent P2002 as skipped', async () => {
-    prisma.gamificationEvent.findUnique.mockResolvedValue(null);
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
     prisma.$transaction.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
         code: 'P2002',
@@ -106,39 +109,39 @@ describe('GamificationOnboardingService', () => {
   });
 
   it('writes ONBOARDING_COMPLETED with stable idempotency key', async () => {
-    prisma.gamificationEvent.findUnique.mockResolvedValue(null);
+    userEventService.findByIdempotencyKey
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null);
+    userEventService.record.mockResolvedValue({
+      event: { id: 'evt-new' } as any,
+      replayed: false,
+    });
 
-    let createdPayload: Record<string, unknown> | undefined;
-    prisma.$transaction.mockImplementation(
-      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
-        const tx = {
-          gamificationEvent: {
-            findUnique: jest.fn().mockResolvedValue(null),
-            create: jest.fn().mockImplementation(({ data }) => {
-              createdPayload = data;
-              return { id: 'evt-new' };
-            }),
-          },
-          userGamificationWallet: {
-            upsert: jest.fn().mockResolvedValue({}),
-          },
-          progressIndicator: {
-            upsert: jest.fn().mockResolvedValue({}),
-          },
-        };
-        return fn(tx as unknown as typeof prisma);
-      },
-    );
+    prisma.$transaction.mockImplementation(async (fn: (tx: any) => Promise<unknown>) => {
+      const tx = {
+        userGamificationWallet: {
+          upsert: jest.fn().mockResolvedValue({}),
+        },
+        progressIndicator: {
+          upsert: jest.fn().mockResolvedValue({}),
+        },
+      };
+      return fn(tx);
+    });
 
     await service.applyOnboardingSideEffects(
       { id: 'u1' },
       UserSegment.BEGINNER,
     );
 
-    expect(createdPayload).toMatchObject({
-      userId: 'u1',
-      eventType: GamificationEventType.ONBOARDING_COMPLETED,
-      idempotencyKey: 'onboarding-completed:u1',
-    });
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u1',
+        eventType: AppEventType.ONBOARDING_COMPLETED,
+        source: EventSource.ONBOARDING,
+        idempotencyKey: 'onboarding-completed:u1',
+      }),
+      expect.anything(),
+    );
   });
 });

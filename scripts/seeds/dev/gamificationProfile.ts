@@ -112,7 +112,7 @@ async function seedWalletHistoryForNamedUser(
   const pointsKey = `seed-points-${user.id}`;
   const xpKey = `seed-xp-${user.id}`;
 
-  const existingPoints = await prisma.gamificationEvent.findUnique({
+  const existingPoints = await prisma.userEvent.findUnique({
     where: { idempotencyKey: pointsKey },
   });
   if (existingPoints) {
@@ -123,12 +123,12 @@ async function seedWalletHistoryForNamedUser(
   let entries = 0;
 
   if (wallet.points > 0) {
-    const event = await prisma.gamificationEvent.create({
+    const event = await prisma.userEvent.create({
       data: {
         userId: user.id,
         eventType: 'POINTS_AWARDED',
-        subjectType: 'SEED',
-        payload: { source: 'dev-seed' },
+        source: 'seed',
+        metadata: { source: 'dev-seed', subject: { type: 'SEED' } },
         idempotencyKey: pointsKey,
       },
     });
@@ -147,12 +147,12 @@ async function seedWalletHistoryForNamedUser(
   }
 
   if (wallet.xp > 0) {
-    const event = await prisma.gamificationEvent.create({
+    const event = await prisma.userEvent.create({
       data: {
         userId: user.id,
         eventType: 'XP_AWARDED',
-        subjectType: 'SEED',
-        payload: { source: 'dev-seed' },
+        source: 'seed',
+        metadata: { source: 'dev-seed', subject: { type: 'SEED' } },
         idempotencyKey: xpKey,
       },
     });

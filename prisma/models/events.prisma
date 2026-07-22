@@ -1,0 +1,25 @@
+// ============================================================
+// App-wide user event ledger (gamification and other features)
+// ============================================================
+
+/// Append-only user activity facts.
+model UserEvent {
+  id             String   @id @default(uuid())
+  userId         String
+  eventType      String
+  source         String
+  metadata       Json     @default("{}")
+  groupId        String?
+  idempotencyKey String?  @unique
+  createdAt      DateTime @default(now())
+
+  user          User          @relation("UserEvents", fields: [userId], references: [id], onDelete: Cascade)
+  group         UserGroup?    @relation("GroupUserEvents", fields: [groupId], references: [id], onDelete: SetNull)
+  walletEntries WalletEntry[]
+
+  @@index([userId, createdAt])
+  @@index([groupId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([source, createdAt])
+  @@map("user_events")
+}
