@@ -100,6 +100,9 @@ describe('nevo translations import', () => {
 
   it('dry-run does not call prisma mutations', async () => {
     const prismaMock = {
+      entityTranslation: {
+        count: jest.fn().mockResolvedValue(0),
+      },
       genericFood: {
         findMany: jest.fn().mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
       },
@@ -109,10 +112,61 @@ describe('nevo translations import', () => {
     const report = await importNevoCsv(prismaMock, {
       file: FIXTURE,
       dryRun: true,
+      skipExisting: true,
       batchSize: 100,
     });
 
     expect(report.upsertedTranslations).toBe(16);
+    expect(report.skippedExisting).toBe(false);
     expect(prismaMock.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('skips import when GenericFood translations already exist', async () => {
+    const prismaMock = {
+      entityTranslation: {
+        count: jest.fn().mockResolvedValue(42),
+      },
+      genericFood: {
+        findMany: jest.fn(),
+      },
+      $transaction: jest.fn(),
+    } as any;
+
+    const report = await importNevoCsv(prismaMock, {
+      file: FIXTURE,
+      dryRun: false,
+      skipExisting: true,
+      batchSize: 100,
+    });
+
+    expect(report.skippedExisting).toBe(true);
+    expect(report.upsertedTranslations).toBe(0);
+    expect(prismaMock.genericFood.findMany).not.toHaveBeenCalled();
+    expect(prismaMock.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('re-imports when force disables skipExisting', async () => {
+    const prismaMock = {
+      entityTranslation: {
+        count: jest.fn().mockResolvedValue(42),
+        upsert: jest.fn(),
+      },
+      genericFood: {
+        findMany: jest.fn().mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
+      },
+      $transaction: jest.fn().mockResolvedValue([]),
+    } as any;
+
+    const report = await importNevoCsv(prismaMock, {
+      file: FIXTURE,
+      dryRun: false,
+      skipExisting: false,
+      batchSize: 100,
+    });
+
+    expect(report.skippedExisting).toBe(false);
+    expect(report.upsertedTranslations).toBe(16);
+    expect(prismaMock.entityTranslation.count).not.toHaveBeenCalled();
+    expect(prismaMock.$transaction).toHaveBeenCalled();
   });
 });

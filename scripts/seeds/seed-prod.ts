@@ -11,7 +11,7 @@ async function main() {
   console.log('🔒 Running production seed (NEVO + OpenFoodFacts + Recipes)');
 
   try {
-    const genericFoods = await seedGenericFoods(prisma);
+    const genericFoods = await seedGenericFoods(prisma, { skipExisting: true });
     console.log(`   ✅ NEVO: ${genericFoods.length} generic foods upserted`);
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);
@@ -55,7 +55,7 @@ async function main() {
     );
 
     console.log(
-      '\n   ℹ️  Run npm run db:import:nevo-translations to load food name translations.',
+      '\n   ℹ️  Run npm run db:translations to load food name translations.',
     );
   } catch (err) {
     console.error('❌ Error during prod seed:', err);

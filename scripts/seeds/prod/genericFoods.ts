@@ -7,7 +7,7 @@ const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NE
 /**
  * Column indices in the pipe-delimited NEVO CSV.
  * English metadata lands on GenericFood. Dutch columns (1, 4, 6, 8) and other
- * locales are loaded via `npm run db:import:nevo-translations`.
+ * locales are loaded via `npm run db:translations`.
  */
 const COL = {
   NEVO_VERSION: 0,
@@ -186,7 +186,16 @@ function parseInt_(raw: string): number {
   return parseInt(cleaned, 10);
 }
 
-export async function seedGenericFoods(prisma: PrismaClient) {
+export type SeedGenericFoodsOptions = {
+  /** When true (default), skip the whole import if any GenericFood rows already exist. */
+  skipExisting?: boolean;
+};
+
+export async function seedGenericFoods(
+  prisma: PrismaClient,
+  options: SeedGenericFoodsOptions = {},
+) {
+  const { skipExisting = true } = options;
   console.log('🥗 Seeding generic foods from NEVO2025...');
 
   if (!fs.existsSync(CSV_PATH)) {
@@ -194,6 +203,16 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       `⚠️  NEVO CSV not found at ${CSV_PATH}, skipping generic foods seed.`,
     );
     return [];
+  }
+
+  if (skipExisting) {
+    const existingCount = await prisma.genericFood.count();
+    if (existingCount > 0) {
+      console.log(
+        `   ⏭️  Skipping NEVO seed — ${existingCount} generic foods already present (pass --force to re-import)`,
+      );
+      return [];
+    }
   }
 
   const content = fs.readFileSync(CSV_PATH, 'utf-8');

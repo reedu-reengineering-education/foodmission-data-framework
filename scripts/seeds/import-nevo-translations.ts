@@ -57,6 +57,7 @@ export type ImportReport = {
   importedAt: string;
   csvPath: string;
   dryRun: boolean;
+  skippedExisting: boolean;
   foodsInCsv: number;
   upsertedTranslations: number;
   skippedBlank: number;
@@ -228,8 +229,35 @@ async function upsertTranslationBatch(
 
 export async function importNevoCsv(
   prisma: PrismaClient,
-  options: { file: string; dryRun: boolean; batchSize: number },
+  options: {
+    file: string;
+    dryRun: boolean;
+    batchSize: number;
+    /** When true (default), skip if GenericFood entity_translations already exist. */
+    skipExisting?: boolean;
+  },
 ): Promise<ImportReport> {
+  const skipExisting = options.skipExisting ?? true;
+
+  if (skipExisting) {
+    const existingCount = await prisma.entityTranslation.count({
+      where: { entityType: 'GenericFood' },
+    });
+    if (existingCount > 0) {
+      return {
+        importedAt: new Date().toISOString(),
+        csvPath: options.file,
+        dryRun: options.dryRun,
+        skippedExisting: true,
+        foodsInCsv: 0,
+        upsertedTranslations: 0,
+        skippedBlank: 0,
+        skippedUnknownNevoCode: 0,
+        unknownNevoCodes: [],
+      };
+    }
+  }
+
   const content = fs.readFileSync(options.file, 'utf-8');
   const parsedRows = parseNevoTranslationsCsv(content);
   const foods = await prisma.genericFood.findMany({
@@ -254,6 +282,7 @@ export async function importNevoCsv(
     importedAt: new Date().toISOString(),
     csvPath: options.file,
     dryRun: options.dryRun,
+    skippedExisting: false,
     foodsInCsv: parsedRows.length,
     upsertedTranslations: ops.translationRows.length,
     skippedBlank: ops.skippedBlank,
@@ -264,6 +293,12 @@ export async function importNevoCsv(
 
 export function printImportReport(report: ImportReport): void {
   console.log(`\nNEVO translations import${report.dryRun ? ' (dry-run)' : ''}`);
+  if (report.skippedExisting) {
+    console.log(
+      '  ⏭️  Skipped — GenericFood translations already present (pass --force to re-import)',
+    );
+    return;
+  }
   console.log(`  csv: ${report.csvPath}`);
   console.log(`  foods in csv: ${report.foodsInCsv}`);
   console.log(`  translations upserted: ${report.upsertedTranslations}`);
@@ -284,6 +319,7 @@ async function main(): Promise<void> {
     options: {
       file: { type: 'string', default: DEFAULT_NEVO_TRANSLATIONS_CSV },
       'dry-run': { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
       'batch-size': { type: 'string', default: '500' },
     },
   });
@@ -298,6 +334,7 @@ async function main(): Promise<void> {
     const report = await importNevoCsv(prisma, {
       file: values.file ?? DEFAULT_NEVO_TRANSLATIONS_CSV,
       dryRun: values['dry-run'] ?? false,
+      skipExisting: !(values.force ?? false),
       batchSize,
     });
     printImportReport(report);

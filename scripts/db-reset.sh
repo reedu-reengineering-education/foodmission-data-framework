@@ -22,4 +22,7 @@ fi
 echo "📝 Resetting Prisma migrations..."
 npx prisma migrate reset --force
 
+echo "🌐 Loading database translations..."
+npm run db:translations
+
 echo "✅ Database reset complete!"

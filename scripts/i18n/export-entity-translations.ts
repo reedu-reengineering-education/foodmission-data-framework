@@ -23,7 +23,7 @@ async function main(): Promise<void> {
       fields: { type: 'string' },
       /**
        * By default export all non-English locales except nl (usually loaded via
-       * db:import:nevo-translations). Pass --include-nl to also export Dutch.
+       * db:translations). Pass --include-nl to also export Dutch.
        */
       'include-nl': { type: 'boolean', default: false },
     },
