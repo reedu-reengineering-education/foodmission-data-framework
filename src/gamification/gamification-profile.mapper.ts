@@ -8,7 +8,6 @@ import {
 
 export function toWalletDto(
   wallet: {
-    level: number;
     xp: number;
     points: number;
     updatedAt: Date;
@@ -16,7 +15,6 @@ export function toWalletDto(
 ): GamificationWalletDto | null {
   if (!wallet) return null;
   return {
-    level: wallet.level,
     xp: wallet.xp,
     points: wallet.points,
     updatedAt: wallet.updatedAt,

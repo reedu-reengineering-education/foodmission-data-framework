@@ -43,7 +43,6 @@ export interface AwardWalletResult {
 
 type WalletRow = {
   userId: string;
-  level: number;
   xp: number;
   points: number;
   updatedAt: Date;
@@ -60,7 +59,7 @@ export class GamificationWalletService {
     return this.prisma.userGamificationWallet.upsert({
       where: { userId },
       update: {},
-      create: { userId, level: 1, xp: 0, points: 0 },
+      create: { userId, xp: 0, points: 0 },
     });
   }
 
@@ -119,11 +118,11 @@ export class GamificationWalletService {
         await tx.userGamificationWallet.upsert({
           where: { userId: input.userId },
           update: {},
-          create: { userId: input.userId, level: 1, xp: 0, points: 0 },
+          create: { userId: input.userId, xp: 0, points: 0 },
         });
 
         const locked = await tx.$queryRaw<WalletRow[]>`
-          SELECT "userId", "level", "xp", "points", "updatedAt"
+          SELECT "userId", "xp", "points", "updatedAt"
           FROM "user_gamification_wallets"
           WHERE "userId" = ${input.userId}
           FOR UPDATE

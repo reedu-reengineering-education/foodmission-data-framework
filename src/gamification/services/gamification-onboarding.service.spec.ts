@@ -15,7 +15,6 @@ describe('GamificationOnboardingService', () => {
   >;
   let prisma: {
     userGamificationWallet: { upsert: jest.Mock };
-    progressIndicator: { upsert: jest.Mock };
     $transaction: jest.Mock;
   };
 
@@ -27,7 +26,6 @@ describe('GamificationOnboardingService', () => {
 
     prisma = {
       userGamificationWallet: { upsert: jest.fn() },
-      progressIndicator: { upsert: jest.fn() },
       $transaction: jest.fn(),
     };
 
@@ -55,11 +53,10 @@ describe('GamificationOnboardingService', () => {
 
     expect(result.skipped).toBe(true);
     expect(result.onboardingEventRecorded).toBe(false);
-    expect(result.indicatorsSeeded).toBe(0);
     expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  it('runs wallet, indicators, and event in one transaction', async () => {
+  it('runs wallet ensure and event in one transaction', async () => {
     userEventService.findByIdempotencyKey.mockResolvedValue(null);
     userEventService.record.mockResolvedValue({
       event: { id: 'evt-new' } as any,
@@ -71,9 +68,6 @@ describe('GamificationOnboardingService', () => {
         const tx = {
           userGamificationWallet: {
             upsert: jest.fn().mockResolvedValue({ userId: 'u1' }),
-          },
-          progressIndicator: {
-            upsert: jest.fn().mockResolvedValue({}),
           },
         };
         return fn(tx);
@@ -88,7 +82,6 @@ describe('GamificationOnboardingService', () => {
     expect(result.skipped).toBe(false);
     expect(result.onboardingEventRecorded).toBe(true);
     expect(result.walletEnsured).toBe(true);
-    expect(result.indicatorsSeeded).toBe(7);
     expect(prisma.$transaction).toHaveBeenCalledTimes(1);
     expect(userEventService.record).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -96,6 +89,7 @@ describe('GamificationOnboardingService', () => {
         eventType: AppEventType.ONBOARDING_COMPLETED,
         source: EventSource.ONBOARDING,
         idempotencyKey: 'onboarding-completed:u1',
+        metadata: { segment: UserSegment.INTERMEDIATE },
       }),
       expect.anything(),
     );

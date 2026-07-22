@@ -188,7 +188,10 @@ export class UserProfilesService {
       (payload.preferences as { onboardingSurvey?: unknown } | undefined)
         ?.onboardingSurvey !== undefined;
     const segmentTouched = payload.segment !== undefined;
-    if ((!surveyTouched && !segmentTouched) || !hasAllOnboardingBaselines(user)) {
+    if (
+      (!surveyTouched && !segmentTouched) ||
+      !hasAllOnboardingBaselines(user)
+    ) {
       return user;
     }
 

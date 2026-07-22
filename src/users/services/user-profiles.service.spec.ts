@@ -64,7 +64,6 @@ describe('UserProfilesService updateProfile gamification', () => {
           useValue: {
             applyOnboardingSideEffects: jest.fn().mockResolvedValue({
               segment: UserSegment.BEGINNER,
-              indicatorsSeeded: 7,
               walletEnsured: true,
               onboardingEventRecorded: true,
               skipped: false,

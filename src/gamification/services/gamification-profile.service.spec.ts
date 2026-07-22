@@ -49,7 +49,6 @@ describe('GamificationProfileService', () => {
       weeklyReusableOrRefill: 'TEN_PLUS',
       preferences: {},
       gamificationWallet: {
-        level: 2,
         xp: 150,
         points: 40,
         updatedAt: new Date('2026-07-01T11:00:00Z'),

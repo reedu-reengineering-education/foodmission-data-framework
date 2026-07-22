@@ -2,19 +2,10 @@ import {
   buildUserPreferences,
   extractOnboardingSurvey,
   formatUserRecordForApi,
-  targetForSegment,
 } from './onboarding.utils';
-import {
-  UserSegment,
-  WeeklyMeatRange,
-} from '@prisma/client';
+import { WeeklyMeatRange } from '@prisma/client';
 
 describe('onboarding.utils', () => {
-  it('maps segment to default targets', () => {
-    expect(targetForSegment(UserSegment.BEGINNER)).toBe(10);
-    expect(targetForSegment(null)).toBe(10);
-  });
-
   it('extracts known onboarding survey fields', () => {
     expect(
       extractOnboardingSurvey({

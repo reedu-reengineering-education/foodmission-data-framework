@@ -73,7 +73,6 @@ describe('GamificationWalletService', () => {
     );
     prisma.userGamificationWallet.upsert.mockResolvedValue({
       userId: 'u1',
-      level: 1,
       xp: 0,
       points: 25,
       updatedAt: new Date(),
@@ -111,7 +110,6 @@ describe('GamificationWalletService', () => {
     };
     const updatedWallet = {
       userId: 'u1',
-      level: 1,
       xp: 0,
       points: 10,
       updatedAt: new Date(),
@@ -131,7 +129,6 @@ describe('GamificationWalletService', () => {
           userGamificationWallet: {
             upsert: jest.fn().mockResolvedValue({
               userId: 'u1',
-              level: 1,
               xp: 0,
               points: 0,
               updatedAt: new Date(),
@@ -144,7 +141,6 @@ describe('GamificationWalletService', () => {
           $queryRaw: jest.fn().mockResolvedValue([
             {
               userId: 'u1',
-              level: 1,
               xp: 0,
               points: 0,
               updatedAt: new Date(),
@@ -204,7 +200,6 @@ describe('GamificationWalletService', () => {
     );
     prisma.userGamificationWallet.upsert.mockResolvedValue({
       userId: 'u1',
-      level: 1,
       xp: 0,
       points: 5,
       updatedAt: new Date(),
@@ -244,7 +239,6 @@ describe('GamificationWalletService', () => {
     };
     const wallet = {
       userId: 'u1',
-      level: 1,
       xp: 0,
       points: 10,
       updatedAt: new Date(),

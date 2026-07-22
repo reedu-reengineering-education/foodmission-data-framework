@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, ProgressPrecision, User, UserSegment } from '@prisma/client';
+import { Prisma, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { AppEventType, EventSource } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
-import {
-  SOFT_PROGRESS_INDICATOR_KINDS,
-  targetForSegment,
-} from '../onboarding.utils';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
   return `onboarding-completed:${userId}`;
@@ -14,10 +10,9 @@ export function onboardingCompletedIdempotencyKey(userId: string): string {
 
 export interface CompleteOnboardingResult {
   segment: UserSegment;
-  indicatorsSeeded: number;
   walletEnsured: boolean;
   onboardingEventRecorded: boolean;
-  /** True when ONBOARDING_COMPLETED already existed — no wallet/indicator writes. */
+  /** True when ONBOARDING_COMPLETED already existed — no wallet write. */
   skipped: boolean;
 }
 
@@ -29,9 +24,9 @@ export class GamificationOnboardingService {
   ) {}
 
   /**
-   * First-time onboarding only: ensure wallet, seed soft indicators, and
-   * record ONBOARDING_COMPLETED in a single transaction.
-   * Later baseline PATCHes no-op once that event exists (targets are not rewritten).
+   * First-time onboarding only: ensure wallet and record ONBOARDING_COMPLETED
+   * in a single transaction. Later baseline PATCHes no-op once that event exists.
+   * Progress-indicator seeding is deferred until product defines post-onboarding rules.
    */
   async applyOnboardingSideEffects(
     user: Pick<User, 'id'>,
@@ -40,7 +35,6 @@ export class GamificationOnboardingService {
     const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
     const skipped = {
       segment,
-      indicatorsSeeded: 0,
       walletEnsured: false,
       onboardingEventRecorded: false,
       skipped: true as const,
@@ -57,40 +51,15 @@ export class GamificationOnboardingService {
         await tx.userGamificationWallet.upsert({
           where: { userId: user.id },
           update: {},
-          create: { userId: user.id, level: 1, xp: 0, points: 0 },
+          create: { userId: user.id, xp: 0, points: 0 },
         });
-
-        const targetValue = targetForSegment(segment);
-        let indicatorsSeeded = 0;
-
-        for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {
-          await tx.progressIndicator.upsert({
-            where: {
-              userId_kind: { userId: user.id, kind },
-            },
-            update: {
-              precision: ProgressPrecision.SOFT,
-              targetValue,
-            },
-            create: {
-              userId: user.id,
-              kind,
-              precision: ProgressPrecision.SOFT,
-              level: 1,
-              accumulatedValue: 0,
-              targetValue,
-              allTimeTotal: 0,
-            },
-          });
-          indicatorsSeeded += 1;
-        }
 
         await this.userEventService.record(
           {
             userId: user.id,
             eventType: AppEventType.ONBOARDING_COMPLETED,
             source: EventSource.ONBOARDING,
-            metadata: { segment, indicatorsSeeded },
+            metadata: { segment },
             idempotencyKey,
             subject: { type: 'USER', id: user.id },
           },
@@ -99,7 +68,6 @@ export class GamificationOnboardingService {
 
         return {
           segment,
-          indicatorsSeeded,
           walletEnsured: true,
           onboardingEventRecorded: true,
           skipped: false,

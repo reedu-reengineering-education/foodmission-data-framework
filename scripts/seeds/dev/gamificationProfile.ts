@@ -1,19 +1,9 @@
-import {
-  WalletCurrency,
-  PrismaClient,
-  ProgressPrecision,
-  User,
-  UserGroup,
-} from '@prisma/client';
-import {
-  SOFT_PROGRESS_INDICATOR_KINDS,
-  targetForSegment,
-} from '../../../src/gamification/onboarding.utils';
+import { WalletCurrency, PrismaClient, User } from '@prisma/client';
 
 async function upsertUserWallet(
   prisma: PrismaClient,
   user: User,
-  wallet: { level: number; xp: number; points: number },
+  wallet: { xp: number; points: number },
 ): Promise<void> {
   await prisma.userGamificationWallet.upsert({
     where: { userId: user.id },
@@ -25,86 +15,19 @@ async function upsertUserWallet(
   });
 }
 
-async function upsertSoftIndicatorsForUser(
-  prisma: PrismaClient,
-  user: User,
-): Promise<number> {
-  const targetValue = targetForSegment(user.segment);
-  let count = 0;
-
-  for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {
-    await prisma.progressIndicator.upsert({
-      where: {
-        userId_kind: { userId: user.id, kind },
-      },
-      update: {
-        precision: ProgressPrecision.SOFT,
-        targetValue,
-      },
-      create: {
-        userId: user.id,
-        kind,
-        precision: ProgressPrecision.SOFT,
-        level: 1,
-        accumulatedValue: 0,
-        targetValue,
-        allTimeTotal: 0,
-      },
-    });
-    count += 1;
-  }
-
-  return count;
-}
-
-async function upsertSoftIndicatorsForGroup(
-  prisma: PrismaClient,
-  group: UserGroup,
-  targetValue = 25,
-): Promise<number> {
-  let count = 0;
-
-  for (const kind of SOFT_PROGRESS_INDICATOR_KINDS) {
-    await prisma.progressIndicator.upsert({
-      where: {
-        groupId_kind: { groupId: group.id, kind },
-      },
-      update: {
-        precision: ProgressPrecision.SOFT,
-        targetValue,
-      },
-      create: {
-        groupId: group.id,
-        kind,
-        precision: ProgressPrecision.SOFT,
-        level: 1,
-        accumulatedValue: 0,
-        targetValue,
-        allTimeTotal: 0,
-      },
-    });
-    count += 1;
-  }
-
-  return count;
-}
-
 /** Named-dev wallets with varied progress for manual testing. */
-const NAMED_USER_WALLETS: Record<
-  string,
-  { level: number; xp: number; points: number }
-> = {
-  'dev@foodmission.dev': { level: 3, xp: 450, points: 120 },
-  'jane.smith@example.com': { level: 2, xp: 180, points: 55 },
-  'mike.johnson@example.com': { level: 1, xp: 40, points: 10 },
-  'sarah.wilson@example.com': { level: 4, xp: 900, points: 250 },
-  'admin@foodmission.dev': { level: 5, xp: 1500, points: 400 },
+const NAMED_USER_WALLETS: Record<string, { xp: number; points: number }> = {
+  'dev@foodmission.dev': { xp: 450, points: 120 },
+  'jane.smith@example.com': { xp: 180, points: 55 },
+  'mike.johnson@example.com': { xp: 40, points: 10 },
+  'sarah.wilson@example.com': { xp: 900, points: 250 },
+  'admin@foodmission.dev': { xp: 1500, points: 400 },
 };
 
 async function seedWalletHistoryForNamedUser(
   prisma: PrismaClient,
   user: User,
-  wallet: { level: number; xp: number; points: number },
+  wallet: { xp: number; points: number },
 ): Promise<{ events: number; entries: number }> {
   const pointsKey = `seed-points-${user.id}`;
   const xpKey = `seed-xp-${user.id}`;
@@ -172,12 +95,10 @@ async function seedWalletHistoryForNamedUser(
 
 export async function seedGamificationProfiles(prisma: PrismaClient): Promise<{
   wallets: number;
-  userIndicators: number;
-  groupIndicators: number;
   events: number;
   walletEntries: number;
 }> {
-  console.log('🎮 Seeding gamification wallets and progress indicators...');
+  console.log('🎮 Seeding gamification wallets...');
 
   const namedEmails = Object.keys(NAMED_USER_WALLETS);
   const namedUsers = await prisma.user.findMany({
@@ -185,16 +106,13 @@ export async function seedGamificationProfiles(prisma: PrismaClient): Promise<{
   });
 
   let wallets = 0;
-  let userIndicators = 0;
   let events = 0;
   let walletEntries = 0;
 
   for (const user of namedUsers) {
-    const wallet =
-      NAMED_USER_WALLETS[user.email] ?? { level: 1, xp: 0, points: 0 };
+    const wallet = NAMED_USER_WALLETS[user.email] ?? { xp: 0, points: 0 };
     await upsertUserWallet(prisma, user, wallet);
     wallets += 1;
-    userIndicators += await upsertSoftIndicatorsForUser(prisma, user);
     const history = await seedWalletHistoryForNamedUser(prisma, user, wallet);
     events += history.events;
     walletEntries += history.entries;
@@ -209,16 +127,13 @@ export async function seedGamificationProfiles(prisma: PrismaClient): Promise<{
 
   for (const user of generatedUsers) {
     await upsertUserWallet(prisma, user, {
-      level: 1,
       xp: 0,
       points: 0,
     });
     wallets += 1;
-    userIndicators += await upsertSoftIndicatorsForUser(prisma, user);
   }
 
   const groups = await prisma.userGroup.findMany();
-  let groupIndicators = 0;
   for (const group of groups) {
     // Placeholder quest id until Quest catalog exists
     if (!group.currentQuestId) {
@@ -227,12 +142,11 @@ export async function seedGamificationProfiles(prisma: PrismaClient): Promise<{
         data: { currentQuestId: `seed-group-quest-${group.id.slice(0, 8)}` },
       });
     }
-    groupIndicators += await upsertSoftIndicatorsForGroup(prisma, group);
   }
 
   console.log(
-    `✅ Gamification profile seed: ${wallets} wallets, ${userIndicators} user indicators, ${groupIndicators} group indicators, ${events} events, ${walletEntries} wallet entries`,
+    `✅ Gamification profile seed: ${wallets} wallets, ${events} events, ${walletEntries} wallet entries`,
   );
 
-  return { wallets, userIndicators, groupIndicators, events, walletEntries };
+  return { wallets, events, walletEntries };
 }

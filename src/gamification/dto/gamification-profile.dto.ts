@@ -34,9 +34,6 @@ export class GamificationProfileQueryDto {
 
 export class GamificationWalletDto {
   @ApiProperty()
-  level!: number;
-
-  @ApiProperty()
   xp!: number;
 
   @ApiProperty()
