@@ -230,6 +230,9 @@ npm run db:migrate:deploy
 
 # Seed the database with initial data
 npm run db:seed
+
+# Load DB translations (NEVO overlays; skips if already present)
+npm run db:translations
 ```
 
 ### 5. Start the Application
@@ -293,6 +296,8 @@ npm run start:dev
 - `npm run db:migrate:reset` - Reset database and apply all migrations
 - `npm run db:studio` - Open Prisma Studio (database GUI)
 - `npm run db:seed` - Seed database with initial data
+- `npm run db:seed:prod` - Production seed (catalog data only)
+- `npm run db:translations` - Load DB translations after seed (NEVO + future sources)
 - `npm run db:backup` - Create database backup
 - `npm run db:restore` - Restore database from backup
 
