@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { FoodProductRepository } from '../repositories/food-product.repository';
 import { OpenFoodFactsService } from './openfoodfacts.service';
+import { ProductInfo } from '../interfaces/openfoodfacts.interface';
 import { CreateFoodProductDto } from '../dto/create-food-product.dto';
 import { UpdateFoodProductDto } from '../dto/update-food-product.dto';
 import {
@@ -136,25 +137,16 @@ export class FoodProductService {
     return responseDto;
   }
 
-  async findByBarcode(
-    barcode: string,
-    includeOpenFoodFacts: boolean = false,
-  ): Promise<FoodProductResponseDto> {
+  async findByBarcode(barcode: string): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by barcode: ${barcode}`);
 
-    const food = await this.foodProductRepository.findByBarcode(barcode);
-    if (!food) {
+    const offProduct =
+      await this.openFoodFactsService.getProductByBarcode(barcode);
+    if (!offProduct) {
       throw new NotFoundException('Food product not found');
     }
 
-    const responseDto = this.transformToResponseDto(food);
-
-    if (includeOpenFoodFacts) {
-      const offInfo = await this.getOpenFoodFactsInfo(barcode);
-      responseDto.openFoodFactsInfo = offInfo || undefined;
-    }
-
-    return responseDto;
+    return this.buildResponseFromOpenFoodFacts(offProduct);
   }
 
   async update(
@@ -249,19 +241,7 @@ export class FoodProductService {
         return null;
       }
 
-      return plainToClass(OpenFoodFactsInfoDto, {
-        barcode: productInfo.barcode,
-        name: productInfo.name,
-        brands: productInfo.brands,
-        categories: productInfo.categories,
-        ingredients: productInfo.ingredients,
-        allergens: productInfo.allergens,
-        nutritionGrade: productInfo.nutritionGrade,
-        novaGroup: productInfo.novaGroup,
-        nutritionalInfo: productInfo.nutritionalInfo,
-        imageUrl: productInfo.imageUrl,
-        completeness: productInfo.completeness,
-      });
+      return this.mapToOpenFoodFactsInfoDto(productInfo);
     } catch (error) {
       this.logger.error(
         `Error fetching OpenFoodFacts info for ${barcode}:`,
@@ -269,6 +249,56 @@ export class FoodProductService {
       );
       return null;
     }
+  }
+
+  private mapToOpenFoodFactsInfoDto(
+    productInfo: ProductInfo,
+  ): OpenFoodFactsInfoDto {
+    return plainToClass(OpenFoodFactsInfoDto, {
+      barcode: productInfo.barcode,
+      name: productInfo.name,
+      brands: productInfo.brands,
+      categories: productInfo.categories,
+      ingredients: productInfo.ingredients,
+      allergens: productInfo.allergens,
+      nutritionGrade: productInfo.nutritionGrade,
+      novaGroup: productInfo.novaGroup,
+      nutritionalInfo: productInfo.nutritionalInfo,
+      imageUrl: productInfo.imageUrl,
+      completeness: productInfo.completeness,
+    });
+  }
+
+  // Barcode found only in OpenFoodFacts (Mongo dump or live API), not in our
+  // local catalog. Read-only passthrough: no FoodProduct row is created, so
+  // `id` is not a real local id and this product can't be PATCHed/DELETEd.
+  private buildResponseFromOpenFoodFacts(
+    productInfo: ProductInfo,
+  ): FoodProductResponseDto {
+    return plainToClass(
+      FoodProductResponseDto,
+      {
+        id: productInfo.barcode,
+        name: productInfo.name,
+        description: productInfo.genericName,
+        barcode: productInfo.barcode,
+        brands: productInfo.brands?.join(', '),
+        categories: productInfo.categories,
+        labels: productInfo.labels,
+        quantity: productInfo.quantity,
+        servingSize: productInfo.servingSize,
+        ingredientsText: productInfo.ingredients,
+        allergens: productInfo.allergens,
+        traces: productInfo.traces,
+        countries: productInfo.countries,
+        origins: productInfo.origins,
+        manufacturingPlaces: productInfo.manufacturingPlaces,
+        imageUrl: productInfo.imageUrl,
+        imageFrontUrl: productInfo.imageFrontUrl,
+        openFoodFactsInfo: this.mapToOpenFoodFactsInfoDto(productInfo),
+      },
+      { excludeExtraneousValues: true },
+    );
   }
 
   private transformToResponseDto(food: any): FoodProductResponseDto {

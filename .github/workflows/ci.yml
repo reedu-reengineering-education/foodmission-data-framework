@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx prisma generate
+        run: npm run db:generate
 
       # English-only gate: other locales may lag behind new keys and fall back to
       # English at runtime (I18nModule.fallbackLanguage + catalog defaultValue).
@@ -120,7 +120,7 @@ jobs:
 
       - name: Check for unused dependencies
         run: |
-          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics"
+          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics,.prisma"
 
       - name: Generate complexity report
         run: |
@@ -218,10 +218,10 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx prisma generate
+        run: npm run db:generate
 
       - name: Run database migrations
-        run: npx prisma migrate deploy
+        run: npm run db:migrate:deploy
 
       - name: Seed test database
         run: npm run db:seed

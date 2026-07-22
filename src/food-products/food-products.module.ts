@@ -6,6 +6,7 @@ import { FoodProductController } from './controllers/food-products.controller';
 import { FoodProductService } from './services/food-product.service';
 import { OpenFoodFactsService } from './services/openfoodfacts.service';
 import { FoodProductRepository } from './repositories/food-product.repository';
+import { OffMongoProductRepository } from './repositories/off-mongo-product.repository';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { CommonModule } from '../common/common.module';
 
@@ -16,6 +17,7 @@ import { CommonModule } from '../common/common.module';
     FoodProductService,
     OpenFoodFactsService,
     FoodProductRepository,
+    OffMongoProductRepository,
     UsersRepository,
   ],
   exports: [FoodProductService, OpenFoodFactsService, FoodProductRepository],
