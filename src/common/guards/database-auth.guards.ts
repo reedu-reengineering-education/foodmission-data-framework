@@ -89,19 +89,15 @@ export class DataBaseAuthGuard implements CanActivate {
     }
   }
 
-  /**
-   * Throttled write so authenticated traffic updates lastLoginAt without
-   * a DB write on every request. Uses DB compare-and-set (works across instances).
-   */
   private async maybeTouchLastLogin(userId: string): Promise<void> {
     try {
-      await this.usersRepository.touchLastLoginAtIfStale(
+      await this.usersRepository.touchLastLoginAt(
         userId,
         new Date(),
         LAST_LOGIN_TOUCH_INTERVAL_MS,
       );
     } catch {
-      // Do not fail the request if activity tracking write fails.
+      // Activity tracking must not fail the request.
     }
   }
 }

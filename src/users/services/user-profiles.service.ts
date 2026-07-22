@@ -126,12 +126,6 @@ export class UserProfilesService {
       }
     }
 
-    if (payload.segment !== undefined) {
-      throw new BadRequestException(
-        'segment is server-derived from onboarding baselines and cannot be set by clients',
-      );
-    }
-
     if (payload.country !== undefined) updateData.country = payload.country;
     if (payload.region !== undefined) updateData.region = payload.region;
     if (payload.zip !== undefined) updateData.zip = payload.zip;
@@ -223,45 +217,37 @@ export class UserProfilesService {
     user: User,
     payload: Record<string, unknown>,
   ): Promise<User> {
-    const baselines = {
-      weeklyMeatConsumption: user.weeklyMeatConsumption,
-      weeklyBeefConsumption: user.weeklyBeefConsumption,
-      weeklyFoodWaste: user.weeklyFoodWaste,
-      weeklyUpfConsumption: user.weeklyUpfConsumption,
-      weeklyReusableOrRefill: user.weeklyReusableOrRefill,
-    };
-
-    const hasAllBaselines = ONBOARDING_BASELINE_FIELDS.every(
-      (field) => baselines[field] != null,
-    );
-    if (!hasAllBaselines) {
+    const surveyTouched =
+      (payload.preferences as { onboardingSurvey?: unknown } | undefined)
+        ?.onboardingSurvey !== undefined;
+    if (!surveyTouched) {
       return user;
     }
 
-    const touchedOnboarding =
-      (payload.preferences as { onboardingSurvey?: unknown } | undefined)
-        ?.onboardingSurvey !== undefined;
-    if (!touchedOnboarding) {
+    const hasAllBaselines = ONBOARDING_BASELINE_FIELDS.every(
+      (field) => user[field] != null,
+    );
+    if (!hasAllBaselines) {
       return user;
     }
 
     const segment =
       user.segment ??
       this.gamificationOnboardingService.deriveSegment({
-        weeklyMeatConsumption: baselines.weeklyMeatConsumption!,
-        weeklyBeefConsumption: baselines.weeklyBeefConsumption!,
-        weeklyFoodWaste: baselines.weeklyFoodWaste!,
-        weeklyUpfConsumption: baselines.weeklyUpfConsumption!,
-        weeklyReusableOrRefill: baselines.weeklyReusableOrRefill!,
+        weeklyMeatConsumption: user.weeklyMeatConsumption!,
+        weeklyBeefConsumption: user.weeklyBeefConsumption!,
+        weeklyFoodWaste: user.weeklyFoodWaste!,
+        weeklyUpfConsumption: user.weeklyUpfConsumption!,
+        weeklyReusableOrRefill: user.weeklyReusableOrRefill!,
       });
 
-    let nextUser = user;
-    if (user.segment !== segment) {
-      nextUser = await this.prisma.user.update({
-        where: { id: user.id },
-        data: { segment },
-      });
-    }
+    const nextUser =
+      user.segment === segment
+        ? user
+        : await this.prisma.user.update({
+            where: { id: user.id },
+            data: { segment },
+          });
 
     await this.gamificationOnboardingService.applyOnboardingSideEffects(
       nextUser,

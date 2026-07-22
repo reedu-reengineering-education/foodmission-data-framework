@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
-import { UserProfileResponseDto } from '../dto/user-profile-response.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
@@ -41,18 +40,9 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Check whether basic profile is complete',
     description:
-      'Returns a JSON boolean only — not the user profile object.\n\n' +
-      '- `true`: username, yearOfBirth, country, region, zip, and language are all set\n' +
-      '- `false`: user missing or any of those fields is unset\n\n' +
-      'For the full profile object, use `GET /users/me/profile`.\n' +
-      'For the gamification profile (wallet, indicators, events), use `GET /users/me/gamification`.\n' +
-      'To update profile / onboarding fields, use `PATCH /users/me`.',
+      'JSON boolean only. Full profile: `GET /users/me/profile`. Gamification: `GET /users/me/gamification`.',
   })
-  @ApiOkResponse({
-    description:
-      'Whether basic profile is complete (raw JSON boolean `true` or `false`)',
-    schema: { type: 'boolean' },
-  })
+  @ApiOkResponse({ schema: { type: 'boolean' } })
   async getMyProfile(@CurrentUser('id') userId: string) {
     const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) return false;
@@ -62,16 +52,8 @@ export class UserProfilesController {
   @Get('me/profile')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get current user profile',
-    description:
-      'Returns the full user profile including preferences (with onboardingSurvey), settings, ' +
-      'segment, and quest id. Use `GET /users/me` only for the basic-profile completeness boolean.',
-  })
-  @ApiOkResponse({ type: UserProfileResponseDto })
-  async getMyFullProfile(
-    @CurrentUser('id') userId: string,
-  ): Promise<UserProfileResponseDto> {
+  @ApiOperation({ summary: 'Get current user profile' })
+  async getMyFullProfile(@CurrentUser('id') userId: string) {
     const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) throw new NotFoundException('User not found');
     return user;
@@ -83,11 +65,7 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Get current user gamification profile',
     description:
-      'Returns wallet balances, progress indicators, preferences (including onboardingSurvey), ' +
-      'current quest id, lastLoginAt, and recent events / wallet entries. ' +
-      'Badges are empty until Badge catalog exists.\n\n' +
-      'This is separate from `GET /users/me`, which only returns a boolean ' +
-      'for basic profile completeness, and `GET /users/me/profile`, which returns the full profile.',
+      'Wallet, progress indicators, preferences (incl. onboardingSurvey), quest, events.',
   })
   @ApiOkResponse({ type: GamificationProfileResponseDto })
   @UsePipes(
@@ -113,8 +91,7 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Update current user profile',
     description:
-      'When all five gamification onboarding baselines are set (in this request or already on the profile), ' +
-      'segment is derived server-side from baselines, a wallet is ensured, and soft progress indicators are seeded.',
+      'Onboarding baselines under preferences.onboardingSurvey. Segment is server-derived.',
   })
   @UsePipes(
     new ValidationPipe({
@@ -130,21 +107,18 @@ export class UserProfilesController {
     const user = await this.userProfilesService.getProfileByUserId(userId);
     if (!user) throw new NotFoundException('User not found');
 
-    const cleanedPayload: Record<string, any> = {};
-    if (payload && typeof payload === 'object') {
-      for (const [k, v] of Object.entries(payload)) {
-        if (v !== undefined) cleanedPayload[k] = v;
-      }
+    const cleanedPayload = Object.fromEntries(
+      Object.entries(payload ?? {}).filter(([, v]) => v !== undefined),
+    );
+
+    if (Object.keys(cleanedPayload).length === 0) {
+      return user;
     }
 
-    if (Object.keys(cleanedPayload).length > 0) {
-      return this.userProfilesService.updateProfile(
-        user.keycloakId,
-        cleanedPayload,
-      );
-    }
-
-    return user;
+    return this.userProfilesService.updateProfile(
+      user.keycloakId,
+      cleanedPayload,
+    );
   }
 
   @Delete('me')

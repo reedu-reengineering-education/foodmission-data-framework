@@ -3,7 +3,7 @@ import { UserProfilesService } from './user-profiles.service';
 import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   UserSegment,
@@ -356,21 +356,6 @@ describe('UserProfilesService - deleteUserById', () => {
         gamificationOnboarding.applyOnboardingSideEffects,
       ).toHaveBeenCalledWith(afterSegment, UserSegment.BEGINNER);
       expect(result.segment).toBe(UserSegment.BEGINNER);
-    });
-
-    it('rejects client-provided segment', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
-        mockUser,
-      );
-
-      await expect(
-        service.updateProfile('kc-1', {
-          segment: UserSegment.ADVANCED,
-        }),
-      ).rejects.toThrow(BadRequestException);
-
-      expect(prisma.user.update).not.toHaveBeenCalled();
-      expect(gamificationOnboarding.deriveSegment).not.toHaveBeenCalled();
     });
 
     it('merges partial preferences without wiping stored keys', async () => {

@@ -20,7 +20,7 @@ describe('DataBaseAuthGuard', () => {
       findByKeycloakId: jest.fn(),
       findByEmail: jest.fn(),
       update: jest.fn(),
-      touchLastLoginAtIfStale: jest.fn().mockResolvedValue({ count: 1 }),
+      touchLastLoginAt: jest.fn().mockResolvedValue({ count: 1 }),
     } as any;
 
     mockRequest = {
@@ -100,7 +100,7 @@ describe('DataBaseAuthGuard', () => {
       expect(mockRequest.user.sub).toBe(keycloakId);
       expect(mockRequest.user.email).toBe('user@example.com');
       expect(mockRequest.user.roles).toEqual(jwtRoles);
-      expect(mockUserRepository.touchLastLoginAtIfStale).toHaveBeenCalledWith(
+      expect(mockUserRepository.touchLastLoginAt).toHaveBeenCalledWith(
         dbUserId,
         expect.any(Date),
         5 * 60 * 1000,

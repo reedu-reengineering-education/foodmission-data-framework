@@ -51,8 +51,8 @@ export class UsersRepository {
     });
   }
 
-  /** Throttled lastLoginAt write (safe across app instances). */
-  async touchLastLoginAtIfStale(
+  /** Update lastLoginAt only if null or older than intervalMs (multi-instance safe). */
+  async touchLastLoginAt(
     id: string,
     at: Date = new Date(),
     intervalMs = 5 * 60 * 1000,
@@ -64,15 +64,6 @@ export class UsersRepository {
         OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: threshold } }],
       },
       data: { lastLoginAt: at },
-    });
-  }
-
-  /** @deprecated Use touchLastLoginAtIfStale for throttled updates. */
-  async touchLastLoginAt(id: string, at: Date = new Date()) {
-    return this.prisma.user.update({
-      where: { id },
-      data: { lastLoginAt: at },
-      select: { id: true, lastLoginAt: true },
     });
   }
 
