@@ -176,9 +176,12 @@ describe('GenericFoodsController', () => {
       const foodGroups = ['Vegetables', 'Fruits', 'Grains', 'Dairy'];
       service.getAllFoodGroups.mockResolvedValue(foodGroups);
 
-      const result = await controller.getAllFoodGroups();
+      const result = await controller.getAllFoodGroups({});
 
-      expect(service.getAllFoodGroups).toHaveBeenCalledWith(undefined);
+      expect(service.getAllFoodGroups).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+      );
       expect(result).toEqual(foodGroups);
       expect(result).toHaveLength(4);
     });
@@ -187,16 +190,19 @@ describe('GenericFoodsController', () => {
       const foodGroups = ['Vegetables', 'Vegetable oils'];
       service.getAllFoodGroups.mockResolvedValue(foodGroups);
 
-      const result = await controller.getAllFoodGroups('vegeta');
+      const result = await controller.getAllFoodGroups({ search: 'vegeta' });
 
-      expect(service.getAllFoodGroups).toHaveBeenCalledWith('vegeta');
+      expect(service.getAllFoodGroups).toHaveBeenCalledWith(
+        'vegeta',
+        undefined,
+      );
       expect(result).toEqual(foodGroups);
     });
 
     it('should return empty array when no generic foods exist', async () => {
       service.getAllFoodGroups.mockResolvedValue([]);
 
-      const result = await controller.getAllFoodGroups();
+      const result = await controller.getAllFoodGroups({});
 
       expect(result).toEqual([]);
     });
@@ -208,9 +214,17 @@ describe('GenericFoodsController', () => {
 
       const result = await controller.findById('generic-123');
 
-      expect(service.findById).toHaveBeenCalledWith('generic-123');
+      expect(service.findById).toHaveBeenCalledWith('generic-123', undefined);
       expect(result).toEqual(mockCategory);
       expect(result.id).toBe('generic-123');
+    });
+
+    it('should pass lang to service', async () => {
+      service.findById.mockResolvedValue(mockCategory);
+
+      await controller.findById('generic-123', 'nl');
+
+      expect(service.findById).toHaveBeenCalledWith('generic-123', 'nl');
     });
 
     it('should throw NotFoundException when category not found', async () => {

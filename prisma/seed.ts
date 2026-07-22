@@ -23,19 +23,28 @@ import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
 
 const {
-  values: { environment },
+  values: { environment, force },
 } = parseArgs({
   options: {
     environment: { type: 'string', default: 'development' },
+    force: { type: 'boolean', default: false },
   },
 });
 
 const prisma = new PrismaClient();
+const skipExisting = !(force ?? false);
+
+function printTranslationsReminder(): void {
+  console.log(
+    '\nℹ️  DB translations are not loaded by seed. Run:\n' +
+      '   npm run db:translations',
+  );
+}
 
 async function seedProduction() {
-  const genericFoods = await seedGenericFoods(prisma);
-  const recipes = await seedRecipes(prisma);
-  const shelfLife = await seedFoodKeeper(prisma);
+  const genericFoods = await seedGenericFoods(prisma, { skipExisting });
+  const recipes = await seedRecipes(prisma, { skipExisting });
+  const shelfLife = await seedFoodKeeper(prisma, { skipExisting });
   const shelfLifeLinks = await linkShelfLife(prisma);
   const surveys = await seedSurveys(prisma);
   const foodCount = await prisma.foodProduct.count();
@@ -66,6 +75,7 @@ async function seedProduction() {
   for (const row of summaryRows) {
     console.log(`   - ${row.label}: ${row.value}`);
   }
+  printTranslationsReminder();
 }
 
 async function seedDevelopment() {
@@ -77,7 +87,7 @@ async function seedDevelopment() {
     );
   }
 
-  const genericFoods = await seedGenericFoods(prisma);
+  const genericFoods = await seedGenericFoods(prisma, { skipExisting });
 
   // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
   const users = await seedUsers(prisma);
@@ -95,11 +105,11 @@ async function seedDevelopment() {
   const missions = await seedMissions(prisma);
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
-  const recipes = await seedRecipes(prisma);
+  const recipes = await seedRecipes(prisma, { skipExisting });
   const meals = await seedMeals(prisma);
 
   // --- Shelf-life reference data, then link rows onto FoodProduct / GenericFood ---
-  const shelfLife = await seedFoodKeeper(prisma);
+  const shelfLife = await seedFoodKeeper(prisma, { skipExisting });
   const shelfLifeLinks = await linkShelfLife(prisma);
 
   // --- Surveys ---
@@ -149,11 +159,13 @@ async function seedDevelopment() {
   for (const row of summaryRows) {
     console.log(`   - ${row.label}: ${row.value}`);
   }
+  printTranslationsReminder();
 }
 
 async function main() {
   console.log('🌱 Starting database seeding...');
   console.log(`   environment: ${environment}`);
+  console.log(`   skipExisting: ${skipExisting}`);
   console.log('=====================================');
 
   try {

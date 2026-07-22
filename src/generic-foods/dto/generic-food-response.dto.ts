@@ -28,6 +28,12 @@ export class GenericFoodResponseDto {
   @ApiPropertyOptional({ description: 'Synonym' })
   synonym?: string | null;
 
+  @ApiPropertyOptional({
+    description:
+      'Locale-specific remark (from translations; not stored on English parent)',
+  })
+  remark?: string | null;
+
   @ApiPropertyOptional({ description: 'Quantity', example: 'per 100g' })
   quantity?: string | null;
 

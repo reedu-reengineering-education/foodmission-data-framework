@@ -38,6 +38,10 @@ npx prisma migrate deploy
 echo "🌱 Seeding database with initial data..."
 npm run db:seed
 
+# Load DB translations (NEVO + future sources; skips if already present)
+echo "🌐 Loading database translations..."
+npm run db:translations
+
 echo "✅ Development environment setup complete!"
 echo ""
 echo "🎯 Next steps:"
@@ -46,7 +50,8 @@ echo "  - Open http://localhost:3000 to access the API"
 echo "  - Run 'npm test' to run the test suite"
 echo ""
 echo "🔧 Useful commands:"
-echo "  - npm run db:studio    # Open Prisma Studio"
-echo "  - npm run db:reset     # Reset database"
-echo "  - npm run lint         # Run ESLint"
-echo "  - npm run format       # Format code with Prettier"
+echo "  - npm run db:studio         # Open Prisma Studio"
+echo "  - npm run db:reset          # Reset database"
+echo "  - npm run db:translations   # Load/re-check DB translations"
+echo "  - npm run lint              # Run ESLint"
+echo "  - npm run format            # Format code with Prettier"

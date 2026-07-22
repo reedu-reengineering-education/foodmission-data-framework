@@ -6,7 +6,8 @@ const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NE
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
- * Dutch-only columns (2: Voedingsmiddelgroep, 5: Dutch food name, 9: Opmerking) are skipped.
+ * English metadata lands on GenericFood. Dutch columns (1, 4, 6, 8) and other
+ * locales are loaded via `npm run db:translations`.
  */
 const COL = {
   NEVO_VERSION: 0,
@@ -15,7 +16,7 @@ const COL = {
   NEVO_CODE: 3,
   // 4 = Voedingsmiddelnaam/Dutch food name — skipped
   FOOD_NAME: 5,
-  SYNONYM: 6,
+  // 6 = Synoniem (Dutch) — skipped
   QUANTITY: 7,
   // 8 = Opmerking (Dutch remark) — skipped
   CONTAINS_TRACES_OF: 9,
@@ -185,7 +186,16 @@ function parseInt_(raw: string): number {
   return parseInt(cleaned, 10);
 }
 
-export async function seedGenericFoods(prisma: PrismaClient) {
+export type SeedGenericFoodsOptions = {
+  /** When true (default), skip the whole import if any GenericFood rows already exist. */
+  skipExisting?: boolean;
+};
+
+export async function seedGenericFoods(
+  prisma: PrismaClient,
+  options: SeedGenericFoodsOptions = {},
+) {
+  const { skipExisting = true } = options;
   console.log('🥗 Seeding generic foods from NEVO2025...');
 
   if (!fs.existsSync(CSV_PATH)) {
@@ -193,6 +203,16 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       `⚠️  NEVO CSV not found at ${CSV_PATH}, skipping generic foods seed.`,
     );
     return [];
+  }
+
+  if (skipExisting) {
+    const existingCount = await prisma.genericFood.count();
+    if (existingCount > 0) {
+      console.log(
+        `   ⏭️  Skipping NEVO seed — ${existingCount} generic foods already present (pass --force to re-import)`,
+      );
+      return [];
+    }
   }
 
   const content = fs.readFileSync(CSV_PATH, 'utf-8');
@@ -215,7 +235,7 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),
-      synonym: parseStringOrNull(cols[COL.SYNONYM]),
+      synonym: null,
       quantity: parseStringOrNull(cols[COL.QUANTITY]),
       containsTracesOf: parseStringOrNull(cols[COL.CONTAINS_TRACES_OF]),
       isFortifiedWith: parseStringOrNull(cols[COL.IS_FORTIFIED_WITH]),
@@ -378,15 +398,13 @@ export async function seedGenericFoods(prisma: PrismaClient) {
       fattyAcidsUnidentified: parseFloat_(cols[COL.FAUN]),
     };
 
-    const record = await prisma.genericFood.upsert({
+    await prisma.genericFood.upsert({
       where: { nevoCode },
       update: data,
       create: { nevoCode, ...data },
     });
 
-    if (record) {
-      results.push({ nevoCode, foodName: data.foodName });
-    }
+    results.push({ nevoCode, foodName: data.foodName });
   }
 
   console.log(`   ✅ Processed ${results.length} generic foods`);

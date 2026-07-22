@@ -7,15 +7,50 @@ the FOODMISSION Data Framework.
 
 ### Database and Seeding
 
-- **`seed-dev.ts`** — OFF JSON + core users + extra dev users / food products from fixtures
+- **`prisma/seed.ts`** — Primary entry via `npm run db:seed` / `db:seed:prod` (uses `scripts/seeds/prod/genericFoods.ts`)
+- **`seeds/prod/genericFoods.ts`** — NEVO nutrition CSV → `generic_foods` (English only; skips if data already exists)
+- **`seeds/seed-translations.ts`** — DB translations step (`npm run db:translations`): NEVO overlays + future translation sources
+- **`seeds/import-nevo-translations.ts`** — NEVO translations CSV → `entity_translations` (used by `db:translations`; also `db:import:nevo-translations`)
 - **`seed-test.ts`** — Minimal deterministic users + barcode food products for CI (`npm run db:seed:test`)
-- **`seed-prod.ts`** — Production-oriented pipeline: NEVO (create-only) → OFF JSON → recipes → FoodKeeper → shelf-life links (`npm run db:seed:prod`)
-- **`seed-nevo.ts`** — Standalone NEVO CSV → `generic_foods` (create-only); also runnable as CLI
-- **`seed-prod-nevo.ts`** — NEVO import then recipe seeding (subset prod workflow)
-- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive — use only when you intend to replace the catalog
-- **`migration-utils.ts`** - Migration helper utilities
-- **`db-reset.sh`** - Reset local database state
-- **`init-test-db.sql`** - Test DB bootstrap SQL
+- **`seed-food-products-only.ts`** — **Wipes all `food_products`** then loads `openfoodfacts-foods.json` only (`npm run db:seed:foods`); destructive
+- **`seed-prod.ts`** — Legacy prod pipeline (OFF + recipes + shelf-life); prefer `npm run db:seed:prod`
+
+### NEVO deployment (new database)
+
+English food metadata and locale overlays are loaded in **three steps**:
+
+```bash
+# 1. Schema
+npm run db:migrate:deploy   # or db:migrate locally
+
+# 2. English NEVO foods (+ other prod seed data). Skips if data already exists.
+npm run db:seed:prod          # production seed
+# or: npm run db:seed         # development (includes dev fixtures)
+# optional: -- --force        # re-import even when rows exist
+
+# 3. Non-English food name/group/remark/synonym overlays (~40k rows). Skips if already present.
+npm run db:translations -- --dry-run   # optional preview
+npm run db:translations
+# optional: -- --force                 # re-import even when rows exist
+```
+
+**What each step writes**
+
+| Step | Command | Table | Locales |
+| --- | --- | --- | --- |
+| Seed | `db:seed` / `db:seed:prod` | `generic_foods` | English canonical fields only |
+| Translations | `db:translations` | `entity_translations` | `nl`, `no`, `de`, `el`, `es`, `it`, `pl`, `sl` |
+
+**Updating translations later**
+
+- Bulk NEVO file refresh → `npm run db:translations -- --force`
+- Low-level NEVO-only import → `npm run db:import:nevo-translations`
+- Vendor spreadsheet edits → `npm run i18n:export:db` / `i18n:import:db`
+
+**Data files**
+
+- `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` — nutrition + English labels
+- `prisma/seeds/data/nevo/nevo_translations.csv` — all non-English display strings
 
 ### Backup and Restore
 
@@ -38,6 +73,16 @@ Interactive Swagger UI: run the API and open `/api/docs` (see root `README.md` �
 - `test-runner.sh` - Scripted test runner helper
 - `manage-secrets.sh` - Secrets management helper script
 
+### Translations (`scripts/i18n/`)
+
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md) for full workflows.
+
+| npm script | Purpose |
+| --- | --- |
+| `i18n:export` / `i18n:import` | Vendor handoff for UI JSON (`src/i18n/`) |
+| `i18n:export:db` / `i18n:import:db` | Vendor handoff for DB `entity_translations` |
+| `i18n:validate` / `i18n:validate:locales` / `i18n:missing` | Check UI translation files |
+
 ## `scripts/dev/` Folder
 
 The `scripts/dev/` folder contains meal-log analytics development utilities:
@@ -58,7 +103,8 @@ npm run dev:reset
 
 # Core seeding
 npm run db:seed
-npm run db:seed:dev
+npm run db:seed:prod
+npm run db:translations
 npm run db:seed:test
 npm run db:seed:foods
 

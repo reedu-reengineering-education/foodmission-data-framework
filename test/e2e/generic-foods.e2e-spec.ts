@@ -5,6 +5,7 @@ import { PrismaService } from '../../src/database/prisma.service';
 import { GenericFoodsController } from '../../src/generic-foods/controllers/generic-foods.controller';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
 import { GenericFoodService } from '../../src/generic-foods/services/generic-food.service';
+import { TranslationService } from '../../src/translations/services/translation.service';
 import {
   createAuthGuardMock,
   createControllerE2eTestApp,
@@ -51,6 +52,7 @@ describe('GenericFoods endpoints (e2e)', () => {
       providers: [
         GenericFoodService,
         GenericFoodRepository,
+        TranslationService,
         { provide: PrismaService, useValue: prisma },
       ],
       authGuardMock: createAuthGuardMock(authUser),
@@ -60,6 +62,7 @@ describe('GenericFoods endpoints (e2e)', () => {
   });
 
   beforeEach(async () => {
+    await prisma.entityTranslation.deleteMany();
     await prisma.genericFood.deleteMany();
     await prisma.user.deleteMany({ where: { id: authUser.id } });
     await seedBaseData();
@@ -116,6 +119,53 @@ describe('GenericFoods endpoints (e2e)', () => {
       .get('/generic-foods/00000000-0000-0000-0000-000000000301')
       .expect(200);
     expect(res.body.nevoCode).toBe(900001);
+  });
+
+  itIfDb('GET /generic-foods?lang=nl overlays Dutch translations', async () => {
+    await prisma.entityTranslation.createMany({
+      data: [
+        {
+          entityType: 'GenericFood',
+          entityId: '00000000-0000-0000-0000-000000000301',
+          locale: 'nl',
+          field: 'foodName',
+          value: 'Appel rauw',
+        },
+        {
+          entityType: 'GenericFood',
+          entityId: '00000000-0000-0000-0000-000000000301',
+          locale: 'nl',
+          field: 'foodGroup',
+          value: 'Fruit (NL)',
+        },
+      ],
+    });
+
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods/00000000-0000-0000-0000-000000000301?lang=nl')
+      .expect(200);
+
+    expect(res.body.foodName).toBe('Appel rauw');
+    expect(res.body.foodGroup).toBe('Fruit (NL)');
+  });
+
+  itIfDb('GET /generic-foods search works with localized names', async () => {
+    await prisma.entityTranslation.create({
+      data: {
+        entityType: 'GenericFood',
+        entityId: '00000000-0000-0000-0000-000000000301',
+        locale: 'nl',
+        field: 'foodName',
+        value: 'Appel rauw',
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?lang=nl&search=Appel')
+      .expect(200);
+
+    expect(res.body.items.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.items[0].foodName).toBe('Appel rauw');
   });
 
   itIfDb('POST /generic-foods creates one', async () => {

@@ -24,7 +24,9 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
+import { FoodGroupsQueryDto } from '../dto/food-groups-query.dto';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('generic-foods')
 @Controller('generic-foods')
@@ -58,13 +60,20 @@ export class GenericFoodsController {
   @ApiOperation({
     summary: 'Get all generic foods',
     description:
-      'Get a paginated list of generic foods with optional filtering',
+      'Get a paginated list of generic foods with optional filtering and locale overlay',
   })
   @ApiQuery({ name: 'search', required: false, description: 'Search term' })
   @ApiQuery({
     name: 'foodGroup',
     required: false,
-    description: 'Food group filter',
+    description:
+      'Food group filter (partial match; English or translated when lang is set)',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
@@ -81,20 +90,15 @@ export class GenericFoodsController {
   @ApiOperation({
     summary: 'Get all unique food groups',
     description:
-      'Get a list of all distinct food groups available, optionally filtered by search term',
-  })
-  @ApiQuery({
-    name: 'search',
-    required: false,
-    description: 'Filter food groups by search term',
+      'Get a list of all distinct food groups available, optionally filtered by search term and localized via lang',
   })
   @ApiResponse({
     status: 200,
     description: 'Food groups retrieved successfully',
     type: [String],
   })
-  getAllFoodGroups(@Query('search') search?: string): Promise<string[]> {
-    return this.genericFoodService.getAllFoodGroups(search);
+  getAllFoodGroups(@Query() query: FoodGroupsQueryDto): Promise<string[]> {
+    return this.genericFoodService.getAllFoodGroups(query.search, query.lang);
   }
 
   @Get(':id')
@@ -103,14 +107,23 @@ export class GenericFoodsController {
     summary: 'Get food category by ID',
     description: 'Get detailed information about a specific food category',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'Food category found',
     type: GenericFoodResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Food category not found' })
-  findById(@Param('id') id: string): Promise<GenericFoodResponseDto> {
-    return this.genericFoodService.findById(id);
+  findById(
+    @Param('id') id: string,
+    @Query('lang') lang?: string,
+  ): Promise<GenericFoodResponseDto> {
+    return this.genericFoodService.findById(id, lang);
   }
 
   @Patch(':id')
