@@ -113,6 +113,25 @@ describe('UserProfilesController', () => {
     });
   });
 
+  describe('getMyFullProfile', () => {
+    it('should return full profile', async () => {
+      service.getProfileByUserId.mockResolvedValue(mockUserProfile);
+
+      const result = await controller.getMyFullProfile('user-1');
+
+      expect(result).toEqual(mockUserProfile);
+      expect(service.getProfileByUserId).toHaveBeenCalledWith('user-1');
+    });
+
+    it('should throw NotFoundException if user not found', async () => {
+      service.getProfileByUserId.mockResolvedValue(null);
+
+      await expect(controller.getMyFullProfile('user-1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
   describe('getMyGamificationProfile', () => {
     it('should delegate to GamificationProfileService', async () => {
       const profile = {
@@ -259,7 +278,6 @@ describe('UserProfilesController', () => {
             weeklyReusableOrRefill: 'THREE_TO_SIX',
           },
         },
-        segment: 'BEGINNER',
       } as ProfileUpdateDto;
 
       service.getProfileByUserId.mockResolvedValue(mockUserProfile);

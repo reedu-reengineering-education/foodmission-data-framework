@@ -51,7 +51,23 @@ export class UsersRepository {
     });
   }
 
-  /** Fire-and-forget friendly: updates lastLoginAt for activity tracking. */
+  /** Throttled lastLoginAt write (safe across app instances). */
+  async touchLastLoginAtIfStale(
+    id: string,
+    at: Date = new Date(),
+    intervalMs = 5 * 60 * 1000,
+  ) {
+    const threshold = new Date(at.getTime() - intervalMs);
+    return this.prisma.user.updateMany({
+      where: {
+        id,
+        OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: threshold } }],
+      },
+      data: { lastLoginAt: at },
+    });
+  }
+
+  /** @deprecated Use touchLastLoginAtIfStale for throttled updates. */
   async touchLastLoginAt(id: string, at: Date = new Date()) {
     return this.prisma.user.update({
       where: { id },

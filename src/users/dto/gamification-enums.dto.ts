@@ -1,73 +1,15 @@
 /**
- * Local enums mirroring Prisma gamification/onboarding enums.
- * Keep in sync with prisma/models/users.prisma and gamification.prisma.
+ * Re-export Prisma enums for DTO validation and OpenAPI.
+ * Source of truth: prisma/models/users.prisma and gamification.prisma
  */
-
-export enum WeeklyMeatRange {
-  ZERO_TO_FOUR = 'ZERO_TO_FOUR',
-  FIVE_TO_NINE = 'FIVE_TO_NINE',
-  TEN_TO_FOURTEEN = 'TEN_TO_FOURTEEN',
-  FIFTEEN_PLUS = 'FIFTEEN_PLUS',
-}
-
-export enum WeeklyBeefFrequency {
-  NEVER = 'NEVER',
-  LESS_THAN_ONCE_PER_WEEK = 'LESS_THAN_ONCE_PER_WEEK',
-  ONE_TO_TWO_TIMES_PER_WEEK = 'ONE_TO_TWO_TIMES_PER_WEEK',
-  THREE_PLUS_TIMES_PER_WEEK = 'THREE_PLUS_TIMES_PER_WEEK',
-}
-
-export enum WeeklyFoodWasteRange {
-  ZERO = 'ZERO',
-  ONE_TO_TWO = 'ONE_TO_TWO',
-  THREE_TO_FOUR = 'THREE_TO_FOUR',
-  FIVE_PLUS = 'FIVE_PLUS',
-}
-
-export enum WeeklyUpfRange {
-  ZERO_TO_THREE = 'ZERO_TO_THREE',
-  FOUR_TO_NINE = 'FOUR_TO_NINE',
-  TEN_TO_FOURTEEN = 'TEN_TO_FOURTEEN',
-  FIFTEEN_PLUS = 'FIFTEEN_PLUS',
-}
-
-export enum WeeklyReusableRange {
-  ZERO_TO_TWO = 'ZERO_TO_TWO',
-  THREE_TO_SIX = 'THREE_TO_SIX',
-  SEVEN_TO_NINE = 'SEVEN_TO_NINE',
-  TEN_PLUS = 'TEN_PLUS',
-}
-
-export enum UserSegment {
-  BEGINNER = 'BEGINNER',
-  INTERMEDIATE = 'INTERMEDIATE',
-  ADVANCED = 'ADVANCED',
-}
-
-export enum Motivation {
-  SUSTAINABLE_HABITS = 'SUSTAINABLE_HABITS',
-  PLANETARY_IMPACT = 'PLANETARY_IMPACT',
-  SUSTAINABILITY_KNOWLEDGE = 'SUSTAINABILITY_KNOWLEDGE',
-}
-
-export enum ProgressIndicatorKind {
-  FOOD_CHOICES = 'FOOD_CHOICES',
-  FOOD_AND_WASTE = 'FOOD_AND_WASTE',
-  HEALTH = 'HEALTH',
-  CO2_REDUCTION = 'CO2_REDUCTION',
-  ENERGY_REDUCTION = 'ENERGY_REDUCTION',
-  WATER_SAVINGS = 'WATER_SAVINGS',
-  LAND_USE_REDUCTION = 'LAND_USE_REDUCTION',
-  PROTEIN = 'PROTEIN',
-  FAT = 'FAT',
-  SUGAR = 'SUGAR',
-  SALT = 'SALT',
-  FIBER = 'FIBER',
-  VITAMINS = 'VITAMINS',
-  CALORIES = 'CALORIES',
-}
-
-export enum ProgressPrecision {
-  SOFT = 'SOFT',
-  PRECISE = 'PRECISE',
-}
+export {
+  WeeklyMeatRange,
+  WeeklyBeefFrequency,
+  WeeklyFoodWasteRange,
+  WeeklyUpfRange,
+  WeeklyReusableRange,
+  UserSegment,
+  Motivation,
+  ProgressIndicatorKind,
+  ProgressPrecision,
+} from '@prisma/client';

@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { UsersRepository } from '../../users/repositories/users.repository';
 
-/** Skip rewriting lastLoginAt more often than this (per process). */
+/** Skip rewriting lastLoginAt more often than this. */
 const LAST_LOGIN_TOUCH_INTERVAL_MS = 5 * 60 * 1000;
 
 @Injectable()
@@ -19,7 +19,6 @@ export class DataBaseAuthGuard implements CanActivate {
   ) {}
 
   private userCache = new Map<string, { id: string; keycloakId: string }>();
-  private lastLoginTouchedAt = new Map<string, number>();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(META_PUBLIC, [
@@ -92,20 +91,17 @@ export class DataBaseAuthGuard implements CanActivate {
 
   /**
    * Throttled write so authenticated traffic updates lastLoginAt without
-   * a DB write on every request.
+   * a DB write on every request. Uses DB compare-and-set (works across instances).
    */
   private async maybeTouchLastLogin(userId: string): Promise<void> {
-    const now = Date.now();
-    const last = this.lastLoginTouchedAt.get(userId) ?? 0;
-    if (now - last < LAST_LOGIN_TOUCH_INTERVAL_MS) {
-      return;
-    }
-    this.lastLoginTouchedAt.set(userId, now);
     try {
-      await this.usersRepository.touchLastLoginAt(userId);
+      await this.usersRepository.touchLastLoginAtIfStale(
+        userId,
+        new Date(),
+        LAST_LOGIN_TOUCH_INTERVAL_MS,
+      );
     } catch {
       // Do not fail the request if activity tracking write fails.
-      this.lastLoginTouchedAt.delete(userId);
     }
   }
 }

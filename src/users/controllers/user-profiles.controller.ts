@@ -18,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
+import { UserProfileResponseDto } from '../dto/user-profile-response.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
@@ -43,6 +44,7 @@ export class UserProfilesController {
       'Returns a JSON boolean only — not the user profile object.\n\n' +
       '- `true`: username, yearOfBirth, country, region, zip, and language are all set\n' +
       '- `false`: user missing or any of those fields is unset\n\n' +
+      'For the full profile object, use `GET /users/me/profile`.\n' +
       'For the gamification profile (wallet, indicators, events), use `GET /users/me/gamification`.\n' +
       'To update profile / onboarding fields, use `PATCH /users/me`.',
   })
@@ -57,6 +59,24 @@ export class UserProfilesController {
     return this.userProfilesService.isBasicProfileComplete(user.keycloakId);
   }
 
+  @Get('me/profile')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user profile',
+    description:
+      'Returns the full user profile including preferences (with onboardingSurvey), settings, ' +
+      'segment, and quest id. Use `GET /users/me` only for the basic-profile completeness boolean.',
+  })
+  @ApiOkResponse({ type: UserProfileResponseDto })
+  async getMyFullProfile(
+    @CurrentUser('id') userId: string,
+  ): Promise<UserProfileResponseDto> {
+    const user = await this.userProfilesService.getProfileByUserId(userId);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
   @Get('me/gamification')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
@@ -67,7 +87,7 @@ export class UserProfilesController {
       'current quest id, lastLoginAt, and recent events / wallet entries. ' +
       'Badges are empty until Badge catalog exists.\n\n' +
       'This is separate from `GET /users/me`, which only returns a boolean ' +
-      'for basic profile completeness.',
+      'for basic profile completeness, and `GET /users/me/profile`, which returns the full profile.',
   })
   @ApiOkResponse({ type: GamificationProfileResponseDto })
   @UsePipes(
@@ -94,7 +114,7 @@ export class UserProfilesController {
     summary: 'Update current user profile',
     description:
       'When all five gamification onboarding baselines are set (in this request or already on the profile), ' +
-      'segment is derived if omitted, a wallet is ensured, and soft progress indicators are seeded.',
+      'segment is derived server-side from baselines, a wallet is ensured, and soft progress indicators are seeded.',
   })
   @UsePipes(
     new ValidationPipe({

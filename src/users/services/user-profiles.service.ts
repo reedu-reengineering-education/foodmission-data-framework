@@ -17,7 +17,7 @@ import {
   extractOnboardingSurvey,
   ONBOARDING_BASELINE_FIELDS,
 } from '../../gamification/onboarding.utils';
-import { User, UserSegment } from '@prisma/client';
+import { User } from '@prisma/client';
 
 export interface UserProfile {
   id: string;
@@ -126,6 +126,12 @@ export class UserProfilesService {
       }
     }
 
+    if (payload.segment !== undefined) {
+      throw new BadRequestException(
+        'segment is server-derived from onboarding baselines and cannot be set by clients',
+      );
+    }
+
     if (payload.country !== undefined) updateData.country = payload.country;
     if (payload.region !== undefined) updateData.region = payload.region;
     if (payload.zip !== undefined) updateData.zip = payload.zip;
@@ -150,7 +156,6 @@ export class UserProfilesService {
       'activityLevel',
       'healthGoals',
       'nutritionTargets',
-      'segment',
       'currentQuestId',
     ];
 
@@ -235,13 +240,12 @@ export class UserProfilesService {
 
     const touchedOnboarding =
       (payload.preferences as { onboardingSurvey?: unknown } | undefined)
-        ?.onboardingSurvey !== undefined || payload.segment !== undefined;
+        ?.onboardingSurvey !== undefined;
     if (!touchedOnboarding) {
       return user;
     }
 
     const segment =
-      (payload.segment as UserSegment | undefined) ??
       user.segment ??
       this.gamificationOnboardingService.deriveSegment({
         weeklyMeatConsumption: baselines.weeklyMeatConsumption!,

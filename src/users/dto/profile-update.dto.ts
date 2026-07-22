@@ -8,7 +8,9 @@ import {
   IsObject,
   MaxLength,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   GenderLocal,
@@ -16,7 +18,6 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from './create-user.dto';
-import { UserSegment } from './gamification-enums.dto';
 import { UserPreferencesDto } from './user-preferences.dto';
 import { UserSettingsDto } from './user-settings.dto';
 
@@ -107,12 +108,13 @@ export class ProfileUpdateDto {
 
   @ApiProperty({
     description:
-      'User preferences — dietary prefs, exclusions, motivation, etc. See UserPreferencesDto shape.',
+      'User preferences — dietary prefs, exclusions, motivation, onboardingSurvey, etc.',
     required: false,
     type: UserPreferencesDto,
   })
   @IsOptional()
-  @IsObject()
+  @ValidateNested()
+  @Type(() => UserPreferencesDto)
   preferences?: UserPreferencesDto;
 
   @ApiProperty({
@@ -122,17 +124,9 @@ export class ProfileUpdateDto {
     type: UserSettingsDto,
   })
   @IsOptional()
-  @IsObject()
+  @ValidateNested()
+  @Type(() => UserSettingsDto)
   settings?: UserSettingsDto;
-
-  @ApiProperty({
-    description: 'User gamification segment',
-    required: false,
-    enum: Object.values(UserSegment),
-  })
-  @IsOptional()
-  @IsEnum(UserSegment)
-  segment?: UserSegment;
 
   @ApiProperty({
     description:

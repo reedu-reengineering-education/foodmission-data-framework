@@ -3,7 +3,7 @@ import { UserProfilesService } from './user-profiles.service';
 import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   UserSegment,
@@ -357,41 +357,17 @@ describe('UserProfilesService - deleteUserById', () => {
       expect(result.segment).toBe(UserSegment.BEGINNER);
     });
 
-    it('does not re-derive when segment is provided', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
-        ...mockUser,
-        weeklyMeatConsumption: null,
-        segment: null,
-      });
+    it('rejects client-provided segment', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(mockUser);
 
-      const afterUpdate = {
-        ...mockUser,
-        weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
-        weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
-        weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-        weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
-        weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
-        segment: UserSegment.ADVANCED,
-      };
-      (prisma.user.update as jest.Mock).mockResolvedValue(afterUpdate);
+      await expect(
+        service.updateProfile('kc-1', {
+          segment: UserSegment.ADVANCED,
+        }),
+      ).rejects.toThrow(BadRequestException);
 
-      await service.updateProfile('kc-1', {
-        preferences: {
-          onboardingSurvey: {
-            weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
-            weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
-            weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-            weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
-            weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
-          },
-        },
-        segment: UserSegment.ADVANCED,
-      });
-
+      expect(prisma.user.update).not.toHaveBeenCalled();
       expect(gamificationOnboarding.deriveSegment).not.toHaveBeenCalled();
-      expect(
-        gamificationOnboarding.applyOnboardingSideEffects,
-      ).toHaveBeenCalledWith(afterUpdate, UserSegment.ADVANCED);
     });
 
     it('merges partial preferences without wiping stored keys', async () => {
