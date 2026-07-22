@@ -119,12 +119,43 @@ describe('FoodProducts endpoints (e2e)', () => {
   });
 
   itIfDb(
-    'GET /food-products/barcode/:barcode returns one product',
+    'GET /food-products/barcode/:barcode returns OpenFoodFacts product',
     async () => {
+      openFoodFactsMock.getProductByBarcode.mockResolvedValue({
+        barcode: '1111111111111',
+        name: 'Apple OFF',
+        genericName: 'Fresh apple',
+        brands: ['Test Brand'],
+      });
+
       const res = await request(app.getHttpServer())
         .get('/food-products/barcode/1111111111111')
         .expect(200);
-      expect(res.body.barcode).toBe('1111111111111');
+
+      expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
+        '1111111111111',
+      );
+      // OFF passthrough: id is the barcode, not a local FoodProduct UUID
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          id: '1111111111111',
+          barcode: '1111111111111',
+          name: 'Apple OFF',
+          description: 'Fresh apple',
+          brands: 'Test Brand',
+        }),
+      );
+    },
+  );
+
+  itIfDb(
+    'GET /food-products/barcode/:barcode returns 404 when OFF has no match',
+    async () => {
+      openFoodFactsMock.getProductByBarcode.mockResolvedValue(null);
+
+      await request(app.getHttpServer())
+        .get('/food-products/barcode/9999999999999')
+        .expect(404);
     },
   );
 
