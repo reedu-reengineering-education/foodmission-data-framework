@@ -91,7 +91,7 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Update current user profile',
     description:
-      'Onboarding baselines under preferences.onboardingSurvey. Segment may be set by the client or derived server-side when omitted.',
+      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding.',
   })
   @UsePipes(
     new ValidationPipe({

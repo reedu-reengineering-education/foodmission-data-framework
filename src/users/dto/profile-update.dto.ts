@@ -128,7 +128,7 @@ export class ProfileUpdateDto {
 
   @ApiProperty({
     description:
-      'Gamification segment. Optional — if omitted when onboarding baselines are complete, server derives it.',
+      'Gamification segment chosen by the user at onboarding (BEGINNER / INTERMEDIATE / ADVANCED).',
     required: false,
     enum: Object.values(UserSegment),
   })

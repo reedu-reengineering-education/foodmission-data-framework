@@ -14,7 +14,6 @@ import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.servic
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   buildUserPreferences,
-  deriveUserSegment,
   extractOnboardingSurvey,
   hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
@@ -178,8 +177,8 @@ export class UserProfilesService {
   }
 
   /**
-   * When all five habit baselines are present and onboarding was touched
-   * (survey and/or segment), persist segment and apply first-time side effects.
+   * When all five habit baselines are present, a client-chosen segment is set,
+   * and onboarding was touched (survey and/or segment), apply first-time side effects.
    */
   private async applyGamificationOnboardingIfReady(
     user: User,
@@ -194,9 +193,10 @@ export class UserProfilesService {
     }
 
     const segment =
-      (payload.segment as User['segment'] | undefined) ??
-      user.segment ??
-      deriveUserSegment(user);
+      (payload.segment as User['segment'] | undefined) ?? user.segment;
+    if (!segment) {
+      return user;
+    }
 
     const nextUser =
       user.segment === segment

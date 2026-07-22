@@ -84,7 +84,49 @@ describe('UserProfilesService updateProfile gamification', () => {
     jest.clearAllMocks();
   });
 
-  it('derives segment and applies side effects when all baselines are set', async () => {
+  it('applies side effects when baselines and client-chosen segment are set', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      weeklyMeatConsumption: null,
+      weeklyBeefConsumption: null,
+      weeklyFoodWaste: null,
+      weeklyUpfConsumption: null,
+      weeklyReusableOrRefill: null,
+      segment: null,
+    });
+
+    const afterUpdate = {
+      ...mockUser,
+      weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
+      weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+      weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
+      weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
+      weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+      segment: UserSegment.BEGINNER,
+    };
+
+    (prisma.user.update as jest.Mock).mockResolvedValueOnce(afterUpdate);
+
+    const result = await service.updateProfile('kc-1', {
+      segment: UserSegment.BEGINNER,
+      preferences: {
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
+          weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+          weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
+          weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
+          weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
+        },
+      },
+    });
+
+    expect(
+      gamificationOnboarding.applyOnboardingSideEffects,
+    ).toHaveBeenCalledWith(afterUpdate, UserSegment.BEGINNER);
+    expect(result.segment).toBe(UserSegment.BEGINNER);
+  });
+
+  it('does not apply side effects when baselines are set without a segment', async () => {
     (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
       ...mockUser,
       weeklyMeatConsumption: null,
@@ -104,14 +146,8 @@ describe('UserProfilesService updateProfile gamification', () => {
       weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
       segment: null,
     };
-    const afterSegment = {
-      ...afterUpdate,
-      segment: UserSegment.BEGINNER,
-    };
 
-    (prisma.user.update as jest.Mock)
-      .mockResolvedValueOnce(afterUpdate)
-      .mockResolvedValueOnce(afterSegment);
+    (prisma.user.update as jest.Mock).mockResolvedValueOnce(afterUpdate);
 
     const result = await service.updateProfile('kc-1', {
       preferences: {
@@ -127,10 +163,9 @@ describe('UserProfilesService updateProfile gamification', () => {
 
     expect(
       gamificationOnboarding.applyOnboardingSideEffects,
-    ).toHaveBeenCalledWith(afterSegment, UserSegment.BEGINNER);
-    expect(result.segment).toBe(UserSegment.BEGINNER);
+    ).not.toHaveBeenCalled();
+    expect(result.segment).toBeNull();
   });
-
   it('merges partial preferences and settings without wiping stored keys', async () => {
     (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
       ...mockUser,
