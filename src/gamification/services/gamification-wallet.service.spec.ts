@@ -20,7 +20,9 @@ describe('levelFromXp', () => {
 
 describe('GamificationWalletService', () => {
   let service: GamificationWalletService;
-  let userEventService: jest.Mocked<Pick<UserEventService, 'findByIdempotencyKey' | 'record'>>;
+  let userEventService: jest.Mocked<
+    Pick<UserEventService, 'findByIdempotencyKey' | 'record'>
+  >;
   let prisma: {
     userEvent: { findUniqueOrThrow: jest.Mock };
     userGamificationWallet: {
@@ -79,7 +81,9 @@ describe('GamificationWalletService', () => {
         },
       ],
     };
-    userEventService.findByIdempotencyKey.mockResolvedValue(existingEvent as any);
+    userEventService.findByIdempotencyKey.mockResolvedValue(
+      existingEvent as any,
+    );
     prisma.userGamificationWallet.upsert.mockResolvedValue({
       userId: 'u1',
       level: 1,

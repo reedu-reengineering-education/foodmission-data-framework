@@ -17,7 +17,7 @@ import {
   extractOnboardingSurvey,
   ONBOARDING_BASELINE_FIELDS,
 } from '../../gamification/onboarding.utils';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 export interface UserProfile {
   id: string;

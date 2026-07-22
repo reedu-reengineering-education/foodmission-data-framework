@@ -82,13 +82,13 @@ describe('UserProfilesService - deleteUserById', () => {
     const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> =
       {
         deriveSegment: jest.fn().mockReturnValue(UserSegment.BEGINNER),
-      applyOnboardingSideEffects: jest.fn().mockResolvedValue({
-        segment: UserSegment.BEGINNER,
-        indicatorsSeeded: 7,
-        walletEnsured: true,
-        onboardingEventRecorded: true,
-        skipped: false,
-      }),
+        applyOnboardingSideEffects: jest.fn().mockResolvedValue({
+          segment: UserSegment.BEGINNER,
+          indicatorsSeeded: 7,
+          walletEnsured: true,
+          onboardingEventRecorded: true,
+          skipped: false,
+        }),
       };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -342,7 +342,8 @@ describe('UserProfilesService - deleteUserById', () => {
         preferences: {
           onboardingSurvey: {
             weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
-            weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
+            weeklyBeefConsumption:
+              WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
             weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
             weeklyUpfConsumption: WeeklyUpfRange.FIFTEEN_PLUS,
             weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
@@ -358,7 +359,9 @@ describe('UserProfilesService - deleteUserById', () => {
     });
 
     it('rejects client-provided segment', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(mockUser);
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
+        mockUser,
+      );
 
       await expect(
         service.updateProfile('kc-1', {

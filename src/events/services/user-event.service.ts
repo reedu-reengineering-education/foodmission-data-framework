@@ -7,7 +7,7 @@ import { EventSourceValue } from '../event-types';
 export interface RecordUserEventInput {
   userId: string;
   eventType: string;
-  source: EventSourceValue | string;
+  source: EventSourceValue;
   metadata?: Record<string, unknown>;
   groupId?: string | null;
   idempotencyKey?: string | null;

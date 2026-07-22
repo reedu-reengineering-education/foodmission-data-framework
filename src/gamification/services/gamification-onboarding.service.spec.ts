@@ -10,7 +10,9 @@ import {
 
 describe('GamificationOnboardingService', () => {
   let service: GamificationOnboardingService;
-  let userEventService: jest.Mocked<Pick<UserEventService, 'findByIdempotencyKey' | 'record'>>;
+  let userEventService: jest.Mocked<
+    Pick<UserEventService, 'findByIdempotencyKey' | 'record'>
+  >;
   let prisma: {
     userGamificationWallet: { upsert: jest.Mock };
     progressIndicator: { upsert: jest.Mock };
@@ -66,17 +68,19 @@ describe('GamificationOnboardingService', () => {
       replayed: false,
     });
 
-    prisma.$transaction.mockImplementation(async (fn: (tx: any) => Promise<unknown>) => {
-      const tx = {
-        userGamificationWallet: {
-          upsert: jest.fn().mockResolvedValue({ userId: 'u1' }),
-        },
-        progressIndicator: {
-          upsert: jest.fn().mockResolvedValue({}),
-        },
-      };
-      return fn(tx);
-    });
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: any) => Promise<unknown>) => {
+        const tx = {
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({ userId: 'u1' }),
+          },
+          progressIndicator: {
+            upsert: jest.fn().mockResolvedValue({}),
+          },
+        };
+        return fn(tx);
+      },
+    );
 
     const result = await service.applyOnboardingSideEffects(
       { id: 'u1' },
@@ -117,17 +121,19 @@ describe('GamificationOnboardingService', () => {
       replayed: false,
     });
 
-    prisma.$transaction.mockImplementation(async (fn: (tx: any) => Promise<unknown>) => {
-      const tx = {
-        userGamificationWallet: {
-          upsert: jest.fn().mockResolvedValue({}),
-        },
-        progressIndicator: {
-          upsert: jest.fn().mockResolvedValue({}),
-        },
-      };
-      return fn(tx);
-    });
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: any) => Promise<unknown>) => {
+        const tx = {
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({}),
+          },
+          progressIndicator: {
+            upsert: jest.fn().mockResolvedValue({}),
+          },
+        };
+        return fn(tx);
+      },
+    );
 
     await service.applyOnboardingSideEffects(
       { id: 'u1' },

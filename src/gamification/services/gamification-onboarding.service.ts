@@ -48,9 +48,8 @@ export class GamificationOnboardingService {
 
     const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
 
-    const existing = await this.userEventService.findByIdempotencyKey(
-      idempotencyKey,
-    );
+    const existing =
+      await this.userEventService.findByIdempotencyKey(idempotencyKey);
     if (existing) {
       return {
         segment,

@@ -40,8 +40,7 @@ export const ONBOARDING_BASELINE_FIELDS = [
   'weeklyReusableOrRefill',
 ] as const;
 
-type OnboardingBaselineField =
-  (typeof ONBOARDING_BASELINE_FIELDS)[number];
+type OnboardingBaselineField = (typeof ONBOARDING_BASELINE_FIELDS)[number];
 
 const ONBOARDING_FIELD_ENUMS: Record<
   OnboardingBaselineField,
@@ -110,8 +109,8 @@ export function buildUserPreferences(
     !Array.isArray(storedPreferences)
       ? (storedPreferences as Record<string, unknown>)
       : {};
-  const { onboardingSurvey: _storedSurvey, ...prefsWithoutSurvey } =
-    storedPrefs;
+  const prefsWithoutSurvey = { ...storedPrefs };
+  delete prefsWithoutSurvey.onboardingSurvey;
 
   const survey: OnboardingSurvey = {};
   for (const field of ONBOARDING_BASELINE_FIELDS) {

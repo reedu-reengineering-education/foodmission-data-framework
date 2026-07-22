@@ -1,8 +1,5 @@
 import { WalletCurrency } from '@prisma/client';
-import {
-  AppEventType,
-  type AppEventTypeValue,
-} from '../events/event-types';
+import { AppEventType, type AppEventTypeValue } from '../events/event-types';
 
 /** XP required per level (level = floor(xp / XP_PER_LEVEL) + 1). */
 export const XP_PER_LEVEL = 100;
