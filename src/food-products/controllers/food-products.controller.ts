@@ -179,16 +179,9 @@ export class FoodProductController {
   @Public()
   @ApiOperation({
     summary: 'Find food product by barcode',
-    description:
-      'Retrieves a food product by its barcode. Optionally includes OpenFoodFacts information.',
+    description: 'Retrieves product information from OpenFoodFacts.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
-  @ApiQuery({
-    name: 'includeOpenFoodFacts',
-    required: false,
-    type: 'boolean',
-    description: 'Include OpenFoodFacts information in response',
-  })
   @ApiResponse({
     status: 200,
     description: 'Food product found',
@@ -197,10 +190,8 @@ export class FoodProductController {
   @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
   findByBarcode(
     @Param('barcode') barcode: string,
-    @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
   ): Promise<FoodProductResponseDto> {
-    const includeOff = includeOpenFoodFacts === 'true';
-    return this.foodProductService.findByBarcode(barcode, includeOff);
+    return this.foodProductService.findByBarcode(barcode);
   }
 
   @Get(':id')

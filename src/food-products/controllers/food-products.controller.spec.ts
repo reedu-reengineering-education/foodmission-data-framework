@@ -72,22 +72,10 @@ describe('FoodProductController', () => {
   });
 
   describe('findByBarcode', () => {
-    it('passes includeOpenFoodFacts=false by default', async () => {
+    it('delegates to service.findByBarcode', async () => {
       service.findByBarcode.mockResolvedValue(foodDto);
-      await controller.findByBarcode(TEST_FOOD.barcode, undefined);
-      expect(service.findByBarcode).toHaveBeenCalledWith(
-        TEST_FOOD.barcode,
-        false,
-      );
-    });
-
-    it('passes includeOpenFoodFacts=true when query is "true"', async () => {
-      service.findByBarcode.mockResolvedValue(foodDto);
-      await controller.findByBarcode(TEST_FOOD.barcode, 'true');
-      expect(service.findByBarcode).toHaveBeenCalledWith(
-        TEST_FOOD.barcode,
-        true,
-      );
+      await controller.findByBarcode(TEST_FOOD.barcode);
+      expect(service.findByBarcode).toHaveBeenCalledWith(TEST_FOOD.barcode);
     });
   });
 
