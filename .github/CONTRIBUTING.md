@@ -11,11 +11,12 @@ Thanks for helping improve localization coverage.
 | List missing UI keys | `npm run i18n:missing` | `src/i18n/*/` |
 | Vendor handoff: **UI strings** | `npm run i18n:export` / `i18n:import` | JSON under `src/i18n/` |
 | Vendor handoff: **DB content** | `npm run i18n:export:db` / `i18n:import:db` | `entity_translations` table |
-| Bulk-load NEVO food translations after seed | `npm run db:import:nevo-translations` | NEVO CSV → `entity_translations` |
+| Bulk-load NEVO food translations after seed | `npm run db:translations` | NEVO CSV → `entity_translations` |
 
 - **`i18n:export` / `i18n:import`** — app UI copy (JSON files)
 - **`i18n:export:db` / `i18n:import:db`** — database strings (food names, missions, …)
-- **`db:import:nevo-translations`** — one-shot NEVO CSV load after seed (separate from vendor handoff)
+- **`db:translations`** — post-seed DB translation load (NEVO + future sources; skips if data exists)
+- **`db:import:nevo-translations`** — low-level NEVO CSV import only (also used by `db:translations`)
 
 ## Translation locations (UI JSON)
 
@@ -72,11 +73,10 @@ Full runbook: [scripts/README.md](../scripts/README.md#nevo-deployment-new-datab
 ```bash
 npm run db:migrate:deploy   # or db:migrate locally
 npm run db:seed:prod        # English NEVO foods (+ other prod seed data)
-npm run db:import:nevo-translations -- --dry-run
-npm run db:import:nevo-translations
+npm run db:translations     # NEVO + future DB translation sources
 ```
 
-For dev: use `db:seed` instead of `db:seed:prod`. Vendor gap-fills after import: `i18n:export:db` / `i18n:import:db`.
+For dev: use `db:seed` instead of `db:seed:prod`, then `db:translations`. Both seed and translations skip when data already exists (`--force` to re-import). Vendor gap-fills: `i18n:export:db` / `i18n:import:db`.
 
 ## Before Opening a PR
 
