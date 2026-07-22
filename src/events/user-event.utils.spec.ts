@@ -1,4 +1,4 @@
-import { buildEventMetadata } from './user-event.utils';
+import { buildEventMetadata, asObjectMetadata } from './user-event.utils';
 
 describe('buildEventMetadata', () => {
   it('merges subject into metadata', () => {
@@ -12,5 +12,17 @@ describe('buildEventMetadata', () => {
 
   it('returns metadata unchanged when subject is omitted', () => {
     expect(buildEventMetadata({ foo: 'bar' })).toEqual({ foo: 'bar' });
+  });
+});
+
+describe('asObjectMetadata', () => {
+  it('returns objects as-is', () => {
+    expect(asObjectMetadata({ a: 1 })).toEqual({ a: 1 });
+  });
+
+  it('returns {} for non-objects', () => {
+    expect(asObjectMetadata(null)).toEqual({});
+    expect(asObjectMetadata('x')).toEqual({});
+    expect(asObjectMetadata([1])).toEqual({});
   });
 });

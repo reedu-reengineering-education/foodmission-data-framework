@@ -13,3 +13,11 @@ export function buildEventMetadata(
     },
   };
 }
+
+/** Normalize Prisma Json / unknown into a plain object for API responses. */
+export function asObjectMetadata(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  return {};
+}

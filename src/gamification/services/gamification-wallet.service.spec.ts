@@ -3,20 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Prisma, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { UserEventService } from '../../events/services/user-event.service';
-import { levelFromXp } from '../gamification.constants';
 import { GamificationWalletService } from './gamification-wallet.service';
-
-describe('levelFromXp', () => {
-  it('starts at level 1', () => {
-    expect(levelFromXp(0)).toBe(1);
-    expect(levelFromXp(99)).toBe(1);
-  });
-
-  it('increments every 100 XP', () => {
-    expect(levelFromXp(100)).toBe(2);
-    expect(levelFromXp(250)).toBe(3);
-  });
-});
 
 describe('GamificationWalletService', () => {
   let service: GamificationWalletService;

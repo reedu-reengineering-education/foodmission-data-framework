@@ -1,11 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { buildUserPreferences } from '../onboarding.utils';
+import {
+  toProgressIndicatorDto,
+  toUserEventDto,
+  toWalletDto,
+  toWalletEntryDto,
+} from '../gamification-profile.mapper';
 import { GamificationProfileResponseDto } from '../dto/gamification-profile.dto';
+import { BadgeService } from './badge.service';
 
 @Injectable()
 export class GamificationProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly badgeService: BadgeService,
+  ) {}
 
   async getProfileForUserId(
     userId: string,
@@ -22,6 +32,14 @@ export class GamificationProfileService {
           where: { groupId: null },
           orderBy: { kind: 'asc' },
         },
+        userEvents: {
+          orderBy: { createdAt: 'desc' },
+          take: eventsLimit,
+        },
+        walletEntries: {
+          orderBy: { createdAt: 'desc' },
+          take: walletEntriesLimit,
+        },
       },
     });
 
@@ -29,20 +47,7 @@ export class GamificationProfileService {
       throw new NotFoundException('User not found');
     }
 
-    const [recentEvents, recentWalletEntries] = await Promise.all([
-      this.prisma.userEvent.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: eventsLimit,
-      }),
-      this.prisma.walletEntry.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: walletEntriesLimit,
-      }),
-    ]);
-
-    const wallet = user.gamificationWallet;
+    const badges = await this.badgeService.listForUser(userId);
 
     return {
       userId: user.id,
@@ -50,49 +55,11 @@ export class GamificationProfileService {
       currentQuestId: user.currentQuestId,
       lastLoginAt: user.lastLoginAt,
       preferences: buildUserPreferences(user.preferences, user),
-      wallet: wallet
-        ? {
-            level: wallet.level,
-            xp: wallet.xp,
-            points: wallet.points,
-            updatedAt: wallet.updatedAt,
-          }
-        : null,
-      progressIndicators: user.progressIndicators.map((row) => ({
-        id: row.id,
-        kind: row.kind,
-        precision: row.precision,
-        level: row.level,
-        accumulatedValue: row.accumulatedValue,
-        targetValue: row.targetValue,
-        allTimeTotal: row.allTimeTotal,
-        cycleStartedAt: row.cycleStartedAt,
-        lastUpdatedAt: row.lastUpdatedAt,
-      })),
-      badges: [],
-      recentEvents: recentEvents.map((event) => ({
-        id: event.id,
-        userId: event.userId,
-        eventType: event.eventType,
-        source: event.source,
-        timestamp: event.createdAt,
-        groupId: event.groupId,
-        metadata:
-          event.metadata &&
-          typeof event.metadata === 'object' &&
-          !Array.isArray(event.metadata)
-            ? (event.metadata as Record<string, unknown>)
-            : {},
-      })),
-      recentWalletEntries: recentWalletEntries.map((entry) => ({
-        id: entry.id,
-        currency: entry.currency,
-        amount: entry.amount,
-        balanceAfter: entry.balanceAfter,
-        reason: entry.reason,
-        eventId: entry.eventId,
-        createdAt: entry.createdAt,
-      })),
+      wallet: toWalletDto(user.gamificationWallet),
+      progressIndicators: user.progressIndicators.map(toProgressIndicatorDto),
+      badges,
+      recentEvents: user.userEvents.map(toUserEventDto),
+      recentWalletEntries: user.walletEntries.map(toWalletEntryDto),
     };
   }
 }

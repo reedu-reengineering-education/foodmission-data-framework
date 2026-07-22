@@ -141,7 +141,8 @@ export class GamificationProfileResponseDto {
 
   @ApiProperty({
     type: [String],
-    description: 'Earned badge ids (empty until Badge catalog exists)',
+    description:
+      'Earned badge ids from BadgeService (empty until Badge catalog exists)',
     example: [],
   })
   badges!: string[];

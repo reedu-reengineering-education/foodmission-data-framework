@@ -13,7 +13,6 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
-import { levelFromXp } from '../gamification.constants';
 
 export interface AwardWalletInput {
   userId: string;
@@ -168,7 +167,6 @@ export class GamificationWalletService {
           data: {
             xp: nextXp,
             points: nextPoints,
-            level: levelFromXp(nextXp),
           },
         });
 

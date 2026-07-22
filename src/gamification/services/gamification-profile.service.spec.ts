@@ -2,26 +2,26 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationProfileService } from './gamification-profile.service';
+import { BadgeService } from './badge.service';
 
 describe('GamificationProfileService', () => {
   let service: GamificationProfileService;
-  let prisma: {
-    user: { findUnique: jest.Mock };
-    userEvent: { findMany: jest.Mock };
-    walletEntry: { findMany: jest.Mock };
-  };
+  let prisma: { user: { findUnique: jest.Mock } };
+  let badgeService: { listForUser: jest.Mock };
 
   beforeEach(async () => {
     prisma = {
       user: { findUnique: jest.fn() },
-      userEvent: { findMany: jest.fn() },
-      walletEntry: { findMany: jest.fn() },
+    };
+    badgeService = {
+      listForUser: jest.fn().mockResolvedValue([]),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GamificationProfileService,
         { provide: PrismaService, useValue: prisma },
+        { provide: BadgeService, useValue: badgeService },
       ],
     }).compile();
 
@@ -47,6 +47,7 @@ describe('GamificationProfileService', () => {
       weeklyFoodWaste: 'ZERO',
       weeklyUpfConsumption: 'ZERO_TO_THREE',
       weeklyReusableOrRefill: 'TEN_PLUS',
+      preferences: {},
       gamificationWallet: {
         level: 2,
         xp: 150,
@@ -66,35 +67,45 @@ describe('GamificationProfileService', () => {
           lastUpdatedAt: new Date('2026-07-01T12:00:00Z'),
         },
       ],
+      userEvents: [
+        {
+          id: 'e1',
+          userId: 'u1',
+          eventType: 'POINTS_AWARDED',
+          source: 'wallet',
+          groupId: null,
+          metadata: { source: 'test' },
+          createdAt: new Date('2026-07-01T12:00:00Z'),
+        },
+      ],
+      walletEntries: [
+        {
+          id: 'w1',
+          currency: 'POINTS',
+          amount: 40,
+          balanceAfter: 40,
+          reason: 'SEED_INITIAL_POINTS',
+          eventId: 'e1',
+          createdAt: new Date('2026-07-01T12:00:00Z'),
+        },
+      ],
     });
-    prisma.userEvent.findMany.mockResolvedValue([
-      {
-        id: 'e1',
-        userId: 'u1',
-        eventType: 'POINTS_AWARDED',
-        source: 'wallet',
-        groupId: null,
-        metadata: { source: 'test' },
-        createdAt: new Date('2026-07-01T12:00:00Z'),
-      },
-    ]);
-    prisma.walletEntry.findMany.mockResolvedValue([
-      {
-        id: 'w1',
-        currency: 'POINTS',
-        amount: 40,
-        balanceAfter: 40,
-        reason: 'SEED_INITIAL_POINTS',
-        eventId: 'e1',
-        createdAt: new Date('2026-07-01T12:00:00Z'),
-      },
-    ]);
 
     const result = await service.getProfileForUserId('u1', {
       eventsLimit: 5,
       walletEntriesLimit: 5,
     });
 
+    expect(prisma.user.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'u1' },
+        include: expect.objectContaining({
+          userEvents: expect.objectContaining({ take: 5 }),
+          walletEntries: expect.objectContaining({ take: 5 }),
+        }),
+      }),
+    );
+    expect(badgeService.listForUser).toHaveBeenCalledWith('u1');
     expect(result.userId).toBe('u1');
     expect(result.preferences?.onboardingSurvey).toEqual({
       weeklyMeatConsumption: 'ZERO_TO_FOUR',
@@ -110,8 +121,5 @@ describe('GamificationProfileService', () => {
     expect(result.recentEvents[0].source).toBe('wallet');
     expect(result.recentEvents[0].timestamp).toBeDefined();
     expect(result.recentWalletEntries[0].amount).toBe(40);
-    expect(prisma.userEvent.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ take: 5 }),
-    );
   });
 });
