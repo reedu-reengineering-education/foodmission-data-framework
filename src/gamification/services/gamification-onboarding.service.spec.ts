@@ -92,6 +92,15 @@ describe('GamificationOnboardingService', () => {
     expect(result.walletEnsured).toBe(true);
     expect(result.indicatorsSeeded).toBe(7);
     expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'u1',
+        eventType: AppEventType.ONBOARDING_COMPLETED,
+        source: EventSource.ONBOARDING,
+        idempotencyKey: 'onboarding-completed:u1',
+      }),
+      expect.anything(),
+    );
   });
 
   it('treats concurrent P2002 as skipped', async () => {
@@ -110,44 +119,5 @@ describe('GamificationOnboardingService', () => {
 
     expect(result.skipped).toBe(true);
     expect(result.onboardingEventRecorded).toBe(false);
-  });
-
-  it('writes ONBOARDING_COMPLETED with stable idempotency key', async () => {
-    userEventService.findByIdempotencyKey
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(null);
-    userEventService.record.mockResolvedValue({
-      event: { id: 'evt-new' } as any,
-      replayed: false,
-    });
-
-    prisma.$transaction.mockImplementation(
-      async (fn: (tx: any) => Promise<unknown>) => {
-        const tx = {
-          userGamificationWallet: {
-            upsert: jest.fn().mockResolvedValue({}),
-          },
-          progressIndicator: {
-            upsert: jest.fn().mockResolvedValue({}),
-          },
-        };
-        return fn(tx);
-      },
-    );
-
-    await service.applyOnboardingSideEffects(
-      { id: 'u1' },
-      UserSegment.BEGINNER,
-    );
-
-    expect(userEventService.record).toHaveBeenCalledWith(
-      expect.objectContaining({
-        userId: 'u1',
-        eventType: AppEventType.ONBOARDING_COMPLETED,
-        source: EventSource.ONBOARDING,
-        idempotencyKey: 'onboarding-completed:u1',
-      }),
-      expect.anything(),
-    );
   });
 });

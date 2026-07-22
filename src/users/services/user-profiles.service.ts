@@ -14,6 +14,7 @@ import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.servic
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   buildUserPreferences,
+  deriveUserSegment,
   extractOnboardingSurvey,
   ONBOARDING_BASELINE_FIELDS,
 } from '../../gamification/onboarding.utils';
@@ -233,7 +234,7 @@ export class UserProfilesService {
 
     const segment =
       user.segment ??
-      this.gamificationOnboardingService.deriveSegment({
+      deriveUserSegment({
         weeklyMeatConsumption: user.weeklyMeatConsumption!,
         weeklyBeefConsumption: user.weeklyBeefConsumption!,
         weeklyFoodWaste: user.weeklyFoodWaste!,

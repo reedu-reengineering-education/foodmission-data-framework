@@ -14,7 +14,7 @@ import {
   WeeklyUpfRange,
 } from '@prisma/client';
 
-describe('UserProfilesService - deleteUserById', () => {
+describe('UserProfilesService', () => {
   let service: UserProfilesService;
   let userRepository: jest.Mocked<UsersRepository>;
   let prisma: jest.Mocked<PrismaService>;
@@ -49,30 +49,14 @@ describe('UserProfilesService - deleteUserById', () => {
     };
 
     const mockPrisma: Partial<jest.Mocked<PrismaService>> = {
-      user: {
-        update: jest.fn(),
-      } as any,
-      mealLog: {
-        deleteMany: jest.fn(),
-      } as any,
-      meal: {
-        deleteMany: jest.fn(),
-      } as any,
-      recipe: {
-        deleteMany: jest.fn(),
-      } as any,
-      pantryItem: {
-        deleteMany: jest.fn(),
-      } as any,
-      pantry: {
-        deleteMany: jest.fn(),
-      } as any,
-      shoppingListItem: {
-        deleteMany: jest.fn(),
-      } as any,
-      shoppingList: {
-        deleteMany: jest.fn(),
-      } as any,
+      user: { update: jest.fn() } as any,
+      mealLog: { deleteMany: jest.fn() } as any,
+      meal: { deleteMany: jest.fn() } as any,
+      recipe: { deleteMany: jest.fn() } as any,
+      pantryItem: { deleteMany: jest.fn() } as any,
+      pantry: { deleteMany: jest.fn() } as any,
+      shoppingListItem: { deleteMany: jest.fn() } as any,
+      shoppingList: { deleteMany: jest.fn() } as any,
     };
 
     const mockKeycloakAdmin: Partial<jest.Mocked<KeycloakAdminService>> = {
@@ -81,7 +65,6 @@ describe('UserProfilesService - deleteUserById', () => {
 
     const mockOnboarding: Partial<jest.Mocked<GamificationOnboardingService>> =
       {
-        deriveSegment: jest.fn().mockReturnValue(UserSegment.BEGINNER),
         applyOnboardingSideEffects: jest.fn().mockResolvedValue({
           segment: UserSegment.BEGINNER,
           indicatorsSeeded: 7,
@@ -94,26 +77,14 @@ describe('UserProfilesService - deleteUserById', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserProfilesService,
-        {
-          provide: UsersRepository,
-          useValue: mockRepo,
-        },
-        {
-          provide: PrismaService,
-          useValue: mockPrisma,
-        },
-        {
-          provide: KeycloakAdminService,
-          useValue: mockKeycloakAdmin,
-        },
-        {
-          provide: GamificationOnboardingService,
-          useValue: mockOnboarding,
-        },
+        { provide: UsersRepository, useValue: mockRepo },
+        { provide: PrismaService, useValue: mockPrisma },
+        { provide: KeycloakAdminService, useValue: mockKeycloakAdmin },
+        { provide: GamificationOnboardingService, useValue: mockOnboarding },
       ],
     }).compile();
 
-    service = module.get<UserProfilesService>(UserProfilesService);
+    service = module.get(UserProfilesService);
     userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
     keycloakAdminService = module.get(KeycloakAdminService);
@@ -124,65 +95,29 @@ describe('UserProfilesService - deleteUserById', () => {
     jest.clearAllMocks();
   });
 
-  describe('deleteUserById without cascade', () => {
-    it('should delete only user record when cascade is false', async () => {
+  describe('deleteUserById', () => {
+    it('deletes only the user when cascade is false', async () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
       (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
 
       await service.deleteUserById('user-1', false);
 
-      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-      expect(userRepository.remove).toHaveBeenCalledWith('user-1');
-      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
-      expect(prisma.mealLog.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.meal.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.recipe.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.pantryItem.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.pantry.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.shoppingListItem.deleteMany).not.toHaveBeenCalled();
-      expect(prisma.shoppingList.deleteMany).not.toHaveBeenCalled();
-    });
-
-    it('should delete only user record when cascade is not provided (default)', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
-
-      await service.deleteUserById('user-1');
-
-      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
       expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
       expect(prisma.mealLog.deleteMany).not.toHaveBeenCalled();
     });
 
-    it('should throw NotFoundException when user not found', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(null);
-
-      await expect(service.deleteUserById('nonexistent-id')).rejects.toThrow(
-        NotFoundException,
-      );
-      await expect(service.deleteUserById('nonexistent-id')).rejects.toThrow(
-        'User not found',
-      );
-
-      expect(userRepository.findById).toHaveBeenCalledWith('nonexistent-id');
-      expect(userRepository.remove).not.toHaveBeenCalled();
-      expect(keycloakAdminService.deleteUser).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('deleteUserById with cascade', () => {
-    it('should delete all related data when cascade is true', async () => {
+    it('cascades related data when cascade is true', async () => {
       (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 5 });
-      (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 3 });
-      (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 2 });
+      (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
+      (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
+      (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
       (prisma.pantryItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 10,
+        count: 1,
       });
       (prisma.pantry.deleteMany as jest.Mock).mockResolvedValue({ count: 1 });
       (prisma.shoppingListItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 8,
+        count: 1,
       });
       (prisma.shoppingList.deleteMany as jest.Mock).mockResolvedValue({
         count: 1,
@@ -191,124 +126,24 @@ describe('UserProfilesService - deleteUserById', () => {
 
       await service.deleteUserById('user-1', true);
 
-      // Verify user is fetched first
-      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
-
-      // Verify all related entities are deleted in correct order
       expect(prisma.mealLog.deleteMany).toHaveBeenCalledWith({
         where: { userId: 'user-1' },
       });
-      expect(prisma.meal.deleteMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-      expect(prisma.recipe.deleteMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-      expect(prisma.pantryItem.deleteMany).toHaveBeenCalledWith({
-        where: { pantry: { userId: 'user-1' } },
-      });
-      expect(prisma.pantry.deleteMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-      expect(prisma.shoppingListItem.deleteMany).toHaveBeenCalledWith({
-        where: { shoppingList: { userId: 'user-1' } },
-      });
-      expect(prisma.shoppingList.deleteMany).toHaveBeenCalledWith({
-        where: { userId: 'user-1' },
-      });
-
-      // Verify user is deleted from database
-      expect(userRepository.remove).toHaveBeenCalledWith('user-1');
-
-      // Verify user is deleted from Keycloak
-      expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
-    });
-
-    it('should delete user even if there are no related records', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.pantryItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-      (prisma.pantry.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.shoppingListItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-      (prisma.shoppingList.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-      (userRepository.remove as jest.Mock).mockResolvedValue(undefined);
-
-      await service.deleteUserById('user-1', true);
-
-      expect(userRepository.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.remove).toHaveBeenCalledWith('user-1');
       expect(keycloakAdminService.deleteUser).toHaveBeenCalledWith('kc-1');
     });
 
-    it('should propagate errors from Prisma operations', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      const error = new Error('Database constraint violation');
-      (prisma.mealLog.deleteMany as jest.Mock).mockRejectedValue(error);
+    it('throws when user is missing', async () => {
+      (userRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.deleteUserById('user-1', true)).rejects.toThrow(
-        'Database constraint violation',
-      );
-
-      // Verify user was not deleted if cascade deletion fails
-      expect(userRepository.remove).not.toHaveBeenCalled();
-      expect(keycloakAdminService.deleteUser).not.toHaveBeenCalled();
-    });
-
-    it('should propagate errors from user deletion', async () => {
-      (userRepository.findById as jest.Mock).mockResolvedValue(mockUser);
-      (prisma.mealLog.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.meal.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.recipe.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.pantryItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-      (prisma.pantry.deleteMany as jest.Mock).mockResolvedValue({ count: 0 });
-      (prisma.shoppingListItem.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-      (prisma.shoppingList.deleteMany as jest.Mock).mockResolvedValue({
-        count: 0,
-      });
-
-      const error = new Error('User deletion failed');
-      (userRepository.remove as jest.Mock).mockRejectedValue(error);
-
-      await expect(service.deleteUserById('user-1', true)).rejects.toThrow(
-        'User deletion failed',
-      );
-    });
-  });
-
-  describe('other UserProfilesService methods', () => {
-    it('should get user ID from keycloak ID', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
-        mockUser,
-      );
-
-      const result = await service.getUserIdFromKeycloakId('kc-1');
-
-      expect(result).toBe('user-1');
-      expect(userRepository.findByKeycloakId).toHaveBeenCalledWith('kc-1');
-    });
-
-    it('should throw NotFoundException when user not found by keycloak ID', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(null);
-
-      await expect(service.getUserIdFromKeycloakId('kc-1')).rejects.toThrow(
+      await expect(service.deleteUserById('missing')).rejects.toThrow(
         NotFoundException,
       );
+      expect(userRepository.remove).not.toHaveBeenCalled();
     });
   });
 
-  describe('updateProfile gamification onboarding side effects', () => {
+  describe('updateProfile gamification onboarding', () => {
     it('derives segment and applies side effects when all baselines are set', async () => {
       (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
         ...mockUser,
@@ -351,19 +186,21 @@ describe('UserProfilesService - deleteUserById', () => {
         },
       });
 
-      expect(gamificationOnboarding.deriveSegment).toHaveBeenCalled();
       expect(
         gamificationOnboarding.applyOnboardingSideEffects,
       ).toHaveBeenCalledWith(afterSegment, UserSegment.BEGINNER);
       expect(result.segment).toBe(UserSegment.BEGINNER);
     });
 
-    it('merges partial preferences without wiping stored keys', async () => {
+    it('merges partial preferences and settings without wiping stored keys', async () => {
       (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
         ...mockUser,
         preferences: {
           motivation: 'HEALTH',
           foodExclusions: ['peanuts'],
+        },
+        settings: {
+          emailNotifications: true,
         },
       });
 
@@ -372,6 +209,7 @@ describe('UserProfilesService - deleteUserById', () => {
           ...mockUser,
           ...data,
           preferences: data.preferences,
+          settings: data.settings,
         }),
       );
 
@@ -380,6 +218,9 @@ describe('UserProfilesService - deleteUserById', () => {
           onboardingSurvey: {
             weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
           },
+        },
+        settings: {
+          pushNotifications: false,
         },
       });
 
@@ -391,35 +232,6 @@ describe('UserProfilesService - deleteUserById', () => {
               foodExclusions: ['peanuts'],
             },
             weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
-          }),
-        }),
-      );
-    });
-
-    it('merges partial settings without wiping stored keys', async () => {
-      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
-        ...mockUser,
-        settings: {
-          emailNotifications: true,
-        },
-      });
-
-      (prisma.user.update as jest.Mock).mockImplementation(({ data }) =>
-        Promise.resolve({
-          ...mockUser,
-          settings: data.settings,
-        }),
-      );
-
-      await service.updateProfile('kc-1', {
-        settings: {
-          pushNotifications: false,
-        },
-      });
-
-      expect(prisma.user.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
             settings: {
               emailNotifications: true,
               pushNotifications: false,

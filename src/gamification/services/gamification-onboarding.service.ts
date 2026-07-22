@@ -4,9 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { AppEventType, EventSource } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import {
-  OnboardingBaselines,
   SOFT_PROGRESS_INDICATOR_KINDS,
-  deriveUserSegment,
   targetForSegment,
 } from '../onboarding.utils';
 import { assertProgressIndicatorOwner } from '../progress-indicator.utils';
@@ -30,10 +28,6 @@ export class GamificationOnboardingService {
     private readonly prisma: PrismaService,
     private readonly userEventService: UserEventService,
   ) {}
-
-  deriveSegment(baselines: OnboardingBaselines): UserSegment {
-    return deriveUserSegment(baselines);
-  }
 
   /**
    * First-time onboarding only: ensure wallet, seed soft indicators, and

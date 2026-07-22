@@ -51,22 +51,17 @@ describe('onboarding.utils', () => {
     ).toBe(UserSegment.ADVANCED);
   });
 
-  it('extracts onboarding survey fields into column updates', () => {
+  it('extracts known onboarding survey fields into column updates', () => {
     expect(
       extractOnboardingSurvey({
         weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
         weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+        meatMeals: 'ignored',
       }),
     ).toEqual({
       weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
       weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
     });
-  });
-
-  it('rejects unknown onboarding survey fields', () => {
-    expect(() =>
-      extractOnboardingSurvey({ meatMeals: WeeklyMeatRange.FIVE_TO_NINE }),
-    ).toThrow('Unknown onboardingSurvey field');
   });
 
   it('builds preferences with onboardingSurvey from columns', () => {

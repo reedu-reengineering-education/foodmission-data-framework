@@ -42,17 +42,6 @@ export const ONBOARDING_BASELINE_FIELDS = [
 
 type OnboardingBaselineField = (typeof ONBOARDING_BASELINE_FIELDS)[number];
 
-const ONBOARDING_FIELD_ENUMS: Record<
-  OnboardingBaselineField,
-  readonly string[]
-> = {
-  weeklyMeatConsumption: Object.values(WeeklyMeatRange),
-  weeklyBeefConsumption: Object.values(WeeklyBeefFrequency),
-  weeklyFoodWaste: Object.values(WeeklyFoodWasteRange),
-  weeklyUpfConsumption: Object.values(WeeklyUpfRange),
-  weeklyReusableOrRefill: Object.values(WeeklyReusableRange),
-};
-
 export interface OnboardingBaselines {
   weeklyMeatConsumption: WeeklyMeatRange;
   weeklyBeefConsumption: WeeklyBeefFrequency;
@@ -71,30 +60,19 @@ type OnboardingSurveyUser = {
   weeklyReusableOrRefill?: string | null;
 };
 
-/** Parse preferences.onboardingSurvey into column updates. */
+/** Pick known onboardingSurvey fields into column updates (DTO validates enums). */
 export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
   if (survey === null || typeof survey !== 'object' || Array.isArray(survey)) {
     throw new Error('preferences.onboardingSurvey must be an object');
   }
 
-  const result: OnboardingSurvey = {};
   const obj = survey as Record<string, unknown>;
-
-  for (const key of Object.keys(obj)) {
-    if (!ONBOARDING_BASELINE_FIELDS.includes(key as OnboardingBaselineField)) {
-      throw new Error(`Unknown onboardingSurvey field: ${key}`);
+  const result: OnboardingSurvey = {};
+  for (const field of ONBOARDING_BASELINE_FIELDS) {
+    if (obj[field] !== undefined) {
+      result[field] = obj[field] as string;
     }
-    const field = key as OnboardingBaselineField;
-    const value = obj[key];
-    if (
-      typeof value !== 'string' ||
-      !ONBOARDING_FIELD_ENUMS[field].includes(value)
-    ) {
-      throw new Error(`Invalid value for ${field}`);
-    }
-    result[field] = value;
   }
-
   return result;
 }
 
