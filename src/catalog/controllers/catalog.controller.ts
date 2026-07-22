@@ -157,31 +157,31 @@ export class CatalogController {
   }
 
   @Get('weekly-meat-ranges')
-  @PublicCatalogList('List weekly meat consumption ranges')
+  @ProtectedCatalogList('List weekly meat consumption ranges')
   weeklyMeatRanges(): CatalogListResponseDto {
     return this.catalogService.listWeeklyMeatRanges();
   }
 
   @Get('weekly-beef-frequencies')
-  @PublicCatalogList('List weekly beef consumption frequencies')
+  @ProtectedCatalogList('List weekly beef consumption frequencies')
   weeklyBeefFrequencies(): CatalogListResponseDto {
     return this.catalogService.listWeeklyBeefFrequencies();
   }
 
   @Get('weekly-food-waste-ranges')
-  @PublicCatalogList('List weekly edible food waste ranges')
+  @ProtectedCatalogList('List weekly edible food waste ranges')
   weeklyFoodWasteRanges(): CatalogListResponseDto {
     return this.catalogService.listWeeklyFoodWasteRanges();
   }
 
   @Get('weekly-upf-ranges')
-  @PublicCatalogList('List weekly UPF consumption ranges')
+  @ProtectedCatalogList('List weekly UPF consumption ranges')
   weeklyUpfRanges(): CatalogListResponseDto {
     return this.catalogService.listWeeklyUpfRanges();
   }
 
   @Get('weekly-reusable-ranges')
-  @PublicCatalogList(
+  @ProtectedCatalogList(
     'List weekly reusable container / refill product usage ranges',
   )
   weeklyReusableRanges(): CatalogListResponseDto {
@@ -189,31 +189,31 @@ export class CatalogController {
   }
 
   @Get('user-segments')
-  @PublicCatalogList('List user gamification segments')
+  @ProtectedCatalogList('List user gamification segments')
   userSegments(): CatalogListResponseDto {
     return this.catalogService.listUserSegments();
   }
 
   @Get('motivations')
-  @PublicCatalogList('List user motivations')
+  @ProtectedCatalogList('List user motivations')
   motivations(): CatalogListResponseDto {
     return this.catalogService.listMotivations();
   }
 
   @Get('progress-indicator-kinds')
-  @PublicCatalogList('List progress indicator kinds')
+  @ProtectedCatalogList('List progress indicator kinds')
   progressIndicatorKinds(): CatalogListResponseDto {
     return this.catalogService.listProgressIndicatorKinds();
   }
 
   @Get('progress-precisions')
-  @PublicCatalogList('List progress indicator precision types')
+  @ProtectedCatalogList('List progress indicator precision types')
   progressPrecisions(): CatalogListResponseDto {
     return this.catalogService.listProgressPrecisions();
   }
 
   @Get('wallet-currencies')
-  @PublicCatalogList('List gamification point currencies (XP, points)')
+  @ProtectedCatalogList('List gamification point currencies (XP, points)')
   walletCurrencies(): CatalogListResponseDto {
     return this.catalogService.listWalletCurrencies();
   }
