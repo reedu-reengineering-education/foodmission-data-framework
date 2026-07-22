@@ -150,7 +150,6 @@ export class UserProfilesService {
       'activityLevel',
       'healthGoals',
       'nutritionTargets',
-      'settings',
       'segment',
       'currentQuestId',
     ];
@@ -162,8 +161,20 @@ export class UserProfilesService {
       updateData[f] = payload[f];
     }
 
+    if (payload.settings !== undefined) {
+      const stored = (user.settings as Record<string, unknown>) ?? {};
+      updateData.settings = {
+        ...stored,
+        ...(payload.settings as Record<string, unknown>),
+      };
+    }
+
     if (payload.preferences !== undefined) {
-      const prefs = { ...payload.preferences } as Record<string, unknown>;
+      const stored = (user.preferences as Record<string, unknown>) ?? {};
+      const prefs = {
+        ...stored,
+        ...(payload.preferences as Record<string, unknown>),
+      };
       if (prefs.onboardingSurvey !== undefined) {
         try {
           const surveyUpdates = extractOnboardingSurvey(prefs.onboardingSurvey);

@@ -111,6 +111,10 @@ export class GamificationWalletService {
             tx,
           );
           event = recorded.event;
+
+          if (recorded.replayed) {
+            return this.replayFromEventInTx(input, event, tx);
+          }
         }
 
         await tx.userGamificationWallet.upsert({
@@ -205,10 +209,45 @@ export class GamificationWalletService {
       return null;
     }
 
-    const entry = existingEvent.walletEntries.find(
+    const wallet = await this.ensureWallet(input.userId);
+    return this.buildReplayResult(input, existingEvent, wallet);
+  }
+
+  private async replayFromEventInTx(
+    input: AwardWalletInput,
+    event: UserEvent,
+    tx: Prisma.TransactionClient,
+  ): Promise<AwardWalletResult> {
+    const eventWithEntries = await tx.userEvent.findUnique({
+      where: { id: event.id },
+      include: { walletEntries: true },
+    });
+    if (!eventWithEntries) {
+      throw new ConflictException(
+        `Idempotent event ${input.idempotencyKey} is missing`,
+      );
+    }
+
+    const wallet = await tx.userGamificationWallet.findUnique({
+      where: { userId: input.userId },
+    });
+    if (!wallet) {
+      throw new ConflictException(
+        `Wallet row missing for user ${input.userId} during idempotent replay`,
+      );
+    }
+
+    return this.buildReplayResult(input, eventWithEntries, wallet);
+  }
+
+  private buildReplayResult(
+    input: AwardWalletInput,
+    event: UserEvent & { walletEntries: WalletEntry[] },
+    wallet: UserGamificationWallet,
+  ): AwardWalletResult {
+    const entry = event.walletEntries.find(
       (e) => e.currency === input.currency && e.amount === input.amount,
     );
-    const wallet = await this.ensureWallet(input.userId);
     if (!entry) {
       throw new ConflictException(
         `Idempotent event ${input.idempotencyKey} exists without matching wallet entry`,
@@ -217,7 +256,7 @@ export class GamificationWalletService {
     return {
       wallet,
       entry,
-      event: existingEvent,
+      event,
       replayed: true,
     };
   }

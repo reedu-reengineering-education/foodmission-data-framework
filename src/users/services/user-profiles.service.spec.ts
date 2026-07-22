@@ -393,5 +393,76 @@ describe('UserProfilesService - deleteUserById', () => {
         gamificationOnboarding.applyOnboardingSideEffects,
       ).toHaveBeenCalledWith(afterUpdate, UserSegment.ADVANCED);
     });
+
+    it('merges partial preferences without wiping stored keys', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        preferences: {
+          motivation: 'HEALTH',
+          foodExclusions: ['peanuts'],
+        },
+      });
+
+      (prisma.user.update as jest.Mock).mockImplementation(({ data }) =>
+        Promise.resolve({
+          ...mockUser,
+          ...data,
+          preferences: data.preferences,
+        }),
+      );
+
+      await service.updateProfile('kc-1', {
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+          },
+        },
+      });
+
+      expect(prisma.user.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            preferences: {
+              motivation: 'HEALTH',
+              foodExclusions: ['peanuts'],
+            },
+            weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+          }),
+        }),
+      );
+    });
+
+    it('merges partial settings without wiping stored keys', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        settings: {
+          emailNotifications: true,
+        },
+      });
+
+      (prisma.user.update as jest.Mock).mockImplementation(({ data }) =>
+        Promise.resolve({
+          ...mockUser,
+          settings: data.settings,
+        }),
+      );
+
+      await service.updateProfile('kc-1', {
+        settings: {
+          pushNotifications: false,
+        },
+      });
+
+      expect(prisma.user.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            settings: {
+              emailNotifications: true,
+              pushNotifications: false,
+            },
+          }),
+        }),
+      );
+    });
   });
 });

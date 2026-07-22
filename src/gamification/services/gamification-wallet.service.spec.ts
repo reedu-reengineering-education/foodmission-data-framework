@@ -230,4 +230,76 @@ describe('GamificationWalletService', () => {
     expect(result.replayed).toBe(true);
     expect(result.entry.id).toBe('we-race');
   });
+
+  it('does not double-credit when record replays inside the transaction', async () => {
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+
+    const existingEvent = {
+      id: 'evt-replay',
+      userId: 'u1',
+      eventType: 'POINTS_AWARDED',
+      walletEntries: [
+        {
+          id: 'we-replay',
+          userId: 'u1',
+          currency: WalletCurrency.POINTS,
+          amount: 10,
+          balanceAfter: 10,
+          reason: 'mission',
+          eventId: 'evt-replay',
+          createdAt: new Date(),
+        },
+      ],
+    };
+    const wallet = {
+      userId: 'u1',
+      level: 1,
+      xp: 0,
+      points: 10,
+      updatedAt: new Date(),
+    };
+
+    userEventService.record.mockResolvedValue({
+      event: existingEvent as any,
+      replayed: true,
+    });
+
+    const walletEntryCreate = jest.fn();
+    const walletUpdate = jest.fn();
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: {
+            findUnique: jest.fn().mockResolvedValue(existingEvent),
+            findUniqueOrThrow: jest.fn(),
+          },
+          userGamificationWallet: {
+            upsert: jest.fn(),
+            update: walletUpdate,
+            findUnique: jest.fn().mockResolvedValue(wallet),
+          },
+          walletEntry: {
+            create: walletEntryCreate,
+          },
+          $queryRaw: jest.fn(),
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    const result = await service.award({
+      userId: 'u1',
+      currency: WalletCurrency.POINTS,
+      amount: 10,
+      reason: 'mission',
+      eventType: 'POINTS_AWARDED',
+      idempotencyKey: 'award-replay-in-tx',
+    });
+
+    expect(result.replayed).toBe(true);
+    expect(result.entry.id).toBe('we-replay');
+    expect(walletEntryCreate).not.toHaveBeenCalled();
+    expect(walletUpdate).not.toHaveBeenCalled();
+  });
 });
