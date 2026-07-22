@@ -34,7 +34,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.37.0
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -48,7 +48,7 @@ jobs:
           no-fail: true
 
       - name: Upload Hadolint scan results
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.37.0
         if: always()
         with:
           sarif_file: hadolint-results.sarif
@@ -136,7 +136,7 @@ jobs:
             .
 
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.37.0
         if: always() && hashFiles('semgrep.sarif') != ''
         with:
           sarif_file: semgrep.sarif
