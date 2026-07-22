@@ -1,6 +1,5 @@
 import {
   ProgressIndicatorKind,
-  ProgressPrecision,
   UserSegment,
   WeeklyBeefFrequency,
   WeeklyFoodWasteRange,
@@ -20,7 +19,7 @@ export const SOFT_PROGRESS_INDICATOR_KINDS: ProgressIndicatorKind[] = [
   ProgressIndicatorKind.LAND_USE_REDUCTION,
 ];
 
-export const DEFAULT_TARGET_BY_SEGMENT: Record<UserSegment, number> = {
+const DEFAULT_TARGET_BY_SEGMENT: Record<UserSegment, number> = {
   [UserSegment.BEGINNER]: 10,
   [UserSegment.INTERMEDIATE]: 20,
   [UserSegment.ADVANCED]: 30,
@@ -41,7 +40,7 @@ export const ONBOARDING_BASELINE_FIELDS = [
   'weeklyReusableOrRefill',
 ] as const;
 
-export type OnboardingBaselineField =
+type OnboardingBaselineField =
   (typeof ONBOARDING_BASELINE_FIELDS)[number];
 
 const ONBOARDING_FIELD_ENUMS: Record<
@@ -63,9 +62,15 @@ export interface OnboardingBaselines {
   weeklyReusableOrRefill: WeeklyReusableRange;
 }
 
-export type OnboardingSurvey = Partial<
-  Record<OnboardingBaselineField, string>
->;
+type OnboardingSurvey = Partial<Record<OnboardingBaselineField, string>>;
+
+type OnboardingSurveyUser = {
+  weeklyMeatConsumption?: string | null;
+  weeklyBeefConsumption?: string | null;
+  weeklyFoodWaste?: string | null;
+  weeklyUpfConsumption?: string | null;
+  weeklyReusableOrRefill?: string | null;
+};
 
 /** Parse preferences.onboardingSurvey into column updates. */
 export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
@@ -94,28 +99,10 @@ export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
   return result;
 }
 
-/** Build preferences.onboardingSurvey from user columns (omit nulls). */
-export function buildOnboardingSurveyFromUser(user: {
-  weeklyMeatConsumption?: string | null;
-  weeklyBeefConsumption?: string | null;
-  weeklyFoodWaste?: string | null;
-  weeklyUpfConsumption?: string | null;
-  weeklyReusableOrRefill?: string | null;
-}): OnboardingSurvey {
-  const survey: OnboardingSurvey = {};
-  for (const field of ONBOARDING_BASELINE_FIELDS) {
-    const value = user[field];
-    if (value != null) {
-      survey[field] = value;
-    }
-  }
-  return survey;
-}
-
 /** Merge stored preferences JSON with onboardingSurvey built from columns. */
 export function buildUserPreferences(
   storedPreferences: unknown,
-  user: Parameters<typeof buildOnboardingSurveyFromUser>[0],
+  user: OnboardingSurveyUser,
 ): Record<string, unknown> {
   const storedPrefs =
     storedPreferences &&
@@ -125,7 +112,15 @@ export function buildUserPreferences(
       : {};
   const { onboardingSurvey: _storedSurvey, ...prefsWithoutSurvey } =
     storedPrefs;
-  const survey = buildOnboardingSurveyFromUser(user);
+
+  const survey: OnboardingSurvey = {};
+  for (const field of ONBOARDING_BASELINE_FIELDS) {
+    const value = user[field];
+    if (value != null) {
+      survey[field] = value;
+    }
+  }
+
   return {
     ...prefsWithoutSurvey,
     ...(Object.keys(survey).length > 0 ? { onboardingSurvey: survey } : {}),
@@ -195,5 +190,3 @@ export function deriveUserSegment(baselines: OnboardingBaselines): UserSegment {
   if (average >= 1) return UserSegment.INTERMEDIATE;
   return UserSegment.ADVANCED;
 }
-
-export { ProgressPrecision };

@@ -1,5 +1,4 @@
 import {
-  buildOnboardingSurveyFromUser,
   buildUserPreferences,
   deriveUserSegment,
   extractOnboardingSurvey,
@@ -68,21 +67,6 @@ describe('onboarding.utils', () => {
     expect(() =>
       extractOnboardingSurvey({ meatMeals: WeeklyMeatRange.FIVE_TO_NINE }),
     ).toThrow('Unknown onboardingSurvey field');
-  });
-
-  it('builds onboarding survey from user columns', () => {
-    expect(
-      buildOnboardingSurveyFromUser({
-        weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
-        weeklyBeefConsumption: null,
-        weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-        weeklyUpfConsumption: null,
-        weeklyReusableOrRefill: null,
-      }),
-    ).toEqual({
-      weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
-      weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-    });
   });
 
   it('builds preferences with onboardingSurvey from columns', () => {
