@@ -3,8 +3,19 @@ import { HttpService } from '@nestjs/axios';
 import { UsersRepository } from '../src/users/repositories/users.repository';
 import { UserProfilesService } from '../src/users/services/user-profiles.service';
 import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
+import { UserEventService } from '../src/events/services/user-event.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../src/events/event-types';
 import { of } from 'rxjs';
 import { Test, TestingModule } from '@nestjs/testing';
+
+const userEventServiceMock = {
+  record: jest.fn(),
+  findByIdempotencyKey: jest.fn(),
+};
 
 describe('AuthService.triggerPasswordReset', () => {
   let service: AuthService;
@@ -18,6 +29,7 @@ describe('AuthService.triggerPasswordReset', () => {
     keycloakAdminService = {
       sendResetPasswordEmail: jest.fn(),
     };
+    userEventServiceMock.record.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -37,6 +49,10 @@ describe('AuthService.triggerPasswordReset', () => {
         {
           provide: KeycloakAdminService,
           useValue: keycloakAdminService,
+        },
+        {
+          provide: UserEventService,
+          useValue: userEventServiceMock,
         },
       ],
     }).compile();
@@ -96,8 +112,17 @@ describe('AuthService.login', () => {
   let service: AuthService;
   let httpService: jest.Mocked<HttpService>;
   let userProfileService: jest.Mocked<UserProfilesService>;
+  let usersRepository: { touchLastLoginAt: jest.Mock };
+  let userEventService: { record: jest.Mock };
 
   beforeEach(async () => {
+    usersRepository = {
+      touchLastLoginAt: jest.fn().mockResolvedValue({ count: 1 }),
+    };
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -110,7 +135,7 @@ describe('AuthService.login', () => {
         },
         {
           provide: UsersRepository,
-          useValue: {},
+          useValue: usersRepository,
         },
         {
           provide: UserProfilesService,
@@ -121,6 +146,10 @@ describe('AuthService.login', () => {
         {
           provide: KeycloakAdminService,
           useValue: {},
+        },
+        {
+          provide: UserEventService,
+          useValue: userEventService,
         },
       ],
     }).compile();
@@ -141,12 +170,13 @@ describe('AuthService.login', () => {
       given_name: 'Admin',
       family_name: 'User',
     };
+    const profile = { id: 'local-user-1' };
 
     httpService.post.mockReturnValueOnce(of({ data: tokens } as any));
     httpService.get.mockReturnValueOnce(of({ data: kcUser } as any));
 
     (userProfileService.getOrCreateProfile as jest.Mock).mockResolvedValueOnce(
-      {},
+      profile,
     );
 
     const result = await service.login({
@@ -162,7 +192,41 @@ describe('AuthService.login', () => {
       given_name: kcUser.given_name,
       family_name: kcUser.family_name,
     });
+    expect(usersRepository.touchLastLoginAt).toHaveBeenCalledWith(profile.id);
+    expect(userEventService.record).toHaveBeenCalledWith({
+      userId: profile.id,
+      eventType: EventType.USER_LOGGED_IN,
+      source: EventSource.API,
+      subject: { type: EventSubjectType.USER, id: profile.id },
+    });
     expect(result).toEqual(tokens);
+  });
+
+  it('should still return tokens when USER_LOGGED_IN recording fails', async () => {
+    const tokens = {
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    };
+    const kcUser = {
+      sub: 'kc-sub-123',
+      email: 'admin@foodmission.dev',
+    };
+    const profile = { id: 'local-user-1' };
+
+    httpService.post.mockReturnValueOnce(of({ data: tokens } as any));
+    httpService.get.mockReturnValueOnce(of({ data: kcUser } as any));
+    (userProfileService.getOrCreateProfile as jest.Mock).mockResolvedValueOnce(
+      profile,
+    );
+    userEventService.record.mockRejectedValueOnce(new Error('db down'));
+
+    const result = await service.login({
+      username: 'admin',
+      password: 'admin123',
+    });
+
+    expect(result).toEqual(tokens);
+    expect(userEventService.record).toHaveBeenCalled();
   });
 });
 
@@ -186,6 +250,10 @@ describe('AuthService.sendResetPasswordEmailIfExists', () => {
         { provide: UsersRepository, useValue: usersRepository },
         { provide: UserProfilesService, useValue: {} },
         { provide: KeycloakAdminService, useValue: keycloakAdminService },
+        {
+          provide: UserEventService,
+          useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+        },
       ],
     }).compile();
 

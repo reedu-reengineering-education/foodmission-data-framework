@@ -14,6 +14,12 @@ import { LoginDto } from './dto/login.dto';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { UserProfilesService } from '../users/services/user-profiles.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../events/event-types';
+import { UserEventService } from '../events/services/user-event.service';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +30,7 @@ export class AuthService {
     private readonly userRepository: UsersRepository,
     private readonly userProfileService: UserProfilesService,
     private readonly keycloakAdminService: KeycloakAdminService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   private tokenEndpoint() {
@@ -320,12 +327,35 @@ export class AuthService {
     });
     const kcUser = userinfoResp.data;
 
-    await this.userProfileService.getOrCreateProfile({
+    const profile = await this.userProfileService.getOrCreateProfile({
       sub: kcUser.sub,
       email: kcUser.email,
       given_name: kcUser.given_name,
       family_name: kcUser.family_name,
     });
+
+    try {
+      await this.userRepository.touchLastLoginAt(profile.id);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to touch lastLoginAt for user ${profile.id}`,
+        error instanceof Error ? error.message : error,
+      );
+    }
+
+    try {
+      await this.userEventService.record({
+        userId: profile.id,
+        eventType: EventType.USER_LOGGED_IN,
+        source: EventSource.API,
+        subject: { type: EventSubjectType.USER, id: profile.id },
+      });
+    } catch (error) {
+      this.logger.warn(
+        `Failed to record USER_LOGGED_IN for user ${profile.id}`,
+        error instanceof Error ? error.message : error,
+      );
+    }
 
     return tokens;
   }
