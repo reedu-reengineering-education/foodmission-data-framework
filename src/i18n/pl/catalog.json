@@ -87,5 +87,69 @@
     "SHARED_EQUALLY": "Dzielone po równo",
     "MOSTLY_SOMEONE_ELSE": "Głównie ktoś inny",
     "SOMEONE_ELSE": "Ktoś inny"
+  },
+  "weeklyMeatRanges": {
+    "ZERO_TO_FOUR": "0–4",
+    "FIVE_TO_NINE": "5–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyBeefFrequencies": {
+    "NEVER": "Nigdy",
+    "LESS_THAN_ONCE_PER_WEEK": "Rzadziej niż raz w tygodniu",
+    "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 razy w tygodniu",
+    "THREE_PLUS_TIMES_PER_WEEK": "3+ razy w tygodniu"
+  },
+  "weeklyFoodWasteRanges": {
+    "ZERO": "0",
+    "ONE_TO_TWO": "1–2",
+    "THREE_TO_FOUR": "3–4",
+    "FIVE_PLUS": "5+"
+  },
+  "weeklyUpfRanges": {
+    "ZERO_TO_THREE": "0–3",
+    "FOUR_TO_NINE": "4–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyReusableRanges": {
+    "ZERO_TO_TWO": "0–2",
+    "THREE_TO_SIX": "3–6",
+    "SEVEN_TO_NINE": "7–9",
+    "TEN_PLUS": "10+"
+  },
+  "userSegments": {
+    "BEGINNER": "Początkujący",
+    "INTERMEDIATE": "Średniozaawansowany",
+    "ADVANCED": "Zaawansowany"
+  },
+  "motivations": {
+    "SUSTAINABLE_HABITS": "Nabyć bardziej zrównoważone nawyki",
+    "PLANETARY_IMPACT": "Pozytywnie wpływać na planetę",
+    "SUSTAINABILITY_KNOWLEDGE": "Zdobyć wiedzę o zrównoważonym rozwoju"
+  },
+  "progressIndicatorKinds": {
+    "FOOD_CHOICES": "Wybory żywieniowe",
+    "FOOD_AND_WASTE": "Żywność i odpady",
+    "HEALTH": "Zdrowie",
+    "CO2_REDUCTION": "Redukcja CO₂",
+    "ENERGY_REDUCTION": "Redukcja energii",
+    "WATER_SAVINGS": "Oszczędność wody",
+    "LAND_USE_REDUCTION": "Redukcja użytkowania gruntów",
+    "PROTEIN": "Białko",
+    "FAT": "Tłuszcz",
+    "SUGAR": "Cukier",
+    "SALT": "Sól",
+    "FIBER": "Błonnik",
+    "VITAMINS": "Witaminy",
+    "CALORIES": "Kalorie"
+  },
+  "progressPrecisions": {
+    "SOFT": "Miękki",
+    "PRECISE": "Precyzyjny"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Punkty"
   }
 }

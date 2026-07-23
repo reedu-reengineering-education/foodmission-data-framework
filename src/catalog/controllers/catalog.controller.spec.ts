@@ -25,6 +25,16 @@ describe('CatalogController', () => {
       listMealCategories: jest.fn(),
       listMealCourses: jest.fn(),
       listGroupRoles: jest.fn(),
+      listWeeklyMeatRanges: jest.fn(),
+      listWeeklyBeefFrequencies: jest.fn(),
+      listWeeklyFoodWasteRanges: jest.fn(),
+      listWeeklyUpfRanges: jest.fn(),
+      listWeeklyReusableRanges: jest.fn(),
+      listUserSegments: jest.fn(),
+      listMotivations: jest.fn(),
+      listProgressIndicatorKinds: jest.fn(),
+      listProgressPrecisions: jest.fn(),
+      listWalletCurrencies: jest.fn(),
     };
 
     mockService.startup?.mockReturnValue({
@@ -35,6 +45,18 @@ describe('CatalogController', () => {
         annualIncomeLevels: [],
         dietaryPreferences: [],
         shoppingResponsibilities: [],
+        onboarding: {
+          weeklyMeatRanges: [],
+          weeklyBeefFrequencies: [],
+          weeklyFoodWasteRanges: [],
+          weeklyUpfRanges: [],
+          weeklyReusableRanges: [],
+          userSegments: [],
+          motivations: [],
+        },
+        progressIndicatorKinds: [],
+        progressPrecisions: [],
+        walletCurrencies: [],
       },
     });
 

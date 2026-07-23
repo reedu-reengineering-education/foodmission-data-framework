@@ -12,9 +12,9 @@ export const userGroupData: UserGroupSeedData[] = [
   {
     name: 'Doe Family',
     description: 'The Doe family shopping and meal planning group',
-    createdByEmail: 'john.doe@example.com',
+    createdByEmail: 'dev@foodmission.dev',
     memberEmails: [
-      { email: 'john.doe@example.com', role: GroupRole.ADMIN },
+      { email: 'dev@foodmission.dev', role: GroupRole.ADMIN },
       { email: 'jane.smith@example.com', role: GroupRole.MEMBER },
     ],
   },
@@ -67,6 +67,7 @@ export async function seedUserGroups(
         description: groupData.description,
         createdBy: creator.id,
         inviteCode: generateInviteCode(),
+        currentQuestId: `seed-quest-${groupData.name.toLowerCase().replace(/\s+/g, '-')}`,
       },
     });
 

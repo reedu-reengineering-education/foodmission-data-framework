@@ -51,6 +51,22 @@ export class UsersRepository {
     });
   }
 
+  /** Update lastLoginAt only if null or older than intervalMs (multi-instance safe). */
+  async touchLastLoginAt(
+    id: string,
+    at: Date = new Date(),
+    intervalMs = 5 * 60 * 1000,
+  ) {
+    const threshold = new Date(at.getTime() - intervalMs);
+    return this.prisma.user.updateMany({
+      where: {
+        id,
+        OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: threshold } }],
+      },
+      data: { lastLoginAt: at },
+    });
+  }
+
   async remove(id: string) {
     return this.prisma.user.delete({
       where: { id },

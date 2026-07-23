@@ -16,6 +16,7 @@ import {
 } from '../scripts/seeds/dev/knowledge';
 import { seedChallenges } from '../scripts/seeds/dev/challenges';
 import { seedMissions } from '../scripts/seeds/dev/missions';
+import { seedGamificationProfiles } from '../scripts/seeds/dev/gamificationProfile';
 import { seedRecipes } from '../scripts/seeds/prod/themealdb';
 import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
@@ -103,6 +104,7 @@ async function seedDevelopment() {
   const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
   const challenges = await seedChallenges(prisma);
   const missions = await seedMissions(prisma);
+  const gamificationProfiles = await seedGamificationProfiles(prisma);
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
   const recipes = await seedRecipes(prisma, { skipExisting });
@@ -137,6 +139,10 @@ async function seedDevelopment() {
     { label: 'knowledgeProgress', value: knowledgeProgress.length },
     { label: 'challenges', value: challenges.length },
     { label: 'missions', value: missions.length },
+    {
+      label: 'gamificationProfiles',
+      value: `${gamificationProfiles.wallets} wallets, ${gamificationProfiles.events} events, ${gamificationProfiles.walletEntries} wallet entries`,
+    },
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,

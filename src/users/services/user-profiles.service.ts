@@ -11,6 +11,13 @@ import {
   EducationLevel,
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
+import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import {
+  buildUserPreferences,
+  extractOnboardingSurvey,
+  hasAllOnboardingBaselines,
+} from '../../gamification/onboarding.utils';
+import type { User } from '@prisma/client';
 
 export interface UserProfile {
   id: string;
@@ -35,6 +42,10 @@ export interface UserProfile {
   activityLevel?: ActivityLevel | null;
   healthGoals?: Record<string, unknown>;
   nutritionTargets?: Record<string, unknown>;
+
+  segment?: string | null;
+  currentQuestId?: string | null;
+  lastLoginAt?: Date | null;
 }
 
 @Injectable()
@@ -43,6 +54,7 @@ export class UserProfilesService {
     private readonly usersRepository: UsersRepository,
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
+    private readonly gamificationOnboardingService: GamificationOnboardingService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -86,42 +98,19 @@ export class UserProfilesService {
 
     const updateData: any = {};
 
-    const forbidden = [
-      'id',
-      'keycloakId',
-      'email',
-      'username',
-      'createdAt',
-      'updatedAt',
-      'shoppingList',
-      'pantry',
-    ];
-
-    const badKeys = Object.keys(payload || {}).filter((k) =>
-      forbidden.includes(k),
-    );
-    if (badKeys.length > 0) {
-      throw new BadRequestException(
-        `Attempted to update protected fields: ${badKeys.join(', ')}`,
-      );
-    }
-
-    if (payload.country !== undefined) updateData.country = payload.country;
-    if (payload.region !== undefined) updateData.region = payload.region;
-    if (payload.zip !== undefined) updateData.zip = payload.zip;
-    if (payload.language !== undefined) updateData.language = payload.language;
-
-    // Accept yearOfBirth (preferred). Persist to DB as dateOfBirth = Jan 1 of year.
     if (payload.yearOfBirth !== undefined && payload.yearOfBirth !== null) {
       const y = Number(payload.yearOfBirth);
       if (!Number.isFinite(y) || y < 1900 || y > new Date().getUTCFullYear()) {
         throw new BadRequestException('Invalid yearOfBirth');
       }
-      // Persist the numeric year into the DB field `yearOfBirth` (Int). Migration to apply by user.
       updateData.yearOfBirth = Math.trunc(y);
     }
 
-    const extendedFields = [
+    const passThroughFields = [
+      'country',
+      'region',
+      'zip',
+      'language',
       'gender',
       'annualIncome',
       'educationLevel',
@@ -130,23 +119,102 @@ export class UserProfilesService {
       'activityLevel',
       'healthGoals',
       'nutritionTargets',
-      'settings',
-      'preferences',
-    ];
+      'segment',
+      'currentQuestId',
+    ] as const;
 
-    for (const f of extendedFields) {
-      if (payload[f] === undefined) continue;
+    for (const f of passThroughFields) {
+      if (payload[f] !== undefined) {
+        updateData[f] = payload[f];
+      }
+    }
 
-      // Gender is validated at the DTO level; pass through other extended fields directly.
-      updateData[f] = payload[f];
+    if (payload.settings !== undefined) {
+      const stored = (user.settings as Record<string, unknown>) ?? {};
+      updateData.settings = {
+        ...stored,
+        ...(payload.settings as Record<string, unknown>),
+      };
+    }
+
+    if (payload.preferences !== undefined) {
+      const stored = (user.preferences as Record<string, unknown>) ?? {};
+      const prefs = {
+        ...stored,
+        ...(payload.preferences as Record<string, unknown>),
+      };
+      if (prefs.onboardingSurvey !== undefined) {
+        try {
+          Object.assign(
+            updateData,
+            extractOnboardingSurvey(prefs.onboardingSurvey),
+          );
+        } catch (err) {
+          throw new BadRequestException(
+            err instanceof Error ? err.message : 'Invalid onboardingSurvey',
+          );
+        }
+        delete prefs.onboardingSurvey;
+      }
+      updateData.preferences = prefs;
     }
 
     if (Object.keys(updateData).length === 0) {
       return this.formatUserProfile(user);
     }
 
-    const updatedUser = await this.usersRepository.update(user.id, updateData);
+    let updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: updateData,
+    });
+
+    updatedUser = await this.applyGamificationOnboardingIfReady(
+      updatedUser,
+      payload,
+    );
+
     return this.formatUserProfile(updatedUser);
+  }
+
+  /**
+   * When all five habit baselines are present, a client-chosen segment is set,
+   * and onboarding was touched (survey and/or segment), apply first-time side effects.
+   */
+  private async applyGamificationOnboardingIfReady(
+    user: User,
+    payload: Record<string, unknown>,
+  ): Promise<User> {
+    const surveyTouched =
+      (payload.preferences as { onboardingSurvey?: unknown } | undefined)
+        ?.onboardingSurvey !== undefined;
+    const segmentTouched = payload.segment !== undefined;
+    if (
+      (!surveyTouched && !segmentTouched) ||
+      !hasAllOnboardingBaselines(user)
+    ) {
+      return user;
+    }
+
+    const segment =
+      (payload.segment as User['segment'] | undefined) ?? user.segment;
+    if (!segment) {
+      return user;
+    }
+
+    const nextUser =
+      user.segment === segment
+        ? user
+        : await this.prisma.user.update({
+            where: { id: user.id },
+            data: { segment },
+          });
+
+    await this.gamificationOnboardingService.applyOnboardingSideEffects(
+      nextUser,
+      segment,
+    );
+
+    return nextUser;
   }
 
   async isBasicProfileComplete(keycloakId: string): Promise<boolean> {
@@ -167,13 +235,15 @@ export class UserProfilesService {
     // After migration the DB stores the year of birth as an integer in `yearOfBirth`.
     const yearOfBirth = user.yearOfBirth ?? undefined;
 
+    const preferences = buildUserPreferences(user.preferences, user);
+
     return {
       id: user.id,
       email: user.email,
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       keycloakId: user.keycloakId,
-      preferences: user.preferences as Record<string, unknown>,
+      preferences,
       settings: user.settings as Record<string, unknown>,
       username: user.username,
       yearOfBirth,
@@ -190,6 +260,9 @@ export class UserProfilesService {
       activityLevel: user.activityLevel,
       healthGoals: user.healthGoals,
       nutritionTargets: user.nutritionTargets,
+      segment: user.segment,
+      currentQuestId: user.currentQuestId,
+      lastLoginAt: user.lastLoginAt,
     };
   }
 
