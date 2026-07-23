@@ -98,7 +98,7 @@ describe('GamificationWalletService', () => {
     const createdEvent = {
       id: 'evt-2',
       userId: 'u1',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
     };
     const createdEntry = {
       id: 'we-2',
@@ -157,7 +157,7 @@ describe('GamificationWalletService', () => {
       currency: WalletCurrency.POINTS,
       amount: 10,
       reason: 'mission',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
       idempotencyKey: 'award-2',
     });
 
@@ -224,7 +224,7 @@ describe('GamificationWalletService', () => {
     const existingEvent = {
       id: 'evt-replay',
       userId: 'u1',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
       walletEntries: [
         {
           id: 'we-replay',
@@ -279,7 +279,7 @@ describe('GamificationWalletService', () => {
       currency: WalletCurrency.POINTS,
       amount: 10,
       reason: 'mission',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
       idempotencyKey: 'award-replay-in-tx',
     });
 

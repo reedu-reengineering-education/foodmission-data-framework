@@ -64,7 +64,7 @@ describe('UserEventService', () => {
 
     const result = await service.record({
       userId: 'u1',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
       source: EventSource.WALLET,
       idempotencyKey: 'key-1',
     });
@@ -86,7 +86,7 @@ describe('UserEventService', () => {
 
     const result = await service.record({
       userId: 'u1',
-      eventType: EventType.POINTS_AWARDED,
+      eventType: EventType.WALLET_POINTS_AWARDED,
       source: EventSource.WALLET,
       idempotencyKey: 'key-race',
     });

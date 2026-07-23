@@ -97,7 +97,7 @@ export class GamificationWalletService {
             {
               userId: input.userId,
               groupId: input.groupId,
-              eventType: input.eventType ?? EventType.POINTS_AWARDED,
+              eventType: input.eventType ?? EventType.WALLET_POINTS_AWARDED,
               source: EventSource.WALLET,
               metadata: input.metadata ?? {
                 currency: input.currency,

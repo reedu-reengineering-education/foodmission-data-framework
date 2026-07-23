@@ -1,12 +1,16 @@
 /**
  * Event catalog for the append-only `user_events` ledger.
  *
- * ## Layers
- * - **Lifecycle / system** — progress, rewards, account
- *   (`LOGIN`, `ONBOARDING_COMPLETED`, `MISSION_COMPLETED`, `POINTS_AWARDED`, …).
+ * ## Domains
+ * - **Account** — session / onboarding (`USER_LOGGED_IN`, `ONBOARDING_COMPLETED`)
+ * - **Wallet** — points / XP / admin adjustments (`WALLET_*`)
+ * - **Progress** — mission / challenge / quest completion
+ * - **Achievements** — badges and progress indicators
  * - **Behavioural** — evidence missions/challenges can count
  *   (`MEAL_*`, `SWAP_*`, `SHOPPING_*`, `PROCESSING_*`, `PACKAGING_*`,
- *   `FOOD_WASTE_*`, `NUTRITION_*`, `LEARNING_*`).
+ *   `FOOD_WASTE_*`, `NUTRITION_*`, `LEARNING_*`)
+ *
+ * Naming: `DOMAIN[_ENTITY]_ACTION` (SCREAMING_SNAKE), past tense for completed facts.
  *
  * ## Recording (`UserEventService.record`)
  * | Field | Rule |
@@ -35,18 +39,32 @@
 
 /** What happened — shared across app features. */
 export const EventType = {
-  // Lifecycle / system
-  LOGIN: 'LOGIN',
+  // ==========================================
+  // ACCOUNT
+  // ==========================================
+  USER_LOGGED_IN: 'USER_LOGGED_IN',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
-  POINTS_AWARDED: 'POINTS_AWARDED',
-  XP_AWARDED: 'XP_AWARDED',
-  CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
+
+  // ==========================================
+  // WALLET
+  // ==========================================
+  WALLET_POINTS_AWARDED: 'WALLET_POINTS_AWARDED',
+  WALLET_XP_AWARDED: 'WALLET_XP_AWARDED',
+  WALLET_MANUAL_ADJUSTMENT: 'WALLET_MANUAL_ADJUSTMENT',
+
+  // ==========================================
+  // PROGRESS (missions, challenges, quests)
+  // ==========================================
   MISSION_COMPLETED: 'MISSION_COMPLETED',
+  CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
   QUEST_STARTED: 'QUEST_STARTED',
   QUEST_COMPLETED: 'QUEST_COMPLETED',
-  INDICATOR_UPDATED: 'INDICATOR_UPDATED',
+
+  // ==========================================
+  // ACHIEVEMENTS
+  // ==========================================
   BADGE_EARNED: 'BADGE_EARNED',
-  MANUAL_ADJUSTMENT: 'MANUAL_ADJUSTMENT',
+  PROGRESS_INDICATOR_UPDATED: 'PROGRESS_INDICATOR_UPDATED',
 
   // ==========================================
   // 1. MEAL & DIET PATTERNS
@@ -129,7 +147,7 @@ export const EventType = {
   NUTRITION_PLANT_DIVERSITY_COUNT: 'NUTRITION_PLANT_DIVERSITY_COUNT',
 
   // ==========================================
-  // 8. LEARNING & CHALLENGES
+  // 8. LEARNING
   // ==========================================
   LEARNING_FACT_VIEWED: 'LEARNING_FACT_VIEWED',
   LEARNING_FOOTPRINT_COMPARED: 'LEARNING_FOOTPRINT_COMPARED',

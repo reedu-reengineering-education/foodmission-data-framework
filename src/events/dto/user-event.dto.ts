@@ -9,8 +9,8 @@ export class UserEventDto {
 
   @ApiProperty({
     description:
-      'What happened — catalog value from EventType (e.g. MEAL_LOGGED, POINTS_AWARDED).',
-    example: 'POINTS_AWARDED',
+      'What happened — catalog value from EventType (e.g. MEAL_LOGGED, WALLET_POINTS_AWARDED).',
+    example: 'WALLET_POINTS_AWARDED',
   })
   eventType!: string;
 
