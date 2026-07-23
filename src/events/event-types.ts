@@ -1,5 +1,28 @@
+/**
+ * Event catalog.
+ *
+ * Two layers:
+ * - Lifecycle / system: progress, rewards, account (LOGIN, MISSION_COMPLETED, …)
+ * - Behavioural: evidence missions/challenges can count (MEAL_*, SWAP_*, …)
+ *
+ * Metadata conventions for UserEventService.record():
+ * - Always set `source` to the producing feature (EventSource.*).
+ * - Prefer `subject: { type, id }` for the primary entity
+ *   (MEAL, PRODUCT, MISSION, CHALLENGE, USER, …).
+ * - Put context in `metadata`, not the event type:
+ *   meal: { mealId, mealType?, tags? }
+ *   swap: { from, to, productId? }
+ *   shopping/processing/packaging: { productId?, barcode?, score? }
+ *   learning: { contentId?, contentType? }
+ *   wallet: { currency, amount, reason }
+ * - When counted toward a mission/challenge, include missionId / challengeId on
+ *   the behavioural event; emit MISSION_COMPLETED / CHALLENGE_COMPLETED only
+ *   when progress actually completes.
+ */
+
 /** What happened — shared across app features. */
-export const AppEventType = {
+export const EventType = {
+  // Lifecycle / system
   LOGIN: 'LOGIN',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
   POINTS_AWARDED: 'POINTS_AWARDED',
@@ -11,10 +34,97 @@ export const AppEventType = {
   INDICATOR_UPDATED: 'INDICATOR_UPDATED',
   BADGE_EARNED: 'BADGE_EARNED',
   MANUAL_ADJUSTMENT: 'MANUAL_ADJUSTMENT',
+
+  // ==========================================
+  // 1. MEAL & DIET PATTERNS
+  // ==========================================
+  MEAL_LOGGED: 'MEAL_LOGGED',
+  MEAL_MEAT_CONSUMED: 'MEAL_MEAT_CONSUMED',
+  MEAL_MEAT_FREE: 'MEAL_MEAT_FREE',
+  MEAL_LEGUME_CONSUMED: 'MEAL_LEGUME_CONSUMED',
+  MEAL_ALTERNATIVE_STAPLE: 'MEAL_ALTERNATIVE_STAPLE',
+  MEAL_ANCIENT_GRAIN: 'MEAL_ANCIENT_GRAIN',
+  MEAL_SUSTAINABLE_PLATE: 'MEAL_SUSTAINABLE_PLATE',
+
+  // ==========================================
+  // 2. SUBSTITUTIONS & SWAPS
+  // ==========================================
+  SWAP_BEEF_TO_PORK: 'SWAP_BEEF_TO_PORK',
+  SWAP_BEEF_TO_CHICKEN: 'SWAP_BEEF_TO_CHICKEN',
+  SWAP_BEEF_TO_LEGUMES: 'SWAP_BEEF_TO_LEGUMES',
+  SWAP_PORK_TO_CHICKEN: 'SWAP_PORK_TO_CHICKEN',
+  SWAP_PORK_TO_LEGUMES: 'SWAP_PORK_TO_LEGUMES',
+  SWAP_CHICKEN_TO_LEGUMES: 'SWAP_CHICKEN_TO_LEGUMES',
+  SWAP_SUGARY_DRINK_TO_WATER: 'SWAP_SUGARY_DRINK_TO_WATER',
+  SWAP_SNACK_TO_FRUIT_NUTS: 'SWAP_SNACK_TO_FRUIT_NUTS',
+  SWAP_SUGARY_CEREAL_TO_OATS: 'SWAP_SUGARY_CEREAL_TO_OATS',
+  SWAP_READY_MEAL_TO_HOMECOOKED: 'SWAP_READY_MEAL_TO_HOMECOOKED',
+  SWAP_PROCESSED_MEAT_TO_LEGUMES: 'SWAP_PROCESSED_MEAT_TO_LEGUMES',
+
+  // ==========================================
+  // 3. PRODUCT ORIGIN & SHOPPING
+  // ==========================================
+  SHOPPING_ORIGIN_CHECKED: 'SHOPPING_ORIGIN_CHECKED',
+  SHOPPING_LOCAL_CHOSEN: 'SHOPPING_LOCAL_CHOSEN',
+  SHOPPING_SEASONAL_CHOSEN: 'SHOPPING_SEASONAL_CHOSEN',
+  SHOPPING_CERTIFICATION_CHOSEN: 'SHOPPING_CERTIFICATION_CHOSEN',
+  SHOPPING_PACKAGING_INFO_CHECKED: 'SHOPPING_PACKAGING_INFO_CHECKED',
+  SHOPPING_MULTICRITERIA_PURCHASE: 'SHOPPING_MULTICRITERIA_PURCHASE',
+
+  // ==========================================
+  // 4. FOOD PROCESSING & SCORES
+  // ==========================================
+  PROCESSING_NOVA_CHECKED: 'PROCESSING_NOVA_CHECKED',
+  PROCESSING_INGREDIENTS_REVIEWED: 'PROCESSING_INGREDIENTS_REVIEWED',
+  PROCESSING_GREENSCORE_CHECKED: 'PROCESSING_GREENSCORE_CHECKED',
+  PROCESSING_INDICATORS_COMPARED: 'PROCESSING_INDICATORS_COMPARED',
+  PROCESSING_PRODUCTION_METHOD_CHECKED: 'PROCESSING_PRODUCTION_METHOD_CHECKED',
+
+  // ==========================================
+  // 5. PACKAGING & CIRCULARITY
+  // ==========================================
+  PACKAGING_MATERIAL_OBSERVED: 'PACKAGING_MATERIAL_OBSERVED',
+  PACKAGING_RECYCLING_LABEL_READ: 'PACKAGING_RECYCLING_LABEL_READ',
+  PACKAGING_REUSABLE_SPOT_CHOSEN: 'PACKAGING_REUSABLE_SPOT_CHOSEN',
+  PACKAGING_RECYCLABILITY_EVALUATED: 'PACKAGING_RECYCLABILITY_EVALUATED',
+  PACKAGING_COMPARISON_MADE: 'PACKAGING_COMPARISON_MADE',
+  PACKAGING_SMART_OBSERVED: 'PACKAGING_SMART_OBSERVED',
+
+  // ==========================================
+  // 6. FOOD WASTE PREVENTION
+  // ==========================================
+  FOOD_WASTE_HALF_PLATE_SAVED: 'FOOD_WASTE_HALF_PLATE_SAVED',
+  FOOD_WASTE_FULL_PLATE_SAVED: 'FOOD_WASTE_FULL_PLATE_SAVED',
+  FOOD_WASTE_EXPIRED_CONSUMED: 'FOOD_WASTE_EXPIRED_CONSUMED',
+  FOOD_WASTE_STORAGE_INSTRUCTIONS_READ: 'FOOD_WASTE_STORAGE_INSTRUCTIONS_READ',
+  FOOD_WASTE_MEAL_PLANNED: 'FOOD_WASTE_MEAL_PLANNED',
+  FOOD_WASTE_FRIDGE_PANTRY_CHECKED: 'FOOD_WASTE_FRIDGE_PANTRY_CHECKED',
+  FOOD_WASTE_FIFO_ORGANIZED: 'FOOD_WASTE_FIFO_ORGANIZED',
+
+  // ==========================================
+  // 7. NUTRITION & HEALTH
+  // ==========================================
+  NUTRITION_PROTEIN_INCLUDED: 'NUTRITION_PROTEIN_INCLUDED',
+  NUTRITION_FRUIT_VEG_SERVING_ADDED: 'NUTRITION_FRUIT_VEG_SERVING_ADDED',
+  NUTRITION_WHOLEGRAIN_CHOSEN: 'NUTRITION_WHOLEGRAIN_CHOSEN',
+  NUTRITION_HIGH_FIBRE_MEAL: 'NUTRITION_HIGH_FIBRE_MEAL',
+  NUTRITION_SALT_FREE_TABLE: 'NUTRITION_SALT_FREE_TABLE',
+  NUTRITION_HEALTHY_FAT_CHOSEN: 'NUTRITION_HEALTHY_FAT_CHOSEN',
+  NUTRITION_PROTEIN_VARIETY_LOGGED: 'NUTRITION_PROTEIN_VARIETY_LOGGED',
+  NUTRITION_RAINBOW_COLOURS_LOGGED: 'NUTRITION_RAINBOW_COLOURS_LOGGED',
+  NUTRITION_ADDED_SUGAR_AVOIDED: 'NUTRITION_ADDED_SUGAR_AVOIDED',
+  NUTRITION_PLANT_DIVERSITY_COUNT: 'NUTRITION_PLANT_DIVERSITY_COUNT',
+
+  // ==========================================
+  // 8. LEARNING & CHALLENGES
+  // ==========================================
+  LEARNING_FACT_VIEWED: 'LEARNING_FACT_VIEWED',
+  LEARNING_FOOTPRINT_COMPARED: 'LEARNING_FOOTPRINT_COMPARED',
+  LEARNING_RECIPE_EXPLORED: 'LEARNING_RECIPE_EXPLORED',
+  LEARNING_RECIPE_SHARED: 'LEARNING_RECIPE_SHARED',
 } as const;
 
-export type AppEventTypeValue =
-  (typeof AppEventType)[keyof typeof AppEventType];
+export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
 
 /** Who produced the event (service / channel). */
 export const EventSource = {
@@ -23,6 +133,14 @@ export const EventSource = {
   WALLET: 'wallet',
   SEED: 'seed',
   MEAL_LOG: 'meal_log',
+  PANTRY: 'pantry',
+  SHOPPING_LIST: 'shopping_list',
+  LEARNING: 'learning',
+  GAME: 'game',
+  QUEST: 'quest',
+  MISSION: 'mission',
+  CHALLENGE: 'challenge',
+  QUICK_ACTION: 'quick_action',
 } as const;
 
 export type EventSourceValue = (typeof EventSource)[keyof typeof EventSource];

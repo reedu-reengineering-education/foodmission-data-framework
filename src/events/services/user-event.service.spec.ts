@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { AppEventType, EventSource } from '../event-types';
+import { EventSource, EventType } from '../event-types';
 import { UserEventService } from './user-event.service';
 
 describe('UserEventService', () => {
@@ -33,13 +33,13 @@ describe('UserEventService', () => {
     prisma.userEvent.create.mockResolvedValue({
       id: 'evt-1',
       userId: 'u1',
-      eventType: AppEventType.ONBOARDING_COMPLETED,
+      eventType: EventType.ONBOARDING_COMPLETED,
       source: EventSource.ONBOARDING,
     });
 
     const result = await service.record({
       userId: 'u1',
-      eventType: AppEventType.ONBOARDING_COMPLETED,
+      eventType: EventType.ONBOARDING_COMPLETED,
       source: EventSource.ONBOARDING,
       metadata: { segment: 'BEGINNER' },
       subject: { type: 'USER', id: 'u1' },
@@ -64,7 +64,7 @@ describe('UserEventService', () => {
 
     const result = await service.record({
       userId: 'u1',
-      eventType: AppEventType.POINTS_AWARDED,
+      eventType: EventType.POINTS_AWARDED,
       source: EventSource.WALLET,
       idempotencyKey: 'key-1',
     });
@@ -86,7 +86,7 @@ describe('UserEventService', () => {
 
     const result = await service.record({
       userId: 'u1',
-      eventType: AppEventType.POINTS_AWARDED,
+      eventType: EventType.POINTS_AWARDED,
       source: EventSource.WALLET,
       idempotencyKey: 'key-race',
     });

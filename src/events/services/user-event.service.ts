@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, UserEvent } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { buildEventMetadata } from '../user-event.utils';
-import { EventSourceValue } from '../event-types';
+import { EventSourceValue, EventTypeValue } from '../event-types';
 
+/**
+ * Input for appending a UserEvent.
+ * See metadata/subject conventions on EventType in event-types.ts.
+ */
 export interface RecordUserEventInput {
   userId: string;
-  eventType: string;
+  eventType: EventTypeValue;
   source: EventSourceValue;
   metadata?: Record<string, unknown>;
   groupId?: string | null;

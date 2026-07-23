@@ -11,7 +11,11 @@ import {
   WalletEntry,
 } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { EventSource } from '../../events/event-types';
+import {
+  EventSource,
+  EventType,
+  EventTypeValue,
+} from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 
 export interface AwardWalletInput {
@@ -26,7 +30,7 @@ export interface AwardWalletInput {
    * When awarding without a pre-created event, optionally create one.
    * Ignored if `eventId` is provided.
    */
-  eventType?: string;
+  eventType?: EventTypeValue;
   subjectType?: string | null;
   subjectId?: string | null;
   metadata?: Record<string, unknown>;
@@ -93,7 +97,7 @@ export class GamificationWalletService {
             {
               userId: input.userId,
               groupId: input.groupId,
-              eventType: input.eventType ?? 'POINTS_AWARDED',
+              eventType: input.eventType ?? EventType.POINTS_AWARDED,
               source: EventSource.WALLET,
               metadata: input.metadata ?? {
                 currency: input.currency,
