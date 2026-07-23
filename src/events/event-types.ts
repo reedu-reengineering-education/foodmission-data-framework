@@ -2,7 +2,8 @@
  * Event catalog for the append-only `user_events` ledger.
  *
  * ## Domains
- * - **Account** — session / onboarding (`USER_LOGGED_IN`, `ONBOARDING_COMPLETED`)
+ * - **Account** — session / onboarding / groups (`USER_LOGGED_IN`, `ONBOARDING_COMPLETED`, `USER_GROUP_*`)
+ * - **App** — session-level app facts (`APP_OPENED`)
  * - **Wallet** — points / XP / admin adjustments (`WALLET_*`)
  * - **Progress** — mission / challenge / quest completion
  * - **Achievements** — badges and progress indicators
@@ -29,9 +30,14 @@
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Onboarding** — `{ segment }`
+ * - **App open** — optional `{ platform?, appVersion? }`; prefer day-level idempotency
+ *   (`app-opened:{userId}:{YYYY-MM-DD}`) if used for streaks / active days.
+ *   Subject is usually `USER`; use `APP` when the subject is the client app/platform itself.
+ * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
- *   on behavioural events; emit `MISSION_COMPLETED` / `CHALLENGE_COMPLETED`
- *   only when progress actually completes (do not double-count the same action).
+ *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and
+ *   `CHALLENGE_STARTED` / `CHALLENGE_COMPLETED` only on real progress transitions
+ *   (do not double-count the same action).
  *
  * ## Subject
  * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
@@ -44,6 +50,13 @@ export const EventType = {
   // ==========================================
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
+  USER_GROUP_JOINED: 'USER_GROUP_JOINED',
+  USER_GROUP_LEFT: 'USER_GROUP_LEFT',
+
+  // ==========================================
+  // APP
+  // ==========================================
+  APP_OPENED: 'APP_OPENED',
 
   // ==========================================
   // WALLET
@@ -55,7 +68,9 @@ export const EventType = {
   // ==========================================
   // PROGRESS (missions, challenges, quests)
   // ==========================================
+  MISSION_STARTED: 'MISSION_STARTED',
   MISSION_COMPLETED: 'MISSION_COMPLETED',
+  CHALLENGE_STARTED: 'CHALLENGE_STARTED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
   QUEST_STARTED: 'QUEST_STARTED',
   QUEST_COMPLETED: 'QUEST_COMPLETED',
@@ -164,6 +179,7 @@ export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
  */
 export const EventSource = {
   API: 'api',
+  APP: 'app',
   ONBOARDING: 'onboarding',
   WALLET: 'wallet',
   SEED: 'seed',
@@ -175,6 +191,7 @@ export const EventSource = {
   QUEST: 'quest',
   MISSION: 'mission',
   CHALLENGE: 'challenge',
+  GROUP: 'group',
   QUICK_ACTION: 'quick_action',
 } as const;
 
@@ -186,6 +203,7 @@ export type EventSourceValue = (typeof EventSource)[keyof typeof EventSource];
  */
 export const EventSubjectType = {
   USER: 'USER',
+  APP: 'APP',
   MEAL: 'MEAL',
   PRODUCT: 'PRODUCT',
   MISSION: 'MISSION',
@@ -193,6 +211,7 @@ export const EventSubjectType = {
   QUEST: 'QUEST',
   BADGE: 'BADGE',
   CONTENT: 'CONTENT',
+  GROUP: 'GROUP',
   SEED: 'SEED',
 } as const;
 
