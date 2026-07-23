@@ -1,23 +1,36 @@
 /**
- * Event catalog.
+ * Event catalog for the append-only `user_events` ledger.
  *
- * Two layers:
- * - Lifecycle / system: progress, rewards, account (LOGIN, MISSION_COMPLETED, …)
- * - Behavioural: evidence missions/challenges can count (MEAL_*, SWAP_*, …)
+ * ## Layers
+ * - **Lifecycle / system** — progress, rewards, account
+ *   (`LOGIN`, `ONBOARDING_COMPLETED`, `MISSION_COMPLETED`, `POINTS_AWARDED`, …).
+ * - **Behavioural** — evidence missions/challenges can count
+ *   (`MEAL_*`, `SWAP_*`, `SHOPPING_*`, `PROCESSING_*`, `PACKAGING_*`,
+ *   `FOOD_WASTE_*`, `NUTRITION_*`, `LEARNING_*`).
  *
- * Metadata conventions for UserEventService.record():
- * - Always set `source` to the producing feature (EventSource.*).
- * - Prefer `subject: { type, id }` for the primary entity
- *   (MEAL, PRODUCT, MISSION, CHALLENGE, USER, …).
- * - Put context in `metadata`, not the event type:
- *   meal: { mealId, mealType?, tags? }
- *   swap: { from, to, productId? }
- *   shopping/processing/packaging: { productId?, barcode?, score? }
- *   learning: { contentId?, contentType? }
- *   wallet: { currency, amount, reason }
- * - When counted toward a mission/challenge, include missionId / challengeId on
- *   the behavioural event; emit MISSION_COMPLETED / CHALLENGE_COMPLETED only
- *   when progress actually completes.
+ * ## Recording (`UserEventService.record`)
+ * | Field | Rule |
+ * |-------|------|
+ * | `eventType` | Use `EventType.*` — encodes *what* happened. |
+ * | `source` | Use `EventSource.*` — producing feature/channel. |
+ * | `subject` | Primary entity; merged into `metadata.subject`. Prefer `EventSubjectType.*`. |
+ * | `metadata` | Context only (ids, amounts, tags). Do not encode the event kind here. |
+ * | `idempotencyKey` | Stable unique key when retries must not double-write. |
+ * | `groupId` | Optional group scope. |
+ *
+ * ## Metadata shapes by family
+ * - **Meal** — `{ mealId, mealType?, tags? }`
+ * - **Swap** — `{ from, to, productId? }` (type already names the swap)
+ * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
+ * - **Learning** — `{ contentId?, contentType? }`
+ * - **Wallet** — `{ currency, amount, reason }`
+ * - **Onboarding** — `{ segment }`
+ * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
+ *   on behavioural events; emit `MISSION_COMPLETED` / `CHALLENGE_COMPLETED`
+ *   only when progress actually completes (do not double-count the same action).
+ *
+ * ## Subject
+ * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
  */
 
 /** What happened — shared across app features. */
@@ -126,7 +139,11 @@ export const EventType = {
 
 export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
 
-/** Who produced the event (service / channel). */
+/**
+ * Who produced the event (service / channel).
+ * Prefer matching the feature that observed the action, not the consumer
+ * (e.g. meal log → `MEAL_LOG`, even if a mission later counts it).
+ */
 export const EventSource = {
   API: 'api',
   ONBOARDING: 'onboarding',
@@ -144,3 +161,28 @@ export const EventSource = {
 } as const;
 
 export type EventSourceValue = (typeof EventSource)[keyof typeof EventSource];
+
+/**
+ * Known `metadata.subject.type` values for the primary entity the event is about.
+ * Free-form strings are allowed for forward compatibility; prefer these when possible.
+ */
+export const EventSubjectType = {
+  USER: 'USER',
+  MEAL: 'MEAL',
+  PRODUCT: 'PRODUCT',
+  MISSION: 'MISSION',
+  CHALLENGE: 'CHALLENGE',
+  QUEST: 'QUEST',
+  BADGE: 'BADGE',
+  CONTENT: 'CONTENT',
+  SEED: 'SEED',
+} as const;
+
+export type EventSubjectTypeValue =
+  (typeof EventSubjectType)[keyof typeof EventSubjectType];
+
+/** Primary entity reference merged into `metadata.subject` by `buildEventMetadata`. */
+export interface EventSubject {
+  type: EventSubjectTypeValue | string;
+  id?: string | null;
+}
