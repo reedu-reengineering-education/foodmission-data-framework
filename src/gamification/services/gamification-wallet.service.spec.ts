@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { Prisma, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from './gamification-wallet.service';
 
@@ -97,7 +98,7 @@ describe('GamificationWalletService', () => {
     const createdEvent = {
       id: 'evt-2',
       userId: 'u1',
-      eventType: 'POINTS_AWARDED',
+      eventType: EventType.WALLET_POINTS_AWARDED,
     };
     const createdEntry = {
       id: 'we-2',
@@ -156,7 +157,7 @@ describe('GamificationWalletService', () => {
       currency: WalletCurrency.POINTS,
       amount: 10,
       reason: 'mission',
-      eventType: 'POINTS_AWARDED',
+      eventType: EventType.WALLET_POINTS_AWARDED,
       idempotencyKey: 'award-2',
     });
 
@@ -223,7 +224,7 @@ describe('GamificationWalletService', () => {
     const existingEvent = {
       id: 'evt-replay',
       userId: 'u1',
-      eventType: 'POINTS_AWARDED',
+      eventType: EventType.WALLET_POINTS_AWARDED,
       walletEntries: [
         {
           id: 'we-replay',
@@ -278,7 +279,7 @@ describe('GamificationWalletService', () => {
       currency: WalletCurrency.POINTS,
       amount: 10,
       reason: 'mission',
-      eventType: 'POINTS_AWARDED',
+      eventType: EventType.WALLET_POINTS_AWARDED,
       idempotencyKey: 'award-replay-in-tx',
     });
 

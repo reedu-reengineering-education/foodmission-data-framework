@@ -46,7 +46,7 @@ async function seedWalletHistoryForNamedUser(
     const event = await prisma.userEvent.create({
       data: {
         userId: user.id,
-        eventType: 'POINTS_AWARDED',
+        eventType: 'WALLET_POINTS_AWARDED',
         source: 'seed',
         metadata: { source: 'dev-seed', subject: { type: 'SEED' } },
         idempotencyKey: pointsKey,
@@ -70,7 +70,7 @@ async function seedWalletHistoryForNamedUser(
     const event = await prisma.userEvent.create({
       data: {
         userId: user.id,
-        eventType: 'XP_AWARDED',
+        eventType: 'WALLET_XP_AWARDED',
         source: 'seed',
         metadata: { source: 'dev-seed', subject: { type: 'SEED' } },
         idempotencyKey: xpKey,
