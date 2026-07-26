@@ -21,6 +21,14 @@ import {
 } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
 
+/** One USER_LOGGED_IN fact per user per UTC calendar day. */
+export function userLoggedInIdempotencyKey(
+  userId: string,
+  at: Date = new Date(),
+): string {
+  return `user-logged-in:${userId}:${at.toISOString().slice(0, 10)}`;
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -349,6 +357,7 @@ export class AuthService {
         eventType: EventType.USER_LOGGED_IN,
         source: EventSource.API,
         subject: { type: EventSubjectType.USER, id: profile.id },
+        idempotencyKey: userLoggedInIdempotencyKey(profile.id),
       });
     } catch (error) {
       this.logger.warn(

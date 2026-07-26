@@ -1,4 +1,7 @@
-import { AuthService } from '../src/auth/auth.service';
+import {
+  AuthService,
+  userLoggedInIdempotencyKey,
+} from '../src/auth/auth.service';
 import { HttpService } from '@nestjs/axios';
 import { UsersRepository } from '../src/users/repositories/users.repository';
 import { UserProfilesService } from '../src/users/services/user-profiles.service';
@@ -198,6 +201,7 @@ describe('AuthService.login', () => {
       eventType: EventType.USER_LOGGED_IN,
       source: EventSource.API,
       subject: { type: EventSubjectType.USER, id: profile.id },
+      idempotencyKey: userLoggedInIdempotencyKey(profile.id),
     });
     expect(result).toEqual(tokens);
   });
