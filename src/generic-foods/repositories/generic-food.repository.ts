@@ -128,20 +128,22 @@ export class GenericFoodRepository {
     });
   }
 
-  async getAllFoodGroups(search?: string): Promise<string[]> {
-    const where: Prisma.GenericFoodWhereInput = {};
-
-    if (search) {
-      where.foodGroup = { contains: search, mode: 'insensitive' };
-    }
-
+  /**
+   * Distinct English food groups with one sample entity id each
+   * (for resolving localized group labels).
+   */
+  async getDistinctFoodGroups(): Promise<
+    { foodGroup: string; sampleId: string }[]
+  > {
     const result = await this.prisma.genericFood.findMany({
-      where,
-      select: { foodGroup: true },
+      select: { id: true, foodGroup: true },
       distinct: ['foodGroup'],
       orderBy: { foodGroup: 'asc' },
     });
 
-    return result.map((r) => r.foodGroup);
+    return result.map((r) => ({
+      foodGroup: r.foodGroup,
+      sampleId: r.id,
+    }));
   }
 }

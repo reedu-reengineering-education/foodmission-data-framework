@@ -173,7 +173,12 @@ describe('GenericFoodsController', () => {
 
   describe('getAllFoodGroups', () => {
     it('should return all unique food groups', async () => {
-      const foodGroups = ['Vegetables', 'Fruits', 'Grains', 'Dairy'];
+      const foodGroups = [
+        { slug: 'vegetables', name: 'Vegetables' },
+        { slug: 'fruits', name: 'Fruits' },
+        { slug: 'grains', name: 'Grains' },
+        { slug: 'dairy', name: 'Dairy' },
+      ];
       service.getAllFoodGroups.mockResolvedValue(foodGroups);
 
       const result = await controller.getAllFoodGroups({});
@@ -187,7 +192,10 @@ describe('GenericFoodsController', () => {
     });
 
     it('should return filtered food groups when search is provided', async () => {
-      const foodGroups = ['Vegetables', 'Vegetable oils'];
+      const foodGroups = [
+        { slug: 'vegetables', name: 'Vegetables' },
+        { slug: 'vegetable-oils', name: 'Vegetable oils' },
+      ];
       service.getAllFoodGroups.mockResolvedValue(foodGroups);
 
       const result = await controller.getAllFoodGroups({ search: 'vegeta' });

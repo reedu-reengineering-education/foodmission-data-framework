@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GenericFoodRepository } from '../repositories/generic-food.repository';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
+import { FoodGroupResponseDto } from '../dto/food-group-response.dto';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { toFoodGroupSlug } from '../utils/food-group-slug.util';
 import type { GenericFood } from '@prisma/client';
 
 const GENERIC_FOOD_TRANSLATABLE_FIELDS = [
@@ -26,7 +28,7 @@ export class GenericFoodService {
     createDto: CreateGenericFoodDto,
   ): Promise<GenericFoodResponseDto> {
     const category = await this.genericFoodRepository.create(createDto);
-    return category;
+    return this.toResponse(category);
   }
 
   async findAll(query: GenericFoodQueryDto) {
@@ -92,7 +94,7 @@ export class GenericFoodService {
     await this.findById(id);
 
     const updated = await this.genericFoodRepository.update(id, updateDto);
-    return updated;
+    return this.toResponse(updated);
   }
 
   async delete(id: string): Promise<void> {
@@ -101,37 +103,70 @@ export class GenericFoodService {
     await this.genericFoodRepository.delete(id);
   }
 
-  async getAllFoodGroups(search?: string, lang?: string): Promise<string[]> {
+  async getAllFoodGroups(
+    search?: string,
+    lang?: string,
+  ): Promise<FoodGroupResponseDto[]> {
     const locale = this.translationService.resolveLocale(lang);
+    const groups = await this.genericFoodRepository.getDistinctFoodGroups();
+
+    let result: FoodGroupResponseDto[];
 
     if (locale === DEFAULT_LOCALE) {
-      return this.genericFoodRepository.getAllFoodGroups(search);
+      result = groups.map(({ foodGroup }) => ({
+        slug: toFoodGroupSlug(foodGroup),
+        name: foodGroup,
+      }));
+    } else {
+      const sampleIds = groups.map((g) => g.sampleId);
+      const fallbackById = Object.fromEntries(
+        groups.map((g) => [g.sampleId, { foodGroup: g.foodGroup }]),
+      );
+
+      const localized = await this.translationService.resolveMany(
+        'GenericFood',
+        sampleIds,
+        locale,
+        ['foodGroup'],
+        fallbackById,
+      );
+
+      result = groups.map(({ foodGroup, sampleId }) => ({
+        slug: toFoodGroupSlug(foodGroup),
+        name: localized[sampleId]?.foodGroup ?? foodGroup,
+      }));
     }
 
-    const translated = await this.translationService.listDistinct(
-      'GenericFood',
-      locale,
-      'foodGroup',
-      search,
-    );
-
-    if (translated.length > 0) {
-      return translated;
+    if (search?.trim()) {
+      const q = search.trim().toLowerCase();
+      result = result.filter((g) => g.name.toLowerCase().includes(q));
     }
 
-    return this.genericFoodRepository.getAllFoodGroups(search);
+    return result;
+  }
+
+  private toResponse(
+    item: GenericFood & { remark?: string | null },
+  ): GenericFoodResponseDto {
+    return {
+      ...item,
+      foodGroupSlug: toFoodGroupSlug(item.foodGroup),
+    };
   }
 
   private async overlayTranslations(
     items: GenericFood[],
     locale: string,
-  ): Promise<(GenericFood & { remark?: string | null })[]> {
+  ): Promise<GenericFoodResponseDto[]> {
     if (items.length === 0) {
-      return items;
+      return [];
     }
 
     if (locale === DEFAULT_LOCALE) {
-      return items.map((item) => ({ ...item, remark: null }));
+      return items.map((item) => ({
+        ...this.toResponse(item),
+        remark: null,
+      }));
     }
 
     const fallbackById = Object.fromEntries(
@@ -158,6 +193,7 @@ export class GenericFoodService {
       const overlay = localized[item.id] ?? {};
       return {
         ...item,
+        foodGroupSlug: toFoodGroupSlug(item.foodGroup),
         foodName: overlay.foodName ?? item.foodName,
         foodGroup: overlay.foodGroup ?? item.foodGroup,
         synonym: overlay.synonym ?? item.synonym,
