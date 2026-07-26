@@ -4,7 +4,10 @@ import { Prisma, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
-import { GamificationWalletService } from './gamification-wallet.service';
+import {
+  defaultWalletAwardEventType,
+  GamificationWalletService,
+} from './gamification-wallet.service';
 
 describe('GamificationWalletService', () => {
   let service: GamificationWalletService;
@@ -177,6 +180,85 @@ describe('GamificationWalletService', () => {
         reason: 'noop',
       }),
     ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('defaults eventType from currency when omitted (XP → WALLET_XP_AWARDED)', async () => {
+    expect(defaultWalletAwardEventType(WalletCurrency.XP)).toBe(
+      EventType.WALLET_XP_AWARDED,
+    );
+    expect(defaultWalletAwardEventType(WalletCurrency.POINTS)).toBe(
+      EventType.WALLET_POINTS_AWARDED,
+    );
+
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+    userEventService.record.mockResolvedValue({
+      event: {
+        id: 'evt-xp',
+        userId: 'u1',
+        eventType: EventType.WALLET_XP_AWARDED,
+      } as any,
+      replayed: false,
+    });
+
+    const updatedWallet = {
+      userId: 'u1',
+      xp: 15,
+      points: 0,
+      updatedAt: new Date(),
+    };
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: { findUniqueOrThrow: jest.fn() },
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            }),
+            update: jest.fn().mockResolvedValue(updatedWallet),
+          },
+          walletEntry: {
+            create: jest.fn().mockResolvedValue({
+              id: 'we-xp',
+              userId: 'u1',
+              currency: WalletCurrency.XP,
+              amount: 15,
+              balanceAfter: 15,
+              reason: 'mission',
+              eventId: 'evt-xp',
+            }),
+          },
+          $queryRaw: jest.fn().mockResolvedValue([
+            {
+              userId: 'u1',
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            },
+          ]),
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    await service.award({
+      userId: 'u1',
+      currency: WalletCurrency.XP,
+      amount: 15,
+      reason: 'mission',
+      idempotencyKey: 'award-xp-1',
+    });
+
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: EventType.WALLET_XP_AWARDED,
+        idempotencyKey: 'award-xp-1',
+      }),
+      expect.anything(),
+    );
   });
 
   it('replays award when create races on idempotencyKey (P2002)', async () => {

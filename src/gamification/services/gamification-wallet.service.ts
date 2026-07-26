@@ -52,6 +52,15 @@ type WalletRow = {
   updatedAt: Date;
 };
 
+/** Default ledger event kind when `award()` creates an event without an explicit `eventType`. */
+export function defaultWalletAwardEventType(
+  currency: WalletCurrency,
+): EventTypeValue {
+  return currency === WalletCurrency.XP
+    ? EventType.WALLET_XP_AWARDED
+    : EventType.WALLET_POINTS_AWARDED;
+}
+
 @Injectable()
 export class GamificationWalletService {
   constructor(
@@ -97,7 +106,9 @@ export class GamificationWalletService {
             {
               userId: input.userId,
               groupId: input.groupId,
-              eventType: input.eventType ?? EventType.WALLET_POINTS_AWARDED,
+              eventType:
+                input.eventType ??
+                defaultWalletAwardEventType(input.currency),
               source: EventSource.WALLET,
               metadata: input.metadata ?? {
                 currency: input.currency,
