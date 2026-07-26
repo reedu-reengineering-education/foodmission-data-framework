@@ -106,35 +106,5 @@ export class PantryItemRepository {
       where: { id },
     });
   }
-
-  async findFoodProductInPantry(
-    pantryId: string,
-    foodProductId: string,
-    tx?: Prisma.TransactionClient,
-  ): Promise<PantryItemWithRelations | null> {
-    const client = tx ?? this.prisma;
-    return await client.pantryItem.findFirst({
-      where: {
-        pantryId: pantryId,
-        foodProductId: foodProductId,
-      },
-      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
-    });
-  }
-
-  async findGenericFoodInPantry(
-    pantryId: string,
-    genericFoodId: string,
-    tx?: Prisma.TransactionClient,
-  ): Promise<PantryItemWithRelations | null> {
-    const client = tx ?? this.prisma;
-    return await client.pantryItem.findFirst({
-      where: {
-        pantryId: pantryId,
-        genericFoodId: genericFoodId,
-      },
-      include: PANTRY_ITEM_WITH_RELATIONS_INCLUDE,
-    });
-  }
 }
 export { PantryItemWithRelations };

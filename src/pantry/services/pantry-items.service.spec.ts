@@ -1,16 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PantryItemService } from './pantry-items.service';
-import { PantryItemRepository } from '../repositories/pantry-items.repository';
-import { PantryService } from './pantry.service';
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { Unit } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { ERROR_CODES } from '../../common/utils/error.utils';
 import { CreateShoppingListItemDto } from '../../shopping-lists/dto/create-shopping-list-item.dto';
 import { CreatePantryItemDto } from '../dto/create-pantry-item.dto';
 import { UpdatePantryItemDto } from '../dto/update-pantry-item.dto';
@@ -28,6 +21,10 @@ import {
   createMockPantryItemWithRelations,
   setupSuccessfulCreateMocks,
 } from '../test-utils/pantry-items-mocks';
+import { PantryItemService } from './pantry-items.service';
+import { PantryItemRepository } from '../repositories/pantry-items.repository';
+import { PantryService } from './pantry.service';
+import { Test, TestingModule } from '@nestjs/testing';
 
 describe('PantryItemService', () => {
   let service: PantryItemService;
@@ -90,7 +87,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
 
@@ -101,7 +97,6 @@ describe('PantryItemService', () => {
       expect(result.pantryId).toBe(TEST_IDS.PANTRY);
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
       expect(mockFoodRepository.findById).toHaveBeenCalled();
-      expect(repository.findFoodProductInPantry).toHaveBeenCalled();
       expect(mockPantryItemRepository.create).toHaveBeenCalled();
     });
 
@@ -115,21 +110,29 @@ describe('PantryItemService', () => {
       );
     });
 
-    it('should throw ConflictException when food already exists in pantry', async () => {
-      const createDto = PantryItemsTestBuilder.createCreatePantryItemDto();
-      const mockPantryItem = createMockPantryItemWithRelations();
-      mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
-      mockFoodRepository.findById.mockResolvedValue({
-        id: TEST_IDS.FOOD,
-        name: 'Tomatoes',
+    it('should allow creating a duplicate food product in the pantry', async () => {
+      const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
+        expiryDate: new Date('2027-01-15'),
       });
-      mockPantryItemRepository.findFoodProductInPantry.mockResolvedValue(
-        mockPantryItem,
+      const mockPantryItem = createMockPantryItemWithRelations();
+      setupSuccessfulCreateMocks({
+        mockPantryService,
+        mockFoodRepository,
+      });
+      mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+
+      const first = await service.create(createDto, userId);
+      const second = await service.create(
+        {
+          ...createDto,
+          expiryDate: new Date('2027-02-20'),
+        },
+        userId,
       );
 
-      await expect(service.create(createDto, userId)).rejects.toThrow(
-        ConflictException,
-      );
+      expect(first.id).toBe(TEST_IDS.PANTRY_ITEM);
+      expect(second.id).toBe(TEST_IDS.PANTRY_ITEM);
+      expect(mockPantryItemRepository.create).toHaveBeenCalledTimes(2);
     });
 
     it('should throw BadRequestException when creation fails unexpectedly', async () => {
@@ -137,7 +140,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockRejectedValue(new Error('DB Error'));
 
@@ -158,7 +160,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
 
@@ -183,7 +184,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,
@@ -203,7 +203,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,
@@ -237,9 +236,6 @@ describe('PantryItemService', () => {
               : SHELF_LIFE_ID,
           categories: overrides.categories ?? [],
         });
-        mockPantryItemRepository.findFoodProductInPantry.mockResolvedValue(
-          null,
-        );
         mockShelfLifeService.inferStorageType.mockReturnValue('refrigerator');
         mockShelfLifeService.getDaysForStorageType.mockReturnValue(7);
       }
@@ -384,9 +380,6 @@ describe('PantryItemService', () => {
           foodGroup: 'Milk and milk products',
           shelfLifeId: SHELF_LIFE_ID,
         });
-        mockPantryItemRepository.findGenericFoodInPantry.mockResolvedValue(
-          null,
-        );
         mockPantryItemRepository.create.mockResolvedValue({
           ...mockPantryItem,
           expiryDate: null,
@@ -439,10 +432,6 @@ describe('PantryItemService', () => {
       const mockPantryItem = createMockPantryItemWithRelations();
       const mockItems = [mockPantryItem];
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockFoodRepository.findById.mockResolvedValue({
-        id: TEST_IDS.FOOD,
-        name: 'Tomatoes',
-      });
       mockPantryItemRepository.findMany.mockResolvedValue(mockItems);
 
       const query = PantryItemsTestBuilder.createQueryPantryItemDto({
@@ -453,24 +442,27 @@ describe('PantryItemService', () => {
 
       expect(result.data).toHaveLength(1);
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(mockFoodRepository.findById).toHaveBeenCalled();
-      expect(repository.findMany).toHaveBeenCalled();
+      expect(mockFoodRepository.findById).not.toHaveBeenCalled();
+      expect(repository.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pantryId,
+          foodProductId: TEST_IDS.FOOD,
+        }),
+      );
     });
 
-    it('should throw NotFoundException when foodProductId is provided but food does not exist', async () => {
+    it('should return empty data when filtering by foodProductId with no matching items', async () => {
       mockPantryService.validatePantryExists.mockResolvedValue(pantryId);
-      mockFoodRepository.findById.mockResolvedValue(null);
+      mockPantryItemRepository.findMany.mockResolvedValue([]);
 
       const query = PantryItemsTestBuilder.createQueryPantryItemDto({
         foodProductId: 'non-existent-food',
       });
+      const result = await service.findAll(query, userId);
 
-      await expect(service.findAll(query, userId)).rejects.toThrow(
-        NotFoundException,
-      );
+      expect(result.data).toHaveLength(0);
       expect(pantryService.validatePantryExists).toHaveBeenCalled();
-      expect(mockFoodRepository.findById).toHaveBeenCalled();
-      expect(repository.findMany).not.toHaveBeenCalled();
+      expect(repository.findMany).toHaveBeenCalled();
     });
 
     it('should return empty array when no items are found', async () => {
@@ -717,26 +709,27 @@ describe('PantryItemService', () => {
       );
     });
 
-    it('should throw ConflictException when food already exists in pantry', async () => {
+    it('should allow updating food reference to one already present in the pantry', async () => {
       const mockPantryItem = createMockPantryItemWithRelations();
+      const updatedItem = {
+        ...mockPantryItem,
+        foodProductId: 'food-2',
+      };
       mockPantryItemRepository.findById.mockResolvedValue(mockPantryItem);
       mockFoodRepository.findById.mockResolvedValue({
         id: 'food-2',
         name: 'Carrots',
       });
-      const prismaError = new PrismaClientKnownRequestError(
-        'Unique constraint failed',
-        {
-          code: ERROR_CODES.PRISMA_UNIQUE_CONSTRAINT,
-          clientVersion: '4.0.0',
-          meta: { target: ['pantryId', 'foodProductId'] },
-        },
-      );
-      mockPantryItemRepository.update.mockRejectedValue(prismaError);
+      mockPantryItemRepository.update.mockResolvedValue(updatedItem);
 
-      await expect(
-        service.update(itemId, { foodProductId: 'food-2' }, userId),
-      ).rejects.toThrow(ConflictException);
+      const result = await service.update(
+        itemId,
+        { foodProductId: 'food-2' },
+        userId,
+      );
+
+      expect(result.foodProductId).toBe('food-2');
+      expect(mockPantryItemRepository.update).toHaveBeenCalled();
     });
 
     it('should transform expiryDate string to Date object when updating', async () => {
@@ -879,7 +872,6 @@ describe('PantryItemService', () => {
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
-        mockPantryItemRepository,
       });
       mockPantryItemRepository.create.mockResolvedValue({
         ...mockPantryItem,

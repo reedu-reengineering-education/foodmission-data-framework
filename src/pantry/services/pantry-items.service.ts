@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -70,7 +69,6 @@ export class PantryItemService {
     } catch (err) {
       if (
         err instanceof NotFoundException ||
-        err instanceof ConflictException ||
         err instanceof ForbiddenException
       ) {
         throw err;
@@ -96,11 +94,9 @@ export class PantryItemService {
       const { foodProductId, genericFoodId } = createDto;
       this.validateFoodRefInput(foodProductId, genericFoodId);
 
-      const validatedEntity = await this.ensureUniqueAndExists(
-        resolvedPantryId,
+      const validatedEntity = await this.ensureFoodExists(
         foodProductId,
         genericFoodId,
-        tx,
       );
 
       const { foodName, shelfLifeId, categoryHints } = foodProductId
@@ -165,7 +161,6 @@ export class PantryItemService {
     } catch (err) {
       if (
         err instanceof NotFoundException ||
-        err instanceof ConflictException ||
         err instanceof ForbiddenException
       ) {
         throw err;
@@ -190,40 +185,15 @@ export class PantryItemService {
     }
   }
 
-  private async ensureUniqueAndExists(
-    pantryId: string,
+  private async ensureFoodExists(
     foodProductId?: string,
     genericFoodId?: string,
-    tx?: Prisma.TransactionClient,
   ) {
     if (foodProductId) {
-      const food = await this.validateFoodProductExists(foodProductId);
-      const existingItem =
-        await this.pantryItemRepository.findFoodProductInPantry(
-          pantryId,
-          foodProductId,
-          tx,
-        );
-      if (existingItem) {
-        throw new ConflictException(
-          'This food product is already in your pantry',
-        );
-      }
-      return food;
-    } else if (genericFoodId) {
-      const genericFood = await this.validateGenericFoodExists(genericFoodId);
-      const existingItem =
-        await this.pantryItemRepository.findGenericFoodInPantry(
-          pantryId,
-          genericFoodId,
-          tx,
-        );
-      if (existingItem) {
-        throw new ConflictException(
-          'This generic food is already in your pantry',
-        );
-      }
-      return genericFood;
+      return this.validateFoodProductExists(foodProductId);
+    }
+    if (genericFoodId) {
+      return this.validateGenericFoodExists(genericFoodId);
     }
 
     throw new Error('Either foodProductId or genericFoodId is required');
@@ -240,14 +210,8 @@ export class PantryItemService {
         userId,
         pantryId,
       );
-      // Only validate if either filter is provided
       if (foodProductId || genericFoodId) {
         this.validateFoodRefInput(foodProductId, genericFoodId);
-        await this.ensureUniqueAndExists(
-          resolvedPantryId,
-          foodProductId,
-          genericFoodId,
-        );
       }
       const filter: any = { pantryId: resolvedPantryId };
       if (foodProductId !== undefined) filter.foodProductId = foodProductId;
@@ -265,10 +229,7 @@ export class PantryItemService {
         }),
       };
     } catch (err) {
-      if (
-        err instanceof NotFoundException ||
-        err instanceof ConflictException
-      ) {
+      if (err instanceof NotFoundException) {
         throw err;
       }
       throw new BadRequestException(
@@ -352,8 +313,7 @@ export class PantryItemService {
           updateDto.foodProductId,
           updateDto.genericFoodId,
         );
-        await this.ensureUniqueAndExists(
-          item.pantryId,
+        await this.ensureFoodExists(
           updateDto.foodProductId,
           updateDto.genericFoodId,
         );
@@ -398,16 +358,12 @@ export class PantryItemService {
     } catch (err) {
       if (
         err instanceof NotFoundException ||
-        err instanceof ConflictException ||
         err instanceof ForbiddenException ||
         err instanceof BadRequestException
       ) {
         throw err;
       }
       const businessException = handlePrismaError(err, 'update', 'pantry_item');
-      if (businessException.name === 'ResourceAlreadyExistsException') {
-        throw new ConflictException('This pantry item already exists');
-      }
       handleServiceError(
         businessException,
         'Invalid pantry item update payload or value.',
