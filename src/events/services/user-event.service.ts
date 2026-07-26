@@ -8,45 +8,13 @@ import {
   EventTypeValue,
 } from '../event-types';
 
-/**
- * Input for appending a {@link UserEvent}.
- *
- * Catalog and metadata conventions: see `event-types.ts`.
- *
- * @example
- * ```ts
- * await userEventService.record({
- *   userId,
- *   eventType: EventType.MEAL_MEAT_FREE,
- *   source: EventSource.MEAL_LOG,
- *   metadata: { mealId, mealType: 'lunch' },
- *   subject: { type: EventSubjectType.MEAL, id: mealId },
- *   idempotencyKey: `meal-meat-free:${userId}:${mealId}`,
- * });
- * ```
- */
 export interface RecordUserEventInput {
   userId: string;
-  /** What happened — `EventType.*`. */
   eventType: EventTypeValue;
-  /** Producing feature/channel — `EventSource.*`. */
   source: EventSourceValue;
-  /**
-   * Context only (ids, amounts, tags). Merged with `subject` into stored JSON.
-   * Do not put the event kind here; use `eventType`.
-   */
   metadata?: Record<string, unknown>;
-  /** Optional group scope for the event. */
   groupId?: string | null;
-  /**
-   * When set, unique — concurrent/retrying callers get the existing row
-   * (`replayed: true`) instead of a second write.
-   */
   idempotencyKey?: string | null;
-  /**
-   * Primary entity; written to `metadata.subject` as `{ type, id? }`.
-   * Prefer `EventSubjectType.*` for `type`.
-   */
   subject?: EventSubject;
 }
 
@@ -70,10 +38,6 @@ export class UserEventService {
     });
   }
 
-  /**
-   * Append a user event. Pass `tx` to participate in an outer transaction.
-   * Returns `replayed: true` when `idempotencyKey` already existed.
-   */
   async record(
     input: RecordUserEventInput,
     tx?: Prisma.TransactionClient,
