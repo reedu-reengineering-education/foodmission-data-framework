@@ -111,7 +111,12 @@ describe('GenericFoods endpoints (e2e)', () => {
       .get('/generic-foods/food-groups')
       .expect(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body).toEqual(expect.arrayContaining(['Fruit', 'Vegetables']));
+    expect(res.body).toEqual(
+      expect.arrayContaining([
+        { slug: 'fruit', name: 'Fruit' },
+        { slug: 'vegetables', name: 'Vegetables' },
+      ]),
+    );
   });
 
   itIfDb('GET /generic-foods/:id returns one generic food', async () => {
@@ -119,6 +124,7 @@ describe('GenericFoods endpoints (e2e)', () => {
       .get('/generic-foods/00000000-0000-0000-0000-000000000301')
       .expect(200);
     expect(res.body.nevoCode).toBe(900001);
+    expect(res.body.foodGroupSlug).toBe('fruit');
   });
 
   itIfDb('GET /generic-foods?lang=nl overlays Dutch translations', async () => {
@@ -147,6 +153,7 @@ describe('GenericFoods endpoints (e2e)', () => {
 
     expect(res.body.foodName).toBe('Appel rauw');
     expect(res.body.foodGroup).toBe('Fruit (NL)');
+    expect(res.body.foodGroupSlug).toBe('fruit');
   });
 
   itIfDb('GET /generic-foods search works with localized names', async () => {
