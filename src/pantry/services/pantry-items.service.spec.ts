@@ -111,28 +111,47 @@ describe('PantryItemService', () => {
     });
 
     it('should allow creating a duplicate food product in the pantry', async () => {
+      const firstExpiryDate = new Date('2027-01-15');
+      const secondExpiryDate = new Date('2027-02-20');
       const createDto = PantryItemsTestBuilder.createCreatePantryItemDto({
-        expiryDate: new Date('2027-01-15'),
+        expiryDate: firstExpiryDate,
       });
-      const mockPantryItem = createMockPantryItemWithRelations();
+      const firstMockPantryItem = createMockPantryItemWithRelations();
+      const secondMockPantryItem = {
+        ...createMockPantryItemWithRelations(),
+        id: `${TEST_IDS.PANTRY_ITEM}-2`,
+        expiryDate: secondExpiryDate,
+      };
       setupSuccessfulCreateMocks({
         mockPantryService,
         mockFoodRepository,
       });
-      mockPantryItemRepository.create.mockResolvedValue(mockPantryItem);
+      mockPantryItemRepository.create
+        .mockResolvedValueOnce(firstMockPantryItem)
+        .mockResolvedValueOnce(secondMockPantryItem);
 
       const first = await service.create(createDto, userId);
       const second = await service.create(
         {
           ...createDto,
-          expiryDate: new Date('2027-02-20'),
+          expiryDate: secondExpiryDate,
         },
         userId,
       );
 
       expect(first.id).toBe(TEST_IDS.PANTRY_ITEM);
-      expect(second.id).toBe(TEST_IDS.PANTRY_ITEM);
+      expect(second.id).toBe(`${TEST_IDS.PANTRY_ITEM}-2`);
       expect(mockPantryItemRepository.create).toHaveBeenCalledTimes(2);
+      expect(mockPantryItemRepository.create).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ expiryDate: firstExpiryDate }),
+        undefined,
+      );
+      expect(mockPantryItemRepository.create).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ expiryDate: secondExpiryDate }),
+        undefined,
+      );
     });
 
     it('should throw BadRequestException when creation fails unexpectedly', async () => {
