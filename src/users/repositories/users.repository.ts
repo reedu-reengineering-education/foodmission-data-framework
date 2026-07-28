@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -56,9 +57,11 @@ export class UsersRepository {
     id: string,
     at: Date = new Date(),
     intervalMs = 5 * 60 * 1000,
+    tx?: Prisma.TransactionClient,
   ) {
+    const db = tx ?? this.prisma;
     const threshold = new Date(at.getTime() - intervalMs);
-    return this.prisma.user.updateMany({
+    return db.user.updateMany({
       where: {
         id,
         OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: threshold } }],

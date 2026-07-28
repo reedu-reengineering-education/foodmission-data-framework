@@ -70,7 +70,7 @@ describe('GamificationProfileService', () => {
         {
           id: 'e1',
           userId: 'u1',
-          eventType: 'POINTS_AWARDED',
+          eventType: 'WALLET_POINTS_AWARDED',
           source: 'wallet',
           groupId: null,
           metadata: { source: 'test' },
@@ -116,7 +116,7 @@ describe('GamificationProfileService', () => {
     expect(result.wallet?.points).toBe(40);
     expect(result.progressIndicators).toHaveLength(1);
     expect(result.badges).toEqual([]);
-    expect(result.recentEvents[0].eventType).toBe('POINTS_AWARDED');
+    expect(result.recentEvents[0].eventType).toBe('WALLET_POINTS_AWARDED');
     expect(result.recentEvents[0].source).toBe('wallet');
     expect(result.recentEvents[0].timestamp).toBeDefined();
     expect(result.recentWalletEntries[0].amount).toBe(40);

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { AppEventType, EventSource } from '../../events/event-types';
+import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import {
   GamificationOnboardingService,
@@ -86,7 +86,7 @@ describe('GamificationOnboardingService', () => {
     expect(userEventService.record).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: 'u1',
-        eventType: AppEventType.ONBOARDING_COMPLETED,
+        eventType: EventType.ONBOARDING_COMPLETED,
         source: EventSource.ONBOARDING,
         idempotencyKey: 'onboarding-completed:u1',
         metadata: { segment: UserSegment.INTERMEDIATE },

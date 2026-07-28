@@ -1,6 +1,12 @@
+import { EventSubject } from './event-types';
+
+/**
+ * Merge an optional {@link EventSubject} into event metadata as `metadata.subject`.
+ * Existing `metadata` keys are preserved; `subject` overwrites any prior `subject` key.
+ */
 export function buildEventMetadata(
   metadata: Record<string, unknown> = {},
-  subject?: { type: string; id?: string | null },
+  subject?: EventSubject,
 ): Record<string, unknown> {
   if (!subject?.type) {
     return metadata;

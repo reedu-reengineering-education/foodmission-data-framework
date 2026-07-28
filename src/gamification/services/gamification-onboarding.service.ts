@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { AppEventType, EventSource } from '../../events/event-types';
+import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
@@ -57,7 +57,7 @@ export class GamificationOnboardingService {
         await this.userEventService.record(
           {
             userId: user.id,
-            eventType: AppEventType.ONBOARDING_COMPLETED,
+            eventType: EventType.ONBOARDING_COMPLETED,
             source: EventSource.ONBOARDING,
             metadata: { segment },
             idempotencyKey,

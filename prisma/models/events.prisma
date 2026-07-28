@@ -1,6 +1,11 @@
 // ============================================================
-// App-wide user event ledger (gamification and other features)
+// User event ledger (gamification and other features)
 // ============================================================
+// eventType / source are free-form TEXT; app catalog lives in
+// src/events/event-types.ts (EventType, EventSource, EventSubjectType).
+// metadata JSON holds context + optional subject { type, id }.
+// Catalog string renames do not alter this schema — see
+// docs/event-emission-guide.md ("Catalog rename / existing rows").
 
 /// Append-only user activity facts.
 model UserEvent {
