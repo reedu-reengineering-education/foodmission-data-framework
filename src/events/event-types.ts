@@ -220,6 +220,6 @@ export type EventSubjectTypeValue =
 
 /** Primary entity reference merged into `metadata.subject` by `buildEventMetadata`. */
 export interface EventSubject {
-  type: EventSubjectTypeValue | string;
+  type: EventSubjectTypeValue | (string & {});
   id?: string | null;
 }
