@@ -20,6 +20,7 @@ import {
   EventType,
 } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
+import { PrismaService } from '../database/prisma.service';
 
 /** One USER_LOGGED_IN fact per user per UTC calendar day. */
 export function userLoggedInIdempotencyKey(
@@ -39,6 +40,7 @@ export class AuthService {
     private readonly userProfileService: UserProfilesService,
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly userEventService: UserEventService,
+    private readonly prisma: PrismaService,
   ) {}
 
   private tokenEndpoint() {
@@ -342,26 +344,35 @@ export class AuthService {
       family_name: kcUser.family_name,
     });
 
+    // touchLastLoginAt and the USER_LOGGED_IN record must stay consistent with
+    // each other, so they run in one transaction; a failure on either side
+    // rolls both back rather than leaving lastLoginAt and the event ledger
+    // disagreeing. This is still best-effort — a failure here never fails login.
+    // Both share one `now` so the idempotency key's UTC-day slice can never
+    // diverge from the lastLoginAt timestamp (e.g. a login right at midnight UTC).
+    const now = new Date();
     try {
-      await this.userRepository.touchLastLoginAt(profile.id);
-    } catch (error) {
-      this.logger.warn(
-        `Failed to touch lastLoginAt for user ${profile.id}`,
-        error instanceof Error ? error.message : error,
-      );
-    }
-
-    try {
-      await this.userEventService.record({
-        userId: profile.id,
-        eventType: EventType.USER_LOGGED_IN,
-        source: EventSource.API,
-        subject: { type: EventSubjectType.USER, id: profile.id },
-        idempotencyKey: userLoggedInIdempotencyKey(profile.id),
+      await this.prisma.$transaction(async (tx) => {
+        await this.userRepository.touchLastLoginAt(
+          profile.id,
+          now,
+          undefined,
+          tx,
+        );
+        await this.userEventService.record(
+          {
+            userId: profile.id,
+            eventType: EventType.USER_LOGGED_IN,
+            source: EventSource.API,
+            subject: { type: EventSubjectType.USER, id: profile.id },
+            idempotencyKey: userLoggedInIdempotencyKey(profile.id, now),
+          },
+          tx,
+        );
       });
     } catch (error) {
       this.logger.warn(
-        `Failed to record USER_LOGGED_IN for user ${profile.id}`,
+        `Failed to record login side effects for user ${profile.id}`,
         error instanceof Error ? error.message : error,
       );
     }

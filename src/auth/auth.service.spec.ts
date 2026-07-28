@@ -5,6 +5,7 @@ import { UsersRepository } from '../users/repositories/users.repository';
 import { UserProfilesService } from '../users/services/user-profiles.service';
 import { KeycloakAdminService } from '../keycloak-admin/keycloak-admin.service';
 import { UserEventService } from '../events/services/user-event.service';
+import { PrismaService } from '../database/prisma.service';
 import { HttpException } from '@nestjs/common';
 
 describe('AuthService.register', () => {
@@ -44,6 +45,10 @@ describe('AuthService.register', () => {
         {
           provide: UserEventService,
           useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+        },
+        {
+          provide: PrismaService,
+          useValue: { $transaction: jest.fn((fn) => fn({})) },
         },
       ],
     }).compile();

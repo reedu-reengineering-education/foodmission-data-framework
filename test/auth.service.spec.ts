@@ -7,6 +7,7 @@ import { UsersRepository } from '../src/users/repositories/users.repository';
 import { UserProfilesService } from '../src/users/services/user-profiles.service';
 import { KeycloakAdminService } from '../src/keycloak-admin/keycloak-admin.service';
 import { UserEventService } from '../src/events/services/user-event.service';
+import { PrismaService } from '../src/database/prisma.service';
 import {
   EventSource,
   EventSubjectType,
@@ -56,6 +57,10 @@ describe('AuthService.triggerPasswordReset', () => {
         {
           provide: UserEventService,
           useValue: userEventServiceMock,
+        },
+        {
+          provide: PrismaService,
+          useValue: { $transaction: jest.fn((fn) => fn({})) },
         },
       ],
     }).compile();
@@ -117,6 +122,7 @@ describe('AuthService.login', () => {
   let userProfileService: jest.Mocked<UserProfilesService>;
   let usersRepository: { touchLastLoginAt: jest.Mock };
   let userEventService: { record: jest.Mock };
+  const fakeTx = {} as any;
 
   beforeEach(async () => {
     usersRepository = {
@@ -153,6 +159,10 @@ describe('AuthService.login', () => {
         {
           provide: UserEventService,
           useValue: userEventService,
+        },
+        {
+          provide: PrismaService,
+          useValue: { $transaction: jest.fn((fn) => fn(fakeTx)) },
         },
       ],
     }).compile();
@@ -195,14 +205,25 @@ describe('AuthService.login', () => {
       given_name: kcUser.given_name,
       family_name: kcUser.family_name,
     });
-    expect(usersRepository.touchLastLoginAt).toHaveBeenCalledWith(profile.id);
-    expect(userEventService.record).toHaveBeenCalledWith({
-      userId: profile.id,
-      eventType: EventType.USER_LOGGED_IN,
-      source: EventSource.API,
-      subject: { type: EventSubjectType.USER, id: profile.id },
-      idempotencyKey: userLoggedInIdempotencyKey(profile.id),
-    });
+    expect(usersRepository.touchLastLoginAt).toHaveBeenCalledWith(
+      profile.id,
+      expect.any(Date),
+      undefined,
+      fakeTx,
+    );
+    // Both calls must share the exact same `now` so the idempotency key's
+    // UTC-day slice can never diverge from the lastLoginAt timestamp.
+    const sharedNow = usersRepository.touchLastLoginAt.mock.calls[0][1];
+    expect(userEventService.record).toHaveBeenCalledWith(
+      {
+        userId: profile.id,
+        eventType: EventType.USER_LOGGED_IN,
+        source: EventSource.API,
+        subject: { type: EventSubjectType.USER, id: profile.id },
+        idempotencyKey: userLoggedInIdempotencyKey(profile.id, sharedNow),
+      },
+      fakeTx,
+    );
     expect(result).toEqual(tokens);
   });
 
@@ -257,6 +278,10 @@ describe('AuthService.sendResetPasswordEmailIfExists', () => {
         {
           provide: UserEventService,
           useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+        },
+        {
+          provide: PrismaService,
+          useValue: { $transaction: jest.fn((fn) => fn({})) },
         },
       ],
     }).compile();
