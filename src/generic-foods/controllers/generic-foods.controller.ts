@@ -26,6 +26,7 @@ import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { FoodGroupsQueryDto } from '../dto/food-groups-query.dto';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
+import { FoodGroupResponseDto } from '../dto/food-group-response.dto';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('generic-foods')
@@ -90,14 +91,16 @@ export class GenericFoodsController {
   @ApiOperation({
     summary: 'Get all unique food groups',
     description:
-      'Get a list of all distinct food groups available, optionally filtered by search term and localized via lang',
+      'Get distinct food groups with a stable English-derived slug (for icon matching) and a localized display name',
   })
   @ApiResponse({
     status: 200,
     description: 'Food groups retrieved successfully',
-    type: [String],
+    type: [FoodGroupResponseDto],
   })
-  getAllFoodGroups(@Query() query: FoodGroupsQueryDto): Promise<string[]> {
+  getAllFoodGroups(
+    @Query() query: FoodGroupsQueryDto,
+  ): Promise<FoodGroupResponseDto[]> {
     return this.genericFoodService.getAllFoodGroups(query.search, query.lang);
   }
 

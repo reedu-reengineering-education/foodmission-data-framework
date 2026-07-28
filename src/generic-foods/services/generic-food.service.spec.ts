@@ -22,14 +22,13 @@ describe('GenericFoodService', () => {
     update: jest.fn(),
     delete: jest.fn(),
     findByNevoCode: jest.fn(),
-    getAllFoodGroups: jest.fn(),
+    getDistinctFoodGroups: jest.fn(),
   };
 
   const mockTranslationMethods = {
     resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
     resolveMany: jest.fn(),
     findEntityIdsByValue: jest.fn(),
-    listDistinct: jest.fn(),
     deleteForEntity: jest.fn(),
   };
 
@@ -73,7 +72,10 @@ describe('GenericFoodService', () => {
       const result = await service.create(createDto);
 
       expect(repository.create).toHaveBeenCalledWith(createDto);
-      expect(result).toEqual(mockCategory);
+      expect(result).toEqual({
+        ...mockCategory,
+        foodGroupSlug: 'vegetables',
+      });
     });
   });
 
@@ -99,6 +101,7 @@ describe('GenericFoodService', () => {
 
       expect(repository.findAll).toHaveBeenCalledWith(query, undefined);
       expect(result.items[0].foodName).toBe(mockCategory.foodName);
+      expect(result.items[0].foodGroupSlug).toBe('vegetables');
       expect(result.items[0].remark).toBeNull();
     });
 
@@ -126,6 +129,7 @@ describe('GenericFoodService', () => {
 
       expect(result.items[0].foodName).toBe('Tomaat rauw');
       expect(result.items[0].foodGroup).toBe('Groenten');
+      expect(result.items[0].foodGroupSlug).toBe('vegetables');
     });
 
     it('should search localized names when lang is set', async () => {
@@ -216,6 +220,7 @@ describe('GenericFoodService', () => {
 
       expect(repository.findById).toHaveBeenCalledWith('generic-123');
       expect(result.id).toBe('generic-123');
+      expect(result.foodGroupSlug).toBe('vegetables');
       expect(result.remark).toBeNull();
     });
 
@@ -270,29 +275,57 @@ describe('GenericFoodService', () => {
   });
 
   describe('getAllFoodGroups', () => {
-    it('should return English groups by default', async () => {
+    it('should return English groups with slugs by default', async () => {
       translations.resolveLocale.mockReturnValue('en');
-      repository.getAllFoodGroups.mockResolvedValue(['Vegetables']);
+      repository.getDistinctFoodGroups.mockResolvedValue([
+        { foodGroup: 'Vegetables', sampleId: 'sample-1' },
+        { foodGroup: 'Milk and milk products', sampleId: 'sample-2' },
+      ]);
 
       const result = await service.getAllFoodGroups();
 
-      expect(repository.getAllFoodGroups).toHaveBeenCalledWith(undefined);
-      expect(result).toEqual(['Vegetables']);
+      expect(repository.getDistinctFoodGroups).toHaveBeenCalled();
+      expect(result).toEqual([
+        { slug: 'vegetables', name: 'Vegetables' },
+        { slug: 'milk-and-milk-products', name: 'Milk and milk products' },
+      ]);
     });
 
-    it('should return localized groups when available', async () => {
+    it('should return localized names with English-derived slugs', async () => {
       translations.resolveLocale.mockReturnValue('nl');
-      translations.listDistinct.mockResolvedValue(['Groenten']);
+      repository.getDistinctFoodGroups.mockResolvedValue([
+        { foodGroup: 'Vegetables', sampleId: 'sample-1' },
+      ]);
+      translations.resolveMany.mockResolvedValue({
+        'sample-1': { foodGroup: 'Groenten' },
+      });
 
       const result = await service.getAllFoodGroups(undefined, 'nl');
 
-      expect(translations.listDistinct).toHaveBeenCalledWith(
+      expect(translations.resolveMany).toHaveBeenCalledWith(
         'GenericFood',
+        ['sample-1'],
         'nl',
-        'foodGroup',
-        undefined,
+        ['foodGroup'],
+        { 'sample-1': { foodGroup: 'Vegetables' } },
       );
-      expect(result).toEqual(['Groenten']);
+      expect(result).toEqual([{ slug: 'vegetables', name: 'Groenten' }]);
+    });
+
+    it('should filter by localized name when search is provided', async () => {
+      translations.resolveLocale.mockReturnValue('nl');
+      repository.getDistinctFoodGroups.mockResolvedValue([
+        { foodGroup: 'Vegetables', sampleId: 'sample-1' },
+        { foodGroup: 'Fruits', sampleId: 'sample-2' },
+      ]);
+      translations.resolveMany.mockResolvedValue({
+        'sample-1': { foodGroup: 'Groenten' },
+        'sample-2': { foodGroup: 'Fruit' },
+      });
+
+      const result = await service.getAllFoodGroups('groen', 'nl');
+
+      expect(result).toEqual([{ slug: 'vegetables', name: 'Groenten' }]);
     });
   });
 });

@@ -14,10 +14,17 @@ export class GenericFoodResponseDto {
   nevoVersion: string;
 
   @ApiProperty({
-    description: 'Food group',
+    description: 'Food group (localized when lang is set)',
     example: 'Potatoes and tubers',
   })
   foodGroup: string;
+
+  @ApiProperty({
+    description:
+      'Stable slug derived from the English food group (for icon matching across locales)',
+    example: 'potatoes-and-tubers',
+  })
+  foodGroupSlug: string;
 
   @ApiProperty({ description: 'NEVO food code', example: 100 })
   nevoCode: number;
