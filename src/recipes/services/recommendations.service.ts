@@ -226,20 +226,34 @@ export class RecommendationsService {
     expiringFoodIds: Set<string>,
     expiringCategoryIds: Set<string>,
   ): RecipeRecommendationScore[] {
-    // Build lookup maps for pantry item names
+    // Build lookup maps for pantry item names. When multiple pantry items
+    // share the same food/category/name (duplicates are allowed), always
+    // keep the soonest-expiring one so this representative stays consistent
+    // with the expiringFoodIds/expiringCategoryIds sets below.
     const pantryItemByFoodId = new Map<string, PantryItemWithRelations>();
     const pantryItemByCategoryId = new Map<string, PantryItemWithRelations>();
     const pantryItemByNormalizedName = new Map<
       string,
       PantryItemWithRelations
     >();
+    const upsertMostUrgent = (
+      map: Map<string, PantryItemWithRelations>,
+      key: string,
+      item: PantryItemWithRelations,
+    ) => {
+      const existing = map.get(key);
+      if (!existing || this.isMoreUrgent(item, existing)) {
+        map.set(key, item);
+      }
+    };
     for (const item of pantryItems) {
-      if (item.foodProductId) pantryItemByFoodId.set(item.foodProductId, item);
+      if (item.foodProductId)
+        upsertMostUrgent(pantryItemByFoodId, item.foodProductId, item);
       if (item.genericFoodId)
-        pantryItemByCategoryId.set(item.genericFoodId, item);
+        upsertMostUrgent(pantryItemByCategoryId, item.genericFoodId, item);
       const normalizedName = this.normalizeText(this.getPantryItemName(item));
       if (normalizedName) {
-        pantryItemByNormalizedName.set(normalizedName, item);
+        upsertMostUrgent(pantryItemByNormalizedName, normalizedName, item);
       }
     }
 
@@ -309,6 +323,36 @@ export class RecommendationsService {
         expiringMatchCount,
       };
     });
+  }
+
+  /**
+   * True if `candidate` should be preferred over `current` as the
+   * representative pantry item for a shared food/category/name key.
+   * Preference: soonest upcoming expiry > most recent past expiry > no expiry.
+   */
+  private isMoreUrgent(
+    candidate: PantryItemWithRelations,
+    current: PantryItemWithRelations,
+  ): boolean {
+    const now = Date.now();
+    const candidateTime = candidate.expiryDate
+      ? new Date(candidate.expiryDate).getTime()
+      : null;
+    const currentTime = current.expiryDate
+      ? new Date(current.expiryDate).getTime()
+      : null;
+
+    const candidateUpcoming = candidateTime !== null && candidateTime >= now;
+    const currentUpcoming = currentTime !== null && currentTime >= now;
+
+    if (candidateUpcoming || currentUpcoming) {
+      if (candidateUpcoming !== currentUpcoming) return candidateUpcoming;
+      return candidateTime! < currentTime!;
+    }
+    if (candidateTime !== null && currentTime !== null) {
+      return candidateTime > currentTime;
+    }
+    return candidateTime !== null && currentTime === null;
   }
 
   private normalizeText(value?: string | null): string {

@@ -131,29 +131,6 @@ describe('PantryItemRepository', () => {
       expect(result.expiryDate).toBeNull();
     });
 
-    it('should throw Prisma unique constraint error when food already exists in pantry', async () => {
-      const createData = {
-        pantryId: TEST_IDS.PANTRY,
-        foodProductId: TEST_IDS.FOOD,
-        genericFoodId: null,
-        itemType: 'food_product',
-        quantity: TEST_DATA.QUANTITY,
-        unit: Unit.KG,
-      };
-
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Unique constraint failed',
-        {
-          code: 'P2002',
-          clientVersion: '4.0.0',
-          meta: { target: ['pantryId', 'foodProductId'] },
-        },
-      );
-      mockPrismaService.pantryItem.create.mockRejectedValue(prismaError);
-
-      await expect(repository.create(createData)).rejects.toThrow(prismaError);
-    });
-
     it('should throw error when creation fails', async () => {
       const createData = {
         pantryId: TEST_IDS.PANTRY,
@@ -370,27 +347,6 @@ describe('PantryItemRepository', () => {
       ).rejects.toThrow(prismaError);
     });
 
-    it('should throw Prisma unique constraint error when updating to duplicate food', async () => {
-      const updateData: Prisma.PantryItemUpdateInput = {
-        foodProduct: {
-          connect: { id: 'duplicate-food-id' },
-        },
-      };
-      const prismaError = new Prisma.PrismaClientKnownRequestError(
-        'Unique constraint failed',
-        {
-          code: 'P2002',
-          clientVersion: '4.0.0',
-          meta: { target: ['pantryId', 'foodProductId'] },
-        },
-      );
-      mockPrismaService.pantryItem.update.mockRejectedValue(prismaError);
-
-      await expect(
-        repository.update(TEST_IDS.PANTRY_ITEM, updateData),
-      ).rejects.toThrow(prismaError);
-    });
-
     it('should throw error when update fails', async () => {
       const updateData = {
         quantity: 10,
@@ -435,41 +391,6 @@ describe('PantryItemRepository', () => {
       await expect(repository.delete(TEST_IDS.PANTRY_ITEM)).rejects.toThrow(
         dbError,
       );
-    });
-  });
-
-  describe('findFoodProductInPantry', () => {
-    it('should find a specific food product item in a pantry', async () => {
-      mockPrismaService.pantryItem.findFirst.mockResolvedValue(mockPantryItem);
-
-      const result = await repository.findFoodProductInPantry(
-        TEST_IDS.PANTRY,
-        TEST_IDS.FOOD,
-      );
-
-      expect(result).toEqual(mockPantryItem);
-      expect(prisma.pantryItem.findFirst).toHaveBeenCalledWith({
-        where: {
-          pantryId: TEST_IDS.PANTRY,
-          foodProductId: TEST_IDS.FOOD,
-        },
-        include: {
-          pantry: true,
-          foodProduct: true,
-          genericFood: true,
-        },
-      });
-    });
-
-    it('should return null if food product not found in pantry', async () => {
-      mockPrismaService.pantryItem.findFirst.mockResolvedValue(null);
-
-      const result = await repository.findFoodProductInPantry(
-        TEST_IDS.PANTRY,
-        'food-999',
-      );
-
-      expect(result).toBeNull();
     });
   });
 });

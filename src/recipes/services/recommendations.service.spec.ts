@@ -114,4 +114,83 @@ describe('RecommendationsService', () => {
       'Organic Oat Milks',
     );
   });
+
+  it('picks the soonest-expiring duplicate as the match, keeping isExpiringSoon consistent', async () => {
+    mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+    mockPantryItemRepository.findMany.mockResolvedValue([
+      {
+        id: 'pantry-item-soon',
+        pantryId: 'pantry-1',
+        foodProductId: 'food-1',
+        genericFoodId: null,
+        expiryDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        foodProduct: { name: 'Tomatoes' },
+        genericFood: null,
+      },
+      {
+        id: 'pantry-item-far-future',
+        pantryId: 'pantry-1',
+        foodProductId: 'food-1',
+        genericFoodId: null,
+        expiryDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        foodProduct: { name: 'Tomatoes' },
+        genericFood: null,
+      },
+    ]);
+    mockRecipesRepository.findCandidatesForRecommendation.mockResolvedValue([
+      {
+        id: 'recipe-1',
+        userId: 'user-1',
+        title: 'Tomato Soup',
+        description: null,
+        instructions: null,
+        prepTime: null,
+        cookTime: null,
+        servings: null,
+        difficulty: null,
+        tags: [],
+        nutritionalInfo: null,
+        sustainabilityScore: null,
+        price: null,
+        allergens: [],
+        rating: 0,
+        ratingCount: 0,
+        externalId: null,
+        imageUrl: null,
+        videoUrl: null,
+        cuisineType: null,
+        category: null,
+        isPublic: true,
+        dietaryLabels: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ingredients: [
+          {
+            id: 'ing-1',
+            recipeId: 'recipe-1',
+            name: 'Tomatoes',
+            measure: '2 pcs',
+            order: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            itemType: 'food_product',
+            foodProductId: 'food-1',
+            genericFoodId: null,
+            foodProduct: null,
+            genericFood: null,
+          },
+        ],
+      },
+    ]);
+
+    const result = await service.getRecommendations('user-1', {
+      expiringWithinDays: 7,
+      limit: 10,
+      offset: 0,
+    });
+
+    const match = result.data[0].matchedIngredients[0];
+    expect(match.isExpiringSoon).toBe(true);
+    expect(match.daysUntilExpiry).toBeLessThanOrEqual(7);
+  });
 });

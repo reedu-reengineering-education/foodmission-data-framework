@@ -92,4 +92,47 @@ describe('Pantry Items Auto Expiry', () => {
     expect(pantryItem.expiryDate).toBeNull();
     expect(pantryItem.expiryDateSource).toBeNull();
   });
+
+  it('should allow duplicate products with different expiry dates', async () => {
+    const expiryA = new Date('2027-01-15');
+    const expiryB = new Date('2027-03-01');
+
+    const first = await prisma.pantryItem.create({
+      data: {
+        pantryId: fixtures.pantryId,
+        foodProductId: fixtures.foodProductId,
+        quantity: 1,
+        unit: 'PIECES',
+        expiryDate: expiryA,
+        expiryDateSource: 'manual',
+      },
+    });
+
+    const second = await prisma.pantryItem.create({
+      data: {
+        pantryId: fixtures.pantryId,
+        foodProductId: fixtures.foodProductId,
+        quantity: 2,
+        unit: 'PIECES',
+        expiryDate: expiryB,
+        expiryDateSource: 'manual',
+      },
+    });
+
+    const items = await prisma.pantryItem.findMany({
+      where: {
+        pantryId: fixtures.pantryId,
+        foodProductId: fixtures.foodProductId,
+      },
+      orderBy: { expiryDate: 'asc' },
+    });
+
+    expect(first.id).not.toBe(second.id);
+    expect(items).toHaveLength(2);
+    expect(items.map((i) => i.id)).toEqual(
+      expect.arrayContaining([first.id, second.id]),
+    );
+    expect(items[0].expiryDate).toEqual(expiryA);
+    expect(items[1].expiryDate).toEqual(expiryB);
+  });
 });

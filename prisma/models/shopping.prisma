@@ -92,11 +92,11 @@ model PantryItem {
   genericFood  GenericFood?  @relation(fields: [genericFoodId], references: [id], onDelete: SetNull)
   foodWaste    FoodWaste[]
 
-  @@unique([pantryId, foodProductId])
-  @@unique([pantryId, genericFoodId])
   @@index([pantryId])
   @@index([foodProductId])
   @@index([genericFoodId])
+  @@index([pantryId, foodProductId])
+  @@index([pantryId, genericFoodId])
   @@index([expiryDate])
   @@map("pantry_items")
 }

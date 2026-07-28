@@ -8,8 +8,6 @@ import {
 export function createMockPantryItemRepository() {
   return {
     create: jest.fn(),
-    findFoodProductInPantry: jest.fn(),
-    findGenericFoodInPantry: jest.fn(),
     findMany: jest.fn(),
     findById: jest.fn(),
     update: jest.fn(),
@@ -82,12 +80,13 @@ export function createMockPantryItemWithRelations() {
 export function setupSuccessfulCreateMocks({
   mockPantryService,
   mockFoodRepository,
-  mockPantryItemRepository,
+}: {
+  mockPantryService: ReturnType<typeof createMockPantryService>;
+  mockFoodRepository: ReturnType<typeof createMockFoodProductRepository>;
 }) {
   mockPantryService.validatePantryExists.mockResolvedValue(TEST_IDS.PANTRY);
   mockFoodRepository.findById.mockResolvedValue({
     id: TEST_IDS.FOOD,
     name: 'Tomatoes',
   });
-  mockPantryItemRepository.findFoodProductInPantry.mockResolvedValue(null);
 }
