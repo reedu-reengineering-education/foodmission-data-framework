@@ -59,6 +59,8 @@ COPY --from=builder --chown=nestjs:nodejs /workspace/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /workspace/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /workspace/prisma ./prisma
 COPY --from=builder --chown=nestjs:nodejs /workspace/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nestjs:nodejs /workspace/scripts ./scripts
+COPY --from=builder --chown=nestjs:nodejs /workspace/tsconfig.json ./tsconfig.json
 
 # Switch to non-root user
 USER nestjs
