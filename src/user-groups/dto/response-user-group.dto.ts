@@ -51,6 +51,15 @@ export class UserGroupResponseDto {
 
   @ApiProperty({
     description:
+      'Opaque current quest id (string until Quest catalog exists with UUID PKs)',
+    required: false,
+    nullable: true,
+  })
+  @Expose()
+  currentQuestId?: string | null;
+
+  @ApiProperty({
+    description:
       'List of all members (both registered users and virtual members). Use `isVirtual` to distinguish.',
     type: [MemberResponseDto],
   })

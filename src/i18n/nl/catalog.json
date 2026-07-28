@@ -87,5 +87,69 @@
     "SHARED_EQUALLY": "Gelijkmatig verdeeld",
     "MOSTLY_SOMEONE_ELSE": "Meestal iemand anders",
     "SOMEONE_ELSE": "Iemand anders"
+  },
+  "weeklyMeatRanges": {
+    "ZERO_TO_FOUR": "0–4",
+    "FIVE_TO_NINE": "5–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyBeefFrequencies": {
+    "NEVER": "Nooit",
+    "LESS_THAN_ONCE_PER_WEEK": "Minder dan één keer per week",
+    "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 keer per week",
+    "THREE_PLUS_TIMES_PER_WEEK": "3+ keer per week"
+  },
+  "weeklyFoodWasteRanges": {
+    "ZERO": "0",
+    "ONE_TO_TWO": "1–2",
+    "THREE_TO_FOUR": "3–4",
+    "FIVE_PLUS": "5+"
+  },
+  "weeklyUpfRanges": {
+    "ZERO_TO_THREE": "0–3",
+    "FOUR_TO_NINE": "4–9",
+    "TEN_TO_FOURTEEN": "10–14",
+    "FIFTEEN_PLUS": "15+"
+  },
+  "weeklyReusableRanges": {
+    "ZERO_TO_TWO": "0–2",
+    "THREE_TO_SIX": "3–6",
+    "SEVEN_TO_NINE": "7–9",
+    "TEN_PLUS": "10+"
+  },
+  "userSegments": {
+    "BEGINNER": "Beginner",
+    "INTERMEDIATE": "Gevorderd",
+    "ADVANCED": "Expert"
+  },
+  "motivations": {
+    "SUSTAINABLE_HABITS": "Duurzamere gewoonten ontwikkelen",
+    "PLANETARY_IMPACT": "Een positieve impact op de planeet hebben",
+    "SUSTAINABILITY_KNOWLEDGE": "Kennis over duurzaamheid opdoen"
+  },
+  "progressIndicatorKinds": {
+    "FOOD_CHOICES": "Voedselkeuzes",
+    "FOOD_AND_WASTE": "Voedsel en afval",
+    "HEALTH": "Gezondheid",
+    "CO2_REDUCTION": "CO₂-reductie",
+    "ENERGY_REDUCTION": "Energiebesparing",
+    "WATER_SAVINGS": "Waterbesparing",
+    "LAND_USE_REDUCTION": "Vermindering van landgebruik",
+    "PROTEIN": "Eiwit",
+    "FAT": "Vet",
+    "SUGAR": "Suiker",
+    "SALT": "Zout",
+    "FIBER": "Vezels",
+    "VITAMINS": "Vitaminen",
+    "CALORIES": "Calorieën"
+  },
+  "progressPrecisions": {
+    "SOFT": "Zacht",
+    "PRECISE": "Precies"
+  },
+  "walletCurrencies": {
+    "XP": "XP",
+    "POINTS": "Punten"
   }
 }

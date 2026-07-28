@@ -1,11 +1,13 @@
 import {
   IsString,
   IsOptional,
-  IsObject,
   IsEnum,
   IsNumber,
   IsInt,
   IsPositive,
+  IsObject,
+  MaxLength,
+  ValidateIf,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
@@ -14,6 +16,9 @@ import {
   AnnualIncomeLevel,
   EducationLevel,
 } from './create-user.dto';
+import { UserSegment } from './gamification-enums.dto';
+import { UserPreferencesDto } from './user-preferences.dto';
+import { UserSettingsDto } from './user-settings.dto';
 
 export class ProfileUpdateDto {
   @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
@@ -93,29 +98,55 @@ export class ProfileUpdateDto {
   @ApiProperty({ description: 'Health goals (JSON)', required: false })
   @IsOptional()
   @IsObject()
-  healthGoals?: Record<string, any>;
+  healthGoals?: Record<string, unknown>;
 
   @ApiProperty({ description: 'Nutrition targets (JSON)', required: false })
   @IsOptional()
   @IsObject()
-  nutritionTargets?: Record<string, any>;
+  nutritionTargets?: Record<string, unknown>;
 
   @ApiProperty({
     description:
-      'User preferences (JSON) - dietary preferences, allergies, etc.',
+      'User preferences JSON. Known keys documented on UserPreferencesDto; ' +
+      'extra keys are allowed. onboardingSurvey enums are validated in the service.',
     required: false,
-    example: { dietaryPreference: 'VEGETARIAN', allergies: ['peanuts'] },
+    type: UserPreferencesDto,
   })
   @IsOptional()
   @IsObject()
-  preferences?: Record<string, any>;
+  preferences?: Record<string, unknown>;
 
   @ApiProperty({
-    description: 'User settings (JSON) - app/notification settings, etc.',
+    description:
+      'User settings JSON. Known keys documented on UserSettingsDto; extra keys are allowed.',
     required: false,
-    example: { notifications: true, theme: 'dark' },
+    type: UserSettingsDto,
   })
   @IsOptional()
   @IsObject()
-  settings?: Record<string, any>;
+  settings?: Record<string, unknown>;
+
+  @ApiProperty({
+    description:
+      'Gamification segment chosen by the user at onboarding (BEGINNER / INTERMEDIATE / ADVANCED).',
+    required: false,
+    enum: Object.values(UserSegment),
+  })
+  @IsOptional()
+  @IsEnum(UserSegment)
+  segment?: UserSegment;
+
+  @ApiProperty({
+    description:
+      'Opaque current quest id (string until Quest catalog exists with UUID PKs). ' +
+      'Pass null to clear. Will become UUID + FK when Quest model lands.',
+    required: false,
+    nullable: true,
+    example: 'seed-quest-dev-user',
+  })
+  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
+  @IsString()
+  @MaxLength(255)
+  currentQuestId?: string | null;
 }

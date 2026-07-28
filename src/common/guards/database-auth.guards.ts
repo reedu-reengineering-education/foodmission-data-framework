@@ -8,6 +8,9 @@ import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { UsersRepository } from '../../users/repositories/users.repository';
 
+/** Skip rewriting lastLoginAt more often than this. */
+const LAST_LOGIN_TOUCH_INTERVAL_MS = 5 * 60 * 1000;
+
 @Injectable()
 export class DataBaseAuthGuard implements CanActivate {
   constructor(
@@ -15,7 +18,7 @@ export class DataBaseAuthGuard implements CanActivate {
     private usersRepository: UsersRepository,
   ) {}
 
-  private userCache = new Map<string, any>();
+  private userCache = new Map<string, { id: string; keycloakId: string }>();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(META_PUBLIC, [
@@ -38,12 +41,13 @@ export class DataBaseAuthGuard implements CanActivate {
     console.log(`Authenticating user with Keycloak ID: ${keycloakId}`);
 
     if (this.userCache.has(keycloakId)) {
-      const cachedUser = this.userCache.get(keycloakId);
+      const cachedUser = this.userCache.get(keycloakId)!;
       request.user = {
         ...request.user,
         id: cachedUser.id,
         keycloakId: cachedUser.keycloakId,
       };
+      void this.maybeTouchLastLogin(cachedUser.id);
       return true;
     }
 
@@ -75,11 +79,25 @@ export class DataBaseAuthGuard implements CanActivate {
         keycloakId: keycloakId,
       };
 
+      void this.maybeTouchLastLogin(dbUser.id);
+
       return true;
     } catch (error) {
       throw new UnauthorizedException(
         `Failed to authenticate user: ${error.message}`,
       );
+    }
+  }
+
+  private async maybeTouchLastLogin(userId: string): Promise<void> {
+    try {
+      await this.usersRepository.touchLastLoginAt(
+        userId,
+        new Date(),
+        LAST_LOGIN_TOUCH_INTERVAL_MS,
+      );
+    } catch {
+      // Activity tracking must not fail the request.
     }
   }
 }

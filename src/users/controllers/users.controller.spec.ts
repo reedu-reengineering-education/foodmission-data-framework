@@ -83,6 +83,27 @@ describe('UsersController', () => {
       expect(result).toEqual(mockUser);
       expect(repository.findOne).toHaveBeenCalledWith('user-1');
     });
+
+    it('should nest onboarding baselines under preferences.onboardingSurvey', async () => {
+      repository.findOne.mockResolvedValue({
+        ...mockUser,
+        weeklyMeatConsumption: 'FIVE_TO_NINE',
+        weeklyBeefConsumption: 'NEVER',
+      } as any);
+
+      const result = await controller.findOne('user-1');
+
+      expect(result).toMatchObject({
+        id: 'user-1',
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: 'FIVE_TO_NINE',
+            weeklyBeefConsumption: 'NEVER',
+          },
+        },
+      });
+      expect(result).not.toHaveProperty('weeklyMeatConsumption');
+    });
   });
 
   describe('update', () => {
