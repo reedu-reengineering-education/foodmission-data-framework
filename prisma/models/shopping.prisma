@@ -95,6 +95,8 @@ model PantryItem {
   @@index([pantryId])
   @@index([foodProductId])
   @@index([genericFoodId])
+  @@index([pantryId, foodProductId])
+  @@index([pantryId, genericFoodId])
   @@index([expiryDate])
   @@map("pantry_items")
 }
