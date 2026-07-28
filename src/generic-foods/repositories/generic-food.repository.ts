@@ -138,7 +138,7 @@ export class GenericFoodRepository {
     const result = await this.prisma.genericFood.findMany({
       select: { id: true, foodGroup: true },
       distinct: ['foodGroup'],
-      orderBy: { foodGroup: 'asc' },
+      orderBy: [{ foodGroup: 'asc' }, { id: 'asc' }],
     });
 
     return result.map((r) => ({
