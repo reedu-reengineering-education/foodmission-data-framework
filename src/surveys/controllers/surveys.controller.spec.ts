@@ -6,8 +6,17 @@ describe('SurveysController', () => {
   let controller: SurveysController;
   let service: jest.Mocked<SurveysService>;
 
+  const mockAnswers = [
+    { value: 1, label: 'Strongly disagree' },
+    { value: 2, label: 'Disagree' },
+    { value: 3, label: 'Neither agree nor disagree' },
+    { value: 4, label: 'Agree' },
+    { value: 5, label: 'Strongly agree' },
+  ];
+
   const mockSurvey = {
     id: 'survey-1',
+    slug: 'test-survey',
     title: 'Test Survey',
     description: 'A test survey',
     questions: [
@@ -17,6 +26,7 @@ describe('SurveysController', () => {
         type: 'likert',
         order: 0,
         surveyId: 'survey-1',
+        answers: mockAnswers,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -58,10 +68,18 @@ describe('SurveysController', () => {
     it('should return all surveys', async () => {
       service.getAllSurveys.mockResolvedValue([mockSurvey]);
 
-      const result = await controller.getAllSurveys();
+      const result = await controller.getAllSurveys({});
 
       expect(result).toEqual([mockSurvey]);
-      expect(service.getAllSurveys).toHaveBeenCalled();
+      expect(service.getAllSurveys).toHaveBeenCalledWith(undefined);
+    });
+
+    it('should pass the requested locale to the service', async () => {
+      service.getAllSurveys.mockResolvedValue([mockSurvey]);
+
+      await controller.getAllSurveys({ lang: 'de' });
+
+      expect(service.getAllSurveys).toHaveBeenCalledWith('de');
     });
   });
 
@@ -69,10 +87,18 @@ describe('SurveysController', () => {
     it('should return a survey by id', async () => {
       service.getSurveyById.mockResolvedValue(mockSurvey);
 
-      const result = await controller.getSurveyById('survey-1');
+      const result = await controller.getSurveyById('survey-1', {});
 
       expect(result).toEqual(mockSurvey);
-      expect(service.getSurveyById).toHaveBeenCalledWith('survey-1');
+      expect(service.getSurveyById).toHaveBeenCalledWith('survey-1', undefined);
+    });
+
+    it('should pass the requested locale to the service', async () => {
+      service.getSurveyById.mockResolvedValue(mockSurvey);
+
+      await controller.getSurveyById('survey-1', { lang: 'nl' });
+
+      expect(service.getSurveyById).toHaveBeenCalledWith('survey-1', 'nl');
     });
   });
 
@@ -209,12 +235,14 @@ describe('SurveysController', () => {
       const result = await controller.getUserSurveyResponse(
         'survey-1',
         mockUser,
+        { lang: 'de' },
       );
 
       expect(result).toEqual(mockResponse);
       expect(service.getUserSurveyResponse).toHaveBeenCalledWith(
         'user-1',
         'survey-1',
+        'de',
       );
     });
   });
@@ -234,10 +262,13 @@ describe('SurveysController', () => {
 
       service.getUserSurveyResponses.mockResolvedValue(mockResponses);
 
-      const result = await controller.getUserSurveyResponses(mockUser);
+      const result = await controller.getUserSurveyResponses(mockUser, {});
 
       expect(result).toEqual(mockResponses);
-      expect(service.getUserSurveyResponses).toHaveBeenCalledWith('user-1');
+      expect(service.getUserSurveyResponses).toHaveBeenCalledWith(
+        'user-1',
+        undefined,
+      );
     });
   });
 });

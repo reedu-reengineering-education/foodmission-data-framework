@@ -5,6 +5,7 @@ import {
   Put,
   Delete,
   Param,
+  Query,
   Body,
   UseGuards,
   HttpCode,
@@ -16,6 +17,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiQuery,
   ApiBody,
   ApiConflictResponse,
   ApiBadRequestResponse,
@@ -29,6 +31,8 @@ import {
   SurveyDto,
   SurveyResponseDto,
 } from '../dto/survey.dto';
+import { SurveyQueryDto } from '../dto/survey-query.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Public, Roles } from 'nest-keycloak-connect';
@@ -48,13 +52,19 @@ export class SurveysController {
     description:
       'Retrieve all available surveys with their questions and answer options. No authentication required.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'List of all surveys successfully retrieved',
     type: [SurveyDto],
   })
-  async getAllSurveys(): Promise<SurveyDto[]> {
-    return this.surveysService.getAllSurveys();
+  async getAllSurveys(@Query() query: SurveyQueryDto): Promise<SurveyDto[]> {
+    return this.surveysService.getAllSurveys(query.lang);
   }
 
   @Get(':id')
@@ -65,14 +75,23 @@ export class SurveysController {
     description:
       'Retrieve a specific survey by its ID, including all questions and answer options. No authentication required.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'Survey retrieved successfully',
     type: SurveyDto,
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
-  async getSurveyById(@Param('id') id: string): Promise<SurveyDto> {
-    return this.surveysService.getSurveyById(id);
+  async getSurveyById(
+    @Param('id') id: string,
+    @Query() query: SurveyQueryDto,
+  ): Promise<SurveyDto> {
+    return this.surveysService.getSurveyById(id, query.lang);
   }
 
   // User Endpoints - Survey Responses
@@ -118,6 +137,12 @@ export class SurveysController {
     description:
       "Retrieve the current user's responses to a specific survey if they have responded.",
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'User survey response retrieved successfully',
@@ -129,9 +154,14 @@ export class SurveysController {
   async getUserSurveyResponse(
     @Param('id') surveyId: string,
     @CurrentUser() user: any,
+    @Query() query: SurveyQueryDto,
   ): Promise<SurveyResponseDto> {
     const userId = user.sub;
-    return this.surveysService.getUserSurveyResponse(userId, surveyId);
+    return this.surveysService.getUserSurveyResponse(
+      userId,
+      surveyId,
+      query.lang,
+    );
   }
 
   @Get('responses/user/all')
@@ -140,14 +170,23 @@ export class SurveysController {
     summary: "Get all user's survey responses",
     description: 'Retrieve all survey responses submitted by the current user.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'All user survey responses retrieved successfully',
     type: [SurveyResponseDto],
   })
-  async getUserSurveyResponses(@CurrentUser() user: any) {
+  async getUserSurveyResponses(
+    @CurrentUser() user: any,
+    @Query() query: SurveyQueryDto,
+  ) {
     const userId = user.sub;
-    return this.surveysService.getUserSurveyResponses(userId);
+    return this.surveysService.getUserSurveyResponses(userId, query.lang);
   }
 
   // Admin Endpoints - Survey CRUD

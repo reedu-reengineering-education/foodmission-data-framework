@@ -11,15 +11,26 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export class AnswerOptionDto {
+  /** Value to submit for this option (1–5). */
+  value: number;
+  /** Localized label for the option. */
+  label: string;
+}
+
 export class QuestionDto {
   id: string;
   text: string;
   type: string;
   order: number;
+  /** The 5-point Likert scale, localized. Identical for every question. */
+  answers: AnswerOptionDto[];
 }
 
 export class SurveyDto {
   id: string;
+  /** Stable, always-English identifier derived from the untranslated title. */
+  slug: string;
   title: string;
   description?: string;
   questions: QuestionDto[];
