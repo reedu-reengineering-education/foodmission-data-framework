@@ -104,7 +104,7 @@ export class SurveysController {
   @ApiOperation({
     summary: 'Submit survey responses',
     description:
-      'Submit user responses to a survey. Each response must contain a valid question ID and answer ID. A user can only submit one response per survey.',
+      'Submit user responses to a survey. Each response must contain a valid question ID and a Likert value (1-5). A user can only submit one response per survey.',
   })
   @ApiBody({ type: SubmitSurveyResponseDto })
   @ApiResponse({
@@ -114,7 +114,7 @@ export class SurveysController {
   })
   @ApiBadRequestResponse({
     description:
-      'Invalid request - missing questions, invalid question/answer IDs, or validation errors',
+      'Invalid request - missing questions, invalid question ID, out-of-range value, or validation errors',
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
   @ApiConflictResponse({
