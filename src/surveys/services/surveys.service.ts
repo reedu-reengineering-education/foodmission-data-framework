@@ -243,6 +243,21 @@ export class SurveysService {
     return this.mapSurveyToDto(localized);
   }
 
+  /**
+   * Look up a survey by its slug (see toSurveySlug — derived from `title`,
+   * not stored). Fine to scan the full list given the current survey count;
+   * revisit if that stops being small.
+   */
+  async getSurveyBySlug(slug: string, lang?: string): Promise<SurveyDto> {
+    const surveys = await this.surveysRepository.getAllSurveys();
+    const survey = surveys.find((s) => toSurveySlug(s.title) === slug);
+    if (!survey) {
+      throw new NotFoundException(`Survey with slug ${slug} not found`);
+    }
+    const [localized] = await this.localizeSurveys([survey], lang);
+    return this.mapSurveyToDto(localized);
+  }
+
   async createSurvey(data: CreateSurveyDto): Promise<SurveyDto> {
     if (!data.title || data.title.trim().length === 0) {
       throw new BadRequestException(

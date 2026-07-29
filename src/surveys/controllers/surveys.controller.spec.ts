@@ -43,6 +43,7 @@ describe('SurveysController', () => {
     const mockSurveysService = {
       getAllSurveys: jest.fn(),
       getSurveyById: jest.fn(),
+      getSurveyBySlug: jest.fn(),
       createSurvey: jest.fn(),
       updateSurvey: jest.fn(),
       deleteSurvey: jest.fn(),
@@ -98,6 +99,28 @@ describe('SurveysController', () => {
       await controller.getSurveyById('survey-1', { lang: 'nl' });
 
       expect(service.getSurveyById).toHaveBeenCalledWith('survey-1', 'nl');
+    });
+  });
+
+  describe('getSurveyBySlug', () => {
+    it('should return a survey by slug', async () => {
+      service.getSurveyBySlug.mockResolvedValue(mockSurvey);
+
+      const result = await controller.getSurveyBySlug('test-survey', {});
+
+      expect(result).toEqual(mockSurvey);
+      expect(service.getSurveyBySlug).toHaveBeenCalledWith(
+        'test-survey',
+        undefined,
+      );
+    });
+
+    it('should pass the requested locale to the service', async () => {
+      service.getSurveyBySlug.mockResolvedValue(mockSurvey);
+
+      await controller.getSurveyBySlug('test-survey', { lang: 'nl' });
+
+      expect(service.getSurveyBySlug).toHaveBeenCalledWith('test-survey', 'nl');
     });
   });
 

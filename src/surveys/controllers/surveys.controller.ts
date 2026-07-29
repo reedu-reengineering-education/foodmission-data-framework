@@ -68,6 +68,37 @@ export class SurveysController {
     return this.surveysService.getAllSurveys(query.lang);
   }
 
+  @Get('by-slug/:slug')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({
+    name: 'slug',
+    description: 'Survey slug, e.g. "third-use" (see SurveyDto.slug)',
+  })
+  @ApiOperation({
+    summary: 'Get survey by slug',
+    description:
+      'Retrieve a specific survey by its stable, always-English slug — useful for onboarding flows that reference a survey without knowing its database ID. Requires authentication.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Survey retrieved successfully',
+    type: SurveyDto,
+  })
+  @ApiNotFoundResponse({ description: 'Survey not found' })
+  async getSurveyBySlug(
+    @Param('slug') slug: string,
+    @Query() query: SurveyQueryDto,
+  ): Promise<SurveyDto> {
+    return this.surveysService.getSurveyBySlug(slug, query.lang);
+  }
+
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

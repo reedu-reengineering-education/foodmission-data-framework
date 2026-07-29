@@ -48,6 +48,18 @@ describe('SurveysService', () => {
     updatedAt: new Date(),
   };
 
+  type ResolvedTranslations = Record<
+    string,
+    Record<string, Record<string, string | null>>
+  >;
+
+  /** Stub resolveMany with per-entity-type translation rows. */
+  const mockTranslations = (byEntityType: ResolvedTranslations) => {
+    translationService.resolveMany.mockImplementation((entityType: string) =>
+      Promise.resolve(byEntityType[entityType] ?? {}),
+    );
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -147,6 +159,40 @@ describe('SurveysService', () => {
       await expect(service.getSurveyById('nonexistent')).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('getSurveyBySlug', () => {
+    it('should find a survey by its derived slug', async () => {
+      repository.getAllSurveys.mockResolvedValue([mockSurvey]);
+
+      const result = await service.getSurveyBySlug('test-survey');
+
+      expect(result).toEqual({
+        ...mockSurvey,
+        slug: 'test-survey',
+        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
+      });
+    });
+
+    it('should throw NotFoundException when no survey matches the slug', async () => {
+      repository.getAllSurveys.mockResolvedValue([mockSurvey]);
+
+      await expect(service.getSurveyBySlug('does-not-exist')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should localize title/description while keeping the slug stable', async () => {
+      repository.getAllSurveys.mockResolvedValue([mockSurvey]);
+      mockTranslations({
+        Survey: { 'survey-1': { title: 'Test-Umfrage', description: null } },
+      });
+
+      const result = await service.getSurveyBySlug('test-survey', 'de');
+
+      expect(result.slug).toBe('test-survey');
+      expect(result.title).toBe('Test-Umfrage');
     });
   });
 
@@ -422,18 +468,6 @@ describe('SurveysService', () => {
   });
 
   describe('translations', () => {
-    type ResolvedTranslations = Record<
-      string,
-      Record<string, Record<string, string | null>>
-    >;
-
-    /** Stub resolveMany with per-entity-type translation rows. */
-    const mockTranslations = (byEntityType: ResolvedTranslations) => {
-      translationService.resolveMany.mockImplementation((entityType: string) =>
-        Promise.resolve(byEntityType[entityType] ?? {}),
-      );
-    };
-
     it('should not query translations for the default locale', async () => {
       repository.getAllSurveys.mockResolvedValue([mockSurvey]);
 
