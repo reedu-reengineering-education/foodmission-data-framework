@@ -35,10 +35,9 @@ describe('SurveysController', () => {
     updatedAt: new Date(),
   };
 
-  const mockUser = {
-    sub: 'user-1',
-    email: 'test@example.com',
-  };
+  // What @CurrentUser('id') resolves to at runtime: the DB User.id, not the
+  // Keycloak sub.
+  const mockUserId = 'user-1';
 
   beforeEach(() => {
     const mockSurveysService = {
@@ -205,7 +204,7 @@ describe('SurveysController', () => {
       const result = await controller.submitSurveyResponse(
         'survey-1',
         submitDto,
-        mockUser,
+        mockUserId,
       );
 
       expect(result).toEqual(mockResponse);
@@ -234,7 +233,7 @@ describe('SurveysController', () => {
 
       const result = await controller.getUserSurveyResponse(
         'survey-1',
-        mockUser,
+        mockUserId,
         { lang: 'de' },
       );
 
@@ -262,7 +261,7 @@ describe('SurveysController', () => {
 
       service.getUserSurveyResponses.mockResolvedValue(mockResponses);
 
-      const result = await controller.getUserSurveyResponses(mockUser, {});
+      const result = await controller.getUserSurveyResponses(mockUserId, {});
 
       expect(result).toEqual(mockResponses);
       expect(service.getUserSurveyResponses).toHaveBeenCalledWith(

@@ -123,9 +123,8 @@ export class SurveysController {
   async submitSurveyResponse(
     @Param('id') surveyId: string,
     @Body() dto: SubmitSurveyResponseDto,
-    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
   ): Promise<SurveyResponseDto> {
-    const userId = user.sub; // Extract userId from JWT
     return this.surveysService.submitSurveyResponse(userId, surveyId, {
       responses: dto.responses,
     });
@@ -155,10 +154,9 @@ export class SurveysController {
   })
   async getUserSurveyResponse(
     @Param('id') surveyId: string,
-    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
     @Query() query: SurveyQueryDto,
   ): Promise<SurveyResponseDto> {
-    const userId = user.sub;
     return this.surveysService.getUserSurveyResponse(
       userId,
       surveyId,
@@ -184,10 +182,9 @@ export class SurveysController {
     type: [SurveyResponseDto],
   })
   async getUserSurveyResponses(
-    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
     @Query() query: SurveyQueryDto,
   ) {
-    const userId = user.sub;
     return this.surveysService.getUserSurveyResponses(userId, query.lang);
   }
 
