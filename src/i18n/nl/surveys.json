@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "nl"
+  },
+  "likert5": {
+    "1": "Helemaal oneens",
+    "2": "Oneens",
+    "3": "Niet eens, niet oneens",
+    "4": "Eens",
+    "5": "Helemaal eens"
+  }
+}

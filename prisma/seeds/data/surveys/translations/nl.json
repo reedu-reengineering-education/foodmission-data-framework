@@ -1,0 +1,94 @@
+{
+  "surveys": {
+    "second use": {
+      "title": "tweede gebruik",
+      "description": "Vragenlijst: tweede gebruik"
+    },
+    "third use": {
+      "title": "derde gebruik",
+      "description": "Vragenlijst: derde gebruik"
+    },
+    "fourth use": {
+      "title": "vierde gebruik",
+      "description": "Vragenlijst: vierde gebruik"
+    },
+    "fifth use": {
+      "title": "vijfde gebruik",
+      "description": "Vragenlijst: vijfde gebruik"
+    },
+    "sixth use": {
+      "title": "zesde gebruik",
+      "description": "Vragenlijst: zesde gebruik"
+    },
+    "seventh": {
+      "title": "zevende",
+      "description": "Vragenlijst: zevende"
+    },
+    "after 1 mt and at least 8th use": {
+      "title": "na 1 maand en minstens 8e gebruik",
+      "description": "Vragenlijst: na 1 maand en minstens 8e gebruik"
+    },
+    "after 1 m and at least 9th use": {
+      "title": "na 1 maand en minstens 9e gebruik",
+      "description": "Vragenlijst: na 1 maand en minstens 9e gebruik"
+    },
+    "after 1 m and at least 10th": {
+      "title": "na 1 maand en minstens 10e gebruik",
+      "description": "Vragenlijst: na 1 maand en minstens 10e gebruik"
+    },
+    "end": {
+      "title": "einde",
+      "description": "Vragenlijst: einde"
+    }
+  },
+  "questions": {
+    "When preparing food. It is easy for me to accomplish my desired results": "Bij het bereiden van eten lukt het me gemakkelijk om het gewenste resultaat te behalen.",
+    "In preparing food. I can solve most problems with enough effort.": "Bij het bereiden van eten kan ik de meeste problemen oplossen als ik er genoeg moeite voor doe.",
+    "I am comfortable preparing food.": "Ik voel me op mijn gemak bij het bereiden van eten.",
+    "For me, cooking is just something to get through as quickly as possible": "Voor mij is koken gewoon iets wat ik zo snel mogelijk wil afronden.",
+    "I prefer to spend my time on more important things than food": "Ik besteed mijn tijd liever aan belangrijkere dingen dan aan eten.",
+    "My social responsibilities prevent me from having the time to prepare meals.": "Mijn sociale verplichtingen zorgen ervoor dat ik geen tijd heb om maaltijden te bereiden.",
+    "My job responsibilities prevent me from having the time to prepare meals.": "Mijn werkverplichtingen zorgen ervoor dat ik geen tijd heb om maaltijden te bereiden.",
+    "The FOODMISSION app is accurate.": "De FOODMISSION-app is nauwkeurig.",
+    "The FOODMISSION app is trustworthy.": "De FOODMISSION-app is betrouwbaar.",
+    "The FOODMISSION app is true.": "De FOODMISSION-app is waarheidsgetrouw.",
+    "I can use the FOODMISSION app in the way I want.": "Ik kan de FOODMISSION-app gebruiken zoals ik dat wil.",
+    "I can make choices regarding how to use the FOODMISSION app": "Ik kan zelf keuzes maken over hoe ik de FOODMISSION-app gebruik.",
+    "I can direct my own usage experience while using the FOODMISSION app.": "Ik kan mijn eigen gebruikservaring sturen tijdens het gebruik van de FOODMISSION-app.",
+    "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.": "Ik heb een goed gevoel omdat de emoties die ik voel tijdens het gebruik van de FOODMISSION-app me op een positieve manier uitdagen.",
+    "Using the FOODMISSION app causes me to make some changes in my behavior.": "Het gebruik van de FOODMISSION-app zorgt ervoor dat ik mijn gedrag verander.",
+    "It gives me pleasure to use the FOODMISSION app": "Ik vind het plezierig om de FOODMISSION-app te gebruiken.",
+    "Using the FOODMISSION app has the potential to inspire users.": "Het gebruik van de FOODMISSION-app kan gebruikers inspireren.",
+    "Using the FOODMISSION app has the potential to influence user behavior.": "Het gebruik van de FOODMISSION-app kan het gedrag van gebruikers beïnvloeden.",
+    "I do not eat meat / I am trying to reduce my meat consumption.": "Ik eet geen vlees / Ik probeer mijn vleesconsumptie te verminderen.",
+    "I am trying to have minimal daily food waste.": "Ik probeer dagelijks zo min mogelijk voedsel te verspillen.",
+    "I read labels to check the environmental impact of a product before buying it.": "Ik lees etiketten om vóór aankoop de milieu-impact van een product te controleren.",
+    "I read nutritional information to assess the nutritional quality of a product before buying it.": "Ik lees voedingswaarde-informatie om vóór aankoop de voedingskwaliteit van een product te beoordelen.",
+    "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.": "Ik let op een evenwichtige inname van koolhydraten, eiwitten en vetten.",
+    "I try to include a variety of foods in my diet.": "Ik probeer een gevarieerd aanbod aan voedingsmiddelen in mijn voeding op te nemen.",
+    "I think it is easy for me to follow a vegetarian diet in the future.": "Ik denk dat het voor mij gemakkelijk is om in de toekomst een vegetarisch dieet te volgen.",
+    "Organic products are widely available and convenient to buy.": "Biologische producten zijn ruim verkrijgbaar en gemakkelijk te kopen.",
+    "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.": "Ik kan gezondere eetgewoonten aannemen, ook al moet ik mijn voeding en boodschappen beter plannen.",
+    "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.": "Ik kan mijn inname van ongezonde vetten beperken, ook al duurt het even voordat ik eraan gewend ben.",
+    "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.": "Als ik zou willen, denk ik dat ik het grootste deel van de tijd een zeer voedzaam dieet zou kunnen volhouden.",
+    "I have a positive opinion about diets that are both healthy and environmentally friendly.": "Ik heb een positieve mening over voedingspatronen die zowel gezond als milieuvriendelijk zijn.",
+    "I know how to select products that have a low environmental impact.": "Ik weet hoe ik producten met een lage milieu-impact kies.",
+    "I understand the environmental benefits of eco-labels of food products.": "Ik begrijp de milieuvoordelen van milieukeurmerken op voedingsproducten.",
+    "I know what a healthy diet means.": "Ik weet wat een gezond voedingspatroon inhoudt.",
+    "It is beneficial to eat nutrient-dense food.": "Het is gunstig om voedingsrijk voedsel te eten.",
+    "I know that healthy eating can prevent certain diseases.": "Ik weet dat gezond eten bepaalde ziekten kan voorkomen.",
+    "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.": "Ik voel me persoonlijk verantwoordelijk om het milieu te beschermen door mijn dagelijkse handelingen, waaronder de consumptie van duurzame voedingsproducten.",
+    "I feel guilty when my food choices harm the environment.": "Ik voel me schuldig wanneer mijn voedselkeuzes het milieu schaden.",
+    "I reflect about my health a lot": "Ik denk veel na over mijn gezondheid.",
+    "I am concerned about environmental problems because of the consequences for: - Marine life": "Ik maak me zorgen over milieuproblemen vanwege de gevolgen voor: - het leven in zee",
+    "I am concerned about environmental problems because of the consequences for: - My lifestyle": "Ik maak me zorgen over milieuproblemen vanwege de gevolgen voor: - mijn levensstijl",
+    "I am concerned about environmental problems because of the consequences for: - People in my country": "Ik maak me zorgen over milieuproblemen vanwege de gevolgen voor: - de mensen in mijn land",
+    "I have a positive opinion about plant-based diets.": "Ik heb een positieve mening over plantaardige voeding.",
+    "I believe that organic production is better for the environment than conventional farming.": "Ik geloof dat biologische productie beter is voor het milieu dan conventionele landbouw.",
+    "I believe that reducing food waste is important for protecting the environment.": "Ik geloof dat het verminderen van voedselverspilling belangrijk is voor de bescherming van het milieu.",
+    "When making decisions, I think carefully about how my choices may influence the future.": "Als ik beslissingen neem, denk ik goed na over hoe mijn keuzes de toekomst kunnen beïnvloeden.",
+    "What happens now is more important to me than what might happen in the future.": "Wat nu gebeurt, is voor mij belangrijker dan wat er in de toekomst zou kunnen gebeuren.",
+    "I think two years is a relatively short time to wait for something.": "Ik vind twee jaar een relatief korte tijd om op iets te wachten.",
+    "I find it difficult to foresee the impact of my actions in the future.": "Ik vind het moeilijk om de gevolgen van mijn handelen in de toekomst te voorzien."
+  }
+}

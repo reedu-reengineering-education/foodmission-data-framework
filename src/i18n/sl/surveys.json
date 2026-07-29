@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "sl"
+  },
+  "likert5": {
+    "1": "Sploh se ne strinjam",
+    "2": "Se ne strinjam",
+    "3": "Niti se strinjam niti ne strinjam",
+    "4": "Se strinjam",
+    "5": "Popolnoma se strinjam"
+  }
+}

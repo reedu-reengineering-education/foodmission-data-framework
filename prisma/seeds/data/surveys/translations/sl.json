@@ -1,0 +1,94 @@
+{
+  "surveys": {
+    "second use": {
+      "title": "druga uporaba",
+      "description": "Anketa: druga uporaba"
+    },
+    "third use": {
+      "title": "tretja uporaba",
+      "description": "Anketa: tretja uporaba"
+    },
+    "fourth use": {
+      "title": "četrta uporaba",
+      "description": "Anketa: četrta uporaba"
+    },
+    "fifth use": {
+      "title": "peta uporaba",
+      "description": "Anketa: peta uporaba"
+    },
+    "sixth use": {
+      "title": "šesta uporaba",
+      "description": "Anketa: šesta uporaba"
+    },
+    "seventh": {
+      "title": "sedma",
+      "description": "Anketa: sedma"
+    },
+    "after 1 mt and at least 8th use": {
+      "title": "po 1 mesecu in vsaj 8. uporabi",
+      "description": "Anketa: po 1 mesecu in vsaj 8. uporabi"
+    },
+    "after 1 m and at least 9th use": {
+      "title": "po 1 mesecu in vsaj 9. uporabi",
+      "description": "Anketa: po 1 mesecu in vsaj 9. uporabi"
+    },
+    "after 1 m and at least 10th": {
+      "title": "po 1 mesecu in vsaj 10. uporabi",
+      "description": "Anketa: po 1 mesecu in vsaj 10. uporabi"
+    },
+    "end": {
+      "title": "konec",
+      "description": "Anketa: konec"
+    }
+  },
+  "questions": {
+    "When preparing food. It is easy for me to accomplish my desired results": "Pri pripravi hrane zlahka dosežem želene rezultate.",
+    "In preparing food. I can solve most problems with enough effort.": "Pri pripravi hrane lahko z dovolj truda rešim večino težav.",
+    "I am comfortable preparing food.": "Pri pripravi hrane se počutim sproščeno.",
+    "For me, cooking is just something to get through as quickly as possible": "Zame je kuhanje le nekaj, kar želim opraviti čim hitreje.",
+    "I prefer to spend my time on more important things than food": "Svoj čas raje namenim pomembnejšim stvarem kot hrani.",
+    "My social responsibilities prevent me from having the time to prepare meals.": "Zaradi družbenih obveznosti nimam časa za pripravo obrokov.",
+    "My job responsibilities prevent me from having the time to prepare meals.": "Zaradi službenih obveznosti nimam časa za pripravo obrokov.",
+    "The FOODMISSION app is accurate.": "Aplikacija FOODMISSION je natančna.",
+    "The FOODMISSION app is trustworthy.": "Aplikacija FOODMISSION je vredna zaupanja.",
+    "The FOODMISSION app is true.": "Aplikacija FOODMISSION je resnična.",
+    "I can use the FOODMISSION app in the way I want.": "Aplikacijo FOODMISSION lahko uporabljam tako, kot želim.",
+    "I can make choices regarding how to use the FOODMISSION app": "Sam(a) lahko izberem, kako uporabljam aplikacijo FOODMISSION.",
+    "I can direct my own usage experience while using the FOODMISSION app.": "Med uporabo aplikacije FOODMISSION lahko sam(a) usmerjam svojo izkušnjo.",
+    "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.": "Imam dober občutek, ker me čustva, ki jih doživljam med uporabo aplikacije FOODMISSION, spodbujajo na pozitiven način.",
+    "Using the FOODMISSION app causes me to make some changes in my behavior.": "Uporaba aplikacije FOODMISSION me pripravi do tega, da spremenim svoje vedenje.",
+    "It gives me pleasure to use the FOODMISSION app": "Uporaba aplikacije FOODMISSION mi je v veselje.",
+    "Using the FOODMISSION app has the potential to inspire users.": "Uporaba aplikacije FOODMISSION lahko navdihne uporabnike.",
+    "Using the FOODMISSION app has the potential to influence user behavior.": "Uporaba aplikacije FOODMISSION lahko vpliva na vedenje uporabnikov.",
+    "I do not eat meat / I am trying to reduce my meat consumption.": "Ne jem mesa / Poskušam zmanjšati porabo mesa.",
+    "I am trying to have minimal daily food waste.": "Poskušam imeti čim manj dnevnih odpadkov hrane.",
+    "I read labels to check the environmental impact of a product before buying it.": "Preberem etikete, da pred nakupom preverim okoljski vpliv izdelka.",
+    "I read nutritional information to assess the nutritional quality of a product before buying it.": "Preberem podatke o hranilni vrednosti, da pred nakupom ocenim prehransko kakovost izdelka.",
+    "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.": "Pazim na uravnotežen vnos ogljikovih hidratov, beljakovin in maščob.",
+    "I try to include a variety of foods in my diet.": "V svojo prehrano poskušam vključiti raznolika živila.",
+    "I think it is easy for me to follow a vegetarian diet in the future.": "Mislim, da mi bo v prihodnosti lahko slediti vegetarijanski prehrani.",
+    "Organic products are widely available and convenient to buy.": "Ekološki izdelki so široko dostopni in jih je enostavno kupiti.",
+    "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.": "Lahko privzamem bolj zdrave prehranske navade, tudi če moram bolje načrtovati prehrano in nakupe.",
+    "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.": "Lahko omejim vnos nezdravih maščob, tudi če traja nekaj časa, da se navadim.",
+    "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.": "Če bi želel(a), menim, da bi večino časa lahko ohranjal(a) zelo hranljivo prehrano.",
+    "I have a positive opinion about diets that are both healthy and environmentally friendly.": "Imam pozitivno mnenje o prehrani, ki je hkrati zdrava in okolju prijazna.",
+    "I know how to select products that have a low environmental impact.": "Vem, kako izbrati izdelke z majhnim vplivom na okolje.",
+    "I understand the environmental benefits of eco-labels of food products.": "Razumem okoljske prednosti okoljskih oznak na živilih.",
+    "I know what a healthy diet means.": "Vem, kaj pomeni zdrava prehrana.",
+    "It is beneficial to eat nutrient-dense food.": "Uživanje hranljivo bogatih živil je koristno.",
+    "I know that healthy eating can prevent certain diseases.": "Vem, da lahko zdrava prehrana prepreči nekatere bolezni.",
+    "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.": "Čutim osebno odgovornost za varovanje okolja s svojimi vsakodnevnimi dejanji, vključno z uživanjem trajnostnih živil.",
+    "I feel guilty when my food choices harm the environment.": "Počutim se krivega(-o), kadar moje prehranske izbire škodujejo okolju.",
+    "I reflect about my health a lot": "Veliko razmišljam o svojem zdravju.",
+    "I am concerned about environmental problems because of the consequences for: - Marine life": "Skrbijo me okoljski problemi zaradi posledic za: - morsko življenje",
+    "I am concerned about environmental problems because of the consequences for: - My lifestyle": "Skrbijo me okoljski problemi zaradi posledic za: - moj življenjski slog",
+    "I am concerned about environmental problems because of the consequences for: - People in my country": "Skrbijo me okoljski problemi zaradi posledic za: - ljudi v moji državi",
+    "I have a positive opinion about plant-based diets.": "Imam pozitivno mnenje o rastlinski prehrani.",
+    "I believe that organic production is better for the environment than conventional farming.": "Menim, da je ekološka pridelava boljša za okolje kot konvencionalno kmetijstvo.",
+    "I believe that reducing food waste is important for protecting the environment.": "Menim, da je zmanjševanje odpadne hrane pomembno za varovanje okolja.",
+    "When making decisions, I think carefully about how my choices may influence the future.": "Ko se odločam, dobro premislim, kako lahko moje odločitve vplivajo na prihodnost.",
+    "What happens now is more important to me than what might happen in the future.": "Kar se dogaja zdaj, mi je pomembnejše od tega, kar bi se lahko zgodilo v prihodnosti.",
+    "I think two years is a relatively short time to wait for something.": "Menim, da sta dve leti razmeroma kratek čas čakanja na nekaj.",
+    "I find it difficult to foresee the impact of my actions in the future.": "Težko predvidim posledice svojih dejanj v prihodnosti."
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "surveys": {
+    "second use": {
+      "title": "zweite Nutzung",
+      "description": "Umfrage: zweite Nutzung"
+    },
+    "third use": {
+      "title": "dritte Nutzung",
+      "description": "Umfrage: dritte Nutzung"
+    },
+    "fourth use": {
+      "title": "vierte Nutzung",
+      "description": "Umfrage: vierte Nutzung"
+    },
+    "fifth use": {
+      "title": "fünfte Nutzung",
+      "description": "Umfrage: fünfte Nutzung"
+    },
+    "sixth use": {
+      "title": "sechste Nutzung",
+      "description": "Umfrage: sechste Nutzung"
+    },
+    "seventh": {
+      "title": "siebte",
+      "description": "Umfrage: siebte"
+    },
+    "after 1 mt and at least 8th use": {
+      "title": "nach 1 Monat und mindestens 8. Nutzung",
+      "description": "Umfrage: nach 1 Monat und mindestens 8. Nutzung"
+    },
+    "after 1 m and at least 9th use": {
+      "title": "nach 1 Monat und mindestens 9. Nutzung",
+      "description": "Umfrage: nach 1 Monat und mindestens 9. Nutzung"
+    },
+    "after 1 m and at least 10th": {
+      "title": "nach 1 Monat und mindestens 10. Nutzung",
+      "description": "Umfrage: nach 1 Monat und mindestens 10. Nutzung"
+    },
+    "end": {
+      "title": "Ende",
+      "description": "Umfrage: Ende"
+    }
+  },
+  "questions": {
+    "When preparing food. It is easy for me to accomplish my desired results": "Bei der Zubereitung von Essen fällt es mir leicht, das gewünschte Ergebnis zu erzielen.",
+    "In preparing food. I can solve most problems with enough effort.": "Bei der Zubereitung von Essen kann ich die meisten Probleme mit genügend Aufwand lösen.",
+    "I am comfortable preparing food.": "Ich fühle mich beim Zubereiten von Essen sicher.",
+    "For me, cooking is just something to get through as quickly as possible": "Für mich ist Kochen nur etwas, das ich so schnell wie möglich hinter mich bringen möchte.",
+    "I prefer to spend my time on more important things than food": "Ich verbringe meine Zeit lieber mit wichtigeren Dingen als mit Essen.",
+    "My social responsibilities prevent me from having the time to prepare meals.": "Meine sozialen Verpflichtungen lassen mir keine Zeit, Mahlzeiten zuzubereiten.",
+    "My job responsibilities prevent me from having the time to prepare meals.": "Meine beruflichen Verpflichtungen lassen mir keine Zeit, Mahlzeiten zuzubereiten.",
+    "The FOODMISSION app is accurate.": "Die FOODMISSION-App ist genau.",
+    "The FOODMISSION app is trustworthy.": "Die FOODMISSION-App ist vertrauenswürdig.",
+    "The FOODMISSION app is true.": "Die FOODMISSION-App ist wahrheitsgetreu.",
+    "I can use the FOODMISSION app in the way I want.": "Ich kann die FOODMISSION-App so nutzen, wie ich möchte.",
+    "I can make choices regarding how to use the FOODMISSION app": "Ich kann selbst entscheiden, wie ich die FOODMISSION-App nutze.",
+    "I can direct my own usage experience while using the FOODMISSION app.": "Ich kann mein eigenes Nutzungserlebnis bei der Verwendung der FOODMISSION-App selbst steuern.",
+    "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.": "Ich habe ein gutes Gefühl, weil die Emotionen, die ich bei der Nutzung der FOODMISSION-App empfinde, mich auf positive Weise herausfordern.",
+    "Using the FOODMISSION app causes me to make some changes in my behavior.": "Die Nutzung der FOODMISSION-App bewirkt, dass ich mein Verhalten ändere.",
+    "It gives me pleasure to use the FOODMISSION app": "Es macht mir Freude, die FOODMISSION-App zu nutzen.",
+    "Using the FOODMISSION app has the potential to inspire users.": "Die Nutzung der FOODMISSION-App hat das Potenzial, Nutzerinnen und Nutzer zu inspirieren.",
+    "Using the FOODMISSION app has the potential to influence user behavior.": "Die Nutzung der FOODMISSION-App hat das Potenzial, das Verhalten der Nutzerinnen und Nutzer zu beeinflussen.",
+    "I do not eat meat / I am trying to reduce my meat consumption.": "Ich esse kein Fleisch / Ich versuche, meinen Fleischkonsum zu reduzieren.",
+    "I am trying to have minimal daily food waste.": "Ich versuche, täglich möglichst wenig Lebensmittel zu verschwenden.",
+    "I read labels to check the environmental impact of a product before buying it.": "Ich lese Etiketten, um vor dem Kauf die Umweltauswirkungen eines Produkts zu prüfen.",
+    "I read nutritional information to assess the nutritional quality of a product before buying it.": "Ich lese Nährwertangaben, um vor dem Kauf die ernährungsphysiologische Qualität eines Produkts zu beurteilen.",
+    "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.": "Ich achte auf eine ausgewogene Zufuhr von Kohlenhydraten, Proteinen und Fetten.",
+    "I try to include a variety of foods in my diet.": "Ich versuche, eine Vielfalt an Lebensmitteln in meine Ernährung einzubauen.",
+    "I think it is easy for me to follow a vegetarian diet in the future.": "Ich denke, es fällt mir leicht, mich in Zukunft vegetarisch zu ernähren.",
+    "Organic products are widely available and convenient to buy.": "Bio-Produkte sind weithin verfügbar und bequem zu kaufen.",
+    "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.": "Ich kann mir gesündere Ernährungsgewohnheiten aneignen, auch wenn ich dafür meine Ernährung und meinen Lebensmitteleinkauf besser planen muss.",
+    "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.": "Ich kann meine Aufnahme ungesunder Fette einschränken, auch wenn es dauert, bis ich mich daran gewöhnt habe.",
+    "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.": "Wenn ich wollte, könnte ich mich die meiste Zeit sehr nährstoffreich ernähren.",
+    "I have a positive opinion about diets that are both healthy and environmentally friendly.": "Ich habe eine positive Meinung zu Ernährungsweisen, die sowohl gesund als auch umweltfreundlich sind.",
+    "I know how to select products that have a low environmental impact.": "Ich weiß, wie ich Produkte mit geringen Umweltauswirkungen auswähle.",
+    "I understand the environmental benefits of eco-labels of food products.": "Ich verstehe die ökologischen Vorteile von Umweltsiegeln auf Lebensmitteln.",
+    "I know what a healthy diet means.": "Ich weiß, was eine gesunde Ernährung bedeutet.",
+    "It is beneficial to eat nutrient-dense food.": "Es ist vorteilhaft, nährstoffreiche Lebensmittel zu essen.",
+    "I know that healthy eating can prevent certain diseases.": "Ich weiß, dass gesunde Ernährung bestimmten Krankheiten vorbeugen kann.",
+    "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.": "Ich fühle mich persönlich verantwortlich, die Umwelt durch mein tägliches Handeln zu schützen, einschließlich des Konsums nachhaltiger Lebensmittel.",
+    "I feel guilty when my food choices harm the environment.": "Ich habe ein schlechtes Gewissen, wenn meine Lebensmittelentscheidungen der Umwelt schaden.",
+    "I reflect about my health a lot": "Ich denke viel über meine Gesundheit nach.",
+    "I am concerned about environmental problems because of the consequences for: - Marine life": "Umweltprobleme bereiten mir Sorgen wegen der Folgen für: - das Leben im Meer",
+    "I am concerned about environmental problems because of the consequences for: - My lifestyle": "Umweltprobleme bereiten mir Sorgen wegen der Folgen für: - meinen Lebensstil",
+    "I am concerned about environmental problems because of the consequences for: - People in my country": "Umweltprobleme bereiten mir Sorgen wegen der Folgen für: - die Menschen in meinem Land",
+    "I have a positive opinion about plant-based diets.": "Ich habe eine positive Meinung zu pflanzenbasierter Ernährung.",
+    "I believe that organic production is better for the environment than conventional farming.": "Ich glaube, dass ökologische Erzeugung besser für die Umwelt ist als konventionelle Landwirtschaft.",
+    "I believe that reducing food waste is important for protecting the environment.": "Ich glaube, dass die Reduzierung von Lebensmittelverschwendung wichtig für den Schutz der Umwelt ist.",
+    "When making decisions, I think carefully about how my choices may influence the future.": "Wenn ich Entscheidungen treffe, überlege ich genau, wie sich meine Entscheidungen auf die Zukunft auswirken können.",
+    "What happens now is more important to me than what might happen in the future.": "Was jetzt passiert, ist mir wichtiger als das, was in Zukunft passieren könnte.",
+    "I think two years is a relatively short time to wait for something.": "Ich finde, zwei Jahre sind eine relativ kurze Zeit, um auf etwas zu warten.",
+    "I find it difficult to foresee the impact of my actions in the future.": "Es fällt mir schwer, die Auswirkungen meines Handelns in der Zukunft vorherzusehen."
+  }
+}

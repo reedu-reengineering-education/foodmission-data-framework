@@ -6,16 +6,60 @@ import {
 } from '@nestjs/common';
 import { SurveysRepository } from '../repositories/surveys.repository';
 import {
+  AnswerOptionDto,
   CreateSurveyDto,
   UpdateSurveyDto,
   SubmitSurveyResponseDto,
   SurveyDto,
   SurveyResponseDto,
 } from '../dto/survey.dto';
+import { TranslationService } from '../../translations/services/translation.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { I18nService } from 'nestjs-i18n';
+import { toSurveySlug } from '../utils/survey-slug.util';
+
+type LocalizableQuestion = { id: string; text: string };
+
+type LocalizableSurvey = {
+  id: string;
+  title: string;
+  description?: string | null;
+  questions?: LocalizableQuestion[];
+  slug?: string;
+};
+
+/** Every question uses the same 5-point Likert scale. */
+const LIKERT5_VALUES = [1, 2, 3, 4, 5] as const;
+
+const LIKERT5_ENGLISH: Record<number, string> = {
+  1: 'Strongly disagree',
+  2: 'Disagree',
+  3: 'Neither agree nor disagree',
+  4: 'Agree',
+  5: 'Strongly agree',
+};
 
 @Injectable()
 export class SurveysService {
-  constructor(private readonly surveysRepository: SurveysRepository) {}
+  constructor(
+    private readonly surveysRepository: SurveysRepository,
+    private readonly translationService: TranslationService,
+    private readonly i18n: I18nService,
+  ) {}
+
+  /** Localized answer options, shared by all questions of all surveys. */
+  private likertScale(locale: string): AnswerOptionDto[] {
+    return LIKERT5_VALUES.map((value) => {
+      const label = this.i18n.translate(`surveys.likert5.${value}`, {
+        lang: locale,
+        defaultValue: LIKERT5_ENGLISH[value],
+      });
+      return {
+        value,
+        label: typeof label === 'string' ? label : LIKERT5_ENGLISH[value],
+      };
+    });
+  }
 
   private mapSurveyToDto(survey: any): SurveyDto {
     return survey as SurveyDto;
@@ -28,18 +72,190 @@ export class SurveysService {
     } as SurveyResponseDto;
   }
 
-  // Survey Operations
-  async getAllSurveys(): Promise<SurveyDto[]> {
-    const surveys = await this.surveysRepository.getAllSurveys();
-    return surveys.map((s) => this.mapSurveyToDto(s));
+  /** Translated title/description per survey id (English values as fallback). */
+  private async resolveSurveyFields(
+    surveys: LocalizableSurvey[],
+    locale: string,
+  ): Promise<Record<string, Record<string, string | null>>> {
+    if (surveys.length === 0) {
+      return {};
+    }
+    return this.translationService.resolveMany(
+      'Survey',
+      surveys.map((s) => s.id),
+      locale,
+      ['title', 'description'],
+      Object.fromEntries(
+        surveys.map((s) => [
+          s.id,
+          { title: s.title, description: s.description },
+        ]),
+      ),
+    );
   }
 
-  async getSurveyById(id: string): Promise<SurveyDto> {
+  /** Translated text per question id (English values as fallback). */
+  private async resolveQuestionTexts(
+    questions: LocalizableQuestion[],
+    locale: string,
+  ): Promise<Record<string, Record<string, string | null>>> {
+    if (questions.length === 0) {
+      return {};
+    }
+    return this.translationService.resolveMany(
+      'Question',
+      questions.map((q) => q.id),
+      locale,
+      ['text'],
+      Object.fromEntries(questions.map((q) => [q.id, { text: q.text }])),
+    );
+  }
+
+  /**
+   * Attach the localized answer scale to every question and, for non-default
+   * locales, overlay survey/question translations.
+   */
+  private async localizeSurveys<T extends LocalizableSurvey>(
+    surveys: T[],
+    lang?: string,
+  ): Promise<T[]> {
+    const locale = this.translationService.resolveLocale(lang);
+    const answers = this.likertScale(locale);
+
+    if (surveys.length === 0) {
+      return surveys;
+    }
+
+    if (locale === DEFAULT_LOCALE) {
+      return surveys.map((survey) =>
+        this.withAnswers(
+          // `slug` is placed before the spread so it keeps this key order in
+          // the response — an object spread appends keys the source didn't
+          // already have, so writing it after `...survey` pushes it last.
+          { slug: toSurveySlug(survey.title), ...survey },
+          answers,
+        ),
+      );
+    }
+
+    const questions = surveys.flatMap((s) => s.questions ?? []);
+    const [surveyFields, questionTexts] = await Promise.all([
+      this.resolveSurveyFields(surveys, locale),
+      this.resolveQuestionTexts(questions, locale),
+    ]);
+
+    return surveys.map((survey) =>
+      this.withAnswers(
+        {
+          slug: toSurveySlug(survey.title),
+          ...survey,
+          title: surveyFields[survey.id]?.title ?? survey.title,
+          description:
+            surveyFields[survey.id]?.description ?? survey.description,
+        },
+        answers,
+        questionTexts,
+      ),
+    );
+  }
+
+  private withAnswers<T extends LocalizableSurvey>(
+    survey: T,
+    answers: AnswerOptionDto[],
+    questionTexts?: Record<string, Record<string, string | null>>,
+  ): T {
+    if (!survey.questions) {
+      return survey;
+    }
+    return {
+      ...survey,
+      questions: survey.questions.map((question) => ({
+        ...question,
+        text: questionTexts?.[question.id]?.text ?? question.text,
+        answers,
+      })),
+    };
+  }
+
+  /**
+   * Attach the answer scale to and overlay translations on the survey and
+   * question objects embedded in a survey response payload.
+   */
+  private async localizeSurveyResponses<T extends Record<string, any>>(
+    responses: T[],
+    lang?: string,
+  ): Promise<T[]> {
+    const locale = this.translationService.resolveLocale(lang);
+    const answers = this.likertScale(locale);
+    if (responses.length === 0) {
+      return responses;
+    }
+
+    const embeddedQuestions: LocalizableQuestion[] = responses.flatMap(
+      (r) =>
+        r.questionResponses
+          ?.map((qr: any) => qr.question)
+          .filter(Boolean) as LocalizableQuestion[],
+    );
+    const surveys = responses
+      .map((r) => r.survey)
+      .filter(Boolean) as LocalizableSurvey[];
+
+    const [localizedSurveys, questionTexts] = await Promise.all([
+      this.localizeSurveys(surveys, locale),
+      locale === DEFAULT_LOCALE
+        ? Promise.resolve({})
+        : this.resolveQuestionTexts(embeddedQuestions, locale),
+    ]);
+    const surveyById = new Map(localizedSurveys.map((s) => [s.id, s]));
+
+    return responses.map((response) => ({
+      ...response,
+      survey: response.survey
+        ? (surveyById.get(response.survey.id) ?? response.survey)
+        : response.survey,
+      questionResponses: response.questionResponses?.map((qr: any) => ({
+        ...qr,
+        question: qr.question
+          ? {
+              ...qr.question,
+              text: questionTexts[qr.question.id]?.text ?? qr.question.text,
+              answers,
+            }
+          : qr.question,
+      })),
+    }));
+  }
+
+  // Survey Operations
+  async getAllSurveys(lang?: string): Promise<SurveyDto[]> {
+    const surveys = await this.surveysRepository.getAllSurveys();
+    const localized = await this.localizeSurveys(surveys, lang);
+    return localized.map((s) => this.mapSurveyToDto(s));
+  }
+
+  async getSurveyById(id: string, lang?: string): Promise<SurveyDto> {
     const survey = await this.surveysRepository.getSurveyById(id);
     if (!survey) {
       throw new NotFoundException(`Survey with id ${id} not found`);
     }
-    return this.mapSurveyToDto(survey);
+    const [localized] = await this.localizeSurveys([survey], lang);
+    return this.mapSurveyToDto(localized);
+  }
+
+  /**
+   * Look up a survey by its slug (see toSurveySlug — derived from `title`,
+   * not stored). Fine to scan the full list given the current survey count;
+   * revisit if that stops being small.
+   */
+  async getSurveyBySlug(slug: string, lang?: string): Promise<SurveyDto> {
+    const surveys = await this.surveysRepository.getAllSurveys();
+    const survey = surveys.find((s) => toSurveySlug(s.title) === slug);
+    if (!survey) {
+      throw new NotFoundException(`Survey with slug ${slug} not found`);
+    }
+    const [localized] = await this.localizeSurveys([survey], lang);
+    return this.mapSurveyToDto(localized);
   }
 
   async createSurvey(data: CreateSurveyDto): Promise<SurveyDto> {
@@ -60,7 +276,8 @@ export class SurveysService {
     }
 
     const survey = await this.surveysRepository.createSurvey(data);
-    return this.mapSurveyToDto(survey);
+    const [localized] = await this.localizeSurveys([survey]);
+    return this.mapSurveyToDto(localized);
   }
 
   async updateSurvey(id: string, data: UpdateSurveyDto): Promise<SurveyDto> {
@@ -69,7 +286,8 @@ export class SurveysService {
       throw new NotFoundException(`Survey with id ${id} not found`);
     }
     const updated = await this.surveysRepository.updateSurvey(id, data);
-    return this.mapSurveyToDto(updated);
+    const [localized] = await this.localizeSurveys([updated]);
+    return this.mapSurveyToDto(localized);
   }
 
   async deleteSurvey(id: string): Promise<void> {
@@ -77,6 +295,10 @@ export class SurveysService {
     if (!survey) {
       throw new NotFoundException(`Survey with id ${id} not found`);
     }
+    for (const question of survey.questions) {
+      await this.translationService.deleteForEntity('Question', question.id);
+    }
+    await this.translationService.deleteForEntity('Survey', id);
     await this.surveysRepository.deleteSurvey(id);
   }
 
@@ -106,6 +328,7 @@ export class SurveysService {
   }
 
   async deleteQuestion(questionId: string): Promise<void> {
+    await this.translationService.deleteForEntity('Question', questionId);
     await this.surveysRepository.deleteQuestion(questionId);
   }
 
@@ -158,6 +381,7 @@ export class SurveysService {
   async getUserSurveyResponse(
     userId: string,
     surveyId: string,
+    lang?: string,
   ): Promise<SurveyResponseDto> {
     const response = await this.surveysRepository.getSurveyResponse(
       userId,
@@ -168,12 +392,14 @@ export class SurveysService {
         `No response found for user ${userId} on survey ${surveyId}`,
       );
     }
-    return this.mapSurveyResponseToDto(response);
+    const [localized] = await this.localizeSurveyResponses([response], lang);
+    return this.mapSurveyResponseToDto(localized);
   }
 
-  async getUserSurveyResponses(userId: string) {
+  async getUserSurveyResponses(userId: string, lang?: string) {
     const responses =
       await this.surveysRepository.getUserSurveyResponses(userId);
-    return responses.map((r) => this.mapSurveyResponseToDto(r));
+    const localized = await this.localizeSurveyResponses(responses, lang);
+    return localized.map((r) => this.mapSurveyResponseToDto(r));
   }
 }

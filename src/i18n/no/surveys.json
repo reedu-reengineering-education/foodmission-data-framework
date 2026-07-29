@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "no"
+  },
+  "likert5": {
+    "1": "Helt uenig",
+    "2": "Uenig",
+    "3": "Verken enig eller uenig",
+    "4": "Enig",
+    "5": "Helt enig"
+  }
+}

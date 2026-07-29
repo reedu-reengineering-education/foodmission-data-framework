@@ -1,0 +1,94 @@
+{
+  "surveys": {
+    "second use": {
+      "title": "andre bruk",
+      "description": "Spørreundersøkelse: andre bruk"
+    },
+    "third use": {
+      "title": "tredje bruk",
+      "description": "Spørreundersøkelse: tredje bruk"
+    },
+    "fourth use": {
+      "title": "fjerde bruk",
+      "description": "Spørreundersøkelse: fjerde bruk"
+    },
+    "fifth use": {
+      "title": "femte bruk",
+      "description": "Spørreundersøkelse: femte bruk"
+    },
+    "sixth use": {
+      "title": "sjette bruk",
+      "description": "Spørreundersøkelse: sjette bruk"
+    },
+    "seventh": {
+      "title": "syvende",
+      "description": "Spørreundersøkelse: syvende"
+    },
+    "after 1 mt and at least 8th use": {
+      "title": "etter 1 måned og minst 8. bruk",
+      "description": "Spørreundersøkelse: etter 1 måned og minst 8. bruk"
+    },
+    "after 1 m and at least 9th use": {
+      "title": "etter 1 måned og minst 9. bruk",
+      "description": "Spørreundersøkelse: etter 1 måned og minst 9. bruk"
+    },
+    "after 1 m and at least 10th": {
+      "title": "etter 1 måned og minst 10. bruk",
+      "description": "Spørreundersøkelse: etter 1 måned og minst 10. bruk"
+    },
+    "end": {
+      "title": "slutt",
+      "description": "Spørreundersøkelse: slutt"
+    }
+  },
+  "questions": {
+    "When preparing food. It is easy for me to accomplish my desired results": "Når jeg lager mat, er det lett for meg å oppnå ønsket resultat.",
+    "In preparing food. I can solve most problems with enough effort.": "Når jeg lager mat, kan jeg løse de fleste problemer med nok innsats.",
+    "I am comfortable preparing food.": "Jeg er komfortabel med å lage mat.",
+    "For me, cooking is just something to get through as quickly as possible": "For meg er matlaging bare noe jeg vil bli ferdig med så raskt som mulig.",
+    "I prefer to spend my time on more important things than food": "Jeg bruker heller tiden min på viktigere ting enn mat.",
+    "My social responsibilities prevent me from having the time to prepare meals.": "Mine sosiale forpliktelser gjør at jeg ikke har tid til å lage måltider.",
+    "My job responsibilities prevent me from having the time to prepare meals.": "Mine jobbforpliktelser gjør at jeg ikke har tid til å lage måltider.",
+    "The FOODMISSION app is accurate.": "FOODMISSION-appen er nøyaktig.",
+    "The FOODMISSION app is trustworthy.": "FOODMISSION-appen er til å stole på.",
+    "The FOODMISSION app is true.": "FOODMISSION-appen er sannferdig.",
+    "I can use the FOODMISSION app in the way I want.": "Jeg kan bruke FOODMISSION-appen slik jeg vil.",
+    "I can make choices regarding how to use the FOODMISSION app": "Jeg kan selv velge hvordan jeg bruker FOODMISSION-appen.",
+    "I can direct my own usage experience while using the FOODMISSION app.": "Jeg kan styre min egen brukeropplevelse når jeg bruker FOODMISSION-appen.",
+    "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.": "Jeg får en god følelse fordi følelsene jeg opplever når jeg bruker FOODMISSION-appen, utfordrer meg på en positiv måte.",
+    "Using the FOODMISSION app causes me to make some changes in my behavior.": "Bruken av FOODMISSION-appen gjør at jeg endrer atferden min.",
+    "It gives me pleasure to use the FOODMISSION app": "Det gir meg glede å bruke FOODMISSION-appen.",
+    "Using the FOODMISSION app has the potential to inspire users.": "Bruk av FOODMISSION-appen kan inspirere brukerne.",
+    "Using the FOODMISSION app has the potential to influence user behavior.": "Bruk av FOODMISSION-appen kan påvirke brukernes atferd.",
+    "I do not eat meat / I am trying to reduce my meat consumption.": "Jeg spiser ikke kjøtt / Jeg prøver å redusere kjøttforbruket mitt.",
+    "I am trying to have minimal daily food waste.": "Jeg prøver å ha minst mulig matsvinn hver dag.",
+    "I read labels to check the environmental impact of a product before buying it.": "Jeg leser merkingen for å sjekke miljøpåvirkningen til et produkt før jeg kjøper det.",
+    "I read nutritional information to assess the nutritional quality of a product before buying it.": "Jeg leser næringsinnholdet for å vurdere ernæringskvaliteten til et produkt før jeg kjøper det.",
+    "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.": "Jeg passer på å ha et balansert inntak av karbohydrater, proteiner og fett.",
+    "I try to include a variety of foods in my diet.": "Jeg prøver å ha et variert utvalg av matvarer i kostholdet mitt.",
+    "I think it is easy for me to follow a vegetarian diet in the future.": "Jeg tror det vil være lett for meg å følge et vegetarisk kosthold i fremtiden.",
+    "Organic products are widely available and convenient to buy.": "Økologiske produkter er lett tilgjengelige og enkle å kjøpe.",
+    "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.": "Jeg kan legge om til sunnere spisevaner, selv om jeg må planlegge kosthold og matinnkjøp bedre.",
+    "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.": "Jeg kan begrense inntaket av usunt fett, selv om det tar tid før jeg venner meg til det.",
+    "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.": "Hvis jeg ville, tror jeg at jeg kunne holde et svært næringsrikt kosthold mesteparten av tiden.",
+    "I have a positive opinion about diets that are both healthy and environmentally friendly.": "Jeg har en positiv oppfatning av kosthold som er både sunt og miljøvennlig.",
+    "I know how to select products that have a low environmental impact.": "Jeg vet hvordan jeg velger produkter med lav miljøpåvirkning.",
+    "I understand the environmental benefits of eco-labels of food products.": "Jeg forstår miljøfordelene ved miljømerking av matvarer.",
+    "I know what a healthy diet means.": "Jeg vet hva et sunt kosthold innebærer.",
+    "It is beneficial to eat nutrient-dense food.": "Det er gunstig å spise næringsrik mat.",
+    "I know that healthy eating can prevent certain diseases.": "Jeg vet at sunt kosthold kan forebygge visse sykdommer.",
+    "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.": "Jeg føler et personlig ansvar for å beskytte miljøet gjennom mine daglige handlinger, inkludert forbruket av bærekraftige matvarer.",
+    "I feel guilty when my food choices harm the environment.": "Jeg får dårlig samvittighet når matvalgene mine skader miljøet.",
+    "I reflect about my health a lot": "Jeg tenker mye på helsen min.",
+    "I am concerned about environmental problems because of the consequences for: - Marine life": "Jeg er bekymret for miljøproblemer på grunn av konsekvensene for: - livet i havet",
+    "I am concerned about environmental problems because of the consequences for: - My lifestyle": "Jeg er bekymret for miljøproblemer på grunn av konsekvensene for: - livsstilen min",
+    "I am concerned about environmental problems because of the consequences for: - People in my country": "Jeg er bekymret for miljøproblemer på grunn av konsekvensene for: - folk i landet mitt",
+    "I have a positive opinion about plant-based diets.": "Jeg har en positiv oppfatning av plantebasert kosthold.",
+    "I believe that organic production is better for the environment than conventional farming.": "Jeg mener at økologisk produksjon er bedre for miljøet enn konvensjonelt landbruk.",
+    "I believe that reducing food waste is important for protecting the environment.": "Jeg mener at å redusere matsvinn er viktig for å beskytte miljøet.",
+    "When making decisions, I think carefully about how my choices may influence the future.": "Når jeg tar beslutninger, tenker jeg nøye gjennom hvordan valgene mine kan påvirke fremtiden.",
+    "What happens now is more important to me than what might happen in the future.": "Det som skjer nå, er viktigere for meg enn det som kan skje i fremtiden.",
+    "I think two years is a relatively short time to wait for something.": "Jeg synes to år er relativt kort tid å vente på noe.",
+    "I find it difficult to foresee the impact of my actions in the future.": "Jeg synes det er vanskelig å forutse konsekvensene av handlingene mine i fremtiden."
+  }
+}

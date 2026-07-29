@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "likert5": {
+    "1": "Del tutto in disaccordo",
+    "2": "In disaccordo",
+    "3": "Né d’accordo né in disaccordo",
+    "4": "D’accordo",
+    "5": "Del tutto d’accordo"
+  }
+}

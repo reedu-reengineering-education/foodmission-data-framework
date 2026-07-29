@@ -2,9 +2,10 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
+  Query,
   Body,
   UseGuards,
   HttpCode,
@@ -16,6 +17,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiQuery,
   ApiBody,
   ApiConflictResponse,
   ApiBadRequestResponse,
@@ -29,9 +31,11 @@ import {
   SurveyDto,
   SurveyResponseDto,
 } from '../dto/survey.dto';
+import { SurveyQueryDto } from '../dto/survey-query.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Surveys')
@@ -40,30 +44,47 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class SurveysController {
   constructor(private readonly surveysService: SurveysService) {}
 
-  // Public Endpoints - Get Surveys
+  // User Endpoints - Get Surveys
   @Get()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all surveys',
     description:
-      'Retrieve all available surveys with their questions and answer options. No authentication required.',
+      'Retrieve all available surveys with their questions and answer options. Requires authentication.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiResponse({
     status: 200,
     description: 'List of all surveys successfully retrieved',
     type: [SurveyDto],
   })
-  async getAllSurveys(): Promise<SurveyDto[]> {
-    return this.surveysService.getAllSurveys();
+  async getAllSurveys(@Query() query: SurveyQueryDto): Promise<SurveyDto[]> {
+    return this.surveysService.getAllSurveys(query.lang);
   }
 
-  @Get(':id')
-  @Public()
-  @ApiParam({ name: 'id', description: 'Survey ID' })
+  @Get('by-slug/:slug')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({
+    name: 'slug',
+    description: 'Survey slug, e.g. "third-use" (see SurveyDto.slug)',
+  })
   @ApiOperation({
-    summary: 'Get survey by ID',
+    summary: 'Get survey by slug',
     description:
-      'Retrieve a specific survey by its ID, including all questions and answer options. No authentication required.',
+      'Retrieve a specific survey by its stable, always-English slug — useful for onboarding flows that reference a survey without knowing its database ID. Requires authentication.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiResponse({
     status: 200,
@@ -71,8 +92,39 @@ export class SurveysController {
     type: SurveyDto,
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
-  async getSurveyById(@Param('id') id: string): Promise<SurveyDto> {
-    return this.surveysService.getSurveyById(id);
+  async getSurveyBySlug(
+    @Param('slug') slug: string,
+    @Query() query: SurveyQueryDto,
+  ): Promise<SurveyDto> {
+    return this.surveysService.getSurveyBySlug(slug, query.lang);
+  }
+
+  @Get(':id')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'id', description: 'Survey ID' })
+  @ApiOperation({
+    summary: 'Get survey by ID',
+    description:
+      'Retrieve a specific survey by its ID, including all questions and answer options. Requires authentication.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Survey retrieved successfully',
+    type: SurveyDto,
+  })
+  @ApiNotFoundResponse({ description: 'Survey not found' })
+  async getSurveyById(
+    @Param('id') id: string,
+    @Query() query: SurveyQueryDto,
+  ): Promise<SurveyDto> {
+    return this.surveysService.getSurveyById(id, query.lang);
   }
 
   // User Endpoints - Survey Responses
@@ -83,7 +135,7 @@ export class SurveysController {
   @ApiOperation({
     summary: 'Submit survey responses',
     description:
-      'Submit user responses to a survey. Each response must contain a valid question ID and answer ID. A user can only submit one response per survey.',
+      'Submit user responses to a survey. Each response must contain a valid question ID and a Likert value (1-5). A user can only submit one response per survey.',
   })
   @ApiBody({ type: SubmitSurveyResponseDto })
   @ApiResponse({
@@ -93,7 +145,7 @@ export class SurveysController {
   })
   @ApiBadRequestResponse({
     description:
-      'Invalid request - missing questions, invalid question/answer IDs, or validation errors',
+      'Invalid request - missing questions, invalid question ID, out-of-range value, or validation errors',
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
   @ApiConflictResponse({
@@ -102,9 +154,8 @@ export class SurveysController {
   async submitSurveyResponse(
     @Param('id') surveyId: string,
     @Body() dto: SubmitSurveyResponseDto,
-    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
   ): Promise<SurveyResponseDto> {
-    const userId = user.sub; // Extract userId from JWT
     return this.surveysService.submitSurveyResponse(userId, surveyId, {
       responses: dto.responses,
     });
@@ -118,6 +169,12 @@ export class SurveysController {
     description:
       "Retrieve the current user's responses to a specific survey if they have responded.",
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'User survey response retrieved successfully',
@@ -128,10 +185,14 @@ export class SurveysController {
   })
   async getUserSurveyResponse(
     @Param('id') surveyId: string,
-    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Query() query: SurveyQueryDto,
   ): Promise<SurveyResponseDto> {
-    const userId = user.sub;
-    return this.surveysService.getUserSurveyResponse(userId, surveyId);
+    return this.surveysService.getUserSurveyResponse(
+      userId,
+      surveyId,
+      query.lang,
+    );
   }
 
   @Get('responses/user/all')
@@ -140,14 +201,22 @@ export class SurveysController {
     summary: "Get all user's survey responses",
     description: 'Retrieve all survey responses submitted by the current user.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated titles, descriptions and question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'All user survey responses retrieved successfully',
     type: [SurveyResponseDto],
   })
-  async getUserSurveyResponses(@CurrentUser() user: any) {
-    const userId = user.sub;
-    return this.surveysService.getUserSurveyResponses(userId);
+  async getUserSurveyResponses(
+    @CurrentUser('id') userId: string,
+    @Query() query: SurveyQueryDto,
+  ) {
+    return this.surveysService.getUserSurveyResponses(userId, query.lang);
   }
 
   // Admin Endpoints - Survey CRUD
@@ -174,13 +243,14 @@ export class SurveysController {
     return this.surveysService.createSurvey(dto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Update survey (admin only)',
-    description: 'Update survey title or description. Requires admin role.',
+    description:
+      'Update survey title or description. Requires admin role. Note: `slug` is derived from `title`, so renaming the title changes the slug too.',
   })
   @ApiResponse({
     status: 200,
@@ -233,7 +303,7 @@ export class SurveysController {
     return this.surveysService.addQuestion(surveyId, dto);
   }
 
-  @Put(':surveyId/questions/:questionId')
+  @Patch(':surveyId/questions/:questionId')
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'surveyId', description: 'Survey ID' })

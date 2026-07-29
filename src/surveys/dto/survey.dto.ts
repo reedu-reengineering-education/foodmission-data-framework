@@ -11,15 +11,30 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export class AnswerOptionDto {
+  /** Value to submit for this option (1–5). */
+  value: number;
+  /** Localized label for the option. */
+  label: string;
+}
+
 export class QuestionDto {
   id: string;
   text: string;
   type: string;
   order: number;
+  /** The 5-point Likert scale, localized. Identical for every question. */
+  answers: AnswerOptionDto[];
 }
 
 export class SurveyDto {
   id: string;
+  /**
+   * Always-English identifier derived from `title`, unaffected by `lang`.
+   * Not permanent across renames — recomputed on every read, so changing
+   * `title` via PATCH /surveys/:id changes this too. See toSurveySlug().
+   */
+  slug: string;
   title: string;
   description?: string;
   questions: QuestionDto[];

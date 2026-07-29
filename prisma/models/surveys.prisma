@@ -3,7 +3,7 @@
 // ============================================================
 
 model Survey {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   title       String   @unique
   description String?
   createdAt   DateTime @default(now())
@@ -16,7 +16,7 @@ model Survey {
 }
 
 model Question {
-  id    String @id @default(cuid())
+  id    String @id @default(uuid())
   text  String
   type  String // e.g., "likert"
   order Int    // Order of question in survey
@@ -34,7 +34,7 @@ model Question {
 }
 
 model SurveyResponse {
-  id       String @id @default(cuid())
+  id       String @id @default(uuid())
   userId   String
   surveyId String
   
@@ -52,7 +52,7 @@ model SurveyResponse {
 }
 
 model QuestionResponse {
-  id               String @id @default(cuid())
+  id               String @id @default(uuid())
   questionId       String
   value            Int    // Likert scale value 1–5
   surveyResponseId String

@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "pl"
+  },
+  "likert5": {
+    "1": "Zdecydowanie się nie zgadzam",
+    "2": "Nie zgadzam się",
+    "3": "Ani się zgadzam, ani nie zgadzam",
+    "4": "Zgadzam się",
+    "5": "Zdecydowanie się zgadzam"
+  }
+}
