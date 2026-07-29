@@ -1,0 +1,94 @@
+{
+  "surveys": {
+    "second use": {
+      "title": "δεύτερη χρήση",
+      "description": "Ερωτηματολόγιο: δεύτερη χρήση"
+    },
+    "third use": {
+      "title": "τρίτη χρήση",
+      "description": "Ερωτηματολόγιο: τρίτη χρήση"
+    },
+    "fourth use": {
+      "title": "τέταρτη χρήση",
+      "description": "Ερωτηματολόγιο: τέταρτη χρήση"
+    },
+    "fifth use": {
+      "title": "πέμπτη χρήση",
+      "description": "Ερωτηματολόγιο: πέμπτη χρήση"
+    },
+    "sixth use": {
+      "title": "έκτη χρήση",
+      "description": "Ερωτηματολόγιο: έκτη χρήση"
+    },
+    "seventh": {
+      "title": "έβδομο",
+      "description": "Ερωτηματολόγιο: έβδομο"
+    },
+    "after 1 mt and at least 8th use": {
+      "title": "μετά από 1 μήνα και τουλάχιστον 8η χρήση",
+      "description": "Ερωτηματολόγιο: μετά από 1 μήνα και τουλάχιστον 8η χρήση"
+    },
+    "after 1 m and at least 9th use": {
+      "title": "μετά από 1 μήνα και τουλάχιστον 9η χρήση",
+      "description": "Ερωτηματολόγιο: μετά από 1 μήνα και τουλάχιστον 9η χρήση"
+    },
+    "after 1 m and at least 10th": {
+      "title": "μετά από 1 μήνα και τουλάχιστον 10η χρήση",
+      "description": "Ερωτηματολόγιο: μετά από 1 μήνα και τουλάχιστον 10η χρήση"
+    },
+    "end": {
+      "title": "τέλος",
+      "description": "Ερωτηματολόγιο: τέλος"
+    }
+  },
+  "questions": {
+    "When preparing food. It is easy for me to accomplish my desired results": "Όταν ετοιμάζω φαγητό, μου είναι εύκολο να πετύχω το αποτέλεσμα που θέλω.",
+    "In preparing food. I can solve most problems with enough effort.": "Όταν ετοιμάζω φαγητό, μπορώ να λύσω τα περισσότερα προβλήματα με αρκετή προσπάθεια.",
+    "I am comfortable preparing food.": "Νιώθω άνετα όταν ετοιμάζω φαγητό.",
+    "For me, cooking is just something to get through as quickly as possible": "Για μένα, το μαγείρεμα είναι απλώς κάτι που θέλω να τελειώνω όσο πιο γρήγορα γίνεται.",
+    "I prefer to spend my time on more important things than food": "Προτιμώ να αφιερώνω τον χρόνο μου σε πιο σημαντικά πράγματα από το φαγητό.",
+    "My social responsibilities prevent me from having the time to prepare meals.": "Οι κοινωνικές μου υποχρεώσεις δεν μου αφήνουν χρόνο να ετοιμάζω γεύματα.",
+    "My job responsibilities prevent me from having the time to prepare meals.": "Οι επαγγελματικές μου υποχρεώσεις δεν μου αφήνουν χρόνο να ετοιμάζω γεύματα.",
+    "The FOODMISSION app is accurate.": "Η εφαρμογή FOODMISSION είναι ακριβής.",
+    "The FOODMISSION app is trustworthy.": "Η εφαρμογή FOODMISSION είναι αξιόπιστη.",
+    "The FOODMISSION app is true.": "Η εφαρμογή FOODMISSION είναι αληθής.",
+    "I can use the FOODMISSION app in the way I want.": "Μπορώ να χρησιμοποιώ την εφαρμογή FOODMISSION όπως θέλω.",
+    "I can make choices regarding how to use the FOODMISSION app": "Μπορώ να επιλέγω πώς θα χρησιμοποιήσω την εφαρμογή FOODMISSION.",
+    "I can direct my own usage experience while using the FOODMISSION app.": "Μπορώ να καθοδηγώ τη δική μου εμπειρία χρήσης όσο χρησιμοποιώ την εφαρμογή FOODMISSION.",
+    "I have a good feeling because the emotions that I feel during using the FOODMISSION app challenge me in a positive way.": "Νιώθω ωραία, επειδή τα συναισθήματα που βιώνω χρησιμοποιώντας την εφαρμογή FOODMISSION με προκαλούν με θετικό τρόπο.",
+    "Using the FOODMISSION app causes me to make some changes in my behavior.": "Η χρήση της εφαρμογής FOODMISSION με κάνει να αλλάζω τη συμπεριφορά μου.",
+    "It gives me pleasure to use the FOODMISSION app": "Μου δίνει ευχαρίστηση να χρησιμοποιώ την εφαρμογή FOODMISSION.",
+    "Using the FOODMISSION app has the potential to inspire users.": "Η χρήση της εφαρμογής FOODMISSION μπορεί να εμπνεύσει τους χρήστες.",
+    "Using the FOODMISSION app has the potential to influence user behavior.": "Η χρήση της εφαρμογής FOODMISSION μπορεί να επηρεάσει τη συμπεριφορά των χρηστών.",
+    "I do not eat meat / I am trying to reduce my meat consumption.": "Δεν τρώω κρέας / Προσπαθώ να μειώσω την κατανάλωση κρέατος.",
+    "I am trying to have minimal daily food waste.": "Προσπαθώ να έχω ελάχιστη καθημερινή σπατάλη τροφίμων.",
+    "I read labels to check the environmental impact of a product before buying it.": "Διαβάζω τις ετικέτες για να ελέγξω τις περιβαλλοντικές επιπτώσεις ενός προϊόντος πριν το αγοράσω.",
+    "I read nutritional information to assess the nutritional quality of a product before buying it.": "Διαβάζω τις διατροφικές πληροφορίες για να αξιολογήσω τη διατροφική ποιότητα ενός προϊόντος πριν το αγοράσω.",
+    "I pay attention to maintaining a balanced intake of carbohydrates, proteins and fats.": "Προσέχω να διατηρώ ισορροπημένη πρόσληψη υδατανθράκων, πρωτεϊνών και λιπαρών.",
+    "I try to include a variety of foods in my diet.": "Προσπαθώ να συμπεριλαμβάνω ποικιλία τροφίμων στη διατροφή μου.",
+    "I think it is easy for me to follow a vegetarian diet in the future.": "Πιστεύω ότι θα μου είναι εύκολο να ακολουθήσω χορτοφαγική διατροφή στο μέλλον.",
+    "Organic products are widely available and convenient to buy.": "Τα βιολογικά προϊόντα είναι ευρέως διαθέσιμα και εύκολα στην αγορά.",
+    "I can adopt healthier eating patterns, even if I have to make a more organized nutrition and food shopping plan.": "Μπορώ να υιοθετήσω πιο υγιεινές διατροφικές συνήθειες, ακόμη κι αν χρειαστεί να οργανώσω καλύτερα τη διατροφή και τα ψώνια μου.",
+    "I can limit my intake of unhealthy fats, even if it takes time until I get used to it.": "Μπορώ να περιορίσω την πρόσληψη ανθυγιεινών λιπαρών, ακόμη κι αν χρειαστεί χρόνος για να το συνηθίσω.",
+    "If I wanted to, I feel that I would be able to maintain a highly nutritious diet most of the time.": "Αν το ήθελα, πιστεύω ότι θα μπορούσα να διατηρώ μια ιδιαίτερα θρεπτική διατροφή τις περισσότερες φορές.",
+    "I have a positive opinion about diets that are both healthy and environmentally friendly.": "Έχω θετική άποψη για τις διατροφές που είναι ταυτόχρονα υγιεινές και φιλικές προς το περιβάλλον.",
+    "I know how to select products that have a low environmental impact.": "Ξέρω πώς να επιλέγω προϊόντα με χαμηλές περιβαλλοντικές επιπτώσεις.",
+    "I understand the environmental benefits of eco-labels of food products.": "Κατανοώ τα περιβαλλοντικά οφέλη των οικολογικών σημάτων στα τρόφιμα.",
+    "I know what a healthy diet means.": "Ξέρω τι σημαίνει υγιεινή διατροφή.",
+    "It is beneficial to eat nutrient-dense food.": "Είναι ωφέλιμο να τρώμε τρόφιμα πλούσια σε θρεπτικά συστατικά.",
+    "I know that healthy eating can prevent certain diseases.": "Γνωρίζω ότι η υγιεινή διατροφή μπορεί να προλάβει ορισμένες ασθένειες.",
+    "I feel personally responsible for protecting the environment through my daily actions, including the consumption of sustainable food products.": "Νιώθω προσωπικά υπεύθυνος/η για την προστασία του περιβάλλοντος μέσα από τις καθημερινές μου πράξεις, συμπεριλαμβανομένης της κατανάλωσης βιώσιμων τροφίμων.",
+    "I feel guilty when my food choices harm the environment.": "Νιώθω ενοχές όταν οι διατροφικές μου επιλογές βλάπτουν το περιβάλλον.",
+    "I reflect about my health a lot": "Σκέφτομαι πολύ την υγεία μου.",
+    "I am concerned about environmental problems because of the consequences for: - Marine life": "Ανησυχώ για τα περιβαλλοντικά προβλήματα λόγω των συνεπειών για: - τη θαλάσσια ζωή",
+    "I am concerned about environmental problems because of the consequences for: - My lifestyle": "Ανησυχώ για τα περιβαλλοντικά προβλήματα λόγω των συνεπειών για: - τον τρόπο ζωής μου",
+    "I am concerned about environmental problems because of the consequences for: - People in my country": "Ανησυχώ για τα περιβαλλοντικά προβλήματα λόγω των συνεπειών για: - τους ανθρώπους στη χώρα μου",
+    "I have a positive opinion about plant-based diets.": "Έχω θετική άποψη για τις φυτικές διατροφές.",
+    "I believe that organic production is better for the environment than conventional farming.": "Πιστεύω ότι η βιολογική παραγωγή είναι καλύτερη για το περιβάλλον από τη συμβατική γεωργία.",
+    "I believe that reducing food waste is important for protecting the environment.": "Πιστεύω ότι η μείωση της σπατάλης τροφίμων είναι σημαντική για την προστασία του περιβάλλοντος.",
+    "When making decisions, I think carefully about how my choices may influence the future.": "Όταν παίρνω αποφάσεις, σκέφτομαι προσεκτικά πώς οι επιλογές μου μπορεί να επηρεάσουν το μέλλον.",
+    "What happens now is more important to me than what might happen in the future.": "Αυτό που συμβαίνει τώρα είναι πιο σημαντικό για μένα από αυτό που μπορεί να συμβεί στο μέλλον.",
+    "I think two years is a relatively short time to wait for something.": "Θεωρώ ότι τα δύο χρόνια είναι σχετικά σύντομο διάστημα αναμονής για κάτι.",
+    "I find it difficult to foresee the impact of my actions in the future.": "Μου είναι δύσκολο να προβλέψω τις επιπτώσεις των πράξεών μου στο μέλλον."
+  }
+}

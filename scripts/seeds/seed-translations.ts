@@ -20,6 +20,10 @@ import {
   importNevoCsv,
   printImportReport,
 } from './import-nevo-translations';
+import {
+  printSurveyTranslationReport,
+  seedSurveyTranslations,
+} from './prod/survey-translations';
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -58,6 +62,11 @@ async function main(): Promise<void> {
     if (nevoReport.skippedUnknownNevoCode > 0) {
       process.exitCode = 1;
     }
+
+    // --- Survey / question locale overlays ---
+    console.log('\n📋 Survey translations');
+    const surveyReport = await seedSurveyTranslations(prisma, { dryRun });
+    printSurveyTranslationReport(surveyReport);
 
     // Future DB translation sources (gamification, recipes, …) go here.
 
