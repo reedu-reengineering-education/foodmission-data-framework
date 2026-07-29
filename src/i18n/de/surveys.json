@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "de"
+  },
+  "likert5": {
+    "1": "Stimme überhaupt nicht zu",
+    "2": "Stimme nicht zu",
+    "3": "Weder noch",
+    "4": "Stimme zu",
+    "5": "Stimme voll und ganz zu"
+  }
+}

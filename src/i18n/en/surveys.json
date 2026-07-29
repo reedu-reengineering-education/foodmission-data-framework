@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "likert5": {
+    "1": "Strongly disagree",
+    "2": "Disagree",
+    "3": "Neither agree nor disagree",
+    "4": "Agree",
+    "5": "Strongly agree"
+  }
+}
