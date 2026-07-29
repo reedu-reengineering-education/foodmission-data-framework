@@ -261,7 +261,8 @@ export class SurveysService {
     }
 
     const survey = await this.surveysRepository.createSurvey(data);
-    return this.mapSurveyToDto(survey);
+    const [localized] = await this.localizeSurveys([survey]);
+    return this.mapSurveyToDto(localized);
   }
 
   async updateSurvey(id: string, data: UpdateSurveyDto): Promise<SurveyDto> {
@@ -270,7 +271,8 @@ export class SurveysService {
       throw new NotFoundException(`Survey with id ${id} not found`);
     }
     const updated = await this.surveysRepository.updateSurvey(id, data);
-    return this.mapSurveyToDto(updated);
+    const [localized] = await this.localizeSurveys([updated]);
+    return this.mapSurveyToDto(localized);
   }
 
   async deleteSurvey(id: string): Promise<void> {

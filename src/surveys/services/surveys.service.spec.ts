@@ -167,7 +167,11 @@ describe('SurveysService', () => {
 
       const result = await service.createSurvey(createDto);
 
-      expect(result).toEqual(mockSurvey);
+      expect(result).toEqual({
+        ...mockSurvey,
+        slug: 'test-survey',
+        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
+      });
       expect(repository.createSurvey).toHaveBeenCalledWith(createDto);
     });
 
@@ -222,6 +226,18 @@ describe('SurveysService', () => {
       await expect(
         service.updateSurvey('nonexistent', { title: 'Updated' }),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should attach slug and answers, like the read endpoints do', async () => {
+      repository.getSurveyById.mockResolvedValue(mockSurvey);
+      repository.updateSurvey.mockResolvedValue(mockSurvey);
+
+      const result = await service.updateSurvey('survey-1', {
+        title: 'Test Survey',
+      });
+
+      expect(result.slug).toBe('test-survey');
+      expect(result.questions[0].answers).toEqual(ENGLISH_SCALE);
     });
   });
 
