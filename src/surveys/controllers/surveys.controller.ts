@@ -35,7 +35,7 @@ import { SurveyQueryDto } from '../dto/survey-query.dto';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { Public, Roles } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Surveys')
@@ -44,13 +44,14 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 export class SurveysController {
   constructor(private readonly surveysService: SurveysService) {}
 
-  // Public Endpoints - Get Surveys
+  // User Endpoints - Get Surveys
   @Get()
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all surveys',
     description:
-      'Retrieve all available surveys with their questions and answer options. No authentication required.',
+      'Retrieve all available surveys with their questions and answer options. Requires authentication.',
   })
   @ApiQuery({
     name: 'lang',
@@ -68,12 +69,13 @@ export class SurveysController {
   }
 
   @Get(':id')
-  @Public()
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Get survey by ID',
     description:
-      'Retrieve a specific survey by its ID, including all questions and answer options. No authentication required.',
+      'Retrieve a specific survey by its ID, including all questions and answer options. Requires authentication.',
   })
   @ApiQuery({
     name: 'lang',
