@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  Patch,
   Delete,
   Param,
   Query,
@@ -215,7 +215,7 @@ export class SurveysController {
     return this.surveysService.createSurvey(dto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'id', description: 'Survey ID' })
@@ -274,7 +274,7 @@ export class SurveysController {
     return this.surveysService.addQuestion(surveyId, dto);
   }
 
-  @Put(':surveyId/questions/:questionId')
+  @Patch(':surveyId/questions/:questionId')
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'surveyId', description: 'Survey ID' })
