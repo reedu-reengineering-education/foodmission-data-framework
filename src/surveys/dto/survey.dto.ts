@@ -29,7 +29,11 @@ export class QuestionDto {
 
 export class SurveyDto {
   id: string;
-  /** Stable, always-English identifier derived from the untranslated title. */
+  /**
+   * Always-English identifier derived from `title`, unaffected by `lang`.
+   * Not permanent across renames — recomputed on every read, so changing
+   * `title` via PATCH /surveys/:id changes this too. See toSurveySlug().
+   */
   slug: string;
   title: string;
   description?: string;

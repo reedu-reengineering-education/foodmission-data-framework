@@ -218,7 +218,8 @@ export class SurveysController {
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
     summary: 'Update survey (admin only)',
-    description: 'Update survey title or description. Requires admin role.',
+    description:
+      'Update survey title or description. Requires admin role. Note: `slug` is derived from `title`, so renaming the title changes the slug too.',
   })
   @ApiResponse({
     status: 200,
