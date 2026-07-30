@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
-import { EventsController } from './controllers/events.controller';
-import { ClientEventService } from './services/client-event.service';
 import { UserEventService } from './services/user-event.service';
 
+/**
+ * Shared ledger writer only — safe to import from Auth/Gamification without
+ * mounting HTTP controllers (avoids pulling ThrottlerGuard into lean e2e apps).
+ */
 @Module({
   imports: [DatabaseModule],
-  controllers: [EventsController],
-  providers: [UserEventService, ClientEventService],
+  providers: [UserEventService],
   exports: [UserEventService],
 })
 export class EventsModule {}

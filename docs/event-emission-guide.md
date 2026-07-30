@@ -14,7 +14,7 @@ Catalog domains: **Account**, **App**, **Wallet**, **Progress**, **Achievements*
 
 The only writer is [`UserEventService.record()`](../src/events/services/user-event.service.ts). Feature modules import `EventsModule` and call `record` as a side effect of domain work.
 
-A limited authenticated API — `POST /api/v1/events` — may record **allowlisted** client types only (`CLIENT_RECORDABLE_EVENT_TYPES`: currently `APP_SESSION_OPENED`, `APP_SESSION_ENDED`). All other types stay server-derived.
+A limited authenticated API — `POST /api/v1/events` (`EventsApiModule`) — may record **allowlisted** client types only (`CLIENT_RECORDABLE_EVENT_TYPES`: currently `APP_SESSION_OPENED`, `APP_SESSION_ENDED`). All other types stay server-derived. The shared `EventsModule` exports only `UserEventService` (no HTTP controller) so Auth/Gamification can import it without mounting routes.
 
 ```mermaid
 flowchart TD

@@ -31,9 +31,7 @@ describe('ClientEventService', () => {
         'u1',
         '550e8400-e29b-41d4-a716-446655440000',
       ),
-    ).toBe(
-      'APP_SESSION_OPENED:u1:550e8400-e29b-41d4-a716-446655440000',
-    );
+    ).toBe('APP_SESSION_OPENED:u1:550e8400-e29b-41d4-a716-446655440000');
   });
 
   it('records an allowlisted app session event with APP source', async () => {
