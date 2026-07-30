@@ -246,12 +246,12 @@ export class OpenFoodFactsService {
   ): ProductInfo {
     const brands = product.brands;
     const nutriments = product.nutriments as
-      | OpenFoodFactsNutriments
-      | undefined;
+      OpenFoodFactsNutriments | undefined;
+    const id = this.toOptionalString(product._id) ?? '';
 
     return {
-      id: String(product._id ?? ''),
-      barcode: String(product._id ?? ''),
+      id,
+      barcode: id,
       name: this.getProductName(product, lang),
       genericName: pickLocalizedString(product, 'generic_name', lang),
       brands:
@@ -284,9 +284,7 @@ export class OpenFoodFactsService {
       imageUrl: this.toOptionalString(product.image_url),
       imageFrontUrl: this.toOptionalString(product.image_front_url),
       imageNutritionUrl: this.toOptionalString(product.image_nutrition_url),
-      imageIngredientsUrl: this.toOptionalString(
-        product.image_ingredients_url,
-      ),
+      imageIngredientsUrl: this.toOptionalString(product.image_ingredients_url),
       nutritionalInfo: this.transformNutriments(nutriments),
       countries: (product.countries_tags as string[]) || [],
       stores: (product.stores_tags as string[]) || [],
