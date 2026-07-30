@@ -2,6 +2,8 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
@@ -60,6 +62,7 @@ export class UserProfilesService {
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
+    @Inject(forwardRef(() => ConsentsService))
     private readonly consentsService: ConsentsService,
   ) {}
 

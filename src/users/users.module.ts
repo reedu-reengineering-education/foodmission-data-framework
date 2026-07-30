@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UsersRepository } from './repositories/users.repository';
 import { UsersController } from './controllers/users.controller';
 import { DatabaseModule } from '../database/database.module';
@@ -13,7 +13,7 @@ import { ConsentsModule } from '../consents/consents.module';
     DatabaseModule,
     KeycloakAdminModule,
     GamificationModule,
-    ConsentsModule,
+    forwardRef(() => ConsentsModule),
   ],
   controllers: [UserProfilesController, UsersController],
   providers: [UsersRepository, UserProfilesService],
