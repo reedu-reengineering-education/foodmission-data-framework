@@ -6,14 +6,14 @@ import { UserProfilesController } from './controllers/user-profiles.controller';
 import { UserProfilesService } from './services/user-profiles.service';
 import { KeycloakAdminModule } from '../keycloak-admin/keycloak-admin.module';
 import { GamificationModule } from '../gamification/gamification.module';
-import { ConsentsModule } from '../consents/consents.module';
+import { ConsentsCoreModule } from '../consents/consents-core.module';
 
 @Module({
   imports: [
     DatabaseModule,
     KeycloakAdminModule,
     GamificationModule,
-    ConsentsModule,
+    ConsentsCoreModule,
   ],
   controllers: [UserProfilesController, UsersController],
   providers: [UsersRepository, UserProfilesService],

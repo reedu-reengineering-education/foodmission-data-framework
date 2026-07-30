@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
-import { TranslationsModule } from '../translations/translations.module';
 import { UsersRepository } from '../users/repositories/users.repository';
+import { ConsentsCoreModule } from './consents-core.module';
 import { ConsentsController } from './controllers/consents.controller';
-import { ConsentsService } from './services/consents.service';
-import { ConsentsRepository } from './repositories/consents.repository';
 
 @Module({
-  imports: [DatabaseModule, TranslationsModule],
+  imports: [ConsentsCoreModule, DatabaseModule],
   controllers: [ConsentsController],
-  providers: [ConsentsService, ConsentsRepository, UsersRepository],
-  exports: [ConsentsService],
+  providers: [UsersRepository],
+  exports: [ConsentsCoreModule],
 })
 export class ConsentsModule {}
