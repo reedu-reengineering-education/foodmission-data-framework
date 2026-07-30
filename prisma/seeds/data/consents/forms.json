@@ -1,21 +1,18 @@
 [
   {
     "key": "terms_of_use",
-    "name": "Terms of Use",
     "required": true,
     "title": "Terms of Use",
     "body": "By using the FOODMISSION platform you agree to these Terms of Use. PLACEHOLDER — replace with final legal text."
   },
   {
     "key": "privacy_notice",
-    "name": "Privacy Notice",
     "required": true,
     "title": "Privacy Notice",
     "body": "This Privacy Notice explains what personal data FOODMISSION collects, how it is used, and your rights under GDPR. PLACEHOLDER — replace with final legal text."
   },
   {
     "key": "research_participation",
-    "name": "Research Participation",
     "required": false,
     "title": "Research Participation Consent",
     "body": "You may optionally consent to your anonymised data being used for research related to sustainable food behaviour. PLACEHOLDER — replace with final legal text."

@@ -4,7 +4,6 @@ import * as path from 'path';
 
 export type ConsentFormSeed = {
   key: string;
-  name: string;
   required?: boolean;
   title: string;
   body: string;
@@ -31,7 +30,6 @@ export async function seedConsents(prisma: PrismaClient) {
     await prisma.consentForm.upsert({
       where: { key: formData.key },
       update: {
-        name: formData.name,
         title: formData.title,
         body: formData.body,
         required: formData.required ?? true,
@@ -39,7 +37,6 @@ export async function seedConsents(prisma: PrismaClient) {
       },
       create: {
         key: formData.key,
-        name: formData.name,
         title: formData.title,
         body: formData.body,
         required: formData.required ?? true,

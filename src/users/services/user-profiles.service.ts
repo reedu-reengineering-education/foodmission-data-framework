@@ -137,10 +137,23 @@ export class UserProfilesService {
 
     if (payload.settings !== undefined) {
       const stored = (user.settings as Record<string, unknown>) ?? {};
-      updateData.settings = {
+      const incoming = payload.settings as Record<string, unknown>;
+      const merged: Record<string, unknown> = {
         ...stored,
-        ...(payload.settings as Record<string, unknown>),
+        ...incoming,
       };
+
+      if (Object.prototype.hasOwnProperty.call(incoming, 'consents')) {
+        const language =
+          (payload.language as string | undefined) ?? user.language;
+        merged.consents = await this.consentsService.normalizeConsentsInput(
+          incoming.consents,
+          stored,
+          language,
+        );
+      }
+
+      updateData.settings = merged;
     }
 
     if (payload.preferences !== undefined) {
@@ -291,7 +304,7 @@ export class UserProfilesService {
 
   private async enrichWithConsents(profile: UserProfile): Promise<UserProfile> {
     const consents = await this.consentsService.getUserConsentStatus(
-      profile.id,
+      profile.settings,
     );
     return {
       ...profile,

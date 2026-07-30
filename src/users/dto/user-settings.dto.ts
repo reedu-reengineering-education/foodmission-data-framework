@@ -1,5 +1,5 @@
-import { IsBoolean, IsOptional, Matches } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsOptional, IsObject, Matches } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UserSettingsDto {
   @ApiProperty({
@@ -22,4 +22,17 @@ export class UserSettingsDto {
     message: 'notificationPreferredTime must be HH:mm (24h)',
   })
   notificationPreferredTime?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Consent acceptances keyed by form key. Use true or { locale } to accept; null to revoke. Replaces the whole consents map when sent. Server sets acceptedAt.',
+    example: {
+      terms_of_use: true,
+      privacy_notice: { locale: 'de' },
+      research_participation: null,
+    },
+  })
+  @IsOptional()
+  @IsObject()
+  consents?: Record<string, true | { locale?: string } | null>;
 }

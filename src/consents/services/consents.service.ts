@@ -1,25 +1,20 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { ConsentsRepository } from '../repositories/consents.repository';
 import { TranslationService } from '../../translations/services/translation.service';
-import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
-  AcceptConsentDto,
   ConsentFormDto,
-  CreateConsentFormDto,
   StoredUserConsent,
-  UpdateConsentFormDto,
-  UserConsentDto,
   UserConsentStatusDto,
 } from '../dto/consent.dto';
 
 type ConsentFormRow = Awaited<ReturnType<ConsentsRepository['findByKey']>>;
 
-function readConsentsMap(
+export function readConsentsMap(
   settings: unknown,
 ): Record<string, StoredUserConsent> {
   const root =
@@ -51,13 +46,8 @@ export class ConsentsService {
     private readonly translationService: TranslationService,
   ) {}
 
-  async listForms(
-    lang?: string,
-    options: { includeInactive?: boolean } = {},
-  ): Promise<ConsentFormDto[]> {
-    const forms = options.includeInactive
-      ? await this.consentsRepository.findAll()
-      : await this.consentsRepository.findAllActive();
+  async listForms(lang?: string): Promise<ConsentFormDto[]> {
+    const forms = await this.consentsRepository.findAllActive();
     return this.mapForms(forms, lang);
   }
 
@@ -70,81 +60,11 @@ export class ConsentsService {
     return dto;
   }
 
-  async createForm(data: CreateConsentFormDto): Promise<ConsentFormDto> {
-    const existing = await this.consentsRepository.findByKey(data.key);
-    if (existing) {
-      throw new ConflictException(
-        `Consent form with key "${data.key}" already exists`,
-      );
-    }
-
-    const form = await this.consentsRepository.createForm(data);
-    const [dto] = await this.mapForms([form], DEFAULT_LOCALE);
-    return dto;
-  }
-
-  async updateForm(
-    key: string,
-    data: UpdateConsentFormDto,
-  ): Promise<ConsentFormDto> {
-    const form = await this.requireForm(key);
-    if (
-      data.name === undefined &&
-      data.required === undefined &&
-      data.active === undefined &&
-      data.title === undefined &&
-      data.body === undefined
-    ) {
-      throw new BadRequestException('No fields to update');
-    }
-
-    const updated = await this.consentsRepository.updateForm(form.id, data);
-    const [dto] = await this.mapForms([updated], DEFAULT_LOCALE);
-    return dto;
-  }
-
-  async acceptConsent(
-    userId: string,
-    data: AcceptConsentDto,
-    lang?: string,
-  ): Promise<UserConsentDto> {
-    const form = await this.consentsRepository.findByKey(data.formKey);
-    if (!form || !form.active) {
-      throw new NotFoundException(`Consent form "${data.formKey}" not found`);
-    }
-
-    const user = await this.consentsRepository.findUserSettings(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const locale = this.translationService.resolveLocale(lang);
-    const acceptedAt = new Date().toISOString();
-    const settings =
-      user.settings &&
-      typeof user.settings === 'object' &&
-      !Array.isArray(user.settings)
-        ? { ...(user.settings as Record<string, unknown>) }
-        : {};
+  async getUserConsentStatus(
+    settings: unknown,
+  ): Promise<UserConsentStatusDto[]> {
+    const forms = await this.consentsRepository.findAllActive();
     const consents = readConsentsMap(settings);
-    consents[data.formKey] = { acceptedAt, locale };
-    settings.consents = consents;
-
-    await this.consentsRepository.updateUserSettings(userId, settings);
-
-    return { formKey: data.formKey, locale, acceptedAt };
-  }
-
-  async getUserConsentStatus(userId: string): Promise<UserConsentStatusDto[]> {
-    const [forms, user] = await Promise.all([
-      this.consentsRepository.findAllActive(),
-      this.consentsRepository.findUserSettings(userId),
-    ]);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    const consents = readConsentsMap(user.settings);
     return forms.map((form) => {
       const accepted = consents[form.key];
       return {
@@ -157,12 +77,76 @@ export class ConsentsService {
     });
   }
 
-  private async requireForm(key: string) {
-    const form = await this.consentsRepository.findByKey(key);
-    if (!form) {
-      throw new NotFoundException(`Consent form "${key}" not found`);
+  /**
+   * Validate and normalize a client-supplied settings.consents map.
+   * - Keys must be active consent forms
+   * - `null` removes an acceptance
+   * - Existing acceptedAt is preserved when the key remains
+   * - New acceptances get server-side acceptedAt
+   */
+  async normalizeConsentsInput(
+    input: unknown,
+    existingSettings: unknown,
+    localeFallback?: string | null,
+  ): Promise<Record<string, StoredUserConsent>> {
+    if (input === undefined) {
+      return readConsentsMap(existingSettings);
     }
-    return form;
+    if (input === null || typeof input !== 'object' || Array.isArray(input)) {
+      throw new BadRequestException(
+        'settings.consents must be an object keyed by form key',
+      );
+    }
+
+    const forms = await this.consentsRepository.findAllActive();
+    const activeKeys = new Set(forms.map((f) => f.key));
+    const existing = readConsentsMap(existingSettings);
+    const localeDefault = this.translationService.resolveLocale(
+      localeFallback ?? undefined,
+    );
+    const now = new Date().toISOString();
+    const out: Record<string, StoredUserConsent> = {};
+
+    for (const [formKey, value] of Object.entries(
+      input as Record<string, unknown>,
+    )) {
+      if (value === null) {
+        continue; // explicit revoke
+      }
+      if (!activeKeys.has(formKey)) {
+        throw new BadRequestException(
+          `Unknown or inactive consent form "${formKey}"`,
+        );
+      }
+
+      let locale = existing[formKey]?.locale ?? localeDefault;
+      if (value === true) {
+        // keep locale as above
+      } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const entry = value as Record<string, unknown>;
+        if (typeof entry.locale === 'string') {
+          if (
+            !(SUPPORTED_LOCALES as readonly string[]).includes(entry.locale)
+          ) {
+            throw new BadRequestException(
+              `Invalid locale "${entry.locale}" for consent "${formKey}"`,
+            );
+          }
+          locale = entry.locale;
+        }
+      } else {
+        throw new BadRequestException(
+          `settings.consents.${formKey} must be true, null, or { locale? }`,
+        );
+      }
+
+      out[formKey] = {
+        acceptedAt: existing[formKey]?.acceptedAt ?? now,
+        locale,
+      };
+    }
+
+    return out;
   }
 
   private async mapForms(
@@ -185,7 +169,6 @@ export class ConsentsService {
       return {
         id: form.id,
         key: form.key,
-        name: form.name,
         title: fields.title ?? form.title,
         body: fields.body ?? form.body,
         required: form.required,

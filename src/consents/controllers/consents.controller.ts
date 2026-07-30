@@ -1,18 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -22,19 +10,10 @@ import {
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { ConsentsService } from '../services/consents.service';
-import {
-  AcceptConsentDto,
-  ConsentFormDto,
-  ConsentQueryDto,
-  CreateConsentFormDto,
-  UpdateConsentFormDto,
-  UserConsentDto,
-  UserConsentStatusDto,
-} from '../dto/consent.dto';
+import { ConsentFormDto, ConsentQueryDto } from '../dto/consent.dto';
 
 @ApiTags('Consents')
 @Controller('consents')
@@ -48,7 +27,7 @@ export class ConsentsController {
   @ApiOperation({
     summary: 'List active consent forms',
     description:
-      'Returns active consent forms. Pass ?lang= to resolve title/body translations.',
+      'Returns active consent forms (seeded catalog). Pass ?lang= for translations. Accept via PATCH /users/me settings.consents.',
   })
   @ApiQuery({
     name: 'lang',
@@ -59,47 +38,6 @@ export class ConsentsController {
   @ApiResponse({ status: 200, type: [ConsentFormDto] })
   async listForms(@Query() query: ConsentQueryDto): Promise<ConsentFormDto[]> {
     return this.consentsService.listForms(query.lang);
-  }
-
-  @Get('me')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get current user consent status',
-    description:
-      'Derived from User.settings.consents against active required/optional forms.',
-  })
-  @ApiResponse({ status: 200, type: [UserConsentStatusDto] })
-  async getMyConsentStatus(
-    @CurrentUser('id') userId: string,
-  ): Promise<UserConsentStatusDto[]> {
-    return this.consentsService.getUserConsentStatus(userId);
-  }
-
-  @Post('me')
-  @Roles('user', 'admin')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Accept a consent form',
-    description:
-      'Stores acceptance under User.settings.consents. Locale from ?lang= (defaults to en).',
-  })
-  @ApiQuery({
-    name: 'lang',
-    required: false,
-    enum: SUPPORTED_LOCALES,
-    description: `Locale of the text shown to the user. Defaults to ${DEFAULT_LOCALE}.`,
-  })
-  @ApiBody({ type: AcceptConsentDto })
-  @ApiResponse({ status: 201, type: UserConsentDto })
-  @ApiCrudErrorResponses()
-  async acceptConsent(
-    @CurrentUser('id') userId: string,
-    @Body() body: AcceptConsentDto,
-    @Query() query: ConsentQueryDto,
-  ): Promise<UserConsentDto> {
-    return this.consentsService.acceptConsent(userId, body, query.lang);
   }
 
   @Get(':key')
@@ -120,41 +58,5 @@ export class ConsentsController {
     @Query() query: ConsentQueryDto,
   ): Promise<ConsentFormDto> {
     return this.consentsService.getFormByKey(key, query.lang);
-  }
-
-  @Post()
-  @Roles('admin')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Create a consent form',
-    description: 'Admin only. Creates a form with English title/body.',
-  })
-  @ApiBody({ type: CreateConsentFormDto })
-  @ApiResponse({ status: 201, type: ConsentFormDto })
-  @ApiCrudErrorResponses()
-  async createForm(
-    @Body() body: CreateConsentFormDto,
-  ): Promise<ConsentFormDto> {
-    return this.consentsService.createForm(body);
-  }
-
-  @Patch(':key')
-  @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiParam({ name: 'key', example: 'privacy_notice' })
-  @ApiOperation({
-    summary: 'Update a consent form',
-    description:
-      'Admin only. Updates metadata and/or English title/body in place.',
-  })
-  @ApiBody({ type: UpdateConsentFormDto })
-  @ApiResponse({ status: 200, type: ConsentFormDto })
-  @ApiCrudErrorResponses()
-  async updateForm(
-    @Param('key') key: string,
-    @Body() body: UpdateConsentFormDto,
-  ): Promise<ConsentFormDto> {
-    return this.consentsService.updateForm(key, body);
   }
 }

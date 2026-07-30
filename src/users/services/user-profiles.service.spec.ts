@@ -75,6 +75,9 @@ describe('UserProfilesService updateProfile gamification', () => {
           provide: ConsentsService,
           useValue: {
             getUserConsentStatus: jest.fn().mockResolvedValue([]),
+            normalizeConsentsInput: jest
+              .fn()
+              .mockImplementation(async (input) => input ?? {}),
           },
         },
       ],

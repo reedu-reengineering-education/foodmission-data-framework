@@ -2,7 +2,6 @@
 CREATE TABLE "consent_forms" (
     "id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "body" TEXT NOT NULL,
     "required" BOOLEAN NOT NULL DEFAULT true,

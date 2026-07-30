@@ -91,7 +91,7 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Update current user profile',
     description:
-      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding.',
+      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding. Consent acceptances: settings.consents (true | { locale } | null per form key).',
   })
   @UsePipes(
     new ValidationPipe({
