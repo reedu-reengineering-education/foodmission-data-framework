@@ -133,6 +133,7 @@ describe('OpenFoodFactsService', () => {
       expect(result?.nutritionalInfo?.energyKcal).toBe(539);
       expect(httpService.get).toHaveBeenCalledWith(
         'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
+        { params: { lc: 'en' } },
       );
     });
 
@@ -279,6 +280,7 @@ describe('OpenFoodFactsService', () => {
             json: 1,
             search_terms: 'nutella',
             page_size: 20,
+            lc: 'en',
           }),
         }),
       );
@@ -490,6 +492,117 @@ describe('OpenFoodFactsService', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('locale-aware transform', () => {
+    it('prefers product_name_de when lang=de', async () => {
+      const localizedProduct: OpenFoodFactsProduct = {
+        ...mockProduct,
+        product: {
+          ...mockProduct.product,
+          product_name: 'Nutella',
+          product_name_en: 'Nutella EN',
+          product_name_de: 'Nougatcreme',
+          ingredients_text: 'Sugar',
+          ingredients_text_en: 'Sugar, palm oil',
+          ingredients_text_de: 'Zucker, Palmöl',
+          generic_name: 'Hazelnut spread',
+          generic_name_de: 'Haselnusscreme',
+        } as any,
+      };
+
+      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
+        data: localizedProduct,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+      httpService.get.mockReturnValueOnce(of(mockResponse));
+
+      const result = await service.getProductByBarcode('3017620422003', 'de');
+
+      expect(result?.name).toBe('Nougatcreme');
+      expect(result?.genericName).toBe('Haselnusscreme');
+      expect(result?.ingredients).toBe('Zucker, Palmöl');
+      expect(httpService.get).toHaveBeenCalledWith(
+        'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
+        { params: { lc: 'de' } },
+      );
+    });
+
+    it('falls back to English name when requested locale is missing', async () => {
+      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
+        data: mockProduct,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+      httpService.get.mockReturnValueOnce(of(mockResponse));
+
+      const result = await service.getProductByBarcode('3017620422003', 'de');
+
+      expect(result?.name).toBe('Nutella');
+      expect(result?.ingredients).toBe(
+        'Sugar, palm oil, hazelnuts, cocoa, milk powder',
+      );
+    });
+
+    it('passes lc on search and localizes product names', async () => {
+      const mockResponse: AxiosResponse<OpenFoodFactsSearchResponse> = {
+        data: {
+          ...mockSearchResponse,
+          products: [
+            {
+              product_name: 'Nutella',
+              product_name_en: 'Nutella EN',
+              product_name_de: 'Nougatcreme',
+              brands: 'Ferrero',
+              categories_tags: ['en:sweet-spreads'],
+            } as any,
+          ],
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any,
+      };
+      httpService.get.mockReturnValueOnce(of(mockResponse));
+
+      const result = await service.searchProducts({
+        query: 'nutella',
+        lang: 'de',
+      });
+
+      expect(result.products[0].name).toBe('Nougatcreme');
+      expect(httpService.get).toHaveBeenCalledWith(
+        'https://world.openfoodfacts.org/cgi/search.pl',
+        expect.objectContaining({
+          params: expect.objectContaining({
+            lc: 'de',
+            search_terms: 'nutella',
+          }),
+        }),
+      );
+    });
+
+    it('localizes from Mongo documents with language-suffixed fields', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce({
+        id: '3017620422003',
+        _id: '3017620422003',
+        product_name: 'Nutella',
+        product_name_en: 'Nutella EN',
+        product_name_de: 'Nougatcreme',
+        brands: 'Ferrero',
+      });
+
+      const result = await service.getProductByBarcode('3017620422003', 'de');
+
+      expect(result?.name).toBe('Nougatcreme');
+      expect(httpService.get).not.toHaveBeenCalled();
     });
   });
 

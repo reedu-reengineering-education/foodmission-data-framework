@@ -190,6 +190,8 @@ export interface OpenFoodFactsSearchOptions {
     | 'completeness'
     | 'popularity';
   fields?: string[];
+  /** Resolved locale for name / ingredients / genericName (e.g. de, nl). */
+  lang?: string;
 }
 
 export interface OpenFoodFactsError {

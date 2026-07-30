@@ -12,6 +12,8 @@ import {
   OpenFoodFactsSearchOptions,
   OpenFoodFactsNutriments,
 } from '../interfaces/openfoodfacts.interface';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { pickLocalizedString } from '../utils/off-locale';
 
 @Injectable()
 export class OpenFoodFactsService {
@@ -31,14 +33,20 @@ export class OpenFoodFactsService {
    * Tries the local OpenFoodFacts MongoDB clone first, falling back to the
    * live HTTP API if the clone is unconfigured, unreachable, or errors.
    */
-  async getProductByBarcode(barcode: string): Promise<ProductInfo | null> {
+  async getProductByBarcode(
+    barcode: string,
+    lang: string = DEFAULT_LOCALE,
+  ): Promise<ProductInfo | null> {
     if (this.offMongoRepository.isAvailable) {
       try {
         const doc = await this.withMongoTimeout(
           this.offMongoRepository.findByBarcode(barcode),
         );
         if (doc) {
-          const productInfo = this.transformProduct({ ...doc, _id: doc.id });
+          const productInfo = this.transformProduct(
+            { ...doc, _id: doc.id ?? doc._id },
+            lang,
+          );
           this.logger.log(
             `Found product in local OFF database: ${productInfo.name}`,
           );
@@ -56,18 +64,20 @@ export class OpenFoodFactsService {
       }
     }
 
-    return this.getProductByBarcodeHttp(barcode);
+    return this.getProductByBarcodeHttp(barcode, lang);
   }
 
   private async getProductByBarcodeHttp(
     barcode: string,
+    lang: string = DEFAULT_LOCALE,
   ): Promise<ProductInfo | null> {
     this.logger.log(`Fetching product by barcode: ${barcode}`);
 
     const url = `${this.baseUrl}/api/v0/product/${barcode}.json`;
+    const params = this.buildProductHttpParams(lang);
 
     const response = await this.httpService
-      .get<OpenFoodFactsProduct>(url)
+      .get<OpenFoodFactsProduct>(url, { params })
       .pipe(
         timeout(this.apiTimeout),
         retry(this.maxRetries),
@@ -81,7 +91,7 @@ export class OpenFoodFactsService {
       return null;
     }
 
-    const productInfo = this.transformProduct(response.product);
+    const productInfo = this.transformProduct(response.product, lang);
 
     this.logger.log(`Successfully fetched product: ${productInfo.name}`);
     return productInfo;
@@ -99,13 +109,15 @@ export class OpenFoodFactsService {
     pageSize: number;
     totalPages: number;
   }> {
+    const lang = options.lang ?? DEFAULT_LOCALE;
+
     if (this.offMongoRepository.isAvailable) {
       try {
         const { items, totalCount, page, pageSize } =
           await this.withMongoTimeout(this.offMongoRepository.search(options));
 
         const products = items.map((doc) =>
-          this.transformProduct({ ...doc, _id: doc.id }),
+          this.transformProduct({ ...doc, _id: doc.id }, lang),
         );
 
         this.logger.log(
@@ -132,6 +144,7 @@ export class OpenFoodFactsService {
 
   private async searchProductsHttp(options: OpenFoodFactsSearchOptions) {
     this.logger.log(`Searching products with options:`, options);
+    const lang = options.lang ?? DEFAULT_LOCALE;
 
     // Build search parameters
     const params = this.buildSearchParams(options);
@@ -160,7 +173,7 @@ export class OpenFoodFactsService {
 
     const products = response.products
       .filter((product) => product.product_name) // Only include products with names
-      .map((product) => this.transformProduct(product));
+      .map((product) => this.transformProduct(product, lang));
 
     const result = {
       products,
@@ -227,52 +240,65 @@ export class OpenFoodFactsService {
 
   // Private helper methods
 
-  private transformProduct(product: any): ProductInfo {
+  private transformProduct(
+    product: Record<string, unknown>,
+    lang: string = DEFAULT_LOCALE,
+  ): ProductInfo {
+    const brands = product.brands;
+    const nutriments = product.nutriments as
+      | OpenFoodFactsNutriments
+      | undefined;
+
     return {
-      id: product._id,
-      barcode: product._id,
-      name: this.getProductName(product),
-      genericName: product.generic_name,
-      brands: product.brands
-        ? product.brands.split(',').map((b: string) => b.trim())
-        : [],
-      categories: product.categories_tags || [],
-      labels: product.labels_tags || [],
+      id: String(product._id ?? ''),
+      barcode: String(product._id ?? ''),
+      name: this.getProductName(product, lang),
+      genericName: pickLocalizedString(product, 'generic_name', lang),
+      brands:
+        typeof brands === 'string'
+          ? brands.split(',').map((b: string) => b.trim())
+          : [],
+      categories: (product.categories_tags as string[]) || [],
+      labels: (product.labels_tags as string[]) || [],
       quantity: this.toOptionalString(product.quantity),
       servingSize: this.toOptionalString(product.serving_size),
-      packaging: product.packaging_tags || [],
-      origins: product.origins,
-      manufacturingPlaces: product.manufacturing_places,
-      ingredients: product.ingredients_text_en || product.ingredients_text,
-      allergens: product.allergens_tags || [],
-      traces: product.traces_tags || [],
-      nutritionGrade: product.nutrition_grades,
+      packaging: (product.packaging_tags as string[]) || [],
+      origins: this.toOptionalString(product.origins),
+      manufacturingPlaces: this.toOptionalString(product.manufacturing_places),
+      ingredients: pickLocalizedString(product, 'ingredients_text', lang),
+      allergens: (product.allergens_tags as string[]) || [],
+      traces: (product.traces_tags as string[]) || [],
+      nutritionGrade: this.toOptionalString(product.nutrition_grades),
       novaGroup: this.toOptionalNumber(product.nova_group),
-      ecoscoreGrade: product.ecoscore_grade,
-      carbonFootprint: product.nutriments?.[
+      ecoscoreGrade: this.toOptionalString(product.ecoscore_grade),
+      carbonFootprint: (nutriments as Record<string, unknown> | undefined)?.[
         'carbon-footprint-from-known-ingredients_product'
       ]
         ? Number(
-            product.nutriments[
+            (nutriments as Record<string, unknown>)[
               'carbon-footprint-from-known-ingredients_product'
             ],
           )
         : undefined,
-      nutritionDataPer: product.nutrition_data_per,
-      imageUrl: product.image_url,
-      imageFrontUrl: product.image_front_url,
-      imageNutritionUrl: product.image_nutrition_url,
-      imageIngredientsUrl: product.image_ingredients_url,
-      nutritionalInfo: this.transformNutriments(product.nutriments),
-      countries: product.countries_tags || [],
-      stores: product.stores_tags || [],
-      completeness: product.completeness,
-      createdAt: product.created_t
-        ? new Date(product.created_t * 1000)
-        : undefined,
-      lastModified: product.last_modified_t
-        ? new Date(product.last_modified_t * 1000)
-        : undefined,
+      nutritionDataPer: this.toOptionalString(product.nutrition_data_per),
+      imageUrl: this.toOptionalString(product.image_url),
+      imageFrontUrl: this.toOptionalString(product.image_front_url),
+      imageNutritionUrl: this.toOptionalString(product.image_nutrition_url),
+      imageIngredientsUrl: this.toOptionalString(
+        product.image_ingredients_url,
+      ),
+      nutritionalInfo: this.transformNutriments(nutriments),
+      countries: (product.countries_tags as string[]) || [],
+      stores: (product.stores_tags as string[]) || [],
+      completeness: this.toOptionalNumber(product.completeness),
+      createdAt:
+        typeof product.created_t === 'number'
+          ? new Date(product.created_t * 1000)
+          : undefined,
+      lastModified:
+        typeof product.last_modified_t === 'number'
+          ? new Date(product.last_modified_t * 1000)
+          : undefined,
     };
   }
 
@@ -292,11 +318,13 @@ export class OpenFoodFactsService {
     return Number.isNaN(num) ? undefined : num;
   }
 
-  private getProductName(product: any): string {
+  private getProductName(
+    product: Record<string, unknown>,
+    lang: string = DEFAULT_LOCALE,
+  ): string {
     return (
-      product.product_name_en ||
-      product.product_name ||
-      product.generic_name ||
+      pickLocalizedString(product, 'product_name', lang) ||
+      pickLocalizedString(product, 'generic_name', lang) ||
       'Unknown Product'
     );
   }
@@ -327,12 +355,18 @@ export class OpenFoodFactsService {
     };
   }
 
+  private buildProductHttpParams(lang: string): Record<string, string> {
+    return { lc: lang || DEFAULT_LOCALE };
+  }
+
   private buildSearchParams(options: OpenFoodFactsSearchOptions): any {
+    const lang = options.lang ?? DEFAULT_LOCALE;
     const params: any = {
       action: 'process',
       json: 1,
       page: options.page || 1,
       page_size: options.pageSize || 20,
+      lc: lang,
     };
 
     if (options.query) {

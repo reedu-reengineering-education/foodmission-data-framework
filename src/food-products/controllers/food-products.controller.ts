@@ -43,6 +43,7 @@ import { CacheEvictInterceptor } from '../../cache/cache-evict.interceptor';
 import { Cacheable, CacheEvict } from '../../cache/decorators/cache.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('food-products')
 @Controller('food-products')
@@ -179,9 +180,16 @@ export class FoodProductController {
   @Public()
   @ApiOperation({
     summary: 'Find food product by barcode',
-    description: 'Retrieves product information from OpenFoodFacts.',
+    description:
+      'Retrieves product information from OpenFoodFacts. Use lang to prefer localized name/ingredients when available.',
   })
   @ApiParam({ name: 'barcode', type: 'string', description: 'Product barcode' })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for product name / ingredients. Defaults to ${DEFAULT_LOCALE}. Unsupported codes fall back to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'Food product found',
@@ -190,8 +198,9 @@ export class FoodProductController {
   @ApiCommonErrorResponses({ notFound: true, unauthorized: false })
   findByBarcode(
     @Param('barcode') barcode: string,
+    @Query('lang') lang?: string,
   ): Promise<FoodProductResponseDto> {
-    return this.foodProductService.findByBarcode(barcode);
+    return this.foodProductService.findByBarcode(barcode, lang);
   }
 
   @Get(':id')
@@ -214,6 +223,12 @@ export class FoodProductController {
     type: 'boolean',
     description: 'Include OpenFoodFacts information in response',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for OpenFoodFacts overlay text. Defaults to ${DEFAULT_LOCALE}. Unsupported codes fall back to ${DEFAULT_LOCALE}.`,
+  })
   @ApiResponse({
     status: 200,
     description: 'Food product found',
@@ -223,9 +238,10 @@ export class FoodProductController {
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('includeOpenFoodFacts') includeOpenFoodFacts?: string,
+    @Query('lang') lang?: string,
   ): Promise<FoodProductResponseDto> {
     const includeOff = includeOpenFoodFacts === 'true';
-    return this.foodProductService.findOne(id, includeOff);
+    return this.foodProductService.findOne(id, includeOff, lang);
   }
 
   @Patch(':id')
@@ -301,13 +317,19 @@ export class FoodProductController {
   @ApiOperation({
     summary: 'Get OpenFoodFacts information for food product',
     description:
-      'Retrieves OpenFoodFacts information for a food product by its ID when the product has a barcode.',
+      'Retrieves OpenFoodFacts information for a food product by its ID when the product has a barcode. Use lang to prefer localized name/ingredients when available.',
   })
   @ApiParam({
     name: 'id',
     type: 'string',
     format: 'uuid',
     description: 'Food product ID',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for product name / ingredients. Defaults to ${DEFAULT_LOCALE}. Unsupported codes fall back to ${DEFAULT_LOCALE}.`,
   })
   @ApiResponse({
     status: 200,
@@ -324,11 +346,14 @@ export class FoodProductController {
     unauthorized: false,
     custom: [{ status: 503, description: 'OpenFoodFacts service unavailable' }],
   })
-  async getOpenFoodFactsInfo(@Param('id', ParseUUIDPipe) id: string) {
+  async getOpenFoodFactsInfo(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('lang') lang?: string,
+  ) {
     const food = await this.foodProductService.findOne(id);
     if (!food.barcode) {
       return null;
     }
-    return this.foodProductService.getOpenFoodFactsInfo(food.barcode);
+    return this.foodProductService.getOpenFoodFactsInfo(food.barcode, lang);
   }
 }

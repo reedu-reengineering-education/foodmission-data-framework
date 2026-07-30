@@ -19,6 +19,8 @@ import {
   PaginatedFoodProductResponseDto,
 } from '../dto/food-product-response.dto';
 import { plainToClass } from 'class-transformer';
+import { TranslationService } from '../../translations/services/translation.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 @Injectable()
 export class FoodProductService {
@@ -27,6 +29,7 @@ export class FoodProductService {
   constructor(
     private readonly foodProductRepository: FoodProductRepository,
     private readonly openFoodFactsService: OpenFoodFactsService,
+    private readonly translationService: TranslationService,
   ) {}
 
   async create(
@@ -94,7 +97,10 @@ export class FoodProductService {
         const responseDto = this.transformToResponseDto(food);
 
         if (query.includeOpenFoodFacts && food.barcode) {
-          const offInfo = await this.getOpenFoodFactsInfo(food.barcode);
+          const offInfo = await this.getOpenFoodFactsInfo(
+            food.barcode,
+            query.lang,
+          );
           responseDto.openFoodFactsInfo = offInfo || undefined;
         }
 
@@ -114,6 +120,7 @@ export class FoodProductService {
   async findOne(
     id: string,
     includeOpenFoodFacts: boolean = false,
+    lang?: string,
   ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by id: ${id}`);
 
@@ -130,18 +137,24 @@ export class FoodProductService {
       this.logger.debug(
         `Fetching OpenFoodFacts info for barcode: ${food.barcode}`,
       );
-      const offInfo = await this.getOpenFoodFactsInfo(food.barcode);
+      const offInfo = await this.getOpenFoodFactsInfo(food.barcode, lang);
       responseDto.openFoodFactsInfo = offInfo || undefined;
     }
 
     return responseDto;
   }
 
-  async findByBarcode(barcode: string): Promise<FoodProductResponseDto> {
+  async findByBarcode(
+    barcode: string,
+    lang?: string,
+  ): Promise<FoodProductResponseDto> {
     this.logger.log(`Finding food by barcode: ${barcode}`);
 
-    const offProduct =
-      await this.openFoodFactsService.getProductByBarcode(barcode);
+    const locale = this.translationService.resolveLocale(lang);
+    const offProduct = await this.openFoodFactsService.getProductByBarcode(
+      barcode,
+      locale,
+    );
     if (!offProduct) {
       throw new NotFoundException('Food product not found');
     }
@@ -198,6 +211,7 @@ export class FoodProductService {
       brands: searchDto.brand ? [searchDto.brand] : undefined,
       page: searchDto.page || 1,
       pageSize: searchDto.pageSize || searchDto.limit || 10,
+      lang: this.translationService.resolveLocale(searchDto.lang),
     };
 
     return await this.openFoodFactsService.searchProducts(searchOptions);
@@ -215,8 +229,11 @@ export class FoodProductService {
       throw new BadRequestException('Food with this barcode already exists');
     }
 
-    const productInfo =
-      await this.openFoodFactsService.getProductByBarcode(barcode);
+    // Persist English-preferred snapshot for stable DB content.
+    const productInfo = await this.openFoodFactsService.getProductByBarcode(
+      barcode,
+      DEFAULT_LOCALE,
+    );
     if (!productInfo) {
       throw new NotFoundException('Product not found in OpenFoodFacts');
     }
@@ -233,10 +250,14 @@ export class FoodProductService {
 
   async getOpenFoodFactsInfo(
     barcode: string,
+    lang?: string,
   ): Promise<OpenFoodFactsInfoDto | null> {
     try {
-      const productInfo =
-        await this.openFoodFactsService.getProductByBarcode(barcode);
+      const locale = this.translationService.resolveLocale(lang);
+      const productInfo = await this.openFoodFactsService.getProductByBarcode(
+        barcode,
+        locale,
+      );
       if (!productInfo) {
         return null;
       }
