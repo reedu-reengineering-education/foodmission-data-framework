@@ -5,6 +5,7 @@ export const TRANSLATABLE_ENTITY_TYPES = [
   'Knowledge',
   'Survey',
   'Question',
+  'ConsentForm',
 ] as const;
 
 export type TranslatableEntityType = (typeof TRANSLATABLE_ENTITY_TYPES)[number];
@@ -16,6 +17,7 @@ export const ENTITY_TRANSLATABLE_FIELDS = {
   Knowledge: ['title', 'description'] as const,
   Survey: ['title', 'description'] as const,
   Question: ['text'] as const,
+  ConsentForm: ['title', 'body'] as const,
 } as const;
 
 export type EntityTranslatableField<T extends TranslatableEntityType> =

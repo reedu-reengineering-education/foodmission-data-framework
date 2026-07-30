@@ -1,0 +1,14 @@
+{
+  "terms_of_use": {
+    "title": "Nutzungsbedingungen",
+    "body": "Durch die Nutzung der FOODMISSION-Plattform stimmen Sie diesen Nutzungsbedingungen zu. PLATZHALTER — durch finalen Rechtstext ersetzen."
+  },
+  "privacy_notice": {
+    "title": "Datenschutzhinweis",
+    "body": "Dieser Datenschutzhinweis erläutert, welche personenbezogenen Daten FOODMISSION erhebt, wie sie verwendet werden und Ihre Rechte gemäß DSGVO. PLATZHALTER — durch finalen Rechtstext ersetzen."
+  },
+  "research_participation": {
+    "title": "Einwilligung zur Forschungsteilnahme",
+    "body": "Sie können optional zustimmen, dass Ihre anonymisierten Daten für Forschung zu nachhaltigem Ernährungsverhalten verwendet werden. PLATZHALTER — durch finalen Rechtstext ersetzen."
+  }
+}

@@ -92,7 +92,9 @@ export type EntityExportReport = {
   entityType: string;
   fields: string[];
   targetLocales: string[];
+  /** GenericFood count (legacy field name kept for report compatibility). */
   foodsExported: number;
+  entitiesExported: number;
   totalRows: number;
   perLocale: Record<
     string,
@@ -232,6 +234,111 @@ export async function buildGenericFoodExportSheets(
       fields: options.fields,
       targetLocales: options.locales,
       foodsExported: foods.length,
+      entitiesExported: foods.length,
+      totalRows,
+      perLocale,
+    },
+  };
+}
+
+export const DEFAULT_CONSENT_EXPORT_FIELDS = ['title', 'body'] as const;
+
+/**
+ * Spreadsheet key: ConsentForm.{formKey}.{field}
+ * Example: ConsentForm.privacy_notice.title
+ */
+export async function buildConsentFormExportSheets(
+  prisma: PrismaClient,
+  options: EntityExportOptions,
+): Promise<{ sheets: Record<string, LocaleSheetRow[]>; report: EntityExportReport }> {
+  for (const field of options.fields) {
+    if (!isValidFieldForEntity('ConsentForm', field)) {
+      throw new Error(
+        `Field "${field}" is not translatable for ConsentForm. Allowed: ${ENTITY_TRANSLATABLE_FIELDS.ConsentForm.join(', ')}`,
+      );
+    }
+  }
+
+  const forms = await prisma.consentForm.findMany({
+    select: {
+      id: true,
+      key: true,
+      title: true,
+      body: true,
+    },
+    orderBy: { key: 'asc' },
+  });
+
+  const existing = await prisma.entityTranslation.findMany({
+    where: {
+      entityType: 'ConsentForm',
+      locale: { in: options.locales },
+      field: { in: options.fields },
+      entityId: { in: forms.map((f) => f.id) },
+    },
+    select: {
+      entityId: true,
+      locale: true,
+      field: true,
+      value: true,
+    },
+  });
+
+  const existingByKey = new Map<string, string>();
+  for (const row of existing) {
+    existingByKey.set(`${row.entityId}:${row.locale}:${row.field}`, row.value);
+  }
+
+  const sheets: Record<string, LocaleSheetRow[]> = {};
+  const perLocale: EntityExportReport['perLocale'] = {};
+  let totalRows = 0;
+
+  for (const locale of options.locales) {
+    sheets[locale] = [];
+    let emptyTranslations = 0;
+    let sameAsEn = 0;
+
+    for (const form of forms) {
+      for (const field of options.fields) {
+        const en =
+          field === 'title' ? form.title : field === 'body' ? form.body : '';
+        const current =
+          existingByKey.get(`${form.id}:${locale}:${field}`) ?? '';
+
+        if (!current) {
+          emptyTranslations += 1;
+        } else if (current === en) {
+          sameAsEn += 1;
+        }
+
+        sheets[locale].push({
+          key: toEntityTranslationKey('ConsentForm', form.key, field),
+          en,
+          translation: current,
+        });
+        totalRows += 1;
+      }
+    }
+
+    sheets[locale].sort((a, b) => a.key.localeCompare(b.key));
+    perLocale[locale] = {
+      exportedRows: sheets[locale].length,
+      emptyTranslations,
+      sameAsEn,
+    };
+  }
+
+  return {
+    sheets,
+    report: {
+      exportedAt: new Date().toISOString(),
+      format: options.format,
+      outputPath: options.out,
+      entityType: options.entityType,
+      fields: options.fields,
+      targetLocales: options.locales,
+      foodsExported: forms.length,
+      entitiesExported: forms.length,
       totalRows,
       perLocale,
     },
@@ -351,7 +458,7 @@ export async function importEntityTranslations(
     SUPPORTED_LOCALES.filter((l) => l !== DEFAULT_LOCALE),
   );
 
-  // Resolve GenericFood nevoCodes in bulk
+  // Resolve GenericFood nevoCodes in bulk; ConsentForm rows by key
   const nevoCodesNeeded = new Set<number>();
   for (const row of spreadsheetRows) {
     const parsed = parseEntityTranslationKey(row.key);
@@ -368,6 +475,11 @@ export async function importEntityTranslations(
     select: { id: true, nevoCode: true },
   });
   const idByNevoCode = new Map(foods.map((f) => [f.nevoCode, f.id]));
+
+  const consentForms = await prisma.consentForm.findMany({
+    select: { id: true, key: true },
+  });
+  const idByConsentKey = new Map(consentForms.map((f) => [f.key, f.id]));
 
   for (const row of spreadsheetRows) {
     const rowId = `${row.locale}/${row.key}`;
@@ -391,13 +503,17 @@ export async function importEntityTranslations(
       continue;
     }
 
-    if (parsed.entityType !== 'GenericFood') {
+    let entityId: string | undefined;
+    if (parsed.entityType === 'GenericFood') {
+      const nevoCode = Number(parsed.naturalKey);
+      entityId = idByNevoCode.get(nevoCode);
+    } else if (parsed.entityType === 'ConsentForm') {
+      entityId = idByConsentKey.get(parsed.naturalKey);
+    } else {
       report.skipped.unsupported_entity_type.push(rowId);
       continue;
     }
 
-    const nevoCode = Number(parsed.naturalKey);
-    const entityId = idByNevoCode.get(nevoCode);
     if (!entityId) {
       report.skipped.unknown_entity.push(rowId);
       continue;
@@ -407,14 +523,14 @@ export async function importEntityTranslations(
       await prisma.entityTranslation.upsert({
         where: {
           entityType_entityId_locale_field: {
-            entityType: 'GenericFood',
+            entityType: parsed.entityType,
             entityId,
             locale: row.locale,
             field: parsed.field,
           },
         },
         create: {
-          entityType: 'GenericFood',
+          entityType: parsed.entityType,
           entityId,
           locale: row.locale,
           field: parsed.field,
@@ -433,7 +549,9 @@ export function printEntityExportReport(report: EntityExportReport): void {
   console.log(`\nEntity translation export`);
   console.log(`  entityType: ${report.entityType}`);
   console.log(`  fields: ${report.fields.join(', ')}`);
-  console.log(`  foods: ${report.foodsExported}`);
+  console.log(
+    `  entities: ${report.entitiesExported ?? report.foodsExported}`,
+  );
   console.log(`  locales: ${report.targetLocales.join(', ')}`);
   console.log(`  total rows: ${report.totalRows}`);
   console.log(`  output: ${report.outputPath}`);

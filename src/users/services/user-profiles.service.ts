@@ -18,6 +18,8 @@ import {
   hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
 import type { User } from '@prisma/client';
+import { ConsentsService } from '../../consents/services/consents.service';
+import type { UserConsentStatusDto } from '../../consents/dto/consent.dto';
 
 export interface UserProfile {
   id: string;
@@ -46,6 +48,9 @@ export interface UserProfile {
   segment?: string | null;
   currentQuestId?: string | null;
   lastLoginAt?: Date | null;
+
+  consents?: UserConsentStatusDto[];
+  missingRequiredConsents?: string[];
 }
 
 @Injectable()
@@ -55,6 +60,7 @@ export class UserProfilesService {
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
+    private readonly consentsService: ConsentsService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -89,7 +95,7 @@ export class UserProfilesService {
       });
     }
 
-    return this.formatUserProfile(user);
+    return this.enrichWithConsents(this.formatUserProfile(user));
   }
 
   async updateProfile(keycloakId: string, payload: any): Promise<UserProfile> {
@@ -160,7 +166,7 @@ export class UserProfilesService {
     }
 
     if (Object.keys(updateData).length === 0) {
-      return this.formatUserProfile(user);
+      return this.enrichWithConsents(this.formatUserProfile(user));
     }
 
     let updatedUser = await this.prisma.user.update({
@@ -173,7 +179,7 @@ export class UserProfilesService {
       payload,
     );
 
-    return this.formatUserProfile(updatedUser);
+    return this.enrichWithConsents(this.formatUserProfile(updatedUser));
   }
 
   /**
@@ -280,7 +286,20 @@ export class UserProfilesService {
       return null;
     }
 
-    return this.formatUserProfile(user);
+    return this.enrichWithConsents(this.formatUserProfile(user));
+  }
+
+  private async enrichWithConsents(profile: UserProfile): Promise<UserProfile> {
+    const consents = await this.consentsService.getUserConsentStatus(
+      profile.id,
+    );
+    return {
+      ...profile,
+      consents,
+      missingRequiredConsents: consents
+        .filter((c) => c.required && !c.accepted)
+        .map((c) => c.formKey),
+    };
   }
 
   /**

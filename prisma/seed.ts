@@ -22,6 +22,7 @@ import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
 import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
+import { seedConsents } from '../scripts/seeds/prod/consents';
 
 const {
   values: { environment, force },
@@ -48,6 +49,7 @@ async function seedProduction() {
   const shelfLife = await seedFoodKeeper(prisma, { skipExisting });
   const shelfLifeLinks = await linkShelfLife(prisma);
   const surveys = await seedSurveys(prisma);
+  const consents = await seedConsents(prisma);
   const foodCount = await prisma.foodProduct.count();
 
   console.log('=====================================');
@@ -58,6 +60,10 @@ async function seedProduction() {
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
+    },
+    {
+      label: 'consents',
+      value: `${consents.formsUpserted} forms`,
     },
     {
       label: 'recipes',
@@ -114,8 +120,9 @@ async function seedDevelopment() {
   const shelfLife = await seedFoodKeeper(prisma, { skipExisting });
   const shelfLifeLinks = await linkShelfLife(prisma);
 
-  // --- Surveys ---
+  // --- Surveys & consents ---
   const surveys = await seedSurveys(prisma);
+  const consents = await seedConsents(prisma);
 
   const foodCount = await prisma.foodProduct.count();
 
@@ -146,6 +153,10 @@ async function seedDevelopment() {
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
+    },
+    {
+      label: 'consents',
+      value: `${consents.formsUpserted} forms`,
     },
     {
       label: 'recipes',

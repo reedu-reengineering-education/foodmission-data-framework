@@ -13,11 +13,25 @@ describe('entity translation handoff keys', () => {
     );
   });
 
-  it('parses valid keys', () => {
+  it('parses valid GenericFood keys', () => {
     expect(parseEntityTranslationKey('GenericFood.1.foodName')).toEqual({
       entityType: 'GenericFood',
       naturalKey: '1',
       field: 'foodName',
+    });
+  });
+
+  it('builds and parses ConsentForm keys', () => {
+    expect(
+      toEntityTranslationKey('ConsentForm', 'privacy_notice', 'title'),
+    ).toBe('ConsentForm.privacy_notice.title');
+
+    expect(
+      parseEntityTranslationKey('ConsentForm.privacy_notice.body'),
+    ).toEqual({
+      entityType: 'ConsentForm',
+      naturalKey: 'privacy_notice',
+      field: 'body',
     });
   });
 

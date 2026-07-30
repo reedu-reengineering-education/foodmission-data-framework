@@ -4,6 +4,7 @@ import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import { ConsentsService } from '../../consents/services/consents.service';
 import {
   UserSegment,
   WeeklyBeefFrequency,
@@ -68,6 +69,12 @@ describe('UserProfilesService updateProfile gamification', () => {
               onboardingEventRecorded: true,
               skipped: false,
             }),
+          },
+        },
+        {
+          provide: ConsentsService,
+          useValue: {
+            getUserConsentStatus: jest.fn().mockResolvedValue([]),
           },
         },
       ],

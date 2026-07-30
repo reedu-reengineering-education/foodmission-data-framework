@@ -24,6 +24,10 @@ import {
   printSurveyTranslationReport,
   seedSurveyTranslations,
 } from './prod/survey-translations';
+import {
+  printConsentTranslationReport,
+  seedConsentTranslations,
+} from './prod/consent-translations';
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -68,7 +72,10 @@ async function main(): Promise<void> {
     const surveyReport = await seedSurveyTranslations(prisma, { dryRun });
     printSurveyTranslationReport(surveyReport);
 
-    // Future DB translation sources (gamification, recipes, …) go here.
+    // --- Consent form version locale overlays ---
+    console.log('\n📝 Consent form translations');
+    const consentReport = await seedConsentTranslations(prisma, { dryRun });
+    printConsentTranslationReport(consentReport);
 
     console.log('\n=====================================');
     console.log('✅ Database translations step finished');
