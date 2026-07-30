@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventSource, EventType } from '../event-types';
-import { ClientEventService } from './client-event.service';
+import {
+  buildClientEventIdempotencyKey,
+  ClientEventService,
+} from './client-event.service';
 import { UserEventService } from './user-event.service';
 
 describe('ClientEventService', () => {
@@ -21,7 +24,20 @@ describe('ClientEventService', () => {
     jest.clearAllMocks();
   });
 
+  it('builds a user-scoped idempotency key from eventType + userId + sessionId', () => {
+    expect(
+      buildClientEventIdempotencyKey(
+        EventType.APP_SESSION_OPENED,
+        'u1',
+        '550e8400-e29b-41d4-a716-446655440000',
+      ),
+    ).toBe(
+      'APP_SESSION_OPENED:u1:550e8400-e29b-41d4-a716-446655440000',
+    );
+  });
+
   it('records an allowlisted app session event with APP source', async () => {
+    const sessionId = '550e8400-e29b-41d4-a716-446655440000';
     userEventService.record.mockResolvedValue({
       event: {
         id: 'evt-1',
@@ -30,7 +46,7 @@ describe('ClientEventService', () => {
         source: EventSource.APP,
         createdAt: new Date('2026-07-30T12:00:00Z'),
         metadata: {
-          sessionId: 's1',
+          sessionId,
           subject: { type: 'USER', id: 'u1' },
         },
         groupId: null,
@@ -41,16 +57,15 @@ describe('ClientEventService', () => {
     const result = await service.record({
       userId: 'u1',
       eventType: EventType.APP_SESSION_OPENED,
-      metadata: { sessionId: 's1' },
-      idempotencyKey: 'app-session-opened:u1:s1',
+      metadata: { sessionId, platform: 'ios' },
     });
 
     expect(userEventService.record).toHaveBeenCalledWith({
       userId: 'u1',
       eventType: EventType.APP_SESSION_OPENED,
       source: EventSource.APP,
-      metadata: { sessionId: 's1' },
-      idempotencyKey: 'app-session-opened:u1:s1',
+      metadata: { sessionId, platform: 'ios' },
+      idempotencyKey: `APP_SESSION_OPENED:u1:${sessionId}`,
       subject: { type: 'USER', id: 'u1' },
     });
     expect(result.replayed).toBe(false);
@@ -65,6 +80,7 @@ describe('ClientEventService', () => {
   });
 
   it('returns replayed events without changing the DTO shape', async () => {
+    const sessionId = '550e8400-e29b-41d4-a716-446655440000';
     userEventService.record.mockResolvedValue({
       event: {
         id: 'evt-existing',
@@ -72,7 +88,7 @@ describe('ClientEventService', () => {
         eventType: EventType.APP_SESSION_ENDED,
         source: EventSource.APP,
         createdAt: new Date('2026-07-30T12:05:00Z'),
-        metadata: { sessionId: 's1', durationSeconds: 300 },
+        metadata: { sessionId, durationSeconds: 300 },
         groupId: null,
       },
       replayed: true,
@@ -81,10 +97,14 @@ describe('ClientEventService', () => {
     const result = await service.record({
       userId: 'u1',
       eventType: EventType.APP_SESSION_ENDED,
-      metadata: { sessionId: 's1', durationSeconds: 300 },
-      idempotencyKey: 'app-session-ended:u1:s1',
+      metadata: { sessionId, durationSeconds: 300 },
     });
 
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        idempotencyKey: `APP_SESSION_ENDED:u1:${sessionId}`,
+      }),
+    );
     expect(result.replayed).toBe(true);
     expect(result.event.id).toBe('evt-existing');
   });

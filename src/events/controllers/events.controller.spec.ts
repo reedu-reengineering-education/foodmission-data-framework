@@ -30,10 +30,10 @@ describe('EventsController', () => {
   });
 
   it('delegates to ClientEventService and returns the event DTO', async () => {
+    const sessionId = '550e8400-e29b-41d4-a716-446655440000';
     const dto: CreateClientEventDto = {
       eventType: EventType.APP_SESSION_OPENED,
-      metadata: { sessionId: 's1', platform: 'ios' },
-      idempotencyKey: 'app-session-opened:u1:s1',
+      metadata: { sessionId, platform: 'ios' },
     };
     const eventDto = {
       id: 'evt-1',
@@ -41,7 +41,7 @@ describe('EventsController', () => {
       eventType: EventType.APP_SESSION_OPENED,
       source: 'app',
       timestamp: new Date(),
-      metadata: { sessionId: 's1', platform: 'ios' },
+      metadata: { sessionId, platform: 'ios' },
       groupId: null,
     };
     clientEventService.record.mockResolvedValue({
@@ -55,7 +55,6 @@ describe('EventsController', () => {
       userId: 'u1',
       eventType: dto.eventType,
       metadata: dto.metadata,
-      idempotencyKey: dto.idempotencyKey,
     });
     expect(result).toBe(eventDto);
   });

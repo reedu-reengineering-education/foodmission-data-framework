@@ -30,10 +30,10 @@
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Onboarding** — `{ segment }`
- * - **App session** — `{ sessionId?, platform?, appVersion?, durationSeconds? }`.
- *   Client-submittable via `POST /events` (allowlisted). Prefer idempotency
- *   `app-session-opened:{userId}:{sessionId}` / `app-session-ended:{userId}:{sessionId}`.
- *   Subject is usually `USER`.
+ * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
+ *   Client-submittable via `POST /events` (allowlisted). `sessionId` is required;
+ *   the server builds idempotency `{eventType}:{userId}:{sessionId}` (do not use
+ *   timestamps — retries must reuse a stable key). Subject is usually `USER`.
  * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
  *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and

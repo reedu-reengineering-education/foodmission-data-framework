@@ -1,15 +1,61 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsIn,
+  IsInt,
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
   MaxLength,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import {
   CLIENT_RECORDABLE_EVENT_TYPES,
   ClientRecordableEventType,
 } from '../event-types';
+
+/** Context for client-allowlisted app session events. */
+export class ClientEventMetadataDto {
+  @ApiProperty({
+    description: 'Client-generated session id (required for idempotency)',
+    format: 'uuid',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @IsUUID()
+  sessionId!: string;
+
+  @ApiPropertyOptional({
+    description: 'Client platform (e.g. ios, android, web)',
+    example: 'ios',
+    maxLength: 64,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  platform?: string;
+
+  @ApiPropertyOptional({
+    description: 'Client app version',
+    example: '1.2.3',
+    maxLength: 64,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  appVersion?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Foreground duration in seconds (informational; not server-validated)',
+    example: 420,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  durationSeconds?: number;
+}
 
 export class CreateClientEventDto {
   @ApiProperty({
@@ -20,27 +66,13 @@ export class CreateClientEventDto {
   @IsIn([...CLIENT_RECORDABLE_EVENT_TYPES])
   eventType!: ClientRecordableEventType;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description:
-      'Event context (e.g. sessionId, platform, appVersion, durationSeconds). ' +
-      'Do not encode the event kind here.',
-    type: 'object',
-    additionalProperties: true,
-    example: { sessionId: '550e8400-e29b-41d4-a716-446655440000', platform: 'ios' },
+      'Event context. sessionId is required; the server builds the idempotency key.',
+    type: ClientEventMetadataDto,
   })
-  @IsOptional()
   @IsObject()
-  metadata?: Record<string, unknown>;
-
-  @ApiPropertyOptional({
-    description:
-      'Stable unique key so retries do not double-write. ' +
-      'Suggested: app-session-opened:{userId}:{sessionId}',
-    example: 'app-session-opened:user-id:session-id',
-    maxLength: 255,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  idempotencyKey?: string;
+  @ValidateNested()
+  @Type(() => ClientEventMetadataDto)
+  metadata!: ClientEventMetadataDto;
 }

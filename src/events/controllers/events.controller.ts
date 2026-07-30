@@ -34,7 +34,9 @@ export class EventsController {
     summary: 'Record a client-allowlisted user event',
     description:
       'Accepts APP_SESSION_OPENED / APP_SESSION_ENDED only. ' +
-      'Other event types must be derived server-side from domain mutations.',
+      'Requires metadata.sessionId; idempotency key is built server-side as ' +
+      '{eventType}:{userId}:{sessionId}. Other event types must be derived ' +
+      'server-side from domain mutations.',
   })
   @ApiBody({ type: CreateClientEventDto })
   @ApiResponse({
@@ -51,7 +53,6 @@ export class EventsController {
       userId,
       eventType: dto.eventType,
       metadata: dto.metadata,
-      idempotencyKey: dto.idempotencyKey,
     });
     return event;
   }

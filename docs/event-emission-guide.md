@@ -44,7 +44,7 @@ flowchart TD
    Do not insert into `user_events` from controllers (except the allowlisted client path above), seeds (except explicit seed tooling with `EventSource.SEED`), or the UI.
 
 3. **Use idempotency for retries and rewards**  
-   Stable keys, e.g. `onboarding-completed:{userId}`, `meal-logged:{userId}:{mealId}`, `mission-completed:{userId}:{missionId}`, `app-session-opened:{userId}:{sessionId}`. Concurrent retries should return the existing row (`replayed: true`), not a duplicate fact.
+   Stable keys, e.g. `onboarding-completed:{userId}`, `meal-logged:{userId}:{mealId}`, `mission-completed:{userId}:{missionId}`. For `POST /events`, the server builds `{eventType}:{userId}:{sessionId}` from the authenticated user and required `metadata.sessionId` — clients do not supply `idempotencyKey`. Concurrent retries should return the existing row (`replayed: true`), not a duplicate fact.
 
 4. **Keep domains separate** (see catalog)  
    - **Account** — `USER_LOGGED_IN`, `ONBOARDING_COMPLETED`, `USER_GROUP_JOINED` / `USER_GROUP_LEFT`  
