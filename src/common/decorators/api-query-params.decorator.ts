@@ -100,5 +100,12 @@ export function ApiOpenFoodFactsSearchQuery() {
       description:
         'Items per page (alternative to pageSize, for backward compatibility, min: 1, max: 50)',
     }),
+    ApiQuery({
+      name: 'lang',
+      required: false,
+      type: String,
+      description:
+        'Optional locale for product name / ingredients (supported project locales; unsupported codes fall back to en)',
+    }),
   );
 }

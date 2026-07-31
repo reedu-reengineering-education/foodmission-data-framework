@@ -52,13 +52,27 @@ describe('FoodProductController', () => {
     it('passes includeOpenFoodFacts=false when query omitted', async () => {
       service.findOne.mockResolvedValue(foodDto);
       await controller.findOne(TEST_FOOD.id, undefined);
-      expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id, false);
+      expect(service.findOne).toHaveBeenCalledWith(
+        TEST_FOOD.id,
+        false,
+        undefined,
+      );
     });
 
     it('passes includeOpenFoodFacts=true when query is "true"', async () => {
       service.findOne.mockResolvedValue(foodDto);
       await controller.findOne(TEST_FOOD.id, 'true');
-      expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id, true);
+      expect(service.findOne).toHaveBeenCalledWith(
+        TEST_FOOD.id,
+        true,
+        undefined,
+      );
+    });
+
+    it('passes lang to service when provided', async () => {
+      service.findOne.mockResolvedValue(foodDto);
+      await controller.findOne(TEST_FOOD.id, 'true', 'de');
+      expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id, true, 'de');
     });
 
     it('propagates NotFoundException from service', async () => {
@@ -75,7 +89,19 @@ describe('FoodProductController', () => {
     it('delegates to service.findByBarcode', async () => {
       service.findByBarcode.mockResolvedValue(foodDto);
       await controller.findByBarcode(TEST_FOOD.barcode);
-      expect(service.findByBarcode).toHaveBeenCalledWith(TEST_FOOD.barcode);
+      expect(service.findByBarcode).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+        undefined,
+      );
+    });
+
+    it('forwards lang query to service', async () => {
+      service.findByBarcode.mockResolvedValue(foodDto);
+      await controller.findByBarcode(TEST_FOOD.barcode, 'de');
+      expect(service.findByBarcode).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+        'de',
+      );
     });
   });
 
@@ -163,8 +189,19 @@ describe('FoodProductController', () => {
       expect(service.findOne).toHaveBeenCalledWith(TEST_FOOD.id);
       expect(service.getOpenFoodFactsInfo).toHaveBeenCalledWith(
         TEST_FOOD.barcode,
+        undefined,
       );
       expect(result).toEqual(offPayload);
+    });
+
+    it('forwards lang to getOpenFoodFactsInfo', async () => {
+      service.findOne.mockResolvedValue(foodDto);
+      service.getOpenFoodFactsInfo.mockResolvedValue({ name: 'Apfel' } as any);
+      await controller.getOpenFoodFactsInfo(TEST_FOOD.id, 'de');
+      expect(service.getOpenFoodFactsInfo).toHaveBeenCalledWith(
+        TEST_FOOD.barcode,
+        'de',
+      );
     });
   });
 });

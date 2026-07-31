@@ -1,5 +1,8 @@
 import { IsOptional, IsString, IsInt, Min, Max, IsIn } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { TransformTrimLowercaseToUndefined } from '../../common/decorators/transformers';
 
 export class FoodProductQueryDto {
   @IsOptional()
@@ -36,6 +39,17 @@ export class FoodProductQueryDto {
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   includeOpenFoodFacts?: boolean = false;
+
+  @ApiPropertyOptional({
+    description: `Optional locale for OpenFoodFacts overlay text (name, ingredients). Defaults to ${DEFAULT_LOCALE}. Unsupported codes fall back to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
 }
 
 export class FoodProductSearchDto {
@@ -70,4 +84,15 @@ export class FoodProductSearchDto {
   @Min(1)
   @Max(100)
   limit?: number = 10;
+
+  @ApiPropertyOptional({
+    description: `Optional locale for OpenFoodFacts product name / ingredients. Defaults to ${DEFAULT_LOCALE}. Unsupported codes fall back to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
 }

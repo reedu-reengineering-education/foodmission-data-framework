@@ -23,7 +23,15 @@ describe('ApiQueryParamsDecorators', () => {
       const names = metadata.map((m: any) => m.name);
 
       expect(new Set(names)).toEqual(
-        new Set(['query', 'category', 'brand', 'page', 'pageSize', 'limit']),
+        new Set([
+          'query',
+          'category',
+          'brand',
+          'page',
+          'pageSize',
+          'limit',
+          'lang',
+        ]),
       );
 
       expect(metadata.find((m: any) => m.name === 'query')?.type).toBe(String);

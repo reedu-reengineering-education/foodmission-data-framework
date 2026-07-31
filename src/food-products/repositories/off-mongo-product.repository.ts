@@ -18,8 +18,23 @@ export class OffMongoProductRepository {
     return this.prisma.isConfigured;
   }
 
-  findByBarcode(barcode: string) {
-    return this.prisma.offProduct.findUnique({ where: { id: barcode } });
+  /**
+   * Load a product by barcode via findRaw so language-suffixed fields
+   * (product_name_de, ingredients_text_nl, …) survive. Prisma's typed
+   * findUnique only returns schema-declared columns (en + bare).
+   */
+  async findByBarcode(
+    barcode: string,
+  ): Promise<Record<string, unknown> | null> {
+    const rawItems = await this.prisma.offProduct.findRaw({
+      filter: { _id: barcode } as Prisma.InputJsonValue,
+    });
+    const items = rawItems as unknown as Record<string, unknown>[];
+    if (!items?.length) {
+      return null;
+    }
+    const doc = items[0];
+    return { ...doc, id: doc._id };
   }
 
   // Uses findRaw/aggregateRaw instead of Prisma's regular query builder.

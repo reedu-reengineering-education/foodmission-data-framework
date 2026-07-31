@@ -7,6 +7,7 @@ import { FoodProductController } from '../../src/food-products/controllers/food-
 import { FoodProductRepository } from '../../src/food-products/repositories/food-product.repository';
 import { FoodProductService } from '../../src/food-products/services/food-product.service';
 import { OpenFoodFactsService } from '../../src/food-products/services/openfoodfacts.service';
+import { TranslationService } from '../../src/translations/services/translation.service';
 import {
   createAuthGuardMock,
   createControllerE2eTestApp,
@@ -24,6 +25,24 @@ describe('FoodProducts endpoints (e2e)', () => {
   const openFoodFactsMock = {
     searchProducts: jest.fn(),
     getProductByBarcode: jest.fn(),
+  };
+
+  const translationService = {
+    resolveLocale: jest.fn((lang?: string) => {
+      const candidate = (lang ?? 'en').trim().toLowerCase();
+      const supported = [
+        'en',
+        'no',
+        'de',
+        'el',
+        'es',
+        'it',
+        'nl',
+        'pl',
+        'sl',
+      ];
+      return supported.includes(candidate) ? candidate : 'en';
+    }),
   };
 
   async function seedBaseData() {
@@ -58,6 +77,7 @@ describe('FoodProducts endpoints (e2e)', () => {
         FoodProductRepository,
         { provide: PrismaService, useValue: prisma },
         { provide: OpenFoodFactsService, useValue: openFoodFactsMock },
+        { provide: TranslationService, useValue: translationService },
         { provide: UserContextService, useValue: {} },
       ],
       authGuardMock: createAuthGuardMock(authUser),
@@ -134,6 +154,7 @@ describe('FoodProducts endpoints (e2e)', () => {
 
       expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
         '1111111111111',
+        'en',
       );
       // OFF passthrough: id is the barcode, not a local FoodProduct UUID
       expect(res.body).toEqual(
@@ -145,6 +166,30 @@ describe('FoodProducts endpoints (e2e)', () => {
           brands: 'Test Brand',
         }),
       );
+    },
+  );
+
+  itIfDb(
+    'GET /food-products/barcode/:barcode?lang=de returns localized OFF name',
+    async () => {
+      openFoodFactsMock.getProductByBarcode.mockResolvedValue({
+        barcode: '1111111111111',
+        name: 'Apfel',
+        genericName: 'Frischer Apfel',
+        ingredients: 'Apfel',
+        brands: ['Test Brand'],
+      });
+
+      const res = await request(app.getHttpServer())
+        .get('/food-products/barcode/1111111111111?lang=de')
+        .expect(200);
+
+      expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
+        '1111111111111',
+        'de',
+      );
+      expect(res.body.name).toBe('Apfel');
+      expect(res.body.description).toBe('Frischer Apfel');
     },
   );
 
@@ -176,8 +221,34 @@ describe('FoodProducts endpoints (e2e)', () => {
         )
         .expect(200);
 
-      expect(openFoodFactsMock.searchProducts).toHaveBeenCalled();
+      expect(openFoodFactsMock.searchProducts).toHaveBeenCalledWith(
+        expect.objectContaining({ lang: 'en' }),
+      );
       expect(res.body.products).toHaveLength(1);
+    },
+  );
+
+  itIfDb(
+    'GET /food-products/search/openfoodfacts?lang=de passes locale',
+    async () => {
+      openFoodFactsMock.searchProducts.mockResolvedValue({
+        products: [{ barcode: '333', name: 'OFF Produkt' }],
+        totalCount: 1,
+        page: 1,
+        pageSize: 10,
+        totalPages: 1,
+      });
+
+      const res = await request(app.getHttpServer())
+        .get(
+          '/food-products/search/openfoodfacts?query=food&page=1&pageSize=10&lang=de',
+        )
+        .expect(200);
+
+      expect(openFoodFactsMock.searchProducts).toHaveBeenCalledWith(
+        expect.objectContaining({ lang: 'de', query: 'food' }),
+      );
+      expect(res.body.products[0].name).toBe('OFF Produkt');
     },
   );
 
@@ -211,6 +282,7 @@ describe('FoodProducts endpoints (e2e)', () => {
 
       expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
         '4444444444444',
+        'en',
       );
       expect(res.body.name).toBe('Imported OFF');
     },
@@ -265,6 +337,7 @@ describe('FoodProducts endpoints (e2e)', () => {
 
       expect(openFoodFactsMock.getProductByBarcode).toHaveBeenCalledWith(
         '1111111111111',
+        'en',
       );
       expect(res.body).toEqual(
         expect.objectContaining({ barcode: '1111111111111' }),
