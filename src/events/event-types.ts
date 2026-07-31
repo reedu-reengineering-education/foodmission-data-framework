@@ -3,7 +3,7 @@
  *
  * ## Domains
  * - **Account** — session / onboarding / groups (`USER_LOGGED_IN`, `ONBOARDING_COMPLETED`, `USER_GROUP_*`)
- * - **App** — session-level app facts (`APP_OPENED`)
+ * - **App** — session-level app facts (`APP_SESSION_OPENED`, `APP_SESSION_ENDED`)
  * - **Wallet** — points / XP / admin adjustments (`WALLET_*`)
  * - **Progress** — mission / challenge / quest completion
  * - **Achievements** — badges and progress indicators
@@ -30,9 +30,10 @@
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Onboarding** — `{ segment }`
- * - **App open** — optional `{ platform?, appVersion? }`; prefer day-level idempotency
- *   (`app-opened:{userId}:{YYYY-MM-DD}`) if used for streaks / active days.
- *   Subject is usually `USER`; use `APP` when the subject is the client app/platform itself.
+ * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
+ *   Client-submittable via `POST /events` (allowlisted). `sessionId` is required;
+ *   the server builds idempotency `{eventType}:{userId}:{sessionId}` (do not use
+ *   timestamps — retries must reuse a stable key). Subject is usually `USER`.
  * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
  *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and
@@ -56,7 +57,8 @@ export const EventType = {
   // ==========================================
   // APP
   // ==========================================
-  APP_OPENED: 'APP_OPENED',
+  APP_SESSION_OPENED: 'APP_SESSION_OPENED',
+  APP_SESSION_ENDED: 'APP_SESSION_ENDED',
 
   // ==========================================
   // WALLET
@@ -171,6 +173,18 @@ export const EventType = {
 } as const;
 
 export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
+
+/**
+ * Event types the authenticated client may POST to `/events`.
+ * Trust-sensitive types (wallet, behavioural evidence, progress) stay server-only.
+ */
+export const CLIENT_RECORDABLE_EVENT_TYPES = [
+  EventType.APP_SESSION_OPENED,
+  EventType.APP_SESSION_ENDED,
+] as const;
+
+export type ClientRecordableEventType =
+  (typeof CLIENT_RECORDABLE_EVENT_TYPES)[number];
 
 /**
  * Who produced the event (service / channel).
