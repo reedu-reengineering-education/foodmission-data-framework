@@ -52,10 +52,12 @@ services:
       WEBHOOK_SECRET: test-webhook-secret
     ports:
       - '127.0.0.1:8080:8080'
+    volumes:
+      - ./keycloak/foodmission-realm.dev.json:/opt/keycloak/data/import/foodmission-realm.dev.json
     depends_on:
       postgres:
         condition: service_healthy
-    command: start-dev
+    command: start-dev --import-realm
     healthcheck:
       test:
         ['CMD-SHELL', 'curl -f http://localhost:8080/health/ready || exit 1']
