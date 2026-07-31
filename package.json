@@ -54,6 +54,7 @@
     "db:seed": "prisma db seed -- --environment development",
     "db:seed:prod": "prisma db seed -- --environment production",
     "db:translations": "ts-node scripts/seeds/seed-translations.ts",
+    "db:translations:prod": "node dist/scripts/seeds/seed-translations.js",
     "db:import:nevo-translations": "ts-node scripts/seeds/import-nevo-translations.ts",
     "db:seed:test": "ts-node scripts/dev/seed-test.ts",
     "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",
