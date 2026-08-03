@@ -57,7 +57,7 @@ export class GenericFoodRepository {
         ],
       };
 
-      if (useLocalizedSearch && localizedSearchIds!.length > 0) {
+      if (useLocalizedSearch && localizedSearchIds.length > 0) {
         conditions.push({
           OR: [englishMatch, { id: { in: localizedSearchIds } }],
         });
@@ -71,7 +71,7 @@ export class GenericFoodRepository {
         foodGroup: { contains: foodGroup, mode: 'insensitive' },
       };
 
-      if (useLocalizedFoodGroup && localizedFoodGroupIds!.length > 0) {
+      if (useLocalizedFoodGroup && localizedFoodGroupIds.length > 0) {
         conditions.push({
           OR: [englishFoodGroup, { id: { in: localizedFoodGroupIds } }],
         });

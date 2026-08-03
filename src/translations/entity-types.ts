@@ -31,7 +31,7 @@ export function isValidFieldForEntity(
   entityType: TranslatableEntityType,
   field: string,
 ): boolean {
-  return (
-    ENTITY_TRANSLATABLE_FIELDS[entityType] as readonly string[]
-  ).includes(field);
+  return (ENTITY_TRANSLATABLE_FIELDS[entityType] as readonly string[]).includes(
+    field,
+  );
 }

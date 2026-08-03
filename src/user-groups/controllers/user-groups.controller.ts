@@ -33,7 +33,6 @@ import {
   MemberResponseDto,
 } from '../dto';
 
-
 @ApiTags('user-groups')
 @Controller('user-groups')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)

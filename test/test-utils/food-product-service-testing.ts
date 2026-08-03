@@ -26,17 +26,7 @@ export function createMockTranslationService() {
   return {
     resolveLocale: jest.fn((lang?: string) => {
       const candidate = (lang ?? 'en').trim().toLowerCase();
-      const supported = [
-        'en',
-        'no',
-        'de',
-        'el',
-        'es',
-        'it',
-        'nl',
-        'pl',
-        'sl',
-      ];
+      const supported = ['en', 'no', 'de', 'el', 'es', 'it', 'nl', 'pl', 'sl'];
       return supported.includes(candidate) ? candidate : 'en';
     }),
   };
