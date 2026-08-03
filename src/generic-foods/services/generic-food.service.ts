@@ -72,10 +72,7 @@ export class GenericFoodService {
     };
   }
 
-  async findById(
-    id: string,
-    lang?: string,
-  ): Promise<GenericFoodResponseDto> {
+  async findById(id: string, lang?: string): Promise<GenericFoodResponseDto> {
     const category = await this.genericFoodRepository.findById(id);
 
     if (!category) {

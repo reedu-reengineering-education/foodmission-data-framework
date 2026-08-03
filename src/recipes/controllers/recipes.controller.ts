@@ -42,7 +42,6 @@ export class RecipeController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  
   @ApiOperation({ summary: 'Create a recipe' })
   @ApiBody({ type: CreateRecipeDto })
   @ApiResponse({

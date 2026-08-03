@@ -107,8 +107,7 @@ export class GamificationWalletService {
               userId: input.userId,
               groupId: input.groupId,
               eventType:
-                input.eventType ??
-                defaultWalletAwardEventType(input.currency),
+                input.eventType ?? defaultWalletAwardEventType(input.currency),
               source: EventSource.WALLET,
               metadata: input.metadata ?? {
                 currency: input.currency,

@@ -104,7 +104,9 @@ describe('nevo translations import', () => {
         count: jest.fn().mockResolvedValue(0),
       },
       genericFood: {
-        findMany: jest.fn().mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
+        findMany: jest
+          .fn()
+          .mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
       },
       $transaction: jest.fn(),
     } as any;
@@ -152,7 +154,9 @@ describe('nevo translations import', () => {
         upsert: jest.fn(),
       },
       genericFood: {
-        findMany: jest.fn().mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
+        findMany: jest
+          .fn()
+          .mockResolvedValue([{ id: 'food-uuid-1', nevoCode: 1 }]),
       },
       $transaction: jest.fn().mockResolvedValue([]),
     } as any;

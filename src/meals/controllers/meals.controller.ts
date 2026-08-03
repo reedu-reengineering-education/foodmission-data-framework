@@ -43,7 +43,6 @@ export class MealsController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  
   @ApiOperation({ summary: 'Create a meal' })
   @ApiBody({ type: CreateMealDto })
   @ApiResponse({
