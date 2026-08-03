@@ -5,9 +5,6 @@ import {
 } from '../analytics-utils';
 
 export const DimQuery = (name: 'dim1' | 'dim2' | 'dimension') =>
-  Query(
-    name,
-    new ParseEnumPipe(DemographicDimensionEnum, { optional: true }),
-  ) as ParameterDecorator;
+  Query(name, new ParseEnumPipe(DemographicDimensionEnum, { optional: true }));
 
 export type DimQueryValue = DemographicDimension;
