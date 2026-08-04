@@ -120,7 +120,7 @@ jobs:
 
       - name: Check for unused dependencies
         run: |
-          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics,.prisma,@typescript/native"
+          npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics,.prisma,@typescript/native,js-yaml"
 
       - name: Generate complexity report
         run: |
