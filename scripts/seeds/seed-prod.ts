@@ -6,11 +6,19 @@ import { seedFoodKeeper } from './prod/foodkeeper';
 import { linkShelfLife } from './prod/link-shelf-life';
 import { seedDimensionsAndTopics } from './shared/dimensions-topics';
 import { seedStandardRewards } from './shared/rewards';
+import { seedFoodFacts } from './shared/food-facts';
+import { seedQuizzes } from './shared/quizzes';
+import { seedMissionsCatalog } from './shared/missions-catalog';
+import { seedChallengesCatalog } from './shared/challenges-catalog';
+import { seedQuests } from './shared/quests';
+import { seedMicroLearnings } from './shared/micro-learnings';
 
 async function main() {
   const prisma = new PrismaClient();
 
-  console.log('🔒 Running production seed (NEVO + OpenFoodFacts + Recipes)');
+  console.log(
+    '🔒 Running production seed (taxonomy + catalog + NEVO + OFF + Recipes)',
+  );
 
   try {
     const taxonomyRes = await seedDimensionsAndTopics(prisma);
@@ -22,6 +30,28 @@ async function main() {
     console.log(
       `   ✅ Standard rewards: ${rewardsRes.seeded} seeded (${rewardsRes.total} total)`,
     );
+
+    const foodFacts = await seedFoodFacts(prisma);
+    console.log(`   ✅ Food facts: ${foodFacts.seeded} upserted`);
+
+    const quizzes = await seedQuizzes(prisma);
+    console.log(
+      `   ✅ Quizzes: ${quizzes.seeded} upserted (${quizzes.needingCuration} need correctLabel)`,
+    );
+
+    const missions = await seedMissionsCatalog(prisma);
+    console.log(`   ✅ Missions: ${missions.length} upserted`);
+
+    const challenges = await seedChallengesCatalog(prisma);
+    console.log(`   ✅ Challenges: ${challenges.length} upserted`);
+
+    const quests = await seedQuests(prisma);
+    console.log(
+      `   ✅ Quests: ${quests.seeded} upserted (${quests.items} items)`,
+    );
+
+    const microLearnings = await seedMicroLearnings(prisma);
+    console.log(`   ✅ Micro-learnings: ${microLearnings.seeded} upserted`);
 
     const genericFoods = await seedGenericFoods(prisma, { skipExisting: true });
     console.log(`   ✅ NEVO: ${genericFoods.length} generic foods upserted`);

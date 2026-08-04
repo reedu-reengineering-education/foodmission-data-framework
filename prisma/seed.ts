@@ -20,6 +20,12 @@ import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
 import { seedDimensionsAndTopics } from '../scripts/seeds/shared/dimensions-topics';
 import { seedStandardRewards } from '../scripts/seeds/shared/rewards';
+import { seedFoodFacts } from '../scripts/seeds/shared/food-facts';
+import { seedQuizzes } from '../scripts/seeds/shared/quizzes';
+import { seedMissionsCatalog } from '../scripts/seeds/shared/missions-catalog';
+import { seedChallengesCatalog } from '../scripts/seeds/shared/challenges-catalog';
+import { seedQuests } from '../scripts/seeds/shared/quests';
+import { seedMicroLearnings } from '../scripts/seeds/shared/micro-learnings';
 
 const {
   values: { environment, force },
@@ -43,6 +49,14 @@ function printTranslationsReminder(): void {
 async function seedProduction() {
   const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
+
+  const foodFacts = await seedFoodFacts(prisma);
+  const quizzes = await seedQuizzes(prisma);
+  const missions = await seedMissionsCatalog(prisma);
+  const challenges = await seedChallengesCatalog(prisma);
+  const quests = await seedQuests(prisma);
+  const microLearnings = await seedMicroLearnings(prisma);
+
   const genericFoods = await seedGenericFoods(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
@@ -62,6 +76,18 @@ async function seedProduction() {
       label: 'standardRewards',
       value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
+    { label: 'foodFacts', value: foodFacts.seeded },
+    {
+      label: 'quizzes',
+      value: `${quizzes.seeded} (${quizzes.needingCuration} need correctLabel)`,
+    },
+    { label: 'missions', value: missions.length },
+    { label: 'challenges', value: challenges.length },
+    {
+      label: 'quests',
+      value: `${quests.seeded} quests, ${quests.items} items`,
+    },
+    { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
     {
       label: 'surveys',
@@ -91,6 +117,11 @@ async function seedDevelopment() {
   const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
 
+  // --- Educational catalog (Task 3.3; missions/challenges after users for demo progress) ---
+  const foodFacts = await seedFoodFacts(prisma);
+  const quizzes = await seedQuizzes(prisma);
+  const microLearnings = await seedMicroLearnings(prisma);
+
   // --- Catalog (needed for recipe ingredient linking & shelf-life matching) ---
   const offResult = await seedOpenFoodFactsFromJson(prisma);
   if (offResult.skipped) {
@@ -108,11 +139,12 @@ async function seedDevelopment() {
   const pantry = await seedPantries(prisma);
   const pantryItem = await seedPantryItems(prisma);
 
-  // --- Groups & gamification (missions/challenges do not depend on recipes here) ---
+  // --- Groups & gamification (catalog missions/challenges + sparse Keycloak demo progress) ---
   const userGroups = await seedUserGroups(prisma);
   const virtualMembers = await seedVirtualMembers(prisma);
   const challenges = await seedChallenges(prisma);
   const missions = await seedMissions(prisma);
+  const quests = await seedQuests(prisma);
   const gamificationProfiles = await seedGamificationProfiles(prisma);
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
@@ -140,6 +172,18 @@ async function seedDevelopment() {
       label: 'standardRewards',
       value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
+    { label: 'foodFacts', value: foodFacts.seeded },
+    {
+      label: 'quizzes',
+      value: `${quizzes.seeded} (${quizzes.needingCuration} need correctLabel)`,
+    },
+    { label: 'missions', value: missions.length },
+    { label: 'challenges', value: challenges.length },
+    {
+      label: 'quests',
+      value: `${quests.seeded} quests, ${quests.items} items`,
+    },
+    { label: 'microLearnings', value: microLearnings.seeded },
     {
       label: 'openFoodFactsJson',
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
@@ -152,8 +196,6 @@ async function seedDevelopment() {
     { label: 'pantryItem', value: pantryItem.length },
     { label: 'userGroups', value: userGroups.length },
     { label: 'virtualMembers', value: virtualMembers.length },
-    { label: 'challenges', value: challenges.length },
-    { label: 'missions', value: missions.length },
     {
       label: 'gamificationProfiles',
       value: `${gamificationProfiles.wallets} wallets, ${gamificationProfiles.events} events, ${gamificationProfiles.walletEntries} wallet entries`,
