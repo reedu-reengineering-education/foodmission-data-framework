@@ -19,7 +19,7 @@ module.exports = {
 
   // Transform ESM modules
   transformIgnorePatterns: [
-    'node_modules/(?!(uuid)/)',
+    'node_modules/(?!(uuid|sanitize-html|htmlparser2|entities|dom-serializer|domelementtype|domhandler|domutils)/)',
   ],
 
   // Coverage configuration

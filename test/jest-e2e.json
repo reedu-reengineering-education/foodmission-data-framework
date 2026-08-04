@@ -14,6 +14,6 @@
     "^keycloak-connect$": "<rootDir>/__mocks__/keycloak-connect.js"
   },
   "transformIgnorePatterns": [
-    "node_modules/(?!(uuid)/)"
+    "node_modules/(?!(uuid|sanitize-html|htmlparser2|entities|dom-serializer|domelementtype|domhandler|domutils)/)"
   ]
 }
