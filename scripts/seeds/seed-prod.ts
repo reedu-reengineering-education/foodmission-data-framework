@@ -23,12 +23,8 @@ async function main() {
       `   ✅ Standard rewards: ${rewardsRes.seeded} seeded (${rewardsRes.total} total)`,
     );
 
-    const nevoRes = await seedNevo(prisma);
-    if (nevoRes && nevoRes.skipped) {
-      console.log('   ⏭️  NEVO CSV not found; skipping NEVO import.');
-    } else if (nevoRes && typeof nevoRes.count === 'number') {
-      console.log(`   ✅ NEVO: ${nevoRes.count} generic foods created`);
-    }
+    const genericFoods = await seedGenericFoods(prisma, { skipExisting: true });
+    console.log(`   ✅ NEVO: ${genericFoods.length} generic foods upserted`);
 
     const offRes = await seedOpenFoodFactsFromJson(prisma);
     if (offRes && offRes.skipped) {

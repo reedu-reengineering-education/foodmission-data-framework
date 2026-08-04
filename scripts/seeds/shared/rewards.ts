@@ -37,15 +37,8 @@ const standardRewards: RewardSeedData[] = [
 export async function seedStandardRewards(prisma: PrismaClient) {
   console.log('🎁 Seeding standard rewards...');
 
-  const db = prisma as PrismaClient & {
-    reward: {
-      upsert(args: any): Promise<unknown>;
-      count(): Promise<number>;
-    };
-  };
-
   for (const reward of standardRewards) {
-    await db.reward.upsert({
+    await prisma.reward.upsert({
       where: { name: reward.name },
       update: {
         points: reward.points,
@@ -59,9 +52,9 @@ export async function seedStandardRewards(prisma: PrismaClient) {
     });
   }
 
-  const totalRewards = await db.reward.count();
+  const totalRewards = await prisma.reward.count();
   console.log(
-    `✅ Created/updated ${standardRewards.length} standard rewards (${totalRewards} total)`,
+    `✅ Upserted ${standardRewards.length} standard rewards (${totalRewards} total in DB)`,
   );
 
   return {

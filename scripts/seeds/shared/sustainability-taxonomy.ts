@@ -147,19 +147,8 @@ const sustainabilityTaxonomySeedData: SustainabilityDimensionSeed[] = [
 export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
   console.log('🌿 Seeding sustainability taxonomy...');
 
-  const db = prisma as PrismaClient & {
-    sustainabilityDimension: {
-      upsert(args: any): Promise<{ id: string }>;
-      count(): Promise<number>;
-    };
-    sustainabilityTopic: {
-      upsert(args: any): Promise<unknown>;
-      count(): Promise<number>;
-    };
-  };
-
   for (const dimensionData of sustainabilityTaxonomySeedData) {
-    const dimension = await db.sustainabilityDimension.upsert({
+    const dimension = await prisma.sustainabilityDimension.upsert({
       where: { code: dimensionData.code },
       update: {
         name: dimensionData.name,
@@ -173,7 +162,7 @@ export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
     });
 
     for (const topicData of dimensionData.topics) {
-      await db.sustainabilityTopic.upsert({
+      await prisma.sustainabilityTopic.upsert({
         where: { code: topicData.code },
         update: {
           dimensionId: dimension.id,
@@ -190,11 +179,11 @@ export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
     }
   }
 
-  const dimensions = await db.sustainabilityDimension.count();
-  const topics = await db.sustainabilityTopic.count();
+  const dimensions = await prisma.sustainabilityDimension.count();
+  const topics = await prisma.sustainabilityTopic.count();
 
   console.log(
-    `✅ Created/updated ${dimensions} sustainability dimensions and ${topics} topics`,
+    `✅ Upserted sustainability taxonomy (${dimensions} dimensions, ${topics} topics in DB)`,
   );
 
   return { dimensions, topics };
