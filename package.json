@@ -81,7 +81,7 @@
     "docs:generate": "ts-node scripts/generate-openapi-spec.ts"
   },
   "dependencies": {
-    "@cacheable/memory": "^2.0.9",
+    "@cacheable/memory": "^2.2.0",
     "@keyv/redis": "^5.1.6",
     "@nest-lab/throttler-storage-redis": "^1.2.0",
     "@nestjs/axios": "^4.0.1",
