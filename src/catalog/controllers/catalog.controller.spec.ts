@@ -36,6 +36,9 @@ describe('CatalogController', () => {
       listProgressPrecisions: jest.fn(),
       listWalletCurrencies: jest.fn(),
       getConsentForm: jest.fn(),
+      listContentLevels: jest.fn(),
+      listQuestContentTypes: jest.fn(),
+      listContentTags: jest.fn(),
     };
 
     mockService.startup?.mockReturnValue({

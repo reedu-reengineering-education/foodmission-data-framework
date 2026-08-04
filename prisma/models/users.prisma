@@ -126,28 +126,30 @@ model User {
 
   // Gamification identity / pacing
   segment        UserSegment?
-  currentQuestId String? // FK to Quest when Quest model exists
+  currentQuestId String?
   lastLoginAt    DateTime?
 
   // Relations
-  shoppingList         ShoppingList[]
-  pantry               Pantry?
-  recipes              Recipe[]
-  meals                Meal[]
-  mealLogs             MealLog[]
-  knowledge            Knowledge[]
-  foodWaste            FoodWaste[]
-  knowledgeProgress    UserKnowledgeProgress[]
-  challengeProgress    ChallengeProgress[]
-  missionProgress      MissionProgress[]
+  shoppingList       ShoppingList[]
+  pantry             Pantry?
+  recipes            Recipe[]
+  meals              Meal[]
+  mealLogs           MealLog[]
+  foodWaste          FoodWaste[]
+  challengeProgress  ChallengeProgress[]
+  missionProgress    MissionProgress[]
+  quizProgress       QuizProgress[]
+  questProgress      QuestProgress[]
+  currentQuest       Quest?                  @relation("UserCurrentQuest", fields: [currentQuestId], references: [id], onDelete: SetNull)
   groupMemberships   GroupMembership[]
   gamificationWallet UserGamificationWallet?
   progressIndicators ProgressIndicator[]     @relation("UserProgressIndicators")
-  userEvents         UserEvent[]         @relation("UserEvents")
+  userEvents         UserEvent[]             @relation("UserEvents")
   walletEntries      WalletEntry[]
 
   @@index([email])
   @@index([createdAt])
+  @@index([currentQuestId])
   @@map("users")
 }
 
@@ -159,15 +161,17 @@ model UserGroup {
   createdBy      String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  currentQuestId String? // group quest in progress (FK when Quest model exists)
+  currentQuestId String?
 
   // Relations
   memberships        GroupMembership[]
   progressIndicators ProgressIndicator[] @relation("GroupProgressIndicators")
   userEvents         UserEvent[]         @relation("GroupUserEvents")
+  currentQuest       Quest?              @relation("GroupCurrentQuest", fields: [currentQuestId], references: [id], onDelete: SetNull)
 
   @@index([inviteCode])
   @@index([createdBy])
+  @@index([currentQuestId])
   @@map("user_groups")
 }
 

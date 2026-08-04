@@ -52,11 +52,14 @@ describe('MissionsController', () => {
       const mockResult = { id: 'm1' };
       (service.create as jest.Mock).mockResolvedValue(mockResult);
       const dto = {
+        code: 'M.B1.1',
+        dimensionId: 'dim-1',
+        level: 'BEGINNER' as const,
         title: 't',
-        description: 'd',
+        duration: '1 week',
+        goal: 'g',
+        whyItMatters: 'w',
         available: true,
-        startDate: new Date(),
-        endDate: new Date(),
       };
       const result = await controller.create(dto);
       expect(service.create).toHaveBeenCalledWith(dto);

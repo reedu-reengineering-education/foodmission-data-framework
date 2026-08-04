@@ -113,4 +113,16 @@ describe('Catalog contract (schema.prisma)', () => {
       parsePrismaEnum(schema, 'WalletCurrency'),
     );
   });
+
+  it('matches ContentLevel enum', () => {
+    expect(service.listContentLevels().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'ContentLevel'),
+    );
+  });
+
+  it('matches QuestContentType enum', () => {
+    expect(service.listQuestContentTypes().data.map((x) => x.code)).toEqual(
+      parsePrismaEnum(schema, 'QuestContentType'),
+    );
+  });
 });

@@ -13,6 +13,18 @@ import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 import { ChallengesRepository } from '../repositories/challenges.repository';
 
+function tagsFromFlags(challenge: {
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
+}): string[] {
+  const tags: string[] = [];
+  if (challenge.health) tags.push('HEALTH');
+  if (challenge.foodChoice) tags.push('FOOD_CHOICE');
+  if (challenge.foodWaste) tags.push('FOOD_AND_WASTE');
+  return tags;
+}
+
 @Injectable()
 export class ChallengesService {
   private readonly logger = new Logger(ChallengesService.name);
@@ -100,15 +112,22 @@ export class ChallengesService {
   private transformToResponseDto(challenge: any): ChallengeResponseDto {
     return {
       id: challenge.id,
+      code: challenge.code,
+      dimensionId: challenge.dimensionId,
+      topicId: challenge.topicId,
+      level: challenge.level,
       title: challenge.title,
-      description: challenge.description,
+      task: challenge.task,
+      whyItMatters: challenge.whyItMatters,
+      tags: tagsFromFlags(challenge),
+      health: challenge.health ?? false,
+      foodChoice: challenge.foodChoice ?? false,
+      foodWaste: challenge.foodWaste ?? false,
       available: challenge.available,
       progress:
         challenge.challengeProgresses?.find(
           (cp) => cp.userId === challenge.userId,
         )?.progress || 0,
-      startDate: challenge.startDate,
-      endDate: challenge.endDate,
     };
   }
 }

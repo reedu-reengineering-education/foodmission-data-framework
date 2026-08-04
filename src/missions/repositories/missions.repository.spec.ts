@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MissionsRepository } from './missions.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { ContentLevel } from '@prisma/client';
 
 describe('MissionsRepository', () => {
   let repository: MissionsRepository;
@@ -20,9 +21,6 @@ describe('MissionsRepository', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
-            user: {
-              findMany: jest.fn(),
-            },
           },
         },
       ],
@@ -37,38 +35,35 @@ describe('MissionsRepository', () => {
   });
 
   describe('create', () => {
-    it('should call prisma.mission.create with missionProgresses for all users', async () => {
+    it('should call prisma.mission.create without pre-seeding progress', async () => {
       const data = {
-        userId: 'u1',
+        code: 'M.B1.1',
+        dimensionId: 'dim-1',
+        level: ContentLevel.BEGINNER,
         title: 't',
-        description: 'd',
+        duration: '1 week',
+        goal: 'g',
+        whyItMatters: 'w',
         available: true,
-        startDate: new Date(),
-        endDate: new Date(),
       };
-      const mockUsers = [{ id: 'u1' }, { id: 'u2' }];
-      const mockReturn = { id: 'm1', missionProgresses: [] };
-      (prisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
+      const mockReturn = { id: 'm1' };
       (prisma.mission.create as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.create(data);
-      expect(prisma.user.findMany).toHaveBeenCalledWith({
-        select: { id: true },
-      });
       expect(prisma.mission.create).toHaveBeenCalledWith({
         data: {
+          code: data.code,
+          dimensionId: data.dimensionId,
+          topicId: undefined,
+          level: data.level,
           title: data.title,
-          description: data.description,
+          duration: data.duration,
+          goal: data.goal,
+          whyItMatters: data.whyItMatters,
+          health: false,
+          foodChoice: false,
+          foodWaste: false,
           available: data.available,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          missionProgresses: {
-            create: [
-              { userId: 'u1', progress: 0, completed: false },
-              { userId: 'u2', progress: 0, completed: false },
-            ],
-          },
         },
-        include: { missionProgresses: true },
       });
       expect(result).toBe(mockReturn);
     });
@@ -108,11 +103,18 @@ describe('MissionsRepository', () => {
       expect(prisma.mission.update).toHaveBeenCalledWith({
         where: { id: 'm1' },
         data: {
+          code: undefined,
+          dimensionId: undefined,
+          topicId: undefined,
+          level: undefined,
           title: undefined,
-          description: undefined,
+          duration: undefined,
+          goal: undefined,
+          whyItMatters: undefined,
+          health: undefined,
+          foodChoice: undefined,
+          foodWaste: undefined,
           available: updateData.available,
-          startDate: undefined,
-          endDate: undefined,
         },
         include: { missionProgresses: true },
       });

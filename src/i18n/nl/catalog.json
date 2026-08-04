@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Punten"
+  },
+  "contentLevels": {
+    "BEGINNER": "Beginner",
+    "INTERMEDIATE": "Gevorderd",
+    "ADVANCED": "Expert"
+  },
+  "questContentTypes": {
+    "MISSION": "Missie",
+    "CHALLENGE": "Uitdaging",
+    "FOOD_FACT": "Voedselfeit",
+    "QUIZ": "Quiz",
+    "MICRO_LEARNING": "Microlearning"
+  },
+  "contentTags": {
+    "HEALTH": "Gezondheid",
+    "FOOD_CHOICE": "Voedselkeuze",
+    "FOOD_AND_WASTE": "Voedsel en afval"
   }
 }

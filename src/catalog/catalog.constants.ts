@@ -44,3 +44,21 @@ export const SHOPPING_RESPONSIBILITY_ENTRIES = [
     fallback: 'Someone else',
   },
 ] as const;
+
+export const CONTENT_TAG_ENTRIES = [
+  {
+    code: 'HEALTH',
+    key: 'contentTags.HEALTH',
+    fallback: 'Health',
+  },
+  {
+    code: 'FOOD_CHOICE',
+    key: 'contentTags.FOOD_CHOICE',
+    fallback: 'Food choice',
+  },
+  {
+    code: 'FOOD_AND_WASTE',
+    key: 'contentTags.FOOD_AND_WASTE',
+    fallback: 'Food and waste',
+  },
+] as const;

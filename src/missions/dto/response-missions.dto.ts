@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ContentLevel, MissionProgress } from '@prisma/client';
 import { Expose } from 'class-transformer';
-import { MissionProgress } from '@prisma/client';
 
 export class MissionsResponseDto {
   @ApiProperty({
@@ -11,18 +11,82 @@ export class MissionsResponseDto {
   id: string;
 
   @ApiProperty({
+    description: 'Unique mission code',
+    example: 'M.B1.1',
+  })
+  @Expose()
+  code: string;
+
+  @ApiProperty({
+    description: 'Dimension id',
+    example: 'uuid-dimension-id',
+  })
+  @Expose()
+  dimensionId: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional topic id',
+    example: 'uuid-topic-id',
+  })
+  @Expose()
+  topicId?: string | null;
+
+  @ApiProperty({
+    description: 'Content difficulty level',
+    enum: ContentLevel,
+    example: ContentLevel.BEGINNER,
+  })
+  @Expose()
+  level: ContentLevel;
+
+  @ApiProperty({
     description: 'The mission title',
-    example: 'Plastic-Free Month',
+    example: 'Plastic-Free Week',
   })
   @Expose()
   title: string;
 
   @ApiProperty({
-    description: 'The mission description',
-    example: 'Avoid using plastic bags for a month',
+    description: 'Expected duration',
+    example: '1 week',
   })
   @Expose()
-  description: string;
+  duration: string;
+
+  @ApiProperty({
+    description: 'The mission goal',
+    example: 'Avoid single-use plastics for one week',
+  })
+  @Expose()
+  goal: string;
+
+  @ApiProperty({
+    description: 'Why this mission matters',
+    example: 'Reducing plastic waste protects oceans and wildlife',
+  })
+  @Expose()
+  whyItMatters: string;
+
+  @ApiProperty({
+    description: 'Whether the mission relates to health',
+    example: false,
+  })
+  @Expose()
+  health: boolean;
+
+  @ApiProperty({
+    description: 'Whether the mission relates to food choice',
+    example: true,
+  })
+  @Expose()
+  foodChoice: boolean;
+
+  @ApiProperty({
+    description: 'Whether the mission relates to food waste',
+    example: false,
+  })
+  @Expose()
+  foodWaste: boolean;
 
   @ApiProperty({
     description: 'Indicates if the mission is currently available',
@@ -37,19 +101,5 @@ export class MissionsResponseDto {
     required: false,
   })
   @Expose()
-  progress?: MissionProgress;
-
-  @ApiProperty({
-    description: 'The mission start date',
-    example: '2026-06-01',
-  })
-  @Expose()
-  startDate: Date;
-
-  @ApiProperty({
-    description: 'The mission end date',
-    example: '2026-12-31',
-  })
-  @Expose()
-  endDate: Date;
+  progress?: MissionProgress | number;
 }

@@ -67,7 +67,6 @@ export async function seedUserGroups(
         description: groupData.description,
         createdBy: creator.id,
         inviteCode: generateInviteCode(),
-        currentQuestId: `seed-quest-${groupData.name.toLowerCase().replace(/\s+/g, '-')}`,
       },
     });
 

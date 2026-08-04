@@ -1,29 +1,93 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ContentLevel } from '@prisma/client';
 import {
   IsBoolean,
-  IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export class MissionsContentDto {
   @ApiProperty({
+    description: 'Unique mission code',
+    example: 'M.B1.1',
+  })
+  @IsString()
+  @IsNotEmpty()
+  code: string;
+
+  @ApiProperty({
+    description: 'Dimension id',
+    example: 'uuid-dimension-id',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  dimensionId: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional topic id',
+    example: 'uuid-topic-id',
+  })
+  @IsOptional()
+  @IsUUID()
+  topicId?: string;
+
+  @ApiProperty({
+    description: 'Content difficulty level',
+    enum: ContentLevel,
+    example: ContentLevel.BEGINNER,
+  })
+  @IsEnum(ContentLevel)
+  level: ContentLevel;
+
+  @ApiProperty({
     description: 'The title of the mission',
-    example: 'Plastic-Free Month',
+    example: 'Plastic-Free Week',
   })
   @IsString()
   @IsNotEmpty()
   title: string;
 
   @ApiProperty({
-    description: 'Detailed description of the mission',
-    example:
-      'Reduce plastic usage by avoiding single-use plastics for a month.',
+    description: 'Expected duration',
+    example: '1 week',
   })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  duration: string;
+
+  @ApiProperty({
+    description: 'Goal of the mission',
+    example: 'Avoid single-use plastics for one week',
+  })
+  @IsString()
+  @IsNotEmpty()
+  goal: string;
+
+  @ApiProperty({
+    description: 'Why this mission matters',
+    example: 'Reducing plastic waste protects oceans and wildlife',
+  })
+  @IsString()
+  @IsNotEmpty()
+  whyItMatters: string;
+
+  @ApiPropertyOptional({ example: false, default: false })
+  @IsBoolean()
+  @IsOptional()
+  health?: boolean;
+
+  @ApiPropertyOptional({ example: true, default: false })
+  @IsBoolean()
+  @IsOptional()
+  foodChoice?: boolean;
+
+  @ApiPropertyOptional({ example: false, default: false })
+  @IsBoolean()
+  @IsOptional()
+  foodWaste?: boolean;
 
   @ApiProperty({
     description: 'Whether the mission is available to users',
@@ -33,20 +97,4 @@ export class MissionsContentDto {
   @IsBoolean()
   @IsOptional()
   available?: boolean;
-
-  @ApiProperty({
-    description: 'The start date of the mission',
-    example: '2024-01-01T00:00:00.000Z',
-  })
-  @IsDateString()
-  @IsNotEmpty()
-  startDate: string;
-
-  @ApiProperty({
-    description: 'The end date of the mission',
-    example: '2024-12-31T23:59:59.000Z',
-  })
-  @IsDateString()
-  @IsNotEmpty()
-  endDate: string;
 }

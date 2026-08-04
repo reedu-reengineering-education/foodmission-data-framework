@@ -10,10 +10,6 @@ import { seedPantries } from '../scripts/seeds/dev/pantry';
 import { seedPantryItems } from '../scripts/seeds/dev/pantryItem';
 import { seedUserGroups } from '../scripts/seeds/dev/userGroups';
 import { seedVirtualMembers } from '../scripts/seeds/dev/groupMembers';
-import {
-  seedKnowledge,
-  seedUserKnowledgeProgress,
-} from '../scripts/seeds/dev/knowledge';
 import { seedChallenges } from '../scripts/seeds/dev/challenges';
 import { seedMissions } from '../scripts/seeds/dev/missions';
 import { seedGamificationProfiles } from '../scripts/seeds/dev/gamificationProfile';
@@ -115,8 +111,6 @@ async function seedDevelopment() {
   // --- Groups & gamification (missions/challenges do not depend on recipes here) ---
   const userGroups = await seedUserGroups(prisma);
   const virtualMembers = await seedVirtualMembers(prisma);
-  const knowledge = await seedKnowledge(prisma);
-  const knowledgeProgress = await seedUserKnowledgeProgress(prisma);
   const challenges = await seedChallenges(prisma);
   const missions = await seedMissions(prisma);
   const gamificationProfiles = await seedGamificationProfiles(prisma);
@@ -158,8 +152,6 @@ async function seedDevelopment() {
     { label: 'pantryItem', value: pantryItem.length },
     { label: 'userGroups', value: userGroups.length },
     { label: 'virtualMembers', value: virtualMembers.length },
-    { label: 'knowledge', value: knowledge.length },
-    { label: 'knowledgeProgress', value: knowledgeProgress.length },
     { label: 'challenges', value: challenges.length },
     { label: 'missions', value: missions.length },
     {

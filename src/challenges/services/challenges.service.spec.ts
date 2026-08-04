@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ContentLevel } from '@prisma/client';
 
 describe('ChallengesService', () => {
   let service: ChallengesService;
@@ -15,11 +16,17 @@ describe('ChallengesService', () => {
 
   const mockChallenge = {
     id: 'c1',
+    code: 'CH.B1.1',
+    dimensionId: 'dim-1',
+    topicId: null,
+    level: ContentLevel.BEGINNER,
     title: 'Test Challenge',
-    description: 'Test Description',
+    task: 'Test task',
+    whyItMatters: 'Test why',
+    health: false,
+    foodChoice: true,
+    foodWaste: false,
     available: true,
-    startDate: new Date(),
-    endDate: new Date(),
     challengeProgresses: [{ userId: 'u1', progress: 50 }],
   };
 
@@ -50,11 +57,14 @@ describe('ChallengesService', () => {
 
   describe('create', () => {
     const createDto = {
+      code: 'CH.B1.1',
+      dimensionId: 'dim-1',
+      level: ContentLevel.BEGINNER,
       title: 'Test',
-      description: 'Desc',
+      task: 'Task',
+      whyItMatters: 'Why',
+      tags: ['FOOD_CHOICE'],
       available: true,
-      startDate: new Date(),
-      endDate: new Date(),
     };
 
     it('should create and return transformed challenge', async () => {
@@ -63,7 +73,11 @@ describe('ChallengesService', () => {
       const result = await service.create(createDto);
 
       expect(repository.create).toHaveBeenCalledWith(createDto);
-      expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
+      expect(result).toMatchObject({
+        id: 'c1',
+        title: 'Test Challenge',
+        tags: ['FOOD_CHOICE'],
+      });
     });
 
     it('should rethrow ConflictException', async () => {

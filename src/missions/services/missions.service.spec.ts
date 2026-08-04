@@ -9,6 +9,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ContentLevel } from '@prisma/client';
 
 describe('MissionsService', () => {
   let service: MissionsService;
@@ -16,11 +17,18 @@ describe('MissionsService', () => {
 
   const mockMission = {
     id: 'm1',
+    code: 'M.B1.1',
+    dimensionId: 'dim-1',
+    topicId: null,
+    level: ContentLevel.BEGINNER,
     title: 'Test Mission',
-    description: 'Test Description',
+    duration: '1 week',
+    goal: 'Test goal',
+    whyItMatters: 'Test why',
+    health: false,
+    foodChoice: true,
+    foodWaste: false,
     available: true,
-    startDate: new Date(),
-    endDate: new Date(),
     missionProgresses: [{ userId: 'u1', progress: 50 }],
   };
 
@@ -55,11 +63,14 @@ describe('MissionsService', () => {
 
   describe('create', () => {
     const createDto = {
+      code: 'M.B1.1',
+      dimensionId: 'dim-1',
+      level: ContentLevel.BEGINNER,
       title: 't',
-      description: 'd',
+      duration: '1 week',
+      goal: 'g',
+      whyItMatters: 'w',
       available: true,
-      startDate: new Date(),
-      endDate: new Date(),
     };
 
     it('should call repository.create and return transformed result', async () => {

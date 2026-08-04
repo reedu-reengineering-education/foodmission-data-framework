@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Πόντοι"
+  },
+  "contentLevels": {
+    "BEGINNER": "Αρχάριος",
+    "INTERMEDIATE": "Μεσαίος",
+    "ADVANCED": "Προχωρημένος"
+  },
+  "questContentTypes": {
+    "MISSION": "Αποστολή",
+    "CHALLENGE": "Πρόκληση",
+    "FOOD_FACT": "Γεγονός για τρόφιμα",
+    "QUIZ": "Κουίζ",
+    "MICRO_LEARNING": "Μικρομάθηση"
+  },
+  "contentTags": {
+    "HEALTH": "Υγεία",
+    "FOOD_CHOICE": "Επιλογή τροφίμων",
+    "FOOD_AND_WASTE": "Τρόφιμα και απόβλητα"
   }
 }

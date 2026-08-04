@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { ContentLevel } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 export interface CreateMissionData {
+  code: string;
+  dimensionId: string;
+  topicId?: string;
+  level: ContentLevel;
   title: string;
-  description: string;
+  duration: string;
+  goal: string;
+  whyItMatters: string;
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
   available: boolean;
-  startDate: Date;
-  endDate: Date;
 }
 
 export interface UpdateMissionData {
+  code?: string;
+  dimensionId?: string;
+  topicId?: string | null;
+  level?: ContentLevel;
   title?: string;
-  description?: string;
+  duration?: string;
+  goal?: string;
+  whyItMatters?: string;
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
   available?: boolean;
-  startDate?: Date;
-  endDate?: Date;
 }
 
 @Injectable()
@@ -22,24 +37,21 @@ export class MissionsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateMissionData) {
-    const allUsers = await this.prisma.user.findMany({ select: { id: true } });
-
     return this.prisma.mission.create({
       data: {
+        code: data.code,
+        dimensionId: data.dimensionId,
+        topicId: data.topicId,
+        level: data.level,
         title: data.title,
-        description: data.description,
+        duration: data.duration,
+        goal: data.goal,
+        whyItMatters: data.whyItMatters,
+        health: data.health ?? false,
+        foodChoice: data.foodChoice ?? false,
+        foodWaste: data.foodWaste ?? false,
         available: data.available,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        missionProgresses: {
-          create: allUsers.map((user) => ({
-            userId: user.id,
-            progress: 0,
-            completed: false,
-          })),
-        },
       },
-      include: { missionProgresses: true },
     });
   }
 
@@ -60,11 +72,18 @@ export class MissionsRepository {
     return this.prisma.mission.update({
       where: { id },
       data: {
+        code: data.code,
+        dimensionId: data.dimensionId,
+        topicId: data.topicId,
+        level: data.level,
         title: data.title,
-        description: data.description,
+        duration: data.duration,
+        goal: data.goal,
+        whyItMatters: data.whyItMatters,
+        health: data.health,
+        foodChoice: data.foodChoice,
+        foodWaste: data.foodWaste,
         available: data.available,
-        startDate: data.startDate,
-        endDate: data.endDate,
       },
       include: { missionProgresses: true },
     });

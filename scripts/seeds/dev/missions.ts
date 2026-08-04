@@ -1,134 +1,132 @@
-// missions.seed.ts
-import { Mission, MissionProgress, PrismaClient } from '@prisma/client';
+import {
+  ContentLevel,
+  Mission,
+  PrismaClient,
+} from '@prisma/client';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
 
 export interface MissionSeedData {
+  code: string;
   title: string;
-  description: string;
+  duration: string;
+  goal: string;
+  whyItMatters: string;
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
   available: boolean;
-  startDate: Date;
-  endDate: Date;
 }
 
 export const missionData: MissionSeedData[] = [
   {
-    title: 'Plastic-Free Month',
-    description: 'Eliminate single-use plastics from your life for 30 days',
+    code: 'M.B1.1',
+    title: 'Plastic-Free Week',
+    duration: '1 week',
+    goal: 'Eliminate single-use plastics from your daily routine for 7 days',
+    whyItMatters:
+      'Cutting disposable plastic reduces waste that harms oceans and wildlife',
+    foodChoice: true,
+    foodWaste: true,
     available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-01-31'),
   },
   {
-    title: 'Sustainable Home Makeover',
-    description: 'Replace 10 household items with eco-friendly alternatives',
+    code: 'M.B1.2',
+    title: 'Plant-Forward Week',
+    duration: '1 week',
+    goal: 'Make plant-based meals the majority of your dinners for a week',
+    whyItMatters:
+      'Shifting toward plant foods lowers environmental impact and supports healthier choices',
+    health: true,
+    foodChoice: true,
     available: true,
-    startDate: new Date('2026-02-01'),
-    endDate: new Date('2026-04-30'),
   },
   {
-    title: 'Zero Waste Warrior',
-    description:
-      'Reduce your household waste to less than 1kg per week for a month',
+    code: 'M.B1.3',
+    title: 'Food Waste Watch',
+    duration: '1 week',
+    goal: 'Track and reduce edible food waste in your household for one week',
+    whyItMatters:
+      'Preventing food waste saves resources used to grow, transport, and store food',
+    foodWaste: true,
     available: true,
-    startDate: new Date('2026-03-01'),
-    endDate: new Date('2026-03-31'),
-  },
-  {
-    title: 'Plant-Based Journey',
-    description: 'Transition to a fully plant-based diet over 8 weeks',
-    available: true,
-    startDate: new Date('2026-01-15'),
-    endDate: new Date('2026-03-15'),
-  },
-  {
-    title: 'Green Transportation Champion',
-    description: 'Use only eco-friendly transport methods for 60 days',
-    available: true,
-    startDate: new Date('2026-04-01'),
-    endDate: new Date('2026-05-31'),
-  },
-  {
-    title: 'Community Garden Hero',
-    description: 'Start and maintain a community garden plot for a season',
-    available: true,
-    startDate: new Date('2026-03-01'),
-    endDate: new Date('2026-09-30'),
-  },
-  {
-    title: 'Energy Independence Quest',
-    description: 'Reduce household energy consumption by 30% over 3 months',
-    available: false,
-    startDate: new Date('2026-06-01'),
-    endDate: new Date('2026-08-31'),
-  },
-  {
-    title: 'Water Conservation Master',
-    description: 'Cut water usage by 40% through sustainable practices',
-    available: false,
-    startDate: new Date('2026-07-01'),
-    endDate: new Date('2026-09-30'),
-  },
-  {
-    title: 'Office Sustainability Initiative',
-    description: 'Implement 5 eco-friendly practices in your workplace',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-06-30'),
-  },
-  {
-    title: 'Carbon Footprint Reducer',
-    description: 'Decrease personal carbon emissions by 50% over 6 months',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-06-30'),
   },
 ];
 
+/** Sparse demo progress for named Keycloak users only (not every seeded user). */
+const demoProgressByKeycloakId: Record<
+  string,
+  { code: string; completed: boolean; progress: number }[]
+> = {
+  [KEYCLOAK_DEV_USER_IDS.devUser1]: [
+    { code: 'M.B1.1', completed: false, progress: 40 },
+    { code: 'M.B1.2', completed: true, progress: 100 },
+  ],
+  [KEYCLOAK_DEV_USER_IDS.adminUser1]: [
+    { code: 'M.B1.1', completed: false, progress: 10 },
+  ],
+};
+
 export async function seedMissions(prisma: PrismaClient) {
-  console.log('🎯 Seeding missions and mission progress...');
+  console.log('🎯 Seeding missions...');
 
-  const users = await prisma.user.findMany();
+  const dimension = await prisma.dimension.findUnique({
+    where: { code: 'DIET_CHANGES' },
+  });
 
-  if (users.length === 0) {
-    console.warn('⚠️ No users found, skipping mission progress seeding');
+  if (!dimension) {
+    console.warn(
+      '⚠️ Dimension DIET_CHANGES not found, skipping mission seeding',
+    );
+    return [];
   }
 
   const missions: Mission[] = [];
-  const missionProgresses: MissionProgress[] = [];
 
-  // First, create all missions
   for (const missionInfo of missionData) {
     const mission = await prisma.mission.upsert({
-      where: {
-        id: missionInfo.title.replace(/\s+/g, '-').toLowerCase(),
-      },
+      where: { code: missionInfo.code },
       update: {
+        dimensionId: dimension.id,
+        level: ContentLevel.BEGINNER,
         title: missionInfo.title,
-        description: missionInfo.description,
+        duration: missionInfo.duration,
+        goal: missionInfo.goal,
+        whyItMatters: missionInfo.whyItMatters,
+        health: missionInfo.health ?? false,
+        foodChoice: missionInfo.foodChoice ?? false,
+        foodWaste: missionInfo.foodWaste ?? false,
         available: missionInfo.available,
-        startDate: missionInfo.startDate,
-        endDate: missionInfo.endDate,
       },
       create: {
-        id: missionInfo.title.replace(/\s+/g, '-').toLowerCase(),
+        code: missionInfo.code,
+        dimensionId: dimension.id,
+        level: ContentLevel.BEGINNER,
         title: missionInfo.title,
-        description: missionInfo.description,
+        duration: missionInfo.duration,
+        goal: missionInfo.goal,
+        whyItMatters: missionInfo.whyItMatters,
+        health: missionInfo.health ?? false,
+        foodChoice: missionInfo.foodChoice ?? false,
+        foodWaste: missionInfo.foodWaste ?? false,
         available: missionInfo.available,
-        startDate: missionInfo.startDate,
-        endDate: missionInfo.endDate,
       },
     });
 
     missions.push(mission);
   }
 
-  // Then, create mission progress for each user
-  for (const user of users) {
-    for (const mission of missions) {
-      // Randomize progress and completion for variety
-      const isCompleted = Math.random() > 0.8; // 20% chance of being completed
-      const progress = isCompleted ? 100 : Math.floor(Math.random() * 85);
+  const missionByCode = new Map(missions.map((m) => [m.code, m]));
+  let progressCount = 0;
 
-      const missionProgress = await prisma.missionProgress.upsert({
+  for (const [keycloakId, rows] of Object.entries(demoProgressByKeycloakId)) {
+    const user = await prisma.user.findUnique({ where: { keycloakId } });
+    if (!user) continue;
+
+    for (const row of rows) {
+      const mission = missionByCode.get(row.code);
+      if (!mission) continue;
+
+      await prisma.missionProgress.upsert({
         where: {
           userId_missionId: {
             userId: user.id,
@@ -136,24 +134,21 @@ export async function seedMissions(prisma: PrismaClient) {
           },
         },
         update: {
-          completed: isCompleted,
-          progress: progress,
+          completed: row.completed,
+          progress: row.progress,
         },
         create: {
           userId: user.id,
           missionId: mission.id,
-          completed: isCompleted,
-          progress: progress,
+          completed: row.completed,
+          progress: row.progress,
         },
       });
-
-      missionProgresses.push(missionProgress);
+      progressCount += 1;
     }
   }
 
   console.log(`✅ Created/updated ${missions.length} missions`);
-  console.log(
-    `✅ Created/updated ${missionProgresses.length} mission progress records for ${users.length} users`,
-  );
+  console.log(`✅ Created/updated ${progressCount} demo mission progress rows`);
   return missions;
 }

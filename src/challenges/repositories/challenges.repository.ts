@@ -1,27 +1,60 @@
 import { Injectable } from '@nestjs/common';
+import { ContentLevel } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
+
+function resolveTagFlags(input: {
+  tags?: string[];
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
+}): { health: boolean; foodChoice: boolean; foodWaste: boolean } {
+  const tags = (input.tags ?? []).map((t) => t.toUpperCase());
+  return {
+    health: input.health ?? tags.includes('HEALTH'),
+    foodChoice: input.foodChoice ?? tags.includes('FOOD_CHOICE'),
+    foodWaste:
+      input.foodWaste ??
+      (tags.includes('FOOD_AND_WASTE') || tags.includes('FOOD_WASTE')),
+  };
+}
+
+export interface CreateChallengeData {
+  code: string;
+  dimensionId: string;
+  topicId?: string;
+  level: ContentLevel;
+  title: string;
+  task: string;
+  whyItMatters: string;
+  tags?: string[];
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
+  available: boolean;
+}
 
 @Injectable()
 export class ChallengesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createChallengeDto: CreateChallengeDto) {
-    const allUsers = await this.prisma.user.findMany({ select: { id: true } });
+  async create(createChallengeDto: CreateChallengeDto | CreateChallengeData) {
+    const { tags: _tags, ...rest } = createChallengeDto;
+    const flags = resolveTagFlags(createChallengeDto);
 
     return this.prisma.challenge.create({
       data: {
-        ...createChallengeDto,
-        challengeProgresses: {
-          create: allUsers.map((user) => ({
-            userId: user.id,
-            progress: 0,
-            completed: false,
-          })),
-        },
+        code: rest.code,
+        dimensionId: rest.dimensionId,
+        topicId: rest.topicId,
+        level: rest.level,
+        title: rest.title,
+        task: rest.task,
+        whyItMatters: rest.whyItMatters,
+        ...flags,
+        available: rest.available,
       },
-      include: { challengeProgresses: true },
     });
   }
 
@@ -39,9 +72,33 @@ export class ChallengesRepository {
   }
 
   async update(id: string, updateChallengeDto: UpdateChallengeDto) {
+    const { tags, ...rest } = updateChallengeDto as UpdateChallengeDto & {
+      tags?: string[];
+      health?: boolean;
+      foodChoice?: boolean;
+      foodWaste?: boolean;
+      code?: string;
+      dimensionId?: string;
+      topicId?: string | null;
+      level?: ContentLevel;
+      title?: string;
+      task?: string;
+      whyItMatters?: string;
+    };
+
+    const data: Record<string, unknown> = { ...rest };
+    if (
+      tags !== undefined ||
+      rest.health !== undefined ||
+      rest.foodChoice !== undefined ||
+      rest.foodWaste !== undefined
+    ) {
+      Object.assign(data, resolveTagFlags({ tags, ...rest }));
+    }
+
     return this.prisma.challenge.update({
       where: { id },
-      data: { ...updateChallengeDto },
+      data,
     });
   }
 

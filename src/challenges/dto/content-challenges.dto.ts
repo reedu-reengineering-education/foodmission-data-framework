@@ -1,13 +1,48 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ContentLevel } from '@prisma/client';
 import {
+  IsArray,
   IsBoolean,
-  IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export class ChallengesContentDto {
+  @ApiProperty({
+    description: 'Unique challenge code',
+    example: 'CH.B1.1',
+  })
+  @IsString()
+  @IsNotEmpty()
+  code: string;
+
+  @ApiProperty({
+    description: 'Dimension id',
+    example: 'uuid-dimension-id',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  dimensionId: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional topic id',
+    example: 'uuid-topic-id',
+  })
+  @IsOptional()
+  @IsUUID()
+  topicId?: string;
+
+  @ApiProperty({
+    description: 'Content difficulty level',
+    enum: ContentLevel,
+    example: ContentLevel.BEGINNER,
+  })
+  @IsEnum(ContentLevel)
+  level: ContentLevel;
+
   @ApiProperty({
     description: 'The title of the challenge',
     example: 'Bring Your Own Bag',
@@ -17,12 +52,30 @@ export class ChallengesContentDto {
   title: string;
 
   @ApiProperty({
-    description: 'Detailed description of the challenge',
-    example: 'Use a reusable shopping bag for your groceries today.',
+    description: 'Task of the challenge',
+    example: 'Use a reusable shopping bag for your groceries today',
   })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  task: string;
+
+  @ApiProperty({
+    description: 'Why this challenge matters',
+    example: 'Reusable bags cut plastic waste from everyday shopping',
+  })
+  @IsString()
+  @IsNotEmpty()
+  whyItMatters: string;
+
+  @ApiPropertyOptional({
+    description: 'Content tag codes',
+    example: ['FOOD_CHOICE'],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 
   @ApiProperty({
     description: 'Whether the challenge is available to users',
@@ -32,20 +85,4 @@ export class ChallengesContentDto {
   @IsBoolean()
   @IsOptional()
   available?: boolean;
-
-  @ApiProperty({
-    description: 'The start date of the challenge',
-    example: '2024-01-01T00:00:00.000Z',
-  })
-  @IsDateString()
-  @IsNotEmpty()
-  startDate: string;
-
-  @ApiProperty({
-    description: 'The end date of the challenge',
-    example: '2024-12-31T23:59:59.000Z',
-  })
-  @IsDateString()
-  @IsNotEmpty()
-  endDate: string;
 }

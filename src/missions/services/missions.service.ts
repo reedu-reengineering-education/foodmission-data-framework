@@ -110,10 +110,17 @@ export class MissionsService {
   private transformToResponseDto(mission: any): MissionsResponseDto {
     return {
       id: mission.id,
+      code: mission.code,
+      dimensionId: mission.dimensionId,
+      topicId: mission.topicId,
+      level: mission.level,
       title: mission.title,
-      description: mission.description,
-      startDate: mission.startDate,
-      endDate: mission.endDate,
+      duration: mission.duration,
+      goal: mission.goal,
+      whyItMatters: mission.whyItMatters,
+      health: mission.health,
+      foodChoice: mission.foodChoice,
+      foodWaste: mission.foodWaste,
       progress:
         mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) ||
         0,

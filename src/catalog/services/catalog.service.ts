@@ -28,6 +28,8 @@ import {
   ProgressIndicatorKind,
   ProgressPrecision,
   WalletCurrency,
+  ContentLevel,
+  QuestContentType,
 } from '@prisma/client';
 import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
@@ -36,6 +38,7 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   CONSENT_FORM_COUNTRY_CODES,
   ConsentFormCountryCode,
+  CONTENT_TAG_ENTRIES,
   SHOPPING_RESPONSIBILITY_ENTRIES,
 } from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
@@ -352,6 +355,26 @@ export class CatalogService implements OnModuleInit {
 
   listWalletCurrencies(): CatalogListResponseDto {
     return this.enumSection(Object.values(WalletCurrency), 'walletCurrencies');
+  }
+
+  listContentLevels(): CatalogListResponseDto {
+    return this.enumSection(Object.values(ContentLevel), 'contentLevels');
+  }
+
+  listQuestContentTypes(): CatalogListResponseDto {
+    return this.enumSection(
+      Object.values(QuestContentType),
+      'questContentTypes',
+    );
+  }
+
+  listContentTags(): CatalogListResponseDto {
+    return {
+      data: CONTENT_TAG_ENTRIES.map((entry) => ({
+        code: entry.code,
+        label: this.translateCatalogKey(entry.key, entry.fallback),
+      })),
+    };
   }
 
   listDietaryPreferences(): CatalogListResponseDto {
