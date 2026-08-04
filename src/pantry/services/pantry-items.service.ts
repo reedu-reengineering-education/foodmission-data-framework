@@ -75,7 +75,7 @@ export class PantryItemService {
       }
       throw new BadRequestException(
         'Failed to create pantry item from shopping list: ' +
-          (err instanceof Error ? err.message : err),
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   }
@@ -167,7 +167,7 @@ export class PantryItemService {
       }
       throw new BadRequestException(
         'Failed to create pantry item: ' +
-          (err instanceof Error ? err.message : err),
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   }
@@ -234,7 +234,7 @@ export class PantryItemService {
       }
       throw new BadRequestException(
         'Failed to fetch pantry items: ' +
-          (err instanceof Error ? err.message : err),
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   }
@@ -283,7 +283,7 @@ export class PantryItemService {
       }
       throw new BadRequestException(
         'Failed to fetch pantry item: ' +
-          (err instanceof Error ? err.message : err),
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   }
@@ -384,7 +384,7 @@ export class PantryItemService {
       }
       throw new BadRequestException(
         'Failed to delete pantry item: ' +
-          (err instanceof Error ? err.message : err),
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   }
