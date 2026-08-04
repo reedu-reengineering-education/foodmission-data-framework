@@ -93,7 +93,7 @@ fi
 
 # Check for unused dependencies
 print_info "Checking for unused dependencies..."
-npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics" || true
+npx depcheck --ignores="@types/*,eslint-*,prettier,jest,ts-*,@nestjs/cli,@nestjs/schematics,@typescript/native" || true
 
 # Security audit
 print_info "Running security audit..."
