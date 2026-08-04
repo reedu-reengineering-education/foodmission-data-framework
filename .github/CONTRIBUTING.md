@@ -58,13 +58,26 @@ Import patches existing JSON files (it does not replace them), skips blank cells
 ```bash
 npm run i18n:export:db
 # optional: --locales de,it --include-nl --fields foodName,foodGroup,remark
+# optional: --entities FoodFact,Quiz,Mission   # subset of DB entities
 # csv: --format csv --out translations/entity-handoff.csv
 
 npm run i18n:import:db -- --dry-run
 npm run i18n:import:db
 ```
 
-Sheet columns: `key`, `en`, `translation`. Keys look like `GenericFood.{nevoCode}.foodName`.
+Sheet columns: `key`, `en`, `translation`.
+
+Default export includes **GenericFood** plus learning catalog entities (`Dimension`, `Topic`, `FoodFact`, `Quiz`, `QuizOption`, `Mission`, `Challenge`, `Quest`, `MicroLearning`).
+
+Key examples:
+
+- `GenericFood.{nevoCode}.foodName`
+- `FoodFact.FF1.1.1.body`
+- `Quiz.Q1.1.1.question`
+- `QuizOption.Q1.1.1:A.text`
+- `Mission.M.A1.1.title`
+
+**Catalog enum labels** (`contentLevels`, `questContentTypes`, `contentTags`, …) live in `src/i18n/*/catalog.json` and are covered by `i18n:export` / `i18n:import` (UI handoff), not the DB spreadsheet.
 
 ## NEVO food translations (deployment)
 
