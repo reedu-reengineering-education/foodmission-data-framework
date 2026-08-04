@@ -32,6 +32,7 @@ import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('missions')
 @Controller('missions')
@@ -90,11 +91,12 @@ export class MissionsController {
   @ApiCrudErrorResponses()
   async getAllMissions(
     @Query() query: ListMissionsQueryDto,
-    @Req() req: { user?: { roles?: string[] } },
+    @Req()
+    req: {
+      user?: { resource_access?: Record<string, { roles?: string[] }> };
+    },
   ): Promise<MissionsResponseDto[]> {
-    const isAdmin = Array.isArray(req.user?.roles)
-      ? req.user.roles.includes('admin')
-      : false;
+    const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
     return this.missionService.getAllMissions(query, isAdmin);
   }
 

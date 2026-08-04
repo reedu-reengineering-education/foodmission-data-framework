@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ContentLevel, MissionProgress } from '@prisma/client';
+import { ContentLevel } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class MissionsResponseDto {
@@ -96,10 +96,10 @@ export class MissionsResponseDto {
   available: boolean;
 
   @ApiProperty({
-    description: 'The mission progress',
-    example: '50%',
+    description: 'Aggregate mission progress across users (0-100 scale)',
+    example: 50,
     required: false,
   })
   @Expose()
-  progress?: MissionProgress | number;
+  progress?: number;
 }

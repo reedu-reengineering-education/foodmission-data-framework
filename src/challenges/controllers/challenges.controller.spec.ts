@@ -71,9 +71,33 @@ describe('ChallengesController', () => {
     it('should call service.getAll and return result', async () => {
       const mockResult = [{ id: 'c1', title: 'Test' }];
       (service.getAll as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getAll({}, { user: { roles: ['user'] } });
+      const result = await controller.getAll(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user'] },
+            },
+          },
+        },
+      );
       expect(service.getAll).toHaveBeenCalledWith({}, false);
       expect(result).toBe(mockResult);
+    });
+
+    it('should treat Keycloak resource_access admin as admin', async () => {
+      (service.getAll as jest.Mock).mockResolvedValue([]);
+      await controller.getAll(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user', 'admin'] },
+            },
+          },
+        },
+      );
+      expect(service.getAll).toHaveBeenCalledWith({}, true);
     });
   });
 

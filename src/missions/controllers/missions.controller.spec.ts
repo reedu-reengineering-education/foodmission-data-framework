@@ -77,6 +77,38 @@ describe('MissionsController', () => {
     });
   });
 
+  describe('getAllMissions', () => {
+    it('should pass isAdmin=false for non-admin Keycloak roles', async () => {
+      (service.getAllMissions as jest.Mock).mockResolvedValue([]);
+      await controller.getAllMissions(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user'] },
+            },
+          },
+        },
+      );
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, false);
+    });
+
+    it('should pass isAdmin=true for Keycloak admin role', async () => {
+      (service.getAllMissions as jest.Mock).mockResolvedValue([]);
+      await controller.getAllMissions(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['admin'] },
+            },
+          },
+        },
+      );
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, true);
+    });
+  });
+
   describe('update', () => {
     it('should call service.update and return result', async () => {
       const mockResult = { id: 'm1' };

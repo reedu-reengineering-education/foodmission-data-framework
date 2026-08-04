@@ -32,6 +32,7 @@ import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('challenges')
 @Controller('challenges')
@@ -47,8 +48,7 @@ export class ChallengesController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Create a new Challenge',
-    description:
-      'Creates a new challenge as an Admin. Automatically creates a ChallengeProgress entry for every existing user.',
+    description: 'Creates a new challenge as an Admin',
   })
   @ApiBody({ type: CreateChallengeDto })
   @ApiResponse({
@@ -83,11 +83,12 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async getAll(
     @Query() query: ListChallengesQueryDto,
-    @Req() req: { user?: { roles?: string[] } },
+    @Req()
+    req: {
+      user?: { resource_access?: Record<string, { roles?: string[] }> };
+    },
   ): Promise<ChallengeResponseDto[]> {
-    const isAdmin = Array.isArray(req.user?.roles)
-      ? req.user.roles.includes('admin')
-      : false;
+    const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
     return this.challengeService.getAll(query, isAdmin);
   }
 

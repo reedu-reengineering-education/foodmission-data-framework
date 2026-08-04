@@ -180,9 +180,10 @@ export class ChallengesService {
       foodWaste: challenge.foodWaste ?? false,
       available: challenge.available,
       progress:
-        challenge.challengeProgresses?.find(
-          (cp) => cp.userId === challenge.userId,
-        )?.progress || 0,
+        challenge.challengeProgresses?.reduce(
+          (acc: number, cp: { progress?: number }) => acc + (cp.progress ?? 0),
+          0,
+        ) || 0,
     };
   }
 }

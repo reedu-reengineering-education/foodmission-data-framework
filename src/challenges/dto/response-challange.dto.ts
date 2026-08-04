@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ChallengeProgress, ContentLevel } from '@prisma/client';
+import { ContentLevel } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class ChallengeResponseDto {
@@ -97,9 +97,9 @@ export class ChallengeResponseDto {
   available: boolean;
 
   @ApiProperty({
-    description: 'The challenge progress',
-    example: '50%',
+    description: 'Aggregate challenge progress across users (0-100 scale)',
+    example: 50,
   })
   @Expose()
-  progress: ChallengeProgress | number;
+  progress: number;
 }
