@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ContentLevel } from '@prisma/client';
+import { ContentLevel, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
+import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 
 function resolveTagFlags(input: {
   tags?: string[];
@@ -35,6 +36,12 @@ export interface CreateChallengeData {
   available: boolean;
 }
 
+export interface ChallengeListFilters {
+  dimensionCode?: string;
+  level?: ContentLevel;
+  available?: boolean;
+}
+
 @Injectable()
 export class ChallengesRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -58,15 +65,35 @@ export class ChallengesRepository {
     });
   }
 
-  async findAll() {
+  async findAll(filters: ChallengeListFilters = {}) {
+    const where: Prisma.ChallengeWhereInput = {};
+    if (filters.available !== undefined) {
+      where.available = filters.available;
+    }
+    if (filters.level !== undefined) {
+      where.level = filters.level;
+    }
+    if (filters.dimensionCode) {
+      where.dimension = { code: filters.dimensionCode };
+    }
+
     return this.prisma.challenge.findMany({
+      where,
       include: { challengeProgresses: true },
+      orderBy: { code: 'asc' },
     });
   }
 
   async findById(id: string) {
     return this.prisma.challenge.findUnique({
       where: { id },
+      include: { challengeProgresses: true },
+    });
+  }
+
+  async findByCodeOrId(codeOrId: string) {
+    return this.prisma.challenge.findFirst({
+      where: codeOrIdWhere(codeOrId),
       include: { challengeProgresses: true },
     });
   }

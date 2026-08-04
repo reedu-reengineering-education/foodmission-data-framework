@@ -81,7 +81,9 @@ describe('ChallengesRepository', () => {
       const result = await repository.findAll();
 
       expect(prisma.challenge.findMany).toHaveBeenCalledWith({
+        where: {},
         include: { challengeProgresses: true },
+        orderBy: { code: 'asc' },
       });
       expect(result).toBe(mockChallenges);
     });

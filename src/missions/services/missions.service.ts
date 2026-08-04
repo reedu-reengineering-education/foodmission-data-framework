@@ -15,7 +15,10 @@ import { MissionsResponseDto } from '../dto/response-missions.dto';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { CreateMissionsDto } from '../dto/create-missions.dto';
 import { UpdateMissionsDto } from '../dto/update-missions.dto';
+import { ListMissionsQueryDto } from '../dto/list-missions-query.dto';
 import { PrismaService } from '../../database/prisma.service';
+import { TranslationService } from '../../translations/services/translation.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 @Injectable()
 export class MissionsService {
@@ -24,6 +27,7 @@ export class MissionsService {
   constructor(
     private readonly missionRepository: MissionsRepository,
     private readonly prisma: PrismaService,
+    private readonly translationService: TranslationService,
   ) {}
 
   async create(
@@ -50,26 +54,41 @@ export class MissionsService {
       handleServiceError(error, 'Failed to create mission');
     }
   }
-  async getMissionById(missionId: string): Promise<MissionsResponseDto> {
-    this.logger.log(`Getting mission ${missionId}`);
 
-    const mission = await this.missionRepository.findById(missionId);
+  async getMissionById(
+    codeOrId: string,
+    lang?: string,
+  ): Promise<MissionsResponseDto> {
+    this.logger.log(`Getting mission ${codeOrId}`);
+
+    const mission = await this.missionRepository.findByCodeOrId(codeOrId);
 
     if (!mission) {
       throw new NotFoundException('Mission not found');
     }
-    return this.transformToResponseDto(mission);
+    const [mapped] = await this.overlayTranslations([mission], lang);
+    return mapped;
   }
 
-  async getAllMissions(): Promise<MissionsResponseDto[]> {
+  async getAllMissions(
+    query: ListMissionsQueryDto = {},
+    isAdmin = false,
+  ): Promise<MissionsResponseDto[]> {
     this.logger.log(`Getting All missions`);
 
-    const missions = await this.missionRepository.findAll();
+    const available =
+      isAdmin && query.available !== undefined ? query.available : true;
+
+    const missions = await this.missionRepository.findAll({
+      dimensionCode: query.dimensionCode,
+      level: query.level,
+      available,
+    });
 
     if (!missions || missions.length === 0) {
       throw new NotFoundException('No missions found');
     }
-    return missions.map((mission) => this.transformToResponseDto(mission));
+    return this.overlayTranslations(missions, query.lang);
   }
 
   async update(
@@ -105,6 +124,42 @@ export class MissionsService {
     } catch (error) {
       handleServiceError(error, 'Failed to delete Mission');
     }
+  }
+
+  private async overlayTranslations(
+    missions: any[],
+    lang?: string,
+  ): Promise<MissionsResponseDto[]> {
+    const locale = this.translationService.resolveLocale(lang);
+    if (locale === DEFAULT_LOCALE || missions.length === 0) {
+      return missions.map((m) => this.transformToResponseDto(m));
+    }
+
+    const overlay = await this.translationService.resolveMany(
+      'Mission',
+      missions.map((m) => m.id),
+      locale,
+      ['title', 'goal', 'whyItMatters'],
+      Object.fromEntries(
+        missions.map((m) => [
+          m.id,
+          {
+            title: m.title,
+            goal: m.goal,
+            whyItMatters: m.whyItMatters,
+          },
+        ]),
+      ),
+    );
+
+    return missions.map((m) =>
+      this.transformToResponseDto({
+        ...m,
+        title: overlay[m.id]?.title ?? m.title,
+        goal: overlay[m.id]?.goal ?? m.goal,
+        whyItMatters: overlay[m.id]?.whyItMatters ?? m.whyItMatters,
+      }),
+    );
   }
 
   private transformToResponseDto(mission: any): MissionsResponseDto {

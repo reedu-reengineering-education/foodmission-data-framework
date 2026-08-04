@@ -88,7 +88,9 @@ describe('MissionsRepository', () => {
       (prisma.mission.findMany as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findAll();
       expect(prisma.mission.findMany).toHaveBeenCalledWith({
+        where: {},
         include: { missionProgresses: true },
+        orderBy: { code: 'asc' },
       });
       expect(result).toBe(mockReturn);
     });

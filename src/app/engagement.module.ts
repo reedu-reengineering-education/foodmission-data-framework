@@ -4,6 +4,7 @@ import { EventsApiModule } from '../events/events-api.module';
 import { MissionsModule } from '../missions/missions.module';
 import { SurveysModule } from '../surveys/surveys.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { LearningModule } from '../learning/learning.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { GamificationModule } from '../gamification/gamification.module';
     MissionsModule,
     SurveysModule,
     GamificationModule,
+    LearningModule,
   ],
 })
 export class EngagementModule {}

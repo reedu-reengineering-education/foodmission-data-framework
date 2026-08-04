@@ -13,10 +13,13 @@ describe('MissionProgressRepository', () => {
         {
           provide: PrismaService,
           useValue: {
+            mission: {
+              findUnique: jest.fn(),
+            },
             missionProgress: {
               findUnique: jest.fn(),
               findMany: jest.fn(),
-              update: jest.fn(),
+              upsert: jest.fn(),
             },
           },
         },
@@ -31,6 +34,19 @@ describe('MissionProgressRepository', () => {
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
+  });
+
+  describe('findMissionById', () => {
+    it('should call prisma.mission.findUnique', async () => {
+      const mockReturn = { id: 'm1', title: 'Mission' };
+      (prisma.mission.findUnique as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findMissionById('m1');
+      expect(prisma.mission.findUnique).toHaveBeenCalledWith({
+        where: { id: 'm1' },
+        select: { id: true, title: true },
+      });
+      expect(result).toBe(mockReturn);
+    });
   });
 
   describe('findByUserIdAndMissionId', () => {
@@ -63,17 +79,28 @@ describe('MissionProgressRepository', () => {
     });
   });
 
-  describe('update', () => {
-    it('should call prisma.missionProgress.update with correct params', async () => {
+  describe('upsert', () => {
+    it('should call prisma.missionProgress.upsert with create defaults', async () => {
       const mockReturn = { id: '1' };
-      const updateDto = { completed: true };
-      (prisma.missionProgress.update as jest.Mock).mockResolvedValue(
+      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
-      const result = await repository.update('u1', 'm1', updateDto);
-      expect(prisma.missionProgress.update).toHaveBeenCalledWith({
+      const result = await repository.upsert('u1', 'm1', {
+        completed: true,
+        progress: 50,
+      });
+      expect(prisma.missionProgress.upsert).toHaveBeenCalledWith({
         where: { userId_missionId: { userId: 'u1', missionId: 'm1' } },
-        data: { ...updateDto },
+        create: {
+          userId: 'u1',
+          missionId: 'm1',
+          progress: 50,
+          completed: true,
+        },
+        update: {
+          progress: 50,
+          completed: true,
+        },
         include: { mission: true },
       });
       expect(result).toBe(mockReturn);

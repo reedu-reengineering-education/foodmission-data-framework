@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 
@@ -13,9 +14,10 @@ describe('MissionProgressService', () => {
         {
           provide: MissionProgressRepository,
           useValue: {
+            findMissionById: jest.fn(),
             findByUserIdAndMissionId: jest.fn(),
             findAllByUserId: jest.fn(),
-            update: jest.fn(),
+            upsert: jest.fn(),
           },
         },
       ],
@@ -32,7 +34,7 @@ describe('MissionProgressService', () => {
   });
 
   describe('getMissionById', () => {
-    it('should return mission progress if found and userId matches', async () => {
+    it('should return mission progress if found', async () => {
       const progress = {
         missionId: 'm1',
         userId: 'u1',
@@ -40,6 +42,10 @@ describe('MissionProgressService', () => {
         progress: 0.5,
         mission: { title: 'Test Mission' },
       };
+      (repository.findMissionById as jest.Mock).mockResolvedValue({
+        id: 'm1',
+        title: 'Test Mission',
+      });
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         progress,
       );
@@ -53,28 +59,31 @@ describe('MissionProgressService', () => {
       });
     });
 
-    it('should throw NotFoundException if progress not found', async () => {
+    it('should return default progress when mission exists but no row yet', async () => {
+      (repository.findMissionById as jest.Mock).mockResolvedValue({
+        id: 'm1',
+        title: 'Test Mission',
+      });
       (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
         null,
       );
-      await expect(service.getMissionById('m1', 'u1')).rejects.toThrow(
-        'Mission not found',
-      );
+      const result = await service.getMissionById('m1', 'u1');
+      expect(result).toEqual({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 0,
+        missionTitle: 'Test Mission',
+      });
     });
 
-    it('should throw ForbiddenException if userId does not match', async () => {
-      const progress = {
-        missionId: 'm1',
-        userId: 'other',
-        completed: false,
-        progress: 0.5,
-        mission: { title: 'Test Mission' },
-      };
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        progress,
+    it('should throw NotFoundException if mission does not exist', async () => {
+      (repository.findMissionById as jest.Mock).mockResolvedValue(null);
+      await expect(service.getMissionById('m1', 'u1')).rejects.toThrow(
+        NotFoundException,
       );
       await expect(service.getMissionById('m1', 'u1')).rejects.toThrow(
-        'No permission',
+        'Mission not found',
       );
     });
   });
@@ -119,14 +128,7 @@ describe('MissionProgressService', () => {
   });
 
   describe('update', () => {
-    it('should update and return mission progress if found and userId matches', async () => {
-      const existing = {
-        missionId: 'm1',
-        userId: 'u1',
-        completed: false,
-        progress: 0.5,
-        mission: { title: 'Test Mission' },
-      };
+    it('should upsert and return mission progress', async () => {
       const updated = {
         missionId: 'm1',
         userId: 'u1',
@@ -134,14 +136,20 @@ describe('MissionProgressService', () => {
         progress: 1,
         mission: { title: 'Test Mission' },
       };
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        existing,
-      );
-      (repository.update as jest.Mock).mockResolvedValue(updated);
+      (repository.findMissionById as jest.Mock).mockResolvedValue({
+        id: 'm1',
+        title: 'Test Mission',
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
       const result = await service.update(
         'm1',
         { completed: true, progress: 1 },
         'u1',
+      );
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'm1',
+        { completed: true, progress: 1 },
       );
       expect(result).toEqual({
         missionId: 'm1',
@@ -152,29 +160,11 @@ describe('MissionProgressService', () => {
       });
     });
 
-    it('should throw NotFoundException if progress not found', async () => {
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
+    it('should throw NotFoundException if mission does not exist', async () => {
+      (repository.findMissionById as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('m1', { completed: true }, 'u1'),
       ).rejects.toThrow('Mission not found');
-    });
-
-    it('should throw ForbiddenException if userId does not match', async () => {
-      const existing = {
-        missionId: 'm1',
-        userId: 'other',
-        completed: false,
-        progress: 0.5,
-        mission: { title: 'Test Mission' },
-      };
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        existing,
-      );
-      await expect(
-        service.update('m1', { completed: true }, 'u1'),
-      ).rejects.toThrow('No permission');
     });
   });
 });

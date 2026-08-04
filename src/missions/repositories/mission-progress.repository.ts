@@ -6,6 +6,13 @@ import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 export class MissionProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findMissionById(missionId: string) {
+    return this.prisma.mission.findUnique({
+      where: { id: missionId },
+      select: { id: true, title: true },
+    });
+  }
+
   async findByUserIdAndMissionId(userId: string, missionId: string) {
     return this.prisma.missionProgress.findUnique({
       where: { userId_missionId: { userId, missionId } },
@@ -20,14 +27,30 @@ export class MissionProgressRepository {
     });
   }
 
-  async update(
+  async upsert(
     userId: string,
     missionId: string,
     updateDto: UpdateMissionProgressDto,
   ) {
-    return this.prisma.missionProgress.update({
+    const progress = updateDto.progress ?? 0;
+    const completed = updateDto.completed ?? false;
+
+    return this.prisma.missionProgress.upsert({
       where: { userId_missionId: { userId, missionId } },
-      data: { ...updateDto },
+      create: {
+        userId,
+        missionId,
+        progress,
+        completed,
+      },
+      update: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
       include: { mission: true },
     });
   }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ContentLevel } from '@prisma/client';
+import { ContentLevel, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 
 export interface CreateMissionData {
   code: string;
@@ -29,6 +30,12 @@ export interface UpdateMissionData {
   health?: boolean;
   foodChoice?: boolean;
   foodWaste?: boolean;
+  available?: boolean;
+}
+
+export interface MissionListFilters {
+  dimensionCode?: string;
+  level?: ContentLevel;
   available?: boolean;
 }
 
@@ -62,9 +69,29 @@ export class MissionsRepository {
     });
   }
 
-  async findAll() {
-    return this.prisma.mission.findMany({
+  async findByCodeOrId(codeOrId: string) {
+    return this.prisma.mission.findFirst({
+      where: codeOrIdWhere(codeOrId),
       include: { missionProgresses: true },
+    });
+  }
+
+  async findAll(filters: MissionListFilters = {}) {
+    const where: Prisma.MissionWhereInput = {};
+    if (filters.available !== undefined) {
+      where.available = filters.available;
+    }
+    if (filters.level !== undefined) {
+      where.level = filters.level;
+    }
+    if (filters.dimensionCode) {
+      where.dimension = { code: filters.dimensionCode };
+    }
+
+    return this.prisma.mission.findMany({
+      where,
+      include: { missionProgresses: true },
+      orderBy: { code: 'asc' },
     });
   }
 

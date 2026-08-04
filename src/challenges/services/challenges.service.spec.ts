@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengesService } from './challenges.service';
 import { ChallengesRepository } from '../repositories/challenges.repository';
+import { TranslationService } from '../../translations/services/translation.service';
 import {
   NotFoundException,
   ConflictException,
@@ -40,8 +41,16 @@ describe('ChallengesService', () => {
             create: jest.fn(),
             findAll: jest.fn(),
             findById: jest.fn(),
+            findByCodeOrId: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+          },
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+            resolveMany: jest.fn(),
           },
         },
       ],
@@ -123,16 +132,16 @@ describe('ChallengesService', () => {
 
   describe('getChallengeById', () => {
     it('should return challenge when found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(mockChallenge);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await service.getChallengeById('c1');
 
-      expect(repository.findById).toHaveBeenCalledWith('c1');
+      expect(repository.findByCodeOrId).toHaveBeenCalledWith('c1');
       expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
     });
 
     it('should throw NotFoundException when not found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(null);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(null);
 
       await expect(service.getChallengeById('c1')).rejects.toThrow(
         NotFoundException,
@@ -146,7 +155,11 @@ describe('ChallengesService', () => {
 
       const result = await service.getAll();
 
-      expect(repository.findAll).toHaveBeenCalled();
+      expect(repository.findAll).toHaveBeenCalledWith({
+        dimensionCode: undefined,
+        level: undefined,
+        available: true,
+      });
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({ id: 'c1' });
     });

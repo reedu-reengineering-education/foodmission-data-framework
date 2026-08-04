@@ -1,0 +1,196 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { ContentLevel } from '@prisma/client';
+import { LearningService } from './learning.service';
+import { LearningTranslationHelper } from './learning-translation.helper';
+import { PrismaService } from '../../database/prisma.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+
+describe('LearningService', () => {
+  let service: LearningService;
+  let prisma: {
+    dimension: { findMany: jest.Mock; findFirst: jest.Mock };
+    foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
+    quiz: { findFirst: jest.Mock };
+    quizProgress: { upsert: jest.Mock };
+  };
+
+  const mockTranslations = {
+    resolveLocale: jest.fn((lang?: string) => lang ?? DEFAULT_LOCALE),
+    overlayFields: jest.fn(
+      async (
+        _type: string,
+        items: Array<{ id: string }>,
+        _locale: string,
+        fields: string[],
+        fallbacks: (item: any) => Record<string, string | null | undefined>,
+      ) =>
+        Object.fromEntries(
+          items.map((item) => {
+            const fb = fallbacks(item);
+            const mapped: Record<string, string | null> = {};
+            for (const field of fields) {
+              const v = fb[field];
+              mapped[field] = v == null || v === '' ? null : String(v);
+            }
+            return [item.id, mapped];
+          }),
+        ),
+    ),
+  };
+
+  beforeEach(async () => {
+    prisma = {
+      dimension: {
+        findMany: jest.fn(),
+        findFirst: jest.fn(),
+      },
+      foodFact: {
+        findMany: jest.fn(),
+        count: jest.fn(),
+        findFirst: jest.fn(),
+      },
+      quiz: {
+        findFirst: jest.fn(),
+      },
+      quizProgress: {
+        upsert: jest.fn(),
+      },
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        LearningService,
+        { provide: PrismaService, useValue: prisma },
+        { provide: LearningTranslationHelper, useValue: mockTranslations },
+      ],
+    }).compile();
+
+    service = module.get(LearningService);
+    jest.clearAllMocks();
+    mockTranslations.resolveLocale.mockImplementation(
+      (lang?: string) => lang ?? DEFAULT_LOCALE,
+    );
+  });
+
+  it('lists dimensions with nested topics ordered by sortOrder', async () => {
+    prisma.dimension.findMany.mockResolvedValue([
+      {
+        id: 'd1',
+        code: 'B',
+        name: 'Packaging',
+        sortOrder: 1,
+        topics: [
+          {
+            id: 't1',
+            code: 'B1',
+            name: 'Plastic',
+            dimensionId: 'd1',
+            sortOrder: 0,
+          },
+        ],
+      },
+    ]);
+
+    const result = await service.listDimensions({});
+
+    expect(prisma.dimension.findMany).toHaveBeenCalledWith({
+      orderBy: { sortOrder: 'asc' },
+      include: { topics: { orderBy: { sortOrder: 'asc' } } },
+    });
+    expect(result).toEqual([
+      {
+        id: 'd1',
+        code: 'B',
+        name: 'Packaging',
+        sortOrder: 1,
+        topics: [
+          {
+            id: 't1',
+            code: 'B1',
+            name: 'Plastic',
+            dimensionId: 'd1',
+            sortOrder: 0,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('lists food facts with available=true and pagination meta', async () => {
+    const row = {
+      id: 'ff1',
+      code: 'FF.B1.1',
+      topicId: 't1',
+      body: 'Fact body',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+    };
+    prisma.foodFact.findMany.mockResolvedValue([row]);
+    prisma.foodFact.count.mockResolvedValue(1);
+
+    const result = await service.listFoodFacts({ page: 1, limit: 10 });
+
+    expect(prisma.foodFact.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ available: true }),
+        skip: 0,
+        take: 10,
+      }),
+    );
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0].body).toBe('Fact body');
+    expect(result.meta).toMatchObject({
+      page: 1,
+      limit: 10,
+      total: 1,
+      totalPages: 1,
+      hasNext: false,
+      hasPrevious: false,
+    });
+  });
+
+  it('upserts quiz progress and sets isCorrect from the selected option', async () => {
+    prisma.quiz.findFirst.mockResolvedValue({
+      id: 'q1',
+      options: [
+        { id: 'opt-a', label: 'A', text: 'Wrong', isCorrect: false },
+        { id: 'opt-b', label: 'B', text: 'Right', isCorrect: true },
+      ],
+    });
+    prisma.quizProgress.upsert.mockResolvedValue({
+      id: 'p1',
+      userId: 'u1',
+      quizId: 'q1',
+      selectedOptionId: 'opt-b',
+      isCorrect: true,
+      completed: true,
+      answeredAt: new Date('2026-08-04T12:00:00.000Z'),
+    });
+
+    const result = await service.upsertQuizProgress('u1', 'Q.B1.1', {
+      selectedLabel: 'B',
+    });
+
+    expect(prisma.quizProgress.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { userId_quizId: { userId: 'u1', quizId: 'q1' } },
+        create: expect.objectContaining({
+          selectedOptionId: 'opt-b',
+          isCorrect: true,
+          completed: true,
+        }),
+        update: expect.objectContaining({
+          selectedOptionId: 'opt-b',
+          isCorrect: true,
+          completed: true,
+        }),
+      }),
+    );
+    expect(result.isCorrect).toBe(true);
+    expect(result.completed).toBe(true);
+  });
+});

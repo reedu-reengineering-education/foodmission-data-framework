@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
@@ -14,9 +14,10 @@ describe('ChallengeProgressService', () => {
         {
           provide: ChallengeProgressRepository,
           useValue: {
+            findChallengeById: jest.fn(),
             findByUserIdAndChallengeId: jest.fn(),
             findAllByUserId: jest.fn(),
-            update: jest.fn(),
+            upsert: jest.fn(),
           },
         },
       ],
@@ -33,7 +34,7 @@ describe('ChallengeProgressService', () => {
   });
 
   describe('getChallengeById', () => {
-    it('should return challenge progress if found and userId matches', async () => {
+    it('should return challenge progress if found', async () => {
       const mockProgress = {
         challengeId: 'c1',
         userId: 'u1',
@@ -41,14 +42,14 @@ describe('ChallengeProgressService', () => {
         progress: 0.5,
         challenge: { title: 'Test Challenge' },
       };
+      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        title: 'Test Challenge',
+      });
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         mockProgress,
       );
       const result = await service.getChallengeById('c1', 'u1');
-      expect(repository.findByUserIdAndChallengeId).toHaveBeenCalledWith(
-        'u1',
-        'c1',
-      );
       expect(result).toEqual({
         challengeId: 'c1',
         userId: 'u1',
@@ -58,28 +59,28 @@ describe('ChallengeProgressService', () => {
       });
     });
 
-    it('should throw NotFoundException if progress not found', async () => {
+    it('should return default progress when challenge exists but no row yet', async () => {
+      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        title: 'Test Challenge',
+      });
       (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
         null,
       );
-      await expect(service.getChallengeById('c1', 'u1')).rejects.toThrow(
-        NotFoundException,
-      );
+      const result = await service.getChallengeById('c1', 'u1');
+      expect(result).toEqual({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 0,
+        challengeTitle: 'Test Challenge',
+      });
     });
 
-    it('should throw ForbiddenException if userId does not match', async () => {
-      const mockProgress = {
-        challengeId: 'c1',
-        userId: 'other',
-        completed: false,
-        progress: 0.5,
-        challenge: { title: 'Test Challenge' },
-      };
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        mockProgress,
-      );
+    it('should throw NotFoundException if challenge does not exist', async () => {
+      (repository.findChallengeById as jest.Mock).mockResolvedValue(null);
       await expect(service.getChallengeById('c1', 'u1')).rejects.toThrow(
-        ForbiddenException,
+        NotFoundException,
       );
     });
   });
@@ -106,7 +107,6 @@ describe('ChallengeProgressService', () => {
         mockProgresses,
       );
       const result = await service.getAllChallengesByUserId('u1');
-      expect(repository.findAllByUserId).toHaveBeenCalledWith('u1');
       expect(result).toEqual([
         {
           challengeId: 'c1',
@@ -127,14 +127,7 @@ describe('ChallengeProgressService', () => {
   });
 
   describe('update', () => {
-    it('should update and return challenge progress if found and userId matches', async () => {
-      const existing = {
-        challengeId: 'c1',
-        userId: 'u1',
-        completed: false,
-        progress: 0.5,
-        challenge: { title: 'Test Challenge' },
-      };
+    it('should upsert and return challenge progress', async () => {
       const updated = {
         challengeId: 'c1',
         userId: 'u1',
@@ -142,16 +135,17 @@ describe('ChallengeProgressService', () => {
         progress: 1,
         challenge: { title: 'Test Challenge' },
       };
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        existing,
-      );
-      (repository.update as jest.Mock).mockResolvedValue(updated);
+      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        title: 'Test Challenge',
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
       const result = await service.update(
         'c1',
         { completed: true, progress: 1 },
         'u1',
       );
-      expect(repository.update).toHaveBeenCalledWith('u1', 'c1', {
+      expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
         completed: true,
         progress: 1,
       });
@@ -164,29 +158,11 @@ describe('ChallengeProgressService', () => {
       });
     });
 
-    it('should throw NotFoundException if progress not found', async () => {
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        null,
-      );
+    it('should throw NotFoundException if challenge does not exist', async () => {
+      (repository.findChallengeById as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('c1', { completed: true }, 'u1'),
       ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw ForbiddenException if userId does not match', async () => {
-      const existing = {
-        challengeId: 'c1',
-        userId: 'other',
-        completed: false,
-        progress: 0.5,
-        challenge: { title: 'Test Challenge' },
-      };
-      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
-        existing,
-      );
-      await expect(
-        service.update('c1', { completed: true }, 'u1'),
-      ).rejects.toThrow(ForbiddenException);
     });
   });
 });

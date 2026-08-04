@@ -1,9 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
@@ -22,6 +17,12 @@ export class ChallengeProgressService {
   ): Promise<ChallengeProgressResponseDto> {
     this.logger.log(`Getting challenge ${challengeId} for user: ${userId}`);
 
+    const challenge =
+      await this.challengeProgressRepository.findChallengeById(challengeId);
+    if (!challenge) {
+      throw new NotFoundException('Challenge not found');
+    }
+
     const progress =
       await this.challengeProgressRepository.findByUserIdAndChallengeId(
         userId,
@@ -29,12 +30,13 @@ export class ChallengeProgressService {
       );
 
     if (!progress) {
-      throw new NotFoundException('Challenge not found');
-    }
-
-    // Sicherheit: userId aus dem Token muss übereinstimmen
-    if (progress.userId !== userId) {
-      throw new ForbiddenException('No permission');
+      return {
+        challengeId: challenge.id,
+        userId,
+        completed: false,
+        progress: 0,
+        challengeTitle: challenge.title,
+      };
     }
 
     return this.transformToResponseDto(progress);
@@ -58,21 +60,13 @@ export class ChallengeProgressService {
   ): Promise<ChallengeProgressResponseDto> {
     this.logger.log(`Updating challenge ${challengeId} for user: ${userId}`);
 
-    const existing =
-      await this.challengeProgressRepository.findByUserIdAndChallengeId(
-        userId,
-        challengeId,
-      );
-
-    if (!existing) {
+    const challenge =
+      await this.challengeProgressRepository.findChallengeById(challengeId);
+    if (!challenge) {
       throw new NotFoundException('Challenge not found');
     }
 
-    if (existing.userId !== userId) {
-      throw new ForbiddenException('No permission');
-    }
-
-    const updated = await this.challengeProgressRepository.update(
+    const updated = await this.challengeProgressRepository.upsert(
       userId,
       challengeId,
       updateDto,
@@ -81,7 +75,13 @@ export class ChallengeProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: any): ChallengeProgressResponseDto {
+  private transformToResponseDto(progress: {
+    challengeId: string;
+    userId: string;
+    completed: boolean;
+    progress: number;
+    challenge?: { title?: string } | null;
+  }): ChallengeProgressResponseDto {
     return {
       challengeId: progress.challengeId,
       userId: progress.userId,

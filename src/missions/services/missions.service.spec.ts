@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MissionsService } from './missions.service';
 import { MissionsRepository } from '../repositories/missions.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { TranslationService } from '../../translations/services/translation.service';
 import {
   NotFoundException,
   ConflictException,
@@ -41,6 +42,7 @@ describe('MissionsService', () => {
           useValue: {
             create: jest.fn(),
             findById: jest.fn(),
+            findByCodeOrId: jest.fn(),
             findAll: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
@@ -49,6 +51,13 @@ describe('MissionsService', () => {
         {
           provide: PrismaService,
           useValue: {},
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+            resolveMany: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -119,14 +128,14 @@ describe('MissionsService', () => {
 
   describe('getMissionById', () => {
     it('should return mission if found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(mockMission);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(mockMission);
       const result = await service.getMissionById('m1');
-      expect(repository.findById).toHaveBeenCalledWith('m1');
+      expect(repository.findByCodeOrId).toHaveBeenCalledWith('m1');
       expect(result).toMatchObject({ id: 'm1', title: 'Test Mission' });
     });
 
     it('should throw NotFoundException if mission not found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(null);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(service.getMissionById('m1')).rejects.toThrow(
         NotFoundException,
       );

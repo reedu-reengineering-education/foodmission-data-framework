@@ -1,9 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -22,6 +17,12 @@ export class MissionProgressService {
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Getting mission ${missionId} for user: ${userId}`);
 
+    const mission =
+      await this.missionProgressRepository.findMissionById(missionId);
+    if (!mission) {
+      throw new NotFoundException('Mission not found');
+    }
+
     const progress =
       await this.missionProgressRepository.findByUserIdAndMissionId(
         userId,
@@ -29,11 +30,13 @@ export class MissionProgressService {
       );
 
     if (!progress) {
-      throw new NotFoundException('Mission not found');
-    }
-
-    if (progress.userId !== userId) {
-      throw new ForbiddenException('No permission');
+      return {
+        missionId: mission.id,
+        userId,
+        completed: false,
+        progress: 0,
+        missionTitle: mission.title,
+      };
     }
 
     return this.transformToResponseDto(progress);
@@ -57,21 +60,13 @@ export class MissionProgressService {
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Updating mission ${missionId} for user: ${userId}`);
 
-    const existing =
-      await this.missionProgressRepository.findByUserIdAndMissionId(
-        userId,
-        missionId,
-      );
-
-    if (!existing) {
+    const mission =
+      await this.missionProgressRepository.findMissionById(missionId);
+    if (!mission) {
       throw new NotFoundException('Mission not found');
     }
 
-    if (existing.userId !== userId) {
-      throw new ForbiddenException('No permission');
-    }
-
-    const updated = await this.missionProgressRepository.update(
+    const updated = await this.missionProgressRepository.upsert(
       userId,
       missionId,
       updateDto,
@@ -80,7 +75,13 @@ export class MissionProgressService {
     return this.transformToResponseDto(updated);
   }
 
-  private transformToResponseDto(progress: any): MissionProgressResponseDto {
+  private transformToResponseDto(progress: {
+    missionId: string;
+    userId: string;
+    completed: boolean;
+    progress: number;
+    mission?: { title?: string } | null;
+  }): MissionProgressResponseDto {
     return {
       missionId: progress.missionId,
       userId: progress.userId,

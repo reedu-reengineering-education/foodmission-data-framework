@@ -7,6 +7,8 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,9 +27,11 @@ import { ChallengesService } from '../services/challenges.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
+import { ListChallengesQueryDto } from '../dto/list-challenges-query.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 
 @ApiTags('challenges')
 @Controller('challenges')
@@ -64,11 +68,12 @@ export class ChallengesController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all challenges',
-    description: 'Retrieves all challenges. Admin only.',
+    description:
+      'Retrieves challenges filtered by dimension/level/availability. Non-admins only see available challenges.',
   })
   @ApiResponse({
     status: 200,
@@ -76,18 +81,44 @@ export class ChallengesController {
     type: [ChallengeResponseDto],
   })
   @ApiCrudErrorResponses()
-  async getAll(): Promise<ChallengeResponseDto[]> {
-    return this.challengeService.getAll();
+  async getAll(
+    @Query() query: ListChallengesQueryDto,
+    @Req() req: { user?: { roles?: string[] } },
+  ): Promise<ChallengeResponseDto[]> {
+    const isAdmin = Array.isArray(req.user?.roles)
+      ? req.user.roles.includes('admin')
+      : false;
+    return this.challengeService.getAll(query, isAdmin);
   }
 
-  @Get(':id')
+  @Get('/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get challenge by ID',
-    description: 'Retrieves a specific challenge by its ID.',
+    summary: 'Get all challenge progresses for the current user',
+    description:
+      'Retrieves all challenge progresses for the authenticated user.',
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of challenge progresses retrieved successfully',
+    type: [ChallengeProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgress(
+    @CurrentUser('id') userId: string,
+  ): Promise<ChallengeProgressResponseDto[]> {
+    return this.challengeProgressService.getAllChallengesByUserId(userId);
+  }
+
+  @Get(':codeOrId')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get challenge by UUID or code',
+    description: 'Retrieves a specific challenge by its ID or business code.',
+  })
+  @ApiParam({ name: 'codeOrId', type: 'string' })
   @ApiResponse({
     status: 200,
     description: 'Challenge retrieved successfully',
@@ -99,9 +130,10 @@ export class ChallengesController {
   })
   @ApiCrudErrorResponses()
   async getChallengeById(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeResponseDto> {
-    return this.challengeService.getChallengeById(id);
+    return this.challengeService.getChallengeById(codeOrId, query.lang);
   }
 
   @Patch(':id')
@@ -150,25 +182,5 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.challengeService.delete(id);
-  }
-
-  @Get('/progress')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all challenge progresses for the current user',
-    description:
-      'Retrieves all challenge progresses for the authenticated user.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of challenge progresses retrieved successfully',
-    type: [ChallengeProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAllProgress(
-    @CurrentUser('id') userId: string,
-  ): Promise<ChallengeProgressResponseDto[]> {
-    return this.challengeProgressService.getAllChallengesByUserId(userId);
   }
 }

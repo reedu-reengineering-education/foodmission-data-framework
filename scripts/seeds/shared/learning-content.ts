@@ -7,7 +7,7 @@ import { seedQuests } from './quests';
 import { seedMicroLearnings } from './micro-learnings';
 
 /** Seed all Task 3.3 catalog content (facts → quizzes → missions → challenges → quests → micro-learnings). */
-export async function seedCatalogContent(prisma: PrismaClient) {
+export async function seedLearningContent(prisma: PrismaClient) {
   const foodFacts = await seedFoodFacts(prisma);
   const quizzes = await seedQuizzes(prisma);
   const missions = await seedMissionsCatalog(prisma);

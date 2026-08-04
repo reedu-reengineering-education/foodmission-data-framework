@@ -6,6 +6,13 @@ import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto
 export class ChallengeProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findChallengeById(challengeId: string) {
+    return this.prisma.challenge.findUnique({
+      where: { id: challengeId },
+      select: { id: true, title: true },
+    });
+  }
+
   async findByUserIdAndChallengeId(userId: string, challengeId: string) {
     return this.prisma.challengeProgress.findUnique({
       where: { userId_challengeId: { userId, challengeId } },
@@ -20,14 +27,30 @@ export class ChallengeProgressRepository {
     });
   }
 
-  async update(
+  async upsert(
     userId: string,
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,
   ) {
-    return this.prisma.challengeProgress.update({
+    const progress = updateDto.progress ?? 0;
+    const completed = updateDto.completed ?? false;
+
+    return this.prisma.challengeProgress.upsert({
       where: { userId_challengeId: { userId, challengeId } },
-      data: { ...updateDto },
+      create: {
+        userId,
+        challengeId,
+        progress,
+        completed,
+      },
+      update: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
       include: { challenge: true },
     });
   }
