@@ -4,7 +4,7 @@ import { seedOpenFoodFactsFromJson } from './dev/openfoodfacts';
 import { seedRecipes } from './prod/themealdb';
 import { seedFoodKeeper } from './prod/foodkeeper';
 import { linkShelfLife } from './prod/link-shelf-life';
-import { seedSustainabilityTaxonomy } from './shared/sustainability-taxonomy';
+import { seedDimensionsAndTopics } from './shared/dimensions-topics';
 import { seedStandardRewards } from './shared/rewards';
 
 async function main() {
@@ -13,9 +13,9 @@ async function main() {
   console.log('🔒 Running production seed (NEVO + OpenFoodFacts + Recipes)');
 
   try {
-    const taxonomyRes = await seedSustainabilityTaxonomy(prisma);
+    const taxonomyRes = await seedDimensionsAndTopics(prisma);
     console.log(
-      `   ✅ Sustainability taxonomy: ${taxonomyRes.dimensions} dimensions, ${taxonomyRes.topics} topics`,
+      `   ✅ Dimensions/topics: ${taxonomyRes.dimensions} dimensions, ${taxonomyRes.topics} topics`,
     );
 
     const rewardsRes = await seedStandardRewards(prisma);

@@ -109,7 +109,7 @@ model Knowledge {
   @@map("knowledge")
 }
 
-model SustainabilityDimension {
+model Dimension {
   id        String   @id @default(uuid())
   code      String   @unique
   name      String
@@ -118,13 +118,13 @@ model SustainabilityDimension {
   updatedAt DateTime @updatedAt
 
   // Relations
-  topics SustainabilityTopic[]
+  topics Topic[]
 
   @@index([sortOrder])
-  @@map("sustainability_dimensions")
+  @@map("dimensions")
 }
 
-model SustainabilityTopic {
+model Topic {
   id          String   @id @default(uuid())
   dimensionId String
   code        String   @unique
@@ -134,11 +134,11 @@ model SustainabilityTopic {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  dimension SustainabilityDimension @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  dimension Dimension @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
 
   @@index([dimensionId])
   @@index([sortOrder])
-  @@map("sustainability_topics")
+  @@map("topics")
 }
 
 model Reward {

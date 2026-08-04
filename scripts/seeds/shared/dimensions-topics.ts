@@ -1,19 +1,19 @@
 import { PrismaClient } from '@prisma/client';
 
-interface SustainabilityTopicSeed {
+interface TopicSeed {
   code: string;
   name: string;
   sortOrder: number;
 }
 
-interface SustainabilityDimensionSeed {
+interface DimensionSeed {
   code: string;
   name: string;
   sortOrder: number;
-  topics: SustainabilityTopicSeed[];
+  topics: TopicSeed[];
 }
 
-const sustainabilityTaxonomySeedData: SustainabilityDimensionSeed[] = [
+const dimensionSeedData: DimensionSeed[] = [
   {
     code: 'DIET_CHANGES',
     name: 'Diet changes towards a more sustainable system',
@@ -144,11 +144,11 @@ const sustainabilityTaxonomySeedData: SustainabilityDimensionSeed[] = [
   },
 ];
 
-export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
-  console.log('🌿 Seeding sustainability taxonomy...');
+export async function seedDimensionsAndTopics(prisma: PrismaClient) {
+  console.log('🌿 Seeding dimensions and topics...');
 
-  for (const dimensionData of sustainabilityTaxonomySeedData) {
-    const dimension = await prisma.sustainabilityDimension.upsert({
+  for (const dimensionData of dimensionSeedData) {
+    const dimension = await prisma.dimension.upsert({
       where: { code: dimensionData.code },
       update: {
         name: dimensionData.name,
@@ -162,7 +162,7 @@ export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
     });
 
     for (const topicData of dimensionData.topics) {
-      await prisma.sustainabilityTopic.upsert({
+      await prisma.topic.upsert({
         where: { code: topicData.code },
         update: {
           dimensionId: dimension.id,
@@ -179,11 +179,11 @@ export async function seedSustainabilityTaxonomy(prisma: PrismaClient) {
     }
   }
 
-  const dimensions = await prisma.sustainabilityDimension.count();
-  const topics = await prisma.sustainabilityTopic.count();
+  const dimensions = await prisma.dimension.count();
+  const topics = await prisma.topic.count();
 
   console.log(
-    `✅ Upserted sustainability taxonomy (${dimensions} dimensions, ${topics} topics in DB)`,
+    `✅ Upserted taxonomy (${dimensions} dimensions, ${topics} topics in DB)`,
   );
 
   return { dimensions, topics };

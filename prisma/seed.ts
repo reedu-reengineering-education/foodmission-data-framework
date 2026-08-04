@@ -22,7 +22,7 @@ import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
 import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
-import { seedSustainabilityTaxonomy } from '../scripts/seeds/shared/sustainability-taxonomy';
+import { seedDimensionsAndTopics } from '../scripts/seeds/shared/dimensions-topics';
 import { seedStandardRewards } from '../scripts/seeds/shared/rewards';
 
 const {
@@ -45,7 +45,7 @@ function printTranslationsReminder(): void {
 }
 
 async function seedProduction() {
-  const sustainabilityTaxonomy = await seedSustainabilityTaxonomy(prisma);
+  const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
   const genericFoods = await seedGenericFoods(prisma);
   const recipes = await seedRecipes(prisma);
@@ -59,8 +59,8 @@ async function seedProduction() {
   console.log('📊 Summary:');
   const summaryRows: { label: string; value: string | number }[] = [
     {
-      label: 'sustainabilityTaxonomy',
-      value: `${sustainabilityTaxonomy.dimensions} dimensions, ${sustainabilityTaxonomy.topics} topics`,
+      label: 'dimensionsAndTopics',
+      value: `${taxonomy.dimensions} dimensions, ${taxonomy.topics} topics`,
     },
     {
       label: 'standardRewards',
@@ -92,7 +92,7 @@ async function seedProduction() {
 }
 
 async function seedDevelopment() {
-  const sustainabilityTaxonomy = await seedSustainabilityTaxonomy(prisma);
+  const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
 
   // --- Catalog (needed for recipe ingredient linking & shelf-life matching) ---
@@ -139,8 +139,8 @@ async function seedDevelopment() {
   console.log('📊 Summary:');
   const summaryRows: { label: string; value: string | number }[] = [
     {
-      label: 'sustainabilityTaxonomy',
-      value: `${sustainabilityTaxonomy.dimensions} dimensions, ${sustainabilityTaxonomy.topics} topics`,
+      label: 'dimensionsAndTopics',
+      value: `${taxonomy.dimensions} dimensions, ${taxonomy.topics} topics`,
     },
     {
       label: 'standardRewards',
