@@ -42,8 +42,8 @@ describe('MissionProgressController', () => {
     it('should call service.getMissionById and return result', async () => {
       const mockResult = { missionId: 'm1' };
       (service.getMissionById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getMissionById('m1', 'u1');
-      expect(service.getMissionById).toHaveBeenCalledWith('m1', 'u1');
+      const result = await controller.getMissionById('m1', 'u1', {});
+      expect(service.getMissionById).toHaveBeenCalledWith('m1', 'u1', undefined);
       expect(result).toBe(mockResult);
     });
   });
@@ -53,8 +53,8 @@ describe('MissionProgressController', () => {
       const mockResult = { missionId: 'm1', completed: true };
       (service.update as jest.Mock).mockResolvedValue(mockResult);
       const dto = { completed: true };
-      const result = await controller.update('m1', dto, 'u1');
-      expect(service.update).toHaveBeenCalledWith('m1', dto, 'u1');
+      const result = await controller.update('m1', dto, 'u1', {});
+      expect(service.update).toHaveBeenCalledWith('m1', dto, 'u1', undefined);
       expect(result).toBe(mockResult);
     });
   });

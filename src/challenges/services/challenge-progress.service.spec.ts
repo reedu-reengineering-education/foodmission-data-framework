@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { NotFoundException } from '@nestjs/common';
+import { TranslationService } from '../../translations/services/translation.service';
 
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
@@ -17,7 +18,15 @@ describe('ChallengeProgressService', () => {
             findChallengeById: jest.fn(),
             findByUserIdAndChallengeId: jest.fn(),
             findAllByUserId: jest.fn(),
+            findAllPaginated: jest.fn(),
             upsert: jest.fn(),
+          },
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+            resolveMany: jest.fn(),
           },
         },
       ],

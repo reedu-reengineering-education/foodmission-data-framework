@@ -33,7 +33,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('missions')
@@ -117,7 +117,7 @@ export class MissionsController {
   })
   @ApiCrudErrorResponses()
   async getAllProgressPaginated(
-    @Query() query: PaginationQueryDto,
+    @Query() query: PaginatedLangQueryDto,
   ): Promise<PaginatedResponseDto<MissionProgressResponseDto>> {
     return this.missionProgressService.getAllPaginated(query);
   }
@@ -137,8 +137,9 @@ export class MissionsController {
   @ApiCrudErrorResponses()
   async getAll(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<MissionProgressResponseDto[]> {
-    return this.missionProgressService.getAllMissionsByUserId(userId);
+    return this.missionProgressService.getAllMissionsByUserId(userId, query.lang);
   }
 
   @Get(':codeOrId')

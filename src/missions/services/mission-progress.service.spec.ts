@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
+import { TranslationService } from '../../translations/services/translation.service';
 
 describe('MissionProgressService', () => {
   let service: MissionProgressService;
@@ -17,7 +18,15 @@ describe('MissionProgressService', () => {
             findMissionById: jest.fn(),
             findByUserIdAndMissionId: jest.fn(),
             findAllByUserId: jest.fn(),
+            findAllPaginated: jest.fn(),
             upsert: jest.fn(),
+          },
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+            resolveMany: jest.fn(),
           },
         },
       ],

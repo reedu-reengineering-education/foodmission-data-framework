@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -23,6 +24,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 
 @ApiTags('challenges')
 @Controller('challenges/:challengeId/progress')
@@ -58,8 +60,13 @@ export class ChallengeProgressController {
   async getChallengeById(
     @Param('challengeId', ParseUUIDPipe) challengeId: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeProgressResponseDto> {
-    return this.challengeProgressService.getChallengeById(challengeId, userId);
+    return this.challengeProgressService.getChallengeById(
+      challengeId,
+      userId,
+      query.lang,
+    );
   }
 
   @Patch()
@@ -90,11 +97,13 @@ export class ChallengeProgressController {
     @Param('challengeId', ParseUUIDPipe) challengeId: string,
     @Body() updateChallengeProgressDto: UpdateChallengeProgressDto,
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeProgressResponseDto> {
     return this.challengeProgressService.update(
       challengeId,
       updateChallengeProgressDto,
       userId,
+      query.lang,
     );
   }
 }

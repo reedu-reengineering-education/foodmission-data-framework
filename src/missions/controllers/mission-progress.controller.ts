@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -23,6 +24,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 
 @ApiTags('missions')
 @Controller('missions/:missionId/progress')
@@ -58,8 +60,13 @@ export class MissionProgressController {
   async getMissionById(
     @Param('missionId', ParseUUIDPipe) missionId: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<MissionProgressResponseDto> {
-    return this.missionProgressService.getMissionById(missionId, userId);
+    return this.missionProgressService.getMissionById(
+      missionId,
+      userId,
+      query.lang,
+    );
   }
 
   @Patch()
@@ -90,11 +97,13 @@ export class MissionProgressController {
     @Param('missionId', ParseUUIDPipe) missionId: string,
     @Body() updateMissionProgressDto: UpdateMissionProgressDto,
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<MissionProgressResponseDto> {
     return this.missionProgressService.update(
       missionId,
       updateMissionProgressDto,
       userId,
+      query.lang,
     );
   }
 }

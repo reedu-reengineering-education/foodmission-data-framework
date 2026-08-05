@@ -33,7 +33,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('challenges')
@@ -109,7 +109,7 @@ export class ChallengesController {
   })
   @ApiCrudErrorResponses()
   async getAllProgressPaginated(
-    @Query() query: PaginationQueryDto,
+    @Query() query: PaginatedLangQueryDto,
   ): Promise<PaginatedResponseDto<ChallengeProgressResponseDto>> {
     return this.challengeProgressService.getAllPaginated(query);
   }
@@ -130,8 +130,12 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async getAllProgress(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeProgressResponseDto[]> {
-    return this.challengeProgressService.getAllChallengesByUserId(userId);
+    return this.challengeProgressService.getAllChallengesByUserId(
+      userId,
+      query.lang,
+    );
   }
 
   @Get(':codeOrId')
