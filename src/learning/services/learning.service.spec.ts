@@ -11,9 +11,17 @@ describe('LearningService', () => {
     dimension: { findMany: jest.Mock; findFirst: jest.Mock };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
     quiz: { findFirst: jest.Mock; findMany: jest.Mock };
-    quizProgress: { upsert: jest.Mock; findUnique: jest.Mock; findMany: jest.Mock };
+    quizProgress: {
+      upsert: jest.Mock;
+      findUnique: jest.Mock;
+      findMany: jest.Mock;
+    };
     quest: { findFirst: jest.Mock; findMany: jest.Mock };
-    questProgress: { findUnique: jest.Mock; findMany: jest.Mock; upsert: jest.Mock };
+    questProgress: {
+      findUnique: jest.Mock;
+      findMany: jest.Mock;
+      upsert: jest.Mock;
+    };
     mission: { findMany: jest.Mock };
     challenge: { findMany: jest.Mock };
     microLearning: { findMany: jest.Mock };
@@ -22,7 +30,7 @@ describe('LearningService', () => {
   const mockTranslations = {
     resolveLocale: jest.fn((lang?: string) => lang ?? DEFAULT_LOCALE),
     overlayFields: jest.fn(
-      async (
+      (
         _type: string,
         items: Array<{ id: string }>,
         _locale: string,
@@ -187,8 +195,20 @@ describe('LearningService', () => {
       foodWaste: false,
       available: true,
       options: [
-        { id: 'opt-a', label: 'A', text: 'Wrong', isCorrect: false, sortOrder: 0 },
-        { id: 'opt-b', label: 'B', text: 'Right', isCorrect: true, sortOrder: 1 },
+        {
+          id: 'opt-a',
+          label: 'A',
+          text: 'Wrong',
+          isCorrect: false,
+          sortOrder: 0,
+        },
+        {
+          id: 'opt-b',
+          label: 'B',
+          text: 'Right',
+          isCorrect: true,
+          sortOrder: 1,
+        },
       ],
     });
     prisma.quizProgress.upsert.mockResolvedValue({

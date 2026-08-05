@@ -49,20 +49,19 @@ export class ChallengesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createChallengeDto: CreateChallengeDto | CreateChallengeData) {
-    const { tags: _tags, ...rest } = createChallengeDto;
     const flags = resolveTagFlags(createChallengeDto);
 
     return this.prisma.challenge.create({
       data: {
-        code: rest.code,
-        dimensionId: rest.dimensionId,
-        topicId: rest.topicId,
-        level: rest.level,
-        title: rest.title,
-        task: rest.task,
-        whyItMatters: rest.whyItMatters,
+        code: createChallengeDto.code,
+        dimensionId: createChallengeDto.dimensionId,
+        topicId: createChallengeDto.topicId,
+        level: createChallengeDto.level,
+        title: createChallengeDto.title,
+        task: createChallengeDto.task,
+        whyItMatters: createChallengeDto.whyItMatters,
         ...flags,
-        available: rest.available,
+        available: createChallengeDto.available,
       },
     });
   }
