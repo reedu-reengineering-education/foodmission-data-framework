@@ -23,7 +23,7 @@ const standardRewards: RewardSeedData[] = [
     xp: 60,
   },
   {
-    name: 'Standard Knowledge Reward',
+    name: 'Standard Food Fact Reward',
     points: 40,
     xp: 30,
   },
