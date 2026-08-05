@@ -23,6 +23,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
+import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
 import { LearningPaginatedQueryDto } from '../dto/learning-list-query.dto';
 import { QuizResponseDto } from '../dto/quiz-response.dto';
 import {
@@ -64,6 +65,22 @@ export class QuizzesController {
     @Query() query: LearningLangQueryDto,
   ): Promise<QuizProgressResponseDto[]> {
     return this.learningService.listQuizProgressForUser(userId, query.lang);
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all quiz progress rows (admin, paginated)',
+    description:
+      'Returns paginated quiz progress for all users. Supports lang for translated questions.',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated quiz progress' })
+  @ApiCrudErrorResponses()
+  async listAllProgressPaginated(
+    @Query() query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<QuizProgressResponseDto>> {
+    return this.learningService.listAllQuizProgressPaginated(query);
   }
 
   @Get(':codeOrId/progress')

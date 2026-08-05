@@ -70,13 +70,12 @@ describe('MissionsRepository', () => {
   });
 
   describe('findById', () => {
-    it('should call prisma.mission.findUnique with include missionProgresses', async () => {
-      const mockReturn = { id: 'm1', missionProgresses: [] };
+    it('should call prisma.mission.findUnique without progress include', async () => {
+      const mockReturn = { id: 'm1' };
       (prisma.mission.findUnique as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findById('m1');
       expect(prisma.mission.findUnique).toHaveBeenCalledWith({
         where: { id: 'm1' },
-        include: { missionProgresses: true },
       });
       expect(result).toBe(mockReturn);
     });
@@ -110,8 +109,8 @@ describe('MissionsRepository', () => {
   });
 
   describe('update', () => {
-    it('should call prisma.mission.update with include missionProgresses', async () => {
-      const mockReturn = { id: 'm1', missionProgresses: [] };
+    it('should call prisma.mission.update without progress include', async () => {
+      const mockReturn = { id: 'm1' };
       const updateData = { available: false };
       (prisma.mission.update as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.update('m1', updateData);
@@ -131,7 +130,6 @@ describe('MissionsRepository', () => {
           foodWaste: undefined,
           available: updateData.available,
         },
-        include: { missionProgresses: true },
       });
       expect(result).toBe(mockReturn);
     });

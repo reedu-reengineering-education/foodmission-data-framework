@@ -22,7 +22,9 @@ import { ApiCrudErrorResponses } from '../../common/decorators/api-error-respons
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
+import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
 import { LearningQuestListQueryDto } from '../dto/learning-list-query.dto';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
@@ -60,6 +62,22 @@ export class QuestsController {
     @Query() query: LearningLangQueryDto,
   ): Promise<QuestProgressResponseDto[]> {
     return this.learningService.listQuestProgressForUser(userId, query.lang);
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all quest progress rows (admin, paginated)',
+    description:
+      'Returns paginated quest progress for all users. Supports lang for translated quest titles.',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated quest progress' })
+  @ApiCrudErrorResponses()
+  async listAllProgressPaginated(
+    @Query() query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<QuestProgressResponseDto>> {
+    return this.learningService.listAllQuestProgressPaginated(query);
   }
 
   @Get(':codeOrId/progress')

@@ -97,14 +97,12 @@ export class ChallengesRepository {
   async findById(id: string) {
     return this.prisma.challenge.findUnique({
       where: { id },
-      include: { challengeProgresses: true },
     });
   }
 
   async findByCodeOrId(codeOrId: string) {
     return this.prisma.challenge.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { challengeProgresses: true },
     });
   }
 

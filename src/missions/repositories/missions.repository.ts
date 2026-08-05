@@ -67,14 +67,12 @@ export class MissionsRepository {
   async findById(id: string) {
     return this.prisma.mission.findUnique({
       where: { id },
-      include: { missionProgresses: true },
     });
   }
 
   async findByCodeOrId(codeOrId: string) {
     return this.prisma.mission.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { missionProgresses: true },
     });
   }
 
@@ -122,7 +120,6 @@ export class MissionsRepository {
         foodWaste: data.foodWaste,
         available: data.available,
       },
-      include: { missionProgresses: true },
     });
   }
 

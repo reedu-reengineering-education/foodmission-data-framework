@@ -107,8 +107,8 @@ describe('ChallengesRepository', () => {
   });
 
   describe('findById', () => {
-    it('should return challenge by id with progress', async () => {
-      const mockChallenge = { id: 'c1', challengeProgresses: [] };
+    it('should return challenge by id without progress include', async () => {
+      const mockChallenge = { id: 'c1' };
       (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(
         mockChallenge,
       );
@@ -117,7 +117,6 @@ describe('ChallengesRepository', () => {
 
       expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
         where: { id: 'c1' },
-        include: { challengeProgresses: true },
       });
       expect(result).toBe(mockChallenge);
     });

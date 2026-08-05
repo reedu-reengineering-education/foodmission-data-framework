@@ -15,6 +15,7 @@ import {
   buildQuizWhere,
 } from '../utils/learning-filters';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
+import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
 import {
   LearningPaginatedQueryDto,
   LearningQuestListQueryDto,
@@ -274,6 +275,31 @@ export class LearningService {
     );
   }
 
+  async listAllQuizProgressPaginated(
+    query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<QuizProgressResponseDto>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.quizProgress.findMany({
+        skip,
+        take,
+        include: {
+          quiz: { include: { options: { orderBy: { sortOrder: 'asc' } } } },
+        },
+        orderBy: [{ userId: 'asc' }, { quizId: 'asc' }],
+      }),
+      this.prisma.quizProgress.count(),
+    ]);
+    const data = await Promise.all(
+      rows.map((row) =>
+        this.mapQuizProgressResponse(row.userId, row.quiz, row, query.lang),
+      ),
+    );
+    return toPaginatedResponseDto(data, total, page, limit);
+  }
+
   async upsertQuizProgress(
     userId: string,
     codeOrId: string,
@@ -500,6 +526,29 @@ export class LearningService {
         this.mapQuestProgressResponse(userId, row.quest, row, lang),
       ),
     );
+  }
+
+  async listAllQuestProgressPaginated(
+    query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<QuestProgressResponseDto>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.questProgress.findMany({
+        skip,
+        take,
+        include: { quest: true },
+        orderBy: [{ userId: 'asc' }, { questId: 'asc' }],
+      }),
+      this.prisma.questProgress.count(),
+    ]);
+    const data = await Promise.all(
+      rows.map((row) =>
+        this.mapQuestProgressResponse(row.userId, row.quest, row, query.lang),
+      ),
+    );
+    return toPaginatedResponseDto(data, total, page, limit);
   }
 
   async upsertQuestProgress(
