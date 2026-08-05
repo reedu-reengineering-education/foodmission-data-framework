@@ -83,16 +83,29 @@ describe('MissionsRepository', () => {
   });
 
   describe('findAll', () => {
-    it('should call prisma.mission.findMany with include missionProgresses', async () => {
-      const mockReturn = [{ id: 'm1', missionProgresses: [] }];
+    it('should call prisma.mission.findMany without progress include by default', async () => {
+      const mockReturn = [{ id: 'm1' }];
       (prisma.mission.findMany as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findAll();
       expect(prisma.mission.findMany).toHaveBeenCalledWith({
         where: {},
-        include: { missionProgresses: true },
+        include: {},
         orderBy: { code: 'asc' },
       });
       expect(result).toBe(mockReturn);
+    });
+
+    it('should scope missionProgresses to user when progressUserId is set', async () => {
+      const mockReturn = [{ id: 'm1', missionProgresses: [] }];
+      (prisma.mission.findMany as jest.Mock).mockResolvedValue(mockReturn);
+      await repository.findAll({ progressUserId: 'u1' });
+      expect(prisma.mission.findMany).toHaveBeenCalledWith({
+        where: {},
+        include: {
+          missionProgresses: { where: { userId: 'u1' } },
+        },
+        orderBy: { code: 'asc' },
+      });
     });
   });
 

@@ -96,10 +96,11 @@ export class ChallengeResponseDto {
   @Expose()
   available: boolean;
 
-  @ApiProperty({
-    description: 'Aggregate challenge progress across users (0-100 scale)',
+  @ApiPropertyOptional({
+    description:
+      'Current user challenge progress on a 0–100 scale. Omitted on admin challenge list.',
     example: 50,
   })
   @Expose()
-  progress: number;
+  progress?: number;
 }

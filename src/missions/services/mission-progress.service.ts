@@ -1,4 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -51,6 +54,19 @@ export class MissionProgressService {
       await this.missionProgressRepository.findAllByUserId(userId);
 
     return progresses.map((p) => this.transformToResponseDto(p));
+  }
+
+  async getAllPaginated(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<MissionProgressResponseDto>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const { rows, total } = await this.missionProgressRepository.findAllPaginated(
+      page,
+      limit,
+    );
+    const data = rows.map((p) => this.transformToResponseDto(p));
+    return toPaginatedResponseDto(data, total, page, limit);
   }
 
   async update(

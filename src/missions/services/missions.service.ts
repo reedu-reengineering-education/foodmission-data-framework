@@ -72,8 +72,9 @@ export class MissionsService {
 
   async getAllMissions(
     query: ListMissionsQueryDto = {},
-    isAdmin = false,
+    options: { isAdmin?: boolean; userId?: string } = {},
   ): Promise<MissionsResponseDto[]> {
+    const { isAdmin = false, userId } = options;
     this.logger.log(`Getting All missions`);
 
     const available =
@@ -83,12 +84,15 @@ export class MissionsService {
       dimensionCode: query.dimensionCode,
       level: query.level,
       available,
+      progressUserId: isAdmin ? undefined : userId,
     });
 
     if (!missions || missions.length === 0) {
       throw new NotFoundException('No missions found');
     }
-    return this.overlayTranslations(missions, query.lang);
+    return this.overlayTranslations(missions, query.lang, {
+      includeProgress: !isAdmin,
+    });
   }
 
   async update(
@@ -129,10 +133,11 @@ export class MissionsService {
   private async overlayTranslations(
     missions: any[],
     lang?: string,
+    options?: { includeProgress?: boolean },
   ): Promise<MissionsResponseDto[]> {
     const locale = this.translationService.resolveLocale(lang);
     if (locale === DEFAULT_LOCALE || missions.length === 0) {
-      return missions.map((m) => this.transformToResponseDto(m));
+      return missions.map((m) => this.transformToResponseDto(m, options));
     }
 
     const overlay = await this.translationService.resolveMany(
@@ -153,22 +158,43 @@ export class MissionsService {
     );
 
     return missions.map((m) =>
-      this.transformToResponseDto({
-        ...m,
-        title: overlay[m.id]?.title ?? m.title,
-        goal: overlay[m.id]?.goal ?? m.goal,
-        whyItMatters: overlay[m.id]?.whyItMatters ?? m.whyItMatters,
-      }),
+      this.transformToResponseDto(
+        {
+          ...m,
+          title: overlay[m.id]?.title ?? m.title,
+          goal: overlay[m.id]?.goal ?? m.goal,
+          whyItMatters: overlay[m.id]?.whyItMatters ?? m.whyItMatters,
+        },
+        options,
+      ),
     );
   }
 
-  private transformToResponseDto(mission: any): MissionsResponseDto {
-    return {
+  private transformToResponseDto(
+    mission: {
+      id: string;
+      code: string;
+      dimensionId: string;
+      topicId?: string | null;
+      level: string;
+      title: string;
+      duration: string;
+      goal: string;
+      whyItMatters: string;
+      health: boolean;
+      foodChoice: boolean;
+      foodWaste: boolean;
+      available: boolean;
+      missionProgresses?: Array<{ progress?: number }>;
+    },
+    options?: { includeProgress?: boolean },
+  ): MissionsResponseDto {
+    const dto: MissionsResponseDto = {
       id: mission.id,
       code: mission.code,
       dimensionId: mission.dimensionId,
       topicId: mission.topicId,
-      level: mission.level,
+      level: mission.level as MissionsResponseDto['level'],
       title: mission.title,
       duration: mission.duration,
       goal: mission.goal,
@@ -176,10 +202,14 @@ export class MissionsService {
       health: mission.health,
       foodChoice: mission.foodChoice,
       foodWaste: mission.foodWaste,
-      progress:
-        mission.missionProgresses?.reduce((acc, cp) => acc + cp.progress, 0) ||
-        0,
       available: mission.available,
     };
+
+    if (options?.includeProgress) {
+      const row = mission.missionProgresses?.[0];
+      dto.progress = row?.progress ?? 0;
+    }
+
+    return dto;
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
+import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
 @Injectable()
 export class ChallengeProgressRepository {
@@ -25,6 +26,20 @@ export class ChallengeProgressRepository {
       where: { userId },
       include: { challenge: true },
     });
+  }
+
+  async findAllPaginated(page = 1, limit = 10) {
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.challengeProgress.findMany({
+        skip,
+        take,
+        include: { challenge: true },
+        orderBy: [{ userId: 'asc' }, { challengeId: 'asc' }],
+      }),
+      this.prisma.challengeProgress.count(),
+    ]);
+    return { rows, total, page, limit };
   }
 
   async upsert(

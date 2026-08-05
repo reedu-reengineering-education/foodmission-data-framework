@@ -95,10 +95,10 @@ export class MissionsResponseDto {
   @Expose()
   available: boolean;
 
-  @ApiProperty({
-    description: 'Aggregate mission progress across users (0-100 scale)',
+  @ApiPropertyOptional({
+    description:
+      'Current user mission progress on a 0–100 scale. Omitted on admin mission list.',
     example: 50,
-    required: false,
   })
   @Expose()
   progress?: number;

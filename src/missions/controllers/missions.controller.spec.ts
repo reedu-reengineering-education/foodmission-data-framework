@@ -28,6 +28,7 @@ describe('MissionsController', () => {
           useValue: {
             getMissionById: jest.fn(),
             getAllMissionsByUserId: jest.fn(),
+            getAllPaginated: jest.fn(),
             update: jest.fn(),
           },
         },
@@ -89,8 +90,12 @@ describe('MissionsController', () => {
             },
           },
         },
+        'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, false);
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
+        isAdmin: false,
+        userId: 'u1',
+      });
     });
 
     it('should pass isAdmin=true for Keycloak admin role', async () => {
@@ -104,8 +109,12 @@ describe('MissionsController', () => {
             },
           },
         },
+        'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, true);
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
+        isAdmin: true,
+        userId: 'u1',
+      });
     });
   });
 

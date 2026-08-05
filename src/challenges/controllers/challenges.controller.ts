@@ -32,6 +32,8 @@ import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('challenges')
@@ -87,9 +89,29 @@ export class ChallengesController {
     req: {
       user?: { resource_access?: Record<string, { roles?: string[] }> };
     },
+    @CurrentUser('id') userId: string,
   ): Promise<ChallengeResponseDto[]> {
     const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
-    return this.challengeService.getAll(query, isAdmin);
+    return this.challengeService.getAll(query, { isAdmin, userId });
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all challenge progress rows (admin, paginated)',
+    description:
+      'Returns paginated challenge progress for all users. Use instead of embedded progress on challenge list.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated challenge progress retrieved successfully',
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgressPaginated(
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<ChallengeProgressResponseDto>> {
+    return this.challengeProgressService.getAllPaginated(query);
   }
 
   @Get('/progress')

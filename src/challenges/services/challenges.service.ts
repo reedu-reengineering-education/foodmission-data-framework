@@ -80,8 +80,9 @@ export class ChallengesService {
 
   async getAll(
     query: ListChallengesQueryDto = {},
-    isAdmin = false,
+    options: { isAdmin?: boolean; userId?: string } = {},
   ): Promise<ChallengeResponseDto[]> {
+    const { isAdmin = false, userId } = options;
     this.logger.log('Getting all challenges');
 
     const available =
@@ -91,9 +92,12 @@ export class ChallengesService {
       dimensionCode: query.dimensionCode,
       level: query.level,
       available,
+      progressUserId: isAdmin ? undefined : userId,
     });
 
-    return this.overlayTranslations(challenges, query.lang);
+    return this.overlayTranslations(challenges, query.lang, {
+      includeProgress: !isAdmin,
+    });
   }
 
   async update(
@@ -131,10 +135,11 @@ export class ChallengesService {
   private async overlayTranslations(
     challenges: any[],
     lang?: string,
+    options?: { includeProgress?: boolean },
   ): Promise<ChallengeResponseDto[]> {
     const locale = this.translationService.resolveLocale(lang);
     if (locale === DEFAULT_LOCALE || challenges.length === 0) {
-      return challenges.map((c) => this.transformToResponseDto(c));
+      return challenges.map((c) => this.transformToResponseDto(c, options));
     }
 
     const overlay = await this.translationService.resolveMany(
@@ -155,22 +160,42 @@ export class ChallengesService {
     );
 
     return challenges.map((c) =>
-      this.transformToResponseDto({
-        ...c,
-        title: overlay[c.id]?.title ?? c.title,
-        task: overlay[c.id]?.task ?? c.task,
-        whyItMatters: overlay[c.id]?.whyItMatters ?? c.whyItMatters,
-      }),
+      this.transformToResponseDto(
+        {
+          ...c,
+          title: overlay[c.id]?.title ?? c.title,
+          task: overlay[c.id]?.task ?? c.task,
+          whyItMatters: overlay[c.id]?.whyItMatters ?? c.whyItMatters,
+        },
+        options,
+      ),
     );
   }
 
-  private transformToResponseDto(challenge: any): ChallengeResponseDto {
-    return {
+  private transformToResponseDto(
+    challenge: {
+      id: string;
+      code: string;
+      dimensionId: string;
+      topicId?: string | null;
+      level: string;
+      title: string;
+      task: string;
+      whyItMatters: string;
+      health?: boolean;
+      foodChoice?: boolean;
+      foodWaste?: boolean;
+      available: boolean;
+      challengeProgresses?: Array<{ progress?: number }>;
+    },
+    options?: { includeProgress?: boolean },
+  ): ChallengeResponseDto {
+    const dto: ChallengeResponseDto = {
       id: challenge.id,
       code: challenge.code,
       dimensionId: challenge.dimensionId,
       topicId: challenge.topicId,
-      level: challenge.level,
+      level: challenge.level as ChallengeResponseDto['level'],
       title: challenge.title,
       task: challenge.task,
       whyItMatters: challenge.whyItMatters,
@@ -179,11 +204,13 @@ export class ChallengesService {
       foodChoice: challenge.foodChoice ?? false,
       foodWaste: challenge.foodWaste ?? false,
       available: challenge.available,
-      progress:
-        challenge.challengeProgresses?.reduce(
-          (acc: number, cp: { progress?: number }) => acc + (cp.progress ?? 0),
-          0,
-        ) || 0,
     };
+
+    if (options?.includeProgress) {
+      const row = challenge.challengeProgresses?.[0];
+      dto.progress = row?.progress ?? 0;
+    }
+
+    return dto;
   }
 }

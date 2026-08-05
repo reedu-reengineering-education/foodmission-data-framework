@@ -72,8 +72,8 @@ describe('ChallengesRepository', () => {
   });
 
   describe('findAll', () => {
-    it('should return all challenges with progress', async () => {
-      const mockChallenges = [{ id: 'c1', challengeProgresses: [] }];
+    it('should return all challenges without progress include by default', async () => {
+      const mockChallenges = [{ id: 'c1' }];
       (prisma.challenge.findMany as jest.Mock).mockResolvedValue(
         mockChallenges,
       );
@@ -82,10 +82,27 @@ describe('ChallengesRepository', () => {
 
       expect(prisma.challenge.findMany).toHaveBeenCalledWith({
         where: {},
-        include: { challengeProgresses: true },
+        include: {},
         orderBy: { code: 'asc' },
       });
       expect(result).toBe(mockChallenges);
+    });
+
+    it('should scope challengeProgresses to user when progressUserId is set', async () => {
+      const mockChallenges = [{ id: 'c1', challengeProgresses: [] }];
+      (prisma.challenge.findMany as jest.Mock).mockResolvedValue(
+        mockChallenges,
+      );
+
+      await repository.findAll({ progressUserId: 'u1' });
+
+      expect(prisma.challenge.findMany).toHaveBeenCalledWith({
+        where: {},
+        include: {
+          challengeProgresses: { where: { userId: 'u1' } },
+        },
+        orderBy: { code: 'asc' },
+      });
     });
   });
 

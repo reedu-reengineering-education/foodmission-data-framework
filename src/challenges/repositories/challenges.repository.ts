@@ -40,6 +40,8 @@ export interface ChallengeListFilters {
   dimensionCode?: string;
   level?: ContentLevel;
   available?: boolean;
+  /** When set, only this user's progress rows are included on each challenge. */
+  progressUserId?: string;
 }
 
 @Injectable()
@@ -77,9 +79,17 @@ export class ChallengesRepository {
       where.dimension = { code: filters.dimensionCode };
     }
 
+    const progressInclude = filters.progressUserId
+      ? {
+          challengeProgresses: {
+            where: { userId: filters.progressUserId },
+          },
+        }
+      : {};
+
     return this.prisma.challenge.findMany({
       where,
-      include: { challengeProgresses: true },
+      include: progressInclude,
       orderBy: { code: 'asc' },
     });
   }

@@ -37,6 +37,8 @@ export interface MissionListFilters {
   dimensionCode?: string;
   level?: ContentLevel;
   available?: boolean;
+  /** When set, only this user's progress rows are included on each mission. */
+  progressUserId?: string;
 }
 
 @Injectable()
@@ -88,9 +90,17 @@ export class MissionsRepository {
       where.dimension = { code: filters.dimensionCode };
     }
 
+    const progressInclude = filters.progressUserId
+      ? {
+          missionProgresses: {
+            where: { userId: filters.progressUserId },
+          },
+        }
+      : {};
+
     return this.prisma.mission.findMany({
       where,
-      include: { missionProgresses: true },
+      include: progressInclude,
       orderBy: { code: 'asc' },
     });
   }

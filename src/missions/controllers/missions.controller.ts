@@ -32,6 +32,8 @@ import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('missions')
@@ -95,9 +97,29 @@ export class MissionsController {
     req: {
       user?: { resource_access?: Record<string, { roles?: string[] }> };
     },
+    @CurrentUser('id') userId: string,
   ): Promise<MissionsResponseDto[]> {
     const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
-    return this.missionService.getAllMissions(query, isAdmin);
+    return this.missionService.getAllMissions(query, { isAdmin, userId });
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all mission progress rows (admin, paginated)',
+    description:
+      'Returns paginated mission progress for all users. Use instead of embedded progress on mission list.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated mission progress retrieved successfully',
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgressPaginated(
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<MissionProgressResponseDto>> {
+    return this.missionProgressService.getAllPaginated(query);
   }
 
   @Get('progress')

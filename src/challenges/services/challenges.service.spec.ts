@@ -153,12 +153,13 @@ describe('ChallengesService', () => {
     it('should return all challenges transformed', async () => {
       (repository.findAll as jest.Mock).mockResolvedValue([mockChallenge]);
 
-      const result = await service.getAll();
+      const result = await service.getAll({}, { isAdmin: false, userId: 'u1' });
 
       expect(repository.findAll).toHaveBeenCalledWith({
         dimensionCode: undefined,
         level: undefined,
         available: true,
+        progressUserId: 'u1',
       });
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({ id: 'c1' });
