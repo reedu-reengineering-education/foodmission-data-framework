@@ -1,6 +1,15 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -10,10 +19,15 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { LearningQuestListQueryDto } from '../dto/learning-list-query.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
+import {
+  QuestProgressResponseDto,
+  UpdateQuestProgressDto,
+} from '../dto/quest-progress.dto';
 
 @ApiTags('quests')
 @Controller('quests')
@@ -33,12 +47,65 @@ export class QuestsController {
     return this.learningService.listQuests(query);
   }
 
+  @Get('progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all quest progress rows for the current user',
+  })
+  @ApiResponse({ status: 200, type: [QuestProgressResponseDto] })
+  @ApiCrudErrorResponses()
+  async listProgress(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestProgressResponseDto[]> {
+    return this.learningService.listQuestProgressForUser(userId, query.lang);
+  }
+
+  @Get(':codeOrId/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get current user quest progress' })
+  @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
+  @ApiResponse({ status: 200, type: QuestProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async getProgress(
+    @CurrentUser('id') userId: string,
+    @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestProgressResponseDto> {
+    return this.learningService.getQuestProgress(userId, codeOrId, query.lang);
+  }
+
+  @Patch(':codeOrId/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Upsert quest progress for current user' })
+  @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
+  @ApiBody({ type: UpdateQuestProgressDto })
+  @ApiResponse({ status: 200, type: QuestProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async upsertProgress(
+    @CurrentUser('id') userId: string,
+    @Param('codeOrId') codeOrId: string,
+    @Body() dto: UpdateQuestProgressDto,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestProgressResponseDto> {
+    return this.learningService.upsertQuestProgress(
+      userId,
+      codeOrId,
+      dto,
+      query.lang,
+    );
+  }
+
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get a quest by UUID or code',
-    description: 'Includes ordered quest items (contentType, contentCode).',
+    description:
+      'Includes ordered quest items with translated labels when lang is set.',
   })
   @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
   @ApiResponse({ status: 200, type: QuestResponseDto })

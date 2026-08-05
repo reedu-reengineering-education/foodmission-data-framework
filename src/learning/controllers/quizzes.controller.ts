@@ -51,6 +51,21 @@ export class QuizzesController {
     return this.learningService.listQuizzes(query);
   }
 
+  @Get('progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all quiz progress rows for the current user',
+  })
+  @ApiResponse({ status: 200, type: [QuizProgressResponseDto] })
+  @ApiCrudErrorResponses()
+  async listProgress(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuizProgressResponseDto[]> {
+    return this.learningService.listQuizProgressForUser(userId, query.lang);
+  }
+
   @Get(':codeOrId/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -61,8 +76,9 @@ export class QuizzesController {
   async getProgress(
     @CurrentUser('id') userId: string,
     @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<QuizProgressResponseDto> {
-    return this.learningService.getQuizProgress(userId, codeOrId);
+    return this.learningService.getQuizProgress(userId, codeOrId, query.lang);
   }
 
   @Patch(':codeOrId/progress')
@@ -81,8 +97,14 @@ export class QuizzesController {
     @CurrentUser('id') userId: string,
     @Param('codeOrId') codeOrId: string,
     @Body() dto: UpdateQuizProgressDto,
+    @Query() query: LearningLangQueryDto,
   ): Promise<QuizProgressResponseDto> {
-    return this.learningService.upsertQuizProgress(userId, codeOrId, dto);
+    return this.learningService.upsertQuizProgress(
+      userId,
+      codeOrId,
+      dto,
+      query.lang,
+    );
   }
 
   @Get(':codeOrId')

@@ -10,8 +10,13 @@ describe('LearningService', () => {
   let prisma: {
     dimension: { findMany: jest.Mock; findFirst: jest.Mock };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
-    quiz: { findFirst: jest.Mock };
-    quizProgress: { upsert: jest.Mock };
+    quiz: { findFirst: jest.Mock; findMany: jest.Mock };
+    quizProgress: { upsert: jest.Mock; findUnique: jest.Mock; findMany: jest.Mock };
+    quest: { findFirst: jest.Mock; findMany: jest.Mock };
+    questProgress: { findUnique: jest.Mock; findMany: jest.Mock; upsert: jest.Mock };
+    mission: { findMany: jest.Mock };
+    challenge: { findMany: jest.Mock };
+    microLearning: { findMany: jest.Mock };
   };
 
   const mockTranslations = {
@@ -51,10 +56,25 @@ describe('LearningService', () => {
       },
       quiz: {
         findFirst: jest.fn(),
+        findMany: jest.fn(),
       },
       quizProgress: {
         upsert: jest.fn(),
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
       },
+      quest: {
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+      },
+      questProgress: {
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
+        upsert: jest.fn(),
+      },
+      mission: { findMany: jest.fn().mockResolvedValue([]) },
+      challenge: { findMany: jest.fn().mockResolvedValue([]) },
+      microLearning: { findMany: jest.fn().mockResolvedValue([]) },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -156,9 +176,19 @@ describe('LearningService', () => {
   it('upserts quiz progress and sets isCorrect from the selected option', async () => {
     prisma.quiz.findFirst.mockResolvedValue({
       id: 'q1',
+      code: 'Q.B1.1',
+      topicId: 't1',
+      question: 'Which is best?',
+      explanation: 'Because reuse',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
       options: [
-        { id: 'opt-a', label: 'A', text: 'Wrong', isCorrect: false },
-        { id: 'opt-b', label: 'B', text: 'Right', isCorrect: true },
+        { id: 'opt-a', label: 'A', text: 'Wrong', isCorrect: false, sortOrder: 0 },
+        { id: 'opt-b', label: 'B', text: 'Right', isCorrect: true, sortOrder: 1 },
       ],
     });
     prisma.quizProgress.upsert.mockResolvedValue({
@@ -192,5 +222,36 @@ describe('LearningService', () => {
     );
     expect(result.isCorrect).toBe(true);
     expect(result.completed).toBe(true);
+    expect(result.quizCode).toBe('Q.B1.1');
+    expect(result.question).toBe('Which is best?');
+  });
+
+  it('returns default quiz progress with translated question when no row exists', async () => {
+    prisma.quiz.findFirst.mockResolvedValue({
+      id: 'q1',
+      code: 'Q.B1.1',
+      topicId: 't1',
+      question: 'Which is best?',
+      explanation: 'Because reuse',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+      options: [],
+    });
+    prisma.quizProgress.findUnique.mockResolvedValue(null);
+
+    const result = await service.getQuizProgress('u1', 'Q.B1.1');
+
+    expect(result).toMatchObject({
+      userId: 'u1',
+      quizId: 'q1',
+      quizCode: 'Q.B1.1',
+      question: 'Which is best?',
+      completed: false,
+    });
+    expect(result.id).toBeUndefined();
   });
 });

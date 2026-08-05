@@ -15,6 +15,13 @@ export class QuestItemResponseDto {
   @Expose()
   contentCode: string;
 
+  @ApiPropertyOptional({
+    description: 'Translated display label for the referenced content',
+    example: 'Bring your own bag',
+  })
+  @Expose()
+  label?: string;
+
   @ApiProperty({ example: 0 })
   @Expose()
   sortOrder: number;

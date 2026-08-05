@@ -15,9 +15,9 @@ export class UpdateQuizProgressDto {
 }
 
 export class QuizProgressResponseDto {
-  @ApiProperty({ example: 'uuid-progress-id' })
+  @ApiPropertyOptional({ example: 'uuid-progress-id' })
   @Expose()
-  id: string;
+  id?: string;
 
   @ApiProperty({ example: 'uuid-user-id' })
   @Expose()
@@ -26,6 +26,14 @@ export class QuizProgressResponseDto {
   @ApiProperty({ example: 'uuid-quiz-id' })
   @Expose()
   quizId: string;
+
+  @ApiProperty({ example: 'Q.B1.1' })
+  @Expose()
+  quizCode: string;
+
+  @ApiPropertyOptional({ example: 'Which action reduces packaging waste?' })
+  @Expose()
+  question?: string;
 
   @ApiPropertyOptional({ example: 'uuid-option-id' })
   @Expose()

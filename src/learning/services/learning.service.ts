@@ -29,7 +29,12 @@ import {
   QuizProgressResponseDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
+import { QuestContentType } from '@prisma/client';
 import { QuestResponseDto } from '../dto/quest-response.dto';
+import {
+  QuestProgressResponseDto,
+  UpdateQuestProgressDto,
+} from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 
 @Injectable()
@@ -233,10 +238,11 @@ export class LearningService {
   async getQuizProgress(
     userId: string,
     codeOrId: string,
+    lang?: string,
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
       where: codeOrIdWhere(codeOrId),
-      select: { id: true },
+      include: { options: { orderBy: { sortOrder: 'asc' } } },
     });
     if (!quiz) {
       throw new NotFoundException('Quiz not found');
@@ -245,20 +251,38 @@ export class LearningService {
     const progress = await this.prisma.quizProgress.findUnique({
       where: { userId_quizId: { userId, quizId: quiz.id } },
     });
-    if (!progress) {
-      throw new NotFoundException('Quiz progress not found');
-    }
-    return this.mapQuizProgress(progress);
+
+    return this.mapQuizProgressResponse(userId, quiz, progress, lang);
+  }
+
+  async listQuizProgressForUser(
+    userId: string,
+    lang?: string,
+  ): Promise<QuizProgressResponseDto[]> {
+    const progresses = await this.prisma.quizProgress.findMany({
+      where: { userId },
+      include: {
+        quiz: { include: { options: { orderBy: { sortOrder: 'asc' } } } },
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    return Promise.all(
+      progresses.map((progress) =>
+        this.mapQuizProgressResponse(userId, progress.quiz, progress, lang),
+      ),
+    );
   }
 
   async upsertQuizProgress(
     userId: string,
     codeOrId: string,
     dto: UpdateQuizProgressDto,
+    lang?: string,
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { options: true },
+      include: { options: { orderBy: { sortOrder: 'asc' } } },
     });
     if (!quiz) {
       throw new NotFoundException('Quiz not found');
@@ -290,27 +314,58 @@ export class LearningService {
       },
     });
 
-    return this.mapQuizProgress(progress);
+    return this.mapQuizProgressResponse(userId, quiz, progress, lang);
   }
 
-  private mapQuizProgress(progress: {
-    id: string;
-    userId: string;
-    quizId: string;
-    selectedOptionId: string | null;
-    isCorrect: boolean | null;
-    completed: boolean;
-    answeredAt: Date | null;
-  }): QuizProgressResponseDto {
-    return {
-      id: progress.id,
-      userId: progress.userId,
-      quizId: progress.quizId,
-      selectedOptionId: progress.selectedOptionId,
-      isCorrect: progress.isCorrect,
-      completed: progress.completed,
-      answeredAt: progress.answeredAt,
+  private async mapQuizProgressResponse(
+    userId: string,
+    quiz: {
+      id: string;
+      code: string;
+      topicId: string;
+      question: string;
+      explanation: string;
+      source: string | null;
+      level: QuizResponseDto['level'];
+      health: boolean;
+      foodChoice: boolean;
+      foodWaste: boolean;
+      available: boolean;
+      options: Array<{
+        id: string;
+        label: string;
+        text: string;
+        sortOrder: number;
+      }>;
+    },
+    progress: {
+      id: string;
+      userId: string;
+      quizId: string;
+      selectedOptionId: string | null;
+      isCorrect: boolean | null;
+      completed: boolean;
+      answeredAt: Date | null;
+    } | null,
+    lang?: string,
+  ): Promise<QuizProgressResponseDto> {
+    const [mappedQuiz] = await this.mapQuizzes([quiz], lang);
+    const base = {
+      userId,
+      quizId: quiz.id,
+      quizCode: quiz.code,
+      question: mappedQuiz.question,
+      selectedOptionId: progress?.selectedOptionId ?? null,
+      isCorrect: progress?.isCorrect ?? null,
+      completed: progress?.completed ?? false,
+      answeredAt: progress?.answeredAt ?? null,
     };
+
+    if (!progress) {
+      return base;
+    }
+
+    return { id: progress.id, ...base };
   }
 
   private async mapQuizzes(
@@ -411,6 +466,108 @@ export class LearningService {
     return mapped;
   }
 
+  async getQuestProgress(
+    userId: string,
+    codeOrId: string,
+    lang?: string,
+  ): Promise<QuestProgressResponseDto> {
+    const quest = await this.prisma.quest.findFirst({
+      where: codeOrIdWhere(codeOrId),
+    });
+    if (!quest) {
+      throw new NotFoundException('Quest not found');
+    }
+
+    const progress = await this.prisma.questProgress.findUnique({
+      where: { userId_questId: { userId, questId: quest.id } },
+    });
+
+    return this.mapQuestProgressResponse(userId, quest, progress, lang);
+  }
+
+  async listQuestProgressForUser(
+    userId: string,
+    lang?: string,
+  ): Promise<QuestProgressResponseDto[]> {
+    const progresses = await this.prisma.questProgress.findMany({
+      where: { userId },
+      include: { quest: true },
+      orderBy: { questId: 'asc' },
+    });
+
+    return Promise.all(
+      progresses.map((row) =>
+        this.mapQuestProgressResponse(userId, row.quest, row, lang),
+      ),
+    );
+  }
+
+  async upsertQuestProgress(
+    userId: string,
+    codeOrId: string,
+    dto: UpdateQuestProgressDto,
+    lang?: string,
+  ): Promise<QuestProgressResponseDto> {
+    const quest = await this.prisma.quest.findFirst({
+      where: codeOrIdWhere(codeOrId),
+    });
+    if (!quest) {
+      throw new NotFoundException('Quest not found');
+    }
+
+    const progress = await this.prisma.questProgress.upsert({
+      where: { userId_questId: { userId, questId: quest.id } },
+      create: {
+        userId,
+        questId: quest.id,
+        completed: dto.completed ?? false,
+        progress: dto.progress ?? 0,
+        unlockedAt: new Date(),
+      },
+      update: {
+        ...(dto.completed !== undefined ? { completed: dto.completed } : {}),
+        ...(dto.progress !== undefined ? { progress: dto.progress } : {}),
+      },
+    });
+
+    return this.mapQuestProgressResponse(userId, quest, progress, lang);
+  }
+
+  private async mapQuestProgressResponse(
+    userId: string,
+    quest: {
+      id: string;
+      code: string;
+      title: string | null;
+      description: string | null;
+    },
+    progress: {
+      unlockedAt: Date | null;
+      completed: boolean;
+      progress: number;
+    } | null,
+    lang?: string,
+  ): Promise<QuestProgressResponseDto> {
+    const locale = this.translations.resolveLocale(lang);
+    const overlay = await this.translations.overlayFields(
+      'Quest',
+      [quest],
+      locale,
+      ['title'],
+      (r) => ({ title: r.title }),
+    );
+
+    return {
+      userId,
+      questId: quest.id,
+      questCode: quest.code,
+      questTitle: overlay[quest.id]?.title ?? quest.title,
+      unlockedAt: progress?.unlockedAt ?? null,
+      completed: progress?.completed ?? false,
+      progress: progress?.progress ?? 0,
+    };
+  }
+
   private async mapQuests(
     rows: Array<{
       id: string;
@@ -439,6 +596,14 @@ export class LearningService {
       (r) => ({ title: r.title, description: r.description }),
     );
 
+    const itemLabels =
+      includeItems && rows.some((r) => (r.items?.length ?? 0) > 0)
+        ? await this.hydrateQuestItemLabels(
+            rows.flatMap((r) => r.items ?? []),
+            lang,
+          )
+        : {};
+
     return rows.map((r) => ({
       id: r.id,
       code: r.code,
@@ -453,11 +618,133 @@ export class LearningService {
               id: item.id,
               contentType: item.contentType,
               contentCode: item.contentCode,
+              label:
+                itemLabels[`${item.contentType}:${item.contentCode}`] ??
+                item.contentCode,
               sortOrder: item.sortOrder,
             })),
           }
         : {}),
     }));
+  }
+
+  private async hydrateQuestItemLabels(
+    items: Array<{
+      contentType: QuestContentType;
+      contentCode: string;
+    }>,
+    lang?: string,
+  ): Promise<Record<string, string>> {
+    const labels: Record<string, string> = {};
+    const codesByType = items.reduce(
+      (acc, item) => {
+        const key = item.contentType;
+        if (!acc[key]) acc[key] = new Set<string>();
+        acc[key].add(item.contentCode);
+        return acc;
+      },
+      {} as Partial<Record<QuestContentType, Set<string>>>,
+    );
+
+    const locale = this.translations.resolveLocale(lang);
+
+    const missionCodes = [...(codesByType.MISSION ?? [])];
+    if (missionCodes.length > 0) {
+      const rows = await this.prisma.mission.findMany({
+        where: { code: { in: missionCodes } },
+        select: { id: true, code: true, title: true },
+      });
+      const overlay = await this.translations.overlayFields(
+        'Mission',
+        rows,
+        locale,
+        ['title'],
+        (r) => ({ title: r.title }),
+      );
+      for (const row of rows) {
+        labels[`${QuestContentType.MISSION}:${row.code}`] =
+          overlay[row.id]?.title ?? row.title;
+      }
+    }
+
+    const challengeCodes = [...(codesByType.CHALLENGE ?? [])];
+    if (challengeCodes.length > 0) {
+      const rows = await this.prisma.challenge.findMany({
+        where: { code: { in: challengeCodes } },
+        select: { id: true, code: true, title: true },
+      });
+      const overlay = await this.translations.overlayFields(
+        'Challenge',
+        rows,
+        locale,
+        ['title'],
+        (r) => ({ title: r.title }),
+      );
+      for (const row of rows) {
+        labels[`${QuestContentType.CHALLENGE}:${row.code}`] =
+          overlay[row.id]?.title ?? row.title;
+      }
+    }
+
+    const factCodes = [...(codesByType.FOOD_FACT ?? [])];
+    if (factCodes.length > 0) {
+      const rows = await this.prisma.foodFact.findMany({
+        where: { code: { in: factCodes } },
+        select: { id: true, code: true, body: true },
+      });
+      const overlay = await this.translations.overlayFields(
+        'FoodFact',
+        rows,
+        locale,
+        ['body'],
+        (r) => ({ body: r.body }),
+      );
+      for (const row of rows) {
+        const body = overlay[row.id]?.body ?? row.body;
+        labels[`${QuestContentType.FOOD_FACT}:${row.code}`] =
+          body.length > 80 ? `${body.slice(0, 77)}...` : body;
+      }
+    }
+
+    const quizCodes = [...(codesByType.QUIZ ?? [])];
+    if (quizCodes.length > 0) {
+      const rows = await this.prisma.quiz.findMany({
+        where: { code: { in: quizCodes } },
+        select: { id: true, code: true, question: true },
+      });
+      const overlay = await this.translations.overlayFields(
+        'Quiz',
+        rows,
+        locale,
+        ['question'],
+        (r) => ({ question: r.question }),
+      );
+      for (const row of rows) {
+        labels[`${QuestContentType.QUIZ}:${row.code}`] =
+          overlay[row.id]?.question ?? row.question;
+      }
+    }
+
+    const microCodes = [...(codesByType.MICRO_LEARNING ?? [])];
+    if (microCodes.length > 0) {
+      const rows = await this.prisma.microLearning.findMany({
+        where: { code: { in: microCodes } },
+        select: { id: true, code: true, title: true },
+      });
+      const overlay = await this.translations.overlayFields(
+        'MicroLearning',
+        rows,
+        locale,
+        ['title'],
+        (r) => ({ title: r.title }),
+      );
+      for (const row of rows) {
+        labels[`${QuestContentType.MICRO_LEARNING}:${row.code}`] =
+          overlay[row.id]?.title ?? row.title;
+      }
+    }
+
+    return labels;
   }
 
   // ── Micro-learnings ─────────────────────────────────────────
