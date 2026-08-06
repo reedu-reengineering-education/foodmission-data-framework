@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
@@ -20,17 +22,14 @@ import {
   LearningPaginatedQueryDto,
   LearningQuestListQueryDto,
 } from '../dto/learning-list-query.dto';
+import { CreateQuestDto } from '../dto/create-quest.dto';
 import { DimensionResponseDto } from '../dto/dimension-response.dto';
 import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
-import {
-  QuizOptionPublicDto,
-  QuizResponseDto,
-} from '../dto/quiz-response.dto';
+import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
-import { QuestContentType } from '@prisma/client';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
@@ -445,20 +444,65 @@ export class LearningService {
       foodChoice: r.foodChoice,
       foodWaste: r.foodWaste,
       available: r.available,
-      options: r.options.map(
-        (o): QuizOptionPublicDto => ({
-          id: o.id,
-          label: o.label,
-          text: optionOverlay[o.id]?.text ?? o.text,
-          sortOrder: o.sortOrder,
-        }),
-      ),
+      options: r.options.map((o): QuizOptionPublicDto => ({
+        id: o.id,
+        label: o.label,
+        text: optionOverlay[o.id]?.text ?? o.text,
+        sortOrder: o.sortOrder,
+      })),
     }));
   }
 
   // ── Quests ──────────────────────────────────────────────────
 
-  async listQuests(query: LearningQuestListQueryDto): Promise<QuestResponseDto[]> {
+  async createQuest(dto: CreateQuestDto): Promise<QuestResponseDto> {
+    const dimension = await this.prisma.dimension.findUnique({
+      where: { id: dto.dimensionId },
+      select: { id: true },
+    });
+    if (!dimension) {
+      throw new BadRequestException(`Unknown dimensionId: ${dto.dimensionId}`);
+    }
+
+    await this.assertQuestItemCodesExist(dto.items);
+
+    const itemsData = dto.items.map((item, index) => ({
+      contentType: item.contentType,
+      contentCode: item.contentCode,
+      sortOrder: item.sortOrder ?? index,
+    }));
+
+    try {
+      const row = await this.prisma.quest.create({
+        data: {
+          code: dto.code,
+          dimensionId: dto.dimensionId,
+          level: dto.level,
+          title: dto.title,
+          description: dto.description,
+          available: dto.available ?? true,
+          items: { create: itemsData },
+        },
+        include: { items: { orderBy: { sortOrder: 'asc' } } },
+      });
+      const [mapped] = await this.mapQuests([row], undefined, true);
+      return mapped;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'A quest with this code or dimension+level already exists',
+        );
+      }
+      throw error;
+    }
+  }
+
+  async listQuests(
+    query: LearningQuestListQueryDto,
+  ): Promise<QuestResponseDto[]> {
     const where: {
       available: boolean;
       level?: LearningQuestListQueryDto['level'];
@@ -617,6 +661,80 @@ export class LearningService {
     };
   }
 
+  private async assertQuestItemCodesExist(
+    items: Array<{ contentType: QuestContentType; contentCode: string }>,
+  ): Promise<void> {
+    const codesByType = items.reduce((acc, item) => {
+      const set = acc.get(item.contentType) ?? new Set<string>();
+      set.add(item.contentCode);
+      acc.set(item.contentType, set);
+      return acc;
+    }, new Map<QuestContentType, Set<string>>());
+
+    const missing: string[] = [];
+
+    for (const [contentType, codes] of codesByType) {
+      const codeList = [...codes];
+      let found: string[] = [];
+
+      switch (contentType) {
+        case QuestContentType.MISSION:
+          found = (
+            await this.prisma.mission.findMany({
+              where: { code: { in: codeList } },
+              select: { code: true },
+            })
+          ).map((r) => r.code);
+          break;
+        case QuestContentType.CHALLENGE:
+          found = (
+            await this.prisma.challenge.findMany({
+              where: { code: { in: codeList } },
+              select: { code: true },
+            })
+          ).map((r) => r.code);
+          break;
+        case QuestContentType.FOOD_FACT:
+          found = (
+            await this.prisma.foodFact.findMany({
+              where: { code: { in: codeList } },
+              select: { code: true },
+            })
+          ).map((r) => r.code);
+          break;
+        case QuestContentType.QUIZ:
+          found = (
+            await this.prisma.quiz.findMany({
+              where: { code: { in: codeList } },
+              select: { code: true },
+            })
+          ).map((r) => r.code);
+          break;
+        case QuestContentType.MICRO_LEARNING:
+          found = (
+            await this.prisma.microLearning.findMany({
+              where: { code: { in: codeList } },
+              select: { code: true },
+            })
+          ).map((r) => r.code);
+          break;
+      }
+
+      const foundSet = new Set(found);
+      for (const code of codeList) {
+        if (!foundSet.has(code)) {
+          missing.push(`${contentType}:${code}`);
+        }
+      }
+    }
+
+    if (missing.length > 0) {
+      throw new BadRequestException(
+        `Unknown quest item content codes: ${missing.join(', ')}`,
+      );
+    }
+  }
+
   private async mapQuests(
     rows: Array<{
       id: string;
@@ -628,7 +746,9 @@ export class LearningService {
       available: boolean;
       items?: Array<{
         id: string;
-        contentType: NonNullable<QuestResponseDto['items']>[number]['contentType'];
+        contentType: NonNullable<
+          QuestResponseDto['items']
+        >[number]['contentType'];
         contentCode: string;
         sortOrder: number;
       }>;

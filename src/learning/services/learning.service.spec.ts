@@ -8,7 +8,11 @@ import { DEFAULT_LOCALE } from '../../i18n/constants';
 describe('LearningService', () => {
   let service: LearningService;
   let prisma: {
-    dimension: { findMany: jest.Mock; findFirst: jest.Mock };
+    dimension: {
+      findMany: jest.Mock;
+      findFirst: jest.Mock;
+      findUnique: jest.Mock;
+    };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
     quiz: { findFirst: jest.Mock; findMany: jest.Mock };
     quizProgress: {
@@ -16,7 +20,11 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
       findMany: jest.Mock;
     };
-    quest: { findFirst: jest.Mock; findMany: jest.Mock };
+    quest: {
+      findFirst: jest.Mock;
+      findMany: jest.Mock;
+      create: jest.Mock;
+    };
     questProgress: {
       findUnique: jest.Mock;
       findMany: jest.Mock;
@@ -56,6 +64,7 @@ describe('LearningService', () => {
       dimension: {
         findMany: jest.fn(),
         findFirst: jest.fn(),
+        findUnique: jest.fn(),
       },
       foodFact: {
         findMany: jest.fn(),
@@ -74,6 +83,7 @@ describe('LearningService', () => {
       quest: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        create: jest.fn(),
       },
       questProgress: {
         findUnique: jest.fn(),
@@ -273,5 +283,100 @@ describe('LearningService', () => {
       completed: false,
     });
     expect(result.id).toBeUndefined();
+  });
+
+  it('creates a quest with nested items after validating content codes', async () => {
+    prisma.dimension.findUnique.mockResolvedValue({ id: 'dim-1' });
+    prisma.mission.findMany.mockResolvedValue([{ code: 'M.A1.1' }]);
+    prisma.challenge.findMany.mockResolvedValue([{ code: 'CH.A1.1' }]);
+    prisma.quest.create.mockResolvedValue({
+      id: 'quest-1',
+      code: 'QUEST.CUSTOM',
+      dimensionId: 'dim-1',
+      level: ContentLevel.BEGINNER,
+      title: 'Custom quest',
+      description: 'Desc',
+      available: true,
+      items: [
+        {
+          id: 'item-1',
+          contentType: 'MISSION',
+          contentCode: 'M.A1.1',
+          sortOrder: 0,
+        },
+        {
+          id: 'item-2',
+          contentType: 'CHALLENGE',
+          contentCode: 'CH.A1.1',
+          sortOrder: 1,
+        },
+      ],
+    });
+
+    const result = await service.createQuest({
+      code: 'QUEST.CUSTOM',
+      dimensionId: 'dim-1',
+      level: ContentLevel.BEGINNER,
+      title: 'Custom quest',
+      description: 'Desc',
+      available: true,
+      items: [
+        {
+          contentType: 'MISSION' as const,
+          contentCode: 'M.A1.1',
+          sortOrder: 0,
+        },
+        {
+          contentType: 'CHALLENGE' as const,
+          contentCode: 'CH.A1.1',
+          sortOrder: 1,
+        },
+      ],
+    });
+
+    expect(prisma.quest.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          code: 'QUEST.CUSTOM',
+          dimensionId: 'dim-1',
+          items: {
+            create: [
+              {
+                contentType: 'MISSION',
+                contentCode: 'M.A1.1',
+                sortOrder: 0,
+              },
+              {
+                contentType: 'CHALLENGE',
+                contentCode: 'CH.A1.1',
+                sortOrder: 1,
+              },
+            ],
+          },
+        }),
+      }),
+    );
+    expect(result.code).toBe('QUEST.CUSTOM');
+    expect(result.items).toHaveLength(2);
+  });
+
+  it('rejects create quest when item content codes are unknown', async () => {
+    prisma.dimension.findUnique.mockResolvedValue({ id: 'dim-1' });
+    prisma.mission.findMany.mockResolvedValue([]);
+
+    await expect(
+      service.createQuest({
+        code: 'QUEST.BAD',
+        dimensionId: 'dim-1',
+        level: ContentLevel.BEGINNER,
+        items: [
+          {
+            contentType: 'MISSION' as const,
+            contentCode: 'M.MISSING',
+          },
+        ],
+      }),
+    ).rejects.toThrow('Unknown quest item content codes');
+    expect(prisma.quest.create).not.toHaveBeenCalled();
   });
 });

@@ -2,8 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -24,6 +27,7 @@ import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
 import { LearningQuestListQueryDto } from '../dto/learning-list-query.dto';
+import { CreateQuestDto } from '../dto/create-quest.dto';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
@@ -36,6 +40,30 @@ import {
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class QuestsController {
   constructor(private readonly learningService: LearningService) {}
+
+  @Post()
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a quest (admin)',
+    description:
+      'Creates a quest with nested items. Item contentCode values must exist for the given contentType. Unique on code and on dimensionId+level.',
+  })
+  @ApiBody({ type: CreateQuestDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Quest created successfully',
+    type: QuestResponseDto,
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Quest code or dimension+level already exists',
+  })
+  @ApiCrudErrorResponses()
+  async create(@Body() dto: CreateQuestDto): Promise<QuestResponseDto> {
+    return this.learningService.createQuest(dto);
+  }
 
   @Get()
   @Roles('user', 'admin')
