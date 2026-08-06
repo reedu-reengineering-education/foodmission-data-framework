@@ -294,6 +294,7 @@ describe('LearningService', () => {
       code: 'QUEST.CUSTOM',
       dimensionId: 'dim-1',
       level: ContentLevel.BEGINNER,
+      name: 'Custom name',
       title: 'Custom quest',
       description: 'Desc',
       available: true,
@@ -317,6 +318,7 @@ describe('LearningService', () => {
       code: 'QUEST.CUSTOM',
       dimensionId: 'dim-1',
       level: ContentLevel.BEGINNER,
+      name: 'Custom name',
       title: 'Custom quest',
       description: 'Desc',
       available: true,
@@ -339,6 +341,7 @@ describe('LearningService', () => {
         data: expect.objectContaining({
           code: 'QUEST.CUSTOM',
           dimensionId: 'dim-1',
+          name: 'Custom name',
           items: {
             create: [
               {
@@ -357,6 +360,7 @@ describe('LearningService', () => {
       }),
     );
     expect(result.code).toBe('QUEST.CUSTOM');
+    expect(result.name).toBe('Custom name');
     expect(result.items).toHaveLength(2);
   });
 

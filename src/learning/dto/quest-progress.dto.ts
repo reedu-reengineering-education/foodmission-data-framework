@@ -30,7 +30,7 @@ export class QuestProgressResponseDto {
   @Expose()
   questId: string;
 
-  @ApiProperty({ example: 'QUEST.DIET_CHANGES.BEGINNER' })
+  @ApiProperty({ example: 'QUEST.DIET_CHANGES.BEGINNER.1' })
   @Expose()
   questCode: string;
 

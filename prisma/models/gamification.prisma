@@ -220,6 +220,7 @@ model Quest {
   code        String       @unique
   dimensionId String
   level       ContentLevel
+  name        String?
   title       String?
   description String?
   available   Boolean      @default(true)
@@ -233,8 +234,8 @@ model Quest {
   currentUsers   User[]          @relation("UserCurrentQuest")
   currentGroups  UserGroup[]     @relation("GroupCurrentQuest")
 
-  @@unique([dimensionId, level])
   @@index([dimensionId])
+  @@index([dimensionId, level])
   @@map("quests")
 }
 

@@ -22,7 +22,7 @@ export const ENTITY_TRANSLATABLE_FIELDS = {
   FoodFact: ['body'] as const,
   Quiz: ['question', 'explanation'] as const,
   QuizOption: ['text'] as const,
-  Quest: ['title', 'description'] as const,
+  Quest: ['name', 'title', 'description'] as const,
   MicroLearning: ['title', 'body', 'tips'] as const,
   Dimension: ['name'] as const,
   Topic: ['name'] as const,

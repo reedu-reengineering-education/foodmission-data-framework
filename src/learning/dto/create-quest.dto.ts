@@ -50,7 +50,7 @@ export class CreateQuestItemDto {
 export class CreateQuestDto {
   @ApiProperty({
     description: 'Unique quest code',
-    example: 'QUEST.DIET_CHANGES.CUSTOM',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
     maxLength: 64,
   })
   @IsString()
@@ -68,12 +68,22 @@ export class CreateQuestDto {
   dimensionId: string;
 
   @ApiProperty({
-    description: 'Content difficulty level (unique per dimension)',
+    description: 'Content difficulty level',
     enum: ContentLevel,
     example: ContentLevel.BEGINNER,
   })
   @IsEnum(ContentLevel)
   level: ContentLevel;
+
+  @ApiPropertyOptional({
+    description: 'Quest name',
+    example: 'Learn to Log Your Food',
+    maxLength: 255,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  name?: string;
 
   @ApiPropertyOptional({
     description: 'Quest title',

@@ -11,7 +11,9 @@ interface QuestSeedRow {
   code: string;
   dimensionCode: string;
   level: ContentLevel | string;
+  name?: string;
   title: string;
+  description?: string;
   items: QuestItemSeed[];
 }
 
@@ -47,14 +49,18 @@ export async function seedQuests(prisma: PrismaClient) {
       update: {
         dimensionId,
         level: row.level as ContentLevel,
+        name: row.name,
         title: row.title,
+        description: row.description,
         available: true,
       },
       create: {
         code: row.code,
         dimensionId,
         level: row.level as ContentLevel,
+        name: row.name,
         title: row.title,
+        description: row.description,
         available: true,
       },
     });

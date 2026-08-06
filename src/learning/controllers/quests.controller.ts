@@ -48,7 +48,7 @@ export class QuestsController {
   @ApiOperation({
     summary: 'Create a quest (admin)',
     description:
-      'Creates a quest with nested items. Item contentCode values must exist for the given contentType. Unique on code and on dimensionId+level.',
+      'Creates a quest with nested items. Item contentCode values must exist for the given contentType. Unique on code.',
   })
   @ApiBody({ type: CreateQuestDto })
   @ApiResponse({
@@ -58,7 +58,7 @@ export class QuestsController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Quest code or dimension+level already exists',
+    description: 'Quest code already exists',
   })
   @ApiCrudErrorResponses()
   async create(@Body() dto: CreateQuestDto): Promise<QuestResponseDto> {
@@ -114,8 +114,8 @@ export class QuestsController {
   @ApiOperation({ summary: 'Get current user quest progress' })
   @ApiParam({
     name: 'codeOrId',
-    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
-    example: 'QUEST.DIET_CHANGES.BEGINNER',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
   })
   @ApiResponse({ status: 200, type: QuestProgressResponseDto })
   @ApiCrudErrorResponses()
@@ -133,8 +133,8 @@ export class QuestsController {
   @ApiOperation({ summary: 'Upsert quest progress for current user' })
   @ApiParam({
     name: 'codeOrId',
-    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
-    example: 'QUEST.DIET_CHANGES.BEGINNER',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
   })
   @ApiBody({ type: UpdateQuestProgressDto })
   @ApiResponse({ status: 200, type: QuestProgressResponseDto })
@@ -163,8 +163,8 @@ export class QuestsController {
   })
   @ApiParam({
     name: 'codeOrId',
-    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
-    example: 'QUEST.DIET_CHANGES.BEGINNER',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
   })
   @ApiResponse({ status: 200, type: QuestResponseDto })
   @ApiCrudErrorResponses()

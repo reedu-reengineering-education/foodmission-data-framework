@@ -32,7 +32,7 @@ export class QuestResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'QUEST.DIET_CHANGES.BEGINNER' })
+  @ApiProperty({ example: 'QUEST.DIET_CHANGES.BEGINNER.1' })
   @Expose()
   code: string;
 
@@ -43,6 +43,10 @@ export class QuestResponseDto {
   @ApiProperty({ enum: ContentLevel, example: ContentLevel.BEGINNER })
   @Expose()
   level: ContentLevel;
+
+  @ApiPropertyOptional({ example: 'Learn to Log Your Food' })
+  @Expose()
+  name?: string | null;
 
   @ApiPropertyOptional({ example: 'Diet changes — Beginner' })
   @Expose()

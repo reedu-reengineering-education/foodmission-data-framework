@@ -478,6 +478,7 @@ export class LearningService {
           code: dto.code,
           dimensionId: dto.dimensionId,
           level: dto.level,
+          name: dto.name,
           title: dto.title,
           description: dto.description,
           available: dto.available ?? true,
@@ -492,9 +493,7 @@ export class LearningService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new ConflictException(
-          'A quest with this code or dimension+level already exists',
-        );
+        throw new ConflictException('A quest with this code already exists');
       }
       throw error;
     }
@@ -516,7 +515,7 @@ export class LearningService {
 
     const rows = await this.prisma.quest.findMany({
       where,
-      orderBy: [{ dimensionId: 'asc' }, { level: 'asc' }],
+      orderBy: [{ dimensionId: 'asc' }, { level: 'asc' }, { code: 'asc' }],
     });
     return this.mapQuests(rows, query.lang, false);
   }
@@ -631,6 +630,7 @@ export class LearningService {
     quest: {
       id: string;
       code: string;
+      name?: string | null;
       title: string | null;
       description: string | null;
     },
@@ -646,8 +646,8 @@ export class LearningService {
       'Quest',
       [quest],
       locale,
-      ['title'],
-      (r) => ({ title: r.title }),
+      ['name', 'title'],
+      (r) => ({ name: r.name, title: r.title }),
     );
 
     return {
@@ -741,6 +741,7 @@ export class LearningService {
       code: string;
       dimensionId: string;
       level: QuestResponseDto['level'];
+      name?: string | null;
       title: string | null;
       description: string | null;
       available: boolean;
@@ -761,8 +762,8 @@ export class LearningService {
       'Quest',
       rows,
       locale,
-      ['title', 'description'],
-      (r) => ({ title: r.title, description: r.description }),
+      ['name', 'title', 'description'],
+      (r) => ({ name: r.name, title: r.title, description: r.description }),
     );
 
     const itemLabels =
@@ -778,6 +779,7 @@ export class LearningService {
       code: r.code,
       dimensionId: r.dimensionId,
       level: r.level,
+      name: overlay[r.id]?.name ?? r.name,
       title: overlay[r.id]?.title ?? r.title,
       description: overlay[r.id]?.description ?? r.description,
       available: r.available,
