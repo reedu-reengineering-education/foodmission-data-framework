@@ -1,5 +1,11 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 import {
   ActivityLevel,
@@ -60,8 +66,29 @@ function isConsentFormCountryCode(
 }
 
 @Injectable()
-export class CatalogService {
+export class CatalogService implements OnModuleInit {
   constructor(private readonly i18n: I18nService) {}
+
+  /**
+   * Load every consent form into memory once, off the request path. A missing
+   * file is logged but does not block startup; `getConsentForm` still falls
+   * back to a one-off read (and a 404) for that country.
+   */
+  async onModuleInit(): Promise<void> {
+    await Promise.all(
+      CONSENT_FORM_COUNTRY_CODES.map(async (code) => {
+        const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
+        try {
+          this.consentForms.set(code, await readFile(filePath, 'utf-8'));
+        } catch (error) {
+          this.logger.error(
+            `Consent form file missing or unreadable: ${filePath}`,
+            error instanceof Error ? error.stack : undefined,
+          );
+        }
+      }),
+    );
+  }
 
   private readonly logger = new Logger(CatalogService.name);
 
@@ -70,7 +97,7 @@ export class CatalogService {
     regionsAll?: CatalogValueDto[];
   } = {};
 
-  /** country code -> markdown, read from disk once per process */
+  /** country code -> markdown, filled at startup, read from disk once per process */
   private readonly consentForms = new Map<ConsentFormCountryCode, string>();
 
   private readonly displayNamesByType: Record<
@@ -489,6 +516,7 @@ export class CatalogService {
       };
     }
 
+    // Only reached if the startup preload failed for this country.
     const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
 
     let content: string;
