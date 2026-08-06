@@ -60,8 +60,24 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     description: 'Food waste registration, analytics, and reduction insights',
   },
   {
-    name: 'knowledge',
-    description: 'Knowledge base content, quizzes, and progress tracking',
+    name: 'dimensions',
+    description: 'Sustainability dimensions and nested topics taxonomy',
+  },
+  {
+    name: 'food-facts',
+    description: 'Learning food facts catalog and filters',
+  },
+  {
+    name: 'quizzes',
+    description: 'Learning quizzes, options, and quiz progress',
+  },
+  {
+    name: 'quests',
+    description: 'Learning quests, quest items, and quest progress',
+  },
+  {
+    name: 'micro-learnings',
+    description: 'Micro-learning content catalog',
   },
   {
     name: 'challenges',
