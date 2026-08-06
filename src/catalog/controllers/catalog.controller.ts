@@ -2,6 +2,7 @@ import {
   applyDecorators,
   Controller,
   Get,
+  Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -9,6 +10,7 @@ import {
   ApiBearerAuth,
   ApiOAuth2,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -27,7 +29,9 @@ import {
   RegionsQueryDto,
   CatalogPaginatedQueryDto,
 } from '../dto/catalog-query.dto';
+import { ConsentFormResponseDto } from '../dto/consent-form-response.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { CONSENT_FORM_COUNTRY_CODES } from '../catalog.constants';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 function PublicCatalogList(summary: string) {
@@ -232,6 +236,25 @@ export class CatalogController {
     @Query() query: CatalogPaginatedQueryDto,
   ): PaginatedCatalogListResponseDto {
     return this.catalogService.listCountries(query);
+  }
+
+  @Get('consent-forms/:countryCode')
+  @Public()
+  @ApiOperation({
+    summary:
+      'Get the pilot information letter and consent form for a country, as Markdown',
+  })
+  @ApiParam({
+    name: 'countryCode',
+    enum: CONSENT_FORM_COUNTRY_CODES,
+    description: 'ISO 3166-1 alpha-2 country code of the pilot (lowercase)',
+  })
+  @ApiResponse({ status: 200, type: ConsentFormResponseDto })
+  @ApiCrudErrorResponses()
+  consentForm(
+    @Param('countryCode') countryCode: string,
+  ): ConsentFormResponseDto {
+    return this.catalogService.getConsentForm(countryCode);
   }
 
   @Get('regions')

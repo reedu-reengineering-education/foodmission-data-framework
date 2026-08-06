@@ -9,6 +9,11 @@
         "include": "i18n/**/*",
         "outDir": "dist/src",
         "watchAssets": true
+      },
+      {
+        "include": "catalog/consent-forms/**/*.md",
+        "outDir": "dist/src",
+        "watchAssets": true
       }
     ]
   }

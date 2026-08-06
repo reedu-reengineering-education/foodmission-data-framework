@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import {
   ActivityLevel,
   AnnualIncomeLevel,
@@ -25,13 +27,18 @@ import ISO6391 from 'iso-639-1';
 import iso3166 from 'iso-3166-2';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
-import { SHOPPING_RESPONSIBILITY_ENTRIES } from '../catalog.constants';
+import {
+  CONSENT_FORM_COUNTRY_CODES,
+  ConsentFormCountryCode,
+  SHOPPING_RESPONSIBILITY_ENTRIES,
+} from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
 import {
   CatalogListResponseDto,
   CatalogStartupResponseDto,
   PaginatedCatalogListResponseDto,
 } from '../dto/catalog-response.dto';
+import { ConsentFormResponseDto } from '../dto/consent-form-response.dto';
 import {
   filterLocalizedItems,
   normalizeSearch,
@@ -39,14 +46,32 @@ import {
   toPaginatedResponse,
 } from './catalog.service.helpers';
 
+/**
+ * `__dirname` is `src/catalog/services` in dev/tests and
+ * `dist/src/catalog/services` in a built app; the markdown sits one level up in
+ * both cases because nest-cli copies it as an asset.
+ */
+const CONSENT_FORMS_DIR = join(__dirname, '..', 'consent-forms');
+
+function isConsentFormCountryCode(
+  value: string,
+): value is ConsentFormCountryCode {
+  return (CONSENT_FORM_COUNTRY_CODES as readonly string[]).includes(value);
+}
+
 @Injectable()
 export class CatalogService {
   constructor(private readonly i18n: I18nService) {}
+
+  private readonly logger = new Logger(CatalogService.name);
 
   private cached: {
     countries?: CatalogValueDto[];
     regionsAll?: CatalogValueDto[];
   } = {};
+
+  /** country code -> markdown, read from disk once per process */
+  private readonly consentForms = new Map<ConsentFormCountryCode, string>();
 
   private readonly displayNamesByType: Record<
     'language' | 'region',
@@ -442,5 +467,44 @@ export class CatalogService {
         walletCurrencies: this.listWalletCurrencies().data,
       },
     };
+  }
+
+  /**
+   * Information letter / consent form for a pilot country, as Markdown.
+   * Files live next to this module in `consent-forms/<code>.md` and are copied
+   * into `dist` as assets (see nest-cli.json).
+   */
+  getConsentForm(countryCode: string): ConsentFormResponseDto {
+    const code = countryCode.trim().toLowerCase();
+
+    if (!isConsentFormCountryCode(code)) {
+      throw new NotFoundException(
+        `No consent form available for country code "${countryCode}". Supported: ${CONSENT_FORM_COUNTRY_CODES.join(', ')}`,
+      );
+    }
+
+    const cached = this.consentForms.get(code);
+    if (cached) {
+      return { data: { countryCode: code, content: cached } };
+    }
+
+    const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
+
+    let content: string;
+    try {
+      content = readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      this.logger.error(
+        `Consent form file missing or unreadable: ${filePath}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new NotFoundException(
+        `No consent form available for country code "${code}"`,
+      );
+    }
+
+    this.consentForms.set(code, content);
+
+    return { data: { countryCode: code, content } };
   }
 }

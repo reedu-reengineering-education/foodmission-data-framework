@@ -78,7 +78,8 @@
     "docker:up": "docker compose -f docker-compose.yml up -d",
     "docker:down": "docker compose -f docker-compose.yml down",
     "docker:logs": "docker compose -f docker-compose.yml logs -f",
-    "docs:generate": "ts-node scripts/generate-openapi-spec.ts"
+    "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
+    "docs:consent-forms": "ts-node scripts/dev/convert-consent-forms.ts"
   },
   "dependencies": {
     "@cacheable/memory": "^2.2.0",
@@ -120,6 +121,7 @@
     "joi": "^18.2.3",
     "keycloak-connect": "^26.1.1",
     "keyv": "^5.5.1",
+    "mammoth": "^1.12.0",
     "nest-keycloak-connect": "^2.0.0-alpha.3",
     "nestjs-i18n": "^10.8.5",
     "prisma": "^6.19.3",
@@ -127,6 +129,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "sanitize-html": "^2.17.6",
+    "turndown": "^7.2.4",
     "uuid": "^14.0.1"
   },
   "devDependencies": {
