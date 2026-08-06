@@ -1,11 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEnum,
-  IsIn,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsIn, IsOptional, IsString } from 'class-validator';
 import { ContentLevel } from '@prisma/client';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
@@ -27,8 +21,8 @@ export class ListChallengesQueryDto {
   lang?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by dimension code',
-    example: 'B',
+    description: 'Filter by dimension code (e.g. DIET_CHANGES)',
+    example: 'DIET_CHANGES',
   })
   @IsOptional()
   @IsString()

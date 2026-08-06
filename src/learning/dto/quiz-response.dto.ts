@@ -26,7 +26,7 @@ export class QuizResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'Q.B1.1' })
+  @ApiProperty({ example: 'Q1.1.1' })
   @Expose()
   code: string;
 
@@ -34,11 +34,17 @@ export class QuizResponseDto {
   @Expose()
   topicId: string;
 
-  @ApiProperty({ example: 'Which action reduces packaging waste?' })
+  @ApiProperty({
+    example:
+      'You want to reduce the environmental impact of your dinners. Which change is likely to have the biggest effect?',
+  })
   @Expose()
   question: string;
 
-  @ApiProperty({ example: 'Reusing containers cuts single-use packaging.' })
+  @ApiProperty({
+    example:
+      'Reducing beef consumption generally has a much larger impact than switching between similar foods because livestock production contributes heavily to land use, water use, and greenhouse-gas emissions.',
+  })
   @Expose()
   explanation: string;
 

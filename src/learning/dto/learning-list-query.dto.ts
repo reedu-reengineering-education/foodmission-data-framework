@@ -1,10 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEnum,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { ContentLevel } from '@prisma/client';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import {
@@ -18,7 +13,7 @@ import { IntersectionType } from '@nestjs/swagger';
 export class LearningContentFiltersDto {
   @ApiPropertyOptional({
     description: 'Filter by dimension code',
-    example: 'B',
+    example: 'DIET_CHANGES',
   })
   @IsOptional()
   @IsString()
@@ -27,7 +22,7 @@ export class LearningContentFiltersDto {
 
   @ApiPropertyOptional({
     description: 'Filter by topic code',
-    example: 'B1',
+    example: 'REDUCING_MEAT_CONSUMPTION',
   })
   @IsOptional()
   @IsString()
@@ -87,7 +82,7 @@ export class LearningQuestListQueryDto extends IntersectionType(
 ) {
   @ApiPropertyOptional({
     description: 'Filter by dimension code',
-    example: 'B',
+    example: 'DIET_CHANGES',
   })
   @IsOptional()
   @IsString()

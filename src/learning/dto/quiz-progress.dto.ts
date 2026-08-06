@@ -27,11 +27,14 @@ export class QuizProgressResponseDto {
   @Expose()
   quizId: string;
 
-  @ApiProperty({ example: 'Q.B1.1' })
+  @ApiProperty({ example: 'Q1.1.1' })
   @Expose()
   quizCode: string;
 
-  @ApiPropertyOptional({ example: 'Which action reduces packaging waste?' })
+  @ApiPropertyOptional({
+    example:
+      'You want to reduce the environmental impact of your dinners. Which change is likely to have the biggest effect?',
+  })
   @Expose()
   question?: string;
 

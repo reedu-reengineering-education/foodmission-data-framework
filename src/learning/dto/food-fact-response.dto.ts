@@ -7,7 +7,7 @@ export class FoodFactResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'FF.B1.1' })
+  @ApiProperty({ example: 'FF1.1.1' })
   @Expose()
   code: string;
 
@@ -15,7 +15,10 @@ export class FoodFactResponseDto {
   @Expose()
   topicId: string;
 
-  @ApiProperty({ example: 'Plastic packaging can leach chemicals into food.' })
+  @ApiProperty({
+    example:
+      'Eating less red meat is one of the most effective ways to reduce the environmental impact of your diet.',
+  })
   @Expose()
   body: string;
 

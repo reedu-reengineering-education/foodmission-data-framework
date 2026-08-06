@@ -6,11 +6,11 @@ export class TopicResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'B1' })
+  @ApiProperty({ example: 'REDUCING_MEAT_CONSUMPTION' })
   @Expose()
   code: string;
 
-  @ApiProperty({ example: 'Plastic packaging' })
+  @ApiProperty({ example: 'Reducing meat consumption' })
   @Expose()
   name: string;
 
@@ -28,11 +28,11 @@ export class DimensionResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'B' })
+  @ApiProperty({ example: 'DIET_CHANGES' })
   @Expose()
   code: string;
 
-  @ApiProperty({ example: 'Food Packaging' })
+  @ApiProperty({ example: 'Diet changes towards a more sustainable system' })
   @Expose()
   name: string;
 

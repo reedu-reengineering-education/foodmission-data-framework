@@ -11,13 +11,13 @@ export class QuestItemResponseDto {
   @Expose()
   contentType: QuestContentType;
 
-  @ApiProperty({ example: 'FF.B1.1' })
+  @ApiProperty({ example: 'FF1.1.1' })
   @Expose()
   contentCode: string;
 
   @ApiPropertyOptional({
     description: 'Translated display label for the referenced content',
-    example: 'Bring your own bag',
+    example: 'Stay in the Green Zone',
   })
   @Expose()
   label?: string;
@@ -32,7 +32,7 @@ export class QuestResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'QUEST.B.BEGINNER' })
+  @ApiProperty({ example: 'QUEST.DIET_CHANGES.BEGINNER' })
   @Expose()
   code: string;
 
@@ -44,11 +44,13 @@ export class QuestResponseDto {
   @Expose()
   level: ContentLevel;
 
-  @ApiPropertyOptional({ example: 'Beginner Packaging Quest' })
+  @ApiPropertyOptional({ example: 'Diet changes — Beginner' })
   @Expose()
   title?: string | null;
 
-  @ApiPropertyOptional({ example: 'Learn the basics of food packaging.' })
+  @ApiPropertyOptional({
+    example: 'Beginner quest for more sustainable diet changes.',
+  })
   @Expose()
   description?: string | null;
 
