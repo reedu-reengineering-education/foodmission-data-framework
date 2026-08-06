@@ -38,7 +38,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
-@ApiTags('Surveys')
+@ApiTags('surveys')
 @Controller('surveys')
 @UseGuards(ThrottlerGuard, DataBaseAuthGuard)
 export class SurveysController {

@@ -88,13 +88,31 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     description: 'Mission management - Create and manage user missions',
   },
   {
+    name: 'events',
+    description:
+      'Client-allowlisted user event recording for analytics and gamification',
+  },
+  {
+    name: 'surveys',
+    description: 'Survey definitions, questions, and user responses',
+  },
+  {
     name: 'health',
     description:
       'Application health checks, readiness probes, and monitoring metrics',
   },
   {
+    name: 'analytics',
+    description: 'Cross-domain analytics batch runs, approval, and publishing',
+  },
+  {
     name: 'analytics-meal-log',
     description: 'Anonymized meal-log analytics, reports, and batch workflows',
+  },
+  {
+    name: 'analytics-shopping-list',
+    description:
+      'Anonymized shopping-list analytics, reports, and batch workflows',
   },
   {
     name: 'monitoring',

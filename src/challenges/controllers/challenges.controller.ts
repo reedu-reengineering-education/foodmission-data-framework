@@ -145,7 +145,12 @@ export class ChallengesController {
     summary: 'Get challenge by UUID or code',
     description: 'Retrieves a specific challenge by its ID or business code.',
   })
-  @ApiParam({ name: 'codeOrId', type: 'string' })
+  @ApiParam({
+    name: 'codeOrId',
+    type: 'string',
+    description: 'Challenge UUID or code (e.g. CH.A1.1)',
+    example: 'CH.A1.1',
+  })
   @ApiResponse({
     status: 200,
     description: 'Challenge retrieved successfully',

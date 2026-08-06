@@ -12,7 +12,7 @@ export class MissionsResponseDto {
 
   @ApiProperty({
     description: 'Unique mission code',
-    example: 'M.B1.1',
+    example: 'M.A1.1',
   })
   @Expose()
   code: string;

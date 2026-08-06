@@ -13,7 +13,7 @@ import {
 export class CreateMissionsDto {
   @ApiProperty({
     description: 'Unique mission code',
-    example: 'M.B1.1',
+    example: 'M.A1.1',
     maxLength: 64,
   })
   @IsString()

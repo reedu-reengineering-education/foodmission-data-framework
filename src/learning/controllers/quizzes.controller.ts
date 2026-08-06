@@ -87,7 +87,11 @@ export class QuizzesController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get current user quiz progress' })
-  @ApiParam({ name: 'codeOrId', description: 'Quiz UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quiz UUID or code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
   @ApiResponse({ status: 200, type: QuizProgressResponseDto })
   @ApiCrudErrorResponses()
   async getProgress(
@@ -106,7 +110,11 @@ export class QuizzesController {
     description:
       'Sets selected option, derives isCorrect from the option, marks completed.',
   })
-  @ApiParam({ name: 'codeOrId', description: 'Quiz UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quiz UUID or code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
   @ApiBody({ type: UpdateQuizProgressDto })
   @ApiResponse({ status: 200, type: QuizProgressResponseDto })
   @ApiCrudErrorResponses()
@@ -131,7 +139,11 @@ export class QuizzesController {
     summary: 'Get a quiz by UUID or code',
     description: 'Options omit isCorrect.',
   })
-  @ApiParam({ name: 'codeOrId', description: 'Quiz UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quiz UUID or code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
   @ApiResponse({ status: 200, type: QuizResponseDto })
   @ApiCrudErrorResponses()
   async getOne(

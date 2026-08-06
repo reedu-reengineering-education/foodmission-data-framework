@@ -36,7 +36,11 @@ export class DimensionsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get a dimension by UUID or code' })
-  @ApiParam({ name: 'codeOrId', description: 'Dimension UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Dimension UUID or code (e.g. DIET_CHANGES)',
+    example: 'DIET_CHANGES',
+  })
   @ApiResponse({ status: 200, type: DimensionResponseDto })
   @ApiCrudErrorResponses()
   async getOne(

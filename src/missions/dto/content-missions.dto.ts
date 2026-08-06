@@ -12,7 +12,7 @@ import {
 export class MissionsContentDto {
   @ApiProperty({
     description: 'Unique mission code',
-    example: 'M.B1.1',
+    example: 'M.A1.1',
   })
   @IsString()
   @IsNotEmpty()

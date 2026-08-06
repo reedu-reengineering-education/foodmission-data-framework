@@ -38,7 +38,11 @@ export class FoodFactsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get a food fact by UUID or code' })
-  @ApiParam({ name: 'codeOrId', description: 'Food fact UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Food fact UUID or code (e.g. FF1.1.1)',
+    example: 'FF1.1.1',
+  })
   @ApiResponse({ status: 200, type: FoodFactResponseDto })
   @ApiCrudErrorResponses()
   async getOne(

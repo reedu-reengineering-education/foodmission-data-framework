@@ -12,7 +12,7 @@ export class ChallengeResponseDto {
 
   @ApiProperty({
     description: 'Unique challenge code',
-    example: 'CH.B1.1',
+    example: 'CH.A1.1',
   })
   @Expose()
   code: string;

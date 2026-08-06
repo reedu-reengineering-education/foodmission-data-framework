@@ -7,11 +7,11 @@ export class QuestItemResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ enum: QuestContentType, example: QuestContentType.FOOD_FACT })
+  @ApiProperty({ enum: QuestContentType, example: QuestContentType.MISSION })
   @Expose()
   contentType: QuestContentType;
 
-  @ApiProperty({ example: 'FF1.1.1' })
+  @ApiProperty({ example: 'M.A1.1' })
   @Expose()
   contentCode: string;
 

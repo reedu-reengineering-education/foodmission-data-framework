@@ -112,7 +112,11 @@ export class QuestsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get current user quest progress' })
-  @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER',
+  })
   @ApiResponse({ status: 200, type: QuestProgressResponseDto })
   @ApiCrudErrorResponses()
   async getProgress(
@@ -127,7 +131,11 @@ export class QuestsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Upsert quest progress for current user' })
-  @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER',
+  })
   @ApiBody({ type: UpdateQuestProgressDto })
   @ApiResponse({ status: 200, type: QuestProgressResponseDto })
   @ApiCrudErrorResponses()
@@ -153,7 +161,11 @@ export class QuestsController {
     description:
       'Includes ordered quest items with translated labels when lang is set.',
   })
-  @ApiParam({ name: 'codeOrId', description: 'Quest UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER',
+  })
   @ApiResponse({ status: 200, type: QuestResponseDto })
   @ApiCrudErrorResponses()
   async getOne(

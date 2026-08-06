@@ -139,7 +139,10 @@ export class MissionsController {
     @CurrentUser('id') userId: string,
     @Query() query: LearningLangQueryDto,
   ): Promise<MissionProgressResponseDto[]> {
-    return this.missionProgressService.getAllMissionsByUserId(userId, query.lang);
+    return this.missionProgressService.getAllMissionsByUserId(
+      userId,
+      query.lang,
+    );
   }
 
   @Get(':codeOrId')
@@ -149,7 +152,12 @@ export class MissionsController {
     summary: 'Get mission by UUID or code',
     description: 'Retrieves a specific mission by ID or business code.',
   })
-  @ApiParam({ name: 'codeOrId', type: 'string' })
+  @ApiParam({
+    name: 'codeOrId',
+    type: 'string',
+    description: 'Mission UUID or code (e.g. M.A1.1)',
+    example: 'M.A1.1',
+  })
   @ApiResponse({
     status: 200,
     description: 'Mission retrieved successfully',

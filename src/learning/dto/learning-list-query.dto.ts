@@ -12,7 +12,8 @@ import { IntersectionType } from '@nestjs/swagger';
 /** Shared filters for paginated catalog content lists. */
 export class LearningContentFiltersDto {
   @ApiPropertyOptional({
-    description: 'Filter by dimension code',
+    description:
+      'Filter by dimension code (e.g. DIET_CHANGES, FOOD_WASTE, PACKAGING)',
     example: 'DIET_CHANGES',
   })
   @IsOptional()
@@ -21,7 +22,8 @@ export class LearningContentFiltersDto {
   dimensionCode?: string;
 
   @ApiPropertyOptional({
-    description: 'Filter by topic code',
+    description:
+      'Filter by topic code (e.g. REDUCING_MEAT_CONSUMPTION, PLATE_WASTE)',
     example: 'REDUCING_MEAT_CONSUMPTION',
   })
   @IsOptional()
@@ -63,7 +65,7 @@ export class LearningContentFiltersDto {
 
   @ApiPropertyOptional({
     description: 'Search in primary text field (body/question/title)',
-    example: 'plastic',
+    example: 'meat',
   })
   @IsOptional()
   @IsString()
@@ -81,7 +83,8 @@ export class LearningQuestListQueryDto extends IntersectionType(
   LearningLangQueryDto,
 ) {
   @ApiPropertyOptional({
-    description: 'Filter by dimension code',
+    description:
+      'Filter by dimension code (e.g. DIET_CHANGES, FOOD_WASTE, PACKAGING)',
     example: 'DIET_CHANGES',
   })
   @IsOptional()

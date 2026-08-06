@@ -13,7 +13,7 @@ import {
 export class ChallengesContentDto {
   @ApiProperty({
     description: 'Unique challenge code',
-    example: 'CH.B1.1',
+    example: 'CH.A1.1',
   })
   @IsString()
   @IsNotEmpty()

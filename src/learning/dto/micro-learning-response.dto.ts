@@ -7,7 +7,7 @@ export class MicroLearningResponseDto {
   @Expose()
   id: string;
 
-  @ApiProperty({ example: 'ML.B1.1' })
+  @ApiProperty({ example: 'ML1.1.1' })
   @Expose()
   code: string;
 

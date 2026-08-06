@@ -24,7 +24,7 @@ interface AnalyticsRunPayload {
   shoppingListBatchId: string;
 }
 
-@ApiTags('Analytics')
+@ApiTags('analytics')
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly batchCoordinator: AnalyticsBatchCoordinator) {}

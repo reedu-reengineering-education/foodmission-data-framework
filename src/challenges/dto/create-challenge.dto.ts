@@ -14,7 +14,7 @@ import {
 export class CreateChallengeDto {
   @ApiProperty({
     description: 'Unique challenge code',
-    example: 'CH.B1.1',
+    example: 'CH.A1.1',
     maxLength: 64,
   })
   @IsString()

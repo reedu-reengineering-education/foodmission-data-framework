@@ -38,7 +38,11 @@ export class MicroLearningsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get a micro-learning by UUID or code' })
-  @ApiParam({ name: 'codeOrId', description: 'Micro-learning UUID or code' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Micro-learning UUID or code (e.g. ML1.1.1)',
+    example: 'ML1.1.1',
+  })
   @ApiResponse({ status: 200, type: MicroLearningResponseDto })
   @ApiCrudErrorResponses()
   async getOne(

@@ -22,7 +22,7 @@ export class FoodFactResponseDto {
   @Expose()
   body: string;
 
-  @ApiPropertyOptional({ example: 'WHO 2023' })
+  @ApiPropertyOptional({ example: 'Mazac et al. (2022)' })
   @Expose()
   source?: string | null;
 
