@@ -483,9 +483,10 @@ export class CatalogService {
       );
     }
 
-    const cached = this.consentForms.get(code);
-    if (cached) {
-      return { data: { countryCode: code, content: cached } };
+    if (this.consentForms.has(code)) {
+      return {
+        data: { countryCode: code, content: this.consentForms.get(code)! },
+      };
     }
 
     const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
