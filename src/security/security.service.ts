@@ -118,18 +118,42 @@ export class SecurityService {
   }
 
   /**
+   * Origins under foodmission.eu / foodmission.dev (incl. api/test/staging/preview).
+   * Used so Swagger Try-it-out works on every deployed API host without listing each hostname.
+   */
+  private static readonly FOODMISSION_ORIGIN_PATTERN =
+    /^https:\/\/([a-z0-9-]+\.)*foodmission\.(eu|dev)(:\d+)?$/;
+
+  private isAllowedCorsOrigin(
+    origin: string,
+    allowedOrigins: string[],
+  ): boolean {
+    return (
+      allowedOrigins.includes(origin) ||
+      SecurityService.FOODMISSION_ORIGIN_PATTERN.test(origin)
+    );
+  }
+
+  /**
    * Get CORS configuration
    */
   getCorsConfiguration() {
-    const allowedOrigins = this.configService
-      .get('ALLOWED_ORIGINS')
-      ?.split(',') || [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:4000',
-      'https://foodmission.dev',
-      'https://api.foodmission.dev',
-    ];
+    const allowedOriginsConfig =
+      this.configService.get<string>('ALLOWED_ORIGINS');
+    const allowedOrigins = allowedOriginsConfig
+      ? allowedOriginsConfig
+          .split(',')
+          .map((origin) => origin.trim())
+          .filter(Boolean)
+      : [
+          'http://localhost:3000',
+          'http://localhost:3001',
+          'http://localhost:4000',
+          'https://foodmission.dev',
+          'https://api.foodmission.dev',
+          'https://foodmission.eu',
+          'https://api.foodmission.eu',
+        ];
 
     return {
       origin: (
@@ -139,11 +163,12 @@ export class SecurityService {
         // Allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.includes(origin)) {
+        if (this.isAllowedCorsOrigin(origin, allowedOrigins)) {
           callback(null, true);
         } else {
           this.logger.warn(`CORS blocked request from origin: ${origin}`);
-          callback(new Error('Not allowed by CORS'), false);
+          // Pass null error so GlobalExceptionFilter does not turn this into a 500
+          callback(null, false);
         }
       },
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
