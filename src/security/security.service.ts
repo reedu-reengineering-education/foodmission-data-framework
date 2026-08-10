@@ -120,17 +120,23 @@ export class SecurityService {
   /**
    * Origins under foodmission.eu / foodmission.dev (incl. api/test/staging/preview).
    * Used so Swagger Try-it-out works on every deployed API host without listing each hostname.
+   * Case-insensitive: Origin host is case-insensitive per the URL spec.
    */
   private static readonly FOODMISSION_ORIGIN_PATTERN =
-    /^https:\/\/([a-z0-9-]+\.)*foodmission\.(eu|dev)(:\d+)?$/;
+    /^https:\/\/([a-z0-9-]+\.)*foodmission\.(eu|dev)(:\d+)?$/i;
+
+  private normalizeCorsOrigin(origin: string): string {
+    return origin.trim().toLowerCase();
+  }
 
   private isAllowedCorsOrigin(
     origin: string,
     allowedOrigins: string[],
   ): boolean {
+    const normalizedOrigin = this.normalizeCorsOrigin(origin);
     return (
-      allowedOrigins.includes(origin) ||
-      SecurityService.FOODMISSION_ORIGIN_PATTERN.test(origin)
+      allowedOrigins.includes(normalizedOrigin) ||
+      SecurityService.FOODMISSION_ORIGIN_PATTERN.test(normalizedOrigin)
     );
   }
 
@@ -143,7 +149,7 @@ export class SecurityService {
     const allowedOrigins = allowedOriginsConfig
       ? allowedOriginsConfig
           .split(',')
-          .map((origin) => origin.trim())
+          .map((origin) => this.normalizeCorsOrigin(origin))
           .filter(Boolean)
       : [
           'http://localhost:3000',

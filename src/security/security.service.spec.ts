@@ -186,6 +186,49 @@ describe('SecurityService', () => {
       corsConfig.origin('https://api-staging.foodmission.eu', callback);
     });
 
+    it('should allow mixed-case foodmission origins', (done) => {
+      const corsConfig = service.getCorsConfiguration();
+      const callback = jest.fn((err, allow) => {
+        expect(err).toBeNull();
+        expect(allow).toBe(true);
+        done();
+      });
+
+      corsConfig.origin('https://API.FoodMission.EU', callback);
+    });
+
+    it('should match ALLOWED_ORIGINS case-insensitively', async () => {
+      const moduleWithCasedOrigin: TestingModule =
+        await Test.createTestingModule({
+          providers: [
+            SecurityService,
+            {
+              provide: ConfigService,
+              useValue: {
+                get: jest.fn((key: string) => {
+                  if (key === 'ALLOWED_ORIGINS') {
+                    return 'https://App.Example.COM';
+                  }
+                  return undefined;
+                }),
+              },
+            },
+          ],
+        }).compile();
+
+      const casedService =
+        moduleWithCasedOrigin.get<SecurityService>(SecurityService);
+      const corsConfig = casedService.getCorsConfiguration();
+
+      await new Promise<void>((resolve) => {
+        corsConfig.origin('https://app.example.com', (err, allow) => {
+          expect(err).toBeNull();
+          expect(allow).toBe(true);
+          resolve();
+        });
+      });
+    });
+
     it('should block unconfigured origins without throwing', (done) => {
       const corsConfig = service.getCorsConfiguration();
       const callback = jest.fn((err, allow) => {
