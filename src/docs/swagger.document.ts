@@ -41,6 +41,9 @@ function normalizePathFragments(pathMeta: unknown): string[] {
   if (pathMeta === undefined || pathMeta === null) {
     return [''];
   }
+  if (typeof pathMeta !== 'string' && typeof pathMeta !== 'number') {
+    return [''];
+  }
   return [String(pathMeta)];
 }
 
