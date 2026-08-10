@@ -222,6 +222,24 @@ export class CatalogController {
     return this.catalogService.listWalletCurrencies();
   }
 
+  @Get('content-levels')
+  @ProtectedCatalogList('List content difficulty levels')
+  contentLevels(): CatalogListResponseDto {
+    return this.catalogService.listContentLevels();
+  }
+
+  @Get('quest-content-types')
+  @ProtectedCatalogList('List quest content types')
+  questContentTypes(): CatalogListResponseDto {
+    return this.catalogService.listQuestContentTypes();
+  }
+
+  @Get('content-tags')
+  @ProtectedCatalogList('List content tag codes')
+  contentTags(): CatalogListResponseDto {
+    return this.catalogService.listContentTags();
+  }
+
   @Get('languages')
   @PublicPaginatedCatalog('List languages (paginated)')
   languages(

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengesRepository } from './challenges.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { ContentLevel } from '@prisma/client';
 
 describe('ChallengesRepository', () => {
   let repository: ChallengesRepository;
@@ -20,9 +21,6 @@ describe('ChallengesRepository', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
-            user: {
-              findMany: jest.fn(),
-            },
           },
         },
       ],
@@ -37,46 +35,45 @@ describe('ChallengesRepository', () => {
   });
 
   describe('create', () => {
-    it('should create challenge with progress for all users', async () => {
+    it('should create challenge without pre-seeding progress', async () => {
       const dto = {
+        code: 'CH.B1.1',
+        dimensionId: 'dim-1',
+        level: ContentLevel.BEGINNER,
         title: 'Test',
-        description: 'Desc',
+        task: 'Task',
+        whyItMatters: 'Why',
+        tags: ['FOOD_CHOICE'],
         available: true,
-        startDate: new Date(),
-        endDate: new Date(),
       };
-      const mockChallenge = { id: 'c1', ...dto, challengeProgresses: [] };
+      const mockChallenge = { id: 'c1', ...dto };
 
-      (prisma.user.findMany as jest.Mock).mockResolvedValue([
-        { id: 'u1' },
-        { id: 'u2' },
-      ]);
       (prisma.challenge.create as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await repository.create(dto);
 
-      expect(prisma.user.findMany).toHaveBeenCalledWith({
-        select: { id: true },
-      });
       expect(prisma.challenge.create).toHaveBeenCalledWith({
         data: {
-          ...dto,
-          challengeProgresses: {
-            create: [
-              { userId: 'u1', progress: 0, completed: false },
-              { userId: 'u2', progress: 0, completed: false },
-            ],
-          },
+          code: dto.code,
+          dimensionId: dto.dimensionId,
+          topicId: undefined,
+          level: dto.level,
+          title: dto.title,
+          task: dto.task,
+          whyItMatters: dto.whyItMatters,
+          health: false,
+          foodChoice: true,
+          foodWaste: false,
+          available: dto.available,
         },
-        include: { challengeProgresses: true },
       });
       expect(result).toBe(mockChallenge);
     });
   });
 
   describe('findAll', () => {
-    it('should return all challenges with progress', async () => {
-      const mockChallenges = [{ id: 'c1', challengeProgresses: [] }];
+    it('should return all challenges without progress include by default', async () => {
+      const mockChallenges = [{ id: 'c1' }];
       (prisma.challenge.findMany as jest.Mock).mockResolvedValue(
         mockChallenges,
       );
@@ -84,15 +81,34 @@ describe('ChallengesRepository', () => {
       const result = await repository.findAll();
 
       expect(prisma.challenge.findMany).toHaveBeenCalledWith({
-        include: { challengeProgresses: true },
+        where: {},
+        include: {},
+        orderBy: { code: 'asc' },
       });
       expect(result).toBe(mockChallenges);
+    });
+
+    it('should scope challengeProgresses to user when progressUserId is set', async () => {
+      const mockChallenges = [{ id: 'c1', challengeProgresses: [] }];
+      (prisma.challenge.findMany as jest.Mock).mockResolvedValue(
+        mockChallenges,
+      );
+
+      await repository.findAll({ progressUserId: 'u1' });
+
+      expect(prisma.challenge.findMany).toHaveBeenCalledWith({
+        where: {},
+        include: {
+          challengeProgresses: { where: { userId: 'u1' } },
+        },
+        orderBy: { code: 'asc' },
+      });
     });
   });
 
   describe('findById', () => {
-    it('should return challenge by id with progress', async () => {
-      const mockChallenge = { id: 'c1', challengeProgresses: [] };
+    it('should return challenge by id without progress include', async () => {
+      const mockChallenge = { id: 'c1' };
       (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(
         mockChallenge,
       );
@@ -101,7 +117,6 @@ describe('ChallengesRepository', () => {
 
       expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
         where: { id: 'c1' },
-        include: { challengeProgresses: true },
       });
       expect(result).toBe(mockChallenge);
     });
@@ -125,7 +140,7 @@ describe('ChallengesRepository', () => {
 
       expect(prisma.challenge.update).toHaveBeenCalledWith({
         where: { id: 'c1' },
-        data: { ...updateDto },
+        data: { available: false },
       });
       expect(result).toBe(mockChallenge);
     });

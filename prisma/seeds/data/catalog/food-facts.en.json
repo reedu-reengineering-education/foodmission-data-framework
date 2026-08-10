@@ -1,0 +1,2502 @@
+[
+  {
+    "code": "FF1.1.1",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Eating less red meat is one of the most effective ways to reduce the environmental impact of your diet.",
+    "source": "Mazac et al. (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.2",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Reducing beef consumption can help lower pressure on forests and natural habitats.",
+    "source": "Ritchie et al. (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.3",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Diets with less meat generally produce fewer greenhouse gas emissions.",
+    "source": "Mertens et al. (2017)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.4",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Sustainable diets tend to contain more plant foods and less red meat.",
+    "source": "Mazac et al. (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.5",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Producing beef requires much more land than producing plant proteins such as peas or tofu.",
+    "source": "Poore, J., & Nemecek, T. (2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.6",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Eating less meat can reduce water use associated with food production.",
+    "source": "Mazac et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.7",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Reducing meat consumption may help decrease the need for antibiotics in livestock farming.",
+    "source": "European Centre for Disease Prevention and Control. (n.d)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.8",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Livestock production uses most agricultural land globally while supplying a much smaller share of calories and protein.",
+    "source": "Poore, J., & Nemecek, T. (2018)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.9",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Lower demand for livestock products can help conserve biodiversity by reducing land conversion.",
+    "source": "Dudley & Alexander (2017)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.1.10",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "body": "Replacing some meat meals with legumes can maintain protein intake while reducing environmental impacts.",
+    "source": "World Health Organization (2023)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.1",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Replacing part of your meat intake with legumes can reduce the climate impact of your diet.",
+    "source": "World Health Organization (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.2",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Pulses are rich in protein, fibre, vitamins and minerals while having a low environmental footprint.",
+    "source": "Food and Agriculture Organization of the United Nations (2016)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.3",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Diversifying protein sources helps support both human health and environmental sustainability.",
+    "source": "World Health Organization (2023)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.4",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Beans, lentils, peas and chickpeas are among the most sustainable protein sources available.",
+    "source": "World Health Organization (2023)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.5",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Pulses generally require less water than many animal-based protein sources.",
+    "source": "Food and Agriculture Organization of the United Nations (2016)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.6",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Combining legumes with cereals improves the quality of plant protein.",
+    "source": "Food and Agriculture Organization of the United Nations (2016)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.7",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Eggs and dairy products can provide protein with a lower environmental impact than red meat.",
+    "source": "Food and Agriculture Organization of the United Nations (2016)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.8",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Pulses naturally improve soil fertility by fixing nitrogen from the air, reducing the need for fertilizer.",
+    "source": "Food and Agriculture Organization of the United Nations (2016)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.9",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Insects are rich in nutrients and may become an important alternative protein source in future food systems.",
+    "source": "World Health Organization (2023)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.2.10",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "body": "Plant-based meat alternatives can help reduce meat consumption, but their nutritional quality varies between products.",
+    "source": "World Health Organization (2023)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.1",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Quinoa contains all nine essential amino acids, making it a complete plant protein.",
+    "source": "Harvard Nutrition Source (n.d.)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.2",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Pulses are nutritious staple foods linked to lower risk of chronic diseases.",
+    "source": "European Food Information Council (2023)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.3",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Alternative crops help reduce dependence on wheat, rice and maize.",
+    "source": "Food and Agriculture Organization of the United Nations (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.4",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Millets are highly resilient crops that can grow in hot, dry conditions with little water.",
+    "source": "Food and Agriculture Organization of the United Nations (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.5",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Millets can continue producing food under climate conditions where other crops may fail.",
+    "source": "Food and Agriculture Organization of the United Nations (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.6",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Growing more diverse staple crops can strengthen food security and resilience to climate change.",
+    "source": "Food and Agriculture Organization of the United Nations (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.7",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Quinoa is now cultivated in more than 70 countries, helping diversify global food production.",
+    "source": "Food and Agriculture Organization of the United Nations (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.8",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Buckwheat is naturally gluten-free and rich in fibre, protein and antioxidants.",
+    "source": "Lee et al. (2025)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.9",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Amaranth contains high-quality protein, including lysine.",
+    "source": "Balakrishnan & Schneider (2022)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF1.3.10",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "body": "Ancient grains such as millet, quinoa and amaranth contain beneficial antioxidant compounds.",
+    "source": "Balakrishnan & Schneider (2022)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.1",
+    "topicCode": "LAND_USE",
+    "body": "About half of the world's habitable land is used for agriculture.",
+    "source": "Ritchie Roser (2024)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.2",
+    "topicCode": "LAND_USE",
+    "body": "Producing plant proteins generally requires far less land than producing meat.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.3",
+    "topicCode": "LAND_USE",
+    "body": "Choosing more plant-based meals can help free land for nature restoration.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.4",
+    "topicCode": "LAND_USE",
+    "body": "Reducing beef consumption is one of the biggest diet changes for lowering land use.",
+    "source": "Wood et al. (2019)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.5",
+    "topicCode": "LAND_USE",
+    "body": "Beef is one of the most land-intensive foods people consume.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.6",
+    "topicCode": "LAND_USE",
+    "body": "Reducing food waste could save land larger than some countries.",
+    "source": "Goodwin & Lipinski (2024)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.1.7",
+    "topicCode": "LAND_USE",
+    "body": "Agriculture depends on healthy soils, biodiversity and ecosystem services.",
+    "source": "Dudley & Alexander (2017)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.8",
+    "topicCode": "LAND_USE",
+    "body": "Most agricultural land is used for livestock grazing or growing animal feed.",
+    "source": "Ritchie Roser (2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.9",
+    "topicCode": "LAND_USE",
+    "body": "Farmland expansion is a major driver of biodiversity loss.",
+    "source": "Dudley & Alexander (2017)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.1.10",
+    "topicCode": "LAND_USE",
+    "body": "Around 52% of agricultural land is moderately or significantly degraded.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.1",
+    "topicCode": "WATER_USE",
+    "body": "Around 70% of global freshwater withdrawals are used for agriculture.",
+    "source": "Ringler et al. (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.2",
+    "topicCode": "WATER_USE",
+    "body": "Diets with fewer animal products often require less water.",
+    "source": "Aleksandrowicz et al. (2016)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.3",
+    "topicCode": "WATER_USE",
+    "body": "Sustainable diets can reduce food-related water use by 20–50%.",
+    "source": "Aleksandrowicz et al. (2016)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.4",
+    "topicCode": "WATER_USE",
+    "body": "Food waste also wastes enormous amounts of water used to grow food.",
+    "source": "Ringler et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.5",
+    "topicCode": "WATER_USE",
+    "body": "Water shortages could threaten food production in many regions by 2050.",
+    "source": "Ringler et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.6",
+    "topicCode": "WATER_USE",
+    "body": "Preventing food waste helps conserve freshwater resources.",
+    "source": "Ringler et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.7",
+    "topicCode": "WATER_USE",
+    "body": "The water footprint of your diet depends heavily on what you eat.",
+    "source": "Ringler et al. (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.8",
+    "topicCode": "WATER_USE",
+    "body": "Improving water management can reduce the environmental impact of farming.",
+    "source": "Springmann et al. (2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.9",
+    "topicCode": "WATER_USE",
+    "body": "Irrigation water use has more than doubled since 1961.",
+    "source": "Intergovernmental Panel on Climate Change (2019)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.2.10",
+    "topicCode": "WATER_USE",
+    "body": "Excess fertilizer use contributes to water pollution and dead zones.",
+    "source": "Kitzmann et al. (2025)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.1",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Food systems generate about one-third of global greenhouse gas emissions.",
+    "source": "Crippa et al. (2021)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.2",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Replacing some animal protein with legumes can lower dietary emissions.",
+    "source": "WHO (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.3",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Buying seasonal foods can help reduce food-related emissions.",
+    "source": "Lee & Stoeltje (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.4",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Foods with the same calories can have very different carbon footprints.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.5",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Meat, especially beef and lamb, has a much higher carbon footprint than most plant foods.",
+    "source": "Poore, J., & Nemecek, T. (2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.6",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Vegetarian diets can produce substantially fewer emissions than meat-heavy diets.",
+    "source": "Aggarwal (2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.7",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Flexitarian diets can significantly reduce climate impacts.",
+    "source": "Lucas et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.8",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Food waste generates billions of tonnes of CO2-equivalent emissions annually.",
+    "source": "Lal (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.9",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Protecting forests prevents large carbon emissions from land conversion.",
+    "source": "Lal (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.3.10",
+    "topicCode": "CARBON_FOOTPRINT",
+    "body": "Crop rotations with legumes can reduce the carbon footprint of crop production.",
+    "source": "Lal (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.4.1",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Global food transport generates about 3 billion tonnes of CO₂-equivalent emissions each year.",
+    "source": "(Li et al., 2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.2",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Long-distance transport often requires refrigeration, which increases the energy use and carbon footprint of food.",
+    "source": "(Li et al., 2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.3",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Choosing seasonal foods and reducing unnecessary transport can help lower the climate impact of the food system.",
+    "source": "(Li et al., 2022)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF2.4.4",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Nearly one-fifth of the greenhouse gas emissions from the global food system come from transporting food.",
+    "source": "(Li et al., 2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.5",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Fruit and vegetables account for around 36% of food-mile emissions worldwide.",
+    "source": "(Li et al., 2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.6",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Maintaining an unbroken cold chain is essential for preserving food quality and reducing spoilage during transport.",
+    "source": "(FAO, 2026)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.7",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Transporting fruit and vegetables can generate roughly twice the greenhouse gas emissions produced during their cultivation.",
+    "source": "(Li et al., 2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.8",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Although food accounts for only about 18% of global freight transport distances, it produces around 27% of freight-related emissions.",
+    "source": "(Li et al., 2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.9",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Around 526 million tonnes of food are lost or wasted each year because of inadequate refrigeration and cooling systems.",
+    "source": "(FAO, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF2.4.10",
+    "topicCode": "TRAVEL_DISTANCES",
+    "body": "Improving cold-chain infrastructure can reduce food losses, improve food security, and reduce environmental impacts.",
+    "source": "(FAO, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true
+  },
+  {
+    "code": "FF3.1.1",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Food processing can improve food safety and extend shelf life.",
+    "source": "Shabir et al. (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.2",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Processing can help reduce food waste by preserving food for longer.",
+    "source": "Shabir et al. (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.3",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Ultra-processed foods are often higher in sugar, salt and saturated fat.",
+    "source": "Vellinga et al. (2022)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.4",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Different processing methods use very different amounts of energy.",
+    "source": "Shabir et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.5",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Frozen foods can require substantial energy for storage.",
+    "source": "Shabir et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.6",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Processing, packaging and transport all contribute to food-system impacts.",
+    "source": "Intergovernmental Panel on Climate Change. (2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.7",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Not all processed foods have high environmental impacts.",
+    "source": "Mazac et al. (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.8",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Food processing can improve storage and transport efficiency.",
+    "source": "Vellinga et al. (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.9",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "The sustainability of processed foods depends on production technology.",
+    "source": "Shabir et al. (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.1.10",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "body": "Looking at the full food life cycle gives a better sustainability picture than focusing only on processing.",
+    "source": "Shabir et al. (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.1",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Short supply chains can support local economies and resilience.",
+    "source": "Schmitt et al. (2017)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.2",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Seasonal local food may reduce storage and transport requirements.",
+    "source": "Stein & Santini (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.3",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Country of origin alone cannot determine whether a food is sustainable.",
+    "source": "Schmitt et al. (2017)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.4",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Food origin can provide useful information about traceability and sustainability.",
+    "source": "Béné et al. (2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.5",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Global food trade has increased dramatically over recent decades.",
+    "source": "Intergovernmental Panel on Climate Change (2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.6",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Many European food systems depend on imported feed and commodities.",
+    "source": "Cadillo-Benalcazar et al. (2020)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.7",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Consumers often associate origin labels with quality and safety.",
+    "source": "Newman et al. (2014)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.8",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Local food is not always the most sustainable option.",
+    "source": "Stein & Santini (2022)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.9",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "How food is produced often matters more than the distance it travels.",
+    "source": "Schmitt et al. (2017)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.2.10",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "body": "Air-freighted food can have a much larger carbon footprint than sea-freighted food.",
+    "source": "Pettersen et al. (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.1",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Organic farms support higher biodiversity than conventional farms.",
+    "source": "Tuck et al. (2014)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.2",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Climate-smart agriculture aims to improve resilience while reducing emissions.",
+    "source": "Kabato et al. (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.3",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Sustainable farming balances productivity with environmental protection.",
+    "source": "FAO (n.d.)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.4",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Flower strips and pollinator habitats can support biodiversity on farms.",
+    "source": "Soni et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.5",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Organic farming avoids synthetic fertilizers and pesticides.",
+    "source": "Gamage et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.6",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Crop diversification helps farms resist pests and diseases.",
+    "source": "Tamburini et al. (2020)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.7",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Agroforestry combines trees with crops or livestock on the same land.",
+    "source": "Nair et al. (2009)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.8",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Integrated Pest Management reduces reliance on chemical pesticides.",
+    "source": "FAO (n.d.)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.9",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Precision agriculture can reduce fertilizer use and emissions.",
+    "source": "Balafoutis et al. (2017)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.3.10",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "body": "Conservation agriculture reduces soil disturbance and protects soil health.",
+    "source": "FAO (n.d.)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.1",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Diversifying crops and breeds can increase food-system resilience.",
+    "source": "IPCC (2019)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.2",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Alternative proteins may reduce reliance on conventional livestock production.",
+    "source": "Mešić et al. (2024)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.3",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Sustainable breeding should be combined with broader food-system improvements.",
+    "source": "Caccialanza et al. (2023)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.4",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Breeding animals for lower methane emissions can reduce livestock impacts.",
+    "source": "Herrero et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.5",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Alternative aquaculture feeds can reduce pressure on wild fish stocks.",
+    "source": "Pettersen et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.6",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Genetic improvement can help crops cope with new environmental challenges.",
+    "source": "Mešić et al. (2024)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.7",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Improving animal productivity can reduce resource use per kilogram of meat.",
+    "source": "Kumar et al. (2023)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.8",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Genome editing may help develop crops that are more resilient to climate stress.",
+    "source": "Galanakis (2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.9",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Selective breeding can improve feed efficiency in livestock.",
+    "source": "Kumar et al. (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.4.10",
+    "topicCode": "BREEDING_METHODS",
+    "body": "Hydroponic and aquaponic systems can use far less water than conventional farming.",
+    "source": "Mešić et al. (2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.1",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Agriculture accounts for most child labour cases worldwide.",
+    "source": "DNV (2022)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.2",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Fairtrade aims to improve incomes and working conditions for farmers.",
+    "source": "Salim et al. (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.3",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Fair trade promotes transparency and fair pricing across supply chains.",
+    "source": "Salim et al. (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.4",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Safe and decent working conditions are a key part of sustainable food systems.",
+    "source": "Salim et al. (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.5",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Food-system sustainability includes social and labour conditions.",
+    "source": "Salim et al. (2025)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.6",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Many food-system workers remain vulnerable to exploitation.",
+    "source": "Palumbo et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.7",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Consumers increasingly value ethical and fair food production.",
+    "source": "Eliasson et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.8",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Women play a critical role in food production but often have less access to resources.",
+    "source": "IPCC (2019)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.9",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Smallholder farmers produce a large share of the world's food.",
+    "source": "Herrero et al. (2023)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF3.5.10",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "body": "Sustainable food systems should be environmentally sound and socially just.",
+    "source": "Salim et al. (2025)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF4.1.1",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Food packaging protects products from contamination, moisture, oxygen and physical damage, helping maintain food safety and quality.",
+    "source": "(European Commission, n.d)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.2",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Plastic packaging can reduce food spoilage because it is lightweight, durable and effective at protecting perishable foods.",
+    "source": "(European Commission, n.d.)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.3",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "The most sustainable packaging balances material efficiency, recyclability, product protection and food-waste prevention.",
+    "source": "(European Commission, n.d.)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.4",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "The environmental impact of producing food is often much greater than the impact of the packaging used to protect it.",
+    "source": "(FAO, 2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.5",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Well-designed packaging can reduce food waste by extending shelf life and preventing spoilage during transport, storage and home use.",
+    "source": "(FAO, 2019)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.6",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "There is no single “most sustainable” packaging material; environmental performance depends on the entire product life cycle.",
+    "source": "(European Commission, n.d.)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.7",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Edible packaging can help reduce reliance on fossil-based plastics by replacing conventional packaging materials with biodegradable alternatives.",
+    "source": "(Zhao et al., 2021)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.8",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Edible coatings can extend the shelf life of fruits and vegetables by reducing moisture loss and slowing respiration.",
+    "source": "(Sharma et al., 2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.9",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Smart packaging can monitor temperature, freshness and product condition, helping reduce food losses across the supply chain.",
+    "source": "(EFSA, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.1.10",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "body": "Active packaging can interact with food by absorbing oxygen or moisture, helping products stay fresh for longer.",
+    "source": "(EFSA, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.1",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Reusable packaging only becomes environmentally beneficial after it has been reused enough times.",
+    "source": "Miao et al. (2024)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.2",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Europe generates about 1.5 tonnes of single-use packaging waste every second.",
+    "source": "The PackHub (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.3",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Only around 40% of packaging waste in Europe is recycled.",
+    "source": "The PackHub (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.4",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Reusable packaging can reduce demand for virgin raw materials.",
+    "source": "The PackHub (2025)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.5",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "The environmental benefits of reusable packaging depend on how often it is reused.",
+    "source": "Miao et al. (2024)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.6",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Transport distances and cleaning processes influence the environmental impact of reusable packaging systems.",
+    "source": "Marmora et al. (2026)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.7",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Every reusable package has a break-even point where it becomes better than single-use alternatives.",
+    "source": "Miao et al. (2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.8",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Many reuse systems in Europe already achieve return rates of 75% or higher.",
+    "source": "The PackHub (2025)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.9",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Improved packaging systems can help reduce food waste by extending shelf life.",
+    "source": "FAO (2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF4.2.10",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "body": "Reusable transport packaging is often designed to remain in circulation for many years.",
+    "source": "Reusable Packaging Europe (2020)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.1",
+    "topicCode": "PLATE_WASTE",
+    "body": "Households generate more food waste than any other sector in the European Union.",
+    "source": "Eurostat (2026)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.2",
+    "topicCode": "PLATE_WASTE",
+    "body": "Around one fifth of food available to consumers is wasted globally.",
+    "source": "European Commission (n.d.)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.3",
+    "topicCode": "PLATE_WASTE",
+    "body": "Shopping lists and meal planning can help reduce food waste at home.",
+    "source": "Zacharatos & Theodoridis (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.4",
+    "topicCode": "PLATE_WASTE",
+    "body": "Offering smaller portion sizes can reduce plate waste in canteens and restaurants.",
+    "source": "Visschers et al. (2020)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.5",
+    "topicCode": "PLATE_WASTE",
+    "body": "Standard portion sizes often lead to unnecessary leftovers.",
+    "source": "European Commission (n.d.)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.6",
+    "topicCode": "PLATE_WASTE",
+    "body": "Many people take more food than they can eat in buffet-style dining environments.",
+    "source": "Ellison et al. (2019)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.7",
+    "topicCode": "PLATE_WASTE",
+    "body": "Food waste is responsible for a significant share of food-system greenhouse gas emissions.",
+    "source": "European Commission (n.d.)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.8",
+    "topicCode": "PLATE_WASTE",
+    "body": "Wasted meat contributes disproportionately to the climate impact of food waste.",
+    "source": "Sundin et al. (2024)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.9",
+    "topicCode": "PLATE_WASTE",
+    "body": "If food waste were a country, it would be one of the world’s largest greenhouse gas emitters.",
+    "source": "Zacharatos & Theodoridis (2025)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.1.10",
+    "topicCode": "PLATE_WASTE",
+    "body": "Wasted food also means wasted nutrients such as protein and fibre.",
+    "source": "Sundin et al. (2024)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.1",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Households account for more than half of food waste generated in the EU.",
+    "source": "Eurostat (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.2",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Proper storage helps reduce waste and keeps food safe to eat.",
+    "source": "CDCP (2025)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.3",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Perishable foods should generally not be left at room temperature for more than two hours.",
+    "source": "CDCP (2025)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.4",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Better planning and reuse of leftovers can save money and reduce environmental impacts.",
+    "source": "UNEP; European Parliament",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.5",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Best-before dates refer to quality, while use-by dates refer to food safety.",
+    "source": "EUFIC (2021)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.6",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Fruits and vegetables are the most wasted foods in Europe.",
+    "source": "EUFIC (2021)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.7",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Cooling leftovers quickly helps prevent bacterial growth.",
+    "source": "USDA FSIS (2020)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.8",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Meat and dairy may be wasted less often but have a larger environmental footprint when wasted.",
+    "source": "EUFIC (2021)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.9",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Large portions of food cool faster when divided into smaller containers.",
+    "source": "USDA FSIS (2020)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.2.10",
+    "topicCode": "LEFTOVERS_WASTE",
+    "body": "Airtight containers help keep leftovers fresh for longer.",
+    "source": "USDA FSIS (2020)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.1",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "More than half of all food waste in Europe is generated by households.",
+    "source": "(European Commission, 2026)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.2",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Buying more food than needed is one of the main causes of avoidable food waste at home.",
+    "source": "(European Commission, 2026)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.3",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Planning meals and checking cupboards before shopping can help reduce overbuying and food waste.",
+    "source": "(European Commission, 2026)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.4",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Freezing surplus food before it spoils can extend its shelf life and reduce waste.",
+    "source": "(European Commission, 2026)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.5",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Household food waste in Europe is estimated at around 69 million tonnes per year.",
+    "source": "(European Commission, 2026)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.6",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Confusion about “best before” and “use by” labels contributes significantly to unnecessary food waste.",
+    "source": "(European Commission, 2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.7",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Many foods remain safe to eat after their “best before” date if they have been stored correctly.",
+    "source": "(European Commission, 2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.8",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Multi-buy offers and bulk discounts can encourage consumers to purchase more food than they can use.",
+    "source": "(European Commission, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.9",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Fresh fruit, vegetables, dairy products and bakery items are among the foods most commonly wasted because of over-purchasing.",
+    "source": "(European Commission, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.3.10",
+    "topicCode": "EXPIRED_FOOD",
+    "body": "Keeping track of the food you throw away can help identify habits that lead to overconsumption and waste.",
+    "source": "(European Commission, 2026)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.1",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Portion sizes in many countries have increased substantially over recent decades.",
+    "source": "(Young & Nestle, 2002)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.2",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Larger portion sizes often lead people to eat more without feeling proportionally fuller.",
+    "source": "(Hollands et al., 2015)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.3",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Reducing excessive food intake can benefit both personal health and environmental sustainability.",
+    "source": "(Willett et al., 2019)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.4",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "The environmental impact of a diet depends not only on what people eat but also on how much they eat.",
+    "source": "(Springmann et al., 2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.5",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Consuming excess calories contributes to higher food-system greenhouse gas emissions because more food must be produced.",
+    "source": "(Aleksandrowicz et al., 2016)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.6",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Foods with high environmental footprints have an even greater impact when consumed in excess.",
+    "source": "(Poore & Nemecek, 2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.7",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Choosing appropriate portion sizes can help reduce both calorie overconsumption and resource use.",
+    "source": "(Hollands et al., 2015)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.8",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Eating more food than the body needs increases demand for agricultural resources such as land, water and energy.",
+    "source": "(Aleksandrowicz et al., 2016)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.9",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Overconsumption contributes to unnecessary demand for food production, transport, storage and packaging.",
+    "source": "(Springmann et al., 2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF5.4.10",
+    "topicCode": "OVERCONSUMPTION",
+    "body": "Sustainable diets encourage eating enough to meet nutritional needs while avoiding excessive consumption.",
+    "source": "(Willett et al., 2019)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true
+  },
+  {
+    "code": "FF6.1.1",
+    "topicCode": "PROTEIN",
+    "body": "Protein helps build and repair muscles, tissues, enzymes and hormones.",
+    "source": "FAO (2023b)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.2",
+    "topicCode": "PROTEIN",
+    "body": "Both plant and animal foods can provide protein.",
+    "source": "European Commission (2026)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.3",
+    "topicCode": "PROTEIN",
+    "body": "Replacing some red meat with legumes benefits health and sustainability.",
+    "source": "WHO (2023)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.4",
+    "topicCode": "PROTEIN",
+    "body": "Most adults need about 0.83 g of protein per kilogram of body weight each day.",
+    "source": "FAO (2023b)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.5",
+    "topicCode": "PROTEIN",
+    "body": "Lentils, beans, peas, nuts and seeds are excellent plant protein sources.",
+    "source": "Harvard (n.d.)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.6",
+    "topicCode": "PROTEIN",
+    "body": "The overall nutritional package of a protein source matters, not just its protein content.",
+    "source": "Harvard (n.d.)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.7",
+    "topicCode": "PROTEIN",
+    "body": "Eating a variety of plant proteins can provide all essential amino acids.",
+    "source": "European Commission (2026)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.8",
+    "topicCode": "PROTEIN",
+    "body": "Quinoa is a complete plant protein containing all essential amino acids.",
+    "source": "Harvard (n.d.)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.9",
+    "topicCode": "PROTEIN",
+    "body": "Protein quality depends on digestibility and amino acid composition.",
+    "source": "FAO (2023b)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.1.10",
+    "topicCode": "PROTEIN",
+    "body": "Many high-income countries consume more protein than recommended.",
+    "source": "European Commission (2026)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.1",
+    "topicCode": "FAT",
+    "body": "Unsaturated fats are generally healthier than saturated fats.",
+    "source": "WHO (2023b)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.2",
+    "topicCode": "FAT",
+    "body": "WHO recommends limiting saturated fat to less than 10% of daily energy intake.",
+    "source": "WHO (2023b)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.3",
+    "topicCode": "FAT",
+    "body": "Nuts, seeds, fish and olive oil are good sources of healthy fats.",
+    "source": "WHO (2023b)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.4",
+    "topicCode": "FAT",
+    "body": "The type of fat you eat matters as much as the amount.",
+    "source": "WHO (2023b)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.5",
+    "topicCode": "FAT",
+    "body": "Trans fats increase the risk of heart disease and have no known health benefits.",
+    "source": "WHO (2023b)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.6",
+    "topicCode": "FAT",
+    "body": "Replacing saturated fat with unsaturated fat can improve heart health.",
+    "source": "WHO (2023b)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.7",
+    "topicCode": "FAT",
+    "body": "Fat should contribute no more than about 30% of total daily energy intake.",
+    "source": "WHO (2023b)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.8",
+    "topicCode": "FAT",
+    "body": "Low-fat processed foods may still contain high levels of sugar.",
+    "source": "WHO (2023b)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.9",
+    "topicCode": "FAT",
+    "body": "Industrially produced trans fats can be removed without affecting food availability.",
+    "source": "WHO (2023b)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.2.10",
+    "topicCode": "FAT",
+    "body": "Fat helps the body absorb vitamins A, D, E and K.",
+    "source": "WHO (2023b)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.1",
+    "topicCode": "SUGAR",
+    "body": "Sugary drinks are a major source of added sugar in many diets.",
+    "source": "EFSA (2022)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.2",
+    "topicCode": "SUGAR",
+    "body": "High sugar intake contributes to tooth decay.",
+    "source": "WHO (2015)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.3",
+    "topicCode": "SUGAR",
+    "body": "Excess sugar intake is linked to weight gain and obesity.",
+    "source": "WHO (2015)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.4",
+    "topicCode": "SUGAR",
+    "body": "WHO recommends limiting free sugars to less than 10% of daily energy intake.",
+    "source": "WHO (2015)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.5",
+    "topicCode": "SUGAR",
+    "body": "Fruit contains natural sugars together with fibre and vitamins.",
+    "source": "WCRF (2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.6",
+    "topicCode": "SUGAR",
+    "body": "Reducing sugary drink consumption is an effective way to lower sugar intake.",
+    "source": "WCRF (2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.7",
+    "topicCode": "SUGAR",
+    "body": "Cooking at home makes it easier to control added sugar.",
+    "source": "WCRF (2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.8",
+    "topicCode": "SUGAR",
+    "body": "Sugar provides energy but few essential nutrients.",
+    "source": "WHO (2015)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.9",
+    "topicCode": "SUGAR",
+    "body": "Reducing free sugars to below 5% may provide additional health benefits.",
+    "source": "WHO (2015)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.3.10",
+    "topicCode": "SUGAR",
+    "body": "Reading labels can help identify foods high in added sugar.",
+    "source": "WCRF (2022)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.1",
+    "topicCode": "SALT",
+    "body": "Most people consume more than twice the recommended salt intake.",
+    "source": "WHO (2026)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.2",
+    "topicCode": "SALT",
+    "body": "Reducing salt intake lowers the risk of heart disease and stroke.",
+    "source": "WHO (2026)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.3",
+    "topicCode": "SALT",
+    "body": "Excess sodium intake contributes to millions of deaths worldwide.",
+    "source": "WHO (2026)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.4",
+    "topicCode": "SALT",
+    "body": "WHO recommends consuming less than 5 grams of salt per day.",
+    "source": "WHO (2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.5",
+    "topicCode": "SALT",
+    "body": "Most dietary salt comes from processed and restaurant foods.",
+    "source": "WHO (2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.6",
+    "topicCode": "SALT",
+    "body": "High sodium intake increases blood pressure.",
+    "source": "WHO (2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.7",
+    "topicCode": "SALT",
+    "body": "Herbs and spices can help replace salt in cooking.",
+    "source": "WHO (2026)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.8",
+    "topicCode": "SALT",
+    "body": "Bread, processed meat and cheese are major sodium sources in Europe.",
+    "source": "EFSA (2019)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.9",
+    "topicCode": "SALT",
+    "body": "Low-sodium salt substitutes may help suitable adults reduce sodium intake.",
+    "source": "WHO (2026)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.4.10",
+    "topicCode": "SALT",
+    "body": "Sea salt, Himalayan salt and table salt all contain significant sodium.",
+    "source": "WHO (2026)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.1",
+    "topicCode": "FIBER",
+    "body": "Most Europeans consume less fibre than recommended.",
+    "source": "Stephen et al. (2017)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.2",
+    "topicCode": "FIBER",
+    "body": "Whole grains, fruits, vegetables and pulses are excellent fibre sources.",
+    "source": "EUFIC (2023)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.3",
+    "topicCode": "FIBER",
+    "body": "Drinking enough water helps fibre work effectively.",
+    "source": "EUFIC (2023)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.4",
+    "topicCode": "FIBER",
+    "body": "Adults should aim for at least 25 grams of fibre per day.",
+    "source": "EFSA (2010)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.5",
+    "topicCode": "FIBER",
+    "body": "Increasing fibre gradually can reduce digestive discomfort.",
+    "source": "EUFIC (2023)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.6",
+    "topicCode": "FIBER",
+    "body": "Whole grains provide fibre as well as important nutrients.",
+    "source": "EUFIC (2023)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.7",
+    "topicCode": "FIBER",
+    "body": "Fibre supports healthy digestion and bowel function.",
+    "source": "EUFIC (2023)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.8",
+    "topicCode": "FIBER",
+    "body": "Higher fibre intake is linked to lower risk of heart disease and type 2 diabetes.",
+    "source": "Knowledge for Policy",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.9",
+    "topicCode": "FIBER",
+    "body": "Both soluble and insoluble fibre contribute to health.",
+    "source": "EUFIC (2023)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.5.10",
+    "topicCode": "FIBER",
+    "body": "Fibre-rich foods can help people feel full for longer.",
+    "source": "EUFIC (2023)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.1",
+    "topicCode": "VITAMINS",
+    "body": "Vitamin D deficiency is common across Europe.",
+    "source": "Quraishi et al. (2016)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.2",
+    "topicCode": "VITAMINS",
+    "body": "Vitamin C supports immunity and wound healing.",
+    "source": "Carr & Maggini (2017)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.3",
+    "topicCode": "VITAMINS",
+    "body": "Fruits and vegetables provide important vitamins and antioxidants.",
+    "source": "WHO (2020)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.4",
+    "topicCode": "VITAMINS",
+    "body": "Eating a diverse diet helps reduce the risk of vitamin deficiencies.",
+    "source": "WHO (2020)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.5",
+    "topicCode": "VITAMINS",
+    "body": "Orange and dark-green vegetables are good sources of vitamin A precursors.",
+    "source": "EFSA (2015)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.6",
+    "topicCode": "VITAMINS",
+    "body": "Nuts, seeds and vegetable oils are good sources of vitamin E.",
+    "source": "EFSA (2015)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.7",
+    "topicCode": "VITAMINS",
+    "body": "Sunlight is the body’s primary source of vitamin D.",
+    "source": "Młynarska et al. (2025)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.8",
+    "topicCode": "VITAMINS",
+    "body": "Vitamin B12 is found mainly in animal-based foods.",
+    "source": "Watanabe & Bito (2018)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.9",
+    "topicCode": "VITAMINS",
+    "body": "Vegans may need fortified foods or supplements to obtain enough B12.",
+    "source": "Watanabe & Bito (2018)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.6.10",
+    "topicCode": "VITAMINS",
+    "body": "Vitamin deficiencies can occur even when food is abundant.",
+    "source": "Kendrick (2024)",
+    "level": "ADVANCED",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.1",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "The world already produces enough calories to feed everyone.",
+    "source": "Ritchie et al. (2018)",
+    "level": "BEGINNER",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.2",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Nutrient-rich foods are not always the same as calorie-rich foods.",
+    "source": "Ickowitz et al. (2022)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.3",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Ultra-processed foods may encourage people to consume more calories.",
+    "source": "Hall et al. (2019)",
+    "level": "BEGINNER",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.4",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Foods providing the same number of calories can have very different environmental impacts.",
+    "source": "Poore & Nemecek (2018)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.5",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Sustainable diets focus on food choices, not only calorie reduction.",
+    "source": "Mazac et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.6",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "More than half of food calories are lost between farm and plate.",
+    "source": "Ritchie et al. (2018)",
+    "level": "INTERMEDIATE",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.7",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Rice, wheat and maize provide nearly half of global calories.",
+    "source": "Ickowitz et al. (2022)",
+    "level": "INTERMEDIATE",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.8",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Feeding crops to livestock results in major calorie losses.",
+    "source": "Ritchie et al. (2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.9",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Beef generates far more emissions per calorie than most plant foods.",
+    "source": "Ritchie et al. (2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  },
+  {
+    "code": "FF6.7.10",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "body": "Improving food-system efficiency can increase available nutrition without producing more food.",
+    "source": "Ritchie et al. (2018)",
+    "level": "ADVANCED",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false
+  }
+]

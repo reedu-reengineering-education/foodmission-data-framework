@@ -133,17 +133,6 @@ export async function seedGamificationProfiles(prisma: PrismaClient): Promise<{
     wallets += 1;
   }
 
-  const groups = await prisma.userGroup.findMany();
-  for (const group of groups) {
-    // Placeholder quest id until Quest catalog exists
-    if (!group.currentQuestId) {
-      await prisma.userGroup.update({
-        where: { id: group.id },
-        data: { currentQuestId: `seed-group-quest-${group.id.slice(0, 8)}` },
-      });
-    }
-  }
-
   console.log(
     `✅ Gamification profile seed: ${wallets} wallets, ${events} events, ${walletEntries} wallet entries`,
   );

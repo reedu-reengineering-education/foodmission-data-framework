@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Punti"
+  },
+  "contentLevels": {
+    "BEGINNER": "Principiante",
+    "INTERMEDIATE": "Intermedio",
+    "ADVANCED": "Avanzato"
+  },
+  "questContentTypes": {
+    "MISSION": "Missione",
+    "CHALLENGE": "Sfida",
+    "FOOD_FACT": "Curiosità alimentare",
+    "QUIZ": "Quiz",
+    "MICRO_LEARNING": "Microapprendimento"
+  },
+  "contentTags": {
+    "HEALTH": "Salute",
+    "FOOD_CHOICE": "Scelte alimentari",
+    "FOOD_AND_WASTE": "Cibo e sprechi"
   }
 }

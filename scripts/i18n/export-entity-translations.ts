@@ -3,7 +3,12 @@
 import { PrismaClient } from '@prisma/client';
 import { parseArgs } from 'node:util';
 import {
-  buildGenericFoodExportSheets,
+  isTranslatableEntityType,
+  type TranslatableEntityType,
+} from '../../src/translations/entity-types';
+import {
+  buildEntityExportSheets,
+  DEFAULT_DB_HANDOFF_ENTITY_TYPES,
   DEFAULT_ENTITY_HANDOFF_PATH,
   DEFAULT_GENERIC_FOOD_EXPORT_FIELDS,
   parseCsvList,
@@ -14,6 +19,31 @@ import {
   writeSpreadsheet,
 } from './entity-translation-handoff';
 
+function parseEntityTypes(
+  value: string | undefined,
+): TranslatableEntityType[] {
+  const requested = parseCsvList(value);
+  if (!requested?.length) {
+    return [...DEFAULT_DB_HANDOFF_ENTITY_TYPES];
+  }
+
+  const types: TranslatableEntityType[] = [];
+  for (const item of requested) {
+    if (!isTranslatableEntityType(item)) {
+      throw new Error(
+        `Unsupported entity type "${item}". Allowed: ${DEFAULT_DB_HANDOFF_ENTITY_TYPES.join(', ')}`,
+      );
+    }
+    if (!(DEFAULT_DB_HANDOFF_ENTITY_TYPES as readonly string[]).includes(item)) {
+      throw new Error(
+        `Entity type "${item}" is not part of DB handoff. Allowed: ${DEFAULT_DB_HANDOFF_ENTITY_TYPES.join(', ')}`,
+      );
+    }
+    types.push(item);
+  }
+  return types;
+}
+
 async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
@@ -21,6 +51,12 @@ async function main(): Promise<void> {
       format: { type: 'string', default: 'xlsx' },
       locales: { type: 'string' },
       fields: { type: 'string' },
+      /**
+       * Comma-separated entity types. Default: GenericFood + learning catalog
+       * (Dimension, Topic, FoodFact, Quiz, QuizOption, Mission, Challenge,
+       * Quest, MicroLearning).
+       */
+      entities: { type: 'string' },
       /**
        * By default export all non-English locales except nl (usually loaded via
        * db:translations). Pass --include-nl to also export Dutch.
@@ -45,18 +81,18 @@ async function main(): Promise<void> {
     locales = locales.filter((locale) => locale !== 'nl');
   }
 
-  const fields =
-    parseCsvList(values.fields) ??
-    [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS];
+  const genericFoodFields =
+    parseCsvList(values.fields) ?? [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS];
+  const entityTypes = parseEntityTypes(values.entities);
 
   const prisma = new PrismaClient();
   try {
-    const { sheets, report } = await buildGenericFoodExportSheets(prisma, {
+    const { sheets, report } = await buildEntityExportSheets(prisma, {
       out,
       format,
       locales,
-      entityType: 'GenericFood',
-      fields,
+      entityTypes,
+      genericFoodFields,
     });
 
     await writeSpreadsheet(sheets, out, format);

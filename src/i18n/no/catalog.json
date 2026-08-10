@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Poeng"
+  },
+  "contentLevels": {
+    "BEGINNER": "Nybegynner",
+    "INTERMEDIATE": "Middels",
+    "ADVANCED": "Avansert"
+  },
+  "questContentTypes": {
+    "MISSION": "Oppdrag",
+    "CHALLENGE": "Utfordring",
+    "FOOD_FACT": "Matfakta",
+    "QUIZ": "Quiz",
+    "MICRO_LEARNING": "Mikroæring"
+  },
+  "contentTags": {
+    "HEALTH": "Helse",
+    "FOOD_CHOICE": "Matvalg",
+    "FOOD_AND_WASTE": "Mat og avfall"
   }
 }

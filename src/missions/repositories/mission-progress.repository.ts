@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
+import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
 @Injectable()
 export class MissionProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findMissionById(missionId: string) {
+    return this.prisma.mission.findUnique({
+      where: { id: missionId },
+      select: { id: true, title: true },
+    });
+  }
 
   async findByUserIdAndMissionId(userId: string, missionId: string) {
     return this.prisma.missionProgress.findUnique({
@@ -20,14 +28,44 @@ export class MissionProgressRepository {
     });
   }
 
-  async update(
+  async findAllPaginated(page = 1, limit = 10) {
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.missionProgress.findMany({
+        skip,
+        take,
+        include: { mission: true },
+        orderBy: [{ userId: 'asc' }, { missionId: 'asc' }],
+      }),
+      this.prisma.missionProgress.count(),
+    ]);
+    return { rows, total, page, limit };
+  }
+
+  async upsert(
     userId: string,
     missionId: string,
     updateDto: UpdateMissionProgressDto,
   ) {
-    return this.prisma.missionProgress.update({
+    const progress = updateDto.progress ?? 0;
+    const completed = updateDto.completed ?? false;
+
+    return this.prisma.missionProgress.upsert({
       where: { userId_missionId: { userId, missionId } },
-      data: { ...updateDto },
+      create: {
+        userId,
+        missionId,
+        progress,
+        completed,
+      },
+      update: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
       include: { mission: true },
     });
   }

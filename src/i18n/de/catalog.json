@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Punkte"
+  },
+  "contentLevels": {
+    "BEGINNER": "Anfänger",
+    "INTERMEDIATE": "Fortgeschritten",
+    "ADVANCED": "Experte"
+  },
+  "questContentTypes": {
+    "MISSION": "Mission",
+    "CHALLENGE": "Herausforderung",
+    "FOOD_FACT": "Lebensmittelfakt",
+    "QUIZ": "Quiz",
+    "MICRO_LEARNING": "Mikrolernen"
+  },
+  "contentTags": {
+    "HEALTH": "Gesundheit",
+    "FOOD_CHOICE": "Lebensmittelauswahl",
+    "FOOD_AND_WASTE": "Lebensmittel und Abfall"
   }
 }

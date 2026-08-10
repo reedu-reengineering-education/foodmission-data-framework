@@ -1,133 +1,39 @@
-// challenges.seed.ts
-import { PrismaClient, Challenge, ChallengeProgress } from '@prisma/client';
+import { Challenge, PrismaClient } from '@prisma/client';
+import { seedChallengesCatalog } from '../shared/challenges-catalog';
+import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
 
-export interface ChallengeSeedData {
-  title: string;
-  description: string;
-  available: boolean;
-  startDate: Date;
-  endDate: Date;
-}
+/** Sparse demo progress for named Keycloak users only (not every seeded user). */
+const demoProgressByKeycloakId: Record<
+  string,
+  { code: string; completed: boolean; progress: number }[]
+> = {
+  [KEYCLOAK_DEV_USER_IDS.devUser1]: [
+    { code: 'CH.B1.1', completed: true, progress: 100 },
+    { code: 'CH.B1.2', completed: false, progress: 0 },
+  ],
+  [KEYCLOAK_DEV_USER_IDS.adminUser1]: [
+    { code: 'CH.B1.1', completed: false, progress: 50 },
+  ],
+};
 
-export const challengeData: ChallengeSeedData[] = [
-  {
-    title: 'Bring Your Own Bag',
-    description: 'Use a reusable shopping bag for your groceries today',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-12-31'),
-  },
-  {
-    title: 'Meatless Monday',
-    description: 'Go vegetarian for the entire day',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-12-31'),
-  },
-  {
-    title: 'Water Bottle Warrior',
-    description: 'Drink only from your reusable water bottle today',
-    available: true,
-    startDate: new Date('2026-02-01'),
-    endDate: new Date('2026-06-30'),
-  },
-  {
-    title: 'Zero Waste Shopping',
-    description: 'Buy products with minimal or no packaging',
-    available: true,
-    startDate: new Date('2026-01-15'),
-    endDate: new Date('2026-07-15'),
-  },
-  {
-    title: 'Local Hero',
-    description: 'Purchase at least 3 locally sourced products',
-    available: true,
-    startDate: new Date('2026-03-01'),
-    endDate: new Date('2026-09-01'),
-  },
-  {
-    title: 'Bike to Work',
-    description: 'Use your bicycle instead of driving today',
-    available: true,
-    startDate: new Date('2026-04-01'),
-    endDate: new Date('2026-10-31'),
-  },
-  {
-    title: 'Energy Saver',
-    description: 'Unplug all unused devices for the day',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-12-31'),
-  },
-  {
-    title: 'Compost Champion',
-    description: 'Start composting your organic waste today',
-    available: false,
-    startDate: new Date('2026-05-01'),
-    endDate: new Date('2026-11-30'),
-  },
-  {
-    title: 'Digital Detox Hour',
-    description: 'Spend one hour without any electronic devices',
-    available: true,
-    startDate: new Date('2026-01-01'),
-    endDate: new Date('2026-12-31'),
-  },
-  {
-    title: 'Green Commute',
-    description: 'Use public transportation or walk to work',
-    available: true,
-    startDate: new Date('2026-02-15'),
-    endDate: new Date('2026-08-15'),
-  },
-];
-
+/**
+ * Seed full Task 3.3 challenge catalog, then attach sparse demo progress
+ * for Keycloak dev users.
+ */
 export async function seedChallenges(prisma: PrismaClient) {
-  console.log('🏆 Seeding challenges and challenge progress...');
+  const challenges = await seedChallengesCatalog(prisma);
+  const challengeByCode = new Map(challenges.map((c) => [c.code, c]));
+  let progressCount = 0;
 
-  const users = await prisma.user.findMany();
+  for (const [keycloakId, rows] of Object.entries(demoProgressByKeycloakId)) {
+    const user = await prisma.user.findUnique({ where: { keycloakId } });
+    if (!user) continue;
 
-  if (users.length === 0) {
-    console.warn('⚠️ No users found, skipping challenge progress seeding');
-  }
+    for (const row of rows) {
+      const challenge = challengeByCode.get(row.code);
+      if (!challenge) continue;
 
-  const challenges: Challenge[] = [];
-  const challengeProgresses: ChallengeProgress[] = [];
-
-  // First, create all challenges
-  for (const challengeInfo of challengeData) {
-    const challenge = await prisma.challenge.upsert({
-      where: {
-        id: challengeInfo.title.replace(/\s+/g, '-').toLowerCase(),
-      },
-      update: {
-        title: challengeInfo.title,
-        description: challengeInfo.description,
-        available: challengeInfo.available,
-        startDate: challengeInfo.startDate,
-        endDate: challengeInfo.endDate,
-      },
-      create: {
-        id: challengeInfo.title.replace(/\s+/g, '-').toLowerCase(),
-        title: challengeInfo.title,
-        description: challengeInfo.description,
-        available: challengeInfo.available,
-        startDate: challengeInfo.startDate,
-        endDate: challengeInfo.endDate,
-      },
-    });
-
-    challenges.push(challenge);
-  }
-
-  // Then, create challenge progress for each user
-  for (const user of users) {
-    for (const challenge of challenges) {
-      // Randomize progress and completion for variety
-      const isCompleted = Math.random() > 0.7; // 30% chance of being completed
-      const progress = isCompleted ? 100 : Math.floor(Math.random() * 90);
-
-      const challengeProgress = await prisma.challengeProgress.upsert({
+      await prisma.challengeProgress.upsert({
         where: {
           userId_challengeId: {
             userId: user.id,
@@ -135,24 +41,22 @@ export async function seedChallenges(prisma: PrismaClient) {
           },
         },
         update: {
-          completed: isCompleted,
-          progress: progress,
+          completed: row.completed,
+          progress: row.progress,
         },
         create: {
           userId: user.id,
           challengeId: challenge.id,
-          completed: isCompleted,
-          progress: progress,
+          completed: row.completed,
+          progress: row.progress,
         },
       });
-
-      challengeProgresses.push(challengeProgress);
+      progressCount += 1;
     }
   }
 
-  console.log(`✅ Created/updated ${challenges.length} challenges`);
   console.log(
-    `✅ Created/updated ${challengeProgresses.length} challenge progress records for ${users.length} users`,
+    `✅ Created/updated ${progressCount} demo challenge progress rows`,
   );
-  return challenges;
+  return challenges as Challenge[];
 }

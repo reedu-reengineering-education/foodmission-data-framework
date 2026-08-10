@@ -8,8 +8,8 @@
  *   npm run db:seed:prod   # (or db:seed)
  *   npm run db:translations
  *
- * Loads NEVO food name overlays into `entity_translations`, and is the place
- * to add further DB translation imports later. Skips sources that already have
+ * Loads NEVO food name overlays, survey translations, and learning content
+ * locale JSON into `entity_translations`. Skips sources that already have
  * data unless `--force` is passed.
  */
 
@@ -24,6 +24,10 @@ import {
   printSurveyTranslationReport,
   seedSurveyTranslations,
 } from './prod/survey-translations';
+import {
+  printLearningTranslationReport,
+  seedLearningTranslations,
+} from './prod/learning-translations';
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -67,6 +71,11 @@ async function main(): Promise<void> {
     console.log('\n📋 Survey translations');
     const surveyReport = await seedSurveyTranslations(prisma, { dryRun });
     printSurveyTranslationReport(surveyReport);
+
+    // --- Learning content locale overlays ---
+    console.log('\n📚 Learning translations');
+    const learningReport = await seedLearningTranslations(prisma, { dryRun });
+    printLearningTranslationReport(learningReport);
 
     // Future DB translation sources (gamification, recipes, …) go here.
 

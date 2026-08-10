@@ -7,6 +7,8 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,9 +27,14 @@ import { ChallengesService } from '../services/challenges.service';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
+import { ListChallengesQueryDto } from '../dto/list-challenges-query.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
+import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('challenges')
 @Controller('challenges')
@@ -43,8 +50,7 @@ export class ChallengesController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Create a new Challenge',
-    description:
-      'Creates a new challenge as an Admin. Automatically creates a ChallengeProgress entry for every existing user.',
+    description: 'Creates a new challenge as an Admin',
   })
   @ApiBody({ type: CreateChallengeDto })
   @ApiResponse({
@@ -64,11 +70,12 @@ export class ChallengesController {
   }
 
   @Get()
-  @Roles('admin')
+  @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all challenges',
-    description: 'Retrieves all challenges. Admin only.',
+    description:
+      'Retrieves challenges filtered by dimension/level/availability. Non-admins only see available challenges.',
   })
   @ApiResponse({
     status: 200,
@@ -76,18 +83,74 @@ export class ChallengesController {
     type: [ChallengeResponseDto],
   })
   @ApiCrudErrorResponses()
-  async getAll(): Promise<ChallengeResponseDto[]> {
-    return this.challengeService.getAll();
+  async getAll(
+    @Query() query: ListChallengesQueryDto,
+    @Req()
+    req: {
+      user?: { resource_access?: Record<string, { roles?: string[] }> };
+    },
+    @CurrentUser('id') userId: string,
+  ): Promise<ChallengeResponseDto[]> {
+    const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
+    return this.challengeService.getAll(query, { isAdmin, userId });
   }
 
-  @Get(':id')
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all challenge progress rows (admin, paginated)',
+    description:
+      'Returns paginated challenge progress for all users. Use instead of embedded progress on challenge list.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated challenge progress retrieved successfully',
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgressPaginated(
+    @Query() query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<ChallengeProgressResponseDto>> {
+    return this.challengeProgressService.getAllPaginated(query);
+  }
+
+  @Get('/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get challenge by ID',
-    description: 'Retrieves a specific challenge by its ID.',
+    summary: 'Get all challenge progresses for the current user',
+    description:
+      'Retrieves all challenge progresses for the authenticated user.',
   })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of challenge progresses retrieved successfully',
+    type: [ChallengeProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgress(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeProgressResponseDto[]> {
+    return this.challengeProgressService.getAllChallengesByUserId(
+      userId,
+      query.lang,
+    );
+  }
+
+  @Get(':codeOrId')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get challenge by UUID or code',
+    description: 'Retrieves a specific challenge by its ID or business code.',
+  })
+  @ApiParam({
+    name: 'codeOrId',
+    type: 'string',
+    description: 'Challenge UUID or code (e.g. CH.A1.1)',
+    example: 'CH.A1.1',
+  })
   @ApiResponse({
     status: 200,
     description: 'Challenge retrieved successfully',
@@ -99,9 +162,10 @@ export class ChallengesController {
   })
   @ApiCrudErrorResponses()
   async getChallengeById(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeResponseDto> {
-    return this.challengeService.getChallengeById(id);
+    return this.challengeService.getChallengeById(codeOrId, query.lang);
   }
 
   @Patch(':id')
@@ -150,25 +214,5 @@ export class ChallengesController {
   @ApiCrudErrorResponses()
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.challengeService.delete(id);
-  }
-
-  @Get('/progress')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all challenge progresses for the current user',
-    description:
-      'Retrieves all challenge progresses for the authenticated user.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of challenge progresses retrieved successfully',
-    type: [ChallengeProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAllProgress(
-    @CurrentUser('id') userId: string,
-  ): Promise<ChallengeProgressResponseDto[]> {
-    return this.challengeProgressService.getAllChallengesByUserId(userId);
   }
 }

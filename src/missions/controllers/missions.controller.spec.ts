@@ -28,6 +28,7 @@ describe('MissionsController', () => {
           useValue: {
             getMissionById: jest.fn(),
             getAllMissionsByUserId: jest.fn(),
+            getAllPaginated: jest.fn(),
             update: jest.fn(),
           },
         },
@@ -52,11 +53,14 @@ describe('MissionsController', () => {
       const mockResult = { id: 'm1' };
       (service.create as jest.Mock).mockResolvedValue(mockResult);
       const dto = {
+        code: 'M.B1.1',
+        dimensionId: 'dim-1',
+        level: 'BEGINNER' as const,
         title: 't',
-        description: 'd',
+        duration: '1 week',
+        goal: 'g',
+        whyItMatters: 'w',
         available: true,
-        startDate: new Date(),
-        endDate: new Date(),
       };
       const result = await controller.create(dto);
       expect(service.create).toHaveBeenCalledWith(dto);
@@ -68,9 +72,49 @@ describe('MissionsController', () => {
     it('should call service.getMissionById and return result', async () => {
       const mockResult = { id: 'm1' };
       (service.getMissionById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getMissionById('m1');
-      expect(service.getMissionById).toHaveBeenCalledWith('m1');
+      const result = await controller.getMissionById('m1', {});
+      expect(service.getMissionById).toHaveBeenCalledWith('m1', undefined);
       expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('getAllMissions', () => {
+    it('should pass isAdmin=false for non-admin Keycloak roles', async () => {
+      (service.getAllMissions as jest.Mock).mockResolvedValue([]);
+      await controller.getAllMissions(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user'] },
+            },
+          },
+        },
+        'u1',
+      );
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
+        isAdmin: false,
+        userId: 'u1',
+      });
+    });
+
+    it('should pass isAdmin=true for Keycloak admin role', async () => {
+      (service.getAllMissions as jest.Mock).mockResolvedValue([]);
+      await controller.getAllMissions(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['admin'] },
+            },
+          },
+        },
+        'u1',
+      );
+      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
+        isAdmin: true,
+        userId: 'u1',
+      });
     });
   });
 

@@ -1,0 +1,71 @@
+{
+  "dimensions": {
+    "DIET_CHANGES": "Ernährungsumstellung hin zu einem nachhaltigeren System"
+  },
+  "topics": {
+    "REDUCING_MEAT_CONSUMPTION": "Reduzierung des Fleischkonsums",
+    "INCREASING_OTHER_PROTEIN_SOURCES": "Mehr andere Proteinquellen"
+  },
+  "foodFacts": {
+    "FF1.1.1": {
+      "body": "Weniger rotes Fleisch zu essen ist eine der wirksamsten Möglichkeiten, die Umweltauswirkungen der eigenen Ernährung zu verringern."
+    },
+    "FF1.1.2": {
+      "body": "Eine geringere Rindfleischmenge kann den Druck auf Wälder und natürliche Lebensräume verringern."
+    },
+    "FF1.1.3": {
+      "body": "Ernährungsweisen mit weniger Fleisch verursachen in der Regel weniger Treibhausgasemissionen."
+    }
+  },
+  "quizzes": {
+    "Q1.1.1": {
+      "question": "Du möchtest die Umweltauswirkungen deiner Abendessen verringern. Welche Änderung hat wahrscheinlich den größten Effekt?",
+      "explanation": "Weniger Rindfleisch zu essen hat in der Regel eine deutlich größere Wirkung als der Wechsel zwischen ähnlichen Lebensmitteln, weil die Viehhaltung stark zu Landnutzung, Wasserverbrauch und Treibhausgasemissionen beiträgt.",
+      "options": {
+        "A": "Rindfleisch zweimal pro Woche durch Linsen ersetzen",
+        "B": "Bio-Rindfleisch statt konventionellem Rindfleisch kaufen",
+        "C": "Rindfleisch zweimal pro Woche durch Hähnchen ersetzen",
+        "D": "Möglichst lokal produziertes Rindfleisch kaufen"
+      }
+    },
+    "Q1.1.2": {
+      "question": "Welcher Wochenessensplan hat wahrscheinlich die geringsten Umweltauswirkungen?",
+      "explanation": "Fleisch durch Hülsenfrüchte zu ersetzen bringt in der Regel größere Umweltvorteile als ein einfacher Wechsel zwischen verschiedenen tierischen Proteinen.",
+      "options": {
+        "A": "Rindfleisch zweimal, Hähnchen zweimal, Fisch einmal",
+        "B": "Rindfleisch einmal, Hülsenfrüchte viermal",
+        "C": "Hähnchen fünfmal",
+        "D": "Schweinefleisch dreimal und Käse zweimal"
+      }
+    }
+  },
+  "missions": {
+    "M.A1.1": {
+      "title": "In der grünen Zone bleiben",
+      "goal": "Unter vier Fleischmahlzeiten pro Woche bleiben.",
+      "whyItMatters": "Flexitarische Ernährung kann die Klimaauswirkungen deutlich verringern."
+    },
+    "M.A1.2": {
+      "title": "Mehrheit pflanzliches Protein",
+      "goal": "Den Großteil der proteinhaltigen Mahlzeiten aus nicht-fleischlichen Proteinquellen beziehen.",
+      "whyItMatters": "Pflanzliche Proteine benötigen in der Regel weniger Ressourcen als Fleischproduktion."
+    }
+  },
+  "challenges": {
+    "CH.A1.1": {
+      "title": "Alte Getreide entdecken",
+      "task": "Wähle ein altes Getreide aus, das du noch nie probiert hast, und probiere es.",
+      "whyItMatters": "Alte Getreidesorten tragen zur Ernährungs- und Agrarvielfalt bei."
+    },
+    "CH.A1.2": {
+      "title": "Ein nachhaltiges Menü gestalten",
+      "task": "Entwirf ein Tagesmenü mit: einer Hülsenfrucht, einem alternativen Grundnahrungsmittel und höchstens einer fleischhaltigen Mahlzeit.",
+      "whyItMatters": "Essensplanung hilft, Wissen in Verhalten umzusetzen."
+    }
+  },
+  "quests": {
+    "QUEST.DIET_CHANGES.BEGINNER": {
+      "title": "Ernährungsumstellung — Anfänger"
+    }
+  }
+}

@@ -11,13 +11,31 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ChallengeResponseDto } from '../dto/response-challange.dto';
 import { CreateChallengeDto } from '../dto/create-challenge.dto';
 import { UpdateChallengeDto } from '../dto/update-challenge.dto';
+import { ListChallengesQueryDto } from '../dto/list-challenges-query.dto';
 import { ChallengesRepository } from '../repositories/challenges.repository';
+import { TranslationService } from '../../translations/services/translation.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+
+function tagsFromFlags(challenge: {
+  health?: boolean;
+  foodChoice?: boolean;
+  foodWaste?: boolean;
+}): string[] {
+  const tags: string[] = [];
+  if (challenge.health) tags.push('HEALTH');
+  if (challenge.foodChoice) tags.push('FOOD_CHOICE');
+  if (challenge.foodWaste) tags.push('FOOD_AND_WASTE');
+  return tags;
+}
 
 @Injectable()
 export class ChallengesService {
   private readonly logger = new Logger(ChallengesService.name);
 
-  constructor(private readonly challengesRepository: ChallengesRepository) {}
+  constructor(
+    private readonly challengesRepository: ChallengesRepository,
+    private readonly translationService: TranslationService,
+  ) {}
 
   async create(
     createChallengeDto: CreateChallengeDto,
@@ -43,26 +61,43 @@ export class ChallengesService {
     }
   }
 
-  async getChallengeById(challengeId: string): Promise<ChallengeResponseDto> {
-    this.logger.log(`Getting challenge ${challengeId}`);
+  async getChallengeById(
+    codeOrId: string,
+    lang?: string,
+  ): Promise<ChallengeResponseDto> {
+    this.logger.log(`Getting challenge ${codeOrId}`);
 
-    const challenge = await this.challengesRepository.findById(challengeId);
+    const challenge =
+      await this.challengesRepository.findByCodeOrId(codeOrId);
 
     if (!challenge) {
       throw new NotFoundException('Challenge not found');
     }
 
-    return this.transformToResponseDto(challenge);
+    const [mapped] = await this.overlayTranslations([challenge], lang);
+    return mapped;
   }
 
-  async getAll(): Promise<ChallengeResponseDto[]> {
+  async getAll(
+    query: ListChallengesQueryDto = {},
+    options: { isAdmin?: boolean; userId?: string } = {},
+  ): Promise<ChallengeResponseDto[]> {
+    const { isAdmin = false, userId } = options;
     this.logger.log('Getting all challenges');
 
-    const challenges = await this.challengesRepository.findAll();
+    const available =
+      isAdmin && query.available !== undefined ? query.available : true;
 
-    return challenges.map((challenge) =>
-      this.transformToResponseDto(challenge),
-    );
+    const challenges = await this.challengesRepository.findAll({
+      dimensionCode: query.dimensionCode,
+      level: query.level,
+      available,
+      progressUserId: isAdmin ? undefined : userId,
+    });
+
+    return this.overlayTranslations(challenges, query.lang, {
+      includeProgress: !isAdmin,
+    });
   }
 
   async update(
@@ -97,18 +132,85 @@ export class ChallengesService {
     await this.challengesRepository.delete(challengeId);
   }
 
-  private transformToResponseDto(challenge: any): ChallengeResponseDto {
-    return {
+  private async overlayTranslations(
+    challenges: any[],
+    lang?: string,
+    options?: { includeProgress?: boolean },
+  ): Promise<ChallengeResponseDto[]> {
+    const locale = this.translationService.resolveLocale(lang);
+    if (locale === DEFAULT_LOCALE || challenges.length === 0) {
+      return challenges.map((c) => this.transformToResponseDto(c, options));
+    }
+
+    const overlay = await this.translationService.resolveMany(
+      'Challenge',
+      challenges.map((c) => c.id),
+      locale,
+      ['title', 'task', 'whyItMatters'],
+      Object.fromEntries(
+        challenges.map((c) => [
+          c.id,
+          {
+            title: c.title,
+            task: c.task,
+            whyItMatters: c.whyItMatters,
+          },
+        ]),
+      ),
+    );
+
+    return challenges.map((c) =>
+      this.transformToResponseDto(
+        {
+          ...c,
+          title: overlay[c.id]?.title ?? c.title,
+          task: overlay[c.id]?.task ?? c.task,
+          whyItMatters: overlay[c.id]?.whyItMatters ?? c.whyItMatters,
+        },
+        options,
+      ),
+    );
+  }
+
+  private transformToResponseDto(
+    challenge: {
+      id: string;
+      code: string;
+      dimensionId: string;
+      topicId?: string | null;
+      level: string;
+      title: string;
+      task: string;
+      whyItMatters: string;
+      health?: boolean;
+      foodChoice?: boolean;
+      foodWaste?: boolean;
+      available: boolean;
+      challengeProgresses?: Array<{ progress?: number }>;
+    },
+    options?: { includeProgress?: boolean },
+  ): ChallengeResponseDto {
+    const dto: ChallengeResponseDto = {
       id: challenge.id,
+      code: challenge.code,
+      dimensionId: challenge.dimensionId,
+      topicId: challenge.topicId,
+      level: challenge.level as ChallengeResponseDto['level'],
       title: challenge.title,
-      description: challenge.description,
+      task: challenge.task,
+      whyItMatters: challenge.whyItMatters,
+      tags: tagsFromFlags(challenge),
+      health: challenge.health ?? false,
+      foodChoice: challenge.foodChoice ?? false,
+      foodWaste: challenge.foodWaste ?? false,
       available: challenge.available,
-      progress:
-        challenge.challengeProgresses?.find(
-          (cp) => cp.userId === challenge.userId,
-        )?.progress || 0,
-      startDate: challenge.startDate,
-      endDate: challenge.endDate,
     };
+
+    if (options?.includeProgress) {
+      const row = challenge.challengeProgresses?.[0];
+      dto.progress = row?.progress ?? 0;
+    }
+
+    return dto;
   }
 }

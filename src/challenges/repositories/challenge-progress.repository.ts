@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
+import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
 @Injectable()
 export class ChallengeProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findChallengeById(challengeId: string) {
+    return this.prisma.challenge.findUnique({
+      where: { id: challengeId },
+      select: { id: true, title: true },
+    });
+  }
 
   async findByUserIdAndChallengeId(userId: string, challengeId: string) {
     return this.prisma.challengeProgress.findUnique({
@@ -20,14 +28,44 @@ export class ChallengeProgressRepository {
     });
   }
 
-  async update(
+  async findAllPaginated(page = 1, limit = 10) {
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.challengeProgress.findMany({
+        skip,
+        take,
+        include: { challenge: true },
+        orderBy: [{ userId: 'asc' }, { challengeId: 'asc' }],
+      }),
+      this.prisma.challengeProgress.count(),
+    ]);
+    return { rows, total, page, limit };
+  }
+
+  async upsert(
     userId: string,
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,
   ) {
-    return this.prisma.challengeProgress.update({
+    const progress = updateDto.progress ?? 0;
+    const completed = updateDto.completed ?? false;
+
+    return this.prisma.challengeProgress.upsert({
       where: { userId_challengeId: { userId, challengeId } },
-      data: { ...updateDto },
+      create: {
+        userId,
+        challengeId,
+        progress,
+        completed,
+      },
+      update: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
       include: { challenge: true },
     });
   }

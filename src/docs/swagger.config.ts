@@ -60,8 +60,24 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     description: 'Food waste registration, analytics, and reduction insights',
   },
   {
-    name: 'knowledge',
-    description: 'Knowledge base content, quizzes, and progress tracking',
+    name: 'dimensions',
+    description: 'Sustainability dimensions and nested topics taxonomy',
+  },
+  {
+    name: 'food-facts',
+    description: 'Learning food facts catalog and filters',
+  },
+  {
+    name: 'quizzes',
+    description: 'Learning quizzes, options, and quiz progress',
+  },
+  {
+    name: 'quests',
+    description: 'Learning quests, quest items, and quest progress',
+  },
+  {
+    name: 'micro-learnings',
+    description: 'Micro-learning content catalog',
   },
   {
     name: 'challenges',
@@ -72,13 +88,31 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     description: 'Mission management - Create and manage user missions',
   },
   {
+    name: 'events',
+    description:
+      'Client-allowlisted user event recording for analytics and gamification',
+  },
+  {
+    name: 'surveys',
+    description: 'Survey definitions, questions, and user responses',
+  },
+  {
     name: 'health',
     description:
       'Application health checks, readiness probes, and monitoring metrics',
   },
   {
+    name: 'analytics',
+    description: 'Cross-domain analytics batch runs, approval, and publishing',
+  },
+  {
     name: 'analytics-meal-log',
     description: 'Anonymized meal-log analytics, reports, and batch workflows',
+  },
+  {
+    name: 'analytics-shopping-list',
+    description:
+      'Anonymized shopping-list analytics, reports, and batch workflows',
   },
   {
     name: 'monitoring',

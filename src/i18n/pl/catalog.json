@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Punkty"
+  },
+  "contentLevels": {
+    "BEGINNER": "Początkujący",
+    "INTERMEDIATE": "Średniozaawansowany",
+    "ADVANCED": "Zaawansowany"
+  },
+  "questContentTypes": {
+    "MISSION": "Misja",
+    "CHALLENGE": "Wyzwanie",
+    "FOOD_FACT": "Ciekawostka żywnościowa",
+    "QUIZ": "Quiz",
+    "MICRO_LEARNING": "Mikronauka"
+  },
+  "contentTags": {
+    "HEALTH": "Zdrowie",
+    "FOOD_CHOICE": "Wybór żywności",
+    "FOOD_AND_WASTE": "Żywność i odpady"
   }
 }

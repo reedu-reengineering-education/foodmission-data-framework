@@ -59,7 +59,6 @@ export const userData: UserSeedData[] = [
     weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
     weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
     segment: UserSegment.INTERMEDIATE,
-    currentQuestId: 'seed-quest-dev-user',
     lastLoginAt: new Date(),
   },
   {
@@ -87,7 +86,6 @@ export const userData: UserSeedData[] = [
     weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
     weeklyReusableOrRefill: WeeklyReusableRange.SEVEN_TO_NINE,
     segment: UserSegment.ADVANCED,
-    currentQuestId: 'seed-quest-jane',
     lastLoginAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
   },
   {
@@ -142,7 +140,6 @@ export const userData: UserSeedData[] = [
     weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
     weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
     segment: UserSegment.INTERMEDIATE,
-    currentQuestId: 'seed-quest-sarah',
     lastLoginAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
   },
   {
@@ -176,7 +173,6 @@ export const userData: UserSeedData[] = [
     weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
     weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
     segment: UserSegment.ADVANCED,
-    currentQuestId: 'seed-quest-admin',
     lastLoginAt: new Date(),
   },
 ];

@@ -7,6 +7,8 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -24,10 +26,15 @@ import { MissionsResponseDto } from '../dto/response-missions.dto';
 import { MissionsService } from '../services/missions.service';
 import { CreateMissionsDto } from '../dto/create-missions.dto';
 import { UpdateMissionsDto } from '../dto/update-missions.dto';
+import { ListMissionsQueryDto } from '../dto/list-missions-query.dto';
 import { Roles } from 'nest-keycloak-connect';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
+import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 
 @ApiTags('missions')
 @Controller('missions')
@@ -37,6 +44,7 @@ export class MissionsController {
     private readonly missionService: MissionsService,
     private readonly missionProgressService: MissionProgressService,
   ) {}
+
   @Post()
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
@@ -61,42 +69,13 @@ export class MissionsController {
     return this.missionService.create(createMissionDto);
   }
 
-  @Get(':id')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get mission by ID',
-    description:
-      'Retrieves a specific mission by ID for the authenticated user. Only the mission owner can access it.',
-  })
-  @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiResponse({
-    status: 200,
-    description: 'Mission retrieved successfully',
-    type: MissionsResponseDto,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No permission',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Mission not found',
-  })
-  @ApiCrudErrorResponses()
-  async getMissionById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<MissionsResponseDto> {
-    return this.missionService.getMissionById(id);
-  }
-
   @Get()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Get all missions',
     description:
-      'Retrieves all missions for the authenticated user. Only the mission owner can access them.',
+      'Retrieves missions filtered by dimension/level/availability. Non-admins only see available missions.',
   })
   @ApiResponse({
     status: 200,
@@ -112,8 +91,92 @@ export class MissionsController {
     description: 'No missions found',
   })
   @ApiCrudErrorResponses()
-  async getAllMissions(): Promise<MissionsResponseDto[]> {
-    return this.missionService.getAllMissions();
+  async getAllMissions(
+    @Query() query: ListMissionsQueryDto,
+    @Req()
+    req: {
+      user?: { resource_access?: Record<string, { roles?: string[] }> };
+    },
+    @CurrentUser('id') userId: string,
+  ): Promise<MissionsResponseDto[]> {
+    const isAdmin = extractKeycloakRoles(req.user ?? {}).includes('admin');
+    return this.missionService.getAllMissions(query, { isAdmin, userId });
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all mission progress rows (admin, paginated)',
+    description:
+      'Returns paginated mission progress for all users. Use instead of embedded progress on mission list.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated mission progress retrieved successfully',
+  })
+  @ApiCrudErrorResponses()
+  async getAllProgressPaginated(
+    @Query() query: PaginatedLangQueryDto,
+  ): Promise<PaginatedResponseDto<MissionProgressResponseDto>> {
+    return this.missionProgressService.getAllPaginated(query);
+  }
+
+  @Get('progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get all mission progresses for the current user',
+    description: 'Retrieves all mission progresses for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of mission progresses retrieved successfully',
+    type: [MissionProgressResponseDto],
+  })
+  @ApiCrudErrorResponses()
+  async getAll(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionProgressResponseDto[]> {
+    return this.missionProgressService.getAllMissionsByUserId(
+      userId,
+      query.lang,
+    );
+  }
+
+  @Get(':codeOrId')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get mission by UUID or code',
+    description: 'Retrieves a specific mission by ID or business code.',
+  })
+  @ApiParam({
+    name: 'codeOrId',
+    type: 'string',
+    description: 'Mission UUID or code (e.g. M.A1.1)',
+    example: 'M.A1.1',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Mission retrieved successfully',
+    type: MissionsResponseDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No permission',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Mission not found',
+  })
+  @ApiCrudErrorResponses()
+  async getMissionById(
+    @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionsResponseDto> {
+    return this.missionService.getMissionById(codeOrId, query.lang);
   }
 
   @Patch(':id')
@@ -165,24 +228,5 @@ export class MissionsController {
   @ApiCrudErrorResponses()
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.missionService.remove(id);
-  }
-
-  @Get('progress')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Get all mission progresses for the current user',
-    description: 'Retrieves all mission progresses for the authenticated user.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of mission progresses retrieved successfully',
-    type: [MissionProgressResponseDto],
-  })
-  @ApiCrudErrorResponses()
-  async getAll(
-    @CurrentUser('id') userId: string,
-  ): Promise<MissionProgressResponseDto[]> {
-    return this.missionProgressService.getAllMissionsByUserId(userId);
   }
 }

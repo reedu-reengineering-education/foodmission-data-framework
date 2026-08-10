@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengesService } from './challenges.service';
 import { ChallengesRepository } from '../repositories/challenges.repository';
+import { TranslationService } from '../../translations/services/translation.service';
 import {
   NotFoundException,
   ConflictException,
@@ -8,6 +9,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ContentLevel } from '@prisma/client';
 
 describe('ChallengesService', () => {
   let service: ChallengesService;
@@ -15,11 +17,17 @@ describe('ChallengesService', () => {
 
   const mockChallenge = {
     id: 'c1',
+    code: 'CH.B1.1',
+    dimensionId: 'dim-1',
+    topicId: null,
+    level: ContentLevel.BEGINNER,
     title: 'Test Challenge',
-    description: 'Test Description',
+    task: 'Test task',
+    whyItMatters: 'Test why',
+    health: false,
+    foodChoice: true,
+    foodWaste: false,
     available: true,
-    startDate: new Date(),
-    endDate: new Date(),
     challengeProgresses: [{ userId: 'u1', progress: 50 }],
   };
 
@@ -33,8 +41,16 @@ describe('ChallengesService', () => {
             create: jest.fn(),
             findAll: jest.fn(),
             findById: jest.fn(),
+            findByCodeOrId: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+          },
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+            resolveMany: jest.fn(),
           },
         },
       ],
@@ -50,11 +66,14 @@ describe('ChallengesService', () => {
 
   describe('create', () => {
     const createDto = {
+      code: 'CH.B1.1',
+      dimensionId: 'dim-1',
+      level: ContentLevel.BEGINNER,
       title: 'Test',
-      description: 'Desc',
+      task: 'Task',
+      whyItMatters: 'Why',
+      tags: ['FOOD_CHOICE'],
       available: true,
-      startDate: new Date(),
-      endDate: new Date(),
     };
 
     it('should create and return transformed challenge', async () => {
@@ -63,7 +82,11 @@ describe('ChallengesService', () => {
       const result = await service.create(createDto);
 
       expect(repository.create).toHaveBeenCalledWith(createDto);
-      expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
+      expect(result).toMatchObject({
+        id: 'c1',
+        title: 'Test Challenge',
+        tags: ['FOOD_CHOICE'],
+      });
     });
 
     it('should rethrow ConflictException', async () => {
@@ -109,16 +132,16 @@ describe('ChallengesService', () => {
 
   describe('getChallengeById', () => {
     it('should return challenge when found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(mockChallenge);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(mockChallenge);
 
       const result = await service.getChallengeById('c1');
 
-      expect(repository.findById).toHaveBeenCalledWith('c1');
+      expect(repository.findByCodeOrId).toHaveBeenCalledWith('c1');
       expect(result).toMatchObject({ id: 'c1', title: 'Test Challenge' });
     });
 
     it('should throw NotFoundException when not found', async () => {
-      (repository.findById as jest.Mock).mockResolvedValue(null);
+      (repository.findByCodeOrId as jest.Mock).mockResolvedValue(null);
 
       await expect(service.getChallengeById('c1')).rejects.toThrow(
         NotFoundException,
@@ -130,9 +153,14 @@ describe('ChallengesService', () => {
     it('should return all challenges transformed', async () => {
       (repository.findAll as jest.Mock).mockResolvedValue([mockChallenge]);
 
-      const result = await service.getAll();
+      const result = await service.getAll({}, { isAdmin: false, userId: 'u1' });
 
-      expect(repository.findAll).toHaveBeenCalled();
+      expect(repository.findAll).toHaveBeenCalledWith({
+        dimensionCode: undefined,
+        level: undefined,
+        available: true,
+        progressUserId: 'u1',
+      });
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({ id: 'c1' });
     });

@@ -12,7 +12,7 @@ import { BaseAnalyticsAdminController } from '../../common/base-analytics-admin.
 import { DimQuery } from '../../common/decorators/dim-query.decorator';
 import { DateRangeQuery } from '../../common/decorators/date-range-query.decorator';
 
-@ApiTags('Analytics - Shopping List')
+@ApiTags('analytics-shopping-list')
 @Controller('analytics/shopping-list')
 export class ShoppingListAnalyticsController extends BaseAnalyticsAdminController<ShoppingListAnalyticsBatch> {
   constructor(

@@ -13,10 +13,13 @@ describe('ChallengeProgressRepository', () => {
         {
           provide: PrismaService,
           useValue: {
+            challenge: {
+              findUnique: jest.fn(),
+            },
             challengeProgress: {
               findUnique: jest.fn(),
               findMany: jest.fn(),
-              update: jest.fn(),
+              upsert: jest.fn(),
             },
           },
         },
@@ -31,6 +34,19 @@ describe('ChallengeProgressRepository', () => {
 
   it('should be defined', () => {
     expect(repository).toBeDefined();
+  });
+
+  describe('findChallengeById', () => {
+    it('should call prisma.challenge.findUnique', async () => {
+      const mockReturn = { id: 'c1', title: 'Challenge' };
+      (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findChallengeById('c1');
+      expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
+        where: { id: 'c1' },
+        select: { id: true, title: true },
+      });
+      expect(result).toBe(mockReturn);
+    });
   });
 
   describe('findByUserIdAndChallengeId', () => {
@@ -69,22 +85,33 @@ describe('ChallengeProgressRepository', () => {
     });
   });
 
-  describe('update', () => {
-    it('should call prisma.challengeProgress.update with correct params', async () => {
+  describe('upsert', () => {
+    it('should call prisma.challengeProgress.upsert', async () => {
       const mockReturn = {
         userId: 'u1',
         challengeId: 'c1',
         completed: true,
         progress: 1,
       };
-      const updateDto = { completed: true, progress: 1 };
-      (prisma.challengeProgress.update as jest.Mock).mockResolvedValue(
+      (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
-      const result = await repository.update('u1', 'c1', updateDto);
-      expect(prisma.challengeProgress.update).toHaveBeenCalledWith({
+      const result = await repository.upsert('u1', 'c1', {
+        completed: true,
+        progress: 1,
+      });
+      expect(prisma.challengeProgress.upsert).toHaveBeenCalledWith({
         where: { userId_challengeId: { userId: 'u1', challengeId: 'c1' } },
-        data: { ...updateDto },
+        create: {
+          userId: 'u1',
+          challengeId: 'c1',
+          progress: 1,
+          completed: true,
+        },
+        update: {
+          progress: 1,
+          completed: true,
+        },
         include: { challenge: true },
       });
       expect(result).toBe(mockReturn);

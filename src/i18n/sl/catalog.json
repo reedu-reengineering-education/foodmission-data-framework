@@ -151,5 +151,22 @@
   "walletCurrencies": {
     "XP": "XP",
     "POINTS": "Točke"
+  },
+  "contentLevels": {
+    "BEGINNER": "Začetnik",
+    "INTERMEDIATE": "Srednje",
+    "ADVANCED": "Napredno"
+  },
+  "questContentTypes": {
+    "MISSION": "Misija",
+    "CHALLENGE": "Izziv",
+    "FOOD_FACT": "Dejstvo o hrani",
+    "QUIZ": "Kvizi",
+    "MICRO_LEARNING": "Mikroučenje"
+  },
+  "contentTags": {
+    "HEALTH": "Zdravje",
+    "FOOD_CHOICE": "Izbira hrane",
+    "FOOD_AND_WASTE": "Hrana in odpadki"
   }
 }

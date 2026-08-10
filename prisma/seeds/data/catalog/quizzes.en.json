@@ -1,0 +1,4252 @@
+[
+  {
+    "code": "Q1.1.1",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "You want to reduce the environmental impact of your dinners. Which change is likely to have the biggest effect?",
+    "explanation": "Reducing beef consumption generally has a much larger impact than switching between similar foods because livestock production contributes heavily to land use, water use, and greenhouse-gas emissions.",
+    "source": "Mazac, R., Meinilä, J., Korkalo, L. et al. Incorporation of novel foods in European diets can reduce global warming potential, water use and land use by over 80%. Nat Food 3, 286–293 (2022). https://doi.org/10.1038/s43016-022-00489-9",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace beef with lentils twice a week",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Buy organic beef instead of conventional beef",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Replace beef with chicken twice a week",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Buy locally produced beef whenever possible",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.1.2",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "level": "ADVANCED",
+    "question": "Which weekly meal plan is likely to have the lowest environmental impact?",
+    "explanation": "Replacing meat with legumes generally provides larger environmental benefits than simply switching between animal proteins.",
+    "source": "Mazac, R., Meinilä, J., Korkalo, L. et al. Incorporation of novel foods in European diets can reduce global warming potential, water use and land use by over 80%. Nat Food 3, 286–293 (2022). https://doi.org/10.1038/s43016-022-00489-9",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Beef twice, chicken twice, fish once",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Beef once, legumes four times",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Chicken five times",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Pork three times and cheese twice",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q1.1.3",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "level": "ADVANCED",
+    "question": "You are choosing between two weekly diets:Diet A includes red meat almost every day.Diet B follows a Mediterranean-style pattern with more legumes, vegetables, and moderate amounts of meat.Which diet is generally expected to require less agricultural land?",
+    "explanation": "Producing animal-based foods generally requires more land than producing plant-based foods. Mediterranean-style diets are often associated with lower land-use demands while still supporting nutritional adequacy.",
+    "source": "Mazac, R., Meinilä, J., Korkalo, L. et al. Incorporation of novel foods in European diets can reduce global warming potential, water use and land use by over 80%. Nat Food 3, 286–293 (2022). https://doi.org/10.1038/s43016-022-00489-9",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Diet A, because meat is nutrient-dense",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Diet B, because diets containing more plant-based foods generally require less land",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Both diets require similar amounts of land",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It depends only on whether the food is locally produced",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q1.1.4",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "level": "BEGINNER",
+    "question": "Which lunch choice would generally be the most sustainable?",
+    "explanation": "Meals centred on legumes and vegetables generally have lower environmental impacts than meals centred on red meat.",
+    "source": "Mazac, R., Meinilä, J., Korkalo, L. et al. Incorporation of novel foods in European diets can reduce global warming potential, water use and land use by over 80%. Nat Food 3, 286–293 (2022). https://doi.org/10.1038/s43016-022-00489-9",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Hummus and roasted vegetable wrap",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Roast beef sandwich",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Beef burger",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Lamb kebab",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.1.5",
+    "topicCode": "REDUCING_MEAT_CONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "Why is reducing meat consumption sometimes considered a public-health issue as well as an environmental issue?",
+    "explanation": "Extensive antibiotic use in livestock contributes to antimicrobial resistance, a major public-health concern.",
+    "source": "European Centre for Disease Prevention and Control. (n.d.). Antimicrobial resistance (AMR). https://www.ecdc.europa.eu/en/antimicrobial-resistance",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Livestock farming uses significant amounts of antibiotics that can contribute to antimicrobial resistance",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Eating meat causes all infectious diseases",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Meat contains no essential nutrients",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.2.1",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "level": "INTERMEDIATE",
+    "question": "You are replacing beef in a recipe. Which substitute provides environmental benefits while helping maintain nutritional adequacy?",
+    "explanation": "Replacing part of red meat consumption with legumes can maintain adequate nutrient intake while reducing environmental impact.",
+    "source": "World Health Organization. (2023). Red and processed meat in the context of health and the environment: Many shades of red and green. World Health Organization. https://www.who.int/publications/i/item/9789240074828",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Lentils",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Greek yogurt",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Eggs",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Cheese",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.2.2",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "level": "BEGINNER",
+    "question": "Which weekly protein strategy best aligns with WHO recommendations?",
+    "explanation": "WHO highlights dietary diversity and a wider mix of protein",
+    "source": "as a promising approach for both health and sustainability.Source World Health Organization. (2023). Red and processed meat in the context of health and the environment: Many shades of red and green. World Health Organization. https://www.who.int/publications/i/item/9789240074828",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Beef every day",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "A mix of legumes, fish, eggs and occasional meat",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Every meal vegan",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Chicken at every meal",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q1.2.3",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "level": "INTERMEDIATE",
+    "question": "Which statement about plant-based meat alternatives is most accurate?",
+    "explanation": "Many plant-based meat analogues are highly processed and often contain substantial sodium. Their health and environmental performance can vary widely.",
+    "source": "World Health Organization. (2023). Red and processed meat in the context of health and the environment: Many shades of red and green. World Health Organization. https://www.who.int/publications/i/item/9789240074828",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They are always healthier than meat",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "They are always environmentally superior",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "They may help reduce meat consumption, but nutritional and environmental outcomes depend on the product",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "They contain no sodium",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q1.2.4",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "level": "ADVANCED",
+    "question": "Which protein source offers both nutritional and soil-health benefits?",
+    "explanation": "",
+    "source": "offers both nutritional and soil-health benefits?AnswersA) ChickpeasB) EggsC) CheeseD) Chicken breastExplanationPulses improve soil fertility through nitrogen fixation while providing protein, fibre, vitamins and minerals.Source Food and Agriculture Organization of the United Nations. (2016). Pulses: Nutritious seeds for a sustainable future. https://openknowledge.fao.org/handle/20.500.14283/i6757en",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Chickpeas",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Eggs",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Cheese",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Chicken breast",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.2.5",
+    "topicCode": "INCREASING_OTHER_PROTEIN_SOURCES",
+    "level": "BEGINNER",
+    "question": "A family wants to reduce red meat consumption without eliminating animal products. Which change best reflects the evidence?",
+    "explanation": "Dietary diversity, including legumes, fish, eggs and lower quantities of red meat, is associated with healthier and more sustainable diets.",
+    "source": "World Health Organization. (2023). Red and processed meat in the context of health and the environment: Many shades of red and green. World Health Organization. https://www.who.int/publications/i/item/9789240074828",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace some beef meals with legumes and fish",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Replace beef with processed meat",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Replace beef with extra cheese only",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Keep the same diet but buy local meat",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.3.1",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "level": "BEGINNER",
+    "question": "You want to diversify your grains while improving protein quality. Which option is particularly interesting?",
+    "explanation": "Quinoa contains all nine essential amino acids and is considered a complete protein.",
+    "source": "Harvard T.H. Chan School of Public Health. (n.d.). Quinoa. The Nutrition Source. https://nutritionsource.hsph.harvard.edu/food-features/quinoa/",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Quinoa",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "White rice",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Cornmeal",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Couscous",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.3.2",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "level": "INTERMEDIATE",
+    "question": "Which dietary habit would best support food-system resilience?",
+    "explanation": "Crop diversity increases resilience to climate-related, market and supply-chain disruptions.",
+    "source": "Food and Agriculture Organization of the United Nations. (2023). Millets: Climate-smart seeds of the future. https://www.fao.org/millets-2023/resources/millets--climate-smart-seeds-of-the-future/en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Relying on a variety of staple crops",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Depending mainly on wheat and rice",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Eating the same staple food every week",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Avoiding grains completely",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.3.3",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "level": "ADVANCED",
+    "question": "A person with coeliac disease wants a nutrient-rich grain alternative. Which option is most suitable?",
+    "explanation": "Buckwheat is naturally gluten-free and provides fibre, protein, minerals and beneficial bioactive compounds.",
+    "source": "Li, Y., Zhu, Y., & Zhang, Q. (2025). Buckwheat: Nutritional profile, bioactive compounds and health-promoting properties. Plants, 14(14), 2200. https://www.mdpi.com/2223-7747/14/14/2200",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Buckwheat",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Wheat",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Rye",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Barley",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.3.4",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "level": "ADVANCED",
+    "question": "A farmer is looking for a climate-resilient crop that tolerates heat and low water availability. Which option is best supported by the evidence?",
+    "explanation": "Millets can grow under high temperatures, poor soils and limited water conditions, making them particularly resilient to climate change.",
+    "source": "Food and Agriculture Organization of the United Nations. (2023). Millets: Climate-smart seeds of the future. https://www.fao.org/millets-2023/resources/millets--climate-smart-seeds-of-the-future/en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Millet",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Lettuce",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Spinach",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Celery",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q1.3.5",
+    "topicCode": "ALTERNATIVE_STAPLE_FOODS",
+    "level": "INTERMEDIATE",
+    "question": "Why are pulses often highlighted in sustainable diets?",
+    "explanation": "Pulses combine nutritional benefits with nitrogen fixation, reduced fertilizer requirements and lower environmental footprints.",
+    "source": "Food and Agriculture Organization of the United Nations. (2016). Pulses: Nutritious seeds for a sustainable future. https://openknowledge.fao.org/handle/20.500.14283/i6757en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They provide nutrition while improving agricultural soils",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "They require the most fertilizer of all crops",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "They are useful only in vegetarian diets",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "They have no environmental benefits",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.1.1",
+    "topicCode": "LAND_USE",
+    "level": "BEGINNER",
+    "question": "You want your food choices to better support biodiversity. Which consideration is most relevant?",
+    "explanation": "Agricultural expansion is one of the main drivers of habitat loss and biodiversity decline. Foods that require less land generally place less pressure on forests, grasslands, and other natural ecosystems, helping to protect biodiversity.",
+    "source": "Dudley, N., & Alexander, S. (2017). Agriculture and biodiversity: A review. Biodiversity, 18(2–3), 45–49. https://doi.org/10.1080/14888386.2017.1351892",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Choosing foods with the shortest ingredient list",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Choosing foods that require less agricultural land",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Choosing foods from the largest farms",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Choosing foods with the highest protein content",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.1.2",
+    "topicCode": "LAND_USE",
+    "level": "INTERMEDIATE",
+    "question": "A supermarket promotes \"locally produced beef\" as a sustainable option. Which statement is most consistent with the evidence?",
+    "explanation": "The type of food often matters more than where it comes from. Plant proteins generally require much less land than beef, regardless of origin.",
+    "source": "Poore, J., & Nemecek, T. (2018). Reducing food's environmental impacts through producers and consumers. Science, 360(6392), 987–992. https://doi.org/10.1126/science.aaq0216",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Local beef is always more sustainable than imported plant proteins",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Beef produced locally generally uses less land than legumes",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Choosing legumes is often more effective for reducing land use than choosing local beef",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Country of origin is the only factor that determines sustainability",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q2.1.3",
+    "topicCode": "LAND_USE",
+    "level": "INTERMEDIATE",
+    "question": "You are planning a protein-rich dinner with the lowest possible land footprint. Which option is most likely to perform best?",
+    "explanation": "Animal products generally require more land than plant-based foods. Among these options, the lentil-based meal is associated with the lowest land demand.",
+    "source": "Poore, J., & Nemecek, T. (2018). Reducing food's environmental impacts through producers and consumers. Science, 360(6392), 987–992. https://doi.org/10.1126/science.aaq0216",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Lentil and vegetable stew",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Chicken curry",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Cheese quiche",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Beef chili",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.1.4",
+    "topicCode": "LAND_USE",
+    "level": "ADVANCED",
+    "question": "A friend wants to reduce pressure on biodiversity through food choices. Which advice would be most evidence-based?",
+    "explanation": "Agricultural expansion is a major cause of habitat loss. Reducing demand for land-intensive products helps reduce pressure on forests and natural ecosystems.",
+    "source": "Dudley, N., & Alexander, S. (2017). Agriculture and biodiversity: A review. Biodiversity, 18(2–3), 45–49. https://doi.org/10.1080/14888386.2017.1351892",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Focus mainly on buying local food",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Reduce consumption of land-intensive foods such as beef",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Avoid all imported foods",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Prioritize premium-quality foods",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.1.5",
+    "topicCode": "LAND_USE",
+    "level": "BEGINNER",
+    "question": "Which shopper is likely to have the lowest land-use footprint?",
+    "explanation": "Research consistently identifies the amount of red meat in a diet as one of the strongest determinants of food-related land use.",
+    "source": "Wood, S. L. R., Alam, M., & Dupras, J. (2019). Multiple pathways to more sustainable diets: Shifts in diet composition, caloric intake and food waste. Frontiers in Sustainable Food Systems, 3, 89. https://doi.org/10.3389/fsufs.2019.00089",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Someone who occasionally eats beef but often chooses legumes",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Someone who eats beef daily but buys local produce",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Someone who avoids imported fruit but eats red meat most days",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Someone who focuses primarily on premium meat products",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.2.1",
+    "topicCode": "WATER_USE",
+    "level": "ADVANCED",
+    "question": "You want to reduce the water footprint of your meals. Which habit is likely to be most effective?",
+    "explanation": "A significant share of water used in food production is effectively wasted when food is discarded. Reducing food waste directly lowers water demand.",
+    "source": "Ringler, C., Agbonlahor, M., Barron, J., Baye, K., Meenakshi, J. V., Mekonnen, D. K., & Uhlenbrook, S. (2022). The role of water in transforming food systems. Global Food Security, 33, 100639. https://doi.org/10.1016/j.gfs.2022.100639",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Planning meals so less food is wasted",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Buying only seasonal vegetables",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Choosing smaller packaging sizes",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Avoiding frozen foods",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.2.2",
+    "topicCode": "WATER_USE",
+    "level": "BEGINNER",
+    "question": "Two people eat the same number of calories each day. Which diet is likely to require less water overall?",
+    "explanation": "",
+    "source": "ExplanationWater use generally decreases as diets shift away from animal-source foods and toward plant-based foods.Source Aleksandrowicz, L., Green, R., Joy, E. J. M., Smith, P., & Haines, A. (2016). The impacts of dietary change on greenhouse gas emissions, land use, water use, and health: A systematic review. PLOS ONE, 11(11), e0165797. https://doi.org/10.1371/journal.pone.0165797",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "A diet containing more legumes and fewer animal products",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "A diet containing more dairy and red meat",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "A diet containing more processed meat products",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "A diet centered around beef as the main protein source",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.2.3",
+    "topicCode": "WATER_USE",
+    "level": "BEGINNER",
+    "question": "You find vegetables in your refrigerator that are close to spoiling. What is the most sustainable action?",
+    "explanation": "Using food before it spoils avoids wasting the water, land, and energy already invested in producing it.",
+    "source": "Ringler, C., Agbonlahor, M., Barron, J., Baye, K., Meenakshi, J. V., Mekonnen, D. K., & Uhlenbrook, S. (2022). The role of water in transforming food systems. Global Food Security, 33, 100639. https://doi.org/10.1016/j.gfs.2022.100639",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Build a meal around them tonight",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Freeze them",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Buy fresh vegetables and use those instead",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Compost them immediately",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.2.4",
+    "topicCode": "WATER_USE",
+    "level": "INTERMEDIATE",
+    "question": "Which statement best reflects the evidence on water use and sustainable diets?",
+    "explanation": "",
+    "source": "foods is often an important factor C) Water impacts depend mainly on food milesD) Processed foods always require more water than fresh foodsExplanationStudies show that reducing animal-source foods often lowers water footprints, but overall water use still depends on the composition of the diet.Source Aleksandrowicz, L., Green, R., Joy, E. J. M., Smith, P., & Haines, A. (2016). The impacts of dietary change on greenhouse gas emissions, land use, water use, and health: A systematic review. PLOS ONE, 11(11), e0165797. https://doi.org/10.1371/journal.pone.0165797",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Any vegetarian diet automatically uses less water",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Water use depends on the specific foods chosen, but reducing animal-source foods is often an important factor",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Water impacts depend mainly on food miles",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Processed foods always require more water than fresh foods",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.2.5",
+    "topicCode": "WATER_USE",
+    "level": "INTERMEDIATE",
+    "question": "Which meal would generally be expected to have the lowest water footprint?",
+    "explanation": "Plant-based meals generally require fewer water re",
+    "source": "than meals centred around ruminant meat.Source Aleksandrowicz, L., Green, R., Joy, E. J. M., Smith, P., & Haines, A. (2016). The impacts of dietary change on greenhouse gas emissions, land use, water use, and health: A systematic review. PLOS ONE, 11(11), e0165797. https://doi.org/10.1371/journal.pone.0165797",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Chickpea and vegetable curry",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Beef lasagna",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Lamb stew",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Cheeseburger",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.3.1",
+    "topicCode": "ENERGY_CONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "A consumer wants to reduce the energy footprint of their food purchases. Which change is most likely to have the greatest impact?",
+    "explanation": "Food waste represents not only the loss of food but also the loss of all the energy used to produce, process, transport, store, and prepare it. Reducing waste helps lower unnecessary energy use throughout the food system.",
+    "source": "Vittuari, M., Pagani, M., Johnson, T. G., & De Menna, F. (2020). Impacts and costs of embodied and nutritional energy of food waste in the US food system: Distribution and consumption (Part B). Journal of Cleaner Production, 252, 119857. https://doi.org/10.1016/j.jclepro.2019.119857",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Choosing foods with fewer ingredients",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Reducing food waste at home",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Buying foods in larger packages",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Avoiding frozen vegetables",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.3.2",
+    "topicCode": "ENERGY_CONSUMPTION",
+    "level": "BEGINNER",
+    "question": "You are comparing four diets with the same calorie intake. Which diet is generally expected to require more energy across the food system?",
+    "explanation": "Animal-based foods generally require more energy because they depend on feed production, intensive farming systems, processing, refrigeration, and transport.",
+    "source": "Stanford University (2025). Understand food wastage. Understand Energy Learning Hub. https://understand-energy.stanford.edu/news/understand-food-wastage",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "A diet rich in legumes, grains, and vegetables",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "A diet rich in beef, dairy, and other animal products",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "A diet based mainly on seasonal produce",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "A diet based on minimally processed foods",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.3.3",
+    "topicCode": "ENERGY_CONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "Which stage of the food chain often accounts for a large share of total energy use in many regions?",
+    "explanation": "Although energy is used throughout the food chain, a significant proportion is often consumed during food processing, transportation, refrigeration, retail, cooking, and consumption.",
+    "source": "Stanford University. (2025). Understand food wastage. Understand Energy Learning Hub. https://understand-energy.stanford.edu/news/understand-food-wastage",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Plant growth",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Food processing, distribution, and final consumption",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Food packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Supermarket advertising",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.3.4",
+    "topicCode": "ENERGY_CONSUMPTION",
+    "level": "ADVANCED",
+    "question": "A development agency is deciding where to invest to reduce food losses in a rural agricultural region. Which intervention is likely to provide substantial benefits?",
+    "explanation": "Around 13% of global food production is lost because of inadequate refrigeration. Reliable cold-chain systems help preserve food quality, reduce losses, and improve food-system efficiency.",
+    "source": "tanford University. (2025). Understand food wastage. Understand Energy Learning Hub. https://understand-energy.stanford.edu/news/understand-food-wastage",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Increasing food packaging sizes",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Expanding refrigerated cold-chain infrastructure",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Increasing food imports",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Encouraging longer transport routes",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.3.5",
+    "topicCode": "ENERGY_CONSUMPTION",
+    "level": "ADVANCED",
+    "question": "A policymaker wants to reduce pressure on ecosystems caused by food production. Which statement best reflects current evidence?",
+    "explanation": "",
+    "source": "and energy demand C) Most ecosystem pressure comes from food packaging rather than food productionD) Food demand is expected to decline significantly by 2050ExplanationHuman activity, particularly agriculture, forestry, and food systems, appropriates about 30% of global net primary production, far above the proposed safe boundary of 10%, indicating significant pressure on ecosystems and biodiversity.Source Kitzmann, N., Caesar, L., Sakschewski, B., Rockström, J., Andersen, L., Bechthold, M., Bergfeld, L., Beusen, A., Billing, M., Bodirsky, B. L., Botsyun, S., et al. (2025). Planetary Health Check 2025: A scientific assessment of the state of the planet. Potsdam Institute for Climate Impact Research. https://publications.pik-potsdam.de/rest/items/item_32589_5/component/file_33151/content",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Human food systems use only a small share of Earth's biological productivity",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Food systems place substantial pressure on ecosystems through resource and energy demand",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Most ecosystem pressure comes from food packaging rather than food production",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Food demand is expected to decline significantly by 2050",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.4.1",
+    "topicCode": "CARBON_FOOTPRINT",
+    "level": "BEGINNER",
+    "question": "You want to lower your climate impact but do not want to become vegetarian. Which strategy is likely to be most effective?",
+    "explanation": "Reducing red meat consumption is one of the most effective dietary actions for lowering food-related greenhouse gas emissions.",
+    "source": "Mertens, E., Van’t Veer, P., Hiddink, G. J., Steijns, J. M., & Kuijsten, A. (2017). Operationalising the health aspects of sustainable diets: A review. Public Health Nutrition, 20(4), 739–757. https://doi.org/10.1017/S1368980016002664",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace some red-meat meals with legumes",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Buy only premium meat products",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Stop buying frozen vegetables",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Switch coffee brandsCorrect Answer",
+        "isCorrect": false
+      },
+      {
+        "label": "A",
+        "text": "Replace some red-meat meals with legumes",
+        "isCorrect": true
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.4.2",
+    "topicCode": "CARBON_FOOTPRINT",
+    "level": "BEGINNER",
+    "question": "You want to reduce the carbon footprint of your diet. Which action is likely to have the greatest impact?",
+    "explanation": "Around 30% of food produced globally is wasted, generating approximately 3.3 gigatonnes of CO₂-equivalent emissions annually. Preventing food waste reduces emissions across the entire food chain, including production, processing, transport, and disposal.",
+    "source": "Lal, R. (2022). Reducing carbon footprints of agriculture and food systems. Carbon Footprints, 1(3). https://doi.org/10.20517/cf.2022.05",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Reducing food waste at home",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Buying foods with fewer ingredients",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Choosing products with smaller packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Avoiding frozen foods",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.4.3",
+    "topicCode": "CARBON_FOOTPRINT",
+    "level": "INTERMEDIATE",
+    "question": "Which action reduces emissions without changing the foods you buy?",
+    "explanation": "Food waste generates substantial greenhouse-gas emissions because all the re",
+    "source": "used to produce the food are lost when it is discarded.SourceLal, R. (2022). Reducing carbon footprints of agriculture and food systems. Carbon Footprints, 1(3). https://doi.org/10.20517/cf.2022.05",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Wasting less food",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Shopping less frequently",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Choosing larger packages",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Eating slower",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.4.4",
+    "topicCode": "CARBON_FOOTPRINT",
+    "level": "ADVANCED",
+    "question": "A person focuses only on buying local food but continues eating large amounts of beef. Which statement best reflects the evidence?",
+    "explanation": "Research consistently shows that food type—particularly beef consumption—often plays a larger role than transport distance in determining climate impact.",
+    "source": "Aggarwal, S. (2019). Food and climate change. Jindal Global Law Review, 10(1), 121–127. https://doi.org/10.1007/s41020-019-00083-4",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Food origin is generally more important than food type",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Reducing beef consumption would likely have a larger climate benefit",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Local food always eliminates climate impacts",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Climate impacts mainly come from supermarkets",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.4.5",
+    "topicCode": "CARBON_FOOTPRINT",
+    "level": "INTERMEDIATE",
+    "question": "Which eating pattern is most often identified as a lower-carbon alternative to a typical Western diet?",
+    "explanation": "Flexitarian diets reduce reliance on high-impact animal products while still allowing occasional consumption.",
+    "source": "Lucas, E., Guo, M., & Guillén-Gosálbez, G. (2023). Low-carbon diets can reduce global ecological and health costs. Nature Food, 4(5), 394–406. https://doi.org/10.1038/s43016-023-00749-2",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Flexitarian",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "High-beef diet",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Processed-meat-focused diet",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Meat at every meal",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q3.1.1",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "level": "ADVANCED",
+    "question": "You are comparing two protein-rich meals:Bean stew made from simple ingredientsPlant-based meat nuggetsWhich conclusion is best supported by the evidence?",
+    "explanation": "Food processing can increase energy use, but it can also extend shelf life and reduce food waste. Sustainability depends on the entire life cycle rather than processing level alone.",
+    "source": "Mazac, R., Meinilä, J., Korkalo, L. et al. Incorporation of novel foods in European diets can reduce global warming potential, water use and land use by over 80%. Nat Food 3, 286–293 (2022). https://doi.org/10.1038/s43016-022-00489-9",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "The bean stew is healthier and more sustainable",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The nuggets are less sustainable because they are more processed",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Processing level alone is not enough to determine sustainability",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Foods with longer ingredient lists have higher environmental impacts",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.1.2",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "level": "INTERMEDIATE",
+    "question": "When comparing two foods with similar nutritional value, which factor could increase the environmental footprint of one product?",
+    "explanation": "Heating, freezing, drying, milling, and other industrial processes can contribute substantially to a food product's environmental impact.",
+    "source": "Shabir, I., Dash, K. K., Dar, A. H., Pandey, V. K., Fayaz, U., & Srivastava, S. (2023). Carbon footprints evaluation for sustainable food processing system development: A comprehensive review. Future Foods, 7, 100215. https://doi.org/10.1016/j.fufo.2023.100215",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "The number of vitamins listed",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Additional energy required during processing",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "The size of the packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "The number of ingredients on the label",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.1.3",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "level": "BEGINNER",
+    "question": "A consumer wants to reduce intake of ultra-processed foods. Which choice best supports that goal?",
+    "explanation": "Minimally processed foods generally contain fewer additives and tend to contribute to better overall diet quality.",
+    "source": "Vellinga, R. E., van Bakel, M., Biesbroek, S., Toxopeus, I. B., de Valk, E., Hollander, A., van ’t Veer, P., & Temme, E. H. (2022). Evaluation of foods, drinks and diets in the Netherlands according to the degree of processing for nutritional quality, environmental impact and food costs. BMC Public Health, 22, 877. https://doi.org/10.1186/s12889-022-13282-x",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Oats with fruit and nuts",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Protein breakfast bar",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Breakfast boxed cereal",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Breakfast yoghurt drink",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q3.1.4",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "level": "BEGINNER",
+    "question": "Why does food processing play an important role in food systems?",
+    "explanation": "Processing can improve food safety, maintain quality, and allow food to be stored and transported more efficiently.",
+    "source": "Shabir, I., et al. (2023). Carbon footprints evaluation for sustainable food processing system development: A comprehensive review. Future Foods, 7, 100215. https://doi.org/10.1016/j.fufo.2023.100215",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "It guarantees healthier diets",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It can improve safety and extend shelf life",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It is crucial to eliminate food waste",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It removes the need for refrigeration",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.1.5",
+    "topicCode": "LEVEL_OF_PROCESSING",
+    "level": "INTERMEDIATE",
+    "question": "Which statement about ultra-processed foods is most accurate?",
+    "explanation": "Processing level can provide useful information, but food products still need to be evaluated individually.",
+    "source": "Vellinga, R. E., van Bakel, M., Biesbroek, S., Toxopeus, I. B., de Valk, E., Hollander, A., van ’t Veer, P., & Temme, E. H. (2022). Evaluation of foods, drinks and diets in the Netherlands according to the degree of processing for nutritional quality, environmental impact and food costs. BMC Public Health, 22, 877. https://doi.org/10.1186/s12889-022-13282-x",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They always have the highest environmental footprint",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "They are always less nutritious than minimally processed foods",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Their nutritional and environmental impacts vary depending on the product",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "They should be evaluated solely based on calorie content",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.2.1",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "level": "INTERMEDIATE",
+    "question": "A product is labelled \"local.\" What can you conclude from this information alone?",
+    "explanation": "Country of origin provides useful information, but sustainability depends on multiple factors including production method, transport mode, and seasonality.",
+    "source": "Stein, A. J., & Santini, F. (2022). The sustainability of “local” food: A review for policy-makers. Review of Agricultural, Food and Environmental Studies, 103, 77–89. https://doi.org/10.1007/s41130-021-00148-w",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It is definitely the most sustainable choice",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It has lower emissions than imported alternatives",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "More information is needed to assess sustainability",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "It is always produced more efficiently",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.2.2",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "level": "BEGINNER",
+    "question": "You are comparing two local products. Which additional information would be most useful?",
+    "explanation": "Production methods often have greater environmental impacts than origin alone.",
+    "source": "chmitt, E., Galli, F., Menozzi, D., Maye, D., Touzard, J. M., Marescotti, A., Six, J., & Brunori, G. (2017). Comparing the sustainability of local and global food products in Europe. Journal of Cleaner Production, 165, 346–359. https://doi.org/10.1016/j.jclepro.2017.07.039",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "How they were produced",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Whether they are premium products",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Whether they are sold in supermarkets",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Whether they come from the same region",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q3.2.3",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "level": "ADVANCED",
+    "question": "Which transport method generally deserves the most attention when assessing climate impacts?",
+    "explanation": "Air transport can substantially increase transport-related greenhouse-gas emissions compared with other freight methods.",
+    "source": "Poore, J., & Nemecek, T. (2018). Reducing food's environmental impacts through producers and consumers. Science, 360(6392), 987–992. https://doi.org/10.1126/science.aaq0216",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Air freight",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Rail transport",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Sea freight",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Shared truck transport",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q3.2.4",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "level": "INTERMEDIATE",
+    "question": "Two tomatoes have equal nutritional value. Which information would be most helpful for comparing sustainability?",
+    "explanation": "Production systems often have a larger environmental influence than country of origin alone.",
+    "source": "Schmitt, E., Galli, F., Menozzi, D., Maye, D., Touzard, J. M., Marescotti, A., Six, J., & Brunori, G. (2017). Comparing the sustainability of local and global food products in Europe. Journal of Cleaner Production, 165, 346–359. https://doi.org/10.1016/j.jclepro.2017.07.039",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Country of origin",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Production method",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Package size",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Brand name",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.2.5",
+    "topicCode": "COUNTRY_OF_ORIGIN",
+    "level": "BEGINNER",
+    "question": "Which statement about food origin is most consistent with the evidence?",
+    "explanation": "Food origin can be useful information but must be considered alongside production methods, seasonality, and transport.",
+    "source": "Stein, A. J., & Santini, F. (2022). The sustainability of “local” food: A review for policy-makers. Review of Agricultural, Food and Environmental Studies, 103, 77–89. https://doi.org/10.1007/s41130-021-00148-w",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Local food is always the most sustainable option",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Imported food is always less sustainable",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Food origin is one factor among several sustainability considerations",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Country of origin has no relevance for sustainability",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.3.1",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "level": "ADVANCED",
+    "question": "You are choosing between two apple products:Product A: \"Produced using Integrated Pest Management (IPM)\"Product B: No farming information providedWhat does the IPM claim most likely suggest?",
+    "explanation": "Integrated Pest Management combines biological, physical, crop-specific and, when necessary, chemical approaches to reduce pest damage while minimizing environmental and health impacts.",
+    "source": "Food and Agriculture Organization. (n.d.). Integrated pest management (IPM). https://www.fao.org/pest-and-pesticide-management/ipm/en/",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "The farm never uses pesticides",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The farm aims to minimize pesticide use by combining different pest-control methods",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "The farm follows organic regulations",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "The apples were grown locally",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.3.2",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "level": "INTERMEDIATE",
+    "question": "You are buying vegetables and one package highlights that the farm practices crop rotation and grows several crops. Why might this information be relevant?",
+    "explanation": "Crop diversification and rotations improve soil fertility, nutrient cycling and resilience to pests and diseases, reducing the need for excessive chemical inputs.",
+    "source": "Tamburini, G., Bommarco, R., Wanger, T. C., Kremen, C., Van der Heijden, M. G. A., Liebman, M., & Hallin, S. (2020). Agricultural diversification promotes multiple ecosystem services without compromising yield. Science Advances, 6(45), eaba1715. https://doi.org/10.1126/sciadv.aba1715",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It guarantees higher nutritional value",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It may indicate a farming system that supports soil health and reduces pest pressure",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It means the product is organic",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It means the product travelled fewer kilometres",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.3.3",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "level": "ADVANCED",
+    "question": "You are choosing between two coffee products:Coffee A: Shade-grown in an agroforestry systemCoffee B: Produced in a monoculture plantationWhy might some consumers prefer Coffee A?",
+    "explanation": "Agroforestry combines trees with agricultural production. These systems can improve soil health, biodiversity and carbon sequestration.",
+    "source": "Nair, P. K. R., Kumar, B. M., & Nair, V. D. (2009). Agroforestry as a strategy for carbon sequestration. Journal of Plant Nutrition and Soil Science, 172(1), 10–23. https://doi.org/10.1002/jpln.200800030",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It always tastes better",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It always has lower prices",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Agroforestry can support biodiversity and carbon storage",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "It guarantees organic certification",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.3.4",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "level": "INTERMEDIATE",
+    "question": "Two vegetable products have similar prices. One is labelled \"Organic\". Which farming characteristic is most likely associated with the organic product?",
+    "explanation": "Organic farming relies on practices such as crop rotation, compost application, cover crops and biological pest control instead of synthetic pesticides and fertilizers.",
+    "source": "Gamage, A., Gangahagedara, R., Gamage, J., Jayasinghe, N., Kodikara, N., Suraweera, P., & Merah, O. (2023). Role of organic farming for achieving sustainability in agriculture. Farming System, 1(1), 100005. https://doi.org/10.1016/j.farsys.2023.100005",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Greater reliance on crop rotations and cover crops",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Greater use of precision agriculture technologies",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Greater use of Integrated Pest Management (IPM)",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Greater use of drought-resistant crop varieties",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q3.3.5",
+    "topicCode": "FARMING_PRODUCTION_METHODS",
+    "level": "BEGINNER",
+    "question": "You are choosing between two rice products:Product A: Produced using climate-smart agricultureProduct B: No farming information providedWhat is the main goal of climate-smart agriculture?",
+    "explanation": "Climate-smart agriculture aims to increase productivity, strengthen resilience to climate change and reduce greenhouse-gas emissions.",
+    "source": "Kabato, W., Getnet, G. T., Sinore, T., Nemeth, A., & Molnár, Z. (2025). Towards climate-smart agriculture: Strategies for sustainable agricultural production, food security, and greenhouse gas reduction. Agronomy, 15(3), 565. https://doi.org/10.3390/agronomy15030565",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Maximizing yields regardless of environmental impacts",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Eliminating all agricultural risks",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Increasing productivity while improving climate resilience",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Replacing all conventional farming with organic farming",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.4.1",
+    "topicCode": "BREEDING_METHODS",
+    "level": "INTERMEDIATE",
+    "question": "You are comparing two tomato products. One comes from a crop variety bred to tolerate drought conditions, while the other comes from a conventional variety. Why might some consumers consider the drought-tolerant variety more sustainable?",
+    "explanation": "Breeding drought-tolerant crops can help maintain production under water stress and improve resilience to climate change, although such crops still require water and good agricultural management.",
+    "source": "Galanakis, C. M. (2024). The future of food. Foods, 13(4), 506. https://doi.org/10.3390/foods13040506",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It is always organic",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It may require fewer water",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It guarantees higher nutritional value",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It eliminates the need for irrigation",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.4.2",
+    "topicCode": "BREEDING_METHODS",
+    "level": "ADVANCED",
+    "question": "You find a food product marketed as coming from a climate-resilient crop variety developed through modern breeding techniques. What is the primary sustainability benefit claimed for these technologies?",
+    "explanation": "Modern breeding technologies aim to develop crop varieties that can perform better under changing environmental conditions and help maintain food production in the future.",
+    "source": "Galanakis, C. M. (2024). The future of food. Foods, 13(4), 506. https://doi.org/10.3390/foods13040506",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Lower packaging requirements",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Improved resistance to environmental stresses",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Guaranteed organic certification",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Elimination of environmental impacts from farming",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.4.3",
+    "topicCode": "BREEDING_METHODS",
+    "level": "INTERMEDIATE",
+    "question": "You are choosing between two fish products. One comes from an aquaculture company that partially replaces fish feed made from wild fish with insect meal and algal oils. What is the main sustainability rationale behind this choice?",
+    "explanation": "Aquaculture is increasingly adopting alternative feed ingredients such as insect meal, algal oils, and single-cell proteins to reduce dependence on wild-caught fish re",
+    "source": "Source Pettersen, S. S., et al. (2023). Seafood Forecast: Ocean's Future to 2050. DNV. https://www.dnv.com/publications/seafood-forecast-250243/",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It guarantees lower prices",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It helps reduce pressure on wild fish stocks used for feed",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It eliminates the need for aquaculture",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It guarantees higher protein content",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.4.4",
+    "topicCode": "BREEDING_METHODS",
+    "level": "BEGINNER",
+    "question": "A supermarket promotes products containing protein from insects, microalgae, or mycoprotein. Why are these protein sources often discussed in sustainability research?",
+    "explanation": "",
+    "source": "often discussed in sustainability research?AnswersA) They are healthier than conventional foodsB) They can only be produced indoorsC) They may provide protein with lower environmental impacts D) They eliminate the need for cropsExplanationAlternative protein sources are being explored because they may help reduce environmental pressures associated with conventional livestock production while supporting future food security.Source Mešić, A., Jurić, M., Donsì, F., et al. (2024). Advancing climate resilience: Technological innovations in plant-based, alternative and sustainable food production systems. Discover Sustainability, 5, 423. https://doi.org/10.1007/s43621-024-00581-z",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They are healthier than conventional foods",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "They can only be produced indoors",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "They may provide protein with lower environmental impacts",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "They eliminate the need for crops",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.4.5",
+    "topicCode": "BREEDING_METHODS",
+    "level": "BEGINNER",
+    "question": "A meat producer states that its livestock breeding programme focuses on feed efficiency. Why might this be relevant for sustainability?",
+    "explanation": "",
+    "source": "C) It guarantees lower retail pricesD) It eliminates greenhouse-gas emissionsExplanationLivestock with improved feed-conversion efficiency can produce the same amount of meat using fewer feed resources, reducing environmental pressures per unit of production.Source Kumar, P., Abubakar, A. A., Verma, A. K., Umaraw, P., Ahmed, M. A., Mehta, N., & Sazili, A. Q. (2023). New insights in improving sustainability in meat production: Opportunities and challenges. Critical Reviews in Food Science and Nutrition, 63(33), 11830–11858. https://doi.org/10.1080/10408398.2022.2096562",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Animals automatically become healthier",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Animals may require fewer resources",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It guarantees lower retail prices",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It eliminates greenhouse-gas emissions",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.5.1",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "level": "BEGINNER",
+    "question": "You are choosing between two chocolate bars with similar nutritional value and environmental information. One carries a Fairtrade label.What additional aspect of sustainability is the Fairtrade label primarily intended to address?",
+    "explanation": "Fairtrade aims to improve livelihoods through fair prices, labour protections, community development, and better trading conditions for producers and workers.",
+    "source": "Salim, A., Kowalska, A., & Manning, L. (2025). Fair trade and its role in sustainable development of agri-food system: A systematic literature review. Economics and Business Review, 11(3), 7–37. https://doi.org/10.18559/ebr.2025.3.2181",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Lower greenhouse-gas emissions",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Fairer conditions farmers and workers",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Higher vitamin content",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Shorter transport distances",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.5.2",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "level": "INTERMEDIATE",
+    "question": "A consumer wants to consider both environmental and social sustainability when purchasing fruit. Which statement is most consistent with current evidence?",
+    "explanation": "Research shows that social impacts and environmental impacts are distributed differently. Labour risks may occur in producer countries even when environmental performance appears favorable.",
+    "source": "Mancini, L., Valente, A., Barbero Vignola, G., Sanyé Mengual, E., & Sala, S. (2023). Social footprint of European food production and consumption. Sustainable Production and Consumption, 35, 287–299. https://doi.org/10.1016/j.spc.2022.11.005",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Environmental impacts are usually more important than labour conditions",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Social impacts only occur within Europe",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "A product may have low environmental impacts while still being associated with social risks in the supply chain",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Sustainability labels focus exclusively on environmental performance",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.5.3",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "level": "BEGINNER",
+    "question": "You are buying seafood and notice that one product comes from a certified fishery that monitors labour practices, while another provides no information.Why might some consumers prefer the certified product?",
+    "explanation": "Fisheries are considered a high-risk sector for labour exploitation. Certification programs increasingly include monitoring of labour and human-rights conditions.",
+    "source": "Pettersen, S. S., et al. (2023). Seafood Forecast: Ocean's Future to 2050. DNV. https://www.dnv.com/publications/seafood-forecast-250243/",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Certified seafood is healthier",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Certified seafood has a lower carbon footprint",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Certification provides additional assurance regarding labour and human-rights standards",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Certification guarantees local production",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q3.5.4",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "level": "ADVANCED",
+    "question": "A coffee package highlights support for smallholder farmers. Why is this information relevant to sustainability?",
+    "explanation": "Social sustainability includes fair access to markets, re",
+    "source": ", and economic opportunities for producers, including smallholder farmers.Source Herrero, M., et al. (2023). Livestock and Sustainable Food Systems: Status, Trends, and Priority Actions. In J. von Braun et al. (Eds.), Science and Innovations for Food Systems Transformation. Springer, pp.375-399.https://doi.org/10.1007/978-3-031-15703-5_20",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Smallholders always have lower environmental impacts",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Sustainable food systems include fair distribution of economic benefits",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Smallholders only produce organic products",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Smallholders never use agricultural technologies",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q3.5.5",
+    "topicCode": "FAIR_TRADE_LABOUR",
+    "level": "INTERMEDIATE",
+    "question": "Which product choice is most aligned with the idea that sustainability includes ethical as well as environmental considerations?",
+    "explanation": "The European Commission's Joint Research Centre emphasizes that sustainable food systems must be environmentally sustainable, economically viable, and fair, inclusive, and ethical.",
+    "source": "Bock, A. K., Bontoux, L., & Rudkin, J. (2022). Concepts for a sustainable EU food system (EUR 30894 EN). Publications Office of the European Union. https://doi.org/10.2760/381319",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Choosing products only on the basis of price",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Choosing products only on the basis of carbon footprint",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Considering both environmental impacts and labour-related certifications",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Ignoring supply-chain information",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.1.1",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "level": "BEGINNER",
+    "question": "A consumer wants to reduce the environmental impact of food packaging. Which statement is most consistent with current evidence?",
+    "explanation": "The environmental impact of producing food is often much greater than that of the packaging itself. Packaging that effectively prevents spoilage and food waste can provide overall environmental benefits, even if it uses additional materials.",
+    "source": "European Commission. (n.d.). Packaging wasteEU rules on packaging and packaging waste, including design and waste management. https://environment.ec.europa.eu/topics/waste-and-recycling/packaging-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Packaging should always be eliminated whenever possible",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The most sustainable packaging is always the one made from paper",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Packaging should be evaluated together with its ability to prevent food waste",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Packaging material is more important than the food it protects",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.1.2",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "level": "ADVANCED",
+    "question": "A company is deciding between conventional plastic packaging and an edible coating for fresh fruit. Which potential environmental benefit of edible packaging is best supported by research?",
+    "explanation": "Edible packaging may contribute to climate mitigation by replacing some fossil-based materials and by extending shelf life, helping prevent food waste.",
+    "source": "Bint-E-Zafar, A., Ahsan, S., Chughtai, M.F.J., Khaliq, A., Saima, H., Mehmood, T., Liaqat, A., Farooq, M.A., Sameed, N., Amir, R.M., Khalid, M.Z. and Bugingo, E. (2025), Sustainable Edible Packaging: Advances in Materials, Manufacturing, and Applications. eFood, 6: e70095. https://doi.org/10.1002/efd2.70095",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "It completely eliminates the need for food preservation",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It can reduce both packaging waste and food spoilage",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "It always performs better than conventional packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It eliminates the need for recycling systems",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q4.1.3",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "level": "ADVANCED",
+    "question": "Which packaging innovation is specifically designed to provide information about the condition of a food product rather than directly preserving it?",
+    "explanation": "Intelligent packaging monitors or communicates information about the condition of food, such as freshness, temperature history, or spoilage risk. Unlike active packaging, it does not directly preserve the product.",
+    "source": "European Food Safety Authority. (2026). Food contact materials. https://www.efsa.europa.eu/en/topics/topic/food-contact-materials",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Vacuum packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Antimicrobial coating",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Intelligent packaging with freshness indicators",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Oxygen-absorbing packaging",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.1.4",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "level": "INTERMEDIATE",
+    "question": "Which statement about packaging materials is most accurate?",
+    "explanation": "No packaging material is inherently the most sustainable. Environmental impacts depend on extraction, production, transport, reuse, recycling opportunities, and the food product being protected.",
+    "source": "European Commission (n.d.). Life Cycle Assessment (LCA) methodology. https://eplca.jrc.ec.europa.eu/",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Glass is always the most sustainable packaging material",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Plastic is always the least sustainable packaging material",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "The environmental performance of packaging depends on its full life cycle",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Aluminium is environmentally neutral because it can be recycled",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.1.5",
+    "topicCode": "SUSTAINABILITY_OF_PACKAGING_MATERIALS",
+    "level": "INTERMEDIATE",
+    "question": "A supermarket wants to improve packaging sustainability while maintaining food quality. Which strategy best aligns with the EU packaging hierarchy?",
+    "explanation": "The EU packaging hierarchy prioritizes reducing unnecessary packaging first, then reusing packaging whenever possible, and finally recycling materials. The goal is to protect products while minimizing re",
+    "source": "use.Source European Union. (2025). Regulation (EU) 2025/40 on packaging and packaging waste (PPWR). https://eur-lex.europa.eu/eli/reg/2025/40/oj/eng",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace all packaging with single-use compostable materials",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "First reduce unnecessary packaging, then promote reuse and recycling",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Focus exclusively on recycling rates",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Eliminate packaging whenever technically possible",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q4.2.1",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "level": "BEGINNER",
+    "question": "You have two takeaway options:Option A: A disposable container that can be recycled.Option B: A reusable container that must be returned to the restaurant.Which factor is most important for determining whether Option B is actually more sustainable?",
+    "explanation": "Reusable packaging only becomes environmentally preferable after reaching its environmental break-even point (e-BEP), meaning it must be reused enough times to compensate for its initial production impacts.",
+    "source": "Miao, X., Magnier, L., & Mugge, R. (2025). How many times should I use my reusable packaging? Exploring the role of an environmental break-even point in shaping consumers' intention to reuse. Circular Economy and Sustainability, 5, 625–652. https://doi.org/10.1007/s43615-024-00437-8",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "The distance customers must travel to return the container",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Whether the container is returned and reused enough times",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "The amount of water needed to clean the container",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "The material used to manufacture the container",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q4.2.2",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "level": "BEGINNER",
+    "question": "A coffee shop offers a reusable cup program. Which customer behavior contributes most to the environmental success of the program?",
+    "explanation": "The environmental benefits of reusable systems depend primarily on achieving a high number of reuse cycles.",
+    "source": "Miao, X., Magnier, L., & Mugge, R. (2025). How many times should I use my reusable packaging? Exploring the role of an environmental break-even point in shaping consumers' intention to reuse. Circular Economy and Sustainability, 5, 625–652. https://doi.org/10.1007/s43615-024-00437-8",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Choosing the largest reusable cup",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Consistently returning and reusing the cup",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Washing the cup less often",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Owning several reusable cups",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q4.2.3",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "level": "INTERMEDIATE",
+    "question": "You are comparing two food delivery services:Service A uses single-use packaging that is recycled.Service B uses reusable containers that are collected, cleaned, and reused.Which statement is most accurate?",
+    "explanation": "Reusable systems can outperform single-use systems, but their performance depends on factors such as return rates, transportation, cleaning, and number of reuse cycles.",
+    "source": "Marmora, G., Ferrara, C., Roselli, V., & De Feo, G. (2026). A Comparative Life Cycle Assessment of Conventional and Reusable Packaging Systems Under Alternative Logistic Configurations. Recycling, 11(1), 13. https://doi.org/10.3390/recycling11010013",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Service B is always the better option",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Service A is always better because no cleaning is needed",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "The environmental performance of Service B depends on reuse rates, transport, and cleaning processes",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Both systems always have identical impacts",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.2.4",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "level": "INTERMEDIATE",
+    "question": "A supermarket introduces refill stations for products such as cereals, pasta, and detergents. What sustainability benefit are these systems primarily aiming to achieve?",
+    "explanation": "Reuse and refill systems keep packaging in circulation for longer and reduce the need for new materials and packaging waste.",
+    "source": "The PackHub (2025). European Reuse Barometer 2025 highlights growing momentum for reusable packaging across Europe. https://thepackhub.com/innovation-news/european-reuse-barometer-2025-highlights-growing-momentum-for-reusable-packaging-across-europe/",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Improve nutritional quality",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Extend product shelf life",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Reduce demand for single-use packaging",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Eliminate all waste generation",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q4.2.5",
+    "topicCode": "CAPACITY_TO_REUSE_PACKAGING",
+    "level": "ADVANCED",
+    "question": "A product label states that it uses reusable packaging. Which additional information would be most useful in evaluating its environmental performance?",
+    "explanation": "The number of reuse cycles achieved is one of the most important determinants of whether reusable packaging becomes environmentally beneficial.",
+    "source": "Miao, X., Magnier, L., & Mugge, R. (2024). How many times should I use my reusable packaging? Exploring the role of an environmental break-even point in shaping consumers' intention to reuse. Circular Economy and Sustainability, 5, 625–652. https://doi.org/10.1007/s43615-024-00437-8",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "The colors used on the label",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The size of the brand's marketing budget",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Information about how often the packaging is typically reused",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "The number of products sold by the company",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q5.1.1",
+    "topicCode": "PLATE_WASTE",
+    "level": "BEGINNER",
+    "question": "You are ordering lunch at a restaurant and are unsure how hungry you are. Which choice is most likely to reduce plate waste?",
+    "explanation": "Research shows that offering and selecting smaller portions can significantly reduce plate waste, even when only a small share of customers choose them.",
+    "source": "Visschers, V. H., Gundlach, D., & Beretta, C. (2020). Smaller servings vs. information provision: Results of two interventions to reduce plate waste in two university canteens. Waste Management, 103, 323–333. https://doi.org/10.1016/j.wasman.2019.12.046",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Order the standard portion because leftovers cannot be predicted",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Choose a smaller portion if available and order more only if needed",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Order a larger portion because it usually offers better value for money",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Order multiple dishes and decide which one you feel like eating",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.1.2",
+    "topicCode": "PLATE_WASTE",
+    "level": "BEGINNER",
+    "question": "At a buffet, which behavior is most likely to reduce food waste?",
+    "explanation": "Research in all-you-care-to-eat settings found that many consumers take more food than they actually eat. Starting with smaller portions helps reduce over-selection.",
+    "source": "Ellison, B., Savchenko, O., Nikolaus, C. J., & Duff, B. R. L. (2019). Every plate counts: Evaluation of a food waste reduction campaign in a university dining hall. Resources, Conservation and Recycling, 144, 276–284. https://doi.org/10.1016/j.resconrec.2019.01.046",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Taking a small first portion and returning if still hungry",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Taking all the food you expect to want for the entire meal",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Prioritizing expensive foods to avoid financial waste",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Sampling many dishes before deciding what to finish",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q5.1.3",
+    "topicCode": "PLATE_WASTE",
+    "level": "ADVANCED",
+    "question": "A restaurant introduces a smaller-size menu option. What outcome would be most consistent with the evidence?",
+    "explanation": "Studies show that making smaller servings available can reduce waste substantially, even when relatively few customers choose them.",
+    "source": "Visschers, V. H., Gundlach, D., & Beretta, C. (2020). Smaller servings vs. information provision: Results of two interventions to reduce plate waste in two university canteens. Waste Management, 103, 323–333. https://doi.org/10.1016/j.wasman.2019.12.04",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Food waste only decreases if many customers switch to the smaller portion",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Even limited uptake of smaller portions can reduce overall plate waste",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Smaller portions typically increase waste because customers order additional food",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Portion size has little influence on the amount of food discarded",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.1.4",
+    "topicCode": "PLATE_WASTE",
+    "level": "INTERMEDIATE",
+    "question": "You see a sign in a canteen encouraging customers to reduce food waste. Which reaction is most likely to reduce leftovers?",
+    "explanation": "Consumers who consciously try to finish the food already on their plate tend to leave less food behind. Switching dishes mid-meal may actually increase waste.",
+    "source": "Lorenz-Walther, B. A., Langen, N., Göbel, C., Engelmann, T., Bienge, K., Speck, M., & Teitscheid, P. (2019). What makes people leave LESS food? Testing effects of smaller portions and information in a behavioral model. Appetite, 139, 127–144. https://doi.org/10.1016/j.appet.2019.04.026",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Making an effort to finish the food already selected",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Switching to another dish if the first choice becomes less appealing",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Taking additional food immediately to avoid returning later",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Focusing only on foods you particularly enjoy",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q5.1.5",
+    "topicCode": "PLATE_WASTE",
+    "level": "ADVANCED",
+    "question": "Which factor is most likely to contribute to plate waste at restaurants and canteens?",
+    "explanation": "",
+    "source": "d ingredientsD) Nutritional information on menusExplanationStandardized portion sizes often fail to account for differences in appetite and are recognized as a systemic driver of plate waste.Source European Commission. (2025). Food Waste. https://food.ec.europa.eu/safety/food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Seasonal menus",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Standardized portions",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Locally sourced ingredients",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Nutritional information on menus",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.2.1",
+    "topicCode": "LEFTOVERS_WASTE",
+    "level": "BEGINNER",
+    "question": "You have leftovers from dinner that you plan to eat tomorrow. What is the best first step to prevent both food waste and food safety risks?",
+    "explanation": "Bacteria multiply rapidly at room temperature. Prompt refrigeration helps keep leftovers safe to eat and reduces the likelihood that they will be thrown away.",
+    "source": "Center for Disease Control and Prevention. (2025). Four steps to food safety. https://www.cdc.gov/food-safety/prevention/index.html",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Leave the food out until bedtime so it cools completely",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Refrigerate the leftovers as soon as reasonably possible",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Wait until the next morning to store them",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Keep them covered at room temperature overnight",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.2.2",
+    "topicCode": "LEFTOVERS_WASTE",
+    "level": "INTERMEDIATE",
+    "question": "You find a yogurt that is two days past its \"best before\" date. What is the most appropriate action?",
+    "explanation": "A best before date relates to food quality, whereas a use by date relates to food safety. Many foods remain edible after their best-before date if they have been stored properly.",
+    "source": "European Food Information Council (EUFIC). (2021). Best before, use by and sell by dates explained. https://www.eufic.org/en/food-safety/article/best-before-use-by-and-sell-by-dates-explained",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Throw it away immediately",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Check its appearance, smell, and condition before deciding",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Always eat it regardless of its condition",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Treat it the same as food that is past its \"use by\" date",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.2.3",
+    "topicCode": "LEFTOVERS_WASTE",
+    "level": "ADVANCED",
+    "question": "You have prepared a large pot of soup that you want to save for later in the week. What is the best storage approach?",
+    "explanation": "Smaller containers cool more quickly than a large pot, reducing the time food spends at temperatures that encourage bacterial growth.",
+    "source": "U.S. Department of Agriculture, Food Safety and Inspection Service. (2020). Leftovers and food safety. https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/leftovers-and-food-safety",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Leave the soup in the pot until it reaches room temperature",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Divide the soup into smaller containers before refrigerating it",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Refrigerate the entire pot whenever you have time",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Leave the soup covered on the stove overnight",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.2.4",
+    "topicCode": "LEFTOVERS_WASTE",
+    "level": "BEGINNER",
+    "question": "You have cooked extra rice and want to use it for lunch the next day. Which practice is safest?",
+    "explanation": "Cooked rice can contain Bacillus cereus, a bacterium that can multiply rapidly when rice is left at room temperature. Proper storage helps prevent foodborne illness and unnecessary waste.",
+    "source": "Leong, S. S., Korel, F., & King, J. H. (2023). Bacillus cereus: A review of “fried rice syndrome” causative agents. Microbial Pathogenesis, 185, 106418. https://doi.org/10.1016/j.micpath.2023.106418",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Leave the rice on the counter until the next meal",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Reheat the rice several times throughout the day",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Refrigerate the rice soon after cooking and consume it within a few days",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Store the rice at room temperature overnight if it is covered",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q5.2.5",
+    "topicCode": "LEFTOVERS_WASTE",
+    "level": "INTERMEDIATE",
+    "question": "Which household habit is most likely to reduce leftover food becoming waste?",
+    "explanation": "Many leftovers become waste because they are forgotten or replaced by newly purchased food. Actively planning meals around available leftovers helps reduce food waste.",
+    "source": "van Geffen, L., van Herpen, E., Sijtsema, S., & van Trijp, H. (2020). Food waste as the consequence of competing motivations, lack of opportunities, and insufficient abilities. Resources, Conservation & Recycling: X, 5, 100026. https://doi.org/10.1016/j.rcrx.2019.100026",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Preparing larger batches of meals and freezing portions you will not eat soon",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Planning future meals around leftovers and ingredients already available at home",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Shopping frequently so that ingredients are always fresh",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Prioritizing newly purchased foods over leftovers to maintain food quality",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.3.1",
+    "topicCode": "EXPIRED_FOOD",
+    "level": "INTERMEDIATE",
+    "question": "You find a yogurt that is two days past its \"best before\" date. The packaging is unopened and it has been stored correctly in the refrigerator. What is the most appropriate action?",
+    "explanation": "Many consumers confuse \"best before\" and \"use by\" dates. \"Best before\" refers to quality, while \"use by\" refers to safety. Misunderstanding these labels contributes significantly to avoidable household food waste.",
+    "source": "European Commission. (n.d.). Date marking and food waste prevention. https://food.ec.europa.eu/safety/food-waste/eu-actions-against-food-waste/date-marking-and-food-waste-prevention_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Throw it away immediately because all date labels indicate a safety risk",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Check its condition and understand that the \"best before\" date mainly relates to quality",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Consume it automatically because date labels are not important",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Freeze it immediately without checking its condition",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.3.2",
+    "topicCode": "EXPIRED_FOOD",
+    "level": "ADVANCED",
+    "question": "A supermarket offers a \"Buy 3, Get 2 Free\" promotion on fresh strawberries. What question should you ask yourself before accepting the offer?",
+    "explanation": "Multi-buy promotions often encourage consumers to purchase more than they can consume. Fresh produce is particularly vulnerable to waste because of its short shelf life.",
+    "source": "Reynolds, C., Goucher, L., Quested, T., Bromley, S., Gillick, S., Wells, V. K., Evans, D., Koh, L., Carlsson Kanyama, A., Katzeff, C., Svenfelt, Å., & Jackson, P. (2019). Review: Consumption-stage food waste reduction interventions – What works and how to design better interventions. Food Policy, 83, 7–27. https://doi.org/10.1016/j.foodpol.2019.01.009",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Will the strawberries fit in my refrigerator?",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Can I realistically use all five packs before they spoil?",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Is this the cheapest price per kilogram?",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Were the strawberries grown locally?",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.3.3",
+    "topicCode": "EXPIRED_FOOD",
+    "level": "BEGINNER",
+    "question": "You are deciding what to do with food that is approaching its expiry date. Which strategy is likely to prevent the most food waste?",
+    "explanation": "Meal planning and prioritising foods with shorter remaining shelf life are among the most effective household strategies to reduce food waste.",
+    "source": "van Geffen, L., van Herpen, E., Sijtsema, S., & van Trijp, H. (2020). Food waste as the consequence of competing motivations, lack of opportunities, and insufficient abilities. Resources, Conservation & Recycling: X, 5, 100026. https://doi.org/10.1016/j.rcrx.2019.100026",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Buy replacement products before the current ones expire",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Adapt your meal plans to use foods that need to be eaten first",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Wait until the expiry date arrives and then decide",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Avoid buying perishable foods altogether",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.3.4",
+    "topicCode": "EXPIRED_FOOD",
+    "level": "BEGINNER",
+    "question": "Which household is likely to generate the least waste from expired food?",
+    "explanation": "Many foods expire because consumers forget what is already available at home and purchase duplicate items. Inventory awareness is a key food-waste prevention strategy.",
+    "source": "European Commission. (n.d.). Date marking and food waste prevention. https://food.ec.europa.eu/safety/food-waste/eu-actions-against-food-waste/date-marking-and-food-waste-prevention_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "A household that frequently buys products on promotion",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "A household that purchases large packs to reduce unit costs",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "A household that checks existing food stocks before shopping",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "A household that shops more frequently without planning",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q5.3.5",
+    "topicCode": "EXPIRED_FOOD",
+    "level": "INTERMEDIATE",
+    "question": "A family throws away food shortly after the expiry date because they are worried about food safety. According to the evidence, what is often driving this behaviour?",
+    "explanation": "Research shows that misunderstanding food date labels and concerns about potential health risks are among the main drivers of avoidable household food waste in Europe.",
+    "source": "Reynolds, C., Mirosa, M., & Clothier, B. (2025). Food waste in European households: A meta-analysis of behavioural drivers and quantitative trends. Waste Management, 218, 11536. 10.1016/j.wasman.2026.115536",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Insufficient freezer space",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "High food prices",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Confusion about date labels and precautionary disposal",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Lack of cooking skills",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q5.4.1",
+    "topicCode": "OVERCONSUMPTION",
+    "level": "BEGINNER",
+    "question": "You are planning a family dinner and want to avoid unnecessary food waste. Which approach is most likely to help?",
+    "explanation": "Over-preparation is a common driver of household food waste. Planning portions according to actual needs helps reduce excess food that may never be consumed.",
+    "source": "European Commission. (2026). Toolkit to reduce consumer food waste. Knowledge Centre for Bioeconomy. https://knowledge4policy.ec.europa.eu/bioeconomy/reduce-food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Prepare extra portions \"just in case\"",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Estimate portions based on the number of people eating",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Cook as much as possible so nobody leaves hungry",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Buy additional ingredients at the last minute",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.4.2",
+    "topicCode": "OVERCONSUMPTION",
+    "level": "BEGINNER",
+    "question": "A supermarket offers a large discount on a family-sized package of fresh food. What is the most sustainable response?",
+    "explanation": "Buying more food than can be consumed is a common cause of food waste. Lower unit prices do not necessarily mean less waste if food is discarded later.",
+    "source": "European Commission. (2026). Toolkit to reduce consumer food waste. Knowledge Centre for Bioeconomy. https://knowledge4policy.ec.europa.eu/bioeconomy/reduce-food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Buy it because the price per kilogram is lower",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Buy it only if you have a realistic plan to use it before it spoils",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Always choose the largest available package",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Buy it and decide later what to do with it",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.4.3",
+    "topicCode": "OVERCONSUMPTION",
+    "level": "ADVANCED",
+    "question": "Which shopping habit is most likely to contribute to overconsumption and food waste?",
+    "explanation": "Impulse purchases often lead to over-purchasing and increase the likelihood that food will expire before it is eaten.",
+    "source": "European Commission. (2026). Toolkit to reduce consumer food waste. Knowledge Centre for Bioeconomy. https://knowledge4policy.ec.europa.eu/bioeconomy/reduce-food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Checking cupboards before shopping",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Making a meal plan for the week",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Shopping without a list and buying items spontaneously",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Planning meals around food already available at home",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q5.4.4",
+    "topicCode": "OVERCONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "A household frequently throws away bread, fruit, and vegetables. Which underlying behavior is most likely contributing to the problem?",
+    "explanation": "Fresh produce and bakery products are among the foods most commonly wasted because they have relatively short shelf lives and are often over-purchased.",
+    "source": "European Commission. (2026). Toolkit to reduce consumer food waste. Knowledge Centre for Bioeconomy. https://knowledge4policy.ec.europa.eu/bioeconomy/reduce-food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Buying larger quantities because they appear to offer better value for money",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Purchasing more perishable food than can be used in time",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Regularly taking advantage of multi-buy promotions on fresh products",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Buying extra food \"just in case\" it might be needed",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q5.4.5",
+    "topicCode": "OVERCONSUMPTION",
+    "level": "INTERMEDIATE",
+    "question": "Which statement best reflects the relationship between overconsumption and food waste?",
+    "explanation": "Overconsumption and over-purchasing often lead to food remaining uneaten, increasing both household waste and the environmental impacts associated with producing that food.",
+    "source": "European Commission. (2026). Toolkit to reduce consumer food waste. Knowledge Centre for Bioeconomy. https://knowledge4policy.ec.europa.eu/bioeconomy/reduce-food-waste_en",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Food waste is mainly caused by poor packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Food waste occurs only when consumers misunderstand expiry dates",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Buying, cooking, or serving more food than needed increases the likelihood of food being wasted",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Overconsumption only affects household budgets, not the environment",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.1.1",
+    "topicCode": "PROTEIN",
+    "level": "BEGINNER",
+    "question": "You want to increase your protein intake while reducing the environmental impact of your diet. Which weekly change is most aligned with current evidence?",
+    "explanation": "",
+    "source": "C) Choose foods with the highest protein content regardless of sourceD) Replace meals with protein supplementsExplanationLegumes, nuts and whole grains provide protein while generally having lower environmental impacts than many animal-derived protein sources. Diversifying protein sources is beneficial for both health and sustainability.Source Harvard T.H. Chan School of Public Health. (n.d.). Protein. https://nutritionsource.hsph.harvard.edu/what-should-you-eat/protein/",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Eat larger portions of red meat",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Include more legumes, nuts and whole grains as protein sources",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Choose foods with the highest protein content regardless of source",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Replace meals with protein supplements",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.1.2",
+    "topicCode": "PROTEIN",
+    "level": "INTERMEDIATE",
+    "question": "Two lunches contain a similar amount of protein:Lentil and quinoa saladProcessed meat sandwichWhich statement is most accurate?",
+    "explanation": "Protein-rich foods differ in the nutrients that accompany them, such as fibre, sodium, saturated fat, vitamins, and minerals. The overall protein package matters.",
+    "source": "Harvard T.H. Chan School of Public Health. (n.d.). Protein. https://nutritionsource.hsph.harvard.edu/what-should-you-eat/protein/",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They are nutritionally identical because protein content is similar",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Protein amount alone is not enough to evaluate nutritional and sustainability performance",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "The processed meat option always provides higher-quality protein",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "The lentil-based meal cannot provide enough essential amino acids",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.1.3",
+    "topicCode": "PROTEIN",
+    "level": "INTERMEDIATE",
+    "question": "A person wants to reduce meat consumption but is concerned about getting all essential amino acids. Which strategy is most appropriate?",
+    "explanation": "",
+    "source": "onlyC) Eat a variety of plant protein sources such as legumes, grains, nuts and seedsD) Double total calorie intakeCorrect AnswerCExplanationDifferent plant proteins complement each other. In diversified diets, combining a variety of plant protein sources generally provides all essential amino acids.Source European Commission (2026). Dietary protein. https://knowledge4policy.ec.europa.eu/health-promotion-knowledge-gateway/dietary-protein_en",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Continue eating meat at every meal",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Rely on one plant protein source only",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Eat a variety of plant protein sources such as legumes, grains, nuts and seeds",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Double total calorie intakeCorrect AnswerC",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.1.4",
+    "topicCode": "PROTEIN",
+    "level": "ADVANCED",
+    "question": "You are comparing two food products:Product A: \"Source of protein\"Product B: \"High protein\"What can you conclude?",
+    "explanation": "",
+    "source": "of protein\"Product B: \"High protein\"What can you conclude?AnswersA) Product B necessarily contains twice as much proteinB) Product A is less healthyC) A higher proportion of Product B's energy comes from proteinD) Product B contains animal proteinCorrect AnswerCExplanationUnder EU nutrition claims legislation, a product can only be labelled \"high protein\" when at least 20% of its energy value comes from protein. \"Source of protein\" requires at least 12%.Source European Commission (2026). Dietary protein. https://knowledge4policy.ec.europa.eu/health-promotion-knowledge-gateway/dietary-protein_en",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Product B necessarily contains twice as much protein",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Product A is less healthy",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "A higher proportion of Product B's energy comes from protein",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Product B contains animal proteinCorrect AnswerC",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.1.5",
+    "topicCode": "PROTEIN",
+    "level": "BEGINNER",
+    "question": "Which dietary pattern is most consistent with both sustainability goals and current nutrition recommendations?",
+    "explanation": "",
+    "source": "C) Obtaining protein from a mix of legumes, fish, dairy products, eggs, nuts and moderate amounts of meatD) Relying mainly on protein shakes and supplementsExplanationHealthy and sustainable diets generally rely on diverse protein sources rather than a single source. Legumes, fish, nuts, dairy products and moderate amounts of meat can all contribute to protein adequacy while supporting dietary quality.Sources World Cancer Research Fund International. (2025). Dietary and lifestyle patterns for cancer prevention. https://www.wcrf.org/DLP",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Obtaining most protein from red and processed meats",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Maximizing protein intake regardless of source",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Obtaining protein from a mix of legumes, fish, dairy products, eggs, nuts and moderate amounts of meat",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Relying mainly on protein shakes and supplements",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.2.1",
+    "topicCode": "FAT",
+    "level": "BEGINNER",
+    "question": "You want to improve the quality of fats in your diet while keeping meals satisfying. Which swap is most aligned with current recommendations?",
+    "explanation": "WHO recommends replacing saturated fats with unsaturated fats whenever possible. Olive oil is rich in unsaturated fats, whereas butter is rich in saturated fats.",
+    "source": "World Health Organization. (2023). Saturated fatty acid and trans-fatty acid intake for adults and children: WHO guideline. Geneva: World Health Organization. https://www.who.int/publications/i/item/9789240073630",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace olive oil with butter",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Replace butter with olive oil",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Replace nuts with processed snacks",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Replace fish with processed meat",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.2.2",
+    "topicCode": "FAT",
+    "level": "INTERMEDIATE",
+    "question": "You are comparing two lunches that contain similar amounts of protein:Lentil and walnut saladProcessed meat sandwichWhich statement is most accurate?",
+    "explanation": "Plant-based protein",
+    "source": "tend to contain more unsaturated fats and less saturated fat than many red and processed meat products. They are also generally associated with lower environmental impacts.Sources Harvard T.H. Chan School of Public Health. (n.d.). Protein. https://nutritionsource.hsph.harvard.edu/what-should-you-eat/protein/",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Both meals are nutritionally equivalent because they contain protein",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The processed meat sandwich is healthier because it contains animal protein",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "The lentil-based meal provides a more favorable fat profile and is generally associated with lower environmental impacts",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Fat quality does not influence health outcomes",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.2.3",
+    "topicCode": "FAT",
+    "level": "INTERMEDIATE",
+    "question": "A package says \"Low Fat.\" What is the best interpretation?",
+    "explanation": "Some low-fat products compensate by adding sugars or other ingredients. Evaluating the whole nutritional profile is more useful than focusing on fat alone.",
+    "source": "World Health Organization. (2023). Total fat intake for the prevention of unhealthy weight gain in adults and children: WHO guideline. https://www.who.int/publications/i/item/9789240073654",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It is healthier than other similar products",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It contains fewer calories than other similar products",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Other nutrients such as sugar and fibre should also be considered",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "It contains only unsaturated fats",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.2.4",
+    "topicCode": "FAT",
+    "level": "BEGINNER",
+    "question": "Which dinner choice is most aligned with both heart-health recommendations and sustainable eating patterns?",
+    "explanation": "Fish provides protein together with unsaturated fats, including omega-3 fatty acids. Replacing some red and processed meat with fish is associated with health benefits and can support more sustainable dietary patterns.",
+    "source": "Harvard T.H. Chan School of Public Health. (n.d.). Protein. https://nutritionsource.hsph.harvard.edu/what-should-you-eat/protein/",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Fried chicken and fries",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Bacon cheeseburger",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Grilled salmon with vegetables and whole grains",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Processed meat platter",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.2.5",
+    "topicCode": "FAT",
+    "level": "ADVANCED",
+    "question": "You want to reduce the risk associated with trans-fat intake. Which food is most likely to deserve extra attention?",
+    "explanation": "Industrially produced trans fats are commonly found in fried foods, baked goods and some packaged snacks. WHO recommends keeping trans-fat intake as low as possible because it increases cardiovascular risk and provides no known health benefit.",
+    "source": "World Health Organization. (n.d.). Trans fat. https://www.who.int/news-room/fact-sheets/detail/trans-fat",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Plain oats",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Lentils",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Commercial fried and baked snack products",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Fresh fruit",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.3.1",
+    "topicCode": "SUGAR",
+    "level": "BEGINNER",
+    "question": "You want to reduce your intake of free sugars. Which breakfast change is likely to have the biggest impact?",
+    "explanation": "Sugar-sweetened beverages are among the largest contributors to free sugar intake across many age groups in Europe. Replacing them with water is one of the most effective ways to reduce free sugar consumption.",
+    "source": "European Food Safety Authority (EFSA)(2022). Sugar consumption and health problems. https://www.efsa.europa.eu/en/infographics/sugar-consumption-and-health-problems",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Replace an apple with a pear",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Replace a sugar-sweetened beverage with water",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Switch from oats to wholegrain toast",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Choose a different type of yogurt",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.3.2",
+    "topicCode": "SUGAR",
+    "level": "BEGINNER",
+    "question": "Which product may still contain substantial amounts of sugar even though many consumers perceive it as healthy?",
+    "explanation": "WHO classifies sugars naturally present in fruit juice as free sugars. Fruit juice can therefore contribute substantially to daily sugar intake.",
+    "source": "World Health Organization. (2015). Guideline: Sugars intake for adults and children. https://www.who.int/publications/i/item/9789241549028",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Plain lentils",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Unsalted nuts",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Fruit juice",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Fresh vegetables",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.3.3",
+    "topicCode": "SUGAR",
+    "level": "INTERMEDIATE",
+    "question": "You are comparing two products:Product A: “No added sugars”Product B: Regular versionWhat can you conclude from the claim on Product A?",
+    "explanation": "Products labelled \"no added sugars\" may still contain naturally occurring sugars. EU legislation requires products to state \"contains naturally occurring sugars\" when relevant.",
+    "source": "European Commission (2026). Sugars and sweeteners. https://knowledge4policy.ec.europa.eu/health-promotion-knowledge-gateway/sugars-sweeteners_en",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It contains no sugar",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It is automatically healthier",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "It may still contain naturally occurring sugars",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "It contains fewer calories",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.3.4",
+    "topicCode": "SUGAR",
+    "level": "BEGINNER",
+    "question": "You want a snack that provides nutrients without relying heavily on free sugars. Which option best fits that goal?",
+    "explanation": "Fruit, plain dairy products, and nuts provide nutrients such as fibre, protein, vitamins, and minerals, while many sweet snacks mainly contribute free sugars and calories.",
+    "source": "World Cancer Research Fund (2026). Sugar and cancer. https://www.wcrf.org/preventing-cancer/topics/sugar-and-cancer/",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Sugary breakfast bar",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Plain yogurt with fruit and nuts",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Sweetened yogurt drink",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Chocolate-coated cereal snack",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.3.5",
+    "topicCode": "SUGAR",
+    "level": "ADVANCED",
+    "question": "Which statement best reflects current recommendations on sugar intake?",
+    "explanation": "EFSA concluded that a safe threshold for added and free sugars could not be established and recommends keeping intake as low as possible within a healthy, nutritionally adequate diet.",
+    "source": "EFSA Panel on Nutrition, Novel Foods and Food Allergens (NDA). (2022). Tolerable upper intake level for dietary sugars. EFSA Journal, 20(2), 7074. https://doi.org/10.2903/j.efsa.2022.7074",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Naturally occurring sugars in fruit should be avoided",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "All carbohydrates should be minimized",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Added and free sugars should be kept as low as possible",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Sugar is harmful only because it causes tooth decay",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.4.1",
+    "topicCode": "SALT",
+    "level": "INTERMEDIATE",
+    "question": "You want to reduce your sodium intake. Which change is likely to have the biggest impact?",
+    "explanation": "In most developed countries, 70–80% of dietary salt comes from processed foods and foods eaten outside the home, rather than from the salt added during cooking or at the table.",
+    "source": "World Health Organization. (2016). SHAKE the salt habit: Technical package for salt reduction. https://iris.who.int/server/api/core/bitstreams/b98b5a2a-c18b-49b2-a7bc-cdd48e95152f/content",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Stop adding salt to home-cooked meals",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Switch from sea salt to Himalayan salt",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Reduce consumption of processed foods and ready-made meals",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Eat fewer fresh products that are high in sodium",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.4.2",
+    "topicCode": "SALT",
+    "level": "BEGINNER",
+    "question": "Which meal is most likely to be lower in sodium?",
+    "explanation": "Fresh and minimally processed foods generally contain much less sodium than processed meats, instant products, and ready-made meals.",
+    "source": "World Health Organization. (2026). Sodium reduction. https://www.who.int/news-room/fact-sheets/detail/sodium-reduction",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Ham and cheese sandwich",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Instant noodles with seasoning sachet",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Homemade stew seasoned with herbs and spices",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Frozen pizza",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.4.3",
+    "topicCode": "SALT",
+    "level": "ADVANCED",
+    "question": "A product is labelled \"low sodium.\" What is the best interpretation?",
+    "explanation": "Reducing sodium is beneficial, but a healthy choice should also consider other factors such as fat, sugar, fibre, and overall food quality.",
+    "source": "World Health Organization. (2025). Use of lower-sodium salt substitutes: WHO guideline. https://www.who.int/publications/i/item/9789240105591",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "It contains no sodium",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "It is healthier in every respect",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "It may help reduce sodium intake, but the overall nutritional profile still matters",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "It respects maximum sodium intake recommended",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.4.4",
+    "topicCode": "SALT",
+    "level": "INTERMEDIATE",
+    "question": "You want to add flavor to your meals while reducing salt intake. Which strategy is most consistent with WHO advice?",
+    "explanation": "WHO recommends using herbs and spices to flavor foods instead of relying heavily on salt.",
+    "source": "World Health Organization. (2026). Sodium reduction. https://www.who.int/news-room/fact-sheets/detail/sodium-reduction",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Use pink salt",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Use herbs, spices, garlic, and other flavorings instead of extra salt",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Switch to larger salt crystals",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Use Himalayan salt",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.4.5",
+    "topicCode": "SALT",
+    "level": "ADVANCED",
+    "question": "Which food category is commonly one of the largest contributors to sodium intake in European diets?",
+    "explanation": "In European populations, important contributors to sodium intake include bread, meat and meat products, cheese, and dairy products.",
+    "source": "EFSA Panel on Dietetic Products, Nutrition and Allergies. (2019). Dietary reference values for sodium. https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5778",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Fresh fruit",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Plain rice",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Bread",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Unsalted nuts",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.5.1",
+    "topicCode": "FIBER",
+    "level": "BEGINNER",
+    "question": "You want to increase your fibre intake. Which breakfast is most likely to help?",
+    "explanation": "Oats, fruit, and nuts are all important",
+    "source": "of dietary fibre. Combining different fibre-rich foods helps increase fibre intake while also providing vitamins, minerals, and other beneficial nutrients.Source European Food Information Council (EUFIC). (2023). Recommended daily intake of fibre and fibre-rich foods to help you achieve it. https://www.eufic.org/en/?ACT=115&path=global/pdf/recommended-daily-intake-of-fibre-and-fibre-rich-foods-to-help-you-achieve-it",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "White toast with chocolate spread",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Oatmeal topped with fruit and nuts",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Sugary breakfast cereal",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Croissant with jam",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.5.2",
+    "topicCode": "FIBER",
+    "level": "BEGINNER",
+    "question": "You are choosing between two pasta products. Which option is most likely to contain more fibre?",
+    "explanation": "Whole grain products retain more of the grain's natural fibre than refined grain products. Whole wheat pasta is generally a better",
+    "source": "of dietary fibre than refined white pasta.Source European Food Information Council (EUFIC). (2023). Q&A Whole grain. https://www.eufic.org/en/whats-in-food/article/qa-whole-grain",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Refined white pasta",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Whole wheat pasta",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Rice noodles",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Instant noodles",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.5.3",
+    "topicCode": "FIBER",
+    "level": "ADVANCED",
+    "question": "A package claims to contain whole grains. Which information on the label would provide the strongest indication that the claim is true?",
+    "explanation": "One practical way to identify whole-grain foods is to check whether terms such as \"whole wheat,\" \"whole oats,\" or \"whole grain\" appear near the beginning of the ingredients list.",
+    "source": "European Food Information Council (EUFIC). (2023). Q&A Whole grain. https://www.eufic.org/en/whats-in-food/article/qa-whole-grain",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "The package has a brown colour",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "The word \"natural\" appears on the front",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Whole grain or whole wheat is listed among the first ingredients",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "The product is advertised as high in fiber",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.5.4",
+    "topicCode": "FIBER",
+    "level": "INTERMEDIATE",
+    "question": "A person wants to improve digestive health and prevent constipation. Which habit is most consistent with current evidence?",
+    "explanation": "Dietary fibre supports bowel function, especially when combined with adequate fluid intake. Increasing fibre gradually can also help reduce temporary bloating and discomfort.",
+    "source": "European Food Information Council (EUFIC). (2005). Dietary fibre – what's its role in a healthy diet? https://www.eufic.org/en/whats-in-food/article/dietary-fibre-whats-its-role-in-a-healthy-diet",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Reduce dietary fibre intake",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Eat fibre-rich foods but avoid drinking water",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Increase fibre intake gradually while staying well hydrated",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Replace whole grains with refined grains",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.5.5",
+    "topicCode": "FIBER",
+    "level": "ADVANCED",
+    "question": "Which food combination is most likely to provide a variety of different types of dietary fibre?",
+    "explanation": "Different fibre-rich foods provide different types of soluble and insoluble fibre. Eating a variety of pulses, vegetables, fruits, and whole grains supports digestive health and overall diet quality.",
+    "source": "European Food Information Council (EUFIC). (2023). Recommended daily intake of fibre and fibre-rich foods to help you achieve it. https://www.eufic.org/en/?ACT=115&path=global/pdf/recommended-daily-intake-of-fibre-and-fibre-rich-foods-to-help-you-achieve-it",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "White rice and processed meat",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Cheese and crackers",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Lentils, vegetables, fruit, and whole grains",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Sugary breakfast cereal and fruit juice",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.6.1",
+    "topicCode": "VITAMINS",
+    "level": "INTERMEDIATE",
+    "question": "You want to improve the vitamin content of your diet without taking supplements. Which habit is most aligned with current recommendations?",
+    "explanation": "Fruits and vegetables provide different vitamins, minerals, fibre, and antioxidants. Eating a variety of plant foods helps improve overall micronutrient intake and reduces the risk of deficiencies.",
+    "source": "World Health Organization. (2020). Healthy diet: Keys to eating well. https://www.who.int/news-room/questions-and-answers/item/healthy-diet-keys-to-eating-well",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Eat the same fruits and vegetables every day",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Eat a wide variety of fruits and vegetables of different colors",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Focus only on protein-rich foods",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Replace vegetables with fruit juice",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.6.2",
+    "topicCode": "VITAMINS",
+    "level": "ADVANCED",
+    "question": "A person wants to maintain adequate vitamin D levels through food. Which meal is most likely to contribute?",
+    "explanation": "Natural food",
+    "source": "of vitamin D are relatively limited. Fatty fish such as salmon, milk, and some mushrooms are among the dietary sources that can help contribute to vitamin D intake.Source Młynarska, E., Lisińska, W., Hossa, K., Krupińska, N., Jakubowska, P., Rysz, J., & Franczyk, B. (2025). Vitamin D and Chronic Disorders: A Review of Metabolic and Cardiovascular Diseases. Pharmaceuticals, 18(10), 1467. https://doi.org/10.3390/ph18101467",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "White rice with vegetables",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Salmon with mushrooms and milk",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Apple and oatmeal",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Lentils and carrots",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.6.3",
+    "topicCode": "VITAMINS",
+    "level": "ADVANCED",
+    "question": "A consumer follows a strict vegan diet. Which vitamin deserves particular attention?",
+    "explanation": "Vitamin B12 is found naturally almost exclusively in animal-derived foods. People following vegetarian and especially vegan diets may need fortified foods or supplements to maintain adequate intake.",
+    "source": "Watanabe, F., & Bito, T. (2018). Vitamin B12 sources and microbial interaction. Experimental Biology and Medicine, 243(2), 148–158. https://doi.org/10.1177/1535370217746612",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Vitamin C",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Vitamin E",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Vitamin B12",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Vitamin A",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.6.4",
+    "topicCode": "VITAMINS",
+    "level": "BEGINNER",
+    "question": "Which snack is most likely to provide a good source of vitamin C?",
+    "explanation": "",
+    "source": "of vitamin C?AnswersA) Cheese and crackersB) White bread with butterC) Orange slices and kiwi fruitD) Boiled riceExplanationFruit such as oranges, kiwis, berries, and many vegetables are rich sources of vitamin C, which contributes to immune function and normal collagen formation.Source Carr, A. C., & Maggini, S. (2017). Vitamin C and Immune Function. Nutrients, 9(11), 1211. https://doi.org/10.3390/nu9111211",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Cheese and crackers",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "White bread with butter",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Orange slices and kiwi fruit",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Boiled rice",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.6.5",
+    "topicCode": "VITAMINS",
+    "level": "BEGINNER",
+    "question": "You are choosing between two side dishes:Steamed vegetablesVegetables cooked for a very long time at high temperatureWhich option is more likely to preserve vitamins?",
+    "explanation": "Excessive cooking can reduce the content of some vitamins. WHO recommends avoiding overcooking fruits and vegetables to help preserve important nutrients.",
+    "source": "World Health Organization. (2020). Healthy diet: Keys to eating well. https://www.who.int/news-room/questions-and-answers/item/healthy-diet-keys-to-eating-well",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Steamed vegetables",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Both options preserve vitamins equally well",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Overcooked vegetables",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It depends only on portion size",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q6.7.1",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "level": "BEGINNER",
+    "question": "Two lunches contain a similar number of calories. Which lunch is likely to be more nutrient-dense?",
+    "explanation": "Calories measure energy, but nutrient density reflects the amount of beneficial nutrients provided. A meal based on legumes, vegetables, and whole grains typically provides more fibre, vitamins, minerals, and phytochemicals than many highly processed alternatives with a similar calorie content.",
+    "source": "World Health Organization. (2020). Healthy diet: Keys to eating well. https://www.who.int/news-room/questions-and-answers/item/healthy-diet-keys-to-eating-well",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Lentils, vegetables, and whole grains rather than a burger and fries",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "A burger and fries rather than lentils, vegetables, and whole grains",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Both lunches are equally nutrient-dense because they contain the same number of calories",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "It cannot be determined because calorie content is the only information that matters",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q6.7.2",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "level": "BEGINNER",
+    "question": "Which beverage choice is most likely to reduce unnecessary calorie intake?",
+    "explanation": "Water provides hydration without calories, whereas sugary beverages can add substantial amounts of energy with limited nutritional value.",
+    "source": "World Health Organization. (2020). Healthy diet: Keys to eating well. https://www.who.int/news-room/questions-and-answers/item/healthy-diet-keys-to-eating-well",
+    "health": false,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Sugar-sweetened soft drink",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Energy drink",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Water",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Sweetened iced tea",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.7.3",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "level": "INTERMEDIATE",
+    "question": "Why can regularly eating highly processed snack foods make calorie management more difficult?",
+    "explanation": "Many ultra-processed foods are energy-dense and easy to overconsume, which may contribute to excess calorie intake and unhealthy weight gain.",
+    "source": "Kendrick, E. (2024). Examining the prevalence of nutrient deficiency in modern diets. Clinical nutrition and hospital dietetic, 44(3). DOI: 10.12873/0211-6057.44.03.228",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "They contain too much water",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "They often provide many calories while offering limited satiety",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "They contain no carbohydrates",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "They always contain high levels of sugar",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q6.7.4",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "level": "ADVANCED",
+    "question": "Which statement best reflects a sustainable approach to calorie consumption?",
+    "explanation": "",
+    "source": "C) Matching calorie intake to individual needs while prioritizing nutrient-rich foodsD) Focusing only on calories and ignoring food qualityExplanationA healthy and sustainable diet is not just about calories. It involves meeting energy needs while choosing foods that provide essential nutrients and minimizing unnecessary overconsumption and waste.Source FAO & WHO. (2024). What are healthy diets? Joint statement by the Food and Agriculture Organization of the United Nations and the World Health Organization. https://doi.org/10.4060/cd2223en",
+    "health": true,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Consuming as few calories as possible",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Maximizing calorie intake from any food source",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Matching calorie intake to individual needs while prioritizing nutrient-rich foods",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Focusing only on calories and ignoring food quality",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q6.7.5",
+    "topicCode": "ENERGY_VALUE_CALORIES",
+    "level": "INTERMEDIATE",
+    "question": "Four snacks provide approximately the same number of calories. Which is more likely to keep you satisfied for longer?",
+    "explanation": "Foods containing fibre, protein, and healthy fats generally promote satiety better than foods that consist mainly of added sugars.",
+    "source": "World Health Organization (2026). Healthy diet. https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+    "health": true,
+    "foodChoice": false,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Candy",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "An apple with a handful of nuts",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Donuts",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Boxed cereal",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  }
+]

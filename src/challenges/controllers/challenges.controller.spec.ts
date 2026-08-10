@@ -28,6 +28,7 @@ describe('ChallengesController', () => {
           useValue: {
             getChallengeById: jest.fn(),
             getAllChallengesByUserId: jest.fn(),
+            getAllPaginated: jest.fn(),
             update: jest.fn(),
           },
         },
@@ -52,11 +53,14 @@ describe('ChallengesController', () => {
       const mockResult = { id: 'c1', title: 'Test Challenge' };
       (service.create as jest.Mock).mockResolvedValue(mockResult);
       const dto = {
+        code: 'CH.B1.1',
+        dimensionId: 'dim-1',
+        level: 'BEGINNER' as const,
         title: 'Test',
-        description: 'Desc',
+        task: 'Task',
+        whyItMatters: 'Why',
+        tags: ['FOOD_CHOICE'],
         available: true,
-        startDate: new Date(),
-        endDate: new Date(),
       };
       const result = await controller.create(dto);
       expect(service.create).toHaveBeenCalledWith(dto);
@@ -68,9 +72,41 @@ describe('ChallengesController', () => {
     it('should call service.getAll and return result', async () => {
       const mockResult = [{ id: 'c1', title: 'Test' }];
       (service.getAll as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getAll();
-      expect(service.getAll).toHaveBeenCalled();
+      const result = await controller.getAll(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user'] },
+            },
+          },
+        },
+        'u1',
+      );
+      expect(service.getAll).toHaveBeenCalledWith({}, {
+        isAdmin: false,
+        userId: 'u1',
+      });
       expect(result).toBe(mockResult);
+    });
+
+    it('should treat Keycloak resource_access admin as admin', async () => {
+      (service.getAll as jest.Mock).mockResolvedValue([]);
+      await controller.getAll(
+        {},
+        {
+          user: {
+            resource_access: {
+              'foodmission-api': { roles: ['user', 'admin'] },
+            },
+          },
+        },
+        'u1',
+      );
+      expect(service.getAll).toHaveBeenCalledWith({}, {
+        isAdmin: true,
+        userId: 'u1',
+      });
     });
   });
 
@@ -78,8 +114,8 @@ describe('ChallengesController', () => {
     it('should call service.getChallengeById and return result', async () => {
       const mockResult = { id: 'c1', title: 'Test' };
       (service.getChallengeById as jest.Mock).mockResolvedValue(mockResult);
-      const result = await controller.getChallengeById('c1');
-      expect(service.getChallengeById).toHaveBeenCalledWith('c1');
+      const result = await controller.getChallengeById('c1', {});
+      expect(service.getChallengeById).toHaveBeenCalledWith('c1', undefined);
       expect(result).toBe(mockResult);
     });
   });

@@ -1,5 +1,5 @@
 // ============================================================
-// Gamification - Missions, challenges, knowledge, wallet, indicators
+// Gamification - Catalog content, wallet, indicators
 // ============================================================
 
 enum ProgressIndicatorKind {
@@ -32,18 +32,45 @@ enum WalletCurrency {
   POINTS
 }
 
+enum ContentLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum QuestContentType {
+  MISSION
+  CHALLENGE
+  FOOD_FACT
+  QUIZ
+  MICRO_LEARNING
+}
+
 model Mission {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  available   Boolean  @default(false)
-  startDate   DateTime
-  endDate     DateTime
-  content     Json     @default("{}") // Flexible JSON for mission-specific content
+  id           String       @id @default(uuid())
+  code         String       @unique
+  dimensionId  String
+  topicId      String?
+  level        ContentLevel
+  title        String
+  duration     String
+  goal         String
+  whyItMatters String
+  health       Boolean      @default(false)
+  foodChoice   Boolean      @default(false)
+  foodWaste    Boolean      @default(false)
+  available    Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   // Relations
+  dimension         Dimension         @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  topic             Topic?            @relation(fields: [topicId], references: [id], onDelete: SetNull)
   missionProgresses MissionProgress[]
 
+  @@index([dimensionId])
+  @@index([topicId])
+  @@index([level])
   @@map("missions")
 }
 
@@ -62,17 +89,29 @@ model MissionProgress {
 }
 
 model Challenge {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  available   Boolean  @default(false)
-  startDate   DateTime
-  endDate     DateTime
-  content     Json     @default("{}") // Flexible JSON for challenge-specific content
+  id           String       @id @default(uuid())
+  code         String       @unique
+  dimensionId  String
+  topicId      String?
+  level        ContentLevel
+  title        String
+  task         String
+  whyItMatters String
+  health       Boolean      @default(false)
+  foodChoice   Boolean      @default(false)
+  foodWaste    Boolean      @default(false)
+  available    Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   // Relations
+  dimension           Dimension           @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  topic               Topic?              @relation(fields: [topicId], references: [id], onDelete: SetNull)
   challengeProgresses ChallengeProgress[]
 
+  @@index([dimensionId])
+  @@index([topicId])
+  @@index([level])
   @@map("challenges")
 }
 
@@ -90,43 +129,228 @@ model ChallengeProgress {
   @@map("challenge_progress")
 }
 
-model Knowledge {
-  id          String   @id @default(uuid())
-  userId      String // Creator/owner of the knowledge item
-  title       String
+model FoodFact {
+  id         String       @id @default(uuid())
+  code       String       @unique
+  topicId    String
+  body       String
+  source     String?
+  level      ContentLevel
+  health     Boolean      @default(false)
+  foodChoice Boolean      @default(false)
+  foodWaste  Boolean      @default(false)
+  available  Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  // Relations
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@index([topicId])
+  @@index([level])
+  @@map("food_facts")
+}
+
+model Quiz {
+  id          String       @id @default(uuid())
+  code        String       @unique
+  topicId     String
+  question    String
+  explanation String
+  source      String?
+  level       ContentLevel
+  health      Boolean      @default(false)
+  foodChoice  Boolean      @default(false)
+  foodWaste   Boolean      @default(false)
+  available   Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  options  QuizOption[]
+  progress QuizProgress[]
+
+  @@index([topicId])
+  @@index([level])
+  @@map("quizzes")
+}
+
+model QuizOption {
+  id        String  @id @default(uuid())
+  quizId    String
+  label     String
+  text      String
+  isCorrect Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  // Relations
+  quiz               Quiz                @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  selectedInProgress QuizProgress[]
+
+  @@unique([quizId, label])
+  @@index([quizId])
+  @@map("quiz_options")
+}
+
+model QuizProgress {
+  id               String    @id @default(uuid())
+  userId           String
+  quizId           String
+  selectedOptionId String?
+  isCorrect        Boolean?
+  completed        Boolean   @default(false)
+  answeredAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz           Quiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  selectedOption QuizOption? @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, quizId])
+  @@index([userId])
+  @@index([quizId])
+  @@map("quiz_progress")
+}
+
+model Quest {
+  id          String       @id @default(uuid())
+  code        String       @unique
+  dimensionId String
+  level       ContentLevel
+  name        String?
+  title       String?
   description String?
-  available   Boolean  @default(true)
-  content     Json // Stores quiz data: { questions: [{ question, options, correctAnswer }] }
+  available   Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  dimension      Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  items          QuestItem[]
+  progress       QuestProgress[]
+  currentUsers   User[]          @relation("UserCurrentQuest")
+  currentGroups  UserGroup[]     @relation("GroupCurrentQuest")
+
+  @@index([dimensionId])
+  @@index([dimensionId, level])
+  @@map("quests")
+}
+
+model QuestItem {
+  id          String           @id @default(uuid())
+  questId     String
+  contentType QuestContentType
+  contentCode String
+  sortOrder   Int              @default(0)
+
+  // Relations
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, contentType, contentCode])
+  @@index([questId])
+  @@map("quest_items")
+}
+
+model QuestProgress {
+  userId     String
+  questId    String
+  unlockedAt DateTime?
+  completed  Boolean   @default(false)
+  progress   Float     @default(0)
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest Quest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@id([userId, questId])
+  @@map("quest_progress")
+}
+
+model MicroLearning {
+  id          String        @id @default(uuid())
+  code        String        @unique
+  dimensionId String?
+  topicId     String?
+  title       String
+  body        String
+  tips        String?
+  media       Json          @default("{}")
+  level       ContentLevel?
+  health      Boolean       @default(false)
+  foodChoice  Boolean       @default(false)
+  foodWaste   Boolean       @default(false)
+  available   Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  dimension Dimension? @relation(fields: [dimensionId], references: [id], onDelete: SetNull)
+  topic     Topic?     @relation(fields: [topicId], references: [id], onDelete: SetNull)
+
+  @@index([dimensionId])
+  @@index([topicId])
+  @@index([level])
+  @@map("micro_learnings")
+}
+
+model Dimension {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  topics         Topic[]
+  missions       Mission[]
+  challenges     Challenge[]
+  quests         Quest[]
+  microLearnings MicroLearning[]
+
+  @@index([sortOrder])
+  @@map("dimensions")
+}
+
+model Topic {
+  id          String   @id @default(uuid())
+  dimensionId String
+  code        String   @unique
+  name        String
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userProgress UserKnowledgeProgress[]
+  dimension      Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  missions       Mission[]
+  challenges     Challenge[]
+  foodFacts      FoodFact[]
+  quizzes        Quiz[]
+  microLearnings MicroLearning[]
 
-  @@index([userId])
-  @@index([available])
-  @@map("knowledge")
+  @@index([dimensionId])
+  @@index([sortOrder])
+  @@map("topics")
 }
 
-model UserKnowledgeProgress {
-  id             String   @id @default(uuid())
-  userId         String
-  knowledgeId    String
-  completed      Boolean  @default(false)
-  progress       Json     @default("{}") // Stores: { currentQuestionIndex, answers, score }
-  lastAccessedAt DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model Reward {
+  id                   String   @id @default(uuid())
+  name                 String   @unique
+  points               Int?
+  xp                   Int?
+  badge                String?
+  avatarItem           String?
+  petItem              String?
+  collectible          String?
+  collectibleShareable Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
-  // Relations
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  knowledge Knowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, knowledgeId])
-  @@index([userId])
-  @@index([knowledgeId])
-  @@map("user_knowledge_progress")
+  @@map("rewards")
 }
 
 model UserGamificationWallet {
@@ -142,16 +366,16 @@ model UserGamificationWallet {
 
 /// Append-only history of wallet balance changes (XP / points).
 model WalletEntry {
-  id           String        @id @default(uuid())
+  id           String         @id @default(uuid())
   userId       String
   currency     WalletCurrency
   amount       Int // signed: credit > 0, debit < 0
   balanceAfter Int
   reason       String
   eventId      String?
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime       @default(now())
 
-  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   event UserEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
@@ -163,17 +387,17 @@ model WalletEntry {
 /// Exactly one of userId / groupId must be set
 /// (DB CHECK `progress_indicators_owner_xor` in manual migration).
 model ProgressIndicator {
-  id               String                 @id @default(uuid())
+  id               String                @id @default(uuid())
   userId           String?
   groupId          String?
   kind             ProgressIndicatorKind
   precision        ProgressPrecision
-  level            Int                    @default(1) // 1–5
-  accumulatedValue Float                  @default(0) // current cycle
+  level            Int                   @default(1) // 1–5
+  accumulatedValue Float                 @default(0) // current cycle
   targetValue      Float
-  allTimeTotal     Float                  @default(0)
-  cycleStartedAt   DateTime               @default(now())
-  lastUpdatedAt    DateTime               @updatedAt
+  allTimeTotal     Float                 @default(0)
+  cycleStartedAt   DateTime              @default(now())
+  lastUpdatedAt    DateTime              @updatedAt
 
   user  User?      @relation("UserProgressIndicators", fields: [userId], references: [id], onDelete: Cascade)
   group UserGroup? @relation("GroupProgressIndicators", fields: [groupId], references: [id], onDelete: Cascade)
