@@ -102,6 +102,8 @@ export class SurveyResponseDto {
   id: string;
   userId: string;
   surveyId: string;
+  /** 1-based attempt counter; each submit creates a new attempt. */
+  attemptNumber: number;
   responses: QuestionResponseDto[];
   createdAt: Date;
   updatedAt: Date;

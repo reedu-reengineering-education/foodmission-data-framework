@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException,
 } from '@nestjs/common';
 import { SurveysRepository } from '../repositories/surveys.repository';
 import {
@@ -338,24 +337,11 @@ export class SurveysService {
     surveyId: string,
     data: SubmitSurveyResponseDto,
   ): Promise<SurveyResponseDto> {
-    // Validate survey exists
     const survey = await this.surveysRepository.getSurveyById(surveyId);
     if (!survey) {
       throw new NotFoundException(`Survey with id ${surveyId} not found`);
     }
 
-    // Check if user already responded to this survey
-    const existingResponse = await this.surveysRepository.getSurveyResponse(
-      userId,
-      surveyId,
-    );
-    if (existingResponse) {
-      throw new ConflictException(
-        `User has already responded to survey ${surveyId}`,
-      );
-    }
-
-    // Validate all questions belong to the survey
     const questionIds = new Set(survey.questions.map((q) => q.id));
     for (const response of data.responses) {
       if (!questionIds.has(response.questionId)) {
@@ -365,19 +351,15 @@ export class SurveysService {
       }
     }
 
-    // Prepare data for repository
-    const submitData: SubmitSurveyResponseDto = {
-      responses: data.responses,
-    };
-
     const result = await this.surveysRepository.submitSurveyResponse(
       userId,
       surveyId,
-      submitData,
+      { responses: data.responses },
     );
     return this.mapSurveyResponseToDto(result);
   }
 
+  /** Latest attempt for this user + survey. */
   async getUserSurveyResponse(
     userId: string,
     surveyId: string,
@@ -394,6 +376,26 @@ export class SurveysService {
     }
     const [localized] = await this.localizeSurveyResponses([response], lang);
     return this.mapSurveyResponseToDto(localized);
+  }
+
+  /** All attempts for this user + survey, oldest first. */
+  async getUserSurveyResponsesForSurvey(
+    userId: string,
+    surveyId: string,
+    lang?: string,
+  ): Promise<SurveyResponseDto[]> {
+    const survey = await this.surveysRepository.getSurveyById(surveyId);
+    if (!survey) {
+      throw new NotFoundException(`Survey with id ${surveyId} not found`);
+    }
+
+    const responses =
+      await this.surveysRepository.getUserSurveyResponsesForSurvey(
+        userId,
+        surveyId,
+      );
+    const localized = await this.localizeSurveyResponses(responses, lang);
+    return localized.map((r) => this.mapSurveyResponseToDto(r));
   }
 
   async getUserSurveyResponses(userId: string, lang?: string) {

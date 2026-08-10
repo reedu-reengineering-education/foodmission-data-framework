@@ -34,18 +34,19 @@ model Question {
 }
 
 model SurveyResponse {
-  id       String @id @default(uuid())
-  userId   String
-  surveyId String
-  
-  survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  id            String @id @default(uuid())
+  userId        String
+  surveyId      String
+  attemptNumber Int
+
+  survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
 
   questionResponses QuestionResponse[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, surveyId])
+  @@unique([userId, surveyId, attemptNumber])
   @@index([userId])
   @@index([surveyId])
   @@map("survey_responses")

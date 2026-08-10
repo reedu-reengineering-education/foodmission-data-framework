@@ -19,7 +19,6 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
-  ApiConflictResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
@@ -135,7 +134,7 @@ export class SurveysController {
   @ApiOperation({
     summary: 'Submit survey responses',
     description:
-      'Submit user responses to a survey. Each response must contain a valid question ID and a Likert value (1-5). A user can only submit one response per survey.',
+      'Submit user responses to a survey. Each response must contain a valid question ID and a Likert value (1-5). Users may submit the same survey multiple times; each submit creates a new attempt.',
   })
   @ApiBody({ type: SubmitSurveyResponseDto })
   @ApiResponse({
@@ -148,9 +147,6 @@ export class SurveysController {
       'Invalid request - missing questions, invalid question ID, out-of-range value, or validation errors',
   })
   @ApiNotFoundResponse({ description: 'Survey not found' })
-  @ApiConflictResponse({
-    description: 'User has already submitted responses for this survey',
-  })
   async submitSurveyResponse(
     @Param('id') surveyId: string,
     @Body() dto: SubmitSurveyResponseDto,
@@ -161,13 +157,45 @@ export class SurveysController {
     });
   }
 
+  @Get(':id/responses/me/all')
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'id', description: 'Survey ID' })
+  @ApiOperation({
+    summary: "Get all of the user's attempts for a survey",
+    description:
+      'Retrieve every survey response attempt submitted by the current user for this survey, oldest first.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts. Defaults to ${DEFAULT_LOCALE}.`,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User survey response attempts retrieved successfully',
+    type: [SurveyResponseDto],
+  })
+  @ApiNotFoundResponse({ description: 'Survey not found' })
+  async getUserSurveyResponsesForSurvey(
+    @Param('id') surveyId: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: SurveyQueryDto,
+  ): Promise<SurveyResponseDto[]> {
+    return this.surveysService.getUserSurveyResponsesForSurvey(
+      userId,
+      surveyId,
+      query.lang,
+    );
+  }
+
   @Get(':id/responses/me')
   @ApiBearerAuth('JWT-auth')
   @ApiParam({ name: 'id', description: 'Survey ID' })
   @ApiOperation({
-    summary: "Get user's survey response",
+    summary: "Get user's latest survey response",
     description:
-      "Retrieve the current user's responses to a specific survey if they have responded.",
+      "Retrieve the current user's latest attempt for a specific survey if they have responded.",
   })
   @ApiQuery({
     name: 'lang',
@@ -199,7 +227,8 @@ export class SurveysController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: "Get all user's survey responses",
-    description: 'Retrieve all survey responses submitted by the current user.',
+    description:
+      'Retrieve all survey response attempts submitted by the current user (may include multiple attempts per survey).',
   })
   @ApiQuery({
     name: 'lang',
