@@ -143,6 +143,31 @@ export class SurveysRepository {
     surveyId: string,
     data: SubmitSurveyResponseDto,
   ) {
+    // Concurrent submits can both read the same latest attemptNumber; retry on
+    // the unique-constraint race so the second caller gets the next number.
+    const maxAttempts = 3;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        return await this.createSurveyResponseAttempt(userId, surveyId, data);
+      } catch (error) {
+        const isUniqueViolation =
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2002';
+        if (!isUniqueViolation || attempt === maxAttempts - 1) {
+          throw error;
+        }
+      }
+    }
+
+    // Unreachable: loop always returns or throws.
+    throw new Error('Failed to submit survey response');
+  }
+
+  private createSurveyResponseAttempt(
+    userId: string,
+    surveyId: string,
+    data: SubmitSurveyResponseDto,
+  ) {
     return this.prisma.$transaction(async (tx) => {
       const latest = await tx.surveyResponse.findFirst({
         where: { userId, surveyId },
