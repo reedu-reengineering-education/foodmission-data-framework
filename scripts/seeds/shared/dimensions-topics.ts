@@ -1,19 +1,20 @@
 import { PrismaClient } from '@prisma/client';
 
-interface TopicSeed {
+export interface TopicSeed {
   code: string;
   name: string;
   sortOrder: number;
 }
 
-interface DimensionSeed {
+export interface DimensionSeed {
   code: string;
   name: string;
   sortOrder: number;
   topics: TopicSeed[];
 }
 
-const dimensionSeedData: DimensionSeed[] = [
+/** English source of the dimension/topic names (exported for the i18n workbook). */
+export const dimensionSeedData: DimensionSeed[] = [
   {
     code: 'DIET_CHANGES',
     name: 'Diet changes towards a more sustainable system',

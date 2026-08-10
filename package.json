@@ -41,6 +41,8 @@
     "i18n:import": "ts-node scripts/i18n/import-translations.ts",
     "i18n:export:db": "ts-node scripts/i18n/export-entity-translations.ts",
     "i18n:import:db": "ts-node scripts/i18n/import-entity-translations.ts",
+    "i18n:workbook:export": "ts-node scripts/i18n/export-partner-workbook.ts",
+    "i18n:workbook:import": "ts-node scripts/i18n/import-partner-workbook.ts",
     "test:i18n": "npm run i18n:validate:locales && npm run i18n:missing",
     "test:otel": "ts-node scripts/test-otel-setup.ts",
     "db:generate": "prisma generate && npm run db:generate:off",
