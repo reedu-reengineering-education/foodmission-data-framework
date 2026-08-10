@@ -1,6 +1,8 @@
+import { NotFoundException } from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { CONSENT_FORM_COUNTRY_CODES } from '../catalog.constants';
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -17,6 +19,24 @@ describe('CatalogService', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  describe('getConsentForm', () => {
+    it('returns the markdown for every supported pilot country', () => {
+      for (const code of CONSENT_FORM_COUNTRY_CODES) {
+        const res = service.getConsentForm(code);
+        expect(res.data.countryCode).toBe(code);
+        expect(res.data.content.length).toBeGreaterThan(0);
+      }
+    });
+
+    it('normalizes the country code casing and whitespace', () => {
+      expect(service.getConsentForm(' NO ').data.countryCode).toBe('no');
+    });
+
+    it('throws NotFoundException for an unsupported country code', () => {
+      expect(() => service.getConsentForm('fr')).toThrow(NotFoundException);
+    });
   });
 
   it('lists genders from Prisma enum', () => {

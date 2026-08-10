@@ -78,7 +78,8 @@
     "docker:up": "docker compose -f docker-compose.yml up -d",
     "docker:down": "docker compose -f docker-compose.yml down",
     "docker:logs": "docker compose -f docker-compose.yml logs -f",
-    "docs:generate": "ts-node scripts/generate-openapi-spec.ts"
+    "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
+    "docs:consent-forms": "ts-node scripts/dev/convert-consent-forms.ts"
   },
   "dependencies": {
     "@cacheable/memory": "^2.2.0",
@@ -153,11 +154,13 @@
     "globals": "^17.8.0",
     "jest": "^30.4.2",
     "js-yaml": "^5.2.3",
+    "mammoth": "^1.12.0",
     "prettier": "^3.9.6",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
     "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
+    "turndown": "^7.2.4",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.65.0"
   },

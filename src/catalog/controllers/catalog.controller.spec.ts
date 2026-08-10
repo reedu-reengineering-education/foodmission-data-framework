@@ -35,6 +35,7 @@ describe('CatalogController', () => {
       listProgressIndicatorKinds: jest.fn(),
       listProgressPrecisions: jest.fn(),
       listWalletCurrencies: jest.fn(),
+      getConsentForm: jest.fn(),
     };
 
     mockService.startup?.mockReturnValue({
@@ -81,6 +82,17 @@ describe('CatalogController', () => {
   it('startup should delegate to service', () => {
     controller.startup();
     expect(service.startup).toHaveBeenCalled();
+  });
+
+  it('consentForm should delegate to service with the country code', () => {
+    service.getConsentForm.mockReturnValue({
+      data: { countryCode: 'no', content: '# Consent' },
+    });
+
+    expect(controller.consentForm('no')).toEqual({
+      data: { countryCode: 'no', content: '# Consent' },
+    });
+    expect(service.getConsentForm).toHaveBeenCalledWith('no');
   });
 
   it('countries should delegate to service with query', () => {
