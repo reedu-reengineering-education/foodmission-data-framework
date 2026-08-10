@@ -44,7 +44,8 @@ This document summarizes the security features implemented for Task 17: Security
   - Removes X-Powered-By header
 
 - **CORS Configuration**
-  - Configurable allowed origins via environment variable
+  - Configurable allowed origins via `ALLOWED_ORIGINS` environment variable
+  - Always allows `*.foodmission.eu` / `*.foodmission.dev` (Swagger Try-it-out on API hosts)
   - Supports credentials
   - Proper preflight handling
   - Logs blocked CORS requests
@@ -54,6 +55,7 @@ This document summarizes the security features implemented for Task 17: Security
 - **Environment Validation Schema** (`src/security/config/environment.validation.ts`)
   - Uses Joi for comprehensive validation
   - Validates required variables (DATABASE_URL, etc.)
+
   <!-- - Enforces minimum security requirements (JWT_SECRET >= 32 chars) -->
   - Validates URLs, ports, and other formats
   - Different requirements for production vs development
@@ -102,7 +104,7 @@ This document summarizes the security features implemented for Task 17: Security
    - HSTS for HTTPS enforcement
 
 4. **CORS Protection**
-   - Configurable origin whitelist
+   - Configurable origin whitelist plus foodmission.eu/dev subdomain rule
    - Proper preflight handling
    - Credential support
    - Request logging
@@ -131,7 +133,7 @@ This document summarizes the security features implemented for Task 17: Security
 
 Security features are configured through environment variables:
 
-- `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
+- `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins (trimmed). Origins under `foodmission.eu` / `foodmission.dev` are always allowed so Swagger Try-it-out works on api/test/staging/preview. Set this for any non-foodmission frontend Origins in each deploy environment.
 - `RATE_LIMIT_TTL`: Rate limit time window (default: 60000ms)
 - `RATE_LIMIT_MAX`: Maximum requests per window (default: 100)
 - `NODE_ENV`: Environment mode (affects security strictness)

@@ -164,16 +164,80 @@ describe('SecurityService', () => {
       corsConfig.origin('http://localhost:3000', callback);
     });
 
-    it('should block unconfigured origins', (done) => {
+    it('should allow foodmission.eu API origin', (done) => {
       const corsConfig = service.getCorsConfiguration();
       const callback = jest.fn((err, allow) => {
-        expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Not allowed by CORS');
+        expect(err).toBeNull();
+        expect(allow).toBe(true);
+        done();
+      });
+
+      corsConfig.origin('https://api.foodmission.eu', callback);
+    });
+
+    it('should allow foodmission staging-like subdomains', (done) => {
+      const corsConfig = service.getCorsConfiguration();
+      const callback = jest.fn((err, allow) => {
+        expect(err).toBeNull();
+        expect(allow).toBe(true);
+        done();
+      });
+
+      corsConfig.origin('https://api-staging.foodmission.eu', callback);
+    });
+
+    it('should allow mixed-case foodmission origins', (done) => {
+      const corsConfig = service.getCorsConfiguration();
+      const callback = jest.fn((err, allow) => {
+        expect(err).toBeNull();
+        expect(allow).toBe(true);
+        done();
+      });
+
+      corsConfig.origin('https://API.FoodMission.EU', callback);
+    });
+
+    it('should match ALLOWED_ORIGINS case-insensitively', async () => {
+      const moduleWithCasedOrigin: TestingModule =
+        await Test.createTestingModule({
+          providers: [
+            SecurityService,
+            {
+              provide: ConfigService,
+              useValue: {
+                get: jest.fn((key: string) => {
+                  if (key === 'ALLOWED_ORIGINS') {
+                    return 'https://App.Example.COM';
+                  }
+                  return undefined;
+                }),
+              },
+            },
+          ],
+        }).compile();
+
+      const casedService =
+        moduleWithCasedOrigin.get<SecurityService>(SecurityService);
+      const corsConfig = casedService.getCorsConfiguration();
+
+      await new Promise<void>((resolve) => {
+        corsConfig.origin('https://app.example.com', (err, allow) => {
+          expect(err).toBeNull();
+          expect(allow).toBe(true);
+          resolve();
+        });
+      });
+    });
+
+    it('should block unconfigured origins without throwing', (done) => {
+      const corsConfig = service.getCorsConfiguration();
+      const callback = jest.fn((err, allow) => {
+        expect(err).toBeNull();
         expect(allow).toBe(false);
         done();
       });
 
-      corsConfig.origin('http://malicious-site.com', callback);
+      corsConfig.origin('https://evil.example.com', callback);
     });
 
     it('should allow requests with no origin', (done) => {
@@ -185,6 +249,63 @@ describe('SecurityService', () => {
       });
 
       corsConfig.origin(undefined as any, callback);
+    });
+
+    it('should trim entries from ALLOWED_ORIGINS', async () => {
+      const moduleWithSpaces: TestingModule = await Test.createTestingModule({
+        providers: [
+          SecurityService,
+          {
+            provide: ConfigService,
+            useValue: {
+              get: jest.fn((key: string) => {
+                if (key === 'ALLOWED_ORIGINS') {
+                  return 'http://localhost:3000, https://app.example.com';
+                }
+                return undefined;
+              }),
+            },
+          },
+        ],
+      }).compile();
+
+      const spacedService =
+        moduleWithSpaces.get<SecurityService>(SecurityService);
+      const corsConfig = spacedService.getCorsConfiguration();
+
+      await new Promise<void>((resolve) => {
+        corsConfig.origin('https://app.example.com', (err, allow) => {
+          expect(err).toBeNull();
+          expect(allow).toBe(true);
+          resolve();
+        });
+      });
+    });
+
+    it('should use defaults including foodmission.eu when ALLOWED_ORIGINS is unset', async () => {
+      const moduleWithDefaults: TestingModule = await Test.createTestingModule({
+        providers: [
+          SecurityService,
+          {
+            provide: ConfigService,
+            useValue: {
+              get: jest.fn(() => undefined),
+            },
+          },
+        ],
+      }).compile();
+
+      const defaultService =
+        moduleWithDefaults.get<SecurityService>(SecurityService);
+      const corsConfig = defaultService.getCorsConfiguration();
+
+      await new Promise<void>((resolve) => {
+        corsConfig.origin('https://api.foodmission.eu', (err, allow) => {
+          expect(err).toBeNull();
+          expect(allow).toBe(true);
+          resolve();
+        });
+      });
     });
   });
 
