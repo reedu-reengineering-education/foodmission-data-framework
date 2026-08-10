@@ -46,7 +46,7 @@ export class QuestsController {
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Create a quest (admin)',
+    summary: 'Create a quest',
     description:
       'Creates a quest with nested items. Item contentCode values must exist for the given contentType. Unique on code.',
   })
@@ -96,7 +96,7 @@ export class QuestsController {
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'List all quest progress rows (admin, paginated)',
+    summary: 'List all quest progress rows (paginated)',
     description:
       'Returns paginated quest progress for all users. Supports lang for translated quest titles.',
   })
