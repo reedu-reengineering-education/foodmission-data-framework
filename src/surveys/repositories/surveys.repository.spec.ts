@@ -40,7 +40,7 @@ describe('SurveysRepository', () => {
     it('creates a new attempt with the next attemptNumber', async () => {
       prisma.surveyResponse.findFirst.mockResolvedValue({ attemptNumber: 1 });
       prisma.surveyResponse.create.mockResolvedValue(createdResponse);
-      prisma.$transaction.mockImplementation(async (cb) => cb(prisma));
+      prisma.$transaction.mockImplementation(async (cb) => await cb(prisma));
 
       const result = await repository.submitSurveyResponse(
         'user-1',
@@ -73,7 +73,7 @@ describe('SurveysRepository', () => {
             attemptNumber: 1,
           });
           prisma.surveyResponse.create.mockResolvedValue(createdResponse);
-          return cb(prisma);
+          return await cb(prisma);
         });
 
       const result = await repository.submitSurveyResponse(
