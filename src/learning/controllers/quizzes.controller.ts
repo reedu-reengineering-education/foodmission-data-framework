@@ -71,7 +71,7 @@ export class QuizzesController {
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'List all quiz progress rows (admin, paginated)',
+    summary: 'List all quiz progress rows (paginated)',
     description:
       'Returns paginated quiz progress for all users. Supports lang for translated questions.',
   })

@@ -107,7 +107,7 @@ export class MissionsController {
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'List all mission progress rows (admin, paginated)',
+    summary: 'List all mission progress rows (paginated)',
     description:
       'Returns paginated mission progress for all users. Use instead of embedded progress on mission list.',
   })

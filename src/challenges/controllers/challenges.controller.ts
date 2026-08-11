@@ -99,7 +99,7 @@ export class ChallengesController {
   @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'List all challenge progress rows (admin, paginated)',
+    summary: 'List all challenge progress rows (paginated)',
     description:
       'Returns paginated challenge progress for all users. Use instead of embedded progress on challenge list.',
   })
