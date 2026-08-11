@@ -576,9 +576,12 @@ function catalogString(row: CatalogRow, field: string): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function learningTranslationPath(locale: string): string {
+export function learningTranslationPath(locale: string): string {
   return path.join(LEARNING_TRANSLATIONS_DIR, `${locale}.json`);
 }
+
+/** Sheets whose content lives in the learning translation files. */
+export const CATALOG_CATEGORY_PREFIX = 'catalog-';
 
 function readLearningFile(locale: string): JsonObject {
   const filePath = learningTranslationPath(locale);
