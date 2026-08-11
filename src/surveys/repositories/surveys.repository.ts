@@ -1,10 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import {
   CreateSurveyDto,
   UpdateSurveyDto,
   SubmitSurveyResponseDto,
 } from '../dto/survey.dto';
+
+const surveyResponseInclude = {
+  questionResponses: {
+    include: {
+      question: true,
+    },
+  },
+  survey: {
+    include: {
+      questions: {
+        orderBy: { order: 'asc' as const },
+      },
+    },
+  },
+} satisfies Prisma.SurveyResponseInclude;
 
 @Injectable()
 export class SurveysRepository {
@@ -103,25 +119,22 @@ export class SurveysRepository {
   }
 
   // Survey Response Operations
+
+  /** Latest attempt for this user + survey, or null if none. */
   async getSurveyResponse(userId: string, surveyId: string) {
-    return this.prisma.surveyResponse.findUnique({
-      where: {
-        userId_surveyId: { userId, surveyId },
-      },
-      include: {
-        questionResponses: {
-          include: {
-            question: true,
-          },
-        },
-        survey: {
-          include: {
-            questions: {
-              orderBy: { order: 'asc' },
-            },
-          },
-        },
-      },
+    return this.prisma.surveyResponse.findFirst({
+      where: { userId, surveyId },
+      orderBy: { attemptNumber: 'desc' },
+      include: surveyResponseInclude,
+    });
+  }
+
+  /** All attempts for this user + survey, oldest first. */
+  async getUserSurveyResponsesForSurvey(userId: string, surveyId: string) {
+    return this.prisma.surveyResponse.findMany({
+      where: { userId, surveyId },
+      orderBy: { attemptNumber: 'asc' },
+      include: surveyResponseInclude,
     });
   }
 
@@ -130,54 +143,61 @@ export class SurveysRepository {
     surveyId: string,
     data: SubmitSurveyResponseDto,
   ) {
-    // Create or update survey response
-    const surveyResponse = await this.prisma.surveyResponse.upsert({
-      where: {
-        userId_surveyId: { userId, surveyId },
-      },
-      update: { updatedAt: new Date() },
-      create: {
-        userId,
-        surveyId,
-      },
-    });
+    // Concurrent submits can both read the same latest attemptNumber; retry on
+    // the unique-constraint race so the second caller gets the next number.
+    const maxAttempts = 3;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        return await this.createSurveyResponseAttempt(userId, surveyId, data);
+      } catch (error) {
+        const isUniqueViolation =
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2002';
+        if (!isUniqueViolation || attempt === maxAttempts - 1) {
+          throw error;
+        }
+      }
+    }
 
-    // Delete old question responses
-    await this.prisma.questionResponse.deleteMany({
-      where: { surveyResponseId: surveyResponse.id },
-    });
+    // Unreachable: loop always returns or throws.
+    throw new Error('Failed to submit survey response');
+  }
 
-    // Create new question responses
-    await this.prisma.questionResponse.createMany({
-      data: data.responses.map((response) => ({
-        surveyResponseId: surveyResponse.id,
-        questionId: response.questionId,
-        value: response.value,
-      })),
-    });
+  private createSurveyResponseAttempt(
+    userId: string,
+    surveyId: string,
+    data: SubmitSurveyResponseDto,
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const latest = await tx.surveyResponse.findFirst({
+        where: { userId, surveyId },
+        orderBy: { attemptNumber: 'desc' },
+        select: { attemptNumber: true },
+      });
+      const attemptNumber = (latest?.attemptNumber ?? 0) + 1;
 
-    // Return updated response with relations
-    return this.getSurveyResponse(userId, surveyId);
+      return tx.surveyResponse.create({
+        data: {
+          userId,
+          surveyId,
+          attemptNumber,
+          questionResponses: {
+            create: data.responses.map((response) => ({
+              questionId: response.questionId,
+              value: response.value,
+            })),
+          },
+        },
+        include: surveyResponseInclude,
+      });
+    });
   }
 
   async getUserSurveyResponses(userId: string) {
     return this.prisma.surveyResponse.findMany({
       where: { userId },
-      include: {
-        survey: {
-          include: {
-            questions: {
-              orderBy: { order: 'asc' },
-            },
-          },
-        },
-        questionResponses: {
-          include: {
-            question: true,
-          },
-        },
-      },
-      orderBy: { updatedAt: 'desc' },
+      include: surveyResponseInclude,
+      orderBy: [{ surveyId: 'asc' }, { attemptNumber: 'desc' }],
     });
   }
 }

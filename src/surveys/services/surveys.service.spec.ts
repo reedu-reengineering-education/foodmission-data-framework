@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   BadRequestException,
   NotFoundException,
-  ConflictException,
 } from '@nestjs/common';
 import { SurveysService } from './surveys.service';
 import { SurveysRepository } from '../repositories/surveys.repository';
@@ -77,6 +76,7 @@ describe('SurveysService', () => {
             deleteQuestion: jest.fn(),
             getSurveyResponse: jest.fn(),
             getUserSurveyResponses: jest.fn(),
+            getUserSurveyResponsesForSurvey: jest.fn(),
             submitSurveyResponse: jest.fn(),
           },
         },
@@ -357,6 +357,7 @@ describe('SurveysService', () => {
         id: 'response-1',
         userId: 'user-1',
         surveyId: 'survey-1',
+        attemptNumber: 1,
         questionResponses: [
           {
             id: 'qr-1',
@@ -374,7 +375,6 @@ describe('SurveysService', () => {
       };
 
       repository.getSurveyById.mockResolvedValue(mockSurvey);
-      repository.getSurveyResponse.mockResolvedValueOnce(null); // No existing response
       repository.submitSurveyResponse.mockResolvedValue(mockResponseData);
 
       const result = await service.submitSurveyResponse(
@@ -384,39 +384,62 @@ describe('SurveysService', () => {
       );
 
       expect(result).toBeDefined();
+      expect(result.attemptNumber).toBe(1);
       expect(repository.submitSurveyResponse).toHaveBeenCalledWith(
         'user-1',
         'survey-1',
         submitDto,
       );
+      expect(repository.getSurveyResponse).not.toHaveBeenCalled();
     });
 
-    it('should throw ConflictException when user already responded to survey', async () => {
+    it('should allow submitting the same survey again as a new attempt', async () => {
       const submitDto: SubmitSurveyResponseDto = {
         responses: [
           {
             questionId: 'q-1',
-            value: 3,
+            value: 2,
           },
         ],
       };
 
-      const existingResponse = {
-        id: 'existing-response',
+      const mockResponseData = {
+        id: 'response-2',
         userId: 'user-1',
         surveyId: 'survey-1',
-        questionResponses: [],
+        attemptNumber: 2,
+        questionResponses: [
+          {
+            id: 'qr-2',
+            questionId: 'q-1',
+            value: 2,
+            surveyResponseId: 'response-2',
+            question: mockQuestion,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
         survey: mockSurvey,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
       repository.getSurveyById.mockResolvedValue(mockSurvey);
-      repository.getSurveyResponse.mockResolvedValue(existingResponse);
+      repository.submitSurveyResponse.mockResolvedValue(mockResponseData);
 
-      await expect(
-        service.submitSurveyResponse('user-1', 'survey-1', submitDto),
-      ).rejects.toThrow(ConflictException);
+      const result = await service.submitSurveyResponse(
+        'user-1',
+        'survey-1',
+        submitDto,
+      );
+
+      expect(result.id).toBe('response-2');
+      expect(result.attemptNumber).toBe(2);
+      expect(repository.submitSurveyResponse).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+        submitDto,
+      );
     });
 
     it('should throw BadRequestException when response contains invalid question', async () => {
@@ -430,7 +453,6 @@ describe('SurveysService', () => {
       };
 
       repository.getSurveyById.mockResolvedValue(mockSurvey);
-      repository.getSurveyResponse.mockResolvedValue(null);
 
       await expect(
         service.submitSurveyResponse('user-1', 'survey-1', submitDto),
@@ -439,11 +461,12 @@ describe('SurveysService', () => {
   });
 
   describe('getUserSurveyResponse', () => {
-    it('should get user survey response', async () => {
+    it('should get the latest user survey response', async () => {
       const mockResponse = {
-        id: 'response-1',
+        id: 'response-2',
         userId: 'user-1',
         surveyId: 'survey-1',
+        attemptNumber: 2,
         questionResponses: [],
         survey: mockSurvey,
         createdAt: new Date(),
@@ -455,7 +478,8 @@ describe('SurveysService', () => {
       const result = await service.getUserSurveyResponse('user-1', 'survey-1');
 
       expect(result).toBeDefined();
-      expect(result.id).toBe('response-1');
+      expect(result.id).toBe('response-2');
+      expect(result.attemptNumber).toBe(2);
     });
 
     it('should throw NotFoundException when response not found', async () => {
@@ -463,6 +487,59 @@ describe('SurveysService', () => {
 
       await expect(
         service.getUserSurveyResponse('user-1', 'survey-1'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('getUserSurveyResponsesForSurvey', () => {
+    it('should return all attempts for a survey oldest first', async () => {
+      const mockResponses = [
+        {
+          id: 'response-1',
+          userId: 'user-1',
+          surveyId: 'survey-1',
+          attemptNumber: 1,
+          questionResponses: [],
+          survey: mockSurvey,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 'response-2',
+          userId: 'user-1',
+          surveyId: 'survey-1',
+          attemptNumber: 2,
+          questionResponses: [],
+          survey: mockSurvey,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      repository.getSurveyById.mockResolvedValue(mockSurvey);
+      repository.getUserSurveyResponsesForSurvey.mockResolvedValue(
+        mockResponses,
+      );
+
+      const result = await service.getUserSurveyResponsesForSurvey(
+        'user-1',
+        'survey-1',
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result[0].attemptNumber).toBe(1);
+      expect(result[1].attemptNumber).toBe(2);
+      expect(repository.getUserSurveyResponsesForSurvey).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+      );
+    });
+
+    it('should throw NotFoundException when survey does not exist', async () => {
+      repository.getSurveyById.mockResolvedValue(null);
+
+      await expect(
+        service.getUserSurveyResponsesForSurvey('user-1', 'missing'),
       ).rejects.toThrow(NotFoundException);
     });
   });

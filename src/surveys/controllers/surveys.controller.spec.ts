@@ -52,6 +52,7 @@ describe('SurveysController', () => {
       deleteQuestion: jest.fn(),
       submitSurveyResponse: jest.fn(),
       getUserSurveyResponse: jest.fn(),
+      getUserSurveyResponsesForSurvey: jest.fn(),
       getUserSurveyResponses: jest.fn(),
     };
 
@@ -211,6 +212,7 @@ describe('SurveysController', () => {
         id: 'response-1',
         userId: 'user-1',
         surveyId: 'survey-1',
+        attemptNumber: 1,
         responses: [
           {
             id: 'qr-1',
@@ -247,6 +249,7 @@ describe('SurveysController', () => {
         id: 'response-1',
         userId: 'user-1',
         surveyId: 'survey-1',
+        attemptNumber: 2,
         responses: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -269,6 +272,46 @@ describe('SurveysController', () => {
     });
   });
 
+  describe('getUserSurveyResponsesForSurvey', () => {
+    it('should get all attempts for a survey', async () => {
+      const mockResponses = [
+        {
+          id: 'response-1',
+          userId: 'user-1',
+          surveyId: 'survey-1',
+          attemptNumber: 1,
+          responses: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 'response-2',
+          userId: 'user-1',
+          surveyId: 'survey-1',
+          attemptNumber: 2,
+          responses: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      service.getUserSurveyResponsesForSurvey.mockResolvedValue(mockResponses);
+
+      const result = await controller.getUserSurveyResponsesForSurvey(
+        'survey-1',
+        mockUserId,
+        {},
+      );
+
+      expect(result).toEqual(mockResponses);
+      expect(service.getUserSurveyResponsesForSurvey).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+        undefined,
+      );
+    });
+  });
+
   describe('getUserSurveyResponses', () => {
     it('should get all user survey responses', async () => {
       const mockResponses = [
@@ -276,6 +319,7 @@ describe('SurveysController', () => {
           id: 'response-1',
           userId: 'user-1',
           surveyId: 'survey-1',
+          attemptNumber: 1,
           responses: [],
           createdAt: new Date(),
           updatedAt: new Date(),
