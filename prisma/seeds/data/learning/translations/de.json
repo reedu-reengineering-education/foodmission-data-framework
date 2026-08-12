@@ -2929,9 +2929,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER": {
-      "title": "Ernährungsumstellung — Anfänger"
-    },
     "QUEST.DIET_CHANGES.BEGINNER.1": {
       "name": "Lerne, deine Mahlzeiten zu protokollieren",
       "title": "Ernährungsumstellung – Anfänger",
@@ -3331,24 +3328,6 @@
       "name": "Woche der nährstoffreichen Mahlzeiten",
       "title": "Nährwerte – Fortgeschrittene",
       "description": "Achten Sie darauf, dass jede Hauptmahlzeit mindestens drei der folgenden Bestandteile enthält: eine Proteinquelle, ein ballaststoffreiches Lebensmittel, Obst oder Gemüse oder eine Quelle für gesunde Fette. Beachten Sie dabei, dass die Verfütterung von Getreide an Nutztiere zu erheblichen Kalorienverlusten führt."
-    }
-  },
-  "meta": {
-    "machineTranslation": {
-      "provider": "deepl",
-      "at": "2026-08-10T14:18:21.356Z",
-      "keys": 1768,
-      "sheets": [
-        "catalog-dimensions",
-        "catalog-topics",
-        "catalog-food-facts",
-        "catalog-quizzes",
-        "catalog-missions",
-        "catalog-challenges",
-        "catalog-quests",
-        "catalog-micro-learnings"
-      ],
-      "note": "Machine-translated, needs partner review."
     }
   }
 }
