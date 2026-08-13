@@ -35,6 +35,7 @@ import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
+import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 
 @ApiTags('challenges')
 @Controller('challenges')
@@ -133,6 +134,102 @@ export class ChallengesController {
     @Query() query: LearningLangQueryDto,
   ): Promise<ChallengeProgressResponseDto[]> {
     return this.challengeProgressService.getAllChallengesByUserId(
+      userId,
+      query.lang,
+    );
+  }
+
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get challenge by code',
+    description: 'Retrieves a specific challenge by its business code.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Challenge code (e.g. CH.A1.1)',
+    example: 'CH.A1.1',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Challenge retrieved successfully',
+    type: ChallengeResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Challenge not found' })
+  @ApiCrudErrorResponses()
+  async getChallengeByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeResponseDto> {
+    return this.challengeService.getChallengeById(code, query.lang);
+  }
+
+  @Get('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get challenge progress by code',
+    description:
+      'Retrieves the progress of a specific challenge for the authenticated user.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Challenge code (e.g. CH.A1.1)',
+    example: 'CH.A1.1',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Challenge progress retrieved successfully',
+    type: ChallengeProgressResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Challenge not found' })
+  @ApiCrudErrorResponses()
+  async getProgressByCode(
+    @Param('code') code: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeProgressResponseDto> {
+    return this.challengeProgressService.getChallengeById(
+      code,
+      userId,
+      query.lang,
+    );
+  }
+
+  @Patch('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Update challenge progress by code',
+    description:
+      'Updates the progress or completion status of a specific challenge for the authenticated user.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Challenge code (e.g. CH.A1.1)',
+    example: 'CH.A1.1',
+  })
+  @ApiBody({ type: UpdateChallengeProgressDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Challenge progress updated successfully',
+    type: ChallengeProgressResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Challenge not found' })
+  @ApiCrudErrorResponses()
+  async updateProgressByCode(
+    @Param('code') code: string,
+    @Body() updateChallengeProgressDto: UpdateChallengeProgressDto,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeProgressResponseDto> {
+    return this.challengeProgressService.update(
+      code,
+      updateChallengeProgressDto,
       userId,
       query.lang,
     );

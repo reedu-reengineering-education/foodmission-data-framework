@@ -22,7 +22,7 @@ describe('MissionProgressService', () => {
         {
           provide: MissionProgressRepository,
           useValue: {
-            findMissionById: jest.fn(),
+            findMissionByCodeOrId: jest.fn(),
             findByUserIdAndMissionId: jest.fn(),
             findAllByUserId: jest.fn(),
             findAllPaginated: jest.fn(),
@@ -59,7 +59,7 @@ describe('MissionProgressService', () => {
         progress: 0.5,
         mission: { title: 'Test Mission' },
       };
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         title: 'Test Mission',
       });
@@ -77,7 +77,7 @@ describe('MissionProgressService', () => {
     });
 
     it('should return default progress when mission exists but no row yet', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         title: 'Test Mission',
       });
@@ -95,7 +95,7 @@ describe('MissionProgressService', () => {
     });
 
     it('should throw NotFoundException if mission does not exist', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue(null);
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(service.getMissionById('m1', 'u1')).rejects.toThrow(
         NotFoundException,
       );
@@ -153,7 +153,7 @@ describe('MissionProgressService', () => {
         progress: 1,
         mission: { title: 'Test Mission' },
       };
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         code: 'M.A1.1',
         title: 'Test Mission',
@@ -181,8 +181,42 @@ describe('MissionProgressService', () => {
       });
     });
 
+    it('resolves a mission code and upserts by id', async () => {
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
+        id: 'm1',
+        code: 'M.A1.1',
+        title: 'Test Mission',
+      });
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 10,
+        mission: { title: 'Test Mission' },
+      });
+
+      await service.update('M.A1.1', { progress: 10 }, 'u1');
+
+      expect(repository.findMissionByCodeOrId).toHaveBeenCalledWith('M.A1.1');
+      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
+        progress: 10,
+      });
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: expect.objectContaining({
+            missionId: 'm1',
+            missionCode: 'M.A1.1',
+          }),
+          idempotencyKey: 'mission-started:u1:m1',
+        }),
+      );
+    });
+
     it('emits MISSION_STARTED on first active progress', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         code: 'M.A1.1',
         title: 'Test Mission',
@@ -216,7 +250,7 @@ describe('MissionProgressService', () => {
     });
 
     it('emits MISSION_UPDATED when progress changes after start', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         code: 'M.A1.1',
         title: 'Test Mission',
@@ -250,7 +284,7 @@ describe('MissionProgressService', () => {
     });
 
     it('emits UPDATED and COMPLETED when completing an in-progress mission', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         code: 'M.A1.1',
         title: 'Test Mission',
@@ -290,7 +324,7 @@ describe('MissionProgressService', () => {
     });
 
     it('does not emit on a zero-progress create or completed retry', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue({
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'm1',
         code: 'M.A1.1',
         title: 'Test Mission',
@@ -328,7 +362,7 @@ describe('MissionProgressService', () => {
     });
 
     it('should throw NotFoundException if mission does not exist', async () => {
-      (repository.findMissionById as jest.Mock).mockResolvedValue(null);
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('m1', { completed: true }, 'u1'),
       ).rejects.toThrow('Mission not found');

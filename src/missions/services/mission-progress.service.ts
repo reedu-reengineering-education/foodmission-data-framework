@@ -29,22 +29,18 @@ export class MissionProgressService {
   ) {}
 
   async getMissionById(
-    missionId: string,
+    codeOrId: string,
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Getting mission ${missionId} for user: ${userId}`);
+    this.logger.log(`Getting mission ${codeOrId} for user: ${userId}`);
 
-    const mission =
-      await this.missionProgressRepository.findMissionById(missionId);
-    if (!mission) {
-      throw new NotFoundException('Mission not found');
-    }
+    const mission = await this.requireMission(codeOrId);
 
     const progress =
       await this.missionProgressRepository.findByUserIdAndMissionId(
         userId,
-        missionId,
+        mission.id,
       );
 
     if (!progress) {
@@ -90,28 +86,24 @@ export class MissionProgressService {
   }
 
   async update(
-    missionId: string,
+    codeOrId: string,
     updateDto: UpdateMissionProgressDto,
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Updating mission ${missionId} for user: ${userId}`);
+    this.logger.log(`Updating mission ${codeOrId} for user: ${userId}`);
 
-    const mission =
-      await this.missionProgressRepository.findMissionById(missionId);
-    if (!mission) {
-      throw new NotFoundException('Mission not found');
-    }
+    const mission = await this.requireMission(codeOrId);
 
     const previous =
       await this.missionProgressRepository.findByUserIdAndMissionId(
         userId,
-        missionId,
+        mission.id,
       );
 
     const updated = await this.missionProgressRepository.upsert(
       userId,
-      missionId,
+      mission.id,
       updateDto,
     );
 
@@ -119,7 +111,7 @@ export class MissionProgressService {
       previous == null || (previous.progress === 0 && !previous.completed);
     const isActive = updated.progress > 0 || updated.completed;
     const metadata = {
-      missionId,
+      missionId: mission.id,
       missionCode: mission.code,
       source: EventSource.API,
       body: {
@@ -138,7 +130,7 @@ export class MissionProgressService {
         eventType: EventType.MISSION_STARTED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-started:${userId}:${missionId}`,
+        idempotencyKey: `mission-started:${userId}:${mission.id}`,
       });
     } else if (
       previous != null &&
@@ -150,7 +142,7 @@ export class MissionProgressService {
         eventType: EventType.MISSION_UPDATED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-updated:${userId}:${missionId}:${updated.progress}:${updated.completed}`,
+        idempotencyKey: `mission-updated:${userId}:${mission.id}:${updated.progress}:${updated.completed}`,
       });
     }
 
@@ -160,11 +152,20 @@ export class MissionProgressService {
         eventType: EventType.MISSION_COMPLETED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-completed:${userId}:${missionId}`,
+        idempotencyKey: `mission-completed:${userId}:${mission.id}`,
       });
     }
 
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
+  }
+
+  private async requireMission(codeOrId: string) {
+    const mission =
+      await this.missionProgressRepository.findMissionByCodeOrId(codeOrId);
+    if (!mission) {
+      throw new NotFoundException('Mission not found');
+    }
+    return mission;
   }
 
   private async mapRowsToDtos(

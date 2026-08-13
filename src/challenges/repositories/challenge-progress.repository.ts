@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
@@ -7,10 +8,9 @@ import { pageLimitToSkipTake } from '../../common/utils/pagination';
 export class ChallengeProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findChallengeById(challengeId: string) {
-    return this.prisma.challenge.findUnique({
-      where: { id: challengeId },
-      select: { id: true, code: true, title: true },
+  async findChallengeByCodeOrId(codeOrId: string) {
+    return this.prisma.challenge.findFirst({
+      where: codeOrIdWhere(codeOrId),
     });
   }
 

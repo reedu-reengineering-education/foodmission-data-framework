@@ -29,22 +29,18 @@ export class ChallengeProgressService {
   ) {}
 
   async getChallengeById(
-    challengeId: string,
+    codeOrId: string,
     userId: string,
     lang?: string,
   ): Promise<ChallengeProgressResponseDto> {
-    this.logger.log(`Getting challenge ${challengeId} for user: ${userId}`);
+    this.logger.log(`Getting challenge ${codeOrId} for user: ${userId}`);
 
-    const challenge =
-      await this.challengeProgressRepository.findChallengeById(challengeId);
-    if (!challenge) {
-      throw new NotFoundException('Challenge not found');
-    }
+    const challenge = await this.requireChallenge(codeOrId);
 
     const progress =
       await this.challengeProgressRepository.findByUserIdAndChallengeId(
         userId,
-        challengeId,
+        challenge.id,
       );
 
     if (!progress) {
@@ -90,28 +86,24 @@ export class ChallengeProgressService {
   }
 
   async update(
-    challengeId: string,
+    codeOrId: string,
     updateDto: UpdateChallengeProgressDto,
     userId: string,
     lang?: string,
   ): Promise<ChallengeProgressResponseDto> {
-    this.logger.log(`Updating challenge ${challengeId} for user: ${userId}`);
+    this.logger.log(`Updating challenge ${codeOrId} for user: ${userId}`);
 
-    const challenge =
-      await this.challengeProgressRepository.findChallengeById(challengeId);
-    if (!challenge) {
-      throw new NotFoundException('Challenge not found');
-    }
+    const challenge = await this.requireChallenge(codeOrId);
 
     const previous =
       await this.challengeProgressRepository.findByUserIdAndChallengeId(
         userId,
-        challengeId,
+        challenge.id,
       );
 
     const updated = await this.challengeProgressRepository.upsert(
       userId,
-      challengeId,
+      challenge.id,
       updateDto,
     );
 
@@ -119,7 +111,7 @@ export class ChallengeProgressService {
       previous == null || (previous.progress === 0 && !previous.completed);
     const isActive = updated.progress > 0 || updated.completed;
     const metadata = {
-      challengeId,
+      challengeId: challenge.id,
       challengeCode: challenge.code,
       source: EventSource.API,
       body: {
@@ -138,7 +130,7 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_STARTED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-started:${userId}:${challengeId}`,
+        idempotencyKey: `challenge-started:${userId}:${challenge.id}`,
       });
     } else if (
       previous != null &&
@@ -150,7 +142,7 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_UPDATED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-updated:${userId}:${challengeId}:${updated.progress}:${updated.completed}`,
+        idempotencyKey: `challenge-updated:${userId}:${challenge.id}:${updated.progress}:${updated.completed}`,
       });
     }
 
@@ -160,11 +152,20 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_COMPLETED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-completed:${userId}:${challengeId}`,
+        idempotencyKey: `challenge-completed:${userId}:${challenge.id}`,
       });
     }
 
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
+  }
+
+  private async requireChallenge(codeOrId: string) {
+    const challenge =
+      await this.challengeProgressRepository.findChallengeByCodeOrId(codeOrId);
+    if (!challenge) {
+      throw new NotFoundException('Challenge not found');
+    }
+    return challenge;
   }
 
   private async mapRowsToDtos(

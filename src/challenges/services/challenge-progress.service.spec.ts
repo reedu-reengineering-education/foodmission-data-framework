@@ -22,7 +22,7 @@ describe('ChallengeProgressService', () => {
         {
           provide: ChallengeProgressRepository,
           useValue: {
-            findChallengeById: jest.fn(),
+            findChallengeByCodeOrId: jest.fn(),
             findByUserIdAndChallengeId: jest.fn(),
             findAllByUserId: jest.fn(),
             findAllPaginated: jest.fn(),
@@ -59,7 +59,7 @@ describe('ChallengeProgressService', () => {
         progress: 0.5,
         challenge: { title: 'Test Challenge' },
       };
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         title: 'Test Challenge',
       });
@@ -77,7 +77,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('should return default progress when challenge exists but no row yet', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         title: 'Test Challenge',
       });
@@ -95,7 +95,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('should throw NotFoundException if challenge does not exist', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue(null);
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(service.getChallengeById('c1', 'u1')).rejects.toThrow(
         NotFoundException,
       );
@@ -152,7 +152,7 @@ describe('ChallengeProgressService', () => {
         progress: 1,
         challenge: { title: 'Test Challenge' },
       };
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         code: 'CH.A1.1',
         title: 'Test Challenge',
@@ -179,8 +179,33 @@ describe('ChallengeProgressService', () => {
       });
     });
 
+    it('resolves a challenge code and upserts by id', async () => {
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        code: 'CH.A1.1',
+        title: 'Test Challenge',
+      });
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 10,
+        challenge: { title: 'Test Challenge' },
+      });
+
+      await service.update('CH.A1.1', { progress: 10 }, 'u1');
+
+      expect(repository.findChallengeByCodeOrId).toHaveBeenCalledWith('CH.A1.1');
+      expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
+        progress: 10,
+      });
+    });
+
     it('emits CHALLENGE_STARTED on first active progress', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         code: 'CH.A1.1',
         title: 'Test Challenge',
@@ -214,7 +239,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('emits CHALLENGE_UPDATED when progress changes after start', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         code: 'CH.A1.1',
         title: 'Test Challenge',
@@ -248,7 +273,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('emits UPDATED and COMPLETED when completing an in-progress challenge', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         code: 'CH.A1.1',
         title: 'Test Challenge',
@@ -284,7 +309,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('does not emit on a zero-progress create or completed retry', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue({
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
         code: 'CH.A1.1',
         title: 'Test Challenge',
@@ -322,7 +347,7 @@ describe('ChallengeProgressService', () => {
     });
 
     it('should throw NotFoundException if challenge does not exist', async () => {
-      (repository.findChallengeById as jest.Mock).mockResolvedValue(null);
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('c1', { completed: true }, 'u1'),
       ).rejects.toThrow(NotFoundException);
