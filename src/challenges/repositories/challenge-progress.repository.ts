@@ -10,7 +10,7 @@ export class ChallengeProgressRepository {
   async findChallengeById(challengeId: string) {
     return this.prisma.challenge.findUnique({
       where: { id: challengeId },
-      select: { id: true, title: true },
+      select: { id: true, code: true, title: true },
     });
   }
 

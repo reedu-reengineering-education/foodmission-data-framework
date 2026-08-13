@@ -43,7 +43,7 @@ describe('ChallengeProgressRepository', () => {
       const result = await repository.findChallengeById('c1');
       expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
         where: { id: 'c1' },
-        select: { id: true, title: true },
+        select: { id: true, code: true, title: true },
       });
       expect(result).toBe(mockReturn);
     });

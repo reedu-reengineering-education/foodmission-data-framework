@@ -4,6 +4,8 @@ import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.d
 import { overlayTitles } from '../../learning/utils/overlay-titles';
 import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
@@ -23,6 +25,7 @@ export class ChallengeProgressService {
   constructor(
     private readonly challengeProgressRepository: ChallengeProgressRepository,
     private readonly translationService: TranslationService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async getChallengeById(
@@ -100,11 +103,66 @@ export class ChallengeProgressService {
       throw new NotFoundException('Challenge not found');
     }
 
+    const previous =
+      await this.challengeProgressRepository.findByUserIdAndChallengeId(
+        userId,
+        challengeId,
+      );
+
     const updated = await this.challengeProgressRepository.upsert(
       userId,
       challengeId,
       updateDto,
     );
+
+    const wasIdle =
+      previous == null || (previous.progress === 0 && !previous.completed);
+    const isActive = updated.progress > 0 || updated.completed;
+    const metadata = {
+      challengeId,
+      challengeCode: challenge.code,
+      source: EventSource.API,
+      body: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
+    };
+
+    if (wasIdle && isActive) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.CHALLENGE_STARTED,
+        source: EventSource.CHALLENGE,
+        metadata,
+        idempotencyKey: `challenge-started:${userId}:${challengeId}`,
+      });
+    } else if (
+      previous != null &&
+      (previous.progress !== updated.progress ||
+        previous.completed !== updated.completed)
+    ) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.CHALLENGE_UPDATED,
+        source: EventSource.CHALLENGE,
+        metadata,
+        idempotencyKey: `challenge-updated:${userId}:${challengeId}:${updated.progress}:${updated.completed}`,
+      });
+    }
+
+    if (updated.completed && !previous?.completed) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.CHALLENGE_COMPLETED,
+        source: EventSource.CHALLENGE,
+        metadata,
+        idempotencyKey: `challenge-completed:${userId}:${challengeId}`,
+      });
+    }
 
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
   }
