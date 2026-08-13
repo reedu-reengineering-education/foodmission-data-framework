@@ -141,6 +141,7 @@ describe('FoodWasteService', () => {
             foodWasteId: mockFoodWaste.id,
             pantryItemId: TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
             source: EventSource.API,
+            isBatchWaste: false,
             body: expect.objectContaining({
               pantryItemId: TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
               wasteReason: WasteReason.EXPIRED,
@@ -655,6 +656,7 @@ describe('FoodWasteService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: EventType.FOOD_WASTE_LOGGED,
+          metadata: expect.objectContaining({ isBatchWaste: true }),
           idempotencyKey: `food-waste-logged:${mockFoodWaste.id}`,
         }),
         expect.anything(),

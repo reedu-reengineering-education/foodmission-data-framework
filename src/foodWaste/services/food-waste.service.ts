@@ -361,6 +361,7 @@ export class FoodWasteService {
             userId,
             wasteId: createdWaste.id,
             pantryItemId: createDto.pantryItemId,
+            isBatchWaste: false,
             body: {
               pantryItemId: createDto.pantryItemId,
               wasteReason: createDto.wasteReason,
@@ -644,6 +645,7 @@ export class FoodWasteService {
               userId,
               wasteId: createdWaste.id,
               pantryItemId: item.pantryItemId,
+              isBatchWaste: true,
               body: {
                 pantryItemId: item.pantryItemId,
                 ...(item.quantity !== undefined
@@ -801,6 +803,7 @@ export class FoodWasteService {
       userId: string;
       wasteId: string;
       pantryItemId: string;
+      isBatchWaste: boolean;
       body: Record<string, unknown>;
     },
     tx: Prisma.TransactionClient,
@@ -814,6 +817,7 @@ export class FoodWasteService {
           foodWasteId: input.wasteId,
           pantryItemId: input.pantryItemId,
           source: EventSource.API,
+          isBatchWaste: input.isBatchWaste,
           body: input.body,
         },
         idempotencyKey: `food-waste-logged:${input.wasteId}`,
