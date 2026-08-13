@@ -8,6 +8,7 @@ import { PrismaService } from '../../src/database/prisma.service';
 import { FoodProductRepository } from '../../src/food-products/repositories/food-product.repository';
 import { FoodWasteRepository } from '../../src/foodWaste/repositories/food-waste.repository';
 import { FoodWasteService } from '../../src/foodWaste/services/food-waste.service';
+import { UserEventService } from '../../src/events/services/user-event.service';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
 import { PantryController } from '../../src/pantry/controllers/pantry.controller';
 import { PantryItemsController } from '../../src/pantry/controllers/pantry-items.controller';
@@ -45,6 +46,7 @@ describe('Pantry (e2e)', () => {
         ShelfLifeRepository,
         FoodWasteService,
         FoodWasteRepository,
+        UserEventService,
         { provide: PrismaService, useValue: prisma },
       ],
     })

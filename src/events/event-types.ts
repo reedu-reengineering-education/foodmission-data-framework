@@ -151,6 +151,7 @@ export const EventType = {
   FOOD_WASTE_MEAL_PLANNED: 'FOOD_WASTE_MEAL_PLANNED',
   FOOD_WASTE_FRIDGE_PANTRY_CHECKED: 'FOOD_WASTE_FRIDGE_PANTRY_CHECKED',
   FOOD_WASTE_FIFO_ORGANIZED: 'FOOD_WASTE_FIFO_ORGANIZED',
+  FOOD_WASTE_LOGGED: 'FOOD_WASTE_LOGGED',
 
   // ==========================================
   // 7. NUTRITION & HEALTH
@@ -202,6 +203,7 @@ export const EventSource = {
   SEED: 'seed',
   MEAL_LOG: 'meal_log',
   PANTRY: 'pantry',
+  FOOD_WASTE: 'food_waste',
   SHOPPING_LIST: 'shopping_list',
   LEARNING: 'learning',
   GAME: 'game',
