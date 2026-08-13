@@ -38,7 +38,8 @@
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
  *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and
  *   `CHALLENGE_STARTED` / `CHALLENGE_COMPLETED` only on real progress transitions
- *   (do not double-count the same action).
+ *   (do not double-count the same action). Quest progress also emits
+ *   `QUEST_UPDATED` when progress/completed changes after start.
  *
  * ## Subject
  * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
@@ -75,6 +76,7 @@ export const EventType = {
   CHALLENGE_STARTED: 'CHALLENGE_STARTED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
   QUEST_STARTED: 'QUEST_STARTED',
+  QUEST_UPDATED: 'QUEST_UPDATED',
   QUEST_COMPLETED: 'QUEST_COMPLETED',
 
   // ==========================================
