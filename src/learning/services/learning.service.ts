@@ -327,22 +327,62 @@ export class LearningService {
     }
 
     const now = new Date();
-    const progress = await this.prisma.quizProgress.upsert({
-      where: { userId_quizId: { userId, quizId: quiz.id } },
-      create: {
-        userId,
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const previous = await tx.quizProgress.findUnique({
+        where: { userId_quizId: { userId, quizId: quiz.id } },
+      });
+
+      const next = await tx.quizProgress.upsert({
+        where: { userId_quizId: { userId, quizId: quiz.id } },
+        create: {
+          userId,
+          quizId: quiz.id,
+          selectedOptionId: option.id,
+          isCorrect: option.isCorrect,
+          completed: true,
+          answeredAt: now,
+        },
+        update: {
+          selectedOptionId: option.id,
+          isCorrect: option.isCorrect,
+          completed: true,
+          answeredAt: now,
+        },
+      });
+
+      const metadata = {
         quizId: quiz.id,
-        selectedOptionId: option.id,
+        quizCode: quiz.code,
+        source: EventSource.API,
         isCorrect: option.isCorrect,
-        completed: true,
-        answeredAt: now,
-      },
-      update: {
-        selectedOptionId: option.id,
-        isCorrect: option.isCorrect,
-        completed: true,
-        answeredAt: now,
-      },
+        body: { selectedLabel: dto.selectedLabel },
+      };
+
+      if (previous == null) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUIZ_ANSWERED,
+            source: EventSource.LEARNING,
+            metadata,
+            idempotencyKey: `quiz-answered:${userId}:${quiz.id}`,
+          },
+          tx,
+        );
+      } else if (previous.selectedOptionId !== next.selectedOptionId) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUIZ_UPDATED,
+            source: EventSource.LEARNING,
+            metadata,
+            idempotencyKey: `quiz-updated:${userId}:${quiz.id}:${next.selectedOptionId}`,
+          },
+          tx,
+        );
+      }
+
+      return next;
     });
 
     return this.mapQuizProgressResponse(userId, quiz, progress, lang);

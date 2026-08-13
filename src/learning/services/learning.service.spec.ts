@@ -593,4 +593,124 @@ describe('LearningService', () => {
       expect(userEventService.record).not.toHaveBeenCalled();
     });
   });
+
+  describe('upsertQuizProgress events', () => {
+    const quiz = {
+      id: 'q1',
+      code: 'Q.B1.1',
+      topicId: 't1',
+      question: 'Which is best?',
+      explanation: 'Because reuse',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+      options: [
+        {
+          id: 'opt-a',
+          label: 'A',
+          text: 'Wrong',
+          isCorrect: false,
+          sortOrder: 0,
+        },
+        {
+          id: 'opt-b',
+          label: 'B',
+          text: 'Right',
+          isCorrect: true,
+          sortOrder: 1,
+        },
+      ],
+    };
+
+    beforeEach(() => {
+      prisma.quiz.findFirst.mockResolvedValue(quiz);
+    });
+
+    it('emits QUIZ_ANSWERED on first answer', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue(null);
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.QUIZ_ANSWERED,
+          source: EventSource.LEARNING,
+          metadata: {
+            quizId: quiz.id,
+            quizCode: quiz.code,
+            source: EventSource.API,
+            isCorrect: true,
+            body: { selectedLabel: 'B' },
+          },
+          idempotencyKey: 'quiz-answered:u1:q1',
+        }),
+        prisma,
+      );
+    });
+
+    it('emits QUIZ_UPDATED when the selected option changes', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue({
+        selectedOptionId: 'opt-a',
+        isCorrect: false,
+        completed: true,
+      });
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.QUIZ_UPDATED,
+          idempotencyKey: 'quiz-updated:u1:q1:opt-b',
+          metadata: expect.objectContaining({
+            isCorrect: true,
+            body: { selectedLabel: 'B' },
+          }),
+        }),
+        prisma,
+      );
+    });
+
+    it('does not emit when the same option is submitted again', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue({
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+      });
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+  });
 });
