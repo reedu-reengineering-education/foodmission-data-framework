@@ -43,7 +43,7 @@ describe('MissionProgressRepository', () => {
       const result = await repository.findMissionById('m1');
       expect(prisma.mission.findUnique).toHaveBeenCalledWith({
         where: { id: 'm1' },
-        select: { id: true, title: true },
+        select: { id: true, code: true, title: true },
       });
       expect(result).toBe(mockReturn);
     });

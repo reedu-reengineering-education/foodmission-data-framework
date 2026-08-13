@@ -10,7 +10,7 @@ export class MissionProgressRepository {
   async findMissionById(missionId: string) {
     return this.prisma.mission.findUnique({
       where: { id: missionId },
-      select: { id: true, title: true },
+      select: { id: true, code: true, title: true },
     });
   }
 

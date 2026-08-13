@@ -36,10 +36,9 @@
  *   timestamps — retries must reuse a stable key). Subject is usually `USER`.
  * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
- *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and
- *   `CHALLENGE_STARTED` / `CHALLENGE_COMPLETED` only on real progress transitions
- *   (do not double-count the same action). Quest progress also emits
- *   `QUEST_UPDATED` when progress/completed changes after start.
+ *   on behavioural events; emit STARTED / UPDATED / COMPLETED on real progress
+ *   transitions (do not double-count the same action). `*_UPDATED` fires when
+ *   progress/completed changes after start.
  *
  * ## Subject
  * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
@@ -72,6 +71,7 @@ export const EventType = {
   // PROGRESS (missions, challenges, quests)
   // ==========================================
   MISSION_STARTED: 'MISSION_STARTED',
+  MISSION_UPDATED: 'MISSION_UPDATED',
   MISSION_COMPLETED: 'MISSION_COMPLETED',
   CHALLENGE_STARTED: 'CHALLENGE_STARTED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',

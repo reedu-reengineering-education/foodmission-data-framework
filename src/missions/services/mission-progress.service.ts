@@ -4,6 +4,8 @@ import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.d
 import { overlayTitles } from '../../learning/utils/overlay-titles';
 import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -23,6 +25,7 @@ export class MissionProgressService {
   constructor(
     private readonly missionProgressRepository: MissionProgressRepository,
     private readonly translationService: TranslationService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async getMissionById(
@@ -100,11 +103,66 @@ export class MissionProgressService {
       throw new NotFoundException('Mission not found');
     }
 
+    const previous =
+      await this.missionProgressRepository.findByUserIdAndMissionId(
+        userId,
+        missionId,
+      );
+
     const updated = await this.missionProgressRepository.upsert(
       userId,
       missionId,
       updateDto,
     );
+
+    const wasIdle =
+      previous == null || (previous.progress === 0 && !previous.completed);
+    const isActive = updated.progress > 0 || updated.completed;
+    const metadata = {
+      missionId,
+      missionCode: mission.code,
+      source: EventSource.API,
+      body: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
+    };
+
+    if (wasIdle && isActive) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.MISSION_STARTED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-started:${userId}:${missionId}`,
+      });
+    } else if (
+      previous != null &&
+      (previous.progress !== updated.progress ||
+        previous.completed !== updated.completed)
+    ) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.MISSION_UPDATED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-updated:${userId}:${missionId}:${updated.progress}:${updated.completed}`,
+      });
+    }
+
+    if (updated.completed && !previous?.completed) {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.MISSION_COMPLETED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-completed:${userId}:${missionId}`,
+      });
+    }
 
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
   }
