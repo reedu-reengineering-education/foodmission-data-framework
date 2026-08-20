@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { parseArgs } from 'node:util';
 import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
+import { seedNevoLangualFoodex } from '../scripts/seeds/prod/seedNevoLangualFoodex';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
 import { seedShoppingLists } from '../scripts/seeds/dev/shoppingList';
@@ -58,6 +59,8 @@ async function seedProduction() {
   const microLearnings = await seedMicroLearnings(prisma);
 
   const genericFoods = await seedGenericFoods(prisma);
+  // Backfill external classification codes (LanguaL / FoodEx2) from CSV
+  const nevoLangualResult = await seedNevoLangualFoodex(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
@@ -89,6 +92,7 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
+    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
@@ -131,6 +135,8 @@ async function seedDevelopment() {
   }
 
   const genericFoods = await seedGenericFoods(prisma, { skipExisting });
+  // Backfill external classification codes (LanguaL / FoodEx2) from CSV
+  const nevoLangualResult = await seedNevoLangualFoodex(prisma);
 
   // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
   const users = await seedUsers(prisma);
@@ -189,6 +195,7 @@ async function seedDevelopment() {
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
+    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
     { label: 'users', value: users.length },
     { label: 'shoppingList', value: shoppingList.length },
     { label: 'shoppingListItem', value: shoppingListItem.length },
