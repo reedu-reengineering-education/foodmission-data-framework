@@ -36,9 +36,9 @@
  *   timestamps — retries must reuse a stable key). Subject is usually `USER`.
  * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
- *   on behavioural events; emit `MISSION_STARTED` / `MISSION_COMPLETED` and
- *   `CHALLENGE_STARTED` / `CHALLENGE_COMPLETED` only on real progress transitions
- *   (do not double-count the same action).
+ *   on behavioural events; emit STARTED / UPDATED / COMPLETED on real progress
+ *   transitions (do not double-count the same action). `*_UPDATED` fires when
+ *   progress/completed changes after start.
  *
  * ## Subject
  * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
@@ -71,10 +71,13 @@ export const EventType = {
   // PROGRESS (missions, challenges, quests)
   // ==========================================
   MISSION_STARTED: 'MISSION_STARTED',
+  MISSION_UPDATED: 'MISSION_UPDATED',
   MISSION_COMPLETED: 'MISSION_COMPLETED',
   CHALLENGE_STARTED: 'CHALLENGE_STARTED',
+  CHALLENGE_UPDATED: 'CHALLENGE_UPDATED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
   QUEST_STARTED: 'QUEST_STARTED',
+  QUEST_UPDATED: 'QUEST_UPDATED',
   QUEST_COMPLETED: 'QUEST_COMPLETED',
 
   // ==========================================
@@ -90,6 +93,9 @@ export const EventType = {
   MEAL_MEAT_CONSUMED: 'MEAL_MEAT_CONSUMED',
   MEAL_MEAT_FREE: 'MEAL_MEAT_FREE',
   MEAL_LEGUME_CONSUMED: 'MEAL_LEGUME_CONSUMED',
+  MEAL_VEGAN: 'MEAL_VEGAN',
+  MEAL_VEGETARIAN_DAY: 'MEAL_VEGETARIAN_DAY',
+  MEAL_VEGAN_DAY: 'MEAL_VEGAN_DAY',
   MEAL_ALTERNATIVE_STAPLE: 'MEAL_ALTERNATIVE_STAPLE',
   MEAL_ANCIENT_GRAIN: 'MEAL_ANCIENT_GRAIN',
   MEAL_SUSTAINABLE_PLATE: 'MEAL_SUSTAINABLE_PLATE',
@@ -148,6 +154,7 @@ export const EventType = {
   FOOD_WASTE_MEAL_PLANNED: 'FOOD_WASTE_MEAL_PLANNED',
   FOOD_WASTE_FRIDGE_PANTRY_CHECKED: 'FOOD_WASTE_FRIDGE_PANTRY_CHECKED',
   FOOD_WASTE_FIFO_ORGANIZED: 'FOOD_WASTE_FIFO_ORGANIZED',
+  FOOD_WASTE_LOGGED: 'FOOD_WASTE_LOGGED',
 
   // ==========================================
   // 7. NUTRITION & HEALTH
@@ -170,17 +177,96 @@ export const EventType = {
   LEARNING_FOOTPRINT_COMPARED: 'LEARNING_FOOTPRINT_COMPARED',
   LEARNING_RECIPE_EXPLORED: 'LEARNING_RECIPE_EXPLORED',
   LEARNING_RECIPE_SHARED: 'LEARNING_RECIPE_SHARED',
+  QUIZ_ANSWERED: 'QUIZ_ANSWERED',
+  QUIZ_UPDATED: 'QUIZ_UPDATED',
 } as const;
 
 export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
 
 /**
- * Event types the authenticated client may POST to `/events`.
- * Trust-sensitive types (wallet, behavioural evidence, progress) stay server-only.
+ * All event types an authenticated client may POST to `POST /events`.
+ *
+ * Includes app session events and all observational/behavioural events a user
+ * may self-report. Trust-sensitive types (wallet, progress completions,
+ * achievements, account events) are intentionally excluded — those remain
+ * server-derived from domain mutations only.
+ *
+ * Session events (APP_SESSION_*) should include `metadata.sessionId` so the
+ * server can build a stable idempotency key. Behavioural events may supply an
+ * optional `idempotencyKey` directly.
  */
 export const CLIENT_RECORDABLE_EVENT_TYPES = [
+  // App session
   EventType.APP_SESSION_OPENED,
   EventType.APP_SESSION_ENDED,
+  // Meal & diet patterns
+  EventType.MEAL_LOGGED,
+  EventType.MEAL_MEAT_CONSUMED,
+  EventType.MEAL_MEAT_FREE,
+  EventType.MEAL_LEGUME_CONSUMED,
+  EventType.MEAL_VEGAN,
+  EventType.MEAL_VEGETARIAN_DAY,
+  EventType.MEAL_VEGAN_DAY,
+  EventType.MEAL_ALTERNATIVE_STAPLE,
+  EventType.MEAL_ANCIENT_GRAIN,
+  EventType.MEAL_SUSTAINABLE_PLATE,
+  // Substitutions & swaps
+  EventType.SWAP_BEEF_TO_PORK,
+  EventType.SWAP_BEEF_TO_CHICKEN,
+  EventType.SWAP_BEEF_TO_LEGUMES,
+  EventType.SWAP_PORK_TO_CHICKEN,
+  EventType.SWAP_PORK_TO_LEGUMES,
+  EventType.SWAP_CHICKEN_TO_LEGUMES,
+  EventType.SWAP_SUGARY_DRINK_TO_WATER,
+  EventType.SWAP_SNACK_TO_FRUIT_NUTS,
+  EventType.SWAP_SUGARY_CEREAL_TO_OATS,
+  EventType.SWAP_READY_MEAL_TO_HOMECOOKED,
+  EventType.SWAP_PROCESSED_MEAT_TO_LEGUMES,
+  // Product origin & shopping
+  EventType.SHOPPING_ORIGIN_CHECKED,
+  EventType.SHOPPING_LOCAL_CHOSEN,
+  EventType.SHOPPING_SEASONAL_CHOSEN,
+  EventType.SHOPPING_CERTIFICATION_CHOSEN,
+  EventType.SHOPPING_PACKAGING_INFO_CHECKED,
+  EventType.SHOPPING_MULTICRITERIA_PURCHASE,
+  // Food processing & scores
+  EventType.PROCESSING_NOVA_CHECKED,
+  EventType.PROCESSING_INGREDIENTS_REVIEWED,
+  EventType.PROCESSING_GREENSCORE_CHECKED,
+  EventType.PROCESSING_INDICATORS_COMPARED,
+  EventType.PROCESSING_PRODUCTION_METHOD_CHECKED,
+  // Packaging & circularity
+  EventType.PACKAGING_MATERIAL_OBSERVED,
+  EventType.PACKAGING_RECYCLING_LABEL_READ,
+  EventType.PACKAGING_REUSABLE_SPOT_CHOSEN,
+  EventType.PACKAGING_RECYCLABILITY_EVALUATED,
+  EventType.PACKAGING_COMPARISON_MADE,
+  EventType.PACKAGING_SMART_OBSERVED,
+  // Food waste prevention
+  EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+  EventType.FOOD_WASTE_FULL_PLATE_SAVED,
+  EventType.FOOD_WASTE_EXPIRED_CONSUMED,
+  EventType.FOOD_WASTE_STORAGE_INSTRUCTIONS_READ,
+  EventType.FOOD_WASTE_MEAL_PLANNED,
+  EventType.FOOD_WASTE_FRIDGE_PANTRY_CHECKED,
+  EventType.FOOD_WASTE_FIFO_ORGANIZED,
+  EventType.FOOD_WASTE_LOGGED,
+  // Nutrition & health
+  EventType.NUTRITION_PROTEIN_INCLUDED,
+  EventType.NUTRITION_FRUIT_VEG_SERVING_ADDED,
+  EventType.NUTRITION_WHOLEGRAIN_CHOSEN,
+  EventType.NUTRITION_HIGH_FIBRE_MEAL,
+  EventType.NUTRITION_SALT_FREE_TABLE,
+  EventType.NUTRITION_HEALTHY_FAT_CHOSEN,
+  EventType.NUTRITION_PROTEIN_VARIETY_LOGGED,
+  EventType.NUTRITION_RAINBOW_COLOURS_LOGGED,
+  EventType.NUTRITION_ADDED_SUGAR_AVOIDED,
+  EventType.NUTRITION_PLANT_DIVERSITY_COUNT,
+  // Learning
+  EventType.LEARNING_FACT_VIEWED,
+  EventType.LEARNING_FOOTPRINT_COMPARED,
+  EventType.LEARNING_RECIPE_EXPLORED,
+  EventType.LEARNING_RECIPE_SHARED,
 ] as const;
 
 export type ClientRecordableEventType =
@@ -199,6 +285,7 @@ export const EventSource = {
   SEED: 'seed',
   MEAL_LOG: 'meal_log',
   PANTRY: 'pantry',
+  FOOD_WASTE: 'food_waste',
   SHOPPING_LIST: 'shopping_list',
   LEARNING: 'learning',
   GAME: 'game',

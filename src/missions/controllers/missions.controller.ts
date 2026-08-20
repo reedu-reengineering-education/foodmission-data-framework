@@ -35,6 +35,7 @@ import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
+import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 
 @ApiTags('missions')
 @Controller('missions')
@@ -140,6 +141,98 @@ export class MissionsController {
     @Query() query: LearningLangQueryDto,
   ): Promise<MissionProgressResponseDto[]> {
     return this.missionProgressService.getAllMissionsByUserId(
+      userId,
+      query.lang,
+    );
+  }
+
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get mission by code',
+    description: 'Retrieves a specific mission by its business code.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Mission code (e.g. M.A1.1)',
+    example: 'M.A1.1',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Mission retrieved successfully',
+    type: MissionsResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async getMissionByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionsResponseDto> {
+    return this.missionService.getMissionById(code, query.lang);
+  }
+
+  @Get('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get mission progress by code',
+    description:
+      'Retrieves the progress of a specific mission for the authenticated user.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Mission code (e.g. M.A1.1)',
+    example: 'M.A1.1',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Mission progress retrieved successfully',
+    type: MissionProgressResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async getProgressByCode(
+    @Param('code') code: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionProgressResponseDto> {
+    return this.missionProgressService.getMissionById(code, userId, query.lang);
+  }
+
+  @Patch('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Update mission progress by code',
+    description:
+      'Updates the progress or completion status of a specific mission for the authenticated user.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Mission code (e.g. M.A1.1)',
+    example: 'M.A1.1',
+  })
+  @ApiBody({ type: UpdateMissionProgressDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Mission progress updated successfully',
+    type: MissionProgressResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async updateProgressByCode(
+    @Param('code') code: string,
+    @Body() updateMissionProgressDto: UpdateMissionProgressDto,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionProgressResponseDto> {
+    return this.missionProgressService.update(
+      code,
+      updateMissionProgressDto,
       userId,
       query.lang,
     );

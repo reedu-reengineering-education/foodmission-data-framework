@@ -36,12 +36,18 @@ import {
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
+import {
+  EventSource,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 @Injectable()
 export class LearningService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly translations: LearningTranslationHelper,
+    private readonly userEventService: UserEventService,
   ) {}
 
   // ── Dimensions ──────────────────────────────────────────────
@@ -321,22 +327,62 @@ export class LearningService {
     }
 
     const now = new Date();
-    const progress = await this.prisma.quizProgress.upsert({
-      where: { userId_quizId: { userId, quizId: quiz.id } },
-      create: {
-        userId,
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const previous = await tx.quizProgress.findUnique({
+        where: { userId_quizId: { userId, quizId: quiz.id } },
+      });
+
+      const next = await tx.quizProgress.upsert({
+        where: { userId_quizId: { userId, quizId: quiz.id } },
+        create: {
+          userId,
+          quizId: quiz.id,
+          selectedOptionId: option.id,
+          isCorrect: option.isCorrect,
+          completed: true,
+          answeredAt: now,
+        },
+        update: {
+          selectedOptionId: option.id,
+          isCorrect: option.isCorrect,
+          completed: true,
+          answeredAt: now,
+        },
+      });
+
+      const metadata = {
         quizId: quiz.id,
-        selectedOptionId: option.id,
+        quizCode: quiz.code,
+        source: EventSource.API,
         isCorrect: option.isCorrect,
-        completed: true,
-        answeredAt: now,
-      },
-      update: {
-        selectedOptionId: option.id,
-        isCorrect: option.isCorrect,
-        completed: true,
-        answeredAt: now,
-      },
+        body: { selectedLabel: dto.selectedLabel },
+      };
+
+      if (previous == null) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUIZ_ANSWERED,
+            source: EventSource.LEARNING,
+            metadata,
+            idempotencyKey: `quiz-answered:${userId}:${quiz.id}`,
+          },
+          tx,
+        );
+      } else if (previous.selectedOptionId !== next.selectedOptionId) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUIZ_UPDATED,
+            source: EventSource.LEARNING,
+            metadata,
+            idempotencyKey: `quiz-updated:${userId}:${quiz.id}:${next.selectedOptionId}`,
+          },
+          tx,
+        );
+      }
+
+      return next;
     });
 
     return this.mapQuizProgressResponse(userId, quiz, progress, lang);
@@ -607,19 +653,81 @@ export class LearningService {
       throw new NotFoundException('Quest not found');
     }
 
-    const progress = await this.prisma.questProgress.upsert({
-      where: { userId_questId: { userId, questId: quest.id } },
-      create: {
-        userId,
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const previous = await tx.questProgress.findUnique({
+        where: { userId_questId: { userId, questId: quest.id } },
+      });
+
+      const next = await tx.questProgress.upsert({
+        where: { userId_questId: { userId, questId: quest.id } },
+        create: {
+          userId,
+          questId: quest.id,
+          completed: dto.completed ?? false,
+          progress: dto.progress ?? 0,
+          unlockedAt: new Date(),
+        },
+        update: {
+          ...(dto.completed !== undefined ? { completed: dto.completed } : {}),
+          ...(dto.progress !== undefined ? { progress: dto.progress } : {}),
+        },
+      });
+
+      const wasIdle =
+        previous == null || (previous.progress === 0 && !previous.completed);
+      const isActive = next.progress > 0 || next.completed;
+      const metadata = {
         questId: quest.id,
-        completed: dto.completed ?? false,
-        progress: dto.progress ?? 0,
-        unlockedAt: new Date(),
-      },
-      update: {
-        ...(dto.completed !== undefined ? { completed: dto.completed } : {}),
-        ...(dto.progress !== undefined ? { progress: dto.progress } : {}),
-      },
+        questCode: quest.code,
+        source: EventSource.API,
+        body: {
+          ...(dto.progress !== undefined ? { progress: dto.progress } : {}),
+          ...(dto.completed !== undefined ? { completed: dto.completed } : {}),
+        },
+      };
+
+      if (wasIdle && isActive) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUEST_STARTED,
+            source: EventSource.QUEST,
+            metadata,
+            idempotencyKey: `quest-started:${userId}:${quest.id}`,
+          },
+          tx,
+        );
+      } else if (
+        previous != null &&
+        (previous.progress !== next.progress ||
+          previous.completed !== next.completed)
+      ) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUEST_UPDATED,
+            source: EventSource.QUEST,
+            metadata,
+            idempotencyKey: `quest-updated:${userId}:${quest.id}:${next.progress}:${next.completed}`,
+          },
+          tx,
+        );
+      }
+
+      if (next.completed && !previous?.completed) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.QUEST_COMPLETED,
+            source: EventSource.QUEST,
+            metadata,
+            idempotencyKey: `quest-completed:${userId}:${quest.id}`,
+          },
+          tx,
+        );
+      }
+
+      return next;
     });
 
     return this.mapQuestProgressResponse(userId, quest, progress, lang);

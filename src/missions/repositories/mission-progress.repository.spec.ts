@@ -14,7 +14,7 @@ describe('MissionProgressRepository', () => {
           provide: PrismaService,
           useValue: {
             mission: {
-              findUnique: jest.fn(),
+              findFirst: jest.fn(),
             },
             missionProgress: {
               findUnique: jest.fn(),
@@ -36,14 +36,27 @@ describe('MissionProgressRepository', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('findMissionById', () => {
-    it('should call prisma.mission.findUnique', async () => {
-      const mockReturn = { id: 'm1', title: 'Mission' };
-      (prisma.mission.findUnique as jest.Mock).mockResolvedValue(mockReturn);
-      const result = await repository.findMissionById('m1');
-      expect(prisma.mission.findUnique).toHaveBeenCalledWith({
-        where: { id: 'm1' },
-        select: { id: true, title: true },
+  describe('findMissionByCodeOrId', () => {
+    it('should look up by id when the param is a UUID', async () => {
+      const mockReturn = { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Mission' };
+      (prisma.mission.findFirst as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findMissionByCodeOrId(
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
+      expect(prisma.mission.findFirst).toHaveBeenCalledWith({
+        where: { id: '550e8400-e29b-41d4-a716-446655440000' },
+        select: { id: true, code: true, title: true },
+      });
+      expect(result).toBe(mockReturn);
+    });
+
+    it('should look up by code otherwise', async () => {
+      const mockReturn = { id: 'm1', code: 'M.A1.1', title: 'Mission' };
+      (prisma.mission.findFirst as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findMissionByCodeOrId('M.A1.1');
+      expect(prisma.mission.findFirst).toHaveBeenCalledWith({
+        where: { code: 'M.A1.1' },
+        select: { id: true, code: true, title: true },
       });
       expect(result).toBe(mockReturn);
     });

@@ -12,6 +12,8 @@ import { QueryMealLogDto } from '../dto/query-meal-log.dto';
 import { Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 @Injectable()
 export class MealLogsService {
@@ -20,6 +22,7 @@ export class MealLogsService {
   constructor(
     private readonly mealLogRepository: MealLogsRepository,
     private readonly mealRepository: MealsRepository,
+    private readonly userEventService: UserEventService,
   ) {}
 
   private getOwnedMealOrThrow(mealId: string, userId: string) {
@@ -57,6 +60,31 @@ export class MealLogsService {
         timestamp: createMealLogDto.timestamp
           ? new Date(createMealLogDto.timestamp)
           : undefined,
+      });
+
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.MEAL_LOGGED,
+        source: EventSource.MEAL_LOG,
+        metadata: {
+          mealLogId: mealLog.id,
+          mealId: mealLog.mealId,
+          source: EventSource.API,
+          body: {
+            mealId: createMealLogDto.mealId,
+            typeOfMeal: createMealLogDto.typeOfMeal,
+            ...(createMealLogDto.timestamp !== undefined
+              ? { timestamp: createMealLogDto.timestamp }
+              : {}),
+            ...(createMealLogDto.mealFromPantry !== undefined
+              ? { mealFromPantry: createMealLogDto.mealFromPantry }
+              : {}),
+            ...(createMealLogDto.eatenOut !== undefined
+              ? { eatenOut: createMealLogDto.eatenOut }
+              : {}),
+          },
+        },
+        idempotencyKey: `meal-logged:${mealLog.id}`,
       });
 
       return this.toResponse(mealLog);

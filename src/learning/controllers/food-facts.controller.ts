@@ -34,6 +34,24 @@ export class FoodFactsController {
     return this.learningService.listFoodFacts(query);
   }
 
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get a food fact by code' })
+  @ApiParam({
+    name: 'code',
+    description: 'Food fact code (e.g. FF1.1.1)',
+    example: 'FF1.1.1',
+  })
+  @ApiResponse({ status: 200, type: FoodFactResponseDto })
+  @ApiCrudErrorResponses()
+  async getByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<FoodFactResponseDto> {
+    return this.learningService.getFoodFact(code, query);
+  }
+
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

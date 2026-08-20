@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { GroupRole } from '@prisma/client';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import { UserGroupRepository } from '../repositories/user-groups.repository';
 import { GroupMembershipRepository } from '../repositories/group-memberships.repository';
 import { CreateUserGroupDto } from '../dto/create-user-group.dto';
@@ -34,6 +36,7 @@ export class UserGroupService {
   constructor(
     private readonly userGroupRepository: UserGroupRepository,
     private readonly membershipRepository: GroupMembershipRepository,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async create(
@@ -45,6 +48,20 @@ export class UserGroupService {
     const group = await this.userGroupRepository.create({
       ...createDto,
       createdBy: userId,
+    });
+
+    const membership = group.memberships?.find((m) => m.userId === userId);
+    await this.recordGroupMembershipEvent({
+      eventType: EventType.USER_GROUP_JOINED,
+      userId,
+      groupId: group.id,
+      membershipId: membership?.id,
+      body: {
+        name: createDto.name,
+        ...(createDto.description !== undefined
+          ? { description: createDto.description }
+          : {}),
+      },
     });
 
     return this.transformToGroupDto(group);
@@ -113,10 +130,18 @@ export class UserGroupService {
       throw new GroupAlreadyMemberException(group.id, userId);
     }
 
-    await this.membershipRepository.create({
+    const membership = await this.membershipRepository.create({
       userId,
       groupId: group.id,
       role: GroupRole.MEMBER,
+    });
+
+    await this.recordGroupMembershipEvent({
+      eventType: EventType.USER_GROUP_JOINED,
+      userId,
+      groupId: group.id,
+      membershipId: membership.id,
+      body: { inviteCode },
     });
 
     const updatedGroup = await this.userGroupRepository.findById(group.id);
@@ -138,6 +163,13 @@ export class UserGroupService {
 
     if (memberCount <= 1) {
       this.logger.log(`Last member leaving group ${groupId}, deleting group`);
+      await this.recordGroupMembershipEvent({
+        eventType: EventType.USER_GROUP_LEFT,
+        userId,
+        groupId,
+        membershipId: membership.id,
+        body: {},
+      });
       await this.userGroupRepository.delete(groupId);
       return;
     }
@@ -149,6 +181,13 @@ export class UserGroupService {
       }
     }
 
+    await this.recordGroupMembershipEvent({
+      eventType: EventType.USER_GROUP_LEFT,
+      userId,
+      groupId,
+      membershipId: membership.id,
+      body: {},
+    });
     await this.membershipRepository.delete(userId, groupId);
   }
 
@@ -206,6 +245,15 @@ export class UserGroupService {
       ...createDto,
     });
 
+    await this.recordGroupMembershipEvent({
+      eventType: EventType.USER_GROUP_JOINED,
+      userId,
+      groupId,
+      membershipId: membership.id,
+      isVirtual: true,
+      body: { ...createDto },
+    });
+
     return this.transformToMemberDto(membership);
   }
 
@@ -252,6 +300,16 @@ export class UserGroupService {
       }
     }
 
+    const isVirtual = this.membershipRepository.isVirtual(membership);
+    await this.recordGroupMembershipEvent({
+      eventType: EventType.USER_GROUP_LEFT,
+      userId: isVirtual || !membership.userId ? userId : membership.userId,
+      groupId,
+      membershipId: membership.id,
+      isVirtual,
+      body: {},
+    });
+
     await this.membershipRepository.deleteById(membershipId);
   }
 
@@ -285,6 +343,35 @@ export class UserGroupService {
     );
 
     return this.transformToMemberDto(updated);
+  }
+
+  private async recordGroupMembershipEvent(input: {
+    eventType:
+      | typeof EventType.USER_GROUP_JOINED
+      | typeof EventType.USER_GROUP_LEFT;
+    userId: string;
+    groupId: string;
+    membershipId?: string;
+    isVirtual?: boolean;
+    body: Record<string, unknown>;
+  }): Promise<void> {
+    const action =
+      input.eventType === EventType.USER_GROUP_JOINED ? 'joined' : 'left';
+    await this.userEventService.record({
+      userId: input.userId,
+      eventType: input.eventType,
+      source: EventSource.GROUP,
+      groupId: input.groupId,
+      metadata: {
+        groupId: input.groupId,
+        source: EventSource.API,
+        isVirtual: input.isVirtual ?? false,
+        body: input.body,
+      },
+      idempotencyKey: input.membershipId
+        ? `user-group-${action}:${input.membershipId}`
+        : `user-group-${action}:${input.userId}:${input.groupId}`,
+    });
   }
 
   private async getGroupOrThrow(groupId: string) {
