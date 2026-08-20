@@ -1,19 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { UserEvent } from '@prisma/client';
 import {
+  CLIENT_RECORDABLE_EVENT_TYPES,
   ClientRecordableEventType,
   EventSource,
   EventSubjectType,
 } from '../event-types';
-import { ClientEventMetadataDto } from '../dto/create-client-event.dto';
 import { UserEventDto } from '../dto/user-event.dto';
 import { asObjectMetadata } from '../user-event.utils';
 import { UserEventService } from './user-event.service';
 
+/** Session event types that carry sessionId for server-side idempotency. */
+const SESSION_EVENT_TYPES: ReadonlySet<string> = new Set([
+  ...CLIENT_RECORDABLE_EVENT_TYPES.filter((t) =>
+    t.startsWith('APP_SESSION_'),
+  ),
+]);
+
 export interface RecordClientEventInput {
   userId: string;
   eventType: ClientRecordableEventType;
-  metadata: ClientEventMetadataDto;
+  metadata?: Record<string, unknown>;
+  idempotencyKey?: string;
 }
 
 /**
@@ -21,14 +29,6 @@ export interface RecordClientEventInput {
  * collide or leak across users. Do not use timestamps — retries must reuse the
  * same key.
  */
-export function buildClientEventIdempotencyKey(
-  eventType: ClientRecordableEventType,
-  userId: string,
-  sessionId: string,
-): string {
-  return `${eventType}:${userId}:${sessionId}`;
-}
-
 @Injectable()
 export class ClientEventService {
   constructor(private readonly userEventService: UserEventService) {}
@@ -37,30 +37,24 @@ export class ClientEventService {
     event: UserEventDto;
     replayed: boolean;
   }> {
-    const idempotencyKey = buildClientEventIdempotencyKey(
-      input.eventType,
-      input.userId,
-      input.metadata.sessionId,
-    );
+    const isSessionEvent = SESSION_EVENT_TYPES.has(input.eventType);
 
-    const metadata: Record<string, unknown> = {
-      sessionId: input.metadata.sessionId,
-      ...(input.metadata.platform != null
-        ? { platform: input.metadata.platform }
-        : {}),
-      ...(input.metadata.appVersion != null
-        ? { appVersion: input.metadata.appVersion }
-        : {}),
-      ...(input.metadata.durationSeconds != null
-        ? { durationSeconds: input.metadata.durationSeconds }
-        : {}),
-    };
+    // Session events: build stable idempotency key from eventType:userId:sessionId.
+    // Behavioural events: namespace the client-supplied key by userId (if provided).
+    let idempotencyKey: string | undefined;
+    if (isSessionEvent && typeof input.metadata?.sessionId === 'string') {
+      idempotencyKey = `${input.eventType}:${input.userId}:${input.metadata.sessionId}`;
+    } else if (input.idempotencyKey) {
+      idempotencyKey = `${input.userId}:${input.idempotencyKey}`;
+    }
+
+    const source = isSessionEvent ? EventSource.APP : EventSource.QUICK_ACTION;
 
     const { event, replayed } = await this.userEventService.record({
       userId: input.userId,
       eventType: input.eventType,
-      source: EventSource.APP,
-      metadata,
+      source,
+      metadata: input.metadata ?? {},
       idempotencyKey,
       subject: { type: EventSubjectType.USER, id: input.userId },
     });
