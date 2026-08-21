@@ -224,7 +224,7 @@ jobs:
         run: npm run db:migrate:deploy
 
       - name: Check for uncommitted Prisma schema drift
-        run: npx prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code
+        run: npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma --exit-code
 
       - name: Seed test database
         run: npm run db:seed
