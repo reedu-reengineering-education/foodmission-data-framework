@@ -114,6 +114,7 @@
     "cls-hooked": "^4.2.2",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "gray-matter": "^4.0.3",
     "helmet": "^8.2.0",
     "ioredis": "^6.0.0",
     "iso-3166-2": "^1.0.0",
@@ -131,7 +132,6 @@
     "uuid": "^14.0.1"
   },
   "devDependencies": {
-    "@typescript/native": "npm:typescript@^7.0.2",
     "@eslint/js": "^9.35.0",
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.0.10",
@@ -147,6 +147,7 @@
     "@types/sanitize-html": "^2.16.1",
     "@types/supertest": "^7.2.1",
     "@types/uuid": "^10.0.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
