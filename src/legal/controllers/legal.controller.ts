@@ -40,10 +40,10 @@ export class LegalController {
   @ApiOkResponse({ type: LegalDocumentResponseDto })
   @ApiNotFoundResponse({ description: 'No published document found' })
   @Public()
-  async getLatestDocument(
+  getLatestDocument(
     @Param() params: LegalDocumentParamsDto,
     @Query() query: LegalLocaleQueryDto,
-  ): Promise<LegalDocumentResponseDto> {
+  ): LegalDocumentResponseDto {
     return this.legalService.getLatestDocument(params.docType, query.locale);
   }
 
@@ -53,9 +53,9 @@ export class LegalController {
   })
   @ApiOkResponse({ type: [LegalDocumentResponseDto] })
   @Public()
-  async getRequiredDocuments(
+  getRequiredDocuments(
     @Query() query: LegalLocaleQueryDto,
-  ): Promise<LegalDocumentResponseDto[]> {
+  ): LegalDocumentResponseDto[] {
     return this.legalService.getRequiredDocuments(query.locale);
   }
 
