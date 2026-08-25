@@ -50,6 +50,18 @@ export class GenericFoodResponseDto {
   @ApiPropertyOptional({ description: 'Fortification info' })
   isFortifiedWith?: string | null;
 
+  @ApiProperty({ description: 'True when the item is vegan' })
+  vegan: boolean;
+
+  @ApiProperty({ description: 'True when the item is vegetarian' })
+  vegetarian: boolean;
+
+  @ApiProperty({ description: 'True when the item contains meat or fish' })
+  meatOrFish: boolean;
+
+  @ApiProperty({ description: 'True when the item is a legume' })
+  legume: boolean;
+
   @ApiPropertyOptional({ description: 'Energy in kJ' })
   energyKj?: number | null;
 

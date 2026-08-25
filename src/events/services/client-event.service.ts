@@ -12,9 +12,7 @@ import { UserEventService } from './user-event.service';
 
 /** Session event types that carry sessionId for server-side idempotency. */
 const SESSION_EVENT_TYPES: ReadonlySet<string> = new Set([
-  ...CLIENT_RECORDABLE_EVENT_TYPES.filter((t) =>
-    t.startsWith('APP_SESSION_'),
-  ),
+  ...CLIENT_RECORDABLE_EVENT_TYPES.filter((t) => t.startsWith('APP_SESSION_')),
 ]);
 
 export interface RecordClientEventInput {

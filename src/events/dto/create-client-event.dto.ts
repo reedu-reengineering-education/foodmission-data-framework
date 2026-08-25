@@ -1,5 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsIn, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import {
   CLIENT_RECORDABLE_EVENT_TYPES,
   ClientRecordableEventType,
