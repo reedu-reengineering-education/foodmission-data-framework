@@ -81,24 +81,44 @@ Configure your `.env` file:
 
 ```env
 # Database
-DATABASE_URL="postgresql://postgres:password@localhost:5432/foodmission_db?schema=public"
-DATABASE_URL_TEST="postgresql://postgres:password@localhost:5432/foodmission_test_db?schema=public"
+DATABASE_URL="postgresql://postgres:password@localhost:5434/foodmission_db?schema=public"
+DATABASE_URL_TEST="postgresql://postgres:password@localhost:5434/foodmission_test_db?schema=public"
 
 # Cache
 CACHE_URL="redis://localhost:6379"
+
 
 # Keycloak
 KEYCLOAK_BASE_URL="http://localhost:8080"
 KEYCLOAK_AUTH_SERVER_URL="http://localhost:8080"  # Optional: falls back to KEYCLOAK_BASE_URL if not provided
 KEYCLOAK_REALM="foodmission"
 KEYCLOAK_CLIENT_ID="foodmission-api"
-KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret"
+KEYCLOAK_CLIENT_SECRET="your-keycloak-client-secret" 
 KEYCLOAK_SERVICE_CLIENT_ID="foodmission-service"
 KEYCLOAK_SERVICE_CLIENT_SECRET="foodmission-service-secret"
+KEYCLOAK_WEBHOOK_SECRET="test-webhook-secret"
 
 
-# OpenFoodFacts
-OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
+# Logging Configuration
+# OTEL_LOGS_ENABLED=true
+# OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+# OTEL_SERVICE_NAME=foodmission-api
+# OTEL_SERVICE_NAMESPACE=foodmission-test
+# OTEL_SERVICE_VERSION=1.0.0
+LOG_LEVEL="debug"
+
+# Redis Configuration (if using external Redis)
+REDIS_URL="redis://localhost:6379"
+
+
+# OpenFoodFacts Configuration (optional)
+# OPENFOODFACTS_API_URL="https://world.openfoodfacts.org"
+
+# OpenFoodFacts MongoDB clone (optional; falls back to the HTTP API above when unset/unreachable)
+# MONGODB_OFF_URL="mongodb://<user>:<password>@mongodb-service.off-test.svc.cluster.local:27017/off?authSource=admin&serverSelectionTimeoutMS=5000"
+# MONGODB_OFF_URL="mongodb://admin:TestPassword123@localhost:27017/off?authSource=admin&serverSelectionTimeoutMS=5000"
+MONGODB_OFF_URL="mongodb://localhost:27018/off?authSource=admin&serverSelectionTimeoutMS=5000"
+
 
 # Application
 NODE_ENV="development"
