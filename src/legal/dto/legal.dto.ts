@@ -81,7 +81,8 @@ export class LegalConsentStatusResponseDto {
 
 export class AcceptLegalConsentDto {
   @ApiProperty({
-    description: 'Document key from consent status or latest documents endpoint. Format: <DOC_TYPE>:<VERSION>:<LOCALE>',
+    description:
+      'Document key from consent status or latest documents endpoint. Format: <DOC_TYPE>:<VERSION>:<LOCALE>',
     example: 'TERMS_OF_SERVICE:1.0:de',
   })
   @IsString()

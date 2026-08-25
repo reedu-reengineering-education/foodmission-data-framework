@@ -116,10 +116,7 @@ export class LegalService implements OnModuleInit {
     return this.mapDocTypeString(fileName);
   }
 
-  private async findMarkdownFiles(
-    dir: string,
-    prefix = '',
-  ): Promise<string[]> {
+  private async findMarkdownFiles(dir: string, prefix = ''): Promise<string[]> {
     const files: string[] = [];
     const entries = await readdir(dir, { withFileTypes: true });
 
@@ -163,7 +160,8 @@ export class LegalService implements OnModuleInit {
 
         const versionFromPath = file.match(/^v(\d+(?:\.\d+)*)\//i)?.[1];
         const versionFromFile = file.match(/-v?(\d+(?:\.\d+)*)/i)?.[1];
-        const version = front.version ?? versionFromPath ?? versionFromFile ?? '1.0';
+        const version =
+          front.version ?? versionFromPath ?? versionFromFile ?? '1.0';
 
         const localeFromFile = file.match(
           /\.([a-z]{2}(?:-[A-Za-z0-9]+)?)\.md$/i,
@@ -249,10 +247,10 @@ export class LegalService implements OnModuleInit {
     };
   }
 
-  async getLatestDocument(
+  getLatestDocument(
     docType: LegalDocType,
     locale?: string,
-  ): Promise<LegalDocumentResponseDto> {
+  ): LegalDocumentResponseDto {
     const normalizedLocale = this.normalizeLocale(locale);
     const doc = this.findLatestDocumentByType(docType, normalizedLocale);
 
@@ -263,9 +261,7 @@ export class LegalService implements OnModuleInit {
     return this.toDto(doc);
   }
 
-  async getRequiredDocuments(
-    locale?: string,
-  ): Promise<LegalDocumentResponseDto[]> {
+  getRequiredDocuments(locale?: string): LegalDocumentResponseDto[] {
     const normalizedLocale = this.normalizeLocale(locale);
     const docs = this.findLatestRequiredDocuments(normalizedLocale);
     return docs.map((doc) => this.toDto(doc));
@@ -298,7 +294,9 @@ export class LegalService implements OnModuleInit {
 
     const documents = required.map((doc) => {
       const exact = acceptedByKey.get(doc.key);
-      const consentsForType = allConsents.filter((c) => c.docType === doc.docType);
+      const consentsForType = allConsents.filter(
+        (c) => c.docType === doc.docType,
+      );
       const isVersionAccepted = consentsForType.some(
         (c) => this.compareVersion(c.version, doc.version) >= 0,
       );

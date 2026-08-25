@@ -23,9 +23,9 @@ describe('learning translation files', () => {
   });
 
   it('keeps translation files under prisma/seeds/data/learning/translations', () => {
-    expect(
-      path.basename(path.dirname(learningTranslationFilePath('de'))),
-    ).toBe('translations');
+    expect(path.basename(path.dirname(learningTranslationFilePath('de')))).toBe(
+      'translations',
+    );
     expect(
       learningTranslationFilePath('de').includes(
         path.join('learning', 'translations'),

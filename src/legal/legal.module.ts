@@ -10,7 +10,12 @@ import { LegalConsentGuard } from './guards/legal-consent.guard';
 @Module({
   imports: [DatabaseModule, CommonModule],
   controllers: [LegalController],
-  providers: [LegalRepository, LegalService, LegalConsentGuard, UsersRepository],
+  providers: [
+    LegalRepository,
+    LegalService,
+    LegalConsentGuard,
+    UsersRepository,
+  ],
   exports: [LegalService, LegalConsentGuard],
 })
 export class LegalModule {}

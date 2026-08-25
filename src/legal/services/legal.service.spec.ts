@@ -37,8 +37,12 @@ describe('LegalService', () => {
       const required = await service.getRequiredDocuments(locale);
       expect(required).toHaveLength(2);
 
-      const terms = required.find((d) => d.docType === LegalDocType.TERMS_OF_SERVICE);
-      const privacy = required.find((d) => d.docType === LegalDocType.PRIVACY_POLICY);
+      const terms = required.find(
+        (d) => d.docType === LegalDocType.TERMS_OF_SERVICE,
+      );
+      const privacy = required.find(
+        (d) => d.docType === LegalDocType.PRIVACY_POLICY,
+      );
 
       expect(terms).toBeDefined();
       expect(terms?.locale).toBe(locale);
@@ -52,7 +56,10 @@ describe('LegalService', () => {
 
   it('returns localized Terms of Service for each supported locale', async () => {
     for (const locale of SUPPORTED_LOCALES) {
-      const doc = await service.getLatestDocument(LegalDocType.TERMS_OF_SERVICE, locale);
+      const doc = await service.getLatestDocument(
+        LegalDocType.TERMS_OF_SERVICE,
+        locale,
+      );
       expect(doc).toBeDefined();
       expect(doc.locale).toBe(locale);
       expect(doc.version).toBe('1.0');
@@ -62,7 +69,10 @@ describe('LegalService', () => {
 
   it('returns localized Privacy Policy for each supported locale', async () => {
     for (const locale of SUPPORTED_LOCALES) {
-      const doc = await service.getLatestDocument(LegalDocType.PRIVACY_POLICY, locale);
+      const doc = await service.getLatestDocument(
+        LegalDocType.PRIVACY_POLICY,
+        locale,
+      );
       expect(doc).toBeDefined();
       expect(doc.locale).toBe(locale);
       expect(doc.version).toBe('1.0');
