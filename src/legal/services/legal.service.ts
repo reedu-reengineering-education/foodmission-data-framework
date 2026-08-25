@@ -116,12 +116,33 @@ export class LegalService implements OnModuleInit {
     return this.mapDocTypeString(fileName);
   }
 
+  private async findMarkdownFiles(
+    dir: string,
+    prefix = '',
+  ): Promise<string[]> {
+    const files: string[] = [];
+    const entries = await readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = join(dir, entry.name);
+      const relPath = prefix ? join(prefix, entry.name) : entry.name;
+
+      if (entry.isDirectory()) {
+        files.push(...(await this.findMarkdownFiles(fullPath, relPath)));
+      } else if (entry.name.endsWith('.md')) {
+        files.push(relPath);
+      }
+    }
+
+    return files;
+  }
+
   private async loadDocuments(): Promise<void> {
     this.documents.clear();
 
     let files: string[] = [];
     try {
-      files = (await readdir(LEGAL_DOCS_DIR)).filter((f) => f.endsWith('.md'));
+      files = await this.findMarkdownFiles(LEGAL_DOCS_DIR);
     } catch (error) {
       this.logger.error(
         `Legal docs directory missing or unreadable: ${LEGAL_DOCS_DIR}`,
@@ -140,8 +161,9 @@ export class LegalService implements OnModuleInit {
 
         const docType = this.parseDocType(front.docType, file);
 
+        const versionFromPath = file.match(/^v(\d+(?:\.\d+)*)\//i)?.[1];
         const versionFromFile = file.match(/-v?(\d+(?:\.\d+)*)/i)?.[1];
-        const version = front.version ?? versionFromFile ?? '1.0';
+        const version = front.version ?? versionFromPath ?? versionFromFile ?? '1.0';
 
         const localeFromFile = file.match(
           /\.([a-z]{2}(?:-[A-Za-z0-9]+)?)\.md$/i,

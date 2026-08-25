@@ -20,7 +20,10 @@ export class LegalDocumentParamsDto {
 }
 
 export class LegalDocumentResponseDto {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Unique document key: <DOC_TYPE>:<VERSION>:<LOCALE>',
+    example: 'TERMS_OF_SERVICE:1.0:en',
+  })
   key!: string;
 
   @ApiProperty({ enum: LegalDocType })
@@ -47,7 +50,8 @@ export class PendingLegalConsentDto {
   docType!: LegalDocType;
 
   @ApiProperty({
-    description: 'Stable document key: <DOC_TYPE>:<VERSION>:<LOCALE>',
+    description: 'Stable document key format: <DOC_TYPE>:<VERSION>:<LOCALE>',
+    example: 'PRIVACY_POLICY:1.0:de',
   })
   documentKey!: string;
 
@@ -77,7 +81,8 @@ export class LegalConsentStatusResponseDto {
 
 export class AcceptLegalConsentDto {
   @ApiProperty({
-    description: 'Document key returned by legal status endpoint',
+    description: 'Document key from consent status or latest documents endpoint. Format: <DOC_TYPE>:<VERSION>:<LOCALE>',
+    example: 'TERMS_OF_SERVICE:1.0:de',
   })
   @IsString()
   documentKey!: string;
