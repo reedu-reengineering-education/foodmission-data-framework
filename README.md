@@ -225,7 +225,7 @@ Use the `access_token` from the response above:
 
 ```bash
 # Replace YOUR_ACCESS_TOKEN with the actual token from Step 1
-curl http://localhost:3000/api/v1/auth/admin-only \
+curl http://localhost:3000/api/v1/auth/admin \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
