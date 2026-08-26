@@ -1,0 +1,18 @@
+{
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  "high": true,
+  "allowlist": [
+    // GHSA-ggr8-5vv4-36mx: deepmerge-ts stack exhaustion, via prisma > @prisma/config.
+    // No fixed release upstream yet (even @prisma/config@latest still pins deepmerge-ts@7.1.5).
+    // Only reachable through prisma CLI/config merging at build time, not the request path.
+    // Revisit: check if @prisma/config has bumped deepmerge-ts to >=8.0.0.
+    "GHSA-ggr8-5vv4-36mx",
+
+    // GHSA-848j-6mx2-7j84: elliptic ECDSA 'k' truncation, via keycloak-connect > jwk-to-pem.
+    // No patched elliptic version exists upstream at all ("Patched versions: None").
+    // Our Keycloak realms (dev + production) use defaultSignatureAlgorithm RS256, not EC,
+    // so jwk-to-pem never exercises the vulnerable elliptic code path here.
+    // Revisit: recheck if elliptic ships a fix, or if realm signing algorithm changes to EC.
+    "GHSA-848j-6mx2-7j84"
+  ]
+}
