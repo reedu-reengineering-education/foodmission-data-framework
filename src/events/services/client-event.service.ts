@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserEvent } from '@prisma/client';
 import {
-  CLIENT_RECORDABLE_EVENT_TYPES,
   ClientRecordableEventType,
   EventSource,
   EventSubjectType,
+  isAppSessionEventType,
 } from '../event-types';
 import { UserEventDto } from '../dto/user-event.dto';
 import { asObjectMetadata } from '../user-event.utils';
 import { UserEventService } from './user-event.service';
-
-/** Session event types that carry sessionId for server-side idempotency. */
-const SESSION_EVENT_TYPES: ReadonlySet<string> = new Set([
-  ...CLIENT_RECORDABLE_EVENT_TYPES.filter((t) => t.startsWith('APP_SESSION_')),
-]);
 
 export interface RecordClientEventInput {
   userId: string;
@@ -43,7 +38,7 @@ export class ClientEventService {
     event: UserEventDto;
     replayed: boolean;
   }> {
-    const isSessionEvent = SESSION_EVENT_TYPES.has(input.eventType);
+    const isSessionEvent = isAppSessionEventType(input.eventType);
 
     // Session events: build stable idempotency key from eventType:userId:sessionId.
     // Behavioural events: namespace the client-supplied key by userId (if provided).

@@ -270,6 +270,17 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
 export type ClientRecordableEventType =
   (typeof CLIENT_RECORDABLE_EVENT_TYPES)[number];
 
+/** App session event types — require `metadata.sessionId` (UUID) so the server
+ * can build a stable idempotency key (see `buildClientEventIdempotencyKey`). */
+export const APP_SESSION_EVENT_TYPES: ReadonlySet<string> = new Set([
+  EventType.APP_SESSION_OPENED,
+  EventType.APP_SESSION_ENDED,
+]);
+
+export function isAppSessionEventType(eventType: string): boolean {
+  return APP_SESSION_EVENT_TYPES.has(eventType);
+}
+
 /**
  * Who produced the event (service / channel).
  * Prefer matching the feature that observed the action, not the consumer

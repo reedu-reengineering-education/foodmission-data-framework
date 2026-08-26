@@ -5,7 +5,10 @@ import { overlayTitles } from '../../learning/utils/overlay-titles';
 import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
-import { UserEventService } from '../../events/services/user-event.service';
+import {
+  RecordUserEventInput,
+  UserEventService,
+} from '../../events/services/user-event.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
@@ -125,7 +128,7 @@ export class ChallengeProgressService {
     };
 
     if (wasIdle && isActive) {
-      await this.userEventService.record({
+      await this.emitProgressEvent({
         userId,
         eventType: EventType.CHALLENGE_STARTED,
         source: EventSource.CHALLENGE,
@@ -137,7 +140,7 @@ export class ChallengeProgressService {
       (previous.progress !== updated.progress ||
         previous.completed !== updated.completed)
     ) {
-      await this.userEventService.record({
+      await this.emitProgressEvent({
         userId,
         eventType: EventType.CHALLENGE_UPDATED,
         source: EventSource.CHALLENGE,
@@ -147,7 +150,7 @@ export class ChallengeProgressService {
     }
 
     if (updated.completed && !previous?.completed) {
-      await this.userEventService.record({
+      await this.emitProgressEvent({
         userId,
         eventType: EventType.CHALLENGE_COMPLETED,
         source: EventSource.CHALLENGE,
@@ -157,6 +160,22 @@ export class ChallengeProgressService {
     }
 
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
+  }
+
+  /**
+   * Best-effort progress event emission. Progress is already persisted by the
+   * time this runs — a failure here must not surface as an update failure
+   * (the caller would see an error for a write that actually succeeded).
+   */
+  private async emitProgressEvent(input: RecordUserEventInput): Promise<void> {
+    try {
+      await this.userEventService.record(input);
+    } catch (error) {
+      this.logger.error(
+        `Failed to record ${input.eventType} for user ${input.userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
   }
 
   private async requireChallenge(codeOrId: string) {

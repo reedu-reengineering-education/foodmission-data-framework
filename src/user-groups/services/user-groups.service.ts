@@ -163,6 +163,7 @@ export class UserGroupService {
 
     if (memberCount <= 1) {
       this.logger.log(`Last member leaving group ${groupId}, deleting group`);
+      await this.userGroupRepository.delete(groupId);
       await this.recordGroupMembershipEvent({
         eventType: EventType.USER_GROUP_LEFT,
         userId,
@@ -170,7 +171,6 @@ export class UserGroupService {
         membershipId: membership.id,
         body: {},
       });
-      await this.userGroupRepository.delete(groupId);
       return;
     }
 
@@ -181,6 +181,7 @@ export class UserGroupService {
       }
     }
 
+    await this.membershipRepository.delete(userId, groupId);
     await this.recordGroupMembershipEvent({
       eventType: EventType.USER_GROUP_LEFT,
       userId,
@@ -188,7 +189,6 @@ export class UserGroupService {
       membershipId: membership.id,
       body: {},
     });
-    await this.membershipRepository.delete(userId, groupId);
   }
 
   async regenerateInviteCode(
@@ -301,6 +301,7 @@ export class UserGroupService {
     }
 
     const isVirtual = this.membershipRepository.isVirtual(membership);
+    await this.membershipRepository.deleteById(membershipId);
     await this.recordGroupMembershipEvent({
       eventType: EventType.USER_GROUP_LEFT,
       userId: isVirtual || !membership.userId ? userId : membership.userId,
@@ -309,8 +310,6 @@ export class UserGroupService {
       isVirtual,
       body: {},
     });
-
-    await this.membershipRepository.deleteById(membershipId);
   }
 
   async transferAdmin(
@@ -347,8 +346,7 @@ export class UserGroupService {
 
   private async recordGroupMembershipEvent(input: {
     eventType:
-      | typeof EventType.USER_GROUP_JOINED
-      | typeof EventType.USER_GROUP_LEFT;
+      typeof EventType.USER_GROUP_JOINED | typeof EventType.USER_GROUP_LEFT;
     userId: string;
     groupId: string;
     membershipId?: string;

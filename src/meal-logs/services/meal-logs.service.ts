@@ -52,8 +52,9 @@ export class MealLogsService {
     // Validate meal exists and belongs to user
     await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
 
+    let mealLog;
     try {
-      const mealLog = await this.mealLogRepository.create({
+      mealLog = await this.mealLogRepository.create({
         ...createMealLogDto,
         userId,
         mealFromPantry: createMealLogDto.mealFromPantry ?? false,
@@ -61,7 +62,14 @@ export class MealLogsService {
           ? new Date(createMealLogDto.timestamp)
           : undefined,
       });
+    } catch (error) {
+      throw handlePrismaError(error, 'create meal log', 'MealLog');
+    }
 
+    // Best-effort: the meal log is already persisted, so a failure recording
+    // the event must not surface as a create failure (the client would retry
+    // a call that already succeeded, creating a duplicate meal log).
+    try {
       await this.userEventService.record({
         userId,
         eventType: EventType.MEAL_LOGGED,
@@ -86,11 +94,14 @@ export class MealLogsService {
         },
         idempotencyKey: `meal-logged:${mealLog.id}`,
       });
-
-      return this.toResponse(mealLog);
     } catch (error) {
-      throw handlePrismaError(error, 'create meal log', 'MealLog');
+      this.logger.error(
+        `Failed to record MEAL_LOGGED event for meal log ${mealLog.id}`,
+        error instanceof Error ? error.stack : error,
+      );
     }
+
+    return this.toResponse(mealLog);
   }
 
   async findAll(
