@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { parseArgs } from 'node:util';
 import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
+import { seedDietFlags } from '../scripts/seeds/prod/dietFlags';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
 import { seedShoppingLists } from '../scripts/seeds/dev/shoppingList';
@@ -58,6 +59,7 @@ async function seedProduction() {
   const microLearnings = await seedMicroLearnings(prisma);
 
   const genericFoods = await seedGenericFoods(prisma);
+  const dietFlags = await seedDietFlags(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
@@ -89,6 +91,10 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
+    {
+      label: 'dietFlags',
+      value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
+    },
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
