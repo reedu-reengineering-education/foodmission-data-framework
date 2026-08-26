@@ -35,7 +35,10 @@ export type LearningTranslationFile = {
     string,
     { title?: string; task?: string; whyItMatters?: string }
   >;
-  quests?: Record<string, { title?: string; description?: string }>;
+  quests?: Record<
+    string,
+    { name?: string; title?: string; description?: string }
+  >;
   microLearnings?: Record<
     string,
     { title?: string; body?: string; tips?: string }
@@ -93,25 +96,34 @@ export async function seedLearningTranslations(
     unknownCodes: [],
   };
 
-  const [dimensions, topics, foodFacts, quizzes, missions, challenges, quests] =
-    await Promise.all([
-      prisma.dimension.findMany({ select: { id: true, code: true } }),
-      prisma.topic.findMany({ select: { id: true, code: true } }),
-      prisma.foodFact.findMany({ select: { id: true, code: true } }),
-      prisma.quiz.findMany({
-        select: {
-          id: true,
-          code: true,
-          options: {
-            select: { id: true, label: true },
-            orderBy: { sortOrder: 'asc' },
-          },
+  const [
+    dimensions,
+    topics,
+    foodFacts,
+    quizzes,
+    missions,
+    challenges,
+    quests,
+    microLearnings,
+  ] = await Promise.all([
+    prisma.dimension.findMany({ select: { id: true, code: true } }),
+    prisma.topic.findMany({ select: { id: true, code: true } }),
+    prisma.foodFact.findMany({ select: { id: true, code: true } }),
+    prisma.quiz.findMany({
+      select: {
+        id: true,
+        code: true,
+        options: {
+          select: { id: true, label: true },
+          orderBy: { sortOrder: 'asc' },
         },
-      }),
-      prisma.mission.findMany({ select: { id: true, code: true } }),
-      prisma.challenge.findMany({ select: { id: true, code: true } }),
-      prisma.quest.findMany({ select: { id: true, code: true } }),
-    ]);
+      },
+    }),
+    prisma.mission.findMany({ select: { id: true, code: true } }),
+    prisma.challenge.findMany({ select: { id: true, code: true } }),
+    prisma.quest.findMany({ select: { id: true, code: true } }),
+    prisma.microLearning.findMany({ select: { id: true, code: true } }),
+  ]);
 
   const dimensionByCode = new Map(dimensions.map((d) => [d.code, d]));
   const topicByCode = new Map(topics.map((t) => [t.code, t]));
@@ -120,6 +132,7 @@ export async function seedLearningTranslations(
   const missionByCode = new Map(missions.map((m) => [m.code, m]));
   const challengeByCode = new Map(challenges.map((c) => [c.code, c]));
   const questByCode = new Map(quests.map((q) => [q.code, q]));
+  const microLearningByCode = new Map(microLearnings.map((m) => [m.code, m]));
 
   const upsert = async (
     entityType: string,
@@ -250,8 +263,20 @@ export async function seedLearningTranslations(
         report.unknownCodes.push(`${locale}/Quest/${code}`);
         continue;
       }
+      await upsert('Quest', row.id, locale, 'name', fields.name);
       await upsert('Quest', row.id, locale, 'title', fields.title);
       await upsert('Quest', row.id, locale, 'description', fields.description);
+    }
+
+    for (const [code, fields] of Object.entries(file.microLearnings ?? {})) {
+      const row = microLearningByCode.get(code);
+      if (!row) {
+        report.unknownCodes.push(`${locale}/MicroLearning/${code}`);
+        continue;
+      }
+      await upsert('MicroLearning', row.id, locale, 'title', fields.title);
+      await upsert('MicroLearning', row.id, locale, 'body', fields.body);
+      await upsert('MicroLearning', row.id, locale, 'tips', fields.tips);
     }
   }
 

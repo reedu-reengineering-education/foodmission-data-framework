@@ -30,13 +30,13 @@ export function isErrnoWithCode(error: unknown, code: string): boolean {
   );
 }
 
-function isObject(value: unknown): value is JsonObject {
+export function isJsonObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 export function readJsonFile(filePath: string): JsonObject {
   const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8')) as unknown;
-  if (!isObject(parsed)) {
+  if (!isJsonObject(parsed)) {
     throw new Error('Top-level JSON value must be an object');
   }
   return parsed;
@@ -52,7 +52,7 @@ export function collectLeafKeys(obj: JsonObject, prefix = ''): string[] {
       continue;
     }
 
-    if (isObject(value)) {
+    if (isJsonObject(value)) {
       keys.push(...collectLeafKeys(value, fullKey));
       continue;
     }
@@ -68,7 +68,7 @@ export function getValueByPath(obj: JsonObject, dottedPath: string): unknown {
   let current: unknown = obj;
 
   for (const part of parts) {
-    if (!isObject(current) || !(part in current)) {
+    if (!isJsonObject(current) || !(part in current)) {
       return undefined;
     }
     current = current[part];
@@ -191,7 +191,7 @@ export function setValueByPath(
   for (let i = 0; i < parts.length - 1; i += 1) {
     const part = parts[i];
     const next = current[part];
-    if (!isObject(next)) {
+    if (!isJsonObject(next)) {
       current[part] = {};
     }
     current = current[part] as JsonObject;
@@ -219,12 +219,52 @@ export function getStringAtPath(
   return typeof value === 'string' ? value : undefined;
 }
 
+/** Deletes the value at `parts`, then removes any parent object left empty. */
+export function deleteAtPath(obj: JsonObject, parts: string[]): void {
+  const [head, ...rest] = parts;
+  if (rest.length === 0) {
+    delete obj[head];
+    return;
+  }
+  const child = obj[head];
+  if (!isJsonObject(child)) {
+    return;
+  }
+  deleteAtPath(child, rest);
+  if (Object.keys(child).length === 0) {
+    delete obj[head];
+  }
+}
+
+export function deleteValueByPath(obj: JsonObject, dottedPath: string): void {
+  deleteAtPath(obj, dottedPath.split('.'));
+}
+
+/**
+ * Removes leaf keys from `obj` that are no longer in `validKeys` — otherwise a
+ * key dropped from the English source lingers in the translation file forever.
+ * Returns whether anything was removed.
+ */
+export function pruneUnknownKeys(
+  obj: JsonObject,
+  validKeys: Set<string>,
+): boolean {
+  let changed = false;
+  for (const key of collectLeafKeys(obj)) {
+    if (!validKeys.has(key)) {
+      deleteValueByPath(obj, key);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 export function ensureMetaBlock(
   obj: JsonObject,
   locale: string,
   lastImportedAt?: string,
 ): void {
-  const meta: JsonObject = isObject(obj.meta) ? { ...obj.meta } : {};
+  const meta: JsonObject = isJsonObject(obj.meta) ? { ...obj.meta } : {};
   meta.locale = locale;
   if (lastImportedAt !== undefined) {
     meta.lastImportedAt = lastImportedAt;
