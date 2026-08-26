@@ -96,10 +96,13 @@ describe('MissionsController', () => {
         },
         'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
-        isAdmin: false,
-        userId: 'u1',
-      });
+      expect(service.getAllMissions).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: false,
+          userId: 'u1',
+        },
+      );
     });
 
     it('should pass isAdmin=true for Keycloak admin role', async () => {
@@ -115,10 +118,13 @@ describe('MissionsController', () => {
         },
         'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
-        isAdmin: true,
-        userId: 'u1',
-      });
+      expect(service.getAllMissions).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: true,
+          userId: 'u1',
+        },
+      );
     });
   });
 

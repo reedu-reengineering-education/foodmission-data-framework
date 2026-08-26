@@ -126,6 +126,11 @@ const TAG_DESCRIPTIONS: Array<{ name: string; description: string }> = [
     name: 'webhooks',
     description: 'Inbound webhook handlers and event processing',
   },
+  {
+    name: 'legal',
+    description:
+      'Legal document publishing and versioned user consent tracking',
+  },
 ];
 
 const getShortGitSha = (): string | undefined => {

@@ -34,13 +34,13 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4.37.3
+        uses: github/codeql-action/upload-sarif@v4.37.7
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
       - name: Run Hadolint Dockerfile linter
-        uses: hadolint/hadolint-action@v3.3.0
+        uses: hadolint/hadolint-action@v3.4.0
         with:
           dockerfile: Dockerfile
           format: sarif
@@ -48,7 +48,7 @@ jobs:
           no-fail: true
 
       - name: Upload Hadolint scan results
-        uses: github/codeql-action/upload-sarif@v4.37.3
+        uses: github/codeql-action/upload-sarif@v4.37.7
         if: always()
         with:
           sarif_file: hadolint-results.sarif
@@ -65,7 +65,7 @@ jobs:
 
       - name: Run TruffleHog OSS for PR
         if: github.event_name == 'pull_request'
-        uses: trufflesecurity/trufflehog@v3.96.0
+        uses: trufflesecurity/trufflehog@v3.97.0
         with:
           path: ./
           base: ${{ github.event.pull_request.base.sha }}
@@ -74,7 +74,7 @@ jobs:
 
       - name: Run TruffleHog OSS for Push
         if: github.event_name == 'push'
-        uses: trufflesecurity/trufflehog@v3.96.0
+        uses: trufflesecurity/trufflehog@v3.97.0
         with:
           path: ./
           base: ${{ github.event.before }}
@@ -83,7 +83,7 @@ jobs:
 
       - name: Run TruffleHog OSS for Scheduled/Full Scan
         if: github.event_name == 'schedule' || github.event.before == '0000000000000000000000000000000000000000'
-        uses: trufflesecurity/trufflehog@v3.96.0
+        uses: trufflesecurity/trufflehog@v3.97.0
         with:
           path: ./
           extra_args: --debug --only-verified
@@ -136,7 +136,7 @@ jobs:
             .
 
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4.37.3
+        uses: github/codeql-action/upload-sarif@v4.37.7
         if: always() && hashFiles('semgrep.sarif') != ''
         with:
           sarif_file: semgrep.sarif

@@ -154,15 +154,15 @@ jobs:
 
       - name: Run npm audit
         if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
-        run: npm audit --audit-level=high
+        run: npx audit-ci --config audit-ci.jsonc
 
       - name: Run CodeQL Analysis
-        uses: github/codeql-action/init@v4.37.3
+        uses: github/codeql-action/init@v4.37.7
         with:
           languages: javascript
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.37.3
+        uses: github/codeql-action/analyze@v4.37.7
 
   test:
     name: Run Tests
@@ -222,6 +222,9 @@ jobs:
 
       - name: Run database migrations
         run: npm run db:migrate:deploy
+
+      - name: Check for uncommitted Prisma schema drift
+        run: npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma --exit-code
 
       - name: Seed test database
         run: npm run db:seed

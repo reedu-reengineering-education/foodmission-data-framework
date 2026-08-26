@@ -117,6 +117,12 @@ model GenericFood {
   containsTracesOf String? // Traces of allergens
   isFortifiedWith  String? // Fortification info
 
+  // --- External classification codes ---
+  // LanguaL: list of LanguaL classification codes (e.g. ["A0706","A0829"]).
+  // FoodEx2: list of FoodEx2 classification codes (e.g. ["A00ZX","F28.A07HS"]).
+  langualCodes   String[] @default([])
+  foodex2Codes   String[] @default([])
+  
   // --- Energy ---
   energyKj   Float? // Energy (kJ)
   energyKcal Float? // Energy (kcal)

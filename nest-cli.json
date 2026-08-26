@@ -14,6 +14,11 @@
         "include": "catalog/consent-forms/**/*.md",
         "outDir": "dist/src",
         "watchAssets": true
+      },
+      {
+        "include": "catalog/legal-documents/**/*.md",
+        "outDir": "dist/src",
+        "watchAssets": true
       }
     ]
   }

@@ -1,0 +1,26 @@
+// ============================================================
+// Legal documents & user consents
+// ============================================================
+
+enum LegalDocType {
+  TERMS_OF_SERVICE
+  PRIVACY_POLICY
+}
+
+model UserConsent {
+  id             String       @id @default(uuid())
+  userId         String
+  docType        LegalDocType
+  version        String
+  locale         String       @default("en")
+  contentHash    String
+  sourceRef      String?
+  acceptedAt     DateTime     @default(now())
+
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, docType, version, locale])
+  @@index([userId])
+  @@index([docType, locale])
+  @@map("user_consents")
+}

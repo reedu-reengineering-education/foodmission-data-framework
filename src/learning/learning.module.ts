@@ -21,11 +21,7 @@ import { MicroLearningsController } from './controllers/micro-learnings.controll
     QuestsController,
     MicroLearningsController,
   ],
-  providers: [
-    LearningService,
-    LearningTranslationHelper,
-    UsersRepository,
-  ],
+  providers: [LearningService, LearningTranslationHelper, UsersRepository],
   exports: [LearningService],
 })
 export class LearningModule {}
