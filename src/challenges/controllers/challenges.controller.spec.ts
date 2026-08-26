@@ -83,10 +83,13 @@ describe('ChallengesController', () => {
         },
         'u1',
       );
-      expect(service.getAll).toHaveBeenCalledWith({}, {
-        isAdmin: false,
-        userId: 'u1',
-      });
+      expect(service.getAll).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: false,
+          userId: 'u1',
+        },
+      );
       expect(result).toBe(mockResult);
     });
 
@@ -103,10 +106,13 @@ describe('ChallengesController', () => {
         },
         'u1',
       );
-      expect(service.getAll).toHaveBeenCalledWith({}, {
-        isAdmin: true,
-        userId: 'u1',
-      });
+      expect(service.getAll).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: true,
+          userId: 'u1',
+        },
+      );
     });
   });
 

@@ -155,11 +155,10 @@ describe('MissionProgressService', () => {
         { completed: true, progress: 1 },
         'u1',
       );
-      expect(repository.upsert).toHaveBeenCalledWith(
-        'u1',
-        'm1',
-        { completed: true, progress: 1 },
-      );
+      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
+        completed: true,
+        progress: 1,
+      });
       expect(result).toEqual({
         missionId: 'm1',
         userId: 'u1',

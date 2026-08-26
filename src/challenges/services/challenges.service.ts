@@ -67,8 +67,7 @@ export class ChallengesService {
   ): Promise<ChallengeResponseDto> {
     this.logger.log(`Getting challenge ${codeOrId}`);
 
-    const challenge =
-      await this.challengesRepository.findByCodeOrId(codeOrId);
+    const challenge = await this.challengesRepository.findByCodeOrId(codeOrId);
 
     if (!challenge) {
       throw new NotFoundException('Challenge not found');

@@ -383,4 +383,4 @@ build-storybook.log
 docs/FOODMISSION Data Framework API/*
 postman/
 
-graphify-out/*
+graphify-out
