@@ -29,11 +29,14 @@ import {
 import { dimensionSeedData } from '../seeds/shared/dimensions-topics';
 import {
   collectLeafKeys,
+  deleteAtPath,
   ensureMetaBlock,
   extractPlaceholders,
   getStringAtPath,
+  isJsonObject,
   localeNamespaceFilePath,
   namespaceFromFile,
+  pruneUnknownKeys,
   readJsonFile,
   resolveLocaleLayout,
   sameStringArray,
@@ -117,8 +120,24 @@ export type Category = {
   /** Whether {{placeholder}} parity between en and the translation is enforced. */
   checkPlaceholders: boolean;
   collect(locales: string[]): WorkbookEntry[];
-  /** Applies updates to the source files, returns the touched file paths. */
-  apply(updates: LocaleUpdate[], dryRun: boolean): string[];
+  /**
+   * Applies updates to the source files and prunes keys no longer present in
+   * `validKeys` (i.e. dropped from the English source) so re-importing a
+   * workbook doesn't leave orphaned translations behind. Returns the touched
+   * file paths.
+   */
+  apply(
+    updates: LocaleUpdate[],
+    dryRun: boolean,
+    context: ApplyContext,
+  ): string[];
+};
+
+export type ApplyContext = {
+  /** All locales in scope for this sheet, including ones with no updates. */
+  locales: string[];
+  /** Keys currently valid for this category — anything else gets pruned. */
+  validKeys: Set<string>;
 };
 
 function groupByLocale(updates: LocaleUpdate[]): Map<string, LocaleUpdate[]> {
@@ -186,16 +205,24 @@ function namespaceCategory(namespaceFile: string): Category {
         });
     },
 
-    apply(updates, dryRun) {
+    apply(updates, dryRun, { locales, validKeys }) {
       const touched: string[] = [];
+      const updatesByLocale = groupByLocale(updates);
 
-      for (const [locale, localeUpdates] of groupByLocale(updates)) {
+      for (const locale of locales) {
         const filePath = localeNamespaceFilePath(locale, namespaceFile);
         const json = readNamespaceJson(locale, namespaceFile);
+        const localeUpdates = updatesByLocale.get(locale) ?? [];
 
         for (const update of localeUpdates) {
           setValueByPath(json, update.key, update.value);
         }
+        const pruned = pruneUnknownKeys(json, validKeys);
+
+        if (localeUpdates.length === 0 && !pruned) {
+          continue;
+        }
+
         ensureMetaBlock(json, locale, new Date().toISOString());
 
         if (!dryRun) {
@@ -308,11 +335,13 @@ const surveyMetaCategory: Category = {
     );
   },
 
-  apply(updates, dryRun) {
+  apply(updates, dryRun, { locales, validKeys }) {
     const touched: string[] = [];
+    const updatesByLocale = groupByLocale(updates);
 
-    for (const [locale, localeUpdates] of groupByLocale(updates)) {
+    for (const locale of locales) {
       const file = readSurveyTranslations(locale);
+      const localeUpdates = updatesByLocale.get(locale) ?? [];
 
       for (const update of localeUpdates) {
         const separator = update.key.lastIndexOf(KEY_SEPARATOR);
@@ -323,6 +352,28 @@ const surveyMetaCategory: Category = {
           entry[field] = update.value;
         }
         file.surveys[title] = entry;
+      }
+
+      let pruned = false;
+      for (const title of Object.keys(file.surveys)) {
+        const entry = file.surveys[title];
+        for (const field of ['title', 'description'] as const) {
+          if (
+            entry[field] !== undefined &&
+            !validKeys.has(`${title}${KEY_SEPARATOR}${field}`)
+          ) {
+            delete entry[field];
+            pruned = true;
+          }
+        }
+        if (Object.keys(entry).length === 0) {
+          delete file.surveys[title];
+          pruned = true;
+        }
+      }
+
+      if (localeUpdates.length === 0 && !pruned) {
+        continue;
       }
 
       touched.push(
@@ -371,14 +422,29 @@ const surveyQuestionCategory: Category = {
     }));
   },
 
-  apply(updates, dryRun) {
+  apply(updates, dryRun, { locales, validKeys }) {
     const touched: string[] = [];
+    const updatesByLocale = groupByLocale(updates);
 
-    for (const [locale, localeUpdates] of groupByLocale(updates)) {
+    for (const locale of locales) {
       const file = readSurveyTranslations(locale);
+      const localeUpdates = updatesByLocale.get(locale) ?? [];
       for (const update of localeUpdates) {
         file.questions[update.key] = update.value;
       }
+
+      let pruned = false;
+      for (const key of Object.keys(file.questions)) {
+        if (!validKeys.has(key)) {
+          delete file.questions[key];
+          pruned = true;
+        }
+      }
+
+      if (localeUpdates.length === 0 && !pruned) {
+        continue;
+      }
+
       touched.push(
         dryRun
           ? relativePath(surveyTranslationPath(locale))
@@ -627,6 +693,25 @@ function splitCatalogKey(key: string): { code: string; fields: string[] } {
   return { code, fields };
 }
 
+/** Leaf keys currently stored under a (non-plain) catalog section, e.g. `M.B1.1::title`. */
+function collectSectionKeys(section: JsonObject): string[] {
+  const keys: string[] = [];
+
+  const walk = (obj: JsonObject, prefix: string[]) => {
+    for (const [key, value] of Object.entries(obj)) {
+      const path = [...prefix, key];
+      if (isJsonObject(value)) {
+        walk(value, path);
+      } else if (typeof value === 'string') {
+        keys.push(path.join(KEY_SEPARATOR));
+      }
+    }
+  };
+
+  walk(section, []);
+  return keys;
+}
+
 type CatalogEnglishRow = { key: string; en: string };
 
 type CatalogCategoryConfig = {
@@ -700,14 +785,44 @@ function catalogCategory(config: CatalogCategoryConfig): Category {
       }));
     },
 
-    apply(updates, dryRun) {
+    apply(updates, dryRun, { locales, validKeys }) {
       const touched: string[] = [];
+      const updatesByLocale = groupByLocale(updates);
 
-      for (const [locale, localeUpdates] of groupByLocale(updates)) {
+      for (const locale of locales) {
         const file = readLearningFile(locale);
+        const localeUpdates = updatesByLocale.get(locale) ?? [];
         for (const update of localeUpdates) {
           writeValue(file, update.key, update.value);
         }
+
+        let pruned = false;
+        const section = readObject(file, config.section);
+        if (section) {
+          if (config.plain) {
+            const validCodes = new Set(
+              [...validKeys].map((key) => splitCatalogKey(key).code),
+            );
+            for (const code of Object.keys(section)) {
+              if (typeof section[code] === 'string' && !validCodes.has(code)) {
+                delete section[code];
+                pruned = true;
+              }
+            }
+          } else {
+            for (const key of collectSectionKeys(section)) {
+              if (!validKeys.has(key)) {
+                deleteAtPath(section, key.split(KEY_SEPARATOR));
+                pruned = true;
+              }
+            }
+          }
+        }
+
+        if (localeUpdates.length === 0 && !pruned) {
+          continue;
+        }
+
         touched.push(
           dryRun
             ? relativePath(learningTranslationPath(locale))

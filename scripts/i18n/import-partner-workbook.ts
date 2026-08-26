@@ -138,7 +138,10 @@ async function main(): Promise<void> {
       }
     }
 
-    const touched = category.apply(updates, dryRun);
+    const touched = category.apply(updates, dryRun, {
+      locales: sheet.locales,
+      validKeys: new Set(current.keys()),
+    });
     report.touchedFiles.push(...touched);
     report.perSheet[sheet.name] = { updated: updates.length };
     report.updated += updates.length;
