@@ -4,6 +4,7 @@ import { DatabaseModule } from '../database/database.module';
 
 import { CommonModule } from '../common/common.module';
 import { TranslationsModule } from '../translations/translations.module';
+import { EventsModule } from '../events/events.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { ChallengesController } from './controllers/challenges.controller';
 import { ChallengesService } from './services/challenges.service';
@@ -13,7 +14,13 @@ import { ChallengeProgressService } from './services/challenge-progress.service'
 import { ChallengeProgressRepository } from './repositories/challenge-progress.repository';
 
 @Module({
-  imports: [DatabaseModule, HttpModule, CommonModule, TranslationsModule],
+  imports: [
+    DatabaseModule,
+    HttpModule,
+    CommonModule,
+    TranslationsModule,
+    EventsModule,
+  ],
   controllers: [ChallengesController, ChallengeProgressController],
   providers: [
     ChallengesService,

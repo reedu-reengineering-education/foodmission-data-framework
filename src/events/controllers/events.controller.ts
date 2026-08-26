@@ -33,17 +33,21 @@ export class EventsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @Throttle({
-    short: { limit: 2, ttl: 1_000 },
-    medium: { limit: 30, ttl: 60_000 },
-    long: { limit: 200, ttl: 900_000 },
+    short: { limit: 5, ttl: 1_000 },
+    medium: { limit: 60, ttl: 60_000 },
+    long: { limit: 500, ttl: 900_000 },
   })
   @ApiOperation({
-    summary: 'Record a client-allowlisted user event',
+    summary: 'Record a client event for the authenticated user',
     description:
-      'Accepts APP_SESSION_OPENED / APP_SESSION_ENDED only. ' +
-      'Requires metadata.sessionId; idempotency key is built server-side as ' +
-      '{eventType}:{userId}:{sessionId}. Other event types must be derived ' +
-      'server-side from domain mutations.',
+      'Accepts all client-recordable event types — app session events ' +
+      '(APP_SESSION_OPENED / APP_SESSION_ENDED) and all behavioural/observational ' +
+      'events (MEAL_*, SWAP_*, SHOPPING_*, PROCESSING_*, PACKAGING_*, FOOD_WASTE_*, ' +
+      'NUTRITION_*, LEARNING_*). Trust-sensitive types (wallet, progress completions, ' +
+      'achievements, account events) remain server-only and will be rejected. ' +
+      'For APP_SESSION_* events include metadata.sessionId (UUID) — the server builds ' +
+      'the idempotency key as {eventType}:{userId}:{sessionId}. ' +
+      'For behavioural events supply an optional idempotencyKey to prevent duplicate writes.',
   })
   @ApiBody({ type: CreateClientEventDto })
   @ApiResponse({
@@ -60,6 +64,7 @@ export class EventsController {
       userId,
       eventType: dto.eventType,
       metadata: dto.metadata,
+      idempotencyKey: dto.idempotencyKey,
     });
     return event;
   }

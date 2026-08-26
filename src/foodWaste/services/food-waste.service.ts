@@ -30,6 +30,8 @@ import { PrismaService } from '../../database/prisma.service';
 import { Prisma, WasteReason, DetectionMethod, Unit } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 /**
  * Carbon footprint estimates in kg CO2 per kg of food
@@ -83,6 +85,7 @@ export class FoodWasteService {
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly foodProductRepository: FoodProductRepository,
     private readonly prisma: PrismaService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   /**
@@ -353,6 +356,37 @@ export class FoodWasteService {
           );
         }
 
+        await this.recordFoodWasteLogged(
+          {
+            userId,
+            wasteId: createdWaste.id,
+            pantryItemId: createDto.pantryItemId,
+            isBatchWaste: false,
+            body: {
+              pantryItemId: createDto.pantryItemId,
+              wasteReason: createDto.wasteReason,
+              detectionMethod: createDto.detectionMethod,
+              ...(createDto.quantity !== undefined
+                ? { quantity: createDto.quantity }
+                : {}),
+              ...(createDto.unit !== undefined ? { unit: createDto.unit } : {}),
+              ...(createDto.notes !== undefined
+                ? { notes: createDto.notes }
+                : {}),
+              ...(createDto.costEstimate !== undefined
+                ? { costEstimate: createDto.costEstimate }
+                : {}),
+              ...(createDto.carbonFootprint !== undefined
+                ? { carbonFootprint: createDto.carbonFootprint }
+                : {}),
+              ...(createDto.wastedAt !== undefined
+                ? { wastedAt: createDto.wastedAt }
+                : {}),
+            },
+          },
+          tx,
+        );
+
         return createdWaste;
       });
 
@@ -606,6 +640,27 @@ export class FoodWasteService {
             );
           }
 
+          await this.recordFoodWasteLogged(
+            {
+              userId,
+              wasteId: createdWaste.id,
+              pantryItemId: item.pantryItemId,
+              isBatchWaste: true,
+              body: {
+                pantryItemId: item.pantryItemId,
+                ...(item.quantity !== undefined
+                  ? { quantity: item.quantity }
+                  : {}),
+                ...(item.unit !== undefined ? { unit: item.unit } : {}),
+                ...(item.costEstimate !== undefined
+                  ? { costEstimate: item.costEstimate }
+                  : {}),
+                ...(item.notes !== undefined ? { notes: item.notes } : {}),
+              },
+            },
+            tx,
+          );
+
           return createdWaste;
         });
 
@@ -741,6 +796,34 @@ export class FoodWasteService {
     } catch (error) {
       throw handlePrismaError(error, 'get waste trends', 'FoodWaste');
     }
+  }
+
+  private async recordFoodWasteLogged(
+    input: {
+      userId: string;
+      wasteId: string;
+      pantryItemId: string;
+      isBatchWaste: boolean;
+      body: Record<string, unknown>;
+    },
+    tx: Prisma.TransactionClient,
+  ): Promise<void> {
+    await this.userEventService.record(
+      {
+        userId: input.userId,
+        eventType: EventType.FOOD_WASTE_LOGGED,
+        source: EventSource.FOOD_WASTE,
+        metadata: {
+          foodWasteId: input.wasteId,
+          pantryItemId: input.pantryItemId,
+          source: EventSource.API,
+          isBatchWaste: input.isBatchWaste,
+          body: input.body,
+        },
+        idempotencyKey: `food-waste-logged:${input.wasteId}`,
+      },
+      tx,
+    );
   }
 
   /**

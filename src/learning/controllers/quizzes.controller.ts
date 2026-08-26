@@ -83,6 +83,76 @@ export class QuizzesController {
     return this.learningService.listAllQuizProgressPaginated(query);
   }
 
+  @Get('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get current user quiz progress by code' })
+  @ApiParam({
+    name: 'code',
+    description: 'Quiz code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
+  @ApiResponse({ status: 200, type: QuizProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async getProgressByCode(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuizProgressResponseDto> {
+    return this.learningService.getQuizProgress(userId, code, query.lang);
+  }
+
+  @Patch('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Upsert quiz progress by code for current user',
+    description:
+      'Sets selected option, derives isCorrect from the option, marks completed.',
+  })
+  @ApiParam({
+    name: 'code',
+    description: 'Quiz code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
+  @ApiBody({ type: UpdateQuizProgressDto })
+  @ApiResponse({ status: 200, type: QuizProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async upsertProgressByCode(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+    @Body() dto: UpdateQuizProgressDto,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuizProgressResponseDto> {
+    return this.learningService.upsertQuizProgress(
+      userId,
+      code,
+      dto,
+      query.lang,
+    );
+  }
+
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get a quiz by code',
+    description: 'Options omit isCorrect.',
+  })
+  @ApiParam({
+    name: 'code',
+    description: 'Quiz code (e.g. Q1.1.1)',
+    example: 'Q1.1.1',
+  })
+  @ApiResponse({ status: 200, type: QuizResponseDto })
+  @ApiCrudErrorResponses()
+  async getByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuizResponseDto> {
+    return this.learningService.getQuiz(code, query);
+  }
+
   @Get(':codeOrId/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

@@ -18,9 +18,12 @@ import {
   VirtualMemberCannotBeAdminException,
   AlreadyAdminException,
 } from '../../common/exceptions/business.exception';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('UserGroupsService', () => {
   let service: UserGroupsService;
+  let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
 
   const mockUserGroupsRepository = {
     create: jest.fn(),
@@ -49,6 +52,10 @@ describe('UserGroupsService', () => {
   };
 
   beforeEach(async () => {
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserGroupsService,
@@ -60,6 +67,7 @@ describe('UserGroupsService', () => {
           provide: GroupMembershipRepository,
           useValue: mockMembershipRepository,
         },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -82,7 +90,9 @@ describe('UserGroupsService', () => {
         inviteCode: TEST_DATA.INVITE_CODE,
         createdBy: userId,
         createdAt: new Date(),
-        memberships: [],
+        memberships: [
+          { id: TEST_IDS.GROUP_MEMBERSHIP, userId, role: GroupRole.ADMIN },
+        ],
       };
       mockUserGroupsRepository.create.mockResolvedValue(mockGroup);
 
@@ -93,6 +103,24 @@ describe('UserGroupsService', () => {
       expect(mockUserGroupsRepository.create).toHaveBeenCalledWith({
         ...createDto,
         createdBy: userId,
+      });
+      expect(userEventService.record).toHaveBeenCalledWith({
+        userId,
+        eventType: EventType.USER_GROUP_JOINED,
+        source: EventSource.GROUP,
+        groupId: TEST_IDS.USER_GROUP,
+        metadata: {
+          groupId: TEST_IDS.USER_GROUP,
+          source: EventSource.API,
+          isVirtual: false,
+          body: {
+            name: createDto.name,
+            ...(createDto.description !== undefined
+              ? { description: createDto.description }
+              : {}),
+          },
+        },
+        idempotencyKey: `user-group-joined:${TEST_IDS.GROUP_MEMBERSHIP}`,
       });
     });
   });
@@ -261,7 +289,11 @@ describe('UserGroupsService', () => {
       };
       mockUserGroupsRepository.findByInviteCode.mockResolvedValue(mockGroup);
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(null);
-      mockMembershipRepository.create.mockResolvedValue({});
+      mockMembershipRepository.create.mockResolvedValue({
+        id: TEST_IDS.GROUP_MEMBERSHIP,
+        userId,
+        groupId: TEST_IDS.USER_GROUP,
+      });
       mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
 
       const result = await service.joinByInviteCode(inviteCode, userId);
@@ -271,6 +303,19 @@ describe('UserGroupsService', () => {
         userId,
         groupId: TEST_IDS.USER_GROUP,
         role: GroupRole.MEMBER,
+      });
+      expect(userEventService.record).toHaveBeenCalledWith({
+        userId,
+        eventType: EventType.USER_GROUP_JOINED,
+        source: EventSource.GROUP,
+        groupId: TEST_IDS.USER_GROUP,
+        metadata: {
+          groupId: TEST_IDS.USER_GROUP,
+          source: EventSource.API,
+          isVirtual: false,
+          body: { inviteCode },
+        },
+        idempotencyKey: `user-group-joined:${TEST_IDS.GROUP_MEMBERSHIP}`,
       });
     });
 
@@ -302,7 +347,12 @@ describe('UserGroupsService', () => {
     const groupId = TEST_IDS.USER_GROUP;
 
     it('should allow member to leave', async () => {
-      const mockMembership = { userId, groupId, role: GroupRole.MEMBER };
+      const mockMembership = {
+        id: TEST_IDS.GROUP_MEMBERSHIP,
+        userId,
+        groupId,
+        role: GroupRole.MEMBER,
+      };
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -310,6 +360,19 @@ describe('UserGroupsService', () => {
 
       await service.leave(groupId, userId);
 
+      expect(userEventService.record).toHaveBeenCalledWith({
+        userId,
+        eventType: EventType.USER_GROUP_LEFT,
+        source: EventSource.GROUP,
+        groupId,
+        metadata: {
+          groupId,
+          source: EventSource.API,
+          isVirtual: false,
+          body: {},
+        },
+        idempotencyKey: `user-group-left:${TEST_IDS.GROUP_MEMBERSHIP}`,
+      });
       expect(mockMembershipRepository.delete).toHaveBeenCalledWith(
         userId,
         groupId,
@@ -338,7 +401,12 @@ describe('UserGroupsService', () => {
     });
 
     it('should allow admin to leave when there are other admins', async () => {
-      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockMembership = {
+        id: TEST_IDS.GROUP_MEMBERSHIP,
+        userId,
+        groupId,
+        role: GroupRole.ADMIN,
+      };
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -354,7 +422,12 @@ describe('UserGroupsService', () => {
     });
 
     it('should delete group when last member leaves', async () => {
-      const mockMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const mockMembership = {
+        id: TEST_IDS.GROUP_MEMBERSHIP,
+        userId,
+        groupId,
+        role: GroupRole.ADMIN,
+      };
       mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
         mockMembership,
       );
@@ -362,6 +435,12 @@ describe('UserGroupsService', () => {
 
       await service.leave(groupId, userId);
 
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.USER_GROUP_LEFT,
+          idempotencyKey: `user-group-left:${TEST_IDS.GROUP_MEMBERSHIP}`,
+        }),
+      );
       expect(mockUserGroupsRepository.delete).toHaveBeenCalledWith(groupId);
       expect(mockMembershipRepository.delete).not.toHaveBeenCalled();
     });
@@ -544,6 +623,19 @@ describe('UserGroupsService', () => {
       expect(result.id).toBe(TEST_IDS.VIRTUAL_MEMBER);
       expect(result.isVirtual).toBe(true);
       expect(mockMembershipRepository.createVirtualMember).toHaveBeenCalled();
+      expect(userEventService.record).toHaveBeenCalledWith({
+        userId,
+        eventType: EventType.USER_GROUP_JOINED,
+        source: EventSource.GROUP,
+        groupId,
+        metadata: {
+          groupId,
+          source: EventSource.API,
+          isVirtual: true,
+          body: { ...createDto },
+        },
+        idempotencyKey: `user-group-joined:${TEST_IDS.VIRTUAL_MEMBER}`,
+      });
     });
 
     it('should throw NotGroupMemberException when not a member', async () => {
@@ -664,6 +756,44 @@ describe('UserGroupsService', () => {
 
       await service.removeMember(groupId, membershipId, userId);
 
+      expect(mockMembershipRepository.deleteById).toHaveBeenCalledWith(
+        membershipId,
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId,
+          eventType: EventType.USER_GROUP_LEFT,
+          metadata: expect.objectContaining({ isVirtual: true }),
+          idempotencyKey: `user-group-left:${membershipId}`,
+        }),
+      );
+    });
+
+    it('should emit USER_GROUP_LEFT when removing a registered member', async () => {
+      const otherUserId = 'other-user-id';
+      const mockGroup = { id: groupId };
+      const mockAdmin = { userId, groupId, role: GroupRole.ADMIN };
+      const mockRegisteredMember = {
+        id: membershipId,
+        groupId,
+        userId: otherUserId,
+        role: GroupRole.MEMBER,
+      };
+
+      mockMembershipRepository.findById.mockResolvedValue(mockRegisteredMember);
+      mockMembershipRepository.isVirtual.mockReturnValue(false);
+      mockUserGroupsRepository.findById.mockResolvedValue(mockGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(mockAdmin);
+
+      await service.removeMember(groupId, membershipId, userId);
+
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: otherUserId,
+          eventType: EventType.USER_GROUP_LEFT,
+          idempotencyKey: `user-group-left:${membershipId}`,
+        }),
+      );
       expect(mockMembershipRepository.deleteById).toHaveBeenCalledWith(
         membershipId,
       );

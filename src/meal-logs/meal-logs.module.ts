@@ -5,10 +5,11 @@ import { MealLogsRepository } from './repositories/meal-logs.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { MealsModule } from '../meals/meals.module';
+import { EventsModule } from '../events/events.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, MealsModule],
+  imports: [DatabaseModule, CommonModule, MealsModule, EventsModule],
   controllers: [MealLogsController],
   providers: [MealLogsService, MealLogsRepository, UsersRepository],
   exports: [MealLogsService, MealLogsRepository],

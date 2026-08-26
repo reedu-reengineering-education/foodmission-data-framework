@@ -108,6 +108,73 @@ export class QuestsController {
     return this.learningService.listAllQuestProgressPaginated(query);
   }
 
+  @Get('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get current user quest progress by code' })
+  @ApiParam({
+    name: 'code',
+    description: 'Quest code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
+  })
+  @ApiResponse({ status: 200, type: QuestProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async getProgressByCode(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestProgressResponseDto> {
+    return this.learningService.getQuestProgress(userId, code, query.lang);
+  }
+
+  @Patch('by-code/:code/progress')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Upsert quest progress by code for current user' })
+  @ApiParam({
+    name: 'code',
+    description: 'Quest code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
+  })
+  @ApiBody({ type: UpdateQuestProgressDto })
+  @ApiResponse({ status: 200, type: QuestProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async upsertProgressByCode(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+    @Body() dto: UpdateQuestProgressDto,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestProgressResponseDto> {
+    return this.learningService.upsertQuestProgress(
+      userId,
+      code,
+      dto,
+      query.lang,
+    );
+  }
+
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get a quest by code',
+    description:
+      'Includes ordered quest items with translated labels when lang is set.',
+  })
+  @ApiParam({
+    name: 'code',
+    description: 'Quest code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
+    example: 'QUEST.DIET_CHANGES.BEGINNER.1',
+  })
+  @ApiResponse({ status: 200, type: QuestResponseDto })
+  @ApiCrudErrorResponses()
+  async getByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<QuestResponseDto> {
+    return this.learningService.getQuest(code, query);
+  }
+
   @Get(':codeOrId/progress')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

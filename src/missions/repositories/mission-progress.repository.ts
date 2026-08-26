@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 
@@ -7,10 +8,10 @@ import { pageLimitToSkipTake } from '../../common/utils/pagination';
 export class MissionProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findMissionById(missionId: string) {
-    return this.prisma.mission.findUnique({
-      where: { id: missionId },
-      select: { id: true, title: true },
+  async findMissionByCodeOrId(codeOrId: string) {
+    return this.prisma.mission.findFirst({
+      where: codeOrIdWhere(codeOrId),
+      select: { id: true, code: true, title: true },
     });
   }
 

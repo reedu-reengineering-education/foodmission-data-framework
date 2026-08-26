@@ -102,6 +102,11 @@ model GenericFood {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  vegan      Boolean @default(false)
+  vegetarian Boolean @default(false)
+  meatOrFish Boolean @default(false)
+  legume     Boolean @default(false)
+
   // --- NEVO metadata ---
   nevoVersion      String // e.g. "NEVO-Online 2025 9.0"
   foodGroup        String // e.g. "Potatoes and tubers"

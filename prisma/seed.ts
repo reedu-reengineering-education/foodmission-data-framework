@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { parseArgs } from 'node:util';
 import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
+import { seedDietFlags } from '../scripts/seeds/prod/dietFlags';
 import { seedNevoLangualFoodex } from '../scripts/seeds/prod/seedNevoLangualFoodex';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
@@ -59,6 +60,7 @@ async function seedProduction() {
   const microLearnings = await seedMicroLearnings(prisma);
 
   const genericFoods = await seedGenericFoods(prisma);
+  const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
   const recipes = await seedRecipes(prisma);
@@ -93,6 +95,10 @@ async function seedProduction() {
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
     { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
+    {
+      label: 'dietFlags',
+      value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
+    },
     {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,

@@ -34,6 +34,24 @@ export class MicroLearningsController {
     return this.learningService.listMicroLearnings(query);
   }
 
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get a micro-learning by code' })
+  @ApiParam({
+    name: 'code',
+    description: 'Micro-learning code (e.g. ML1.1.1)',
+    example: 'ML1.1.1',
+  })
+  @ApiResponse({ status: 200, type: MicroLearningResponseDto })
+  @ApiCrudErrorResponses()
+  async getByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MicroLearningResponseDto> {
+    return this.learningService.getMicroLearning(code, query);
+  }
+
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

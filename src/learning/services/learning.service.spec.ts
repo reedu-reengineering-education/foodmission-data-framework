@@ -4,9 +4,12 @@ import { LearningService } from './learning.service';
 import { LearningTranslationHelper } from './learning-translation.helper';
 import { PrismaService } from '../../database/prisma.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('LearningService', () => {
   let service: LearningService;
+  let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let prisma: {
     dimension: {
       findMany: jest.Mock;
@@ -33,6 +36,7 @@ describe('LearningService', () => {
     mission: { findMany: jest.Mock };
     challenge: { findMany: jest.Mock };
     microLearning: { findMany: jest.Mock };
+    $transaction: jest.Mock;
   };
 
   const mockTranslations = {
@@ -93,6 +97,17 @@ describe('LearningService', () => {
       mission: { findMany: jest.fn().mockResolvedValue([]) },
       challenge: { findMany: jest.fn().mockResolvedValue([]) },
       microLearning: { findMany: jest.fn().mockResolvedValue([]) },
+      $transaction: jest.fn(),
+    };
+    prisma.$transaction.mockImplementation(async (arg: unknown) => {
+      if (typeof arg === 'function') {
+        return (arg as (tx: typeof prisma) => Promise<unknown>)(prisma);
+      }
+      return Promise.all(arg as Promise<unknown>[]);
+    });
+
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -100,6 +115,7 @@ describe('LearningService', () => {
         LearningService,
         { provide: PrismaService, useValue: prisma },
         { provide: LearningTranslationHelper, useValue: mockTranslations },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -382,5 +398,319 @@ describe('LearningService', () => {
       }),
     ).rejects.toThrow('Unknown quest item content codes');
     expect(prisma.quest.create).not.toHaveBeenCalled();
+  });
+
+  describe('upsertQuestProgress events', () => {
+    const quest = {
+      id: 'quest-1',
+      code: 'QUEST.DIET.1',
+      title: 'Diet quest',
+      name: 'Diet',
+      description: null,
+    };
+
+    beforeEach(() => {
+      prisma.quest.findFirst.mockResolvedValue(quest);
+    });
+
+    it('emits QUEST_STARTED on first active progress', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue(null);
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: false,
+        progress: 10,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, { progress: 10 });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'u1',
+          eventType: EventType.QUEST_STARTED,
+          source: EventSource.QUEST,
+          metadata: {
+            questId: quest.id,
+            questCode: quest.code,
+            source: EventSource.API,
+            body: { progress: 10 },
+          },
+          idempotencyKey: 'quest-started:u1:quest-1',
+        }),
+        prisma,
+      );
+    });
+
+    it('emits STARTED and COMPLETED when first write is completed', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue(null);
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: true,
+        progress: 100,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, {
+        completed: true,
+        progress: 100,
+      });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(2);
+      expect(userEventService.record.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          eventType: EventType.QUEST_STARTED,
+          idempotencyKey: 'quest-started:u1:quest-1',
+          metadata: {
+            questId: quest.id,
+            questCode: quest.code,
+            source: EventSource.API,
+            body: { progress: 100, completed: true },
+          },
+        }),
+      );
+      expect(userEventService.record.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          eventType: EventType.QUEST_COMPLETED,
+          source: EventSource.QUEST,
+          idempotencyKey: 'quest-completed:u1:quest-1',
+          metadata: {
+            questId: quest.id,
+            questCode: quest.code,
+            source: EventSource.API,
+            body: { progress: 100, completed: true },
+          },
+        }),
+      );
+    });
+
+    it('does not emit on a zero-progress create', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue(null);
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: false,
+        progress: 0,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, { progress: 0 });
+
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('emits QUEST_UPDATED when progress changes after start', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: false,
+        progress: 10,
+      });
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: false,
+        progress: 40,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, { progress: 40 });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.QUEST_UPDATED,
+          source: EventSource.QUEST,
+          metadata: {
+            questId: quest.id,
+            questCode: quest.code,
+            source: EventSource.API,
+            body: { progress: 40 },
+          },
+          idempotencyKey: 'quest-updated:u1:quest-1:40:false',
+        }),
+        prisma,
+      );
+    });
+
+    it('emits UPDATED and COMPLETED when completing an in-progress quest', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: false,
+        progress: 40,
+      });
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: true,
+        progress: 100,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, {
+        completed: true,
+        progress: 100,
+      });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(2);
+      expect(userEventService.record.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          eventType: EventType.QUEST_UPDATED,
+          idempotencyKey: 'quest-updated:u1:quest-1:100:true',
+        }),
+      );
+      expect(userEventService.record.mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          eventType: EventType.QUEST_COMPLETED,
+          idempotencyKey: 'quest-completed:u1:quest-1',
+        }),
+      );
+    });
+
+    it('does not re-emit on a completed retry', async () => {
+      prisma.questProgress.findUnique.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: true,
+        progress: 100,
+      });
+      prisma.questProgress.upsert.mockResolvedValue({
+        userId: 'u1',
+        questId: quest.id,
+        completed: true,
+        progress: 100,
+        unlockedAt: new Date(),
+      });
+
+      await service.upsertQuestProgress('u1', quest.code, {
+        completed: true,
+        progress: 100,
+      });
+
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('upsertQuizProgress events', () => {
+    const quiz = {
+      id: 'q1',
+      code: 'Q.B1.1',
+      topicId: 't1',
+      question: 'Which is best?',
+      explanation: 'Because reuse',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+      options: [
+        {
+          id: 'opt-a',
+          label: 'A',
+          text: 'Wrong',
+          isCorrect: false,
+          sortOrder: 0,
+        },
+        {
+          id: 'opt-b',
+          label: 'B',
+          text: 'Right',
+          isCorrect: true,
+          sortOrder: 1,
+        },
+      ],
+    };
+
+    beforeEach(() => {
+      prisma.quiz.findFirst.mockResolvedValue(quiz);
+    });
+
+    it('emits QUIZ_ANSWERED on first answer', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue(null);
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.QUIZ_ANSWERED,
+          source: EventSource.LEARNING,
+          metadata: {
+            quizId: quiz.id,
+            quizCode: quiz.code,
+            source: EventSource.API,
+            isCorrect: true,
+            body: { selectedLabel: 'B' },
+          },
+          idempotencyKey: 'quiz-answered:u1:q1',
+        }),
+        prisma,
+      );
+    });
+
+    it('emits QUIZ_UPDATED when the selected option changes', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue({
+        selectedOptionId: 'opt-a',
+        isCorrect: false,
+        completed: true,
+      });
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.QUIZ_UPDATED,
+          idempotencyKey: 'quiz-updated:u1:q1:opt-b',
+          metadata: expect.objectContaining({
+            isCorrect: true,
+            body: { selectedLabel: 'B' },
+          }),
+        }),
+        prisma,
+      );
+    });
+
+    it('does not emit when the same option is submitted again', async () => {
+      prisma.quizProgress.findUnique.mockResolvedValue({
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+      });
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
   });
 });
