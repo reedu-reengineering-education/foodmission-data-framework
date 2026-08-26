@@ -23,10 +23,18 @@ export interface RecordClientEventInput {
 }
 
 /**
- * Server-owned idempotency key. Includes authenticated userId so keys cannot
- * collide or leak across users. Do not use timestamps — retries must reuse the
- * same key.
+ * Server-owned idempotency key for session events. Includes authenticated
+ * userId so keys cannot collide or leak across users. Do not use
+ * timestamps — retries must reuse the same key.
  */
+export function buildClientEventIdempotencyKey(
+  eventType: ClientRecordableEventType,
+  userId: string,
+  sessionId: string,
+): string {
+  return `${eventType}:${userId}:${sessionId}`;
+}
+
 @Injectable()
 export class ClientEventService {
   constructor(private readonly userEventService: UserEventService) {}
@@ -41,7 +49,11 @@ export class ClientEventService {
     // Behavioural events: namespace the client-supplied key by userId (if provided).
     let idempotencyKey: string | undefined;
     if (isSessionEvent && typeof input.metadata?.sessionId === 'string') {
-      idempotencyKey = `${input.eventType}:${input.userId}:${input.metadata.sessionId}`;
+      idempotencyKey = buildClientEventIdempotencyKey(
+        input.eventType,
+        input.userId,
+        input.metadata.sessionId,
+      );
     } else if (input.idempotencyKey) {
       idempotencyKey = `${input.userId}:${input.idempotencyKey}`;
     }
