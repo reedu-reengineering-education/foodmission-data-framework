@@ -1,0 +1,71 @@
+{
+  "dimensions": {
+    "DIET_CHANGES": "Transición hacia un sistema alimentario más sostenible"
+  },
+  "topics": {
+    "REDUCING_MEAT_CONSUMPTION": "Reducción del consumo de carne",
+    "INCREASING_OTHER_PROTEIN_SOURCES": "Aumento de otras fuentes de proteínas"
+  },
+  "foodFacts": {
+    "FF1.1.1": {
+      "body": "Comer menos carne roja es una de las formas más eficaces de reducir el impacto ambiental de la propia alimentación."
+    },
+    "FF1.1.2": {
+      "body": "Reducir el consumo de carne de res puede disminuir la presión sobre los bosques y los hábitats naturales."
+    },
+    "FF1.1.3": {
+      "body": "Las dietas con menos carne suelen generar menos emisiones de gases de efecto invernadero."
+    }
+  },
+  "quizzes": {
+    "Q1.1.1": {
+      "question": "Quieres reducir el impacto ambiental de tus cenas. ¿Qué cambio probablemente tendrá el mayor efecto?",
+      "explanation": "Comer menos carne de res suele tener un impacto mucho mayor que cambiar entre alimentos similares, ya que la ganadería contribuye considerablemente al uso del suelo, al consumo de agua y a las emisiones de gases de efecto invernadero.",
+      "options": {
+        "A": "Sustituir la carne de res por lentejas dos veces por semana",
+        "B": "Comprar carne de res ecológica en lugar de carne de res convencional",
+        "C": "Sustituir la carne de res por pollo dos veces por semana",
+        "D": "Comprar carne de res producida lo más localmente posible"
+      }
+    },
+    "Q1.1.2": {
+      "question": "¿Qué plan de comidas semanal probablemente tiene el menor impacto ambiental?",
+      "explanation": "Sustituir la carne por legumbres suele aportar mayores beneficios ambientales que simplemente cambiar entre diferentes proteínas de origen animal.",
+      "options": {
+        "A": "Carne de res dos veces, pollo dos veces y pescado una vez",
+        "B": "Carne de res una vez y legumbres cuatro veces",
+        "C": "Pollo cinco veces",
+        "D": "Carne de cerdo tres veces y queso dos veces"
+      }
+    }
+  },
+  "missions": {
+    "M.A1.1": {
+      "title": "Mantente en la zona verde",
+      "goal": "Mantenerse por debajo de cuatro comidas con carne por semana.",
+      "whyItMatters": "Una alimentación flexitariana puede reducir considerablemente el impacto climático."
+    },
+    "M.A1.2": {
+      "title": "Proteínas mayoritariamente vegetales",
+      "goal": "Obtener la mayor parte de las comidas ricas en proteínas de fuentes proteicas que no sean carne.",
+      "whyItMatters": "Las proteínas vegetales suelen requerir menos recursos que la producción de carne."
+    }
+  },
+  "challenges": {
+    "CH.A1.1": {
+      "title": "Descubre cereales ancestrales",
+      "task": "Elige un cereal ancestral que nunca hayas probado y pruébalo.",
+      "whyItMatters": "Los cereales ancestrales contribuyen a la diversidad alimentaria y agrícola."
+    },
+    "CH.A1.2": {
+      "title": "Diseña un menú sostenible",
+      "task": "Diseña un menú para un día que incluya: una legumbre, un alimento básico alternativo y como máximo una comida con carne.",
+      "whyItMatters": "La planificación de las comidas ayuda a convertir el conocimiento en acciones."
+    }
+  },
+  "quests": {
+    "QUEST.DIET_CHANGES.BEGINNER": {
+      "title": "Transición alimentaria — Principiante"
+    }
+  }
+}
