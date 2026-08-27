@@ -19,6 +19,7 @@ import {
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
 import {
+  LearningContentFiltersDto,
   LearningPaginatedQueryDto,
   LearningQuestListQueryDto,
 } from '../dto/learning-list-query.dto';
@@ -238,6 +239,39 @@ export class LearningService {
       throw new NotFoundException('Quiz not found');
     }
     const [mapped] = await this.mapQuizzes([row], query.lang);
+    return mapped;
+  }
+
+  async getRandomQuiz(
+    userId: string,
+    filters: LearningContentFiltersDto,
+    lang?: string,
+  ): Promise<QuizResponseDto | null> {
+    const where = buildQuizWhere(filters);
+
+    const answeredIds = await this.prisma.quizProgress
+      .findMany({
+        where: { userId, completed: true },
+        select: { quizId: true },
+      })
+      .then((rows) => rows.map((r) => r.quizId));
+
+    if (answeredIds.length > 0) {
+      where.id = { notIn: answeredIds };
+    }
+
+    const count = await this.prisma.quiz.count({ where });
+    if (count === 0) return null;
+
+    const skip = Math.floor(Math.random() * count);
+    const [row] = await this.prisma.quiz.findMany({
+      where,
+      skip,
+      take: 1,
+      include: { options: { orderBy: { sortOrder: 'asc' } } },
+    });
+
+    const [mapped] = await this.mapQuizzes([row], lang);
     return mapped;
   }
 
