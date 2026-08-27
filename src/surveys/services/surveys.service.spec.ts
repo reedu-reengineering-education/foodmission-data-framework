@@ -27,6 +27,7 @@ describe('SurveysService', () => {
 
   const mockQuestion = {
     id: 'q-1',
+    key: null,
     text: 'Question 1?',
     type: 'likert',
     order: 0,
@@ -307,6 +308,7 @@ describe('SurveysService', () => {
     it('should add a question to a survey', async () => {
       const newQuestion = {
         id: 'q-2',
+        key: null,
         text: 'New question?',
         type: 'likert',
         order: 1,

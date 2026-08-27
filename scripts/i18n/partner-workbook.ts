@@ -387,6 +387,28 @@ const surveyMetaCategory: Category = {
   },
 };
 
+/**
+ * The same question text is reused by several surveys — group their seed ids
+ * by text so the workbook still shows (and asks partners to translate) each
+ * text only once, while storage on disk stays keyed by id (see
+ * survey-translations.ts for why: ids survive English wording changes,
+ * plain text as a key doesn't).
+ */
+function questionIdsByText(): Map<string, string[]> {
+  const idsByText = new Map<string, string[]>();
+  for (const survey of readEnglishSurveys()) {
+    for (const question of survey.questions) {
+      if (!question.text?.trim()) {
+        continue;
+      }
+      const ids = idsByText.get(question.text) ?? [];
+      ids.push(question.id);
+      idsByText.set(question.text, ids);
+    }
+  }
+  return idsByText;
+}
+
 const surveyQuestionCategory: Category = {
   id: 'survey-questions',
   title: 'Survey question texts (deduplicated across surveys)',
@@ -398,45 +420,44 @@ const surveyQuestionCategory: Category = {
     const files = new Map(
       locales.map((locale) => [locale, readSurveyTranslations(locale)]),
     );
+    const idsByText = questionIdsByText();
 
-    // The same question text is reused by several surveys and only needs one
-    // translation — mirrors how seedSurveyTranslations() looks them up.
-    const texts = new Set<string>();
-    for (const survey of readEnglishSurveys()) {
-      for (const question of survey.questions) {
-        if (question.text?.trim()) {
-          texts.add(question.text);
-        }
-      }
-    }
-
-    return [...texts].sort().map((text) => ({
-      key: text,
-      en: text,
-      translations: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          files.get(locale)!.questions[text] ?? '',
-        ]),
-      ),
-    }));
+    return [...idsByText.keys()].sort().map((text) => {
+      const [firstId] = idsByText.get(text)!;
+      return {
+        key: text,
+        en: text,
+        translations: Object.fromEntries(
+          locales.map((locale) => [
+            locale,
+            files.get(locale)!.questions[firstId] ?? '',
+          ]),
+        ),
+      };
+    });
   },
 
   apply(updates, dryRun, { locales, validKeys }) {
     const touched: string[] = [];
     const updatesByLocale = groupByLocale(updates);
+    const idsByText = questionIdsByText();
+    const validIds = new Set(
+      [...validKeys].flatMap((text) => idsByText.get(text) ?? []),
+    );
 
     for (const locale of locales) {
       const file = readSurveyTranslations(locale);
       const localeUpdates = updatesByLocale.get(locale) ?? [];
       for (const update of localeUpdates) {
-        file.questions[update.key] = update.value;
+        for (const id of idsByText.get(update.key) ?? []) {
+          file.questions[id] = update.value;
+        }
       }
 
       let pruned = false;
-      for (const key of Object.keys(file.questions)) {
-        if (!validKeys.has(key)) {
-          delete file.questions[key];
+      for (const id of Object.keys(file.questions)) {
+        if (!validIds.has(id)) {
+          delete file.questions[id];
           pruned = true;
         }
       }
