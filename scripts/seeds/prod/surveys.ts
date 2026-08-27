@@ -56,27 +56,41 @@ export async function seedSurveys(prisma: PrismaClient) {
       results.surveysCreated++;
       console.log(`  ✓ Survey: ${surveyData.title}`);
 
-      // Update questions in place, matched by position. Deleting and
+      // Update questions in place, matched by their seed key (falling back to
+      // position for rows seeded before `key` existed). Deleting and
       // recreating them would cascade-delete every user's answers
       // (QuestionResponse.questionId is onDelete: Cascade).
       const existingQuestions = await prisma.question.findMany({
         where: { surveyId: survey.id },
         orderBy: { order: 'asc' },
       });
+      const existingByKey = new Map(
+        existingQuestions
+          .filter((q) => q.key)
+          .map((q) => [q.key as string, q]),
+      );
 
       for (let qIndex = 0; qIndex < surveyData.questions.length; qIndex++) {
         const questionData = surveyData.questions[qIndex];
-        const existing = existingQuestions.find((q) => q.order === qIndex);
+        const existing =
+          existingByKey.get(questionData.id) ??
+          existingQuestions.find((q) => !q.key && q.order === qIndex);
 
         if (existing) {
           await prisma.question.update({
             where: { id: existing.id },
-            data: { text: questionData.text, type: questionData.type },
+            data: {
+              key: questionData.id,
+              text: questionData.text,
+              type: questionData.type,
+              order: qIndex,
+            },
           });
           results.questionsUpdated++;
         } else {
           await prisma.question.create({
             data: {
+              key: questionData.id,
               text: questionData.text,
               type: questionData.type,
               order: qIndex,

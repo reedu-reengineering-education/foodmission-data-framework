@@ -9,7 +9,7 @@ import {
 type SurveySeed = {
   title: string;
   description?: string;
-  questions: { text: string }[];
+  questions: { id: string; text: string }[];
 };
 
 const SEED_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'surveys');
@@ -30,8 +30,8 @@ function readSeededSurveys(): SurveySeed[] {
 describe('survey translation files', () => {
   const surveys = readSeededSurveys();
   const englishTitles = surveys.map((s) => s.title);
-  const englishQuestions = [
-    ...new Set(surveys.flatMap((s) => s.questions.map((q) => q.text))),
+  const questionKeys = [
+    ...new Set(surveys.flatMap((s) => s.questions.map((q) => q.id))),
   ];
 
   it('has a file for every supported locale except English', () => {
@@ -52,8 +52,8 @@ describe('survey translation files', () => {
         expect(file.surveys[title]?.description?.trim()).toBeTruthy();
       }
 
-      for (const text of englishQuestions) {
-        expect(file.questions[text]?.trim()).toBeTruthy();
+      for (const key of questionKeys) {
+        expect(file.questions[key]?.trim()).toBeTruthy();
       }
     },
   );
@@ -67,9 +67,7 @@ describe('survey translation files', () => {
         Object.keys(file.surveys).filter((k) => !englishTitles.includes(k)),
       ).toEqual([]);
       expect(
-        Object.keys(file.questions).filter(
-          (k) => !englishQuestions.includes(k),
-        ),
+        Object.keys(file.questions).filter((k) => !questionKeys.includes(k)),
       ).toEqual([]);
     },
   );

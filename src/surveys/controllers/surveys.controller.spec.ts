@@ -180,6 +180,7 @@ describe('SurveysController', () => {
 
       const newQuestion = {
         id: 'q-2',
+        key: null,
         text: 'New question?',
         type: 'likert',
         order: 1,

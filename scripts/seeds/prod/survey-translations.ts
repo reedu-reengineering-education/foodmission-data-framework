@@ -9,8 +9,9 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../../src/i18n/constants';
  *   prisma/seeds/data/surveys/translations/<locale>.json
  *
  * Surveys are keyed by their English title (unique in the DB), questions by
- * their English text (deduplicated across surveys — the same question text is
- * reused by several surveys and only needs translating once).
+ * their seed key (the `id` field in the survey JSON, e.g. "third use_0") —
+ * stored on `Question.key` at seed time. Keying by id instead of by English
+ * text keeps translations linked even when the English wording changes.
  */
 export type SurveyTranslationFile = {
   surveys: Record<string, { title?: string; description?: string }>;
@@ -58,9 +59,9 @@ export type SurveyTranslationReport = {
   upserted: number;
   /** Survey titles present in a translation file but missing in the DB. */
   unknownSurveys: string[];
-  /** English question texts present in a translation file but missing in the DB. */
+  /** Question keys present in a translation file but missing in the DB. */
   unknownQuestions: string[];
-  /** English strings in the DB without a translation, per locale. */
+  /** Survey titles / question keys in the DB without a translation, per locale. */
   missingTranslations: string[];
 };
 
@@ -85,20 +86,21 @@ export async function seedSurveyTranslations(
   });
   const surveyIdByTitle = new Map(surveys.map((s) => [s.title, s.id]));
 
-  // The same question text can appear in several surveys — each occurrence is
-  // its own row and needs its own translation entry.
-  const questionIdsByText = new Map<string, string[]>();
+  // Question.key holds the seed id (e.g. "third use_0"), set by seedSurveys().
+  // Questions seeded before `key` existed have none yet — skip them here,
+  // they'll pick up a key next time the survey seed runs.
+  const questionIdByKey = new Map<string, string>();
   for (const survey of surveys) {
     for (const question of survey.questions) {
-      const ids = questionIdsByText.get(question.text) ?? [];
-      ids.push(question.id);
-      questionIdsByText.set(question.text, ids);
+      if (question.key) {
+        questionIdByKey.set(question.key, question.id);
+      }
     }
   }
 
   // The survey seed recreates questions on every run, so translations of
   // questions that no longer exist would linger.
-  const liveQuestionIds = [...questionIdsByText.values()].flat();
+  const liveQuestionIds = [...questionIdByKey.values()];
   if (!dryRun && liveQuestionIds.length > 0) {
     await prisma.entityTranslation.deleteMany({
       where: { entityType: 'Question', entityId: { notIn: liveQuestionIds } },
@@ -152,24 +154,16 @@ export async function seedSurveyTranslations(
       }
     }
 
-    for (const [englishText, translation] of Object.entries(file.questions)) {
-      const questionIds = questionIdsByText.get(englishText);
-      if (!questionIds) {
-        report.unknownQuestions.push(`${locale}/${englishText}`);
+    for (const [questionKey, translation] of Object.entries(file.questions)) {
+      const questionId = questionIdByKey.get(questionKey);
+      if (!questionId) {
+        report.unknownQuestions.push(`${locale}/${questionKey}`);
         continue;
       }
       if (!translation.trim()) {
         continue;
       }
-      for (const questionId of questionIds) {
-        await upsert(
-          'Question',
-          questionId,
-          locale,
-          'text',
-          translation.trim(),
-        );
-      }
+      await upsert('Question', questionId, locale, 'text', translation.trim());
     }
 
     for (const survey of surveys) {
@@ -177,9 +171,9 @@ export async function seedSurveyTranslations(
         report.missingTranslations.push(`${locale}/Survey/${survey.title}`);
       }
     }
-    for (const text of questionIdsByText.keys()) {
-      if (!file.questions[text]) {
-        report.missingTranslations.push(`${locale}/Question/${text}`);
+    for (const key of questionIdByKey.keys()) {
+      if (!file.questions[key]) {
+        report.missingTranslations.push(`${locale}/Question/${key}`);
       }
     }
   }

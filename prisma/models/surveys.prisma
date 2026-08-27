@@ -16,10 +16,11 @@ model Survey {
 }
 
 model Question {
-  id    String @id @default(uuid())
+  id    String  @id @default(uuid())
+  key   String? @unique // stable seed id (e.g. "third use_0"), used to match translations
   text  String
-  type  String // e.g., "likert"
-  order Int    // Order of question in survey
+  type  String  // e.g., "likert"
+  order Int     // Order of question in survey
 
   surveyId String
   survey   Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
