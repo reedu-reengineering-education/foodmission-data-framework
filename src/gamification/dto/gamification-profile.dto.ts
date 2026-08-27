@@ -150,3 +150,48 @@ export class GamificationProfileResponseDto {
   @ApiProperty({ type: [WalletEntryDto] })
   recentWalletEntries!: WalletEntryDto[];
 }
+
+export class WalletBalanceDto {
+  @ApiProperty({ description: 'Current XP balance' })
+  xp!: number;
+
+  @ApiProperty({ description: 'Current points balance' })
+  points!: number;
+
+  @ApiProperty({ description: 'When wallet was last updated' })
+  updatedAt!: Date;
+}
+
+export class EarnedRewardDto {
+  @ApiProperty({ description: 'Unique ID of earned reward' })
+  id!: string;
+
+  @ApiProperty({ description: 'The reward that was earned' })
+  reward!: {
+    id: string;
+    name: string;
+    points?: number | null;
+    xp?: number | null;
+    badgeId?: string | null;
+    avatarItem?: string | null;
+    petItem?: string | null;
+    collectible?: string | null;
+  };
+
+  @ApiPropertyOptional({ enum: ['MISSION', 'CHALLENGE', 'QUEST', 'QUIZ'] })
+  sourceType?: string | null;
+
+  @ApiPropertyOptional({ description: 'ID of the mission/challenge/quest/quiz' })
+  sourceId?: string | null;
+
+  @ApiProperty({ description: 'When the reward was earned' })
+  earnedAt!: Date;
+}
+
+export class UserEarnedRewardsDto {
+  @ApiProperty({ type: [EarnedRewardDto] })
+  earnedRewards!: EarnedRewardDto[];
+
+  @ApiProperty({ type: WalletBalanceDto })
+  wallet!: WalletBalanceDto;
+}
