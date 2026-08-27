@@ -8,6 +8,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 describe('MissionsController', () => {
   let controller: MissionsController;
   let service: MissionsService;
+  let progressService: MissionProgressService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,6 +43,9 @@ describe('MissionsController', () => {
 
     controller = module.get<MissionsController>(MissionsController);
     service = module.get<MissionsService>(MissionsService);
+    progressService = module.get<MissionProgressService>(
+      MissionProgressService,
+    );
   });
 
   it('should be defined', () => {
@@ -92,10 +96,13 @@ describe('MissionsController', () => {
         },
         'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
-        isAdmin: false,
-        userId: 'u1',
-      });
+      expect(service.getAllMissions).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: false,
+          userId: 'u1',
+        },
+      );
     });
 
     it('should pass isAdmin=true for Keycloak admin role', async () => {
@@ -111,10 +118,60 @@ describe('MissionsController', () => {
         },
         'u1',
       );
-      expect(service.getAllMissions).toHaveBeenCalledWith({}, {
-        isAdmin: true,
-        userId: 'u1',
-      });
+      expect(service.getAllMissions).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: true,
+          userId: 'u1',
+        },
+      );
+    });
+  });
+
+  describe('getMissionByCode', () => {
+    it('should call service.getMissionById with the code', async () => {
+      const mockResult = { id: 'm1', code: 'M.A1.1' };
+      (service.getMissionById as jest.Mock).mockResolvedValue(mockResult);
+      const result = await controller.getMissionByCode('M.A1.1', {});
+      expect(service.getMissionById).toHaveBeenCalledWith('M.A1.1', undefined);
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('getProgressByCode', () => {
+    it('should call progressService.getMissionById with the code', async () => {
+      const mockResult = { missionId: 'm1', progress: 10 };
+      (progressService.getMissionById as jest.Mock).mockResolvedValue(
+        mockResult,
+      );
+      const result = await controller.getProgressByCode('M.A1.1', 'u1', {});
+      expect(progressService.getMissionById).toHaveBeenCalledWith(
+        'M.A1.1',
+        'u1',
+        undefined,
+      );
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('updateProgressByCode', () => {
+    it('should call progressService.update with the code', async () => {
+      const mockResult = { missionId: 'm1', progress: 10 };
+      (progressService.update as jest.Mock).mockResolvedValue(mockResult);
+      const dto = { progress: 10 };
+      const result = await controller.updateProgressByCode(
+        'M.A1.1',
+        dto,
+        'u1',
+        {},
+      );
+      expect(progressService.update).toHaveBeenCalledWith(
+        'M.A1.1',
+        dto,
+        'u1',
+        undefined,
+      );
+      expect(result).toBe(mockResult);
     });
   });
 

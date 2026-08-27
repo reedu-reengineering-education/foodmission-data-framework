@@ -3,6 +3,7 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { TranslationsModule } from '../translations/translations.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { EventsModule } from '../events/events.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { LearningService } from './services/learning.service';
 import { LearningTranslationHelper } from './services/learning-translation.helper';
@@ -14,6 +15,7 @@ import { MicroLearningsController } from './controllers/micro-learnings.controll
 
 @Module({
   imports: [DatabaseModule, CommonModule, TranslationsModule, GamificationModule],
+  imports: [DatabaseModule, CommonModule, TranslationsModule, EventsModule],
   controllers: [
     DimensionsController,
     FoodFactsController,
@@ -21,11 +23,7 @@ import { MicroLearningsController } from './controllers/micro-learnings.controll
     QuestsController,
     MicroLearningsController,
   ],
-  providers: [
-    LearningService,
-    LearningTranslationHelper,
-    UsersRepository,
-  ],
+  providers: [LearningService, LearningTranslationHelper, UsersRepository],
   exports: [LearningService],
 })
 export class LearningModule {}

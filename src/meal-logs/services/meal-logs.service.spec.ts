@@ -9,9 +9,12 @@ import {
   ResourceAlreadyExistsException,
   ResourceNotFoundException,
 } from '../../common/exceptions/business.exception';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('MealLogsService', () => {
   let service: MealLogsService;
+  let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   const userId = 'user-1';
 
   const mockMealLogRepository = {
@@ -27,11 +30,16 @@ describe('MealLogsService', () => {
   };
 
   beforeEach(async () => {
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MealLogsService,
         { provide: MealLogsRepository, useValue: mockMealLogRepository },
         { provide: MealsRepository, useValue: mockMealRepository },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -48,6 +56,7 @@ describe('MealLogsService', () => {
     await expect(
       service.create({ mealId: 'm1', typeOfMeal: TypeOfMeal.LUNCH }, userId),
     ).rejects.toThrow(NotFoundException);
+    expect(userEventService.record).not.toHaveBeenCalled();
   });
 
   it('should enforce ownership on create', async () => {
@@ -91,6 +100,21 @@ describe('MealLogsService', () => {
         typeOfMeal: TypeOfMeal.LUNCH,
       }),
     );
+    expect(userEventService.record).toHaveBeenCalledWith({
+      userId,
+      eventType: EventType.MEAL_LOGGED,
+      source: EventSource.MEAL_LOG,
+      metadata: {
+        mealLogId: 'm1',
+        mealId: 'm1',
+        source: EventSource.API,
+        body: {
+          mealId: 'm1',
+          typeOfMeal: TypeOfMeal.LUNCH,
+        },
+      },
+      idempotencyKey: 'meal-logged:m1',
+    });
   });
 
   it('should forbid delete when owner differs', async () => {

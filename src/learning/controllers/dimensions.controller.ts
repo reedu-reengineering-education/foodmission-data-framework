@@ -32,6 +32,24 @@ export class DimensionsController {
     return this.learningService.listDimensions(query);
   }
 
+  @Get('by-code/:code')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get a dimension by code' })
+  @ApiParam({
+    name: 'code',
+    description: 'Dimension code (e.g. DIET_CHANGES)',
+    example: 'DIET_CHANGES',
+  })
+  @ApiResponse({ status: 200, type: DimensionResponseDto })
+  @ApiCrudErrorResponses()
+  async getByCode(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<DimensionResponseDto> {
+    return this.learningService.getDimension(code, query);
+  }
+
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

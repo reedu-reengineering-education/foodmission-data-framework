@@ -10,6 +10,8 @@ import { FoodWasteRepository } from '../repositories/food-waste.repository';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
 import { FoodProductRepository } from '../../food-products/repositories/food-product.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { EventSource, EventType } from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 import {
   TEST_FOOD_WASTE,
   TEST_FOOD_WASTE_2,
@@ -25,6 +27,7 @@ describe('FoodWasteService', () => {
   let pantryItemRepository: jest.Mocked<PantryItemRepository>;
   let foodProductRepository: jest.Mocked<FoodProductRepository>;
   let prismaService: { $transaction: jest.Mock };
+  let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
 
   const mockFoodWaste = { ...TEST_FOOD_WASTE };
   const mockFood: any = { ...TEST_FOOD };
@@ -67,6 +70,13 @@ describe('FoodWasteService', () => {
   };
 
   beforeEach(async () => {
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
+    mockPrismaService.$transaction.mockImplementation(
+      async (callback) => await callback({}),
+    );
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FoodWasteService,
@@ -86,6 +96,7 @@ describe('FoodWasteService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+        { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
 
@@ -121,6 +132,26 @@ describe('FoodWasteService', () => {
         TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
       );
       expect(foodWasteRepository.create).toHaveBeenCalled();
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId,
+          eventType: EventType.FOOD_WASTE_LOGGED,
+          source: EventSource.FOOD_WASTE,
+          metadata: expect.objectContaining({
+            foodWasteId: mockFoodWaste.id,
+            pantryItemId: TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
+            source: EventSource.API,
+            isBatchWaste: false,
+            body: expect.objectContaining({
+              pantryItemId: TEST_CREATE_FOOD_WASTE_DTO.pantryItemId,
+              wasteReason: WasteReason.EXPIRED,
+              detectionMethod: DetectionMethod.MANUAL,
+            }),
+          }),
+          idempotencyKey: `food-waste-logged:${mockFoodWaste.id}`,
+        }),
+        expect.anything(),
+      );
     });
 
     it('should throw NotFoundException if pantry item does not exist', async () => {
@@ -613,12 +644,23 @@ describe('FoodWasteService', () => {
       foodWasteRepository.create.mockResolvedValue(mockFoodWaste);
       pantryItemRepository.delete.mockResolvedValue(undefined);
       foodProductRepository.findById.mockResolvedValue(mockFood);
+      prismaService.$transaction.mockImplementation(
+        async (callback) => await callback({}),
+      );
 
       const result = await service.batchCreateFromExpired(batchDto, 'user-1');
 
       expect(result).toBeDefined();
       expect(result.successCount).toBe(1);
       expect(result.errorCount).toBe(0);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.FOOD_WASTE_LOGGED,
+          metadata: expect.objectContaining({ isBatchWaste: true }),
+          idempotencyKey: `food-waste-logged:${mockFoodWaste.id}`,
+        }),
+        expect.anything(),
+      );
       expect(pantryItemRepository.delete).toHaveBeenCalledWith(
         'pantry-item-1',
         expect.any(Object),

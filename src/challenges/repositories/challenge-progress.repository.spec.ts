@@ -14,7 +14,7 @@ describe('ChallengeProgressRepository', () => {
           provide: PrismaService,
           useValue: {
             challenge: {
-              findUnique: jest.fn(),
+              findFirst: jest.fn(),
             },
             challengeProgress: {
               findUnique: jest.fn(),
@@ -36,14 +36,28 @@ describe('ChallengeProgressRepository', () => {
     expect(repository).toBeDefined();
   });
 
-  describe('findChallengeById', () => {
-    it('should call prisma.challenge.findUnique', async () => {
-      const mockReturn = { id: 'c1', title: 'Challenge' };
-      (prisma.challenge.findUnique as jest.Mock).mockResolvedValue(mockReturn);
-      const result = await repository.findChallengeById('c1');
-      expect(prisma.challenge.findUnique).toHaveBeenCalledWith({
-        where: { id: 'c1' },
-        select: { id: true, title: true },
+  describe('findChallengeByCodeOrId', () => {
+    it('should look up by id when the param is a UUID', async () => {
+      const mockReturn = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        title: 'Challenge',
+      };
+      (prisma.challenge.findFirst as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findChallengeByCodeOrId(
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
+      expect(prisma.challenge.findFirst).toHaveBeenCalledWith({
+        where: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      });
+      expect(result).toBe(mockReturn);
+    });
+
+    it('should look up by code otherwise', async () => {
+      const mockReturn = { id: 'c1', code: 'CH.A1.1', title: 'Challenge' };
+      (prisma.challenge.findFirst as jest.Mock).mockResolvedValue(mockReturn);
+      const result = await repository.findChallengeByCodeOrId('CH.A1.1');
+      expect(prisma.challenge.findFirst).toHaveBeenCalledWith({
+        where: { code: 'CH.A1.1' },
       });
       expect(result).toBe(mockReturn);
     });

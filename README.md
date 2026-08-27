@@ -317,9 +317,45 @@ npm run start:dev
 - `npm run db:studio` - Open Prisma Studio (database GUI)
 - `npm run db:seed` - Seed database with initial data
 - `npm run db:seed:prod` - Production seed (catalog data only)
-- `npm run db:translations` - Load DB translations after seed (NEVO + future sources)
+- `npm run db:translations` - Load DB translations after seed (NEVO + surveys)
+- `npm run i18n:workbook:export` - Export all translations to one partner .xlsx
+- `npm run i18n:workbook:import` - Import a partner .xlsx back into the sources
 - `npm run db:backup` - Create database backup
 - `npm run db:restore` - Restore database from backup
+
+#### Translations (partner handoff)
+
+One workbook holds every translatable string: an `en` column plus one column
+per target locale, grouped into a sheet per content category.
+
+| Sheets | Content | Source file |
+| --- | --- | --- |
+| `ui-catalog`, `ui-common`, `ui-surveys` | App/API strings | `src/i18n/<locale>/<namespace>.json` |
+| `survey-meta`, `survey-questions` | Survey titles/descriptions, question texts | `prisma/seeds/data/surveys/translations/<locale>.json` |
+| `catalog-dimensions`, `catalog-topics`, `catalog-food-facts`, `catalog-quizzes`, `catalog-missions`, `catalog-challenges`, `catalog-quests`, `catalog-micro-learnings` | Learning catalog content | `prisma/seeds/data/learning/translations/<locale>.json` |
+| `food-groups`, `food-names` | NEVO food data | `prisma/seeds/data/nevo/nevo_translations.csv` |
+
+```bash
+# Create translations/foodmission-translations.xlsx from the current sources
+npm run i18n:workbook:export
+
+# Only rows still missing a translation, e.g. for one partner
+npm run i18n:workbook:export -- --locales de --missing-only --out translations/de.xlsx
+
+# Check a returned file without writing anything
+npm run i18n:workbook:import -- --file translations/de.xlsx --dry-run
+
+# Write the edits back into the source files
+npm run i18n:workbook:import -- --file translations/de.xlsx
+```
+
+The importer writes back into the source files listed above. Commit the changed
+files — `ui-*` ships with the build, everything else is loaded into
+`entity_translations` on the next deployment via `npm run db:translations`.
+
+Rows are matched by the `key` column (business codes such as `M.A1.1::goal` or
+`Q1.1.1::options::B`), empty cells keep the current value, and translations that
+drop a `{{placeholder}}` are rejected (exit code 1).
 
 #### Testing
 

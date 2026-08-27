@@ -4,6 +4,11 @@ import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.d
 import { overlayTitles } from '../../learning/utils/overlay-titles';
 import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
+import { EventSource, EventType } from '../../events/event-types';
+import {
+  RecordUserEventInput,
+  UserEventService,
+} from '../../events/services/user-event.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -23,25 +28,22 @@ export class MissionProgressService {
   constructor(
     private readonly missionProgressRepository: MissionProgressRepository,
     private readonly translationService: TranslationService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async getMissionById(
-    missionId: string,
+    codeOrId: string,
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Getting mission ${missionId} for user: ${userId}`);
+    this.logger.log(`Getting mission ${codeOrId} for user: ${userId}`);
 
-    const mission =
-      await this.missionProgressRepository.findMissionById(missionId);
-    if (!mission) {
-      throw new NotFoundException('Mission not found');
-    }
+    const mission = await this.requireMission(codeOrId);
 
     const progress =
       await this.missionProgressRepository.findByUserIdAndMissionId(
         userId,
-        missionId,
+        mission.id,
       );
 
     if (!progress) {
@@ -87,26 +89,102 @@ export class MissionProgressService {
   }
 
   async update(
-    missionId: string,
+    codeOrId: string,
     updateDto: UpdateMissionProgressDto,
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Updating mission ${missionId} for user: ${userId}`);
+    this.logger.log(`Updating mission ${codeOrId} for user: ${userId}`);
 
-    const mission =
-      await this.missionProgressRepository.findMissionById(missionId);
-    if (!mission) {
-      throw new NotFoundException('Mission not found');
-    }
+    const mission = await this.requireMission(codeOrId);
+
+    const previous =
+      await this.missionProgressRepository.findByUserIdAndMissionId(
+        userId,
+        mission.id,
+      );
 
     const updated = await this.missionProgressRepository.upsert(
       userId,
-      missionId,
+      mission.id,
       updateDto,
     );
 
+    const wasIdle =
+      previous == null || (previous.progress === 0 && !previous.completed);
+    const isActive = updated.progress > 0 || updated.completed;
+    const metadata = {
+      missionId: mission.id,
+      missionCode: mission.code,
+      source: EventSource.API,
+      body: {
+        ...(updateDto.progress !== undefined
+          ? { progress: updateDto.progress }
+          : {}),
+        ...(updateDto.completed !== undefined
+          ? { completed: updateDto.completed }
+          : {}),
+      },
+    };
+
+    if (wasIdle && isActive) {
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.MISSION_STARTED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-started:${userId}:${mission.id}`,
+      });
+    } else if (
+      previous != null &&
+      (previous.progress !== updated.progress ||
+        previous.completed !== updated.completed)
+    ) {
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.MISSION_UPDATED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-updated:${userId}:${mission.id}:${updated.progress}:${updated.completed}`,
+      });
+    }
+
+    if (updated.completed && !previous?.completed) {
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.MISSION_COMPLETED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: `mission-completed:${userId}:${mission.id}`,
+      });
+    }
+
     return this.mapRowsToDtos([updated], lang).then((rows) => rows[0]);
+  }
+
+  /**
+   * Best-effort progress event emission. Progress is already persisted by the
+   * time this runs — a failure here must not surface as an update failure
+   * (the caller would see an error for a write that actually succeeded).
+   */
+  private async emitProgressEvent(input: RecordUserEventInput): Promise<void> {
+    try {
+      await this.userEventService.record(input);
+    } catch (error) {
+      this.logger.error(
+        `Failed to record ${input.eventType} for user ${input.userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
+  }
+
+  private async requireMission(codeOrId: string) {
+    const mission =
+      await this.missionProgressRepository.findMissionByCodeOrId(codeOrId);
+    if (!mission) {
+      throw new NotFoundException('Mission not found');
+    }
+    return mission;
   }
 
   private async mapRowsToDtos(

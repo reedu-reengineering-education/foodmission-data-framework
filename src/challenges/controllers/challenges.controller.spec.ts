@@ -8,6 +8,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 describe('ChallengesController', () => {
   let controller: ChallengesController;
   let service: ChallengesService;
+  let progressService: ChallengeProgressService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,6 +43,9 @@ describe('ChallengesController', () => {
 
     controller = module.get<ChallengesController>(ChallengesController);
     service = module.get<ChallengesService>(ChallengesService);
+    progressService = module.get<ChallengeProgressService>(
+      ChallengeProgressService,
+    );
   });
 
   it('should be defined', () => {
@@ -83,10 +87,13 @@ describe('ChallengesController', () => {
         },
         'u1',
       );
-      expect(service.getAll).toHaveBeenCalledWith({}, {
-        isAdmin: false,
-        userId: 'u1',
-      });
+      expect(service.getAll).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: false,
+          userId: 'u1',
+        },
+      );
       expect(result).toBe(mockResult);
     });
 
@@ -103,10 +110,13 @@ describe('ChallengesController', () => {
         },
         'u1',
       );
-      expect(service.getAll).toHaveBeenCalledWith({}, {
-        isAdmin: true,
-        userId: 'u1',
-      });
+      expect(service.getAll).toHaveBeenCalledWith(
+        {},
+        {
+          isAdmin: true,
+          userId: 'u1',
+        },
+      );
     });
   });
 
@@ -116,6 +126,56 @@ describe('ChallengesController', () => {
       (service.getChallengeById as jest.Mock).mockResolvedValue(mockResult);
       const result = await controller.getChallengeById('c1', {});
       expect(service.getChallengeById).toHaveBeenCalledWith('c1', undefined);
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('getChallengeByCode', () => {
+    it('should call service.getChallengeById with the code', async () => {
+      const mockResult = { id: 'c1', code: 'CH.A1.1' };
+      (service.getChallengeById as jest.Mock).mockResolvedValue(mockResult);
+      const result = await controller.getChallengeByCode('CH.A1.1', {});
+      expect(service.getChallengeById).toHaveBeenCalledWith(
+        'CH.A1.1',
+        undefined,
+      );
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('getProgressByCode', () => {
+    it('should call progressService.getChallengeById with the code', async () => {
+      const mockResult = { challengeId: 'c1', progress: 10 };
+      (progressService.getChallengeById as jest.Mock).mockResolvedValue(
+        mockResult,
+      );
+      const result = await controller.getProgressByCode('CH.A1.1', 'u1', {});
+      expect(progressService.getChallengeById).toHaveBeenCalledWith(
+        'CH.A1.1',
+        'u1',
+        undefined,
+      );
+      expect(result).toBe(mockResult);
+    });
+  });
+
+  describe('updateProgressByCode', () => {
+    it('should call progressService.update with the code', async () => {
+      const mockResult = { challengeId: 'c1', progress: 10 };
+      (progressService.update as jest.Mock).mockResolvedValue(mockResult);
+      const dto = { progress: 10 };
+      const result = await controller.updateProgressByCode(
+        'CH.A1.1',
+        dto,
+        'u1',
+        {},
+      );
+      expect(progressService.update).toHaveBeenCalledWith(
+        'CH.A1.1',
+        dto,
+        'u1',
+        undefined,
+      );
       expect(result).toBe(mockResult);
     });
   });
