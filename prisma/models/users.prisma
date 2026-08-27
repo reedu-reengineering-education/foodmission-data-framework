@@ -143,6 +143,7 @@ model User {
   currentQuest       Quest?                  @relation("UserCurrentQuest", fields: [currentQuestId], references: [id], onDelete: SetNull)
   groupMemberships   GroupMembership[]
   gamificationWallet UserGamificationWallet?
+  earnedBadges       UserEarnedBadge[]
   progressIndicators ProgressIndicator[]     @relation("UserProgressIndicators")
   userEvents         UserEvent[]             @relation("UserEvents")
   walletEntries      WalletEntry[]

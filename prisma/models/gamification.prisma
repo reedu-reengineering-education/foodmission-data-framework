@@ -365,7 +365,8 @@ model Badge {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  rewards Reward[]
+  rewards      Reward[]
+  earnedByUsers UserEarnedBadge[]
 
   @@map("badges")
 }
@@ -390,6 +391,7 @@ model Reward {
   quests        Quest[]       @relation("QuestReward")
   quizzes       Quiz[]        @relation("QuizReward")
   walletEntries WalletEntry[]
+  earnedBadges  UserEarnedBadge[]
 
   @@map("rewards")
 }
@@ -398,13 +400,32 @@ model UserGamificationWallet {
   userId    String   @id
   xp        Int      @default(0)
   points    Int      @default(0)
-  // [{ rewardId, badgeId, sourceType, sourceId, earnedAt }]
-  badges    Json     @default("[]")
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  earnedBadges UserEarnedBadge[]
 
   @@map("user_gamification_wallets")
+}
+
+model UserEarnedBadge {
+  id         String            @id @default(uuid())
+  userId     String
+  badgeId    String
+  rewardId   String?
+  sourceType RewardSourceType?
+  sourceId   String?
+  earnedAt   DateTime          @default(now())
+
+  user                    User                   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_earned_badges_userId_user_fkey")
+  userGamificationWallet  UserGamificationWallet @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "user_earned_badges_userId_wallet_fkey")
+  badge                   Badge                  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  reward                  Reward?                @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@map("user_earned_badges")
 }
 
 /// Append-only history of wallet balance changes (XP / points).
