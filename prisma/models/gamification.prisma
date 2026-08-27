@@ -37,6 +37,7 @@ enum RewardSourceType {
   CHALLENGE
   QUEST
   QUIZ
+  FOOD_FACT
 }
 
 enum ContentLevel {
@@ -153,15 +154,37 @@ model FoodFact {
   foodChoice Boolean      @default(false)
   foodWaste  Boolean      @default(false)
   available  Boolean      @default(true)
+  rewardId   String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
 
   // Relations
-  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  reward   Reward?             @relation("FoodFactReward", fields: [rewardId], references: [id], onDelete: SetNull)
+  progress FoodFactProgress[]
 
   @@index([topicId])
   @@index([level])
+  @@index([rewardId])
   @@map("food_facts")
+}
+
+model FoodFactProgress {
+  id         String    @id @default(uuid())
+  userId     String
+  foodFactId String
+  readAt     DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodFact FoodFact @relation(fields: [foodFactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, foodFactId])
+  @@index([userId])
+  @@index([foodFactId])
+  @@map("food_fact_progress")
 }
 
 model Quiz {
@@ -390,6 +413,7 @@ model Reward {
   challenges    Challenge[]   @relation("ChallengeReward")
   quests        Quest[]       @relation("QuestReward")
   quizzes       Quiz[]        @relation("QuizReward")
+  foodFacts     FoodFact[]    @relation("FoodFactReward")
   walletEntries WalletEntry[]
   earnedBadges  UserEarnedBadge[]
 

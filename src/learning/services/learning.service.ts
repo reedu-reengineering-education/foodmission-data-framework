@@ -32,6 +32,10 @@ import {
   QuizRewardDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
+import {
+  FoodFactProgressResponseDto,
+  FoodFactRewardDto,
+} from '../dto/food-fact-progress.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
@@ -164,6 +168,80 @@ export class LearningService {
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
     return mapped;
+  }
+
+  async markFoodFactRead(
+    userId: string,
+    codeOrId: string,
+    lang?: string,
+  ): Promise<FoodFactProgressResponseDto> {
+    const foodFact = await this.prisma.foodFact.findFirst({
+      where: { ...codeOrIdWhere(codeOrId), available: true },
+      include: { reward: true },
+    });
+    if (!foodFact) {
+      throw new NotFoundException('Food fact not found');
+    }
+
+    const existing = await this.prisma.foodFactProgress.findUnique({
+      where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+    });
+
+    const now = new Date();
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const record = await tx.foodFactProgress.upsert({
+        where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+        create: { userId, foodFactId: foodFact.id, readAt: now },
+        update: { readAt: now },
+      });
+
+      if (existing == null) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.LEARNING_FACT_READ,
+            source: EventSource.LEARNING,
+            metadata: {
+              foodFactId: foodFact.id,
+              foodFactCode: foodFact.code,
+              source: EventSource.API,
+            },
+            idempotencyKey: `food-fact-read:${userId}:${foodFact.id}`,
+          },
+          tx,
+        );
+      }
+
+      return record;
+    });
+
+    let earnedReward: FoodFactRewardDto | null = null;
+    if (!existing && foodFact.reward) {
+      const { reward } = foodFact;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.FOOD_FACT,
+        sourceId: foodFact.id,
+        reason: `Food fact ${foodFact.code} read`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
+      }
+      if (reward.points) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    return {
+      id: progress.id,
+      userId: progress.userId,
+      foodFactId: progress.foodFactId,
+      foodFactCode: foodFact.code,
+      readAt: progress.readAt,
+      reward: earnedReward,
+    };
   }
 
   private async mapFoodFacts(
