@@ -14,8 +14,13 @@ import { QuestsController } from './controllers/quests.controller';
 import { MicroLearningsController } from './controllers/micro-learnings.controller';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, TranslationsModule, GamificationModule],
-  imports: [DatabaseModule, CommonModule, TranslationsModule, EventsModule],
+  imports: [
+    DatabaseModule,
+    CommonModule,
+    TranslationsModule,
+    EventsModule,
+    GamificationModule,
+  ],
   controllers: [
     DimensionsController,
     FoodFactsController,
