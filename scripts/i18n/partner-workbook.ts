@@ -393,8 +393,12 @@ const surveyMetaCategory: Category = {
  * text only once, while storage on disk stays keyed by id (see
  * survey-translations.ts for why: ids survive English wording changes,
  * plain text as a key doesn't).
+ *
+ * Each group's own first id doubles as the workbook row's `key` — stable,
+ * matches how every other sheet keys its rows by an internal id rather than
+ * the English string.
  */
-function questionIdsByText(): Map<string, string[]> {
+function questionGroups(): { key: string; text: string; ids: string[] }[] {
   const idsByText = new Map<string, string[]>();
   for (const survey of readEnglishSurveys()) {
     for (const question of survey.questions) {
@@ -406,7 +410,9 @@ function questionIdsByText(): Map<string, string[]> {
       idsByText.set(question.text, ids);
     }
   }
-  return idsByText;
+  return [...idsByText.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([text, ids]) => ({ key: ids[0], text, ids }));
 }
 
 const surveyQuestionCategory: Category = {
@@ -420,36 +426,34 @@ const surveyQuestionCategory: Category = {
     const files = new Map(
       locales.map((locale) => [locale, readSurveyTranslations(locale)]),
     );
-    const idsByText = questionIdsByText();
 
-    return [...idsByText.keys()].sort().map((text) => {
-      const [firstId] = idsByText.get(text)!;
-      return {
-        key: text,
-        en: text,
-        translations: Object.fromEntries(
-          locales.map((locale) => [
-            locale,
-            files.get(locale)!.questions[firstId] ?? '',
-          ]),
-        ),
-      };
-    });
+    return questionGroups().map(({ key, text }) => ({
+      key,
+      en: text,
+      translations: Object.fromEntries(
+        locales.map((locale) => [
+          locale,
+          files.get(locale)!.questions[key] ?? '',
+        ]),
+      ),
+    }));
   },
 
   apply(updates, dryRun, { locales, validKeys }) {
     const touched: string[] = [];
     const updatesByLocale = groupByLocale(updates);
-    const idsByText = questionIdsByText();
+    const groupByKey = new Map(
+      questionGroups().map((group) => [group.key, group]),
+    );
     const validIds = new Set(
-      [...validKeys].flatMap((text) => idsByText.get(text) ?? []),
+      [...validKeys].flatMap((key) => groupByKey.get(key)?.ids ?? []),
     );
 
     for (const locale of locales) {
       const file = readSurveyTranslations(locale);
       const localeUpdates = updatesByLocale.get(locale) ?? [];
       for (const update of localeUpdates) {
-        for (const id of idsByText.get(update.key) ?? []) {
+        for (const id of groupByKey.get(update.key)?.ids ?? []) {
           file.questions[id] = update.value;
         }
       }
