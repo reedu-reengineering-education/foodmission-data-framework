@@ -4,8 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, QuestContentType } from '@prisma/client';
+import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningTranslationHelper } from './learning-translation.helper';
@@ -28,6 +29,7 @@ import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
 import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
+  QuizRewardDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
@@ -42,6 +44,7 @@ export class LearningService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly translations: LearningTranslationHelper,
+    private readonly walletService: GamificationWalletService,
   ) {}
 
   // ── Dimensions ──────────────────────────────────────────────
@@ -307,7 +310,10 @@ export class LearningService {
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { options: { orderBy: { sortOrder: 'asc' } } },
+      include: {
+        options: { orderBy: { sortOrder: 'asc' } },
+        reward: true,
+      },
     });
     if (!quiz) {
       throw new NotFoundException('Quiz not found');
@@ -319,6 +325,12 @@ export class LearningService {
         `Quiz has no option with label '${dto.selectedLabel}'`,
       );
     }
+
+    const existing = await this.prisma.quizProgress.findUnique({
+      where: { userId_quizId: { userId, quizId: quiz.id } },
+      select: { isCorrect: true },
+    });
+    const wasAlreadyCorrect = existing?.isCorrect === true;
 
     const now = new Date();
     const progress = await this.prisma.quizProgress.upsert({
@@ -339,7 +351,27 @@ export class LearningService {
       },
     });
 
-    return this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    let earnedReward: QuizRewardDto | null = null;
+    if (option.isCorrect && !wasAlreadyCorrect && quiz.reward) {
+      const { reward } = quiz;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.QUIZ,
+        sourceId: quiz.id,
+        reason: `Quiz ${quiz.code} correct answer`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
+      }
+      if (reward.points) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    return { ...response, reward: earnedReward };
   }
 
   private async mapQuizProgressResponse(

@@ -32,6 +32,11 @@ export async function seedQuizzes(prisma: PrismaClient) {
   const topics = await prisma.topic.findMany({ select: { id: true, code: true } });
   const topicByCode = new Map(topics.map((t) => [t.code, t.id]));
 
+  const quizReward = await prisma.reward.findUnique({ where: { name: 'Standard Quiz Reward' } });
+  if (!quizReward) {
+    console.warn('   ⚠️  Standard Quiz Reward not found – run seedStandardRewards first');
+  }
+
   let seeded = 0;
   let optionsUpserted = 0;
   let skipped = 0;
@@ -61,6 +66,7 @@ export async function seedQuizzes(prisma: PrismaClient) {
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: true,
+        rewardId: quizReward?.id ?? null,
       },
       create: {
         code: row.code,
@@ -73,6 +79,7 @@ export async function seedQuizzes(prisma: PrismaClient) {
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: true,
+        rewardId: quizReward?.id ?? null,
       },
     });
 
