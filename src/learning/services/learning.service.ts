@@ -39,6 +39,7 @@ import {
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
+  QuestRewardDto,
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
@@ -47,6 +48,7 @@ import {
   EventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LearningService {
@@ -173,7 +175,6 @@ export class LearningService {
   async markFoodFactRead(
     userId: string,
     codeOrId: string,
-    lang?: string,
   ): Promise<FoodFactProgressResponseDto> {
     const foodFact = await this.prisma.foodFact.findFirst({
       where: { ...codeOrIdWhere(codeOrId), available: true },
@@ -758,10 +759,17 @@ export class LearningService {
   ): Promise<QuestProgressResponseDto> {
     const quest = await this.prisma.quest.findFirst({
       where: codeOrIdWhere(codeOrId),
+      include: { reward: true },
     });
     if (!quest) {
       throw new NotFoundException('Quest not found');
     }
+
+    const existingProgress = await this.prisma.questProgress.findUnique({
+      where: { userId_questId: { userId, questId: quest.id } },
+      select: { completed: true },
+    });
+    const wasAlreadyCompleted = existingProgress?.completed === true;
 
     const progress = await this.prisma.$transaction(async (tx) => {
       const previous = await tx.questProgress.findUnique({
@@ -840,7 +848,43 @@ export class LearningService {
       return next;
     });
 
-    return this.mapQuestProgressResponse(userId, quest, progress, lang);
+    let earnedReward: QuestRewardDto | null = null;
+    if (progress.completed && !wasAlreadyCompleted && quest.reward) {
+      const { reward } = quest;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.QUEST,
+        sourceId: quest.id,
+        reason: `Quest ${quest.code} completed`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.XP,
+          amount: reward.xp,
+        });
+      }
+      if (reward.points) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.POINTS,
+          amount: reward.points,
+        });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    const response = await this.mapQuestProgressResponse(
+      userId,
+      quest,
+      progress,
+      lang,
+    );
+    return plainToInstance(QuestProgressResponseDto, {
+      ...response,
+      reward: earnedReward,
+    });
   }
 
   private async mapQuestProgressResponse(

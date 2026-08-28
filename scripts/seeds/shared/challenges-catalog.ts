@@ -32,6 +32,15 @@ export async function seedChallengesCatalog(
   const topics = await prisma.topic.findMany({ select: { id: true, code: true } });
   const topicByCode = new Map(topics.map((t) => [t.code, t.id]));
 
+  const challengeReward = await prisma.reward.findUnique({
+    where: { name: 'Standard Challenge Reward' },
+  });
+  if (!challengeReward) {
+    console.warn(
+      '   ⚠️  Standard Challenge Reward not found – run seedStandardRewards first',
+    );
+  }
+
   const challenges: Challenge[] = [];
   let skipped = 0;
 
@@ -63,6 +72,7 @@ export async function seedChallengesCatalog(
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: row.available ?? true,
+        rewardId: challengeReward?.id ?? null,
       },
       create: {
         code: row.code,
@@ -76,6 +86,7 @@ export async function seedChallengesCatalog(
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: row.available ?? true,
+        rewardId: challengeReward?.id ?? null,
       },
     });
     challenges.push(challenge);

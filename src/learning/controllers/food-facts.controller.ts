@@ -86,8 +86,7 @@ export class FoodFactsController {
   async markAsRead(
     @Param('codeOrId') codeOrId: string,
     @CurrentUser('id') userId: string,
-    @Query() query: LearningLangQueryDto,
   ): Promise<FoodFactProgressResponseDto> {
-    return this.learningService.markFoodFactRead(userId, codeOrId, query.lang);
+    return this.learningService.markFoodFactRead(userId, codeOrId);
   }
 }
