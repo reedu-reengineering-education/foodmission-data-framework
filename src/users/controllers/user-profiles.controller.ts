@@ -24,6 +24,8 @@ import { GamificationProfileService } from '../../gamification/services/gamifica
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
+  WalletBalanceDto,
+  UserEarnedRewardsDto,
 } from '../../gamification/dto/gamification-profile.dto';
 
 @ApiTags('users')
@@ -83,6 +85,35 @@ export class UserProfilesController {
       eventsLimit: query.eventsLimit,
       walletEntriesLimit: query.walletEntriesLimit,
     });
+  }
+
+  @Get('me/wallet')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user wallet balance',
+    description: 'Returns current XP and points balance.',
+  })
+  @ApiOkResponse({ type: WalletBalanceDto })
+  async getMyWallet(
+    @CurrentUser('id') userId: string,
+  ): Promise<WalletBalanceDto> {
+    return this.gamificationProfileService.getWalletBalance(userId);
+  }
+
+  @Get('me/rewards')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user earned rewards',
+    description:
+      'Returns all earned badges/rewards with full reward details (points, XP, items, etc.) sorted by most recent.',
+  })
+  @ApiOkResponse({ type: UserEarnedRewardsDto })
+  async getMyEarnedRewards(
+    @CurrentUser('id') userId: string,
+  ): Promise<UserEarnedRewardsDto> {
+    return this.gamificationProfileService.getEarnedRewards(userId);
   }
 
   @Patch('me')

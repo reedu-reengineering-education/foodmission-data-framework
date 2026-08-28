@@ -9,6 +9,7 @@ import {
   Prisma,
   UserGamificationWallet,
   WalletEntry,
+  RewardSourceType,
 } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import {
@@ -26,6 +27,10 @@ export interface AwardWalletInput {
   /** When set, links the WalletEntry to an existing event. */
   eventId?: string | null;
   groupId?: string | null;
+  /** Links the entry to the reward that triggered this credit. */
+  rewardId?: string | null;
+  sourceType?: RewardSourceType | null;
+  sourceId?: string | null;
   /**
    * When awarding without a pre-created event, optionally create one.
    * Ignored if `eventId` is provided.
@@ -171,6 +176,9 @@ export class GamificationWalletService {
             amount: input.amount,
             balanceAfter,
             reason: input.reason,
+            rewardId: input.rewardId ?? null,
+            sourceType: input.sourceType ?? null,
+            sourceId: input.sourceId ?? null,
             eventId: event?.id ?? null,
           },
         });

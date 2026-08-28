@@ -6,6 +6,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 
 describe('LearningService', () => {
   let service: LearningService;
@@ -110,12 +111,22 @@ describe('LearningService', () => {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
 
+    const gamificationWalletService = {
+      award: jest.fn().mockResolvedValue({
+        wallet: { userId: 'u1', xp: 0, points: 0, updatedAt: new Date() },
+        entry: { id: 'we-1', balanceAfter: 0 },
+        event: null,
+        replayed: false,
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LearningService,
         { provide: PrismaService, useValue: prisma },
         { provide: LearningTranslationHelper, useValue: mockTranslations },
         { provide: UserEventService, useValue: userEventService },
+        { provide: GamificationWalletService, useValue: gamificationWalletService },
       ],
     }).compile();
 

@@ -4,8 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, QuestContentType } from '@prisma/client';
+import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningTranslationHelper } from './learning-translation.helper';
@@ -28,11 +29,17 @@ import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
 import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
+  QuizRewardDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
+import {
+  FoodFactProgressResponseDto,
+  FoodFactRewardDto,
+} from '../dto/food-fact-progress.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
+  QuestRewardDto,
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
@@ -41,12 +48,14 @@ import {
   EventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LearningService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly translations: LearningTranslationHelper,
+    private readonly walletService: GamificationWalletService,
     private readonly userEventService: UserEventService,
   ) {}
 
@@ -161,6 +170,79 @@ export class LearningService {
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
     return mapped;
+  }
+
+  async markFoodFactRead(
+    userId: string,
+    codeOrId: string,
+  ): Promise<FoodFactProgressResponseDto> {
+    const foodFact = await this.prisma.foodFact.findFirst({
+      where: { ...codeOrIdWhere(codeOrId), available: true },
+      include: { reward: true },
+    });
+    if (!foodFact) {
+      throw new NotFoundException('Food fact not found');
+    }
+
+    const existing = await this.prisma.foodFactProgress.findUnique({
+      where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+    });
+
+    const now = new Date();
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const record = await tx.foodFactProgress.upsert({
+        where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+        create: { userId, foodFactId: foodFact.id, readAt: now },
+        update: { readAt: now },
+      });
+
+      if (existing == null) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.LEARNING_FACT_READ,
+            source: EventSource.LEARNING,
+            metadata: {
+              foodFactId: foodFact.id,
+              foodFactCode: foodFact.code,
+              source: EventSource.API,
+            },
+            idempotencyKey: `food-fact-read:${userId}:${foodFact.id}`,
+          },
+          tx,
+        );
+      }
+
+      return record;
+    });
+
+    let earnedReward: FoodFactRewardDto | null = null;
+    if (!existing && foodFact.reward) {
+      const { reward } = foodFact;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.FOOD_FACT,
+        sourceId: foodFact.id,
+        reason: `Food fact ${foodFact.code} read`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
+      }
+      if (reward.points) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    return {
+      id: progress.id,
+      userId: progress.userId,
+      foodFactId: progress.foodFactId,
+      foodFactCode: foodFact.code,
+      readAt: progress.readAt,
+      reward: earnedReward,
+    };
   }
 
   private async mapFoodFacts(
@@ -313,7 +395,10 @@ export class LearningService {
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { options: { orderBy: { sortOrder: 'asc' } } },
+      include: {
+        options: { orderBy: { sortOrder: 'asc' } },
+        reward: true,
+      },
     });
     if (!quiz) {
       throw new NotFoundException('Quiz not found');
@@ -325,6 +410,12 @@ export class LearningService {
         `Quiz has no option with label '${dto.selectedLabel}'`,
       );
     }
+
+    const existing = await this.prisma.quizProgress.findUnique({
+      where: { userId_quizId: { userId, quizId: quiz.id } },
+      select: { isCorrect: true },
+    });
+    const wasAlreadyCorrect = existing?.isCorrect === true;
 
     const now = new Date();
     const progress = await this.prisma.$transaction(async (tx) => {
@@ -385,7 +476,27 @@ export class LearningService {
       return next;
     });
 
-    return this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    let earnedReward: QuizRewardDto | null = null;
+    if (option.isCorrect && !wasAlreadyCorrect && quiz.reward) {
+      const { reward } = quiz;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.QUIZ,
+        sourceId: quiz.id,
+        reason: `Quiz ${quiz.code} correct answer`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
+      }
+      if (reward.points) {
+        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    return { ...response, reward: earnedReward };
   }
 
   private async mapQuizProgressResponse(
@@ -648,10 +759,17 @@ export class LearningService {
   ): Promise<QuestProgressResponseDto> {
     const quest = await this.prisma.quest.findFirst({
       where: codeOrIdWhere(codeOrId),
+      include: { reward: true },
     });
     if (!quest) {
       throw new NotFoundException('Quest not found');
     }
+
+    const existingProgress = await this.prisma.questProgress.findUnique({
+      where: { userId_questId: { userId, questId: quest.id } },
+      select: { completed: true },
+    });
+    const wasAlreadyCompleted = existingProgress?.completed === true;
 
     const progress = await this.prisma.$transaction(async (tx) => {
       const previous = await tx.questProgress.findUnique({
@@ -730,7 +848,43 @@ export class LearningService {
       return next;
     });
 
-    return this.mapQuestProgressResponse(userId, quest, progress, lang);
+    let earnedReward: QuestRewardDto | null = null;
+    if (progress.completed && !wasAlreadyCompleted && quest.reward) {
+      const { reward } = quest;
+      const base = {
+        userId,
+        rewardId: reward.id,
+        sourceType: RewardSourceType.QUEST,
+        sourceId: quest.id,
+        reason: `Quest ${quest.code} completed`,
+      };
+      if (reward.xp) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.XP,
+          amount: reward.xp,
+        });
+      }
+      if (reward.points) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.POINTS,
+          amount: reward.points,
+        });
+      }
+      earnedReward = { xp: reward.xp, points: reward.points };
+    }
+
+    const response = await this.mapQuestProgressResponse(
+      userId,
+      quest,
+      progress,
+      lang,
+    );
+    return plainToInstance(QuestProgressResponseDto, {
+      ...response,
+      reward: earnedReward,
+    });
   }
 
   private async mapQuestProgressResponse(

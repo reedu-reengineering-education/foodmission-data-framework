@@ -1,6 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+export class QuizRewardDto {
+  @ApiPropertyOptional({ example: 15 })
+  @Expose()
+  xp?: number | null;
+
+  @ApiPropertyOptional({ example: 20 })
+  @Expose()
+  points?: number | null;
+}
 
 export class UpdateQuizProgressDto {
   @ApiProperty({
@@ -53,4 +63,9 @@ export class QuizProgressResponseDto {
   @ApiPropertyOptional({ example: '2026-08-04T12:00:00.000Z' })
   @Expose()
   answeredAt?: Date | null;
+
+  @ApiPropertyOptional({ type: QuizRewardDto, description: 'Set only when this answer first earned a reward' })
+  @Expose()
+  @Type(() => QuizRewardDto)
+  reward?: QuizRewardDto | null;
 }

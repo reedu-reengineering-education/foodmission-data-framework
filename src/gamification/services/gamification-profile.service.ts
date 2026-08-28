@@ -7,7 +7,11 @@ import {
   toWalletDto,
   toWalletEntryDto,
 } from '../gamification-profile.mapper';
-import { GamificationProfileResponseDto } from '../dto/gamification-profile.dto';
+import {
+  GamificationProfileResponseDto,
+  WalletBalanceDto,
+  UserEarnedRewardsDto,
+} from '../dto/gamification-profile.dto';
 import { BadgeService } from './badge.service';
 
 @Injectable()
@@ -60,6 +64,73 @@ export class GamificationProfileService {
       badges,
       recentEvents: user.userEvents.map(toUserEventDto),
       recentWalletEntries: user.walletEntries.map(toWalletEntryDto),
+    };
+  }
+
+  /**
+   * Get current user's wallet balance.
+   */
+  async getWalletBalance(userId: string): Promise<WalletBalanceDto> {
+    const wallet = await this.prisma.userGamificationWallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      // Return default wallet if user hasn't earned anything yet
+      return {
+        xp: 0,
+        points: 0,
+        updatedAt: new Date(),
+      };
+    }
+
+    return {
+      xp: wallet.xp,
+      points: wallet.points,
+      updatedAt: wallet.updatedAt,
+    };
+  }
+
+  /**
+   * Get user's earned rewards (badges with reward details).
+   */
+  async getEarnedRewards(
+    userId: string,
+    limit: number = 100,
+  ): Promise<UserEarnedRewardsDto> {
+    const wallet = await this.getWalletBalance(userId);
+
+    const earnedBadges = await this.prisma.userEarnedBadge.findMany({
+      where: { userId },
+      include: {
+        reward: {
+          select: {
+            id: true,
+            name: true,
+            points: true,
+            xp: true,
+            badgeId: true,
+            avatarItem: true,
+            petItem: true,
+            collectible: true,
+          },
+        },
+      },
+      orderBy: { earnedAt: 'desc' },
+      take: limit,
+    });
+
+    return {
+      earnedRewards: earnedBadges
+        .filter((eb) => eb.reward !== null)
+        .map((eb) => ({
+          id: eb.id,
+          reward: eb.reward!,
+          sourceType: eb.sourceType,
+          sourceId: eb.sourceId,
+          earnedAt: eb.earnedAt,
+        })),
+      wallet,
     };
   }
 }

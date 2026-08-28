@@ -3,6 +3,16 @@ import { Type } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { Expose } from 'class-transformer';
 
+export class QuestRewardDto {
+  @ApiPropertyOptional({ example: 15 })
+  @Expose()
+  xp?: number | null;
+
+  @ApiPropertyOptional({ example: 20 })
+  @Expose()
+  points?: number | null;
+}
+
 export class UpdateQuestProgressDto {
   @ApiPropertyOptional({ example: false })
   @IsOptional()
@@ -49,4 +59,12 @@ export class QuestProgressResponseDto {
   @ApiProperty({ example: 0 })
   @Expose()
   progress: number;
+
+  @ApiPropertyOptional({
+    type: QuestRewardDto,
+    description: 'Set only when this update first completed the quest and earned a reward',
+  })
+  @Expose()
+  @Type(() => QuestRewardDto)
+  reward?: QuestRewardDto | null;
 }
