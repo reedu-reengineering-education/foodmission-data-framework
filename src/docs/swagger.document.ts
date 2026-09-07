@@ -32,6 +32,7 @@ const HTTP_METHOD_BY_REQUEST_METHOD: Record<RequestMethod, string> = {
   [RequestMethod.PROPPATCH]: 'patch',
   [RequestMethod.LOCK]: 'post',
   [RequestMethod.UNLOCK]: 'post',
+  [RequestMethod.QUERY]: 'get',
 };
 
 function normalizePathFragments(pathMeta: unknown): string[] {
