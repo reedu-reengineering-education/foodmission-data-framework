@@ -17,7 +17,7 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
     };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
-    quiz: { findFirst: jest.Mock; findMany: jest.Mock };
+    quiz: { findFirst: jest.Mock; findMany: jest.Mock; count: jest.Mock };
     quizProgress: {
       upsert: jest.Mock;
       findUnique: jest.Mock;
@@ -78,6 +78,7 @@ describe('LearningService', () => {
       quiz: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        count: jest.fn(),
       },
       quizProgress: {
         upsert: jest.fn(),
@@ -299,6 +300,137 @@ describe('LearningService', () => {
       completed: false,
     });
     expect(result.id).toBeUndefined();
+  });
+
+  describe('getRandomQuiz', () => {
+    it('excludes completed quizzes and forwards filters and locale to the selection query', async () => {
+      const filters = {
+        level: ContentLevel.BEGINNER,
+        health: true,
+        topicCode: 'TOPIC.REDUCE_MEAT',
+        dimensionCode: 'DIM.DIET',
+      };
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.25);
+      prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'completed-1' }]);
+      prisma.quiz.count.mockResolvedValue(2);
+      prisma.quiz.findMany.mockResolvedValue([
+        {
+          id: 'quiz-2',
+          code: 'Q.B1.2',
+          topicId: 't2',
+          question: 'Which option saves more?',
+          explanation: 'Because it is lower impact',
+          source: null,
+          level: ContentLevel.BEGINNER,
+          health: true,
+          foodChoice: false,
+          foodWaste: false,
+          available: true,
+          options: [{
+            id: 'opt-1',
+            label: 'A',
+            text: 'Lower impact',
+            isCorrect: true,
+            sortOrder: 0,
+          }],
+        },
+      ]);
+
+      const result = await service.getRandomQuiz('u1', filters, 'de');
+
+      expect(prisma.quizProgress.findMany).toHaveBeenCalledWith({
+        where: { userId: 'u1', completed: true },
+        select: { quizId: true },
+      });
+      expect(prisma.quiz.count).toHaveBeenCalledWith({
+        where: {
+          available: true,
+          level: ContentLevel.BEGINNER,
+          health: true,
+          topic: {
+            code: 'TOPIC.REDUCE_MEAT',
+            dimension: { code: 'DIM.DIET' },
+          },
+          id: { notIn: ['completed-1'] },
+        },
+      });
+      expect(prisma.quiz.findMany).toHaveBeenCalledWith({
+        where: {
+          available: true,
+          level: ContentLevel.BEGINNER,
+          health: true,
+          topic: {
+            code: 'TOPIC.REDUCE_MEAT',
+            dimension: { code: 'DIM.DIET' },
+          },
+          id: { notIn: ['completed-1'] },
+        },
+        skip: 0,
+        take: 1,
+        include: { options: { orderBy: { sortOrder: 'asc' } } },
+      });
+      expect(mockTranslations.resolveLocale).toHaveBeenCalledWith('de');
+      expect(result).toMatchObject({
+        id: 'quiz-2',
+        code: 'Q.B1.2',
+        question: 'Which option saves more?',
+      });
+
+      randomSpy.mockRestore();
+    });
+
+    it('maps a selected candidate and returns null when no candidates remain', async () => {
+      const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.9);
+      prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'q1' }]);
+      prisma.quiz.count.mockResolvedValue(0);
+
+      await expect(service.getRandomQuiz('u1', { foodChoice: true }, 'fr')).resolves.toBeNull();
+      expect(prisma.quiz.findMany).not.toHaveBeenCalled();
+
+      prisma.quiz.count.mockResolvedValue(3);
+      prisma.quiz.findMany.mockResolvedValue([
+        {
+          id: 'quiz-3',
+          code: 'Q.B2.3',
+          topicId: 't3',
+          question: 'Which label is correct?',
+          explanation: 'Because it is seasonal',
+          source: null,
+          level: ContentLevel.BEGINNER,
+          health: false,
+          foodChoice: true,
+          foodWaste: false,
+          available: true,
+          options: [{
+            id: 'opt-2',
+            label: 'A',
+            text: 'Seasonal',
+            isCorrect: false,
+            sortOrder: 0,
+          }],
+        },
+      ]);
+
+      const mapped = await service.getRandomQuiz('u1', { foodChoice: true }, 'fr');
+
+      expect(mapped).toMatchObject({
+        id: 'quiz-3',
+        code: 'Q.B2.3',
+        question: 'Which label is correct?',
+      });
+      expect(prisma.quiz.findMany).toHaveBeenLastCalledWith({
+        where: {
+          available: true,
+          foodChoice: true,
+          id: { notIn: ['q1'] },
+        },
+        skip: 2,
+        take: 1,
+        include: { options: { orderBy: { sortOrder: 'asc' } } },
+      });
+
+      randomSpy.mockRestore();
+    });
   });
 
   it('creates a quest with nested items after validating content codes', async () => {
