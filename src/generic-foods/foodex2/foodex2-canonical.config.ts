@@ -58,6 +58,13 @@ export interface Foodex2CanonicalConfig {
   /** Score for a NEVO name that names no preparation state at all. */
   neutralPreparationScore: number;
   modifierRules: readonly ModifierRule[];
+  /**
+   * Root of the composite (recipe-based) branch of the MTX hierarchy: dishes,
+   * bakery wares, imitates — foods defined by a recipe rather than by what
+   * they are. A concept below it names a dish, so the ingredients its NEVO
+   * records mention are not the food itself.
+   */
+  compositeFoodRootCode: string;
   /** Penalty per hierarchy step between the NEVO term and the concept. */
   hierarchyDepthPenalty: number;
   /** Penalty per character of the NEVO name; longer names are more specific. */
@@ -106,7 +113,16 @@ export const FOODEX2_CANONICAL_CONFIG: Foodex2CanonicalConfig = {
     // Fortified and branded/compound entries are the least representative.
     { id: 'fortified', pattern: /\bfortified\b/, delta: -40 },
     { id: 'specific-variant', pattern: /\bprod\b|\bw\b|\//, delta: -25 },
+    // A record that names what was added to it describes one recipe, not the
+    // concept: "Foe jung hai filled omelet wo rice" is a poor stand-in for
+    // *Egg based dishes* next to "Omelette/scrambled eggs".
+    {
+      id: 'compound',
+      pattern: /\b(spiced|filled|stuffed|breaded|flavou?red|coated|seasoned)\b/,
+      delta: -25,
+    },
   ],
+  compositeFoodRootCode: 'A0BAG',
   hierarchyDepthPenalty: -15,
   nameLengthPenalty: -0.5,
 };

@@ -83,8 +83,11 @@ ingredients and food waste — all ingredient-shaped. Change
 `preparationRules` if the product becomes as-consumed oriented.
 
 Scoring, in order of weight: preparation state → NEVO's own generic averages
-(`av`) → penalties for fortified and compound variants → hierarchy distance →
-name length. Ties break on the lowest NEVO code, so the outcome is
+(`av`) → penalties for fortified variants, for specific ones (`prod`, `w`, `/`)
+and for records named after what was added to them (`filled`, `stuffed`,
+`spiced`, `breaded`, `coated`, `seasoned`, `flavoured`) → hierarchy distance →
+name length. That last penalty is what makes _Egg based dishes_ resolve to
+"Omelette/scrambled eggs" rather than "Foe jung hai filled omelet wo rice". Ties break on the lowest NEVO code, so the outcome is
 deterministic. The score and a human-readable `selectionReason` are stored on
 every mapping row.
 
@@ -158,10 +161,38 @@ Pass `lang` to search and it does two things:
    concept name has been translated: all 2328 NEVO records already carry German
    names from `nevo_translations.csv`.
 
+Concept names, and the NEVO records of a plain concept, are matched in **every**
+locale, not just the requested one — "Möhren" finds the carrot whatever `lang`
+says. A composite concept is the exception: there the head rule below only holds
+in the language the name was written in, so its non-canonical records are
+matched in the requested locale only.
+
+A trailing German plural `-n` is stripped from the search term before matching,
+so _Frühlingsrollen_ finds "Frühlingsrolle" and _Kartoffeln_ reaches
+"Kartoffelpüree". Only the exact-name tier compares the term as typed.
+
 Ranking puts a match on the **canonical** NEVO name (tiers 7-8) above a match
 on any other variant (tier 9). Without that split, searching _Nudeln_ surfaced
 "Meat soup" ahead of "Dried pasta", because a soup variant is called
 _Klare Suppe mit Nudeln_.
+
+Under a **composite** concept — anything below `compositeFoodRootCode`
+(`A0BAG`), the recipe-based branch holding dishes, bakery wares and imitates —
+a non-canonical record has to be _named_ after the term rather than mention it:
+the term has to start the head. A dish is named after its recipe, so a word
+further along is an ingredient, and a single "Sweet pepper stuffed w cream
+cheese" filed under _Finger food_ was enough to make `?search=Paprika` return a
+frozen rice ball. Dropping these records outright was too strict — it also lost
+_Frühlingsrolle_, _Kroketten_, _Lasagne_ and _Gulasch_, which are exactly the
+names a user types for a dish.
+
+A NEVO name is matched on its **head** only — everything up to the first comma
+or modifier word (`mit`, `with`, `w`, `wo`, `und`, `ohne`, …). NEVO names are
+head-first, so what follows is an ingredient rather than the food itself.
+Without the cut, _Omelett mit Kartoffeln, spanische Tortilla_ made
+_Egg based dishes_ answer a search for _Kartoffeln_, high up, because a concept
+collapses every NEVO record filed under it. The head still contains the food:
+_Weiße Nudeln, roh_ keeps matching _Nudeln_.
 
 All 619 concept names ship translated into every supported locale
 (`no de el es it nl pl sl`) in
@@ -203,11 +234,49 @@ workbook: one sheet per entity type, with columns `key`, `en` and one column
 per locale, so a translator sees every language for a key side by side. The
 importer also still accepts the older one-sheet-per-locale files.
 
+## Vocabulary granularity: the extended-term question
+
+The vocabulary stops at **core** terms, so an MTX term that names a food well
+can be invisible. `A040F Spring rolls` is an extended term: its two NEVO records
+roll up into `A040C Finger food`, and a search for _Frühlingsrolle_ answers
+"Fingerfood". Extended terms carry **1059 of the 2317** mapped NEVO records
+across **447** terms (221 of them hold two records or more), so this is not a
+corner case.
+
+Three shapes were measured against NEVO 2025. None is free:
+
+| Option                                    | Concepts         | What it costs                                                                                                                                          |
+| ----------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Core only (today)                         | 619              | Dish and variety names stay collapsed                                                                                                                  |
+| `conceptDetailLevels: [C, E]`             | 859 (+447, −207) | Fragments plain foods too: _Spinaches and similar-_ (7 records), _Margarines and similar_ (33) disappear into varieties                                |
+| Extended inside the composite branch only | 719 (+131, −31)  | Loses headline concepts whose records all sit on children: _Dried pasta_, _Fresh pasta_, _Pizza_, _Egg based dishes_, _Lager beer_, _Coffee beverages_ |
+
+The absorbed rows are the problem in both wider options: a core concept vanishes
+when every record beneath it moves to a child. So the recommended shape is a
+fourth one, **additive** rather than a re-levelling:
+
+1. Keep the 619 concepts exactly as they are — nothing is absorbed, no client
+   sees a food disappear.
+2. Add the 447 extended terms that carry records as a second, finer level, each
+   pointing at its core concept as parent. Canonical election runs per extended
+   term, so nutrition still comes from one NEVO record.
+3. Search returns both levels, ranked with the concept first; a client that
+   wants only the coarse vocabulary keeps `coreOnly=true`.
+
+Cost to plan for: the 447 new names are English-only, so a translation run
+(`scripts/i18n/entity-translation-handoff.ts`, 447 × 8 locales) has to land
+before they are shown in a localized UI, and the partial unique index on
+canonical mappings has to key on the new level as well.
+
 ### Known gaps
 
 - Until concept names are translated, a German user matches on German NEVO
   names but still sees English labels (`Dried pasta`). `nameEn` is always
   returned so clients can decide how to present that.
+- A food NEVO does not carry cannot be found under any name — NEVO 2025 has no
+  _Sommerrolle_ in any language, so nothing matches it. The `synonyms` column on
+  `foodex2_terms` is searched and would be the place for aliases, but MTX ships
+  none and nothing else fills it.
 - NEVO's German vocabulary does not always match everyday usage: carrots are
   `Karotte roh av`, so `Möhren` only matches an incidental variant and ranks
   low. The `synonyms` column on `foodex2_terms` exists for exactly this kind of

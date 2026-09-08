@@ -180,6 +180,17 @@ describe('scoreNevoCandidate', () => {
     expect(fortified.priority).toBeLessThan(plain.priority);
   });
 
+  it('penalises a record named after what was added to it', () => {
+    const plain = scoreNevoCandidate(
+      candidate({ nevoCode: 5321, foodName: 'Omelette/scrambled eggs' }),
+    );
+    const compound = scoreNevoCandidate(
+      candidate({ nevoCode: 473, foodName: 'Omelette filled w potatoes' }),
+    );
+    expect(compound.priority).toBeLessThan(plain.priority);
+    expect(compound.selectionReason).toContain('compound=-25');
+  });
+
   it('penalises deeper hierarchy roll-ups', () => {
     const direct = scoreNevoCandidate(
       candidate({ nevoCode: 4, foodName: 'Pasta raw', hierarchyDepth: 0 }),

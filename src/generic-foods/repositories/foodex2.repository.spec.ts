@@ -72,6 +72,58 @@ describe('Foodex2Repository', () => {
       expect(values).toContain('%pasta%');
     });
 
+    it('matches only the head of a variant name, not its ingredients', async () => {
+      await repository.search({ search: 'Kartoffeln', skip: 0, take: 20 });
+
+      const { text, values } = sqlOf(prisma.$queryRaw.mock.calls[0]);
+      // "Omelett mit Kartoffeln" must not make *Egg based dishes* a potato.
+      expect(text).toContain('regexp_replace');
+      expect(text).toContain('split_part(LOWER(');
+      expect(values).toContain(
+        String.raw`\s+(mit|met|with|w|wo|without|und|and|en|in|im|auf|op|ohne|zonder|from|van)\s.*$`,
+      );
+    });
+
+    it('needs a head-initial match on a composite concept, not a mention', async () => {
+      await repository.search({ search: 'Paprika', skip: 0, take: 20 });
+
+      const { text, values } = sqlOf(prisma.$queryRaw.mock.calls[0]);
+      // "Mit Frischkäse gefüllte Paprika" must not make *Finger food* a
+      // pepper, while "Frühlingsrolle" must still find it.
+      expect(text).toContain('WITH RECURSIVE');
+      expect(text).toContain('SELECT "code" FROM "composite_terms"');
+      expect(values).toContain('A0BAG');
+      expect(values).toContain('paprika%');
+      expect(values).toContain('%paprika%');
+      // Word order differs per language, so the head rule only holds in the
+      // locale that was asked for.
+      expect(text).toContain('gtr."locale" = ');
+    });
+
+    it('matches a plural by its stem', async () => {
+      await repository.search({ search: 'Frühlingsrollen', skip: 0, take: 20 });
+
+      const { values } = sqlOf(prisma.$queryRaw.mock.calls[0]);
+      expect(values).toContain('%frühlingsrolle%');
+      // The exact-name tier still compares the term as it was typed.
+      expect(values).toContain('frühlingsrollen');
+    });
+
+    it('leaves a short word alone when stripping a plural', async () => {
+      await repository.search({ search: 'Wein', skip: 0, take: 20 });
+
+      const { values } = sqlOf(prisma.$queryRaw.mock.calls[0]);
+      expect(values).toContain('%wein%');
+      expect(values).not.toContain('%wei%');
+    });
+
+    it('matches a concept name in any locale it is translated into', async () => {
+      await repository.search({ search: 'Kartoffeln', skip: 0, take: 20 });
+
+      const { text } = sqlOf(prisma.$queryRaw.mock.calls[0]);
+      expect(text).toContain(`ltr."entityType" = 'Foodex2Term'`);
+    });
+
     it('escapes LIKE wildcards so they are matched literally', async () => {
       await repository.search({ search: '50%', skip: 0, take: 20 });
 
