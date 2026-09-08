@@ -8,6 +8,7 @@ import { GenericFoodService } from '../../src/generic-foods/services/generic-foo
 import { Foodex2FoodService } from '../../src/generic-foods/services/foodex2-food.service';
 import { Foodex2Repository } from '../../src/generic-foods/repositories/foodex2.repository';
 import { TranslationService } from '../../src/translations/services/translation.service';
+import { FOODEX2_CANONICAL_CONFIG } from '../../src/generic-foods/foodex2/foodex2-canonical.config';
 import {
   createAuthGuardMock,
   createControllerE2eTestApp,
@@ -74,6 +75,24 @@ describe('GenericFoods endpoints (e2e)', () => {
           water: 11.2,
           proteins: 13.4,
         },
+        // Two NEVO records behind a *composite* concept: a dish is named after
+        // its recipe, so the second one mentions an ingredient it is not.
+        {
+          id: '00000000-0000-0000-0000-000000000306',
+          nevoVersion: 'NEVO-Online 2025 9.0',
+          foodGroup: 'Egg dishes',
+          nevoCode: 900007,
+          foodName: 'Omelette scrambled eggs',
+          foodex2Codes: ['A908D'],
+        },
+        {
+          id: '00000000-0000-0000-0000-000000000307',
+          nevoVersion: 'NEVO-Online 2025 9.0',
+          foodGroup: 'Egg dishes',
+          nevoCode: 900008,
+          foodName: 'Omelette w potatoes Spanish tortilla',
+          foodex2Codes: ['A908D'],
+        },
       ],
       skipDuplicates: true,
     });
@@ -127,6 +146,26 @@ describe('GenericFoods endpoints (e2e)', () => {
           parentCode: 'A907L',
           mtxVersion: 'test',
         },
+        // The composite (recipe-based) branch: concepts under it name dishes.
+        {
+          code: FOODEX2_CANONICAL_CONFIG.compositeFoodRootCode,
+          name: 'Composite food classes',
+          nameEn: 'Composite food classes',
+          detailLevel: 'H',
+          termType: 's',
+          isCore: false,
+          mtxVersion: 'test',
+        },
+        {
+          code: 'A908D',
+          name: 'Egg based dishes',
+          nameEn: 'Egg based dishes',
+          detailLevel: 'C',
+          termType: 's',
+          isCore: true,
+          parentCode: FOODEX2_CANONICAL_CONFIG.compositeFoodRootCode,
+          mtxVersion: 'test',
+        },
         // A concept with no NEVO mapping at all — must stay out of search.
         {
           code: 'A907Z',
@@ -167,6 +206,22 @@ describe('GenericFoods endpoints (e2e)', () => {
           hierarchyDepth: 1,
           isCanonical: false,
           priority: 130,
+        },
+        {
+          foodex2Code: 'A908D',
+          nevoCode: 900007,
+          sourceFoodex2Code: 'A908D',
+          hierarchyDepth: 0,
+          isCanonical: true,
+          priority: 120,
+        },
+        {
+          foodex2Code: 'A908D',
+          nevoCode: 900008,
+          sourceFoodex2Code: 'A908D',
+          hierarchyDepth: 0,
+          isCanonical: false,
+          priority: 60,
         },
       ],
       skipDuplicates: true,
@@ -538,23 +593,78 @@ describe('GenericFoods endpoints (e2e)', () => {
     },
   );
 
-  itIfDb('German search does not leak into the English locale', async () => {
+  itIfDb(
+    'finds a plain concept by a translated name in any locale',
+    async () => {
+      // A user typing German without ?lang should still find the food.
+      await prisma.entityTranslation.create({
+        data: {
+          entityType: 'GenericFood',
+          entityId: '00000000-0000-0000-0000-000000000303',
+          locale: 'de',
+          field: 'foodName',
+          value: 'Weiße Nudeln, roh',
+        },
+      });
+
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods/search?search=Nudeln')
+        .expect(200);
+
+      expect(
+        res.body.items.map((item: { foodex2Code: string }) => item.foodex2Code),
+      ).toEqual(['A907L']);
+    },
+  );
+
+  itIfDb('holds a composite concept to the requested locale', async () => {
+    // Word order differs per language, and the head rule below relies on it.
     await prisma.entityTranslation.create({
       data: {
         entityType: 'GenericFood',
-        entityId: '00000000-0000-0000-0000-000000000303',
+        entityId: '00000000-0000-0000-0000-000000000307',
         locale: 'de',
         field: 'foodName',
-        value: 'Weiße Nudeln, roh',
+        value: 'Kartoffelomelett, spanische Tortilla',
       },
     });
 
-    const res = await request(app.getHttpServer())
-      .get('/generic-foods/search?search=Nudeln')
+    const german = await request(app.getHttpServer())
+      .get('/generic-foods/search?search=Kartoffelomelett&lang=de')
       .expect(200);
+    expect(
+      german.body.items.map(
+        (item: { foodex2Code: string }) => item.foodex2Code,
+      ),
+    ).toEqual(['A908D']);
 
-    expect(res.body.items).toEqual([]);
+    const english = await request(app.getHttpServer())
+      .get('/generic-foods/search?search=Kartoffelomelett')
+      .expect(200);
+    expect(english.body.items).toEqual([]);
   });
+
+  itIfDb(
+    'never answers a composite concept with an ingredient it mentions',
+    async () => {
+      // "Omelett mit Kartoffeln" is filed under egg dishes; it is not a potato.
+      await prisma.entityTranslation.create({
+        data: {
+          entityType: 'GenericFood',
+          entityId: '00000000-0000-0000-0000-000000000307',
+          locale: 'de',
+          field: 'foodName',
+          value: 'Omelett mit Kartoffeln, spanische Tortilla',
+        },
+      });
+
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods/search?search=Kartoffeln&lang=de')
+        .expect(200);
+
+      expect(res.body.items).toEqual([]);
+    },
+  );
 
   itIfDb('DELETE /generic-foods/:id deletes one', async () => {
     await request(app.getHttpServer())
