@@ -16,7 +16,7 @@ import {
   resolveTargetLocales,
   runScript,
   writeReportFile,
-  writeSpreadsheet,
+  writeEntityWorkbook,
 } from './entity-translation-handoff';
 
 function parseEntityTypes(
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
       genericFoodFields,
     });
 
-    await writeSpreadsheet(sheets, out, format);
+    await writeEntityWorkbook(sheets, locales, out, format);
 
     const reportPath = `${out}.report.json`;
     writeReportFile(reportPath, report);

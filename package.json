@@ -50,6 +50,7 @@
     "db:generate": "prisma generate && npm run db:generate:off",
     "db:generate:off": "prisma generate --schema=prisma-mongo/schema.prisma",
     "off:dump-sample": "./scripts/dump-off-sample.sh",
+    "foodex2:extract": "ts-node scripts/foodex2/extract-mtx.ts",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",

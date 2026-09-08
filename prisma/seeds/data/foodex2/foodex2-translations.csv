@@ -1,0 +1,620 @@
+code,en,no,de,el,es,it,nl,pl,sl
+A000Y,Common millet and similar-,Hirse og lignende,Rispenhirse und ähnliche,Κεχρί και παρόμοια,Mijo común y similares,Miglio comune e simili,Pluimgierst en soortgelijke,Proso zwyczajne i podobne,Navadno proso in podobno
+A001C,Rice and similar-,Ris og lignende,Reis und ähnliche,Ρύζι και παρόμοια,Arroz y similares,Riso e simili,Rijst en soortgelijke,Ryż i podobne,Riž in podobno
+A002G,Buckwheat flour,Bokhvetemel,Buchweizenmehl,Αλεύρι φαγόπυρου,Harina de trigo sarraceno,Farina di grano saraceno,Boekweitmeel,Mąka gryczana,Ajdova moka
+A002H,Buckwheat groats,Bokhvetegryn,Buchweizengrütze,Πλιγούρι φαγόπυρου,Sémola de trigo sarraceno,Semola di grano saraceno,Boekweitgort,Kasza gryczana,Ajdova kaša
+A002R,Maize starch,Maisstivelse,Maisstärke,Άμυλο καλαμποκιού,Almidón de maíz,Amido di mais,Maïszetmeel,Skrobia kukurydziana,Koruzni škrob
+A002Y,Oat flour,Havremel,Hafermehl,Αλεύρι βρώμης,Harina de avena,Farina di avena,Havermeel,Mąka owsiana,Ovsena moka
+A003B,Oat bran,Havrekli,Haferkleie,Πίτουρο βρώμης,Salvado de avena,Crusca di avena,Haverzemelen,Otręby owsiane,Ovseni otrobi
+A003F,Rice flour,Rismel,Reismehl,Αλεύρι ρυζιού,Harina de arroz,Farina di riso,Rijstmeel,Mąka ryżowa,Rižena moka
+A003J,Rye flour,Rugmel,Roggenmehl,Αλεύρι σίκαλης,Harina de centeno,Farina di segale,Roggemeel,Mąka żytnia,Ržena moka
+A003X,Wheat flour,Hvetemel,Weizenmehl,Αλεύρι σίτου,Harina de trigo,Farina di frumento,Tarwemeel,Mąka pszenna,Pšenična moka
+A004F,Wheat semolina,Hvetesemule,Weizengrieß,Σιμιγδάλι σίτου,Sémola de trigo,Semola di grano,Tarwegriesmeel,Kasza manna,Pšenični zdrob
+A004G,Bulgur,Bulgur,Bulgur,Πλιγούρι,Bulgur,Bulgur,Bulgur,Bulgur,Bulgur
+A004H,Spelt flour,Speltmel,Dinkelmehl,Αλεύρι ντίνκελ,Harina de espelta,Farina di farro,Speltmeel,Mąka orkiszowa,Pirina moka
+A004P,Wheat bran,Hvetekli,Weizenkleie,Πίτουρο σίτου,Salvado de trigo,Crusca di frumento,Tarwezemelen,Otręby pszenne,Pšenični otrobi
+A004Q,Wheat germ,Hvetekim,Weizenkeime,Φύτρο σίτου,Germen de trigo,Germe di grano,Tarwekiemen,Zarodki pszenne,Pšenični kalčki
+A004Y,"Wheat bread and rolls, white (refined flour)",Hvetebrød og rundstykker av siktet mel,Weizenbrot und Brötchen aus hellem Mehl,Ψωμί και ψωμάκια σίτου λευκά,Pan y panecillos de trigo blancos,Pane e panini di frumento bianchi,Tarwebrood en broodjes wit,Chleb i bułki pszenne białe,Pšenični kruh in žemlje beli
+A005D,"Wheat bread and rolls, semi-brown",Halvgrovt hvetebrød og rundstykker,Weizenbrot und Brötchen halbdunkel,Ψωμί και ψωμάκια σίτου ημίμαυρα,Pan y panecillos de trigo semiintegrales,Pane e panini di frumento semi-integrali,Tarwebrood en broodjes halfbruin,Chleb i bułki pszenne półrazowe,Pšenični kruh in žemlje polbeli
+A005E,"Wheat bread and rolls, brown or wholemeal",Grovt hvetebrød og rundstykker,Weizenvollkornbrot und -brötchen,Ψωμί και ψωμάκια σίτου ολικής άλεσης,Pan y panecillos de trigo integrales,Pane e panini di frumento integrali,Tarwebrood en broodjes bruin of volkoren,Chleb i bułki pszenne razowe,Pšenični kruh in žemlje polnozrnati
+A005F,Rye only bread and rolls,Rent rugbrød og rundstykker,Reines Roggenbrot und -brötchen,Ψωμί και ψωμάκια μόνο σίκαλης,Pan y panecillos solo de centeno,Pane e panini di sola segale,Roggebrood en broodjes,Chleb i bułki wyłącznie żytnie,Kruh in žemlje samo iz rži
+A005K,Bread and rolls with special ingredients added,Brød og rundstykker med spesielle ingredienser,Brot und Brötchen mit besonderen Zutaten,Ψωμί και ψωμάκια με ειδικά συστατικά,Pan y panecillos con ingredientes especiales,Pane e panini con ingredienti speciali,Brood en broodjes met speciale ingrediënten,Chleb i bułki ze specjalnymi dodatkami,Kruh in žemlje s posebnimi sestavinami
+A005M,Mixed wheat and rye bread and rolls,Blandet hvete- og rugbrød og rundstykker,Weizenmischbrot und -brötchen,Ψωμί και ψωμάκια σίτου και σίκαλης,Pan y panecillos de trigo y centeno,Pane e panini di frumento e segale,Tarwe-roggebrood en broodjes,Chleb i bułki pszenno-żytnie,Mešani pšenično-rženi kruh in žemlje
+A005Q,Multigrain (not only rye-wheat) bread and rolls,Flerkornbrød og rundstykker,Mehrkornbrot und -brötchen,Πολύσπορο ψωμί και ψωμάκια,Pan y panecillos multicereales,Pane e panini multicereali,Meergranenbrood en broodjes,Chleb i bułki wielozbożowe,Večzrnati kruh in žemlje
+A005R,Gluten free bread,Glutenfritt brød,Glutenfreies Brot,Ψωμί χωρίς γλουτένη,Pan sin gluten,Pane senza glutine,Glutenvrij brood,Chleb bezglutenowy,Brezglutenski kruh
+A005Y,Crackers and breadsticks,Kjeks og grissini,Cracker und Grissini,Κράκερ και κριτσίνια,Galletas saladas y palitos de pan,Cracker e grissini,Crackers en soepstengels,Krakersy i paluszki chlebowe,Krekerji in kruhove palčke
+A006A,Rye crisp bread,Rugknekkebrød,Roggenknäckebrot,Φρυγανιές σίκαλης,Pan crujiente de centeno,Pane croccante di segale,Roggeknäckebröd,Pieczywo chrupkie żytnie,Rženi hrustljavi kruhki
+A006D,Wheat crisp bread,Hveteknekkebrød,Weizenknäckebrot,Φρυγανιές σίτου,Pan crujiente de trigo,Pane croccante di frumento,Tarweknäckebröd,Pieczywo chrupkie pszenne,Pšenični hrustljavi kruhki
+A006H,Puffed cereals textured bread,Brød av pufset korn,Brot aus gepufftem Getreide,Ψωμί από διογκωμένα δημητριακά,Pan de cereales inflados,Pane di cereali soffiati,Brood van gepofte granen,Pieczywo z ziaren ekspandowanych,Kruh iz napihnjenih žit
+A006M,Rusk,Kavring,Zwieback,Παξιμάδι,Biscote,Fette biscottate,Beschuit,Sucharki,Prepečenec
+A006S,Pita bread,Pitabrød,Pitabrot,Πίτα,Pan de pita,Pane pita,Pitabrood,Pita,Pita kruh
+A006T,Matzo,Matze,Matze,Άζυμο ψωμί,Pan ácimo,Pane azzimo,Matze,Maca,Maca
+A006V,Tortilla,Tortilla,Tortilla,Τορτίγια,Tortilla,Tortilla,Tortilla,Tortilla,Tortilja
+A006X,Roti,Roti,Roti,Ρότι,Roti,Roti,Roti,Roti,Roti
+A007A,Breadcrumbs,Griljermel,Semmelbrösel,Τριμμένη φρυγανιά,Pan rallado,Pangrattato,Paneermeel,Bułka tarta,Krušne drobtine
+A007B,Croutons,Krutonger,Croûtons,Κρουτόν,Picatostes,Crostini,Croutons,Grzanki,Kruhovi kockci
+A007E,"Pasta, plain (not stuffed), uncooked",Pasta uten fyll ukokt,Nudeln ungefüllt ungekocht,Ζυμαρικά απλά άβραστα,Pasta simple sin cocer,Pasta semplice non cotta,Pasta ongevuld ongekookt,Makaron zwykły niegotowany,Testenine navadne nekuhane
+A007F,Fresh pasta,Fersk pasta,Frische Nudeln,Νωπά ζυμαρικά,Pasta fresca,Pasta fresca,Verse pasta,Makaron świeży,Sveže testenine
+A007L,Dried pasta,Tørket pasta,Getrocknete Nudeln,Ξηρά ζυμαρικά,Pasta seca,Pasta secca,Gedroogde pasta,Makaron suszony,Sušene testenine
+A007R,Asian-style noodles other than glass noodles,Asiatiske nudler unntatt glassnudler,Asiatische Nudeln außer Glasnudeln,Ασιατικά νούντλς εκτός από γυάλινα,Fideos asiáticos excepto de cristal,Noodle asiatici esclusi quelli di vetro,Aziatische noedels behalve glasnoedels,Makaron azjatycki poza szklanym,Azijski rezanci razen steklenih
+A008B,"Pasta, gluten free",Glutenfri pasta,Glutenfreie Nudeln,Ζυμαρικά χωρίς γλουτένη,Pasta sin gluten,Pasta senza glutine,Glutenvrije pasta,Makaron bezglutenowy,Brezglutenske testenine
+A008C,Couscous,Couscous,Couscous,Κους κους,Cuscús,Cuscus,Couscous,Kuskus,Kuskus
+A008D,Gnocchi,Gnocchi,Gnocchi,Νιόκι,Ñoquis,Gnocchi,Gnocchi,Gnocchi,Njoki
+A008F,"Noodle, rice",Risnudler,Reisnudeln,Νούντλς ρυζιού,Fideos de arroz,Noodle di riso,Rijstnoedels,Makaron ryżowy,Riževi rezanci
+A008H,Yeast leavened bread doughs,Gjærbakt brøddeig,Hefeteig für Brot,Ζύμες ψωμιού με μαγιά,Masas de pan con levadura,Impasti di pane lievitati,Gistdeeg voor brood,Ciasta chlebowe na drożdżach,Kvašena kruhova testa
+A009L,Laminated doughs,Butterdeig og lignende,Blätterteig,Ζύμες σφολιάτας,Masas laminadas,Impasti sfogliati,Bladerdeeg,Ciasta laminowane,Listnata testa
+A009X,"Biscuits, sweet, plain",Søte kjeks uten fyll,Süße Kekse ohne Füllung,Μπισκότα γλυκά απλά,Galletas dulces sencillas,Biscotti dolci semplici,Zoete koekjes zonder vulling,Herbatniki słodkie zwykłe,Sladki keksi navadni
+A00AE,"Biscuit with inclusions, filling or coating",Kjeks med fyll eller trekk,Kekse mit Füllung oder Überzug,Μπισκότα με γέμιση ή επικάλυψη,Galletas con relleno o cobertura,Biscotti farciti o ricoperti,Koekjes met vulling of laagje,Herbatniki z nadzieniem lub polewą,Keksi z nadevom ali oblivom
+A00AG,Choux pastry,Vannbakkels,Brandteig,Ζύμη σου,Pasta choux,Pasta choux,Soezendeeg,Ciasto parzone,Prhko testo (choux)
+A00AN,Cakes,Kaker,Kuchen,Κέικ,Pasteles,Torte,Cakes,Ciasta,Torte in kolači
+A00BK,Yeast leavened pastry,Gjærbakst,Hefegebäck,Ζυμαρικά με μαγιά,Bollería con levadura,Lievitati da forno,Gistgebak,Wypieki drożdżowe,Kvašeno pecivo
+A00BL,Buns,Boller,Brötchen süß,Ψωμάκια γλυκά,Bollos,Panini dolci,Broodjes zoet,Bułki słodkie,Sladke žemljice
+A00BM,Croissant,Croissant,Croissant,Κρουασάν,Cruasán,Croissant,Croissant,Rogalik,Rogljiček
+A00BR,Doughnuts-berliner,Smultringer og berlinerboller,Berliner und Donuts,Ντόνατς και μπερλίνερ,Rosquillas y berlinas,Ciambelle e krapfen,Donuts en berlinerbollen,Pączki i donuty,Krofi in donuti
+A00BT,Brioche type products,Briocheprodukter,Briocheartige Backwaren,Προϊόντα τύπου μπριός,Productos tipo brioche,Prodotti tipo brioche,Briocheproducten,Wyroby typu brioche,Izdelki vrste brioš
+A00BV,Shortcrust (pies -tarts),Mørdeigspaier og terter,Mürbeteiggebäck (Kuchen und Torten),Ζύμη τάρτας (πίτες και τάρτες),Masa quebrada (tartas),Pasta frolla (crostate),Zanddeeg (taarten),Kruche ciasto (tarty),Krhko testo (pite in tarte)
+A00BX,Flan tart,Flanterte,Puddingtorte,Τάρτα φλαν,Tarta de flan,Crostata di crema,Vlaai,Tarta budyniowa,Kremna tarta
+A00BZ,Fruit pie-tarts,Fruktpaier og terter,Obstkuchen und -torten,Τάρτες φρούτων,Tartas de fruta,Crostate di frutta,Vruchtentaarten,Tarty owocowe,Sadne pite in tarte
+A00CB,Marzipan pie,Marsipankake,Marzipankuchen,Τάρτα αμυγδάλου,Tarta de mazapán,Torta di marzapane,Marsepeintaart,Ciasto marcepanowe,Marcipanova pita
+A00CC,Pastry based on laminated dough,Bakverk av butterdeig,Blätterteiggebäck,Προϊόντα σφολιάτας,Bollería de masa laminada,Prodotti di pasta sfoglia,Bladerdeeggebak,Wyroby z ciasta laminowanego,Pecivo iz listnatega testa
+A00CF,Apple strudel,Eplestrudel,Apfelstrudel,Στρούντελ μήλου,Strudel de manzana,Strudel di mele,Appelstrudel,Strudel jabłkowy,Jabolčni zavitek
+A00CH,Baklava,Baklava,Baklava,Μπακλαβάς,Baklava,Baklava,Baklava,Baklawa,Baklava
+A00CL,Pancakes,Pannekaker,Pfannkuchen,Τηγανίτες,Tortitas,Frittelle,Pannenkoeken,Naleśniki,Palačinke
+A00CN,Macaroons,Makroner,Makronen,Αμυγδαλωτά,Macarrones de almendra,Amaretti,Makronen,Makaroniki,Makroni
+A00CP,Meringue,Marengs,Baiser,Μαρέγκα,Merengue,Meringa,Meringue,Beza,Beljakova pena
+A00CQ,Waffles,Vafler,Waffeln,Βάφλες,Gofres,Waffel,Wafels,Gofry,Vaflji
+A00CR,Spice cakes,Krydderkaker,Gewürzkuchen,Κέικ μπαχαρικών,Pasteles de especias,Torte speziate,Kruidkoek,Piernik,Začinjene torte
+A00CY,Barley rolled grains,Byggflak,Gerstenflocken,Νιφάδες κριθαριού,Copos de cebada,Fiocchi d'orzo,Gerstevlokken,Płatki jęczmienne,Ječmenovi kosmiči
+A00DC,"Popcorn (maize, popped)",Popkorn,Popcorn,Ποπ κορν,Palomitas de maíz,Popcorn,Popcorn,Popcorn,Pokovka
+A00DD,Processed maize-based flakes,Maisflak,Maisflocken,Νιφάδες καλαμποκιού,Copos de maíz,Fiocchi di mais,Cornflakes,Płatki kukurydziane,Koruzni kosmiči
+A00DH,Oat rolled grains,Havregryn,Haferflocken,Νιφάδες βρώμης,Copos de avena,Fiocchi d'avena,Havervlokken,Płatki owsiane,Ovseni kosmiči
+A00DR,"Rice, popped",Pufset ris,Puffreis,Ρύζι φουσκωτό,Arroz inflado,Riso soffiato,Gepofte rijst,Ryż ekspandowany,Napihnjen riž
+A00DV,Rye rolled grains,Rugflak,Roggenflocken,Νιφάδες σίκαλης,Copos de centeno,Fiocchi di segale,Roggevlokken,Płatki żytnie,Rženi kosmiči
+A00EA,Spelt rolled grains,Speltflak,Dinkelflocken,Νιφάδες ντίνκελ,Copos de espelta,Fiocchi di farro,Speltvlokken,Płatki orkiszowe,Pirini kosmiči
+A00EE,"Wheat, popped",Pufset hvete,Puffweizen,Σιτάρι φουσκωτό,Trigo inflado,Grano soffiato,Gepofte tarwe,Pszenica ekspandowana,Napihnjena pšenica
+A00EF,Processed wheat-based flakes,Hveteflak,Weizenflocken,Νιφάδες σίτου,Copos de trigo,Fiocchi di frumento,Tarwevlokken,Płatki pszenne,Pšenični kosmiči
+A00EJ,Muesli and similar mixed breakfast cereals,Müsli og lignende frokostblandinger,Müsli und ähnliche Frühstückscerealien,Μούσλι και παρόμοια δημητριακά πρωινού,Muesli y cereales de desayuno similares,Muesli e cereali da colazione simili,Muesli en soortgelijke ontbijtgranen,Musli i podobne płatki śniadaniowe,Musli in podobni zajtrkovi kosmiči
+A00EM,Processed mixed cereal-based flakes,Blandede kornflak,Mehrkornflocken,Νιφάδες μεικτών δημητριακών,Copos de cereales mixtos,Fiocchi di cereali misti,Gemengde graanvlokken,Płatki wielozbożowe,Mešani žitni kosmiči
+A00EN,"Porridge (in dry form, to be diluted)",Grøtpulver,Breipulver,Χυλός σε σκόνη,Papilla en polvo,Porridge in polvere,Papmix,Kaszka w proszku,Kaša v prahu
+A00EY,Cereal bars,Kornbarer,Müsliriegel,Μπάρες δημητριακών,Barritas de cereales,Barrette ai cereali,Mueslirepen,Batony zbożowe,Žitne ploščice
+A00FC,Corn chips,Maischips,Maischips,Τσιπς καλαμποκιού,Chips de maíz,Chips di mais,Maischips,Chipsy kukurydziane,Koruzni čips
+A00FD,Tortilla chips,Tortillachips,Tortillachips,Τσιπς τορτίγιας,Nachos,Tortilla chips,Tortillachips,Chipsy tortilla,Tortilja čips
+A00FE,Corn curls,Maissnacks,Erdnussflips,Γαριδάκια,Ganchitos de maíz,Snack di mais,Nibbits,Chrupki kukurydziane,Koruzni fliki
+A00FF,Rice chips,Rischips,Reischips,Τσιπς ρυζιού,Chips de arroz,Chips di riso,Rijstchips,Chipsy ryżowe,Rižev čips
+A00FH,Mixed cereal-based snacks,Blandede kornsnacks,Mehrkorn-Snacks,Σνακ μεικτών δημητριακών,Aperitivos de cereales mixtos,Snack a base di cereali misti,Gemengde graansnacks,Przekąski wielozbożowe,Mešani žitni prigrizki
+A00FM,Broccoli and similar-,Brokkoli og lignende,Brokkoli und ähnliche,Μπρόκολο και παρόμοια,Brócoli y similares,Broccoli e simili,Broccoli en soortgelijke,Brokuły i podobne,Brokoli in podobno
+A00FX,Head cabbages and similar-,Hodekål og lignende,Kopfkohl und ähnliche,Λάχανο και παρόμοια,Repollos y similares,Cavoli cappucci e simili,Sluitkool en soortgelijke,Kapusta głowiasta i podobne,Glavnato zelje in podobno
+A00GF,Chinese cabbages and similar-,Kinakål og lignende,Chinakohl und ähnliche,Κινέζικο λάχανο και παρόμοια,Coles chinas y similares,Cavoli cinesi e simili,Chinese kool en soortgelijke,Kapusta pekińska i podobne,Kitajsko zelje in podobno
+A00GL,Kales and similar-,Grønnkål og lignende,Grünkohl und ähnliche,Λαχανίδα και παρόμοια,Coles rizadas y similares,Cavoli ricci e simili,Boerenkool en soortgelijke,Jarmuż i podobne,Ohrovt in podobno
+A00GY,Garlic and similar-,Hvitløk og lignende,Knoblauch und ähnliche,Σκόρδο και παρόμοια,Ajo y similares,Aglio e simili,Knoflook en soortgelijke,Czosnek i podobne,Česen in podobno
+A00HB,Onions and similar-,Løk og lignende,Zwiebeln und ähnliche,Κρεμμύδι και παρόμοια,Cebollas y similares,Cipolle e simili,Uien en soortgelijke,Cebula i podobne,Čebula in podobno
+A00HG,Spring onions and similar-,Vårløk og lignende,Frühlingszwiebeln und ähnliche,Φρέσκα κρεμμυδάκια και παρόμοια,Cebolletas y similares,Cipollotti e simili,Bosuien en soortgelijke,Cebula dymka i podobne,Spomladanska čebula in podobno
+A00HQ,Tomatoes and similar-,Tomater og lignende,Tomaten und ähnliche,Ντομάτες και παρόμοια,Tomates y similares,Pomodori e simili,Tomaten en soortgelijke,Pomidory i podobne,Paradižnik in podobno
+A00HZ,Peppers and similar-,Paprika og lignende,Paprika und ähnliche,Πιπεριές και παρόμοια,Pimientos y similares,Peperoni e simili,Paprika's en soortgelijke,Papryka i podobne,Paprika in podobno
+A00JC,Aubergines and similar-,Auberginer og lignende,Auberginen und ähnliche,Μελιτζάνες και παρόμοια,Berenjenas y similares,Melanzane e simili,Aubergines en soortgelijke,Bakłażany i podobne,Jajčevci in podobno
+A00JQ,Courgettes and similar-,Squash og lignende,Zucchini und ähnliche,Κολοκυθάκια και παρόμοια,Calabacines y similares,Zucchine e simili,Courgettes en soortgelijke,Cukinia i podobne,Bučke in podobno
+A00KE,Melons and similar-,Meloner og lignende,Melonen und ähnliche,Πεπόνια και παρόμοια,Melones y similares,Meloni e simili,Meloenen en soortgelijke,Melony i podobne,Melone in podobno
+A00LD,Escaroles and similar-,Endiviesalat og lignende,Endivien und ähnliche,Αντίδια και παρόμοια,Escarolas y similares,Scarole e simili,Andijvie en soortgelijke,Endywia i podobne,Endivija in podobno
+A00LK,Cresses,Karse,Kresse,Κάρδαμο,Berros,Crescione,Tuinkers,Rzeżucha,Kreša
+A00LM,Roman rocket and similar-,Rukola og lignende,Rucola und ähnliche,Ρόκα και παρόμοια,Rúcula y similares,Rucola e simili,Rucola en soortgelijke,Rukola i podobne,Rukola in podobno
+A00MA,Baby leaf crops (including brassica species) and similar-,Babyblader og lignende,Babyblattsalate und ähnliche,Μικρόφυλλα λαχανικά και παρόμοια,Brotes tiernos y similares,Insalatine e simili,Babyblad en soortgelijke,Młode liście i podobne,Mladi listi in podobno
+A00MH,Spinaches and similar-,Spinat og lignende,Spinat und ähnliche,Σπανάκι και παρόμοια,Espinacas y similares,Spinaci e simili,Spinazie en soortgelijke,Szpinak i podobne,Špinača in podobno
+A00MN,Purslanes and similar-,Portulakk og lignende,Portulak und ähnliche,Γλιστρίδα και παρόμοια,Verdolagas y similares,Portulaca e simili,Postelein en soortgelijke,Portulaka i podobne,Portulak in podobno
+A00NC,Watercresses and similar-,Brønnkarse og lignende,Brunnenkresse und ähnliche,Νεροκάρδαμο και παρόμοια,Berros de agua y similares,Crescione d'acqua e simili,Waterkers en soortgelijke,Rukiew wodna i podobne,Vodna kreša in podobno
+A00NF,Other lettuces and salad plants,Andre salater,Andere Salate,Άλλα μαρούλια και σαλατικά,Otras lechugas y ensaladas,Altre lattughe e insalate,Overige sla en slasoorten,Inne sałaty i warzywa sałatowe,Druge solate in solatnice
+A00PC,Beans (with pods) and similar-,Bønner med belg og lignende,Bohnen mit Hülsen und ähnliche,Φασόλια με λοβό και παρόμοια,Judías con vaina y similares,Fagiolini e simili,Bonen met peul en soortgelijke,Fasola w strąkach i podobne,Fižol s strokom in podobno
+A00PX,Peas (with pods) and similar-,Erter med belg og lignende,Erbsen mit Hülsen und ähnliche,Αρακάς με λοβό και παρόμοια,Guisantes con vaina y similares,Piselli con baccello e simili,Erwten met peul en soortgelijke,Groch w strąkach i podobne,Grah s strokom in podobno
+A00QT,Radishes and similar-,Reddiker og lignende,Radieschen und ähnliche,Ραπανάκια και παρόμοια,Rábanos y similares,Ravanelli e simili,Radijzen en soortgelijke,Rzodkiewki i podobne,Redkvice in podobno
+A00SR,Mung bean sprouts,Mungbønnespirer,Mungbohnensprossen,Φύτρα φασολιού μονγκ,Brotes de soja verde,Germogli di soia verde,Taugé,Kiełki fasoli mung,Kalčki mungo fižola
+A00TD,Wild fungi and similar-,Ville sopper og lignende,Wildpilze und ähnliche,Άγρια μανιτάρια και παρόμοια,Setas silvestres y similares,Funghi selvatici e simili,Wilde paddenstoelen en soortgelijke,Grzyby dziko rosnące i podobne,Divje gobe in podobno
+A00TP,Cultivated fungi and similar-,Dyrkede sopper og lignende,Zuchtpilze und ähnliche,Καλλιεργημένα μανιτάρια και παρόμοια,Setas cultivadas y similares,Funghi coltivati e simili,Gekweekte paddenstoelen en soortgelijke,Grzyby uprawne i podobne,Gojene gobe in podobno
+A00VK,Brown algae,Brunalger,Braunalgen,Καφέ φύκια,Algas pardas,Alghe brune,Bruine algen,Algi brunatne,Rjave alge
+A00XC,Chives and similar-,Gressløk og lignende,Schnittlauch und ähnliche,Σχοινόπρασο και παρόμοια,Cebollino y similares,Erba cipollina e simili,Bieslook en soortgelijke,Szczypiorek i podobne,Drobnjak in podobno
+A00ZB,Preserved tomatoes not concentrated,Hermetiske tomater ikke konsentrert,Tomatenkonserven nicht konzentriert,Ντομάτες κονσέρβας μη συμπυκνωμένες,Tomate en conserva no concentrado,Pomodori conservati non concentrati,Tomaten in blik niet geconcentreerd,Pomidory konserwowe nieskoncentrowane,Konzervirani paradižnik nekoncentriran
+A00ZE,Preserved concentrated tomatoes,Tomatkonsentrat,Tomatenmark,Ντοματοπελτές,Concentrado de tomate,Concentrato di pomodoro,Tomatenconcentraat,Koncentrat pomidorowy,Paradižnikov koncentrat
+A00ZG,Sun-dried tomatoes,Soltørkede tomater,Getrocknete Tomaten,Λιαστές ντομάτες,Tomates secos,Pomodori secchi,Zongedroogde tomaten,Pomidory suszone,Sušeni paradižnik
+A00ZJ,Pickled / marinated vegetables,Syltede grønnsaker,Eingelegtes Gemüse,Τουρσί λαχανικών,Verduras en conserva o encurtidas,Verdure sott'aceto o marinate,Ingemaakte groenten,Warzywa marynowane,Vložena zelenjava
+A00ZQ,Dried vegetables,Tørkede grønnsaker,Getrocknetes Gemüse,Αποξηραμένα λαχανικά,Verduras deshidratadas,Verdure essiccate,Gedroogde groenten,Warzywa suszone,Sušena zelenjava
+A011C,Dried potato products,Tørkede potetprodukter,Getrocknete Kartoffelerzeugnisse,Αποξηραμένα προϊόντα πατάτας,Productos de patata deshidratados,Prodotti di patate essiccati,Gedroogde aardappelproducten,Suszone produkty ziemniaczane,Sušeni krompirjevi izdelki
+A011F,Potato starch,Potetstivelse,Kartoffelstärke,Άμυλο πατάτας,Almidón de patata,Fecola di patate,Aardappelzetmeel,Skrobia ziemniaczana,Krompirjev škrob
+A011J,Tapioca starch,Tapiokastivelse,Tapiokastärke,Άμυλο ταπιόκας,Almidón de tapioca,Amido di tapioca,Tapiocazetmeel,Skrobia z tapioki,Tapiokin škrob
+A011L,Potato crisps or sticks,Potetgull og pinner,Kartoffelchips und -sticks,Πατατάκια,Patatas fritas de bolsa,Patatine in busta,Chips en aardappelsticks,Chipsy i paluszki ziemniaczane,Krompirjev čips in palčke
+A011T,Potato starch-based snacks,Snacks av potetstivelse,Snacks aus Kartoffelstärke,Σνακ αμύλου πατάτας,Aperitivos de almidón de patata,Snack a base di fecola di patate,Snacks van aardappelzetmeel,Przekąski ze skrobi ziemniaczanej,Prigrizki iz krompirjevega škroba
+A011V,Tapioca starch-based snacks,Snacks av tapiokastivelse,Snacks aus Tapiokastärke,Σνακ αμύλου ταπιόκας,Aperitivos de almidón de tapioca,Snack a base di amido di tapioca,Snacks van tapiocazetmeel,Przekąski ze skrobi z tapioki,Prigrizki iz tapiokinega škroba
+A011Z,Beans (fresh seeds without pods) and similar-,Bønner uten belg og lignende,Bohnen ohne Hülsen und ähnliche,Φασόλια χωρίς λοβό και παρόμοια,Judías sin vaina y similares,Fagioli sgranati e simili,Bonen zonder peul en soortgelijke,Fasola bez strąków i podobne,Fižol brez stroka in podobno
+A012G,Peas (without pods) and similar-,Erter uten belg og lignende,Erbsen ohne Hülsen und ähnliche,Αρακάς χωρίς λοβό και παρόμοια,Guisantes sin vaina y similares,Piselli sgranati e simili,Erwten zonder peul en soortgelijke,Groch bez strąków i podobne,Grah brez stroka in podobno
+A012R,Pulses (dried legume seeds),Tørkede belgfrukter,Hülsenfrüchte getrocknet,Όσπρια αποξηραμένα,Legumbres secas,Legumi secchi,Peulvruchten gedroogd,Nasiona roślin strączkowych suszone,Suhe stročnice
+A012S,Beans (dry) and similar-,Tørkede bønner og lignende,Getrocknete Bohnen und ähnliche,Ξηρά φασόλια και παρόμοια,Judías secas y similares,Fagioli secchi e simili,Gedroogde bonen en soortgelijke,Fasola sucha i podobne,Suh fižol in podobno
+A014C,Tree nuts,Nøtter,Schalenfrüchte,Ξηροί καρποί δέντρων,Frutos secos de cáscara,Frutta a guscio,Noten,Orzechy,Lupinarji
+A014P,Pine nut kernels and similar-,Pinjekjerner og lignende,Pinienkerne und ähnliche,Κουκουνάρι και παρόμοια,Piñones y similares,Pinoli e simili,Pijnboompitten en soortgelijke,Orzeszki piniowe i podobne,Pinjole in podobno
+A015F,Oilseeds,Oljefrø,Ölsaaten,Ελαιούχοι σπόροι,Semillas oleaginosas,Semi oleosi,Oliehoudende zaden,Nasiona oleiste,Oljna semena
+A016D,Other seeds (including elsewhere non-listed oilseeds and other seeds),Andre frø,Andere Samen,Άλλοι σπόροι,Otras semillas,Altri semi,Overige zaden,Inne nasiona,Druga semena
+A016T,Dried herbs,Tørkede urter,Getrocknete Kräuter,Αποξηραμένα βότανα,Hierbas secas,Erbe essiccate,Gedroogde kruiden,Zioła suszone,Sušena zelišča
+A016Y,"Basil, dry",Tørket basilikum,Getrocknetes Basilikum,Βασιλικός αποξηραμένος,Albahaca seca,Basilico essiccato,Gedroogde basilicum,Bazylia suszona,Sušena bazilika
+A017G,"Marjoram, dry",Tørket merian,Getrockneter Majoran,Ματζουράνα αποξηραμένη,Mejorana seca,Maggiorana essiccata,Gedroogde marjolein,Majeranek suszony,Sušen majaron
+A017J,"Rosemary, dry",Tørket rosmarin,Getrockneter Rosmarin,Δεντρολίβανο αποξηραμένο,Romero seco,Rosmarino essiccato,Gedroogde rozemarijn,Rozmaryn suszony,Sušen rožmarin
+A018Y,"Peppercorn (black, green and white) and similar-",Pepperkorn og lignende,Pfefferkörner und ähnliche,Κόκκοι πιπεριού και παρόμοια,Granos de pimienta y similares,Grani di pepe e simili,Peperkorrels en soortgelijke,Ziarna pieprzu i podobne,Poprova zrna in podobno
+A019K,"Peppers, dried",Tørket chili,Getrocknete Paprika,Πιπεριές αποξηραμένες,Pimientos secos,Peperoncini essiccati,Gedroogde pepers,Papryka suszona,Sušena paprika
+A019T,Cinnamon bark and similar-,Kanel og lignende,Zimt und ähnliche,Κανέλα και παρόμοια,Canela y similares,Cannella e simili,Kaneel en soortgelijke,Cynamon i podobne,Cimet in podobno
+A01BB,Canned or jarred common beans,Hermetiske bønner,Bohnen in Konserven,Φασόλια κονσέρβας,Judías en conserva,Fagioli in scatola,Bonen in blik of pot,Fasola konserwowa,Konzerviran fižol
+A01BC,Canned or jarred peas,Hermetiske erter,Erbsen in Konserven,Αρακάς κονσέρβας,Guisantes en conserva,Piselli in scatola,Erwten in blik of pot,Groszek konserwowy,Konzerviran grah
+A01BD,Canned or jarred lentils,Hermetiske linser,Linsen in Konserven,Φακές κονσέρβας,Lentejas en conserva,Lenticchie in scatola,Linzen in blik of pot,Soczewica konserwowa,Konzervirana leča
+A01BE,Canned or jarred chickpea,Hermetiske kikerter,Kichererbsen in Konserven,Ρεβίθια κονσέρβας,Garbanzos en conserva,Ceci in scatola,Kikkererwten in blik of pot,Ciecierzyca konserwowa,Konzervirana čičerika
+A01BR,"Olives, processed",Bearbeidede oliven,Verarbeitete Oliven,Ελιές επεξεργασμένες,Aceitunas preparadas,Olive lavorate,Bewerkte olijven,Oliwki przetworzone,Predelane olive
+A01BT,Citrus fruits,Sitrusfrukter,Zitrusfrüchte,Εσπεριδοειδή,Cítricos,Agrumi,Citrusvruchten,Owoce cytrusowe,Citrusi
+A01BX,Lemons and similar-,Sitroner og lignende,Zitronen und ähnliche,Λεμόνια και παρόμοια,Limones y similares,Limoni e simili,Citroenen en soortgelijke,Cytryny i podobne,Limone in podobno
+A01CB,Mandarins and similar-,Mandariner og lignende,Mandarinen und ähnliche,Μανταρίνια και παρόμοια,Mandarinas y similares,Mandarini e simili,Mandarijnen en soortgelijke,Mandarynki i podobne,Mandarine in podobno
+A01CP,Oranges and similar-,Appelsiner og lignende,Orangen und ähnliche,Πορτοκάλια και παρόμοια,Naranjas y similares,Arance e simili,Sinaasappels en soortgelijke,Pomarańcze i podobne,Pomaranče in podobno
+A01CX,Grapefruits and similar-,Grapefrukt og lignende,Grapefruits und ähnliche,Γκρέιπφρουτ και παρόμοια,Pomelos y similares,Pompelmi e simili,Grapefruits en soortgelijke,Grejpfruty i podobne,Grenivke in podobno
+A01DH,Apples and similar-,Epler og lignende,Äpfel und ähnliche,Μήλα και παρόμοια,Manzanas y similares,Mele e simili,Appels en soortgelijke,Jabłka i podobne,Jabolka in podobno
+A01DN,Pears and similar-,Pærer og lignende,Birnen und ähnliche,Αχλάδια και παρόμοια,Peras y similares,Pere e simili,Peren en soortgelijke,Gruszki i podobne,Hruške in podobno
+A01DT,Berries and small fruits,Bær og små frukter,Beeren und Kleinobst,Μούρα και μικρόκαρπα φρούτα,Bayas y frutos pequeños,Bacche e piccoli frutti,Bessen en klein fruit,Jagody i drobne owoce,Jagodičevje in drobno sadje
+A01DZ,Strawberries and similar-,Jordbær og lignende,Erdbeeren und ähnliche,Φράουλες και παρόμοια,Fresas y similares,Fragole e simili,Aardbeien en soortgelijke,Truskawki i podobne,Jagode in podobno
+A01EN,Raspberries and similar-,Bringebær og lignende,Himbeeren und ähnliche,Σμέουρα και παρόμοια,Frambuesas y similares,Lamponi e simili,Frambozen en soortgelijke,Maliny i podobne,Maline in podobno
+A01FQ,Gooseberries and similar-,Stikkelsbær og lignende,Stachelbeeren und ähnliche,Φραγκοστάφυλα και παρόμοια,Grosellas espinosas y similares,Uva spina e simili,Kruisbessen en soortgelijke,Agrest i podobne,Kosmulje in podobno
+A01GG,Cherries and similar-,Kirsebær og lignende,Kirschen und ähnliche,Κεράσια και παρόμοια,Cerezas y similares,Ciliegie e simili,Kersen en soortgelijke,Wiśnie i podobne,Češnje in podobno
+A01GL,Peaches and similar-,Fersken og lignende,Pfirsiche und ähnliche,Ροδάκινα και παρόμοια,Melocotones y similares,Pesche e simili,Perziken en soortgelijke,Brzoskwinie i podobne,Breskve in podobno
+A01GP,Plums and similar-,Plommer og lignende,Pflaumen und ähnliche,Δαμάσκηνα και παρόμοια,Ciruelas y similares,Prugne e simili,Pruimen en soortgelijke,Śliwki i podobne,Slive in podobno
+A01HJ,Kumquats and similar-,Kumquat og lignende,Kumquats und ähnliche,Κουμκουάτ και παρόμοια,Kumquats y similares,Kumquat e simili,Kumquats en soortgelijke,Kumkwaty i podobne,Kumkvati in podobno
+A01HL,Carambolas and similar-,Stjernefrukt og lignende,Sternfrüchte und ähnliche,Καράμβολα και παρόμοια,Carambolas y similares,Carambole e simili,Stervruchten en soortgelijke,Karambole i podobne,Karambole in podobno
+A01HP,Kaki and similar-,Kaki og lignende,Kakis und ähnliche,Λωτοί και παρόμοια,Caquis y similares,Cachi e simili,Kaki's en soortgelijke,Persymony i podobne,Kakiji in podobno
+A01LN,Guavas and similar-,Guava og lignende,Guaven und ähnliche,Γκουάβα και παρόμοια,Guayabas y similares,Guaiave e simili,Guaves en soortgelijke,Gujawy i podobne,Guave in podobno
+A01MA,Dried fruit,Tørket frukt,Trockenobst,Αποξηραμένα φρούτα,Fruta desecada,Frutta secca,Gedroogd fruit,Owoce suszone,Suho sadje
+A01MB,Dried prunes,Tørkede svisker,Backpflaumen,Δαμάσκηνα αποξηραμένα,Ciruelas pasas,Prugne secche,Gedroogde pruimen,Śliwki suszone,Suhe slive
+A01MC,Dried apples,Tørkede epler,Getrocknete Äpfel,Μήλα αποξηραμένα,Manzanas desecadas,Mele essiccate,Gedroogde appels,Jabłka suszone,Suha jabolka
+A01MD,Dried apricots,Tørkede aprikoser,Getrocknete Aprikosen,Βερίκοκα αποξηραμένα,Orejones de albaricoque,Albicocche secche,Gedroogde abrikozen,Morele suszone,Suhe marelice
+A01ME,Dried vine fruits (raisins etc.),Rosiner og lignende,Rosinen und ähnliche,Σταφίδες,Pasas,Uva passa,Rozijnen,Rodzynki,Rozine
+A01MF,Dried dates,Tørkede dadler,Getrocknete Datteln,Χουρμάδες αποξηραμένοι,Dátiles secos,Datteri secchi,Gedroogde dadels,Daktyle suszone,Suhe datlji
+A01MG,Dried figs,Tørkede fikener,Getrocknete Feigen,Σύκα αποξηραμένα,Higos secos,Fichi secchi,Gedroogde vijgen,Figi suszone,Suhe fige
+A01MH,Dried pears,Tørkede pærer,Getrocknete Birnen,Αχλάδια αποξηραμένα,Peras desecadas,Pere essiccate,Gedroogde peren,Gruszki suszone,Suhe hruške
+A01MM,Jam of fruit / vegetables,Syltetøy,Konfitüre,Μαρμελάδα φρούτων,Mermelada de frutas,Confettura di frutta,Jam,Dżem,Marmelada
+A01NJ,Marmalade,Marmelade,Marmelade,Μαρμελάδα εσπεριδοειδών,Mermelada de cítricos,Marmellata di agrumi,Marmelade,Marmolada,Citrusna marmelada
+A01NN,Canned or jarred fruit,Hermetisk frukt,Obstkonserven,Φρούτα κονσέρβας,Fruta en conserva,Frutta sciroppata,Fruit in blik of pot,Owoce konserwowe,Konzervirano sadje
+A01PD,Compote of fruit / vegetables,Kompott,Kompott,Κομπόστα,Compota,Composta,Compote,Kompot,Kompot
+A01QF,Mixed dried fruits,Blandet tørket frukt,Gemischtes Trockenobst,Ανάμεικτα αποξηραμένα φρούτα,Frutas desecadas mixtas,Frutta secca mista,Gemengd gedroogd fruit,Mieszanka owoców suszonych,Mešano suho sadje
+A01QP,Fruit preparations for fillings and/or flavouring,Fruktfyll og smakstilsetning,Fruchtzubereitungen für Füllungen,Παρασκευάσματα φρούτων για γέμιση,Preparados de fruta para rellenos,Preparati di frutta per farciture,Vruchtenbereidingen voor vullingen,Przetwory owocowe do nadzień,Sadni pripravki za nadeve
+A01QV,Bovine fresh meat,Ferskt storfekjøtt,Frisches Rindfleisch,Νωπό βόειο κρέας,Carne fresca de vacuno,Carne bovina fresca,Vers rundvlees,Świeże mięso wołowe,Sveže goveje meso
+A01RG,Pig fresh meat,Ferskt svinekjøtt,Frisches Schweinefleisch,Νωπό χοιρινό κρέας,Carne fresca de cerdo,Carne suina fresca,Vers varkensvlees,Świeże mięso wieprzowe,Sveže svinjsko meso
+A01RH,Sheep fresh meat,Ferskt sauekjøtt,Frisches Schaffleisch,Νωπό πρόβειο κρέας,Carne fresca de ovino,Carne ovina fresca,Vers schapenvlees,Świeże mięso baranie,Sveže ovčje meso
+A01RL,Goat fresh meat,Ferskt geitekjøtt,Frisches Ziegenfleisch,Νωπό κατσικίσιο κρέας,Carne fresca de caprino,Carne caprina fresca,Vers geitenvlees,Świeże mięso kozie,Sveže kozje meso
+A01RM,Equine fresh meat,Ferskt hestekjøtt,Frisches Pferdefleisch,Νωπό κρέας ίππου,Carne fresca de equino,Carne equina fresca,Vers paardenvlees,Świeże mięso końskie,Sveže konjsko meso
+A01RQ,Rabbit fresh meat,Ferskt kaninkjøtt,Frisches Kaninchenfleisch,Νωπό κρέας κουνελιού,Carne fresca de conejo,Carne di coniglio fresca,Vers konijnenvlees,Świeże mięso królicze,Sveže kunčje meso
+A01SA,Deer fresh meat,Ferskt hjortekjøtt,Frisches Wildfleisch (Hirsch),Νωπό κρέας ελαφιού,Carne fresca de ciervo,Carne di cervo fresca,Vers hertenvlees,Świeże mięso jelenia,Sveže jelenje meso
+A01SJ,Hare fresh meat,Ferskt harekjøtt,Frisches Hasenfleisch,Νωπό κρέας λαγού,Carne fresca de liebre,Carne di lepre fresca,Vers hazenvlees,Świeże mięso zająca,Sveže zajčje meso
+A01SP,Chicken fresh meat,Ferskt kyllingkjøtt,Frisches Hähnchenfleisch,Νωπό κρέας κοτόπουλου,Carne fresca de pollo,Carne di pollo fresca,Vers kippenvlees,Świeże mięso kurczaka,Sveže piščančje meso
+A01SQ,Turkey fresh meat,Ferskt kalkunkjøtt,Frisches Putenfleisch,Νωπό κρέας γαλοπούλας,Carne fresca de pavo,Carne di tacchino fresca,Vers kalkoenvlees,Świeże mięso indyka,Sveže puranje meso
+A01SR,Duck fresh meat,Ferskt andekjøtt,Frisches Entenfleisch,Νωπό κρέας πάπιας,Carne fresca de pato,Carne di anatra fresca,Vers eendenvlees,Świeże mięso kaczki,Sveže račje meso
+A01ST,Ratites fresh meat,Ferskt kjøtt av strutsefugler,Frisches Fleisch von Laufvögeln,Νωπό κρέας στρουθιονιδών,Carne fresca de ratites,Carne fresca di ratiti,Vers vlees van loopvogels,Świeże mięso ptaków bezgrzebieniowych,Sveže meso tekačev
+A01SY,Partridge fresh meat,Ferskt rapphønekjøtt,Frisches Rebhuhnfleisch,Νωπό κρέας πέρδικας,Carne fresca de perdiz,Carne di pernice fresca,Vers patrijzenvlees,Świeże mięso kuropatwy,Sveže jerebičje meso
+A01SZ,Pheasant fresh meat,Ferskt fasankjøtt,Frisches Fasanenfleisch,Νωπό κρέας φασιανού,Carne fresca de faisán,Carne di fagiano fresca,Vers fazantenvlees,Świeże mięso bażanta,Sveže fazanje meso
+A01TN,Bovine and pig fresh meat,Ferskt storfe- og svinekjøtt,Frisches Rind- und Schweinefleisch,Νωπό βόειο και χοιρινό κρέας,Carne fresca de vacuno y cerdo,Carne bovina e suina fresca,Vers rund- en varkensvlees,Świeże mięso wołowe i wieprzowe,Sveže goveje in svinjsko meso
+A01XF,Bovine liver,Storfelever,Rinderleber,Συκώτι βοδινό,Hígado de vacuno,Fegato bovino,Runderlever,Wątroba wołowa,Goveja jetra
+A01XJ,Pig liver,Svinelever,Schweineleber,Συκώτι χοιρινό,Hígado de cerdo,Fegato suino,Varkenslever,Wątroba wieprzowa,Svinjska jetra
+A01XZ,Chicken liver,Kyllinglever,Hühnerleber,Συκώτι κοτόπουλου,Hígado de pollo,Fegato di pollo,Kippenlever,Wątróbka drobiowa,Piščančja jetra
+A01YJ,Bovine kidney,Storfenyre,Rindernieren,Νεφρά βοδινά,Riñón de vacuno,Rognone bovino,Rundernier,Nerki wołowe,Goveje ledvice
+A01YM,Pig kidney,Svinenyre,Schweinenieren,Νεφρά χοιρινά,Riñón de cerdo,Rognone suino,Varkensnier,Nerki wieprzowe,Svinjske ledvice
+A01YN,Sheep kidney,Saunyre,Schafnieren,Νεφρά πρόβεια,Riñón de ovino,Rognone ovino,Schapennier,Nerki baranie,Ovčje ledvice
+A01ZM,"Bovine edible offal, non-muscle, other than liver and kidney",Annet spiselig storfeslakteavfall,Sonstige essbare Rinderinnereien,Άλλα εδώδιμα εντόσθια βοδινά,Otras vísceras comestibles de vacuno,Altre frattaglie bovine commestibili,Overige eetbare runderorganen,Inne jadalne podroby wołowe,Druga užitna goveja drobovina
+A020R,Bovine other slaughtering products,Andre slakteprodukter av storfe,Sonstige Schlachtprodukte vom Rind,Άλλα προϊόντα σφαγής βοοειδών,Otros productos del sacrificio de vacuno,Altri prodotti della macellazione bovina,Overige slachtproducten van rund,Inne produkty uboju bydła,Drugi klavni izdelki goveda
+A022R,Raw cured (or seasoned) meat,Rått spekekjøtt,Rohes Pökelfleisch,Ωμό αλατισμένο κρέας,Carne curada cruda,Carne cruda stagionata,Rauwe gezouten vleeswaren,Mięso surowe peklowane,Surovo sušeno meso
+A022S,Cured seasoned pork meat,Spekt svinekjøtt,Gepökeltes Schweinefleisch,Αλατισμένο χοιρινό κρέας,Carne de cerdo curada,Carne suina stagionata,Gezouten varkensvlees,Wieprzowina peklowana,Sušeno svinjsko meso
+A023B,Cured seasoned bovine meat,Spekt storfekjøtt,Gepökeltes Rindfleisch,Αλατισμένο βοδινό κρέας,Carne de vacuno curada,Carne bovina stagionata,Gezouten rundvlees,Wołowina peklowana,Sušeno goveje meso
+A023H,Cooked cured (or seasoned) pork meat,Kokt spekt svinekjøtt,Gekochtes Pökelfleisch vom Schwein,Μαγειρεμένο αλατισμένο χοιρινό,Carne de cerdo curada cocida,Carne suina cotta stagionata,Gekookt gezouten varkensvlees,Wieprzowina peklowana gotowana,Kuhano sušeno svinjsko meso
+A023P,Cooked cured (or seasoned) bovine meat,Kokt spekt storfekjøtt,Gekochtes Pökelfleisch vom Rind,Μαγειρεμένο αλατισμένο βοδινό,Carne de vacuno curada cocida,Carne bovina cotta stagionata,Gekookt gezouten rundvlees,Wołowina peklowana gotowana,Kuhano sušeno goveje meso
+A023S,Cooked cured (or seasoned) poultry meat,Kokt spekt fjørfekjøtt,Gekochtes Pökelfleisch vom Geflügel,Μαγειρεμένο αλατισμένο πουλερικό,Carne de ave curada cocida,Carne di pollame cotta stagionata,Gekookt gezouten gevogelte,Drób peklowany gotowany,Kuhano sušeno perutninsko meso
+A024B,Canned-tinned meat,Hermetisk kjøtt,Fleischkonserven,Κρέας κονσέρβας,Carne en conserva,Carne in scatola,Vlees in blik,Mięso konserwowe,Mesne konzerve
+A024F,Sausages,Pølser,Würste,Λουκάνικα,Embutidos,Salsicce e insaccati,Worst,Kiełbasy,Klobase
+A024G,Fresh raw sausages,Ferske rå pølser,Frische Rohwürste,Νωπά ωμά λουκάνικα,Salchichas frescas,Salsicce fresche,Verse rauwe worst,Kiełbasy surowe świeże,Sveže surove klobase
+A024Q,Cured unripened raw sausages,Rå umodne spekepølser,Rohwürste ungereift,Ωμά λουκάνικα χωρίς ωρίμανση,Embutidos crudos sin curar,Salsicce crude non stagionate,Rauwe ongerijpte worst,Kiełbasy surowe niedojrzewające,Surove nezorene klobase
+A024V,Cured ripened raw sausages,Spekepølser,Rohwürste gereift,Ωμά λουκάνικα ωριμασμένα,Embutidos curados,Salumi stagionati,Rauwe gerijpte worst,Kiełbasy surowe dojrzewające,Surove zorene klobase
+A025K,Spreadable cooked sausages,Smørbare kokte pølser,Streichfähige Kochwürste,Αλείψιμα μαγειρεμένα λουκάνικα,Embutidos cocidos untables,Insaccati cotti spalmabili,Smeerbare gekookte worst,Kiełbasy gotowane smarowne,Mazave kuhane klobase
+A025N,Sliceable or firm cooked sausages,Faste kokte pølser,Schnittfeste Kochwürste,Λουκάνικα μαγειρεμένα σε φέτες,Embutidos cocidos loncheables,Insaccati cotti affettabili,Snijdbare gekookte worst,Kiełbasy gotowane krojone,Rezljive kuhane klobase
+A026A,Pre-cooked sausages to be cooked before consumption,Forkokte pølser til oppvarming,Brühwürste zum Garen,Προμαγειρεμένα λουκάνικα προς μαγείρεμα,Salchichas precocidas para cocinar,Salsicce precotte da cuocere,Voorgekookte worst om te bereiden,Kiełbasy parzone do podgrzania,Predkuhane klobase za kuhanje
+A026K,Meat based spreadable-textured specialities,Smørbare kjøttprodukter,Streichfähige Fleischerzeugnisse,Αλείψιμα προϊόντα κρέατος,Especialidades cárnicas untables,Specialità di carne spalmabili,Smeerbare vleesproducten,Pasty mięsne,Mazavi mesni izdelki
+A026M,Liver based spreadable-textured specialities,Leverpostei,Leberstreichwurst,Πατέ συκωτιού,Paté de hígado,Paté di fegato,Leverpastei,Pasztet z wątróbki,Jetrna pašteta
+A026V,Fish (meat),Fisk,Fisch,Ψάρι,Pescado,Pesce,Vis,Ryby,Ribe
+A027J,Catfishes (freshwater),Maller,Welse,Γατόψαρα,Siluros,Pesci gatto,Meervallen,Sumy,Somi
+A027N,Perch,Abbor,Barsch,Πέρκα,Perca,Persico,Baars,Okoń,Ostriž
+A028A,Tilapias and similar,Tilapia og lignende,Tilapia und ähnliche,Τιλάπια και παρόμοια,Tilapias y similares,Tilapie e simili,Tilapia en soortgelijke,Tilapia i podobne,Tilapije in podobno
+A028G,River eels,Ål,Aal,Χέλι,Anguilas,Anguille,Paling,Węgorz,Jegulje
+A029F,Trouts,Ørret,Forellen,Πέστροφα,Truchas,Trote,Forel,Pstrągi,Postrvi
+A029R,Marine fish,Saltvannsfisk,Meeresfisch,Θαλασσινά ψάρια,Pescado de mar,Pesce di mare,Zeevis,Ryby morskie,Morske ribe
+A02AK,Conger,Havål,Meeraal,Μουγγρί,Congrio,Grongo,Zeepaling,Konger,Morska jegulja
+A02AS,Dab or common dab,Sandflyndre,Kliesche,Χωματίδα,Limanda,Limanda,Schar,Zimnica,Limanda
+A02AT,Flounders,Skrubbe,Flunder,Καλκάνι φλάουντερ,Platijas,Passere,Bot,Stornia,Iverke
+A02BC,Plaice,Rødspette,Scholle,Γλώσσα πλατέσσα,Solla,Platessa,Schol,Gładzica,Morska plošča
+A02BF,Sole,Sjøtunge,Seezunge,Γλώσσα,Lenguado,Sogliola,Tong,Sola,Morski list
+A02BL,Wolffishes,Steinbit,Seewolf,Λυκόψαρα,Perros del norte,Bavose,Zeewolf,Zębacze,Volkove ribe
+A02BV,Cod,Torsk,Kabeljau,Μπακαλιάρος,Bacalao,Merluzzo,Kabeljauw,Dorsz,Trska
+A02CA,Haddock,Hyse,Schellfisch,Καλλαρίας,Eglefino,Eglefino,Schelvis,Plamiak,Vahnja
+A02CE,"Pollack, pollock",Sei,Seelachs,Μπακαλιάρος πόλακ,Abadejo,Merluzzo carbonaro,Koolvis,Czarniak,Saj
+A02CG,Whiting,Hvitting,Wittling,Νταούκι,Merlán,Merlano,Wijting,Witlinek,Mol
+A02CT,Mackerel,Makrell,Makrele,Σκουμπρί,Caballa,Sgombro,Makreel,Makrela,Skuša
+A02DA,Sardines and sardine-type fishes,Sardiner og lignende,Sardinen und ähnliche,Σαρδέλες και παρόμοια,Sardinas y similares,Sardine e simili,Sardines en soortgelijke,Sardynki i podobne,Sardele in podobno
+A02DD,Anchovies,Ansjos,Sardellen,Γαύρος,Anchoas,Acciughe,Ansjovis,Sardele,Sardoni
+A02DE,Herrings,Sild,Hering,Ρέγγα,Arenques,Aringhe,Haring,Śledź,Sled
+A02DX,Tuna,Tunfisk,Thunfisch,Τόνος,Atún,Tonno,Tonijn,Tuńczyk,Tuna
+A02EJ,Fish liver,Fiskelever,Fischleber,Συκώτι ψαριού,Hígado de pescado,Fegato di pesce,Vislever,Wątroba ryb,Ribja jetra
+A02EM,Fish roe,Fiskerogn,Fischrogen,Αυγοτάραχο,Huevas de pescado,Uova di pesce,Viskuit,Ikra rybia,Ribja ikra
+A02FP,Lobsters,Hummer,Hummer,Αστακός,Bogavantes,Astici,Kreeft,Homary,Jastogi
+A02FX,Shrimps and prawns,Reker,Garnelen,Γαρίδες,Gambas y langostinos,Gamberi,Garnalen,Krewetki,Kozice
+A02HF,Mussels,Blåskjell,Miesmuscheln,Μύδια,Mejillones,Cozze,Mosselen,Małże,Klapavice
+A02HG,Oysters,Østers,Austern,Στρείδια,Ostras,Ostriche,Oesters,Ostrygi,Ostrige
+A02HN,"Scallops, pectens",Kamskjell,Jakobsmuscheln,Χτένια,Vieiras,Capesante,Sint-jakobsschelpen,Przegrzebki,Pokrovače
+A02HZ,"Squids, cuttlefishes, octopuses",Blekksprut,Tintenfische,Καλαμάρια σουπιές χταπόδια,Calamares sepias y pulpos,Calamari seppie e polpi,Inktvissen,Głowonogi,Glavonožci
+A02JH,Squids,Akkar,Kalmar,Καλαμάρια,Calamares,Calamari,Pijlinktvis,Kalmary,Lignji
+A02JR,Stockfish,Tørrfisk,Stockfisch,Μπακαλιάρος ξηρός,Bacalao seco,Stoccafisso,Stokvis,Sztokfisz,Sušena trska
+A02KC,"Fish fingers, breaded",Fiskepinner,Fischstäbchen,Ψαροκροκέτες πανέ,Palitos de pescado,Bastoncini di pesce,Vissticks,Paluszki rybne,Ribje palčke
+A02KE,Fish paste or surimi,Fiskepasta og surimi,Fischpaste und Surimi,Πάστα ψαριού και σουρίμι,Pasta de pescado y surimi,Pasta di pesce e surimi,Vispasta en surimi,Pasta rybna i surimi,Ribja pasta in surimi
+A02KF,Smoked salmon,Røkelaks,Räucherlachs,Καπνιστός σολομός,Salmón ahumado,Salmone affumicato,Gerookte zalm,Łosoś wędzony,Prekajen losos
+A02KG,Smoked herring,Røkesild,Räucherhering,Καπνιστή ρέγγα,Arenque ahumado,Aringa affumicata,Gerookte haring,Śledź wędzony,Prekajen sled
+A02LK,Snails,Snegler,Schnecken,Σαλιγκάρια,Caracoles,Lumache,Slakken,Ślimaki,Polži
+A02LV,Cow milk,Kumelk,Kuhmilch,Αγελαδινό γάλα,Leche de vaca,Latte vaccino,Koemelk,Mleko krowie,Kravje mleko
+A02MB,Goat milk,Geitemelk,Ziegenmilch,Κατσικίσιο γάλα,Leche de cabra,Latte di capra,Geitenmelk,Mleko kozie,Kozje mleko
+A02MJ,Human milk,Morsmelk,Muttermilch,Μητρικό γάλα,Leche materna,Latte materno,Moedermelk,Mleko kobiece,Materino mleko
+A02ML,"Cream, plain",Fløte,Sahne,Κρέμα γάλακτος,Nata,Panna,Room,Śmietanka,Smetana
+A02MM,Cream with other ingredients,Fløte med tilsetninger,Sahne mit weiteren Zutaten,Κρέμα γάλακτος με πρόσθετα,Nata con otros ingredientes,Panna con altri ingredienti,Room met andere ingrediënten,Śmietanka z dodatkami,Smetana z drugimi sestavinami
+A02MN,Cream sprayable,Sprayfløte,Sprühsahne,Σαντιγί σπρέι,Nata en spray,Panna spray,Slagroom uit spuitbus,Śmietana w sprayu,Smetana v pršilu
+A02MP,Flavoured milks,Smakstilsatt melk,Aromatisierte Milch,Αρωματισμένο γάλα,Leches saborizadas,Latte aromatizzato,Gearomatiseerde melk,Mleko smakowe,Aromatizirano mleko
+A02MV,Buttermilk,Kulturmelk,Buttermilch,Ξινόγαλα,Suero de mantequilla,Latticello,Karnemelk,Maślanka,Pinjenec
+A02NB,"Sour cream, plain",Rømme,Saure Sahne,Ξινή κρέμα,Nata agria,Panna acida,Zure room,Śmietana kwaśna,Kisla smetana
+A02NC,Créme fraiche and other mild variants of sour cream,Crème fraîche,Crème fraîche,Κρεμ φρες,Crema fresca,Crème fraîche,Crème fraîche,Crème fraîche,Crème fraîche
+A02NF,"Yoghurt, cow milk",Yoghurt av kumelk,Joghurt aus Kuhmilch,Γιαούρτι αγελαδινό,Yogur de leche de vaca,Yogurt di latte vaccino,Yoghurt van koemelk,Jogurt z mleka krowiego,Jogurt iz kravjega mleka
+A02NM,"Yoghurt, goat milk",Yoghurt av geitemelk,Joghurt aus Ziegenmilch,Γιαούρτι κατσικίσιο,Yogur de leche de cabra,Yogurt di latte di capra,Yoghurt van geitenmelk,Jogurt z mleka koziego,Jogurt iz kozjega mleka
+A02NQ,"Yoghurt drinks, including sweetened and/or flavoured variants",Yoghurtdrikker,Joghurtgetränke,Ροφήματα γιαουρτιού,Bebidas de yogur,Bevande allo yogurt,Yoghurtdranken,Napoje jogurtowe,Jogurtovi napitki
+A02NR,Probiotic milk-like drinks,Probiotiske melkedrikker,Probiotische Milchgetränke,Προβιοτικά ροφήματα γάλακτος,Bebidas lácteas probióticas,Bevande probiotiche a base di latte,Probiotische melkdranken,Napoje probiotyczne mleczne,Probiotični mlečni napitki
+A02NV,Kefir,Kefir,Kefir,Κεφίρ,Kéfir,Kefir,Kefir,Kefir,Kefir
+A02PF,"Evaporated milk (liquid, unsweetened)",Evaporert melk,Kondensmilch ungezuckert,Γάλα εβαπορέ,Leche evaporada,Latte evaporato,Geëvaporeerde melk,Mleko zagęszczone niesłodzone,Evaporirano mleko
+A02PG,Condensed milk (sometimes with added sugars),Kondensert melk,Kondensmilch gezuckert,Γάλα ζαχαρούχο,Leche condensada,Latte condensato,Gecondenseerde melk,Mleko skondensowane,Kondenzirano mleko
+A02PJ,Milk powder,Melkepulver,Milchpulver,Γάλα σε σκόνη,Leche en polvo,Latte in polvere,Melkpoeder,Mleko w proszku,Mleko v prahu
+A02PV,Dairy desserts spoonable,Melkedesserter,Milchdesserts,Επιδόρπια γάλακτος,Postres lácteos,Dessert al latte,Zuiveldesserts,Desery mleczne,Mlečne sladice
+A02PX,Custard,Vaniljesaus,Vanillepudding,Κρέμα ζαχαροπλαστικής,Natillas,Crema pasticcera,Vla,Krem budyniowy,Vaniljeva krema
+A02PY,Starchy pudding,Pudding,Pudding,Πουτίγκα αμύλου,Flan de almidón,Budino di amido,Pudding,Budyń,Puding
+A02QA,"Ice cream, milk-based",Iskrem av melk,Milcheis,Παγωτό γάλακτος,Helado de leche,Gelato al latte,Roomijs,Lody mleczne,Mlečni sladoled
+A02QB,"Ice cream, milk-imitate based",Iskrem uten melk,Eis auf Milchersatzbasis,Παγωτό με υποκατάστατο γάλακτος,Helado sin leche,Gelato senza latte,IJs op basis van melkvervanger,Lody na bazie zamienników mleka,Sladoled na osnovi mlečnih nadomestkov
+A02QC,Frozen yoghurt,Frossen yoghurt,Frozen Yogurt,Παγωμένο γιαούρτι,Yogur helado,Yogurt gelato,Frozen yoghurt,Jogurt mrożony,Zamrznjen jogurt
+A02QD,Milkshakes,Milkshake,Milchshakes,Μιλκσέικ,Batidos,Frappè al latte,Milkshakes,Koktajle mleczne,Mlečni napitki
+A02QF,Fresh uncured cheese,Ferskost,Frischkäse,Φρέσκο τυρί,Queso fresco,Formaggio fresco,Verse kaas,Ser twarogowy świeży,Sveži sir
+A02RB,Soft brined cheese (feta type),Salt lagret bløtost (fetatype),Salzlakenkäse (Feta-Typ),Λευκό τυρί άλμης (τύπου φέτα),Queso en salmuera (tipo feta),Formaggio in salamoia (tipo feta),Pekelkaas (fetatype),Ser solankowy (typu feta),Sir v slanici (vrste feta)
+A02RJ,Soft-ripened washed-rind cheese (limburger type),Rødkittost,Rotschmierekäse,Μαλακό τυρί με πλυμένη κρούστα,Queso de corteza lavada,Formaggio a crosta lavata,Roodbacteriekaas,Ser o mytej skórce,Mehki sir z oprano skorjo
+A02RT,"Soft-ripened cheese with bloomy rind (white mould) (brie, camembert type)",Hvitmuggost,Weißschimmelkäse,Μαλακό τυρί με λευκή μούχλα,Queso de corteza enmohecida blanca,Formaggio a crosta fiorita,Witschimmelkaas,Ser pleśniowy biały,Mehki sir z belo plesnijo
+A02ST,Firm - ripened cheeses,Faste modnede oster,Feste Reifekäse,Σκληρά ώριμα τυριά,Quesos curados firmes,Formaggi stagionati semiduri,Vaste gerijpte kazen,Sery dojrzewające twarde,Trdi zoreni siri
+A02SV,Firm/semi-hard cheese (gouda and edam type),Halvfast ost (gouda- og edamtype),Schnittkäse (Gouda- und Edamer-Typ),Ημίσκληρο τυρί (τύπου γκούντα),Queso semiduro (tipo gouda y edam),Formaggio semiduro (tipo gouda ed edam),Halfharde kaas (goudse en edammer),Ser półtwardy (typu gouda i edam),Poltrdi sir (vrste gauda in edamec)
+A02YE,"Hard cheese (cheddar, emmental type)",Fast ost (cheddar- og emmentaltype),Hartkäse (Cheddar- und Emmentaler-Typ),Σκληρό τυρί (τύπου τσένταρ),Queso duro (tipo cheddar y emmental),Formaggio duro (tipo cheddar ed emmental),Harde kaas (cheddar en emmentaler),Ser twardy (typu cheddar i ementaler),Trdi sir (vrste čedar in ementalec)
+A02ZH,"Extra hard cheese (parmesan, grana type)",Ekstra fast ost (parmesantype),Extrahartkäse (Parmesan-Typ),Πολύ σκληρό τυρί (τύπου παρμεζάνα),Queso extraduro (tipo parmesano),Formaggio a pasta dura (tipo grana),Extra harde kaas (parmezaan),Ser bardzo twardy (typu parmezan),Zelo trdi sir (vrste parmezan)
+A030B,Firm-ripened blue mould-veined cheese,Blåmuggost,Blauschimmelkäse,Τυρί με γαλάζια μούχλα,Queso azul,Formaggio erborinato,Blauwaderkaas,Ser pleśniowy niebieski,Sir z modro plesnijo
+A030Z,"Firm-ripened cheese with added herbs, spices or other ingredients",Fast ost med urter og krydder,Schnittkäse mit Kräutern und Gewürzen,Τυρί με βότανα και μπαχαρικά,Queso curado con hierbas y especias,Formaggio stagionato con erbe e spezie,Gerijpte kaas met kruiden en specerijen,Ser dojrzewający z ziołami i przyprawami,Zoreni sir z zelišči in začimbami
+A031A,Processed cheese and spreads,Smelteost og ostepålegg,Schmelzkäse und Käsezubereitungen,Τυρί λιωμένο και επαλείψιμο,Queso fundido y untables,Formaggio fuso e spalmabile,Smeltkaas en kaasspreads,Ser topiony i pasty serowe,Topljeni sir in sirni namazi
+A031B,"Processed cheese, sliceable",Smelteost i skiver,Schmelzkäse in Scheiben,Τυρί λιωμένο σε φέτες,Queso fundido en lonchas,Formaggio fuso a fette,Smeltkaas in plakken,Ser topiony w plastrach,Topljeni sir v rezinah
+A031C,"Processed cheese, spreadable",Smørbar smelteost,Streichschmelzkäse,Τυρί λιωμένο επαλείψιμο,Queso fundido untable,Formaggio fuso spalmabile,Smeerbare smeltkaas,Ser topiony smarowny,Mazavi topljeni sir
+A031D,Processed cheese wedges and similar,Smelteost i porsjoner,Schmelzkäseecken,Τυρί λιωμένο σε μερίδες,Porciones de queso fundido,Formaggino a porzioni,Smeltkaaspunten,Serki topione w trójkącikach,Topljeni sir v trikotnikih
+A031G,Hen eggs,Hønseegg,Hühnereier,Αυγά κότας,Huevos de gallina,Uova di gallina,Kippeneieren,Jaja kurze,Kokošja jajca
+A031S,Hen egg yolk,Eggeplomme,Eigelb,Κρόκος αυγού,Yema de huevo,Tuorlo d'uovo,Eigeel,Żółtko jaja,Jajčni rumenjak
+A031T,Hen egg white,Eggehvite,Eiklar,Ασπράδι αυγού,Clara de huevo,Albume d'uovo,Eiwit,Białko jaja,Jajčni beljak
+A031X,"Hen egg mixed whole, dried",Tørket helegg,Volleipulver,Αυγό ολόκληρο αποξηραμένο,Huevo entero deshidratado,Uovo intero essiccato,Heelei poeder,Jajo całe w proszku,Celo jajce v prahu
+A032B,Boiled eggs,Kokte egg,Gekochte Eier,Αυγά βραστά,Huevos cocidos,Uova sode,Gekookte eieren,Jaja gotowane,Kuhana jajca
+A032C,Fried eggs,Stekte egg,Spiegeleier,Αυγά τηγανητά,Huevos fritos,Uova fritte,Gebakken eieren,Jaja smażone,Ocvrta jajca
+A032H,Sucrose (common sugar),Sukrose,Saccharose,Σακχαρόζη,Sacarosa,Saccarosio,Sacharose,Sacharoza,Saharoza
+A032T,Fructose,Fruktose,Fructose,Φρουκτόζη,Fructosa,Fruttosio,Fructose,Fruktoza,Fruktoza
+A032V,Glucose,Glukose,Glucose,Γλυκόζη,Glucosa,Glucosio,Glucose,Glukoza,Glukoza
+A033J,Honey,Honning,Honig,Μέλι,Miel,Miele,Honing,Miód,Med
+A033Z,Syrups,Sirup,Sirupe,Σιρόπια,Siropes,Sciroppi,Stroop,Syropy,Sirupi
+A034G,Bitter chocolate,Mørk sjokolade,Zartbitterschokolade,Μαύρη σοκολάτα,Chocolate negro,Cioccolato fondente,Pure chocolade,Czekolada gorzka,Temna čokolada
+A034J,Milk chocolate,Melkesjokolade,Milchschokolade,Σοκολάτα γάλακτος,Chocolate con leche,Cioccolato al latte,Melkchocolade,Czekolada mleczna,Mlečna čokolada
+A034P,White chocolate,Hvit sjokolade,Weiße Schokolade,Λευκή σοκολάτα,Chocolate blanco,Cioccolato bianco,Witte chocolade,Czekolada biała,Bela čokolada
+A034Q,Filled chocolate,Fylt sjokolade,Gefüllte Schokolade,Σοκολάτα με γέμιση,Chocolate relleno,Cioccolato ripieno,Gevulde chocolade,Czekolada nadziewana,Polnjena čokolada
+A034R,Chocolate coated confectionery,Sjokoladetrukket konfekt,Schokoladenüberzogene Süßwaren,Ζαχαρώδη με επικάλυψη σοκολάτας,Confitería bañada en chocolate,Dolciumi ricoperti di cioccolato,Met chocolade omhulde snoep,Wyroby w polewie czekoladowej,Slaščice v čokoladnem oblivu
+A034S,Pralines,Konfekt,Pralinen,Πραλίνες,Bombones,Praline,Bonbons,Praliny,Pralineji
+A034X,Hard candies,Drops,Bonbons,Καραμέλες σκληρές,Caramelos duros,Caramelle dure,Zuurtjes,Cukierki twarde,Trdi bonboni
+A034Y,Marzipan,Marsipan,Marzipan,Αμυγδαλόπαστα,Mazapán,Marzapane,Marsepein,Marcepan,Marcipan
+A035B,Toffee,Karamell,Toffee,Καραμέλα τόφι,Toffee,Toffee,Toffee,Toffi,Toffi
+A035C,Fudge,Fudge,Fudge,Φαντζ,Fudge,Fudge,Fudge,Krówki,Fudge
+A035D,Nougat,Nougat,Nougat,Νουγκά,Turrón,Torrone,Noga,Nugat,Nugat
+A035H,Foamed sugar products (marshmallows),Marshmallows,Schaumzuckerwaren,Ζαχαρώδη αφρού (μαρσμέλοου),Nubes de azúcar,Marshmallow,Spekjes,Pianki cukrowe,Penasti bonboni
+A035J,Liquorice candies,Lakris,Lakritz,Καραμέλες γλυκόριζας,Regaliz,Liquirizia,Drop,Cukierki lukrecjowe,Sladki koren bonboni
+A035L,Jelly candies,Vingummi,Fruchtgummi,Ζελεδάκια,Gominolas,Caramelle gommose,Winegums,Żelki,Želejni bonboni
+A035M,Chewing gum,Tyggegummi,Kaugummi,Τσίχλα,Chicle,Gomma da masticare,Kauwgom,Guma do żucia,Žvečilni gumi
+A035N,Basic sweet masses,Grunnmasser til konfekt,Süße Grundmassen,Βασικές γλυκές μάζες,Masas dulces base,Paste dolci di base,Basis zoete massa's,Podstawowe masy cukiernicze,Osnovne sladke mase
+A036F,Water-based desserts spoonable,Vannbaserte desserter,Desserts auf Wasserbasis,Επιδόρπια με βάση το νερό,Postres a base de agua,Dessert a base d'acqua,Desserts op waterbasis,Desery na bazie wody,Sladice na osnovi vode
+A036H,Gelatine dessert,Gelédessert,Geleedessert,Επιδόρπιο ζελατίνης,Postre de gelatina,Dessert di gelatina,Geleidessert,Deser żelatynowy,Želatinasta sladica
+A036J,Water-based ice creams,Vannis,Wassereis,Παγωτά νερού,Helados de agua,Ghiaccioli,Waterijs,Lody wodne,Vodni sladoledi
+A036K,Sorbet,Sorbet,Sorbet,Σορμπέ,Sorbete,Sorbetto,Sorbet,Sorbet,Sorbet
+A036N,"Vegetable fats and oils, edible",Vegetabilske fett og oljer,Pflanzliche Fette und Öle,Φυτικά λίπη και έλαια,Grasas y aceites vegetales,Grassi e oli vegetali,Plantaardige vetten en oliën,Tłuszcze i oleje roślinne,Rastlinske maščobe in olja
+A036P,Olive oils,Olivenolje,Olivenöl,Ελαιόλαδο,Aceite de oliva,Olio d'oliva,Olijfolie,Oliwa z oliwek,Oljčno olje
+A036T,Seed oils,Frøoljer,Samenöle,Σπορέλαια,Aceites de semillas,Oli di semi,Zaadoliën,Oleje z nasion,Olja iz semen
+A036V,"Rape seed oil, edible",Rapsolje,Rapsöl,Κραμβέλαιο,Aceite de colza,Olio di colza,Koolzaadolie,Olej rzepakowy,Olje oljne ogrščice
+A036X,"Soya bean oil, refined",Soyaolje,Sojaöl,Σογιέλαιο,Aceite de soja,Olio di soia,Sojaolie,Olej sojowy,Sojino olje
+A036Y,"Maize oil, edible",Maisolje,Maiskeimöl,Καλαμποκέλαιο,Aceite de maíz,Olio di mais,Maïsolie,Olej kukurydziany,Koruzno olje
+A037A,"Peanut oil, edible",Peanøttolje,Erdnussöl,Αραχιδέλαιο,Aceite de cacahuete,Olio di arachidi,Pindaolie,Olej arachidowy,Arašidovo olje
+A037B,"Safflower seed oil, edible",Saflorolje,Distelöl,Καρθαμέλαιο,Aceite de cártamo,Olio di cartamo,Saffloerolie,Olej krokoszowy,Žafranikino olje
+A037C,"Sesame seed oil, edible",Sesamolje,Sesamöl,Σησαμέλαιο,Aceite de sésamo,Olio di sesamo,Sesamolie,Olej sezamowy,Sezamovo olje
+A037D,"Sunflower seed oil, edible",Solsikkeolje,Sonnenblumenöl,Ηλιέλαιο,Aceite de girasol,Olio di girasole,Zonnebloemolie,Olej słonecznikowy,Sončnično olje
+A037G,Linseed oil,Linfrøolje,Leinöl,Λινέλαιο,Aceite de linaza,Olio di lino,Lijnzaadolie,Olej lniany,Laneno olje
+A037L,Other plant oils,Andre planteoljer,Andere Pflanzenöle,Άλλα φυτικά έλαια,Otros aceites vegetales,Altri oli vegetali,Overige plantaardige oliën,Inne oleje roślinne,Druga rastlinska olja
+A037M,Coconut oil/fat,Kokosolje,Kokosfett,Λάδι καρύδας,Aceite de coco,Olio di cocco,Kokosvet,Olej kokosowy,Kokosovo olje
+A037N,Palm oil/fat,Palmeolje,Palmfett,Φοινικέλαιο,Aceite de palma,Olio di palma,Palmvet,Olej palmowy,Palmovo olje
+A037P,"Palm kernel oil, edible",Palmekjerneolje,Palmkernöl,Λάδι πυρήνα φοίνικα,Aceite de palmiste,Olio di palmisto,Palmpittenolie,Olej z ziaren palmowych,Olje palmovih jedrc
+A037V,Pork lard,Svinefett,Schweineschmalz,Χοιρινό λίπος,Manteca de cerdo,Strutto,Reuzel,Smalec wieprzowy,Svinjska mast
+A037X,Beef tallow (including processed suet),Oksetalg,Rindertalg,Βόειο λίπος,Sebo de vacuno,Sego di bovino,Rundervet,Łój wołowy,Goveji loj
+A038F,"Chicken fat, processed",Kyllingfett,Hühnerfett,Λίπος κοτόπουλου,Grasa de pollo,Grasso di pollo,Kippenvet,Tłuszcz z kurczaka,Piščančja maščoba
+A039C,Butter,Smør,Butter,Βούτυρο,Mantequilla,Burro,Boter,Masło,Maslo
+A039M,"Juice, apple",Eplejuice,Apfelsaft,Χυμός μήλου,Zumo de manzana,Succo di mela,Appelsap,Sok jabłkowy,Jabolčni sok
+A039R,"Juice, red currant",Ripsjuice,Johannisbeersaft,Χυμός φραγκοστάφυλου,Zumo de grosella roja,Succo di ribes rosso,Rode bessensap,Sok z czerwonej porzeczki,Sok rdečega ribeza
+A03AC,"Juice, pear",Pærejuice,Birnensaft,Χυμός αχλαδιού,Zumo de pera,Succo di pera,Perensap,Sok gruszkowy,Hruškov sok
+A03AF,"Juice, pineapple",Ananasjuice,Ananassaft,Χυμός ανανά,Zumo de piña,Succo di ananas,Ananassap,Sok ananasowy,Ananasov sok
+A03AH,"Juice, lemon",Sitronjuice,Zitronensaft,Χυμός λεμονιού,Zumo de limón,Succo di limone,Citroensap,Sok cytrynowy,Limonin sok
+A03AK,"Juice, grape",Druejuice,Traubensaft,Χυμός σταφυλιού,Zumo de uva,Succo d'uva,Druivensap,Sok winogronowy,Grozdni sok
+A03AL,"Juice, grapefruit",Grapefruktjuice,Grapefruitsaft,Χυμός γκρέιπφρουτ,Zumo de pomelo,Succo di pompelmo,Grapefruitsap,Sok grejpfrutowy,Grenivkin sok
+A03AM,"Juice, orange",Appelsinjuice,Orangensaft,Χυμός πορτοκαλιού,Zumo de naranja,Succo d'arancia,Sinaasappelsap,Sok pomarańczowy,Pomarančni sok
+A03AN,Mixed fruit juice,Blandet fruktjuice,Mehrfruchtsaft,Χυμός φρούτων ανάμεικτος,Zumo de frutas mixto,Succo di frutta misto,Gemengd vruchtensap,Sok wieloowocowy,Mešani sadni sok
+A03BB,Fruit nectars (min. 25-50% fruit as defined in EU legislation),Fruktnektar,Fruchtnektar,Νέκταρ φρούτων,Néctares de fruta,Nettari di frutta,Vruchtennectar,Nektary owocowe,Sadni nektarji
+A03BD,"Nectar, apple",Eplenektar,Apfelnektar,Νέκταρ μήλου,Néctar de manzana,Nettare di mela,Appelnectar,Nektar jabłkowy,Jabolčni nektar
+A03BL,Mixed fruit nectars,Blandet fruktnektar,Mehrfruchtnektar,Νέκταρ φρούτων ανάμεικτο,Néctares de frutas mixtas,Nettari di frutta misti,Gemengde vruchtennectar,Nektary wieloowocowe,Mešani sadni nektarji
+A03BN,Fruit juice concentrates,Fruktjuicekonsentrat,Fruchtsaftkonzentrate,Συμπυκνωμένοι χυμοί φρούτων,Concentrados de zumo de fruta,Concentrati di succo di frutta,Vruchtensapconcentraten,Koncentraty soków owocowych,Koncentrati sadnih sokov
+A03CJ,"Juice, tomato",Tomatjuice,Tomatensaft,Χυμός ντομάτας,Zumo de tomate,Succo di pomodoro,Tomatensap,Sok pomidorowy,Paradižnikov sok
+A03CK,"Juice, carrot",Gulrotjuice,Karottensaft,Χυμός καρότου,Zumo de zanahoria,Succo di carota,Wortelsap,Sok marchwiowy,Korenčkov sok
+A03CM,"Juice, beetroot",Rødbetjuice,Rote-Bete-Saft,Χυμός παντζαριού,Zumo de remolacha,Succo di barbabietola,Bietensap,Sok z buraków,Sok rdeče pese
+A03CN,"Juice, white cabbage",Hvitkåljuice,Weißkohlsaft,Χυμός λάχανου,Zumo de col blanca,Succo di cavolo cappuccio,Witte koolsap,Sok z kapusty białej,Sok belega zelja
+A03CS,Mixed vegetable juice,Blandet grønnsaksjuice,Gemüsesaft gemischt,Χυμός λαχανικών ανάμεικτος,Zumo de verduras mixto,Succo di verdure misto,Gemengd groentesap,Sok warzywny mieszany,Mešani zelenjavni sok
+A03DE,Mixed juices with added ingredients,Blandet juice med tilsetninger,Mischsäfte mit Zutaten,Ανάμεικτοι χυμοί με πρόσθετα,Zumos mixtos con ingredientes añadidos,Succhi misti con ingredienti aggiunti,Gemengde sappen met toevoegingen,Soki mieszane z dodatkami,Mešani sokovi z dodatki
+A03DF,Fruit smoothies,Fruktsmoothies,Frucht-Smoothies,Σμούθι φρούτων,Smoothies de fruta,Frullati di frutta,Vruchtensmoothies,Smoothie owocowe,Sadni smutiji
+A03DL,Tap water,Springvann,Leitungswasser,Νερό βρύσης,Agua del grifo,Acqua di rubinetto,Kraanwater,Woda wodociągowa,Vodovodna voda
+A03DQ,Natural mineral water,Naturlig mineralvann,Natürliches Mineralwasser,Φυσικό μεταλλικό νερό,Agua mineral natural,Acqua minerale naturale,Natuurlijk mineraalwater,Naturalna woda mineralna,Naravna mineralna voda
+A03EA,"Soft drink, with fruit juice (fruit content below the minimum for nectars)",Leskedrikk med fruktjuice,Erfrischungsgetränk mit Fruchtsaft,Αναψυκτικό με χυμό φρούτων,Refresco con zumo de fruta,Bibita con succo di frutta,Frisdrank met vruchtensap,Napój gazowany z sokiem owocowym,Brezalkoholna pijača s sadnim sokom
+A03EX,"Soft drink, flavoured, no fruit",Leskedrikk uten frukt,Erfrischungsgetränk ohne Frucht,Αναψυκτικό χωρίς φρούτα,Refresco sin fruta,Bibita senza frutta,Frisdrank zonder vruchtensap,Napój gazowany bez owoców,Brezalkoholna pijača brez sadja
+A03FQ,Cola-type drinks,Colabrus,Cola-Getränke,Αναψυκτικά τύπου κόλα,Refrescos de cola,Bevande tipo cola,Coladranken,Napoje typu cola,Pijače vrste kola
+A03GA,Energy drinks,Energidrikker,Energydrinks,Ενεργειακά ποτά,Bebidas energéticas,Bevande energetiche,Energiedranken,Napoje energetyczne,Energijske pijače
+A03GB,Isotonic and sport drinks,Sportsdrikker,Isotonische und Sportgetränke,Ισοτονικά και αθλητικά ποτά,Bebidas isotónicas y deportivas,Bevande isotoniche e sportive,Sportdranken,Napoje izotoniczne i sportowe,Izotonične in športne pijače
+A03GE,Liquid drink bases (including concentrates and home-made preparations),Flytende saftkonsentrat,Flüssige Getränkegrundlagen,Υγρές βάσεις ροφημάτων,Bases líquidas para bebidas,Basi liquide per bevande,Vloeibare drankbasis,Płynne bazy do napojów,Tekoče osnove za napitke
+A03GF,Powdered drink bases,Pulver til drikke,Getränkepulver,Σκόνες για ροφήματα,Bases en polvo para bebidas,Basi in polvere per bevande,Drankpoeders,Bazy do napojów w proszku,Osnove za napitke v prahu
+A03HH,"Cocoa beverage-preparation, powder",Kakaopulver til drikke,Kakaogetränkepulver,Σκόνη ροφήματος κακάο,Preparado de cacao en polvo,Preparato di cacao in polvere,Cacaodrankpoeder,Kakao w proszku do napojów,Kakavov napitek v prahu
+A03KA,Coffee beverages,Kaffedrikker,Kaffeegetränke,Ροφήματα καφέ,Bebidas de café,Bevande al caffè,Koffiedranken,Napoje kawowe,Kavni napitki
+A03KY,Cocoa beverages,Kakaodrikker,Kakaogetränke,Ροφήματα κακάο,Bebidas de cacao,Bevande al cacao,Cacaodranken,Napoje kakaowe,Kakavovi napitki
+A03LB,Tea beverages,Tedrikker,Teegetränke,Ροφήματα τσαγιού,Bebidas de té,Bevande al tè,Theedranken,Napoje herbaciane,Čajni napitki
+A03LG,Herbal and other non-tea infusions,Urtete,Kräutertees,Αφεψήματα βοτάνων,Infusiones de hierbas,Infusi di erbe,Kruidenthee,Napary ziołowe,Zeliščni poparki
+A03MC,Lager beer,Pils,Lagerbier,Μπίρα λάγκερ,Cerveza lager,Birra lager,Pils,Piwo jasne pełne,Ležak
+A03MH,Ale beer,Ale,Ale,Μπίρα έιλ,Cerveza ale,Birra ale,Ale,Piwo ale,Ale
+A03MM,Wheat beer,Hveteøl,Weizenbier,Μπίρα σίτου,Cerveza de trigo,Birra di frumento,Witbier,Piwo pszeniczne,Pšenično pivo
+A03MQ,Shandy,Ølblanding med brus,Radler,Μπίρα με λεμονάδα,Clara de cerveza,Birra e limonata,Radler,Piwo z lemoniadą,Radler
+A03MR,Mixed beer drinks,Ølblandinger,Biermischgetränke,Ανάμεικτα ποτά μπίρας,Bebidas mixtas de cerveza,Bevande miste a base di birra,Biermixdranken,Napoje piwne mieszane,Mešane pivske pijače
+A03MT,Wine,Vin,Wein,Κρασί,Vino,Vino,Wijn,Wino,Vino
+A03MV,"Wine, white",Hvitvin,Weißwein,Λευκό κρασί,Vino blanco,Vino bianco,Witte wijn,Wino białe,Belo vino
+A03MX,"Wine, red",Rødvin,Rotwein,Κόκκινο κρασί,Vino tinto,Vino rosso,Rode wijn,Wino czerwone,Rdeče vino
+A03MY,"Wine, rosé",Rosévin,Roséwein,Ροζέ κρασί,Vino rosado,Vino rosato,Rosé wijn,Wino różowe,Rosé vino
+A03ND,Cider,Sider,Apfelwein,Μηλίτης,Sidra,Sidro,Cider,Cydr,Jabolčnik
+A03NG,Fortified and liqueur wines,Sterkvin,Likörweine,Ενισχυμένοι οίνοι,Vinos generosos y de licor,Vini liquorosi,Versterkte wijn,Wina wzmacniane,Likerska vina
+A03NH,Vermouth,Vermut,Wermut,Βερμούτ,Vermut,Vermut,Vermout,Wermut,Vermut
+A03NJ,Sherry,Sherry,Sherry,Σέρι,Jerez,Sherry,Sherry,Sherry,Sherry
+A03NK,Madeira,Madeira,Madeira,Μαδέρα,Madeira,Madeira,Madeira,Madera,Madeira
+A03NL,Port,Portvin,Portwein,Πόρτο,Oporto,Porto,Port,Porto,Porto
+A03NS,Liqueurs,Likører,Liköre,Λικέρ,Licores,Liquori,Likeuren,Likiery,Likerji
+A03NT,Fruit liqueur,Fruktlikør,Fruchtlikör,Λικέρ φρούτων,Licor de frutas,Liquore alla frutta,Vruchtenlikeur,Likier owocowy,Sadni liker
+A03NV,Herb liqueur,Urtelikør,Kräuterlikör,Λικέρ βοτάνων,Licor de hierbas,Liquore alle erbe,Kruidenlikeur,Likier ziołowy,Zeliščni liker
+A03NZ,Egg liqueur,Eggelikør,Eierlikör,Λικέρ αυγού,Licor de huevo,Liquore all'uovo,Advocaat,Likier jajeczny,Jajčni liker
+A03PA,Cream liqueur,Fløtelikør,Sahnelikör,Λικέρ κρέμας,Licor de crema,Liquore alla crema,Roomlikeur,Likier śmietankowy,Smetanov liker
+A03PN,Cocktail drink,Cocktail,Cocktail,Κοκτέιλ,Cóctel,Cocktail,Cocktail,Koktajl,Koktajl
+A03PQ,Other mixed alcoholic drinks,Andre blandede alkoholdrikker,Andere alkoholische Mischgetränke,Άλλα ανάμεικτα αλκοολούχα ποτά,Otras bebidas alcohólicas mixtas,Altre bevande alcoliche miste,Overige gemengde alcoholdranken,Inne mieszane napoje alkoholowe,Druge mešane alkoholne pijače
+A03QE,"Infant formulae, liquid",Morsmelkerstatning flytende,Säuglingsanfangsnahrung flüssig,Βρεφικό γάλα υγρό,Preparado para lactantes líquido,Latte per lattanti liquido,Zuigelingenvoeding vloeibaar,Mleko początkowe płynne,Začetna mlečna formula tekoča
+A03QQ,"Follow-on formulae, liquid",Tilskuddsblanding flytende,Folgenahrung flüssig,Γάλα δεύτερης βρεφικής ηλικίας υγρό,Preparado de continuación líquido,Latte di proseguimento liquido,Opvolgmelk vloeibaar,Mleko następne płynne,Nadaljevalna mlečna formula tekoča
+A03QY,Simple cereals which have to be reconstituted with milk or other appropriate nutritious liquids,Barnegrøt til utblanding,Getreidebreie zum Anrühren,Κρέμες δημητριακών προς ανασύσταση,Cereales infantiles para reconstituir,Cereali per l'infanzia da ricostituire,Babygranen om aan te maken,Kaszki zbożowe do przygotowania,Otroške žitne kaše za pripravo
+A03RA,"Biscuits, rusks and cookies for children",Barnekjeks,Kinderkekse und Zwieback,Μπισκότα και παξιμάδια για παιδιά,Galletas infantiles,Biscotti per l'infanzia,Kinderkoekjes,Herbatniki dla dzieci,Otroški keksi in prepečenec
+A03RC,Ready-to-eat meal for infants and young children,Ferdigmat for spedbarn og småbarn,Fertiggerichte für Säuglinge und Kleinkinder,Έτοιμα γεύματα για βρέφη και νήπια,Comidas preparadas infantiles,Pasti pronti per lattanti e bambini,Kant-en-klaarmaaltijd voor baby's,Gotowe posiłki dla niemowląt i małych dzieci,Pripravljeni obroki za dojenčke in malčke
+A03RD,Ready-to-eat vegetable-based meal for children,Ferdigmat med grønnsaker for barn,Fertiggerichte auf Gemüsebasis für Kinder,Έτοιμα γεύματα λαχανικών για παιδιά,Comidas infantiles a base de verduras,Pasti pronti a base di verdure per bambini,Kant-en-klaarmaaltijd op groentebasis voor kinderen,Gotowe posiłki warzywne dla dzieci,Pripravljeni zelenjavni obroki za otroke
+A03RH,Ready-to-eat dairy-based meal for children,Ferdigmat med melk for barn,Fertiggerichte auf Milchbasis für Kinder,Έτοιμα γεύματα γάλακτος για παιδιά,Comidas infantiles a base de lácteos,Pasti pronti a base di latte per bambini,Kant-en-klaarmaaltijd op zuivelbasis voor kinderen,Gotowe posiłki mleczne dla dzieci,Pripravljeni mlečni obroki za otroke
+A03RJ,Ready-to-eat fruit-based meal for children,Ferdigmat med frukt for barn,Fertiggerichte auf Obstbasis für Kinder,Έτοιμα γεύματα φρούτων για παιδιά,Comidas infantiles a base de frutas,Pasti pronti a base di frutta per bambini,Kant-en-klaarmaaltijd op fruitbasis voor kinderen,Gotowe posiłki owocowe dla dzieci,Pripravljeni sadni obroki za otroke
+A03RV,Single meal replacement for weight reduction,Måltidserstatning for vektreduksjon,Mahlzeitersatz zur Gewichtsreduktion,Υποκατάστατο γεύματος για απώλεια βάρους,Sustitutivo de comidas para control de peso,Sostituto del pasto per il controllo del peso,Maaltijdvervanger voor gewichtsbeheersing,Zamiennik posiłku do kontroli masy ciała,Nadomestek obroka za uravnavanje telesne teže
+A03SH,Oral rehydration products,Oral rehydreringsvæske,Orale Rehydratationslösungen,Προϊόντα ενυδάτωσης από το στόμα,Productos de rehidratación oral,Prodotti per la reidratazione orale,Orale rehydratatiemiddelen,Produkty do nawadniania doustnego,Izdelki za peroralno rehidracijo
+A03TE,Meat imitates,Kjøtterstatninger,Fleischersatz,Υποκατάστατα κρέατος,Sustitutos de la carne,Sostituti della carne,Vleesvervangers,Zamienniki mięsa,Mesni nadomestki
+A03TH,Milk imitates,Melkeerstatninger,Milchersatz,Υποκατάστατα γάλακτος,Bebidas vegetales sustitutivas de la leche,Sostituti del latte,Melkvervangers,Zamienniki mleka,Mlečni nadomestki
+A03TQ,Dairy imitates other than milks,Andre melkeproduktserstatninger,Milchprodukt-Ersatz außer Milch,Άλλα υποκατάστατα γαλακτοκομικών,Sustitutos lácteos distintos de la leche,Sostituti dei latticini diversi dal latte,Overige zuivelvervangers,Zamienniki nabiału inne niż mleko,Nadomestki mlečnih izdelkov razen mleka
+A03TR,Imitation cream,Fløteerstatning,Sahneersatz,Υποκατάστατο κρέμας,Sustituto de nata,Sostituto della panna,Slagroomvervanger,Zamiennik śmietanki,Nadomestek smetane
+A03TS,Non dairy coffee creamer,Kaffefløteerstatning,Kaffeeweißer,Υποκατάστατο γάλακτος για καφέ,Sustituto de leche para café,Sostituto del latte per caffè,Koffiemelkvervanger,Zabielacz do kawy,Nadomestek mleka za kavo
+A03TT,Tofu,Tofu,Tofu,Τόφου,Tofu,Tofu,Tofu,Tofu,Tofu
+A03TV,Soya yoghurt,Soyayoghurt,Sojajoghurt,Γιαούρτι σόγιας,Yogur de soja,Yogurt di soia,Sojayoghurt,Jogurt sojowy,Sojin jogurt
+A03TY,Imitation cheese,Osteerstatning,Käseersatz,Υποκατάστατο τυριού,Sustituto de queso,Sostituto del formaggio,Kaasvervanger,Zamiennik sera,Nadomestek sira
+A03TZ,"Imitation yoghurt, non soy",Yoghurterstatning uten soya,Joghurtersatz ohne Soja,Υποκατάστατο γιαουρτιού χωρίς σόγια,Sustituto de yogur sin soja,Sostituto dello yogurt senza soia,Yoghurtvervanger zonder soja,Zamiennik jogurtu bez soi,Nadomestek jogurta brez soje
+A03VD,Potato based dishes,Potetretter,Kartoffelgerichte,Πιάτα με βάση την πατάτα,Platos a base de patata,Piatti a base di patate,Aardappelgerechten,Dania ziemniaczane,Krompirjeve jedi
+A03VM,Legumes based dishes,Belgfruktretter,Hülsenfruchtgerichte,Πιάτα με βάση τα όσπρια,Platos a base de legumbres,Piatti a base di legumi,Peulvruchtgerechten,Dania ze strączków,Jedi iz stročnic
+A03VV,Meat based dishes,Kjøttretter,Fleischgerichte,Πιάτα με βάση το κρέας,Platos a base de carne,Piatti a base di carne,Vleesgerechten,Dania mięsne,Mesne jedi
+A03XX,Vegetable based dishes,Grønnsaksretter,Gemüsegerichte,Πιάτα με βάση τα λαχανικά,Platos a base de verduras,Piatti a base di verdure,Groentegerechten,Dania warzywne,Zelenjavne jedi
+A03YJ,Egg based dishes,Eggeretter,Eiergerichte,Πιάτα με βάση το αυγό,Platos a base de huevo,Piatti a base di uova,Eiergerechten,Dania z jaj,Jajčne jedi
+A03YZ,Sandwich and sandwich-like dishes,Smørbrød og lignende,Sandwiches und Ähnliches,Σάντουιτς και παρόμοια,Bocadillos y similares,Panini e simili,Broodjes en soortgelijke gerechten,Kanapki i dania podobne,Sendviči in podobne jedi
+A03ZN,Pizza and pizza-like dishes,Pizza og lignende,Pizza und Ähnliches,Πίτσα και παρόμοια,Pizzas y similares,Pizze e simili,Pizza en soortgelijke gerechten,Pizza i dania podobne,Pica in podobne jedi
+A040C,Finger food,Fingermat,Fingerfood,Σνακ χειρός,Aperitivos para picar,Finger food,Hapjes,Przekąski na jeden kęs,Prstna hrana
+A040N,"Pasta based dishes, cooked",Pastaretter,Nudelgerichte,Πιάτα ζυμαρικών,Platos de pasta,Piatti di pasta,Pastagerechten,Dania z makaronu,Jedi s testeninami
+A040Z,"Rice based dishes, cooked",Risretter,Reisgerichte,Πιάτα ρυζιού,Platos de arroz,Piatti di riso,Rijstgerechten,Dania z ryżu,Riževe jedi
+A041L,Soups (ready-to-eat),Ferdigsupper,Fertigsuppen,Έτοιμες σούπες,Sopas preparadas,Zuppe pronte,Kant-en-klare soepen,Zupy gotowe,Pripravljene juhe
+A041N,Tomato soup,Tomatsuppe,Tomatensuppe,Ντοματόσουπα,Sopa de tomate,Zuppa di pomodoro,Tomatensoep,Zupa pomidorowa,Paradižnikova juha
+A041Q,Legume (beans) soup,Bønnesuppe,Bohnensuppe,Φασολάδα,Sopa de legumbres,Zuppa di legumi,Bonensoep,Zupa fasolowa,Fižolova juha
+A041S,Mixed vegetables soup,Grønnsakssuppe,Gemüsesuppe,Χορτόσουπα,Sopa de verduras,Minestrone di verdure,Groentesoep,Zupa jarzynowa,Zelenjavna juha
+A041T,Meat soup,Kjøttsuppe,Fleischsuppe,Κρεατόσουπα,Sopa de carne,Zuppa di carne,Vleessoep,Zupa mięsna,Mesna juha
+A041V,Meat and vegetable soup,Kjøtt- og grønnsakssuppe,Fleisch-Gemüse-Suppe,Σούπα κρέατος και λαχανικών,Sopa de carne y verduras,Zuppa di carne e verdure,Vlees-groentesoep,Zupa mięsno-warzywna,Mesno-zelenjavna juha
+A041Y,Cereal products and grains based soup,Kornsuppe,Getreidesuppe,Σούπα με δημητριακά,Sopa de cereales,Zuppa di cereali,Graansoep,Zupa zbożowa,Žitna juha
+A042B,Salads,Salater,Salate,Σαλάτες,Ensaladas,Insalate,Salades,Sałatki,Solate
+A042D,Mixed vegetable salad,Blandet grønnsakssalat,Gemischter Gemüsesalat,Ανάμεικτη σαλάτα λαχανικών,Ensalada mixta de verduras,Insalata mista di verdure,Gemengde groentesalade,Sałatka warzywna mieszana,Mešana zelenjavna solata
+A042F,Greek salad,Gresk salat,Griechischer Salat,Χωριάτικη σαλάτα,Ensalada griega,Insalata greca,Griekse salade,Sałatka grecka,Grška solata
+A042H,Prepared pasta salad,Pastasalat,Nudelsalat,Σαλάτα ζυμαρικών,Ensalada de pasta,Insalata di pasta,Pastasalade,Sałatka makaronowa,Solata s testeninami
+A042L,Prepared meat salad,Kjøttsalat,Fleischsalat,Σαλάτα κρέατος,Ensalada de carne,Insalata di carne,Vleessalade,Sałatka mięsna,Mesna solata
+A042M,Prepared mixed egg/meat/fish/vegetable salad,Blandet salat med egg kjøtt fisk og grønnsaker,Gemischter Salat mit Ei Fleisch Fisch und Gemüse,Ανάμεικτη σαλάτα με αυγό κρέας ψάρι και λαχανικά,Ensalada mixta con huevo carne pescado y verduras,Insalata mista con uova carne pesce e verdure,Gemengde salade met ei vlees vis en groenten,Sałatka mieszana z jajkiem mięsem rybą i warzywami,Mešana solata z jajcem mesom ribo in zelenjavo
+A042P,Salt,Salt,Salz,Αλάτι,Sal,Sale,Zout,Sól,Sol
+A042Y,Seasoning mixes,Krydderblandinger,Gewürzmischungen,Μείγματα καρυκευμάτων,Mezclas de condimentos,Miscele di spezie,Kruidenmixen,Mieszanki przypraw,Mešanice začimb
+A043F,Stock cubes or granulate (bouillon base),Buljongterninger,Brühwürfel,Κύβοι ζωμού,Pastillas de caldo,Dadi da brodo,Bouillonblokjes,Kostki bulionowe,Jušne kocke
+A043P,Yeast extract,Gjærekstrakt,Hefeextrakt,Εκχύλισμα μαγιάς,Extracto de levadura,Estratto di lievito,Gistextract,Ekstrakt drożdżowy,Kvasni ekstrakt
+A043Q,Gravy ingredients,Sausingredienser,Zutaten für Bratensoße,Υλικά για σάλτσα,Ingredientes para salsa de carne,Ingredienti per sugo di carne,Jusingrediënten,Składniki do sosów pieczeniowych,Sestavine za mesno omako
+A043V,Savoury sauces,Salte sauser,Herzhafte Soßen,Αλμυρές σάλτσες,Salsas saladas,Salse salate,Hartige sauzen,Sosy wytrawne,Slane omake
+A043Y,Cheese sauce,Ostesaus,Käsesoße,Σάλτσα τυριού,Salsa de queso,Salsa al formaggio,Kaassaus,Sos serowy,Sirova omaka
+A043Z,"Continental european brown cooked sauce, gravy",Brun saus,Braune Soße,Καφέ σάλτσα μαγειρεμένη,Salsa española,Salsa bruna,Bruine saus,Sos brązowy,Rjava omaka
+A044A,Cream sauce,Fløtesaus,Sahnesoße,Σάλτσα κρέμας,Salsa de nata,Salsa alla panna,Roomsaus,Sos śmietanowy,Smetanova omaka
+A044B,Butter sauce,Smørsaus,Buttersoße,Σάλτσα βουτύρου,Salsa de mantequilla,Salsa al burro,Botersaus,Sos maślany,Maslena omaka
+A044C,Tomato-containing cooked sauces,Tomatsauser,Tomatensoßen,Σάλτσες με ντομάτα,Salsas con tomate,Salse a base di pomodoro,Tomatensauzen,Sosy pomidorowe,Omake s paradižnikom
+A044G,Mustard and related sauces,Sennep og lignende sauser,Senf und ähnliche Soßen,Μουστάρδα και παρόμοιες σάλτσες,Mostaza y salsas similares,Senape e salse simili,Mosterd en soortgelijke sauzen,Musztarda i podobne sosy,Gorčica in podobne omake
+A044L,Vinegar,Eddik,Essig,Ξύδι,Vinagre,Aceto,Azijn,Ocet,Kis
+A044P,Tomato ketchup and related sauces,Ketchup og lignende sauser,Ketchup und ähnliche Soßen,Κέτσαπ και παρόμοιες σάλτσες,Kétchup y salsas similares,Ketchup e salse simili,Ketchup en soortgelijke sauzen,Keczup i podobne sosy,Kečap in podobne omake
+A044R,Soy sauce,Soyasaus,Sojasoße,Σάλτσα σόγιας,Salsa de soja,Salsa di soia,Sojasaus,Sos sojowy,Sojina omaka
+A044S,Oyster sauce,Østerssaus,Austernsoße,Σάλτσα στρειδιών,Salsa de ostras,Salsa di ostriche,Oestersaus,Sos ostrygowy,Ostrigina omaka
+A044T,Teriyaki sauce,Teriyakisaus,Teriyaki-Soße,Σάλτσα τεριγιάκι,Salsa teriyaki,Salsa teriyaki,Teriyakisaus,Sos teriyaki,Teriyaki omaka
+A044V,Pesto,Pesto,Pesto,Πέστο,Pesto,Pesto,Pesto,Pesto,Pesto
+A044X,Mayonnaise sauce,Majones,Mayonnaise,Μαγιονέζα,Mayonesa,Maionese,Mayonaise,Majonez,Majoneza
+A045A,Aioli or garlic sauce,Aioli og hvitløkssaus,Aioli und Knoblauchsoße,Αϊόλι και σάλτσα σκόρδου,Alioli o salsa de ajo,Aioli o salsa all'aglio,Aioli en knoflooksaus,Aioli i sos czosnkowy,Aioli in česnova omaka
+A045B,Barbecue or steak sauces,Grill- og biffsauser,Barbecue- und Steaksoßen,Σάλτσες μπάρμπεκιου,Salsas barbacoa,Salse barbecue,Barbecue- en steaksauzen,Sosy barbecue i do steków,Omake za žar in zrezke
+A045E,"Herbs, vegetables and oil sauces",Urte- og grønnsakssauser med olje,Kräuter- und Gemüsesoßen mit Öl,Σάλτσες βοτάνων και λαχανικών με λάδι,Salsas de hierbas y verduras con aceite,Salse di erbe e verdure con olio,Kruiden- en groentesauzen met olie,Sosy ziołowo-warzywne na oleju,Zeliščne in zelenjavne omake z oljem
+A045K,Salad dressing,Salatdressing,Salatdressing,Ντρέσινγκ σαλάτας,Aliño de ensalada,Condimento per insalata,Slasaus,Dressing do sałatek,Solatni preliv
+A045Q,Chutneys,Chutney,Chutney,Τσάτνεϊ,Chutney,Chutney,Chutney,Chutney,Čatni
+A045Y,Pickles,Pickles,Pickles,Πίκλες,Encurtidos,Sottaceti,Zuur,Pikle,Vložene kumarice
+A046G,Fruit sauce,Fruktsaus,Fruchtsoße,Σάλτσα φρούτων,Salsa de fruta,Salsa di frutta,Vruchtensaus,Sos owocowy,Sadna omaka
+A046H,Chocolate sauce,Sjokoladesaus,Schokoladensoße,Σάλτσα σοκολάτας,Salsa de chocolate,Salsa al cioccolato,Chocoladesaus,Sos czekoladowy,Čokoladna omaka
+A046J,Fudge sauce,Karamellsaus,Karamellsoße,Σάλτσα καραμέλας,Salsa de caramelo,Salsa al caramello,Karamelsaus,Sos karmelowy,Karamelna omaka
+A047X,Thickener,Fortykningsmiddel,Verdickungsmittel,Πυκνωτικό,Espesante,Addensante,Bindmiddel,Zagęstnik,Zgoščevalec
+A048A,Flavour enhancer,Smaksforsterker,Geschmacksverstärker,Ενισχυτικό γεύσης,Potenciador del sabor,Esaltatore di sapidità,Smaakversterker,Wzmacniacz smaku,Ojačevalec okusa
+A048Z,Yeast cultures,Gjærkulturer,Hefekulturen,Καλλιέργειες μαγιάς,Cultivos de levadura,Colture di lievito,Gistculturen,Kultury drożdży,Kvasne kulture
+A04JJ,Blueberries and similar-,Blåbær og lignende,Heidelbeeren und ähnliche,Μύρτιλα και παρόμοια,Arándanos y similares,Mirtilli e simili,Bosbessen en soortgelijke,Borówki i podobne,Borovnice in podobno
+A04JK,Cranberries and similar-,Tranebær og lignende,Preiselbeeren und ähnliche,Κράνμπερι και παρόμοια,Arándanos rojos y similares,Mirtilli rossi e simili,Veenbessen en soortgelijke,Żurawina i podobne,Brusnice in podobno
+A04JL,Mulberries (black and white) and similar-,Morbær og lignende,Maulbeeren und ähnliche,Μούρα μουριάς και παρόμοια,Moras de morera y similares,More di gelso e simili,Moerbeien en soortgelijke,Morwy i podobne,Murve in podobno
+A04JP,Litchis and similar-,Litchi og lignende,Litschis und ähnliche,Λίτσι και παρόμοια,Lichis y similares,Litchi e simili,Lychees en soortgelijke,Liczi i podobne,Liči in podobno
+A04JS,Bananas and similar-,Bananer og lignende,Bananen und ähnliche,Μπανάνες και παρόμοια,Plátanos y similares,Banane e simili,Bananen en soortgelijke,Banany i podobne,Banane in podobno
+A04JX,Cassava roots and similar-,Kassava og lignende,Maniok und ähnliche,Κασάβα και παρόμοια,Yuca y similares,Manioca e simili,Cassave en soortgelijke,Maniok i podobne,Kasava in podobno
+A04JY,Yams and similar-,Yams og lignende,Yamswurzeln und ähnliche,Γιαμ και παρόμοια,Ñames y similares,Igname e simili,Yams en soortgelijke,Pochrzyn i podobne,Jam in podobno
+A04JZ,Horseradishes and similar-,Pepperrot og lignende,Meerrettich und ähnliche,Χρένο και παρόμοια,Rábano picante y similares,Rafano e simili,Mierikswortel en soortgelijke,Chrzan i podobne,Hren in podobno
+A04KA,Salsifies and similar-,Havrerot og lignende,Schwarzwurzeln und ähnliche,Λαγόχορτο και παρόμοια,Salsifíes y similares,Scorzonera e simili,Schorseneren en soortgelijke,Salsefia i podobne,Beli koren in podobno
+A04KB,Celery leaves and similar-,Selleriblader og lignende,Sellerieblätter und ähnliche,Φύλλα σέλινου και παρόμοια,Hojas de apio y similares,Foglie di sedano e simili,Selderijblad en soortgelijke,Liście selera i podobne,Listi zelene in podobno
+A04KH,Buckwheat and other pseudo-cereals and similar-,Bokhvete og andre pseudokorn,Buchweizen und andere Pseudogetreide,Φαγόπυρο και άλλα ψευδοδημητριακά,Trigo sarraceno y otros pseudocereales,Grano saraceno e altri pseudocereali,Boekweit en andere pseudogranen,Gryka i inne pseudozboża,Ajda in druga psevdožita
+A04LC,Pasta wholemeal,Fullkornspasta,Vollkornnudeln,Ζυμαρικά ολικής άλεσης,Pasta integral,Pasta integrale,Volkorenpasta,Makaron pełnoziarnisty,Polnozrnate testenine
+A04LL,Popped cereals,Pufset korn,Gepufftes Getreide,Διογκωμένα δημητριακά,Cereales inflados,Cereali soffiati,Gepofte granen,Zboża ekspandowane,Napihnjena žita
+A04MA,Aromatic herbs,Aromatiske urter,Küchenkräuter,Αρωματικά βότανα,Hierbas aromáticas,Erbe aromatiche,Aromatische kruiden,Zioła aromatyczne,Aromatična zelišča
+A04ND,Processed whole meat products,Bearbeidede hele kjøttstykker,Verarbeitete Fleischstücke,Επεξεργασμένα προϊόντα ολόκληρου κρέατος,Productos cárnicos de pieza entera,Prodotti di carne intera lavorata,Bewerkte hele vleesproducten,Przetwory z mięsa w kawałku,Predelani izdelki iz celega mesa
+A04PJ,Fats and oils from terrestrial animals,Fett og oljer fra landdyr,Fette und Öle von Landtieren,Λίπη και έλαια χερσαίων ζώων,Grasas y aceites de animales terrestres,Grassi e oli di animali terrestri,Vetten en oliën van landdieren,Tłuszcze i oleje zwierząt lądowych,Maščobe in olja kopenskih živali
+A04QG,Unsweetened flavoured spirits,Usøtet smakstilsatt brennevin,Ungesüßte aromatisierte Spirituosen,Αρωματισμένα αποστάγματα χωρίς ζάχαρη,Bebidas espirituosas aromatizadas sin azúcar,Distillati aromatizzati non zuccherati,Ongezoete gearomatiseerde sterkedrank,Napoje spirytusowe aromatyzowane niesłodzone,Nesladkana aromatizirana žgane pijače
+A04QY,Cereal flakes and similar,Kornflak og lignende,Getreideflocken und ähnliche,Νιφάδες δημητριακών και παρόμοια,Copos de cereales y similares,Fiocchi di cereali e simili,Graanvlokken en soortgelijke,Płatki zbożowe i podobne,Žitni kosmiči in podobno
+A04RA,Kohlrabies and similar-,Knutekål og lignende,Kohlrabi und ähnliche,Γογγυλοκράμβη και παρόμοια,Colinabos y similares,Cavoli rapa e simili,Koolrabi en soortgelijke,Kalarepa i podobne,Kolerabica in podobno
+A04RK,Fruit used as fruit,Frukt brukt som frukt,Als Obst verwendete Früchte,Φρούτα ως φρούτα,Frutas consumidas como fruta,Frutta consumata come frutta,Fruit gebruikt als fruit,Owoce spożywane jako owoce,Sadje kot sadje
+A04SD,Blended fat and oils,Blandede fett og oljer,Misch-Fette und -Öle,Ανάμεικτα λίπη και έλαια,Grasas y aceites mezclados,Grassi e oli miscelati,Gemengde vetten en oliën,Tłuszcze i oleje mieszane,Mešane maščobe in olja
+A06HL,Snacks other than chips and similar,Andre snacks enn chips,Snacks außer Chips,Σνακ εκτός από τσιπς,Aperitivos distintos de las patatas fritas,Snack diversi dalle patatine,Snacks anders dan chips,Przekąski inne niż chipsy,Prigrizki razen čipsa
+A0B9J,Soups (dry mixture uncooked),Suppepulver,Trockensuppen,Σούπες σε σκόνη,Sopas deshidratadas,Zuppe in polvere,Soeppoeder,Zupy w proszku,Juhe v prahu
+A0BX9,Fruit / vegetable juices and nectars,Frukt- og grønnsaksjuice og nektar,Frucht- und Gemüsesäfte und Nektare,Χυμοί και νέκταρ φρούτων και λαχανικών,Zumos y néctares de frutas y verduras,Succhi e nettari di frutta e verdura,Vruchten- en groentesappen en nectars,Soki i nektary owocowe i warzywne,Sadni in zelenjavni sokovi ter nektarji
+A0BY0,Leavened bread and similar,Hevet brød og lignende,Gesäuertes Brot und ähnliche,Ψωμί με ζύμωση και παρόμοια,Pan fermentado y similares,Pane lievitato e simili,Gerezen brood en soortgelijke,Pieczywo na zakwasie i podobne,Vzhajan kruh in podobno
+A0BZ5,Canned seafood,Hermetiske skalldyr og bløtdyr,Meeresfrüchtekonserven,Θαλασσινά κονσέρβας,Marisco en conserva,Frutti di mare in scatola,Schaal- en schelpdieren in blik,Owoce morza konserwowe,Konzervirani morski sadeži
+A0C0T,Hydrolysed vegetable proteins,Hydrolyserte planteproteiner,Hydrolysierte Pflanzenproteine,Υδρολυμένες φυτικές πρωτεΐνες,Proteínas vegetales hidrolizadas,Proteine vegetali idrolizzate,Gehydrolyseerde plantaardige eiwitten,Hydrolizowane białka roślinne,Hidrolizirane rastlinske beljakovine
+A0C0Z,"Maize, milled",Malt mais,Gemahlener Mais,Καλαμπόκι αλεσμένο,Maíz molido,Mais macinato,Gemalen maïs,Kukurydza mielona,Mleta koruza
+A0C6A,Coffee ingredients (RPC derivatives),Kaffeingredienser,Kaffeezutaten,Συστατικά καφέ,Ingredientes de café,Ingredienti a base di caffè,Koffie-ingrediënten,Składniki kawowe,Kavne sestavine
+A0C6B,Cocoa ingredients (RPC derivatives),Kakaoingredienser,Kakaozutaten,Συστατικά κακάο,Ingredientes de cacao,Ingredienti a base di cacao,Cacao-ingrediënten,Składniki kakaowe,Kakavove sestavine
+A0C6P,Chocolate spread,Sjokoladepålegg,Schokoladenaufstrich,Άλειμμα σοκολάτας,Crema de chocolate para untar,Crema di cioccolato spalmabile,Chocoladepasta,Krem czekoladowy do smarowania,Čokoladni namaz
+A0C75,Salmons,Laks,Lachs,Σολομός,Salmones,Salmoni,Zalm,Łosoś,Lososi
+A0CEN,Savoury pies and tarts,Salte paier og terter,Herzhafte Kuchen und Tartes,Αλμυρές πίτες και τάρτες,Empanadas y tartas saladas,Torte salate,Hartige taarten,Wytrawne tarty i pasztety,Slane pite in tarte
+A0CFF,Hazelnuts and similar-,Hasselnøtter og lignende,Haselnüsse und ähnliche,Φουντούκια και παρόμοια,Avellanas y similares,Nocciole e simili,Hazelnoten en soortgelijke,Orzechy laskowe i podobne,Lešniki in podobno
+A0CGF,Pumpkin seeds and similar-,Gresskarkjerner og lignende,Kürbiskerne und ähnliche,Σπόροι κολοκύθας και παρόμοια,Pipas de calabaza y similares,Semi di zucca e simili,Pompoenpitten en soortgelijke,Pestki dyni i podobne,Bučna semena in podobno
+A0CGX,Ginger roots and similar-,Ingefær og lignende,Ingwer und ähnliche,Τζίντζερ και παρόμοια,Jengibre y similares,Zenzero e simili,Gember en soortgelijke,Imbir i podobne,Ingver in podobno
+A0CHT,Crisp bread,Knekkebrød,Knäckebrot,Φρυγανιές,Pan crujiente,Pane croccante,Knäckebröd,Pieczywo chrupkie,Hrustljavi kruhki
+A0CJA,Fruit in alcohol or spirits,Frukt i alkohol,Früchte in Alkohol,Φρούτα σε αλκοόλ,Frutas en alcohol,Frutta sotto spirito,Vruchten op alcohol,Owoce w alkoholu,Sadje v alkoholu
+A0CSA,Spirits from fruit,Fruktbrennevin,Obstbrände,Αποστάγματα φρούτων,Aguardientes de fruta,Distillati di frutta,Vruchtenbrandewijn,Destylaty owocowe,Sadna žganja
+A0CSC,Spirits not from fruit,Brennevin uten frukt,Nicht-Obstbrände,Αποστάγματα μη φρούτων,Aguardientes no frutales,Distillati non di frutta,Niet-vruchtenbrandewijn,Destylaty nieowocowe,Nesadna žganja
+A0CSK,Pre-mixes (dry) for baked products,Tørre bakemikser,Trockene Backmischungen,Έτοιμα μείγματα αρτοποιίας,Preparados secos para repostería,Preparati secchi da forno,Droge bakmixen,Suche mieszanki do wypieków,Suhe mešanice za pecivo
+A0CSL,Bread pre-mixes (dry),Brødmiks,Brotbackmischungen,Μείγματα ψωμιού,Preparados para pan,Preparati per pane,Broodmix,Mieszanki do chleba,Mešanice za kruh
+A0CSM,Cake pre-mixes (dry),Kakemiks,Kuchenbackmischungen,Μείγματα κέικ,Preparados para pasteles,Preparati per torte,Cakemix,Mieszanki do ciast,Mešanice za torte
+A0CSN,Pancake pre-mixes (dry),Pannekakemiks,Pfannkuchenmischungen,Μείγματα για τηγανίτες,Preparados para tortitas,Preparati per frittelle,Pannenkoekenmix,Mieszanki do naleśników,Mešanice za palačinke
+A0CYA,Cloves buds and similar-,Nellik og lignende,Gewürznelken und ähnliche,Γαρύφαλλα και παρόμοια,Clavo y similares,Chiodi di garofano e simili,Kruidnagels en soortgelijke,Goździki i podobne,Klinčki in podobno
+A0CYJ,Tamarind and similar-,Tamarind og lignende,Tamarinde und ähnliche,Ταμαρίνδος και παρόμοια,Tamarindo y similares,Tamarindo e simili,Tamarinde en soortgelijke,Tamaryndowiec i podobne,Tamarinda in podobno
+A0CYS,Nutmeg seed and similar-,Muskatnøtt og lignende,Muskatnuss und ähnliche,Μοσχοκάρυδο και παρόμοια,Nuez moscada y similares,Noce moscata e simili,Nootmuskaat en soortgelijke,Gałka muszkatołowa i podobne,Muškatni orešček in podobno
+A0CZA,Cumin seed and similar-,Spisskummen og lignende,Kreuzkümmel und ähnliche,Κύμινο και παρόμοια,Comino y similares,Cumino e simili,Komijn en soortgelijke,Kmin rzymski i podobne,Kumina in podobno
+A0CZF,Anise seed and similar-,Anis og lignende,Anis und ähnliche,Γλυκάνισο και παρόμοια,Anís y similares,Anice e simili,Anijs en soortgelijke,Anyż i podobne,Janež in podobno
+A0D9Y,Barley and similar-,Bygg og lignende,Gerste und ähnliche,Κριθάρι και παρόμοια,Cebada y similares,Orzo e simili,Gerst en soortgelijke,Jęczmień i podobne,Ječmen in podobno
+A0DAS,Hemp seeds and similar-,Hampefrø og lignende,Hanfsamen und ähnliche,Σπόροι κάνναβης και παρόμοια,Semillas de cáñamo y similares,Semi di canapa e simili,Hennepzaad en soortgelijke,Nasiona konopi i podobne,Konopljina semena in podobno
+A0DBP,Sunflower seeds and similar-,Solsikkefrø og lignende,Sonnenblumenkerne und ähnliche,Ηλιόσποροι και παρόμοια,Pipas de girasol y similares,Semi di girasole e simili,Zonnebloempitten en soortgelijke,Nasiona słonecznika i podobne,Sončnična semena in podobno
+A0DBQ,Sesame seeds and similar-,Sesamfrø og lignende,Sesamsamen und ähnliche,Σουσάμι και παρόμοια,Semillas de sésamo y similares,Semi di sesamo e simili,Sesamzaad en soortgelijke,Nasiona sezamu i podobne,Sezamova semena in podobno
+A0DBR,Poppy seeds and similar-,Valmuefrø og lignende,Mohnsamen und ähnliche,Σπόροι παπαρούνας και παρόμοια,Semillas de amapola y similares,Semi di papavero e simili,Maanzaad en soortgelijke,Mak i podobne,Makova semena in podobno
+A0DBS,Peanuts and similar-,Peanøtter og lignende,Erdnüsse und ähnliche,Αράπικα φιστίκια και παρόμοια,Cacahuetes y similares,Arachidi e simili,Pinda's en soortgelijke,Orzechy arachidowe i podobne,Arašidi in podobno
+A0DBT,Linseeds and similar-,Linfrø og lignende,Leinsamen und ähnliche,Λιναρόσπορος και παρόμοια,Semillas de lino y similares,Semi di lino e simili,Lijnzaad en soortgelijke,Siemię lniane i podobne,Laneno seme in podobno
+A0DCA,Lupins (dry) and similar-,Tørkede lupiner og lignende,Getrocknete Lupinen und ähnliche,Λούπινα ξηρά και παρόμοια,Altramuces secos y similares,Lupini secchi e simili,Gedroogde lupine en soortgelijke,Łubin suchy i podobne,Suhi volčji bob in podobno
+A0DCD,Peas (dry) and similar-,Tørkede erter og lignende,Getrocknete Erbsen und ähnliche,Αρακάς ξηρός και παρόμοια,Guisantes secos y similares,Piselli secchi e simili,Gedroogde erwten en soortgelijke,Groch suchy i podobne,Suh grah in podobno
+A0DCE,Lentils (dry) and similar-,Tørkede linser og lignende,Getrocknete Linsen und ähnliche,Φακές ξηρές και παρόμοια,Lentejas secas y similares,Lenticchie secche e simili,Gedroogde linzen en soortgelijke,Soczewica sucha i podobne,Suha leča in podobno
+A0DEG,Rhubarbs and similar-,Rabarbra og lignende,Rhabarber und ähnliche,Ραβέντι και παρόμοια,Ruibarbo y similares,Rabarbaro e simili,Rabarber en soortgelijke,Rabarbar i podobne,Rabarbara in podobno
+A0DEH,Leeks and similar-,Purre og lignende,Lauch und ähnliche,Πράσα και παρόμοια,Puerros y similares,Porri e simili,Prei en soortgelijke,Pory i podobne,Por in podobno
+A0DEN,Globe artichokes and similar-,Artisjokk og lignende,Artischocken und ähnliche,Αγκινάρες και παρόμοια,Alcachofas y similares,Carciofi e simili,Artisjokken en soortgelijke,Karczochy i podobne,Artičoke in podobno
+A0DEP,Florence fennels and similar-,Fennikel og lignende,Fenchel und ähnliche,Μάραθο και παρόμοια,Hinojos y similares,Finocchi e simili,Venkel en soortgelijke,Koper włoski i podobne,Koromač in podobno
+A0DEQ,Celeries and similar-,Stangselleri og lignende,Stangensellerie und ähnliche,Σέλινο και παρόμοια,Apios y similares,Sedani e simili,Bleekselderij en soortgelijke,Selery naciowe i podobne,Zelena in podobno
+A0DEV,Asparagus and similar-,Asparges og lignende,Spargel und ähnliche,Σπαράγγια και παρόμοια,Espárragos y similares,Asparagi e simili,Asperges en soortgelijke,Szparagi i podobne,Šparglji in podobno
+A0DHZ,Parsley and similar-,Persille og lignende,Petersilie und ähnliche,Μαϊντανός και παρόμοια,Perejil y similares,Prezzemolo e simili,Peterselie en soortgelijke,Pietruszka i podobne,Peteršilj in podobno
+A0DJJ,Chervil and similar-,Kjørvel og lignende,Kerbel und ähnliche,Σκαντζίκι και παρόμοια,Perifollo y similares,Cerfoglio e simili,Kervel en soortgelijke,Trybula i podobne,Krebuljica in podobno
+A0DJL,Witloofs and similar-,Sikorisalat og lignende,Chicorée und ähnliche,Ραδίκι μπελζίκ και παρόμοια,Endibias y similares,Indivia belga e simili,Witlof en soortgelijke,Cykoria i podobne,Radič vitlof in podobno
+A0DJT,Chards and similar-,Mangold og lignende,Mangold und ähnliche,Σέσκουλα και παρόμοια,Acelgas y similares,Bietole e simili,Snijbiet en soortgelijke,Boćwina i podobne,Blitva in podobno
+A0DLB,Lettuces and similar-,Salat og lignende,Kopfsalat und ähnliche,Μαρούλια και παρόμοια,Lechugas y similares,Lattughe e simili,Sla en soortgelijke,Sałaty i podobne,Solate in podobno
+A0DLC,Lamb's lettuces and similar-,Vårsalat og lignende,Feldsalat und ähnliche,Βαλεριάνα και παρόμοια,Canónigos y similares,Valerianella e simili,Veldsla en soortgelijke,Roszponka i podobne,Motovilec in podobno
+A0DLG,Brussels sprouts and similar-,Rosenkål og lignende,Rosenkohl und ähnliche,Λαχανάκια Βρυξελλών και παρόμοια,Coles de Bruselas y similares,Cavolini di Bruxelles e simili,Spruitjes en soortgelijke,Brukselka i podobne,Brstični ohrovt in podobno
+A0DLL,Cauliflowers and similar-,Blomkål og lignende,Blumenkohl und ähnliche,Κουνουπίδι και παρόμοια,Coliflores y similares,Cavolfiori e simili,Bloemkool en soortgelijke,Kalafior i podobne,Cvetača in podobno
+A0DLP,Sweet corn and similar-,Sukkermais og lignende,Zuckermais und ähnliche,Γλυκό καλαμπόκι και παρόμοια,Maíz dulce y similares,Mais dolce e simili,Suikermaïs en soortgelijke,Kukurydza cukrowa i podobne,Sladka koruza in podobno
+A0DLQ,Watermelons and similar-,Vannmelon og lignende,Wassermelonen und ähnliche,Καρπούζι και παρόμοια,Sandías y similares,Angurie e simili,Watermeloenen en soortgelijke,Arbuzy i podobne,Lubenice in podobno
+A0DLV,Pumpkins and similar-,Gresskar og lignende,Kürbisse und ähnliche,Κολοκύθες και παρόμοια,Calabazas y similares,Zucche e simili,Pompoenen en soortgelijke,Dynie i podobne,Buče in podobno
+A0DMB,Cucumbers and similar-,Agurker og lignende,Gurken und ähnliche,Αγγούρια και παρόμοια,Pepinos y similares,Cetrioli e simili,Komkommers en soortgelijke,Ogórki i podobne,Kumare in podobno
+A0DMC,Okra and similar-,Okra og lignende,Okra und ähnliche,Μπάμιες και παρόμοια,Okras y similares,Okra e simili,Okra en soortgelijke,Okra i podobne,Bamija in podobno
+A0DNG,Turnips and similar-,Nepe og lignende,Speiserüben und ähnliche,Γογγύλια και παρόμοια,Nabos y similares,Rape e simili,Rapen en soortgelijke,Rzepa i podobne,Repa in podobno
+A0DNH,Swedes and similar-,Kålrot og lignende,Kohlrüben und ähnliche,Γογγύλι σουηδικό και παρόμοια,Colinabos suecos y similares,Rutabaga e simili,Koolraap en soortgelijke,Brukiew i podobne,Koleraba in podobno
+A0DNS,Parsnips and similar-,Pastinakk og lignende,Pastinaken und ähnliche,Παστινάκη και παρόμοια,Chirivías y similares,Pastinache e simili,Pastinaak en soortgelijke,Pasternak i podobne,Pastinak in podobno
+A0DNV,Jerusalem artichokes and similar-,Jordskokk og lignende,Topinambur und ähnliche,Κολοκάσι Ιερουσαλήμ και παρόμοια,Aguaturmas y similares,Topinambur e simili,Aardpeer en soortgelijke,Topinambur i podobne,Topinambur in podobno
+A0DNY,Celeriacs and similar-,Knollselleri og lignende,Knollensellerie und ähnliche,Σελινόριζα και παρόμοια,Apionabos y similares,Sedano rapa e simili,Knolselderij en soortgelijke,Seler korzeniowy i podobne,Gomoljna zelena in podobno
+A0DPB,Carrots and similar-,Gulrøtter og lignende,Karotten und ähnliche,Καρότα και παρόμοια,Zanahorias y similares,Carote e simili,Wortelen en soortgelijke,Marchew i podobne,Korenje in podobno
+A0DPC,Beetroots and similar-,Rødbeter og lignende,Rote Bete und ähnliche,Παντζάρια και παρόμοια,Remolachas y similares,Barbabietole e simili,Rode bieten en soortgelijke,Buraki i podobne,Rdeča pesa in podobno
+A0DPH,Sweet potatoes and similar-,Søtpoteter og lignende,Süßkartoffeln und ähnliche,Γλυκοπατάτες και παρόμοια,Boniatos y similares,Patate dolci e simili,Zoete aardappelen en soortgelijke,Bataty i podobne,Sladki krompir in podobno
+A0DPP,Potatoes and similar-,Poteter og lignende,Kartoffeln und ähnliche,Πατάτες και παρόμοια,Patatas y similares,Patate e simili,Aardappelen en soortgelijke,Ziemniaki i podobne,Krompir in podobno
+A0DPV,Pineapples and similar-,Ananas og lignende,Ananas und ähnliche,Ανανάς και παρόμοια,Piñas y similares,Ananas e simili,Ananassen en soortgelijke,Ananasy i podobne,Ananas in podobno
+A0DQC,Granate apples and similar-,Granatepler og lignende,Granatäpfel und ähnliche,Ρόδια και παρόμοια,Granadas y similares,Melograni e simili,Granaatappels en soortgelijke,Granaty i podobne,Granatna jabolka in podobno
+A0DQE,Papayas and similar-,Papaya og lignende,Papayas und ähnliche,Παπάγια και παρόμοια,Papayas y similares,Papaie e simili,Papaja's en soortgelijke,Papaje i podobne,Papaje in podobno
+A0DQF,Mangoes and similar-,Mango og lignende,Mangos und ähnliche,Μάνγκο και παρόμοια,Mangos y similares,Manghi e simili,Mango's en soortgelijke,Mango i podobne,Mango in podobno
+A0DQP,Avocados and similar-,Avokado og lignende,Avocados und ähnliche,Αβοκάντο και παρόμοια,Aguacates y similares,Avocado e simili,Avocado's en soortgelijke,Awokado i podobne,Avokado in podobno
+A0DRB,Passionfruits and similar-,Pasjonsfrukt og lignende,Passionsfrüchte und ähnliche,Φρούτα του πάθους και παρόμοια,Frutas de la pasión y similares,Frutti della passione e simili,Passievruchten en soortgelijke,Marakuja i podobne,Marakuja in podobno
+A0DRG,Kiwi fruits and similar-,Kiwi og lignende,Kiwis und ähnliche,Ακτινίδια και παρόμοια,Kiwis y similares,Kiwi e simili,Kiwi's en soortgelijke,Kiwi i podobne,Kivi in podobno
+A0DRY,Figs and similar-,Fikener og lignende,Feigen und ähnliche,Σύκα και παρόμοια,Higos y similares,Fichi e simili,Vijgen en soortgelijke,Figi i podobne,Fige in podobno
+A0DSB,Dates and similar-,Dadler og lignende,Datteln und ähnliche,Χουρμάδες και παρόμοια,Dátiles y similares,Datteri e simili,Dadels en soortgelijke,Daktyle i podobne,Datlji in podobno
+A0DSV,Currants and similar-,Solbær og rips og lignende,Johannisbeeren und ähnliche,Φραγκοστάφυλα και παρόμοια,Grosellas y similares,Ribes e simili,Aalbessen en soortgelijke,Porzeczki i podobne,Ribez in podobno
+A0DTY,Blackberries and similar-,Bjørnebær og lignende,Brombeeren und ähnliche,Βατόμουρα και παρόμοια,Moras y similares,More e simili,Bramen en soortgelijke,Jeżyny i podobne,Robide in podobno
+A0DVE,Table grapes and similar-,Spisedruer og lignende,Tafeltrauben und ähnliche,Επιτραπέζια σταφύλια και παρόμοια,Uvas de mesa y similares,Uva da tavola e simili,Tafeldruiven en soortgelijke,Winogrona stołowe i podobne,Namizno grozdje in podobno
+A0DVX,Apricots and similar-,Aprikoser og lignende,Aprikosen und ähnliche,Βερίκοκα και παρόμοια,Albaricoques y similares,Albicocche e simili,Abrikozen en soortgelijke,Morele i podobne,Marelice in podobno
+A0DVZ,Medlars and similar-,Mispel og lignende,Mispeln und ähnliche,Μούσμουλα και παρόμοια,Nísperos y similares,Nespole e simili,Mispels en soortgelijke,Nieszpułka i podobne,Nešplje in podobno
+A0DXJ,Walnuts and similar-,Valnøtter og lignende,Walnüsse und ähnliche,Καρύδια και παρόμοια,Nueces y similares,Noci e simili,Walnoten en soortgelijke,Orzechy włoskie i podobne,Orehi in podobno
+A0DXK,Pistachios and similar-,Pistasjnøtter og lignende,Pistazien und ähnliche,Φιστίκια Αιγίνης και παρόμοια,Pistachos y similares,Pistacchi e simili,Pistachenoten en soortgelijke,Pistacje i podobne,Pistacije in podobno
+A0DXX,Pecans and similar-,Pekannøtter og lignende,Pekannüsse und ähnliche,Πεκάν και παρόμοια,Nueces pecanas y similares,Noci pecan e simili,Pecannoten en soortgelijke,Orzechy pekan i podobne,Pekan orehi in podobno
+A0DYA,Macadamias and similar-,Macadamianøtter og lignende,Macadamianüsse und ähnliche,Μακαντάμια και παρόμοια,Nueces de macadamia y similares,Noci di macadamia e simili,Macadamianoten en soortgelijke,Orzechy makadamia i podobne,Makadamija in podobno
+A0DYD,Coconuts and similar-,Kokosnøtter og lignende,Kokosnüsse und ähnliche,Καρύδες και παρόμοια,Cocos y similares,Noci di cocco e simili,Kokosnoten en soortgelijke,Orzechy kokosowe i podobne,Kokosovi orehi in podobno
+A0DYJ,Chestnuts and similar-,Kastanjer og lignende,Esskastanien und ähnliche,Κάστανα και παρόμοια,Castañas y similares,Castagne e simili,Kastanjes en soortgelijke,Kasztany jadalne i podobne,Kostanji in podobno
+A0DYK,Cashew nuts and similar-,Cashewnøtter og lignende,Cashewnüsse und ähnliche,Κάσιους και παρόμοια,Anacardos y similares,Anacardi e simili,Cashewnoten en soortgelijke,Nerkowce i podobne,Indijski oreščki in podobno
+A0DYL,Brazil nuts and similar-,Paranøtter og lignende,Paranüsse und ähnliche,Καρύδια Βραζιλίας και παρόμοια,Nueces de Brasil y similares,Noci del Brasile e simili,Paranoten en soortgelijke,Orzechy brazylijskie i podobne,Brazilski oreščki in podobno
+A0DYP,Almonds and similar-,Mandler og lignende,Mandeln und ähnliche,Αμύγδαλα και παρόμοια,Almendras y similares,Mandorle e simili,Amandelen en soortgelijke,Migdały i podobne,Mandlji in podobno
+A0DYX,Limes and similar-,Lime og lignende,Limetten und ähnliche,Λάιμ και παρόμοια,Limas y similares,Lime e simili,Limoenen en soortgelijke,Limonki i podobne,Limete in podobno
+A0EQP,Soft candies and analogues,Myke godterier,Weichkaramellen,Μαλακές καραμέλες,Caramelos blandos,Caramelle morbide,Zachte snoep,Cukierki miękkie,Mehki bonboni
+A0EQQ,Candies (soft and hard),Godterier,Bonbons,Καραμέλες,Caramelos,Caramelle,Snoep,Cukierki,Bonboni
+A0EQR,Sweet bars and other formed sweet masses,Søte barer,Süßwarenriegel,Γλυκές μπάρες,Barritas dulces,Barrette dolci,Zoete repen,Batony słodkie,Sladke ploščice
+A0EQS,Chocolate/cocoa-based products,Sjokolade- og kakaoprodukter,Schokoladen- und Kakaoerzeugnisse,Προϊόντα σοκολάτας και κακάο,Productos de chocolate y cacao,Prodotti a base di cioccolato e cacao,Chocolade- en cacaoproducten,Wyroby czekoladowe i kakaowe,Čokoladni in kakavovi izdelki
+A0ERE,Filled (stuffed) pastas,Fylt pasta,Gefüllte Nudeln,Γεμιστά ζυμαρικά,Pasta rellena,Pasta ripiena,Gevulde pasta,Makaron nadziewany,Polnjene testenine
+A0ERG,Herbs/spices sauces,Urte- og kryddersauser,Kräuter- und Gewürzsoßen,Σάλτσες βοτάνων και μπαχαρικών,Salsas de hierbas y especias,Salse alle erbe e spezie,Kruiden- en specerijensauzen,Sosy ziołowo-przyprawowe,Zeliščne in začimbne omake
+A0ESV,Basils and mints,Basilikum og mynte,Basilikum und Minze,Βασιλικός και δυόσμος,Albahacas y mentas,Basilico e menta,Basilicum en munt,Bazylia i mięta,Bazilika in meta
+A0ETQ,Canned/jarred vegetables,Hermetiske grønnsaker,Gemüsekonserven,Λαχανικά κονσέρβας,Verduras en conserva,Verdure in scatola,Groenten in blik of pot,Warzywa konserwowe,Konzervirana zelenjava
+A0ETS,Candied or sugar preserved vegetables,Kandiserte grønnsaker,Kandiertes Gemüse,Ζαχαρωμένα λαχανικά,Verduras confitadas,Verdure candite,Gekonfijte groenten,Warzywa kandyzowane,Kandirana zelenjava
+A0ETT,Fermented vegetables,Fermenterte grønnsaker,Fermentiertes Gemüse,Ζυμωμένα λαχανικά,Verduras fermentadas,Verdure fermentate,Gefermenteerde groenten,Warzywa kiszone,Fermentirana zelenjava
+A0EVA,Liquid extract of plant origin,Flytende planteekstrakt,Flüssiger Pflanzenextrakt,Υγρό φυτικό εκχύλισμα,Extracto líquido de origen vegetal,Estratto liquido di origine vegetale,Vloeibaar plantaardig extract,Płynny ekstrakt roślinny,Tekoči rastlinski izvleček
+A0EYH,Mammals and birds meat,Kjøtt av pattedyr og fugl,Fleisch von Säugetieren und Vögeln,Κρέας θηλαστικών και πτηνών,Carne de mamíferos y aves,Carne di mammiferi e uccelli,Vlees van zoogdieren en vogels,Mięso ssaków i ptaków,Meso sesalcev in ptic
+A0EYR,Canned/jarred fish,Hermetisk fisk,Fischkonserven,Ψάρι κονσέρβας,Pescado en conserva,Pesce in scatola,Vis in blik of pot,Ryby konserwowe,Konzervirane ribe
+A0EYS,Smoked fish,Røkt fisk,Räucherfisch,Καπνιστό ψάρι,Pescado ahumado,Pesce affumicato,Gerookte vis,Ryby wędzone,Prekajene ribe
+A0EYT,Salt-preserved fish,Saltet fisk,Gesalzener Fisch,Παστό ψάρι,Pescado en salazón,Pesce sotto sale,Gezouten vis,Ryby solone,Nasoljene ribe
+A0EYY,Dried seafood,Tørkede skalldyr og bløtdyr,Getrocknete Meeresfrüchte,Αποξηραμένα θαλασσινά,Marisco desecado,Frutti di mare essiccati,Gedroogde zeevruchten,Suszone owoce morza,Sušeni morski sadeži
+A0EZA,Marinated / pickled seafood,Marinerte skalldyr og bløtdyr,Marinierte Meeresfrüchte,Μαριναρισμένα θαλασσινά,Marisco en escabeche,Frutti di mare marinati,Gemarineerde zeevruchten,Owoce morza marynowane,Marinirani morski sadeži
+A0EZD,Sauces from fermented/hydrolised sources and similar,Sauser fra fermenterte råvarer,Soßen aus fermentierten Grundstoffen,Σάλτσες από ζυμωμένες πρώτες ύλες,Salsas de origen fermentado,Salse da fonti fermentate,Sauzen op basis van fermentatie,Sosy z surowców fermentowanych,Omake iz fermentiranih virov
+A0F0M,Nut/seeds paste/emulsion/mass,Nøtte- og frøpasta,Nuss- und Samenpasten,Πάστα ξηρών καρπών και σπόρων,Pasta de frutos secos y semillas,Pasta di frutta a guscio e semi,Noten- en zadenpasta,Pasty z orzechów i nasion,Pasta iz oreščkov in semen
+A0F0N,Dried nuts/seeds and related flours and powders,Tørkede nøtter og frø og mel av disse,Getrocknete Nüsse und Samen sowie deren Mehle,Αποξηραμένοι ξηροί καρποί σπόροι και άλευρα,Frutos secos y semillas desecados y sus harinas,Frutta a guscio e semi essiccati e relative farine,Gedroogde noten en zaden en meel daarvan,Suszone orzechy i nasiona oraz mąki z nich,Sušeni oreščki in semena ter njihove moke
+A0F0P,Marinated / pickled fish,Marinert fisk,Marinierter Fisch,Μαριναρισμένο ψάρι,Pescado en escabeche,Pesce marinato,Gemarineerde vis,Ryby marynowane,Marinirane ribe
+A0F0T,Porridge milk based (ready to eat),Melkegrøt ferdig,Milchbrei verzehrfertig,Χυλός γάλακτος έτοιμος,Papilla láctea lista para consumir,Pappa al latte pronta,Melkpap kant-en-klaar,Kaszka mleczna gotowa,Mlečna kaša pripravljena
+A0F1G,Margarines and similar,Margarin og lignende,Margarine und ähnliche,Μαργαρίνη και παρόμοια,Margarinas y similares,Margarine e simili,Margarine en soortgelijke,Margaryny i podobne,Margarine in podobno
+A0F1N,White sauces,Hvite sauser,Helle Soßen,Λευκές σάλτσες,Salsas blancas,Salse bianche,Witte sauzen,Sosy białe,Bele omake
+A0F2E,"Coffee beverage-preparation, powder",Pulverkaffe,Kaffeepulver für Getränke,Σκόνη ροφήματος καφέ,Preparado de café en polvo,Preparato di caffè in polvere,Oploskoffiepoeder,Kawa w proszku do napojów,Kavni napitek v prahu
+A0F4Q,Extruded breakfast cereal products,Ekstrudert frokostkorn,Extrudierte Frühstückscerealien,Εξωθημένα δημητριακά πρωινού,Cereales de desayuno extrusionados,Cereali da colazione estrusi,Geëxtrudeerde ontbijtgranen,Ekstrudowane płatki śniadaniowe,Ekstrudirani zajtrkovi kosmiči
+A0F4S,Coconut water,Kokosvann,Kokoswasser,Νερό καρύδας,Agua de coco,Acqua di cocco,Kokoswater,Woda kokosowa,Kokosova voda
+A0F5E,Gelatine,Gelatin,Gelatine,Ζελατίνη,Gelatina,Gelatina,Gelatine,Żelatyna,Želatina
+A0F7R,Table-top sweeteners formulations,Bordsøtningsmidler,Tafelsüßstoffe,Επιτραπέζια γλυκαντικά,Edulcorantes de mesa,Dolcificanti da tavola,Tafelzoetstoffen,Słodziki stołowe,Namizna sladila
+A0FAP,Alaska pollock,Alaskatorsk,Alaska-Seelachs,Μπακαλιάρος Αλάσκας,Abadejo de Alaska,Merluzzo dell'Alaska,Alaska koolvis,Mintaj,Aljaški polak
+A0FDF,Tzatziki,Tzatziki,Tzatziki,Τζατζίκι,Tzatziki,Tzatziki,Tzatziki,Tzatziki,Tzatziki
+A16EM,Smoked mackerel,Røkt makrell,Geräucherte Makrele,Καπνιστό σκουμπρί,Caballa ahumada,Sgombro affumicato,Gerookte makreel,Makrela wędzona,Prekajena skuša
+A16EY,Sweet and sour sauce,Sursøt saus,Süßsauersoße,Γλυκόξινη σάλτσα,Salsa agridulce,Salsa agrodolce,Zoetzure saus,Sos słodko-kwaśny,Sladko-kisla omaka
+A16FF,Bread- (or similar products) based dishes,Brødretter,Brotgerichte,Πιάτα με βάση το ψωμί,Platos a base de pan,Piatti a base di pane,Broodgerechten,Dania na bazie pieczywa,Jedi na osnovi kruha
+A16GC,Preparations for dessert,Dessertblandinger,Dessertzubereitungen,Παρασκευάσματα επιδορπίων,Preparados para postres,Preparati per dessert,Dessertbereidingen,Preparaty do deserów,Pripravki za sladice
+A16GH,Strained yoghurt,Gresk yoghurt,Griechischer Joghurt,Στραγγιστό γιαούρτι,Yogur griego,Yogurt greco,Griekse yoghurt,Jogurt typu greckiego,Grški jogurt
+A16GK,Savoury sauce dry preparation,Tørr sausmiks,Trockene Soßenzubereitung,Σκόνη για αλμυρή σάλτσα,Preparado seco para salsas,Preparato secco per salse,Droge sausmix,Sos wytrawny w proszku,Suha priprava za slano omako
+A16GM,Mixed roasted flours for porridge-like food,Blandet ristet mel til grøt,Geröstete Mehlmischungen für Brei,Ανάμεικτα καβουρδισμένα άλευρα για χυλό,Harinas tostadas mixtas para papillas,Farine tostate miste per pappe,Gemengde geroosterde meelsoorten voor pap,Mieszanki mąk prażonych na kaszki,Mešane pražene moke za kaše
+A16GX,Herbal infusion extracts (RPC derivatives),Ekstrakter av urteteer,Kräutertee-Extrakte,Εκχυλίσματα αφεψημάτων βοτάνων,Extractos de infusiones de hierbas,Estratti di infusi di erbe,Extracten van kruidenthee,Ekstrakty naparów ziołowych,Izvlečki zeliščnih poparkov
+A18FD,Binding agent,Bindemiddel,Bindemittel,Συνδετικό μέσο,Agente aglutinante,Agente legante,Bindmiddel,Środek wiążący,Vezivo

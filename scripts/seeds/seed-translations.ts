@@ -28,6 +28,10 @@ import {
   printLearningTranslationReport,
   seedLearningTranslations,
 } from './prod/learning-translations';
+import {
+  printFoodex2TranslationReport,
+  seedFoodex2Translations,
+} from './prod/foodex2-translations';
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -76,6 +80,13 @@ async function main(): Promise<void> {
     console.log('\n📚 Learning translations');
     const learningReport = await seedLearningTranslations(prisma, { dryRun });
     printLearningTranslationReport(learningReport);
+
+    // --- FoodEx2 concept-name overlays ---
+    // Runs after the FoodEx2 terms exist (loaded by db:seed); a missing CSV
+    // or missing terms are reported rather than failing the whole step.
+    if (!dryRun) {
+      printFoodex2TranslationReport(await seedFoodex2Translations(prisma));
+    }
 
     // Future DB translation sources (gamification, recipes, …) go here.
 

@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
 import { seedDietFlags } from '../scripts/seeds/prod/dietFlags';
 import { seedNevoLangualFoodex } from '../scripts/seeds/prod/seedNevoLangualFoodex';
+import { printFoodex2Report, seedFoodex2 } from '../scripts/seeds/prod/foodex2';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
 import { seedShoppingLists } from '../scripts/seeds/dev/shoppingList';
@@ -63,6 +64,9 @@ async function seedProduction() {
   const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  // FoodEx2 needs the NEVO FoodEx2 codes above, so it must run after them.
+  const foodex2Result = await seedFoodex2(prisma);
+  printFoodex2Report(foodex2Result);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
@@ -94,7 +98,14 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
+    {
+      label: 'nevoLangualMapping',
+      value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
+    },
+    {
+      label: 'foodex2',
+      value: `${foodex2Result.termsImported} terms, ${foodex2Result.mappedConcepts} searchable foods, ${foodex2Result.mappedNevoItems} NEVO mappings`,
+    },
     {
       label: 'dietFlags',
       value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
@@ -143,6 +154,9 @@ async function seedDevelopment() {
   const genericFoods = await seedGenericFoods(prisma, { skipExisting });
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  // FoodEx2 needs the NEVO FoodEx2 codes above, so it must run after them.
+  const foodex2Result = await seedFoodex2(prisma);
+  printFoodex2Report(foodex2Result);
 
   // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
   const users = await seedUsers(prisma);
@@ -201,7 +215,14 @@ async function seedDevelopment() {
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
+    {
+      label: 'nevoLangualMapping',
+      value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
+    },
+    {
+      label: 'foodex2',
+      value: `${foodex2Result.termsImported} terms, ${foodex2Result.mappedConcepts} searchable foods, ${foodex2Result.mappedNevoItems} NEVO mappings`,
+    },
     { label: 'users', value: users.length },
     { label: 'shoppingList', value: shoppingList.length },
     { label: 'shoppingListItem', value: shoppingListItem.length },

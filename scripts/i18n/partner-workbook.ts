@@ -75,6 +75,14 @@ const NEVO_CSV = path.join(
   'nevo',
   'nevo_translations.csv',
 );
+const FOODEX2_TRANSLATIONS_CSV = path.join(
+  projectRoot,
+  'prisma',
+  'seeds',
+  'data',
+  'foodex2',
+  'foodex2-translations.csv',
+);
 const CATALOG_DATA_DIR = path.join(
   projectRoot,
   'prisma',
@@ -644,6 +652,100 @@ const foodNameCategory: Category = {
   },
 };
 
+type Foodex2Table = {
+  headers: string[];
+  records: Record<string, string>[];
+  eol: string;
+};
+
+function readFoodex2Table(): Foodex2Table {
+  const content = fs.readFileSync(FOODEX2_TRANSLATIONS_CSV, 'utf8');
+  const records = parseCsvRecords(content);
+  if (records.length === 0) {
+    throw new Error(
+      `No rows found in ${relativePath(FOODEX2_TRANSLATIONS_CSV)}`,
+    );
+  }
+  return {
+    headers: Object.keys(records[0]),
+    records,
+    eol: content.includes('\r\n') ? '\r\n' : '\n',
+  };
+}
+
+function writeFoodex2Table(table: Foodex2Table): string {
+  const lines = [table.headers.map(csvCell).join(',')];
+  for (const record of table.records) {
+    lines.push(table.headers.map((h) => csvCell(record[h] ?? '')).join(','));
+  }
+  fs.writeFileSync(
+    FOODEX2_TRANSLATIONS_CSV,
+    `${lines.join(table.eol)}${table.eol}`,
+    'utf8',
+  );
+  return relativePath(FOODEX2_TRANSLATIONS_CSV);
+}
+
+/**
+ * FoodEx2 concept names — the labels users actually search.
+ *
+ * Locales are already columns in the source CSV, named after the locale, so
+ * unlike the NEVO sheet there is no column-name mapping to do.
+ */
+const foodex2NameCategory: Category = {
+  id: 'food-foodex2',
+  title: 'FoodEx2 food names (key = FoodEx2 code)',
+  source: 'prisma/seeds/data/foodex2/foodex2-translations.csv',
+  seededBy: 'db:translations',
+  checkPlaceholders: false,
+
+  collect(locales) {
+    if (!fs.existsSync(FOODEX2_TRANSLATIONS_CSV)) {
+      return [];
+    }
+    const { records } = readFoodex2Table();
+
+    return records
+      .filter((record) => (record.code ?? '').trim().length > 0)
+      .map((record) => ({
+        key: record.code.trim(),
+        en: (record.en ?? '').trim(),
+        translations: Object.fromEntries(
+          locales.map((locale) => [locale, (record[locale] ?? '').trim()]),
+        ),
+      }));
+  },
+
+  apply(updates, dryRun) {
+    if (!fs.existsSync(FOODEX2_TRANSLATIONS_CSV)) {
+      return [];
+    }
+    const table = readFoodex2Table();
+    const byCode = new Map(
+      table.records.map((record) => [(record.code ?? '').trim(), record]),
+    );
+    let changed = false;
+
+    for (const update of updates) {
+      const record = byCode.get(update.key);
+      // A code that is no longer in the CSV is skipped rather than appended:
+      // the English source decides which concepts exist.
+      if (!record) continue;
+      if (!table.headers.includes(update.locale)) continue;
+      record[update.locale] = update.value;
+      changed = true;
+    }
+
+    return changed
+      ? [
+          dryRun
+            ? relativePath(FOODEX2_TRANSLATIONS_CSV)
+            : writeFoodex2Table(table),
+        ]
+      : [];
+  },
+};
+
 // ---------------------------------------------------------------------------
 // catalog-*: learning content (Task 3.3)
 //   English source  prisma/seeds/data/catalog/*.en.json
@@ -1007,6 +1109,7 @@ export function buildCategories(): Category[] {
     microLearningCategory,
     foodGroupCategory,
     foodNameCategory,
+    foodex2NameCategory,
   ];
 }
 
