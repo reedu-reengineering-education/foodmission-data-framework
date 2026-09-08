@@ -507,7 +507,7 @@ describe('GenericFoods endpoints (e2e)', () => {
 
       expect(res.body.items).toHaveLength(1);
       expect(res.body.items[0].foodex2Code).toBe('A907L');
-      expect(res.body.items[0].nutrients.energyKcal).toBe(361);
+      expect(res.body.items[0].energyKcal).toBe(361);
     },
   );
 
@@ -533,7 +533,7 @@ describe('GenericFoods endpoints (e2e)', () => {
         .get('/generic-foods/search?search=Getrocknete&lang=de')
         .expect(200);
 
-      expect(res.body.items[0].name).toBe('Getrocknete Nudeln');
+      expect(res.body.items[0].foodName).toBe('Getrocknete Nudeln');
       expect(res.body.items[0].nameEn).toBe('Dried pasta');
     },
   );

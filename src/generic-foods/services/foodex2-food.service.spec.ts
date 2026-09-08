@@ -74,6 +74,9 @@ describe('Foodex2FoodService', () => {
 
   const mockTranslationService: any = {
     resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+    // `remark` has no column on GenericFood; it is resolved per locale so the
+    // response keeps the same keys as GET /generic-foods.
+    resolveMany: jest.fn().mockResolvedValue({}),
   };
 
   beforeEach(async () => {
@@ -257,6 +260,47 @@ describe('Foodex2FoodService', () => {
       await service.findByFoodex2Code('A007L', 'de');
 
       expect(repository.findByCode).toHaveBeenCalledWith('A007L', 'de');
+    });
+  });
+
+  describe('superset parity', () => {
+    it('always returns a `remark` key, as the generic-food endpoint does', async () => {
+      repository.search.mockResolvedValue({ rows: [CONCEPT_ROW], total: 1 });
+      repository.findGenericFoodsByNevoCodes.mockResolvedValue(
+        new Map([[4, NEVO_PASTA_DRY]]),
+      );
+
+      const [food] = (await service.search({ search: 'pasta' })).items;
+
+      // A client reading `item.remark` must get null, never undefined.
+      expect(food).toHaveProperty('remark');
+      expect(food.remark).toBeNull();
+    });
+
+    it('resolves the canonical record’s remark for a non-English locale', async () => {
+      repository.search.mockResolvedValue({ rows: [CONCEPT_ROW], total: 1 });
+      repository.findGenericFoodsByNevoCodes.mockResolvedValue(
+        new Map([[4, NEVO_PASTA_DRY]]),
+      );
+      mockTranslationService.resolveMany.mockResolvedValueOnce({
+        'generic-4': { remark: 'Hinweis zur Zubereitung' },
+      });
+
+      const [food] = (await service.search({ search: 'pasta', lang: 'de' }))
+        .items;
+
+      expect(food.remark).toBe('Hinweis zur Zubereitung');
+    });
+
+    it('skips the translation lookup for English', async () => {
+      repository.search.mockResolvedValue({ rows: [CONCEPT_ROW], total: 1 });
+      repository.findGenericFoodsByNevoCodes.mockResolvedValue(
+        new Map([[4, NEVO_PASTA_DRY]]),
+      );
+
+      await service.search({ search: 'pasta' });
+
+      expect(mockTranslationService.resolveMany).not.toHaveBeenCalled();
     });
   });
 });
