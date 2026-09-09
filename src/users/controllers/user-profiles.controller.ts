@@ -21,10 +21,12 @@ import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
 } from '../../gamification/dto/gamification-profile.dto';
+import { ProgressWheelDto } from '../../gamification/dto/progress-wheel.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -32,6 +34,7 @@ export class UserProfilesController {
   constructor(
     private readonly userProfilesService: UserProfilesService,
     private readonly gamificationProfileService: GamificationProfileService,
+    private readonly progressWheelService: ProgressWheelService,
   ) {}
 
   @Get('me')
@@ -83,6 +86,23 @@ export class UserProfilesController {
       eventsLimit: query.eventsLimit,
       walletEntriesLimit: query.walletEntriesLimit,
     });
+  }
+
+  @Get('me/gamification/progress-wheels')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the four sustainability progress wheels',
+    description:
+      'CO2 reduction, energy reduction, water savings, land use reduction. ' +
+      'Each wheel tracks the current stage (1-5) of the sustainability ' +
+      'profile chosen at onboarding; empty until the user has a profile.',
+  })
+  @ApiOkResponse({ type: [ProgressWheelDto] })
+  async getMyProgressWheels(
+    @CurrentUser('id') userId: string,
+  ): Promise<ProgressWheelDto[]> {
+    return this.progressWheelService.getWheelsForUser(userId);
   }
 
   @Patch('me')

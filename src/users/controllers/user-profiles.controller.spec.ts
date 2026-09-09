@@ -5,12 +5,16 @@ import { NotFoundException } from '@nestjs/common';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
   let service: jest.Mocked<UserProfilesService>;
   let gamificationProfileService: jest.Mocked<
     Pick<GamificationProfileService, 'getProfileForUserId'>
+  >;
+  let progressWheelService: jest.Mocked<
+    Pick<ProgressWheelService, 'getWheelsForUser'>
   >;
 
   const mockUserProfile = {
@@ -33,6 +37,9 @@ describe('UserProfilesController', () => {
     gamificationProfileService = {
       getProfileForUserId: jest.fn(),
     };
+    progressWheelService = {
+      getWheelsForUser: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
@@ -49,6 +56,10 @@ describe('UserProfilesController', () => {
         {
           provide: GamificationProfileService,
           useValue: gamificationProfileService,
+        },
+        {
+          provide: ProgressWheelService,
+          useValue: progressWheelService,
         },
       ],
     })
