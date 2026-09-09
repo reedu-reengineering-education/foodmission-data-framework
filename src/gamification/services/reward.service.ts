@@ -38,9 +38,9 @@ export class RewardService {
    * At least one of points or xp must be provided.
    */
   async create(input: CreateRewardInput): Promise<Reward> {
-    if (!input.points && !input.xp) {
+    if (!input.points && !input.xp && !input.badgeId) {
       throw new BadRequestException(
-        'Reward must have either points or xp (or both)',
+        'Reward must have points, xp, or a badge',
       );
     }
 
