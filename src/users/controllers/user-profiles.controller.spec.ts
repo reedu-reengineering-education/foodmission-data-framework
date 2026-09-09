@@ -15,7 +15,7 @@ describe('UserProfilesController', () => {
     Pick<GamificationProfileService, 'getProfileForUserId'>
   >;
   let progressWheelService: jest.Mocked<
-    Pick<ProgressWheelService, 'getWheelsForUser'>
+    Pick<ProgressWheelService, 'getWheelsForUser' | 'recordImpact'>
   >;
   let onboardingSurveyService: jest.Mocked<
     Pick<OnboardingSurveyService, 'getSurveyQuestions' | 'submitSurvey'>
@@ -43,6 +43,7 @@ describe('UserProfilesController', () => {
     };
     progressWheelService = {
       getWheelsForUser: jest.fn(),
+      recordImpact: jest.fn(),
     };
     onboardingSurveyService = {
       getSurveyQuestions: jest.fn().mockReturnValue([]),
@@ -160,6 +161,27 @@ describe('UserProfilesController', () => {
         mockUserProfile,
       );
       expect(service.updateProfile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('recordProgressWheelImpact', () => {
+    it('delegates to ProgressWheelService', async () => {
+      const result = {
+        actionCode: 'VEGETARIAN_SERVING_100G',
+        wheels: [],
+        achievements: [],
+      } as any;
+      progressWheelService.recordImpact.mockResolvedValue(result);
+
+      await expect(
+        controller.recordProgressWheelImpact('user-1', {
+          actionCode: 'VEGETARIAN_SERVING_100G',
+        }),
+      ).resolves.toEqual(result);
+      expect(progressWheelService.recordImpact).toHaveBeenCalledWith(
+        'user-1',
+        'VEGETARIAN_SERVING_100G',
+      );
     });
   });
 

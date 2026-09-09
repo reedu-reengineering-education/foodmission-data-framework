@@ -34,6 +34,10 @@ import {
   OnboardingSurveyDto,
   OnboardingSurveyResultDto,
 } from '../../gamification/dto/onboarding-survey.dto';
+import {
+  RecordWheelImpactDto,
+  RecordWheelImpactResultDto,
+} from '../../gamification/dto/wheel-impact.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -111,6 +115,32 @@ export class UserProfilesController {
     @CurrentUser('id') userId: string,
   ): Promise<ProgressWheelDto[]> {
     return this.progressWheelService.getWheelsForUser(userId);
+  }
+
+  @Post('me/gamification/progress-wheels/impact')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Record a validated action against the progress wheels',
+    description:
+      "Adds the action's impact to every wheel it affects. A wheel that " +
+      'crosses 100% archives its stage, rolls any excess into the next ' +
+      'stage, and starts a new cycle. First draft: only VEGETARIAN_SERVING_100G ' +
+      'is defined; more actions land as their impact values are supplied.',
+  })
+  @ApiOkResponse({ type: RecordWheelImpactResultDto })
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
+  async recordProgressWheelImpact(
+    @CurrentUser('id') userId: string,
+    @Body() body: RecordWheelImpactDto,
+  ): Promise<RecordWheelImpactResultDto> {
+    return this.progressWheelService.recordImpact(userId, body.actionCode);
   }
 
   @Get('me/gamification/onboarding-survey')
