@@ -120,18 +120,14 @@ export class RewardService {
    * Update a reward.
    */
   async update(id: string, input: UpdateRewardInput): Promise<Reward> {
-    // Ensure reward exists first
-    await this.getById(id);
+    const reward = await this.getById(id);
+    const points = input.points === undefined ? reward.points : input.points;
+    const xp = input.xp === undefined ? reward.xp : input.xp;
+    const badgeId = input.badgeId === undefined ? reward.badgeId : input.badgeId;
 
-    // Validate that at least one currency is present after update
-    if (
-      input.points !== undefined &&
-      input.xp !== undefined &&
-      !input.points &&
-      !input.xp
-    ) {
+    if (!points && !xp && !badgeId) {
       throw new BadRequestException(
-        'Reward must have either points or xp (or both)',
+        'Reward must have points, xp, or a badge',
       );
     }
 
