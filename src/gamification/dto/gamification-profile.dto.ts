@@ -178,10 +178,14 @@ export class EarnedRewardDto {
     collectible?: string | null;
   };
 
-  @ApiPropertyOptional({ enum: ['MISSION', 'CHALLENGE', 'QUEST', 'QUIZ'] })
+  @ApiPropertyOptional({
+    enum: ['MISSION', 'CHALLENGE', 'QUEST', 'QUIZ', 'FOOD_FACT'],
+  })
   sourceType?: string | null;
 
-  @ApiPropertyOptional({ description: 'ID of the mission/challenge/quest/quiz' })
+  @ApiPropertyOptional({
+    description: 'ID of the mission/challenge/quest/quiz/food fact',
+  })
   sourceId?: string | null;
 
   @ApiProperty({ description: 'When the reward was earned' })
