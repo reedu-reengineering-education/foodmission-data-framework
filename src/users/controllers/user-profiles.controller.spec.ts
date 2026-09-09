@@ -6,6 +6,7 @@ import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
+import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
@@ -15,6 +16,9 @@ describe('UserProfilesController', () => {
   >;
   let progressWheelService: jest.Mocked<
     Pick<ProgressWheelService, 'getWheelsForUser'>
+  >;
+  let onboardingSurveyService: jest.Mocked<
+    Pick<OnboardingSurveyService, 'getSurveyQuestions' | 'submitSurvey'>
   >;
 
   const mockUserProfile = {
@@ -40,6 +44,10 @@ describe('UserProfilesController', () => {
     progressWheelService = {
       getWheelsForUser: jest.fn(),
     };
+    onboardingSurveyService = {
+      getSurveyQuestions: jest.fn().mockReturnValue([]),
+      submitSurvey: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
@@ -60,6 +68,10 @@ describe('UserProfilesController', () => {
         {
           provide: ProgressWheelService,
           useValue: progressWheelService,
+        },
+        {
+          provide: OnboardingSurveyService,
+          useValue: onboardingSurveyService,
         },
       ],
     })
@@ -148,6 +160,39 @@ describe('UserProfilesController', () => {
         mockUserProfile,
       );
       expect(service.updateProfile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getOnboardingSurvey', () => {
+    it('returns the survey questions wrapped in { questions }', () => {
+      const questions = [
+        { field: 'weeklyMeatConsumption', text: 'q1', options: [] },
+      ] as any;
+      onboardingSurveyService.getSurveyQuestions.mockReturnValue(questions);
+
+      expect(controller.getOnboardingSurvey()).toEqual({ questions });
+    });
+  });
+
+  describe('submitOnboardingSurvey', () => {
+    it('delegates to OnboardingSurveyService', async () => {
+      const answers = {
+        weeklyMeatConsumption: 'ZERO_TO_FOUR',
+        weeklyBeefConsumption: 'NEVER',
+        weeklyFoodWaste: 'ZERO',
+        weeklyUpfConsumption: 'ZERO_TO_THREE',
+        weeklyReusableOrRefill: 'TEN_PLUS',
+      } as any;
+      const result = { segment: 'ADVANCED', progressWheels: [] } as any;
+      onboardingSurveyService.submitSurvey.mockResolvedValue(result);
+
+      await expect(
+        controller.submitOnboardingSurvey('user-1', answers),
+      ).resolves.toEqual(result);
+      expect(onboardingSurveyService.submitSurvey).toHaveBeenCalledWith(
+        'user-1',
+        answers,
+      );
     });
   });
 });

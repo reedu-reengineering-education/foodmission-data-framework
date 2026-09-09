@@ -6,6 +6,7 @@ import { GamificationOnboardingService } from './services/gamification-onboardin
 import { GamificationProfileService } from './services/gamification-profile.service';
 import { BadgeService } from './services/badge.service';
 import { ProgressWheelService } from './services/progress-wheel.service';
+import { OnboardingSurveyService } from './services/onboarding-survey.service';
 
 @Module({
   imports: [DatabaseModule, EventsModule],
@@ -15,6 +16,7 @@ import { ProgressWheelService } from './services/progress-wheel.service';
     GamificationProfileService,
     BadgeService,
     ProgressWheelService,
+    OnboardingSurveyService,
   ],
   exports: [
     GamificationWalletService,
@@ -22,6 +24,7 @@ import { ProgressWheelService } from './services/progress-wheel.service';
     GamificationProfileService,
     BadgeService,
     ProgressWheelService,
+    OnboardingSurveyService,
   ],
 })
 export class GamificationModule {}
