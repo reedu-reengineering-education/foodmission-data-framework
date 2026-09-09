@@ -3,6 +3,7 @@ import { Prisma, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { ProgressWheelService } from './progress-wheel.service';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
   return `onboarding-completed:${userId}`;
@@ -21,12 +22,14 @@ export class GamificationOnboardingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userEventService: UserEventService,
+    private readonly progressWheelService: ProgressWheelService,
   ) {}
 
   /**
-   * First-time onboarding only: ensure wallet and record ONBOARDING_COMPLETED
-   * in a single transaction. Later baseline PATCHes no-op once that event exists.
-   * Progress-indicator seeding is deferred until product defines post-onboarding rules.
+   * First-time onboarding only: ensure wallet, seed the four sustainability
+   * progress wheels at stage 1 of the chosen profile, and record
+   * ONBOARDING_COMPLETED — all in a single transaction. Later baseline
+   * PATCHes no-op once that event exists.
    */
   async applyOnboardingSideEffects(
     user: Pick<User, 'id'>,
@@ -53,6 +56,12 @@ export class GamificationOnboardingService {
           update: {},
           create: { userId: user.id, xp: 0, points: 0 },
         });
+
+        await this.progressWheelService.ensureWheelsForUser(
+          user.id,
+          segment,
+          tx,
+        );
 
         await this.userEventService.record(
           {

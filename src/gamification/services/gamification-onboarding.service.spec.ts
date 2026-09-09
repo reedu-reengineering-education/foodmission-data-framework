@@ -3,6 +3,7 @@ import { Prisma, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { ProgressWheelService } from './progress-wheel.service';
 import {
   GamificationOnboardingService,
   onboardingCompletedIdempotencyKey,
@@ -12,6 +13,9 @@ describe('GamificationOnboardingService', () => {
   let service: GamificationOnboardingService;
   let userEventService: jest.Mocked<
     Pick<UserEventService, 'findByIdempotencyKey' | 'record'>
+  >;
+  let progressWheelService: jest.Mocked<
+    Pick<ProgressWheelService, 'ensureWheelsForUser'>
   >;
   let prisma: {
     userGamificationWallet: { upsert: jest.Mock };
@@ -24,6 +28,10 @@ describe('GamificationOnboardingService', () => {
       record: jest.fn(),
     };
 
+    progressWheelService = {
+      ensureWheelsForUser: jest.fn().mockResolvedValue(undefined),
+    };
+
     prisma = {
       userGamificationWallet: { upsert: jest.fn() },
       $transaction: jest.fn(),
@@ -34,6 +42,7 @@ describe('GamificationOnboardingService', () => {
         GamificationOnboardingService,
         { provide: PrismaService, useValue: prisma },
         { provide: UserEventService, useValue: userEventService },
+        { provide: ProgressWheelService, useValue: progressWheelService },
       ],
     }).compile();
 

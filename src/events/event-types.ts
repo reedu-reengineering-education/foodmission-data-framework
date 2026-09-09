@@ -29,6 +29,8 @@
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
+ * - **Progress indicator** — `{ actionCode, wheels: [{ kind, delta, level,
+ *   accumulatedValue, targetValue, stagesCompleted }] }`
  * - **Onboarding** — `{ segment }`
  * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
  *   Client-submittable via `POST /events` (allowlisted). `sessionId` is required;

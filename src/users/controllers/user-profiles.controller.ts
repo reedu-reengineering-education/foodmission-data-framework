@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   Body,
   UseGuards,
   NotFoundException,
@@ -21,10 +22,22 @@ import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
+import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
 } from '../../gamification/dto/gamification-profile.dto';
+import { ProgressWheelDto } from '../../gamification/dto/progress-wheel.dto';
+import {
+  OnboardingSurveyAnswersDto,
+  OnboardingSurveyDto,
+  OnboardingSurveyResultDto,
+} from '../../gamification/dto/onboarding-survey.dto';
+import {
+  RecordWheelImpactDto,
+  RecordWheelImpactResultDto,
+} from '../../gamification/dto/wheel-impact.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -32,6 +45,8 @@ export class UserProfilesController {
   constructor(
     private readonly userProfilesService: UserProfilesService,
     private readonly gamificationProfileService: GamificationProfileService,
+    private readonly progressWheelService: ProgressWheelService,
+    private readonly onboardingSurveyService: OnboardingSurveyService,
   ) {}
 
   @Get('me')
@@ -83,6 +98,92 @@ export class UserProfilesController {
       eventsLimit: query.eventsLimit,
       walletEntriesLimit: query.walletEntriesLimit,
     });
+  }
+
+  @Get('me/gamification/progress-wheels')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the four sustainability progress wheels',
+    description:
+      'CO2 reduction, energy reduction, water savings, land use reduction. ' +
+      'Each wheel tracks the current stage (1-5) of the sustainability ' +
+      'profile chosen at onboarding; empty until the user has a profile.',
+  })
+  @ApiOkResponse({ type: [ProgressWheelDto] })
+  async getMyProgressWheels(
+    @CurrentUser('id') userId: string,
+  ): Promise<ProgressWheelDto[]> {
+    return this.progressWheelService.getWheelsForUser(userId);
+  }
+
+  @Post('me/gamification/progress-wheels/impact')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Record a validated action against the progress wheels',
+    description:
+      "Adds the action's impact to every wheel it affects. A wheel that " +
+      'crosses 100% archives its stage, rolls any excess into the next ' +
+      'stage, and starts a new cycle. First draft: only VEGETARIAN_SERVING_100G ' +
+      'is defined; more actions land as their impact values are supplied.',
+  })
+  @ApiOkResponse({ type: RecordWheelImpactResultDto })
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
+  async recordProgressWheelImpact(
+    @CurrentUser('id') userId: string,
+    @Body() body: RecordWheelImpactDto,
+  ): Promise<RecordWheelImpactResultDto> {
+    return this.progressWheelService.recordImpact(userId, body.actionCode);
+  }
+
+  @Get('me/gamification/onboarding-survey')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the onboarding survey questions for the progress wheels',
+    description:
+      'Static 5-question survey (habit frequency, 4 options each). Answers ' +
+      'map 1:1 to preferences.onboardingSurvey / the fields submitted via ' +
+      'POST of this same route.',
+  })
+  @ApiOkResponse({ type: OnboardingSurveyDto })
+  getOnboardingSurvey(): OnboardingSurveyDto {
+    return {
+      questions: [...this.onboardingSurveyService.getSurveyQuestions()],
+    };
+  }
+
+  @Post('me/gamification/onboarding-survey')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Submit onboarding survey answers',
+    description:
+      'Computes the sustainability profile (dimension) from the 5 answers, ' +
+      'persists it, applies first-time onboarding side effects (wallet + ' +
+      'progress wheels, idempotent), and returns the computed segment ' +
+      'together with the resulting progress wheels.',
+  })
+  @ApiOkResponse({ type: OnboardingSurveyResultDto })
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
+  async submitOnboardingSurvey(
+    @CurrentUser('id') userId: string,
+    @Body() answers: OnboardingSurveyAnswersDto,
+  ): Promise<OnboardingSurveyResultDto> {
+    return this.onboardingSurveyService.submitSurvey(userId, answers);
   }
 
   @Patch('me')
