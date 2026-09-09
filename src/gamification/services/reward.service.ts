@@ -140,12 +140,12 @@ export class RewardService {
         where: { id },
         data: {
           name: input.name,
-          points: input.points ?? undefined,
-          xp: input.xp ?? undefined,
-          badgeId: input.badgeId ?? undefined,
-          avatarItem: input.avatarItem ?? undefined,
-          petItem: input.petItem ?? undefined,
-          collectible: input.collectible ?? undefined,
+          points: input.points,
+          xp: input.xp,
+          badgeId: input.badgeId,
+          avatarItem: input.avatarItem,
+          petItem: input.petItem,
+          collectible: input.collectible,
           collectibleShareable: input.collectibleShareable ?? undefined,
         },
       });
