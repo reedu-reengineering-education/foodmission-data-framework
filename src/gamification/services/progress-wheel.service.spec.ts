@@ -271,7 +271,7 @@ describe('ProgressWheelService', () => {
         expect.objectContaining({
           data: expect.objectContaining({
             level: 2,
-            targetValue: 10,
+            targetValue: 4, // BEGINNER stage-2 CO2 target
             accumulatedValue: expect.closeTo(0.5, 5),
             cycleStartedAt: expect.any(Date),
           }),
@@ -336,7 +336,7 @@ describe('ProgressWheelService', () => {
         data: {
           level: 1,
           accumulatedValue: 0,
-          targetValue: 15, // INTERMEDIATE stage-1 target
+          targetValue: 2.0, // INTERMEDIATE stage-1 ENERGY target
           cycleStartedAt: expect.any(Date),
         },
       });
@@ -389,7 +389,7 @@ describe('ProgressWheelService', () => {
         expect.objectContaining({
           data: expect.objectContaining({
             level: 5,
-            targetValue: 90,
+            targetValue: 11.25, // ADVANCED stage-5 CO2 target
             accumulatedValue: expect.closeTo(0.1, 5),
           }),
         }),

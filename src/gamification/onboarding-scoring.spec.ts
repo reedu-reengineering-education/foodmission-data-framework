@@ -7,15 +7,15 @@ import {
   WeeklyUpfRange,
 } from '@prisma/client';
 import {
-  computeImprovementScore,
+  computeAverageRank,
   deriveUserSegment,
-  scoreToSegment,
+  rankToSegment,
 } from './onboarding-scoring';
 
 describe('onboarding-scoring', () => {
-  it('scores the best answer on every question as 0', () => {
+  it('scores the best answer on every question as rank 0', () => {
     expect(
-      computeImprovementScore({
+      computeAverageRank({
         weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
         weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
         weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
@@ -26,9 +26,9 @@ describe('onboarding-scoring', () => {
     ).toBe(0);
   });
 
-  it('scores the worst answer on every question as 15', () => {
+  it('scores the worst answer on every question as rank 2', () => {
     expect(
-      computeImprovementScore({
+      computeAverageRank({
         weeklyMeatConsumption: WeeklyMeatRange.FIFTEEN_PLUS,
         weeklyBeefConsumption: WeeklyBeefFrequency.THREE_PLUS_TIMES_PER_WEEK,
         weeklyFoodWaste: WeeklyFoodWasteRange.FIVE_PLUS,
@@ -36,18 +36,19 @@ describe('onboarding-scoring', () => {
         // worst reuse answer is the *first* enum value (opposite polarity)
         weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
       }),
-    ).toBe(15);
+    ).toBe(2);
   });
 
   it.each([
     [0, UserSegment.ADVANCED],
-    [4, UserSegment.ADVANCED],
-    [5, UserSegment.INTERMEDIATE],
-    [9, UserSegment.INTERMEDIATE],
-    [10, UserSegment.BEGINNER],
-    [15, UserSegment.BEGINNER],
-  ])('maps score %i to %s', (score, segment) => {
-    expect(scoreToSegment(score)).toBe(segment);
+    [0.4, UserSegment.ADVANCED],
+    [0.5, UserSegment.INTERMEDIATE],
+    [1, UserSegment.INTERMEDIATE],
+    [1.4, UserSegment.INTERMEDIATE],
+    [1.5, UserSegment.BEGINNER],
+    [2, UserSegment.BEGINNER],
+  ])('maps average rank %p to %s', (rank, segment) => {
+    expect(rankToSegment(rank)).toBe(segment);
   });
 
   it('derives ADVANCED for an already-sustainable set of answers', () => {
@@ -72,5 +73,17 @@ describe('onboarding-scoring', () => {
         weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
       }),
     ).toBe(UserSegment.BEGINNER);
+  });
+
+  it('derives INTERMEDIATE for a mixed set of answers', () => {
+    expect(
+      deriveUserSegment({
+        weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+        weeklyBeefConsumption: WeeklyBeefFrequency.ONE_TO_TWO_TIMES_PER_WEEK,
+        weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
+        weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
+        weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
+      }),
+    ).toBe(UserSegment.INTERMEDIATE);
   });
 });

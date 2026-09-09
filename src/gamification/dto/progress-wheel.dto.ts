@@ -34,6 +34,16 @@ export class ProgressWheelDto {
   })
   stage!: number;
 
+  @ApiProperty({ description: 'Stage title, e.g. "Getting Started"' })
+  stageTitle!: string;
+
+  @ApiProperty({
+    minimum: 0,
+    maximum: 100,
+    description: 'Overall sustainability target for the current stage, as a percentage',
+  })
+  sustainabilityTargetPercent!: number;
+
   @ApiProperty({ description: 'Amount accumulated in the current cycle' })
   accumulatedValue!: number;
 
