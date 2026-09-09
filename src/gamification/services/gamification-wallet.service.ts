@@ -91,8 +91,13 @@ export class GamificationWalletService {
       throw new BadRequestException('Wallet award amount must be non-zero');
     }
 
-    if (input.idempotencyKey) {
-      const replayed = await this.tryReplayAward(input);
+    const awardInput = {
+      ...input,
+      idempotencyKey: this.resolveIdempotencyKey(input),
+    };
+
+    if (awardInput.idempotencyKey) {
+      const replayed = await this.tryReplayAward(awardInput);
       if (replayed) {
         return replayed;
       }
@@ -102,27 +107,28 @@ export class GamificationWalletService {
       return await this.prisma.$transaction(async (tx) => {
         let event: UserEvent | null = null;
 
-        if (input.eventId) {
+        if (awardInput.eventId) {
           event = await tx.userEvent.findUniqueOrThrow({
-            where: { id: input.eventId },
+            where: { id: awardInput.eventId },
           });
-        } else if (input.eventType || input.idempotencyKey) {
+        } else if (awardInput.eventType || awardInput.idempotencyKey) {
           const recorded = await this.userEventService.record(
             {
-              userId: input.userId,
-              groupId: input.groupId,
+              userId: awardInput.userId,
+              groupId: awardInput.groupId,
               eventType:
-                input.eventType ?? defaultWalletAwardEventType(input.currency),
+                awardInput.eventType ??
+                defaultWalletAwardEventType(awardInput.currency),
               source: EventSource.WALLET,
-              metadata: input.metadata ?? {
-                currency: input.currency,
-                amount: input.amount,
-                reason: input.reason,
+              metadata: awardInput.metadata ?? {
+                currency: awardInput.currency,
+                amount: awardInput.amount,
+                reason: awardInput.reason,
               },
-              idempotencyKey: input.idempotencyKey,
+              idempotencyKey: awardInput.idempotencyKey,
               subject:
-                input.subjectType != null
-                  ? { type: input.subjectType, id: input.subjectId }
+                awardInput.subjectType != null
+                  ? { type: awardInput.subjectType, id: awardInput.subjectId }
                   : undefined,
             },
             tx,
@@ -130,36 +136,36 @@ export class GamificationWalletService {
           event = recorded.event;
 
           if (recorded.replayed) {
-            return this.replayFromEventInTx(input, event, tx);
+            return this.replayFromEventInTx(awardInput, event, tx);
           }
         }
 
         await tx.userGamificationWallet.upsert({
-          where: { userId: input.userId },
+          where: { userId: awardInput.userId },
           update: {},
-          create: { userId: input.userId, xp: 0, points: 0 },
+          create: { userId: awardInput.userId, xp: 0, points: 0 },
         });
 
         const locked = await tx.$queryRaw<WalletRow[]>`
           SELECT "userId", "xp", "points", "updatedAt"
           FROM "user_gamification_wallets"
-          WHERE "userId" = ${input.userId}
+          WHERE "userId" = ${awardInput.userId}
           FOR UPDATE
         `;
         const wallet = locked[0];
         if (!wallet) {
           throw new ConflictException(
-            `Wallet row missing for user ${input.userId} after upsert`,
+            `Wallet row missing for user ${awardInput.userId} after upsert`,
           );
         }
 
         const nextXp =
-          input.currency === WalletCurrency.XP
-            ? wallet.xp + input.amount
+          awardInput.currency === WalletCurrency.XP
+            ? wallet.xp + awardInput.amount
             : wallet.xp;
         const nextPoints =
-          input.currency === WalletCurrency.POINTS
-            ? wallet.points + input.amount
+          awardInput.currency === WalletCurrency.POINTS
+            ? wallet.points + awardInput.amount
             : wallet.points;
 
         if (nextXp < 0 || nextPoints < 0) {
@@ -167,24 +173,24 @@ export class GamificationWalletService {
         }
 
         const balanceAfter =
-          input.currency === WalletCurrency.XP ? nextXp : nextPoints;
+          awardInput.currency === WalletCurrency.XP ? nextXp : nextPoints;
 
         const entry = await tx.walletEntry.create({
           data: {
-            userId: input.userId,
-            currency: input.currency,
-            amount: input.amount,
+            userId: awardInput.userId,
+            currency: awardInput.currency,
+            amount: awardInput.amount,
             balanceAfter,
-            reason: input.reason,
-            rewardId: input.rewardId ?? null,
-            sourceType: input.sourceType ?? null,
-            sourceId: input.sourceId ?? null,
+            reason: awardInput.reason,
+            rewardId: awardInput.rewardId ?? null,
+            sourceType: awardInput.sourceType ?? null,
+            sourceId: awardInput.sourceId ?? null,
             eventId: event?.id ?? null,
           },
         });
 
         const updatedWallet = await tx.userGamificationWallet.update({
-          where: { userId: input.userId },
+          where: { userId: awardInput.userId },
           data: {
             xp: nextXp,
             points: nextPoints,
@@ -195,17 +201,36 @@ export class GamificationWalletService {
       });
     } catch (error) {
       if (
-        input.idempotencyKey &&
+        awardInput.idempotencyKey &&
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        const replayed = await this.tryReplayAward(input);
+        const replayed = await this.tryReplayAward(awardInput);
         if (replayed) {
           return replayed;
         }
       }
       throw error;
     }
+  }
+
+  private resolveIdempotencyKey(input: AwardWalletInput): string | null {
+    if (input.idempotencyKey) {
+      return input.idempotencyKey;
+    }
+
+    if (!input.rewardId || !input.sourceType || !input.sourceId) {
+      return null;
+    }
+
+    return [
+      'wallet-award',
+      input.userId,
+      input.sourceType,
+      input.sourceId,
+      input.rewardId,
+      input.currency,
+    ].join(':');
   }
 
   private async tryReplayAward(
