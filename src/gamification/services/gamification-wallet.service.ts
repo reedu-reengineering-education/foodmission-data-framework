@@ -289,8 +289,12 @@ export class GamificationWalletService {
     event: UserEvent & { walletEntries: WalletEntry[] },
     wallet: UserGamificationWallet,
   ): AwardWalletResult {
+    // Match on currency only. The idempotency key identifies the award
+    // (user + source + reward + currency), not the amount, so a reward whose
+    // configured xp/points changed after the first credit still replays instead
+    // of throwing. The stored entry is authoritative for what was actually paid.
     const entry = event.walletEntries.find(
-      (e) => e.currency === input.currency && e.amount === input.amount,
+      (e) => e.currency === input.currency,
     );
     if (!entry) {
       throw new ConflictException(

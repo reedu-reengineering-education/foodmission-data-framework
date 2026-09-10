@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
@@ -52,12 +53,69 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LearningService {
+  private readonly logger = new Logger(LearningService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly translations: LearningTranslationHelper,
     private readonly walletService: GamificationWalletService,
     private readonly userEventService: UserEventService,
   ) {}
+
+  /**
+   * Credits a content reward after its progress transaction has committed.
+   *
+   * Safe to call on every eligible request: `award()` derives an idempotency key
+   * from (user, sourceType, sourceId, reward, currency), so repeat calls replay the
+   * original ledger entry instead of double-crediting. That is deliberate — gating
+   * the award on "first completion" would make a failed credit unrecoverable, since
+   * progress is already persisted by the time we get here and the next attempt would
+   * be skipped.
+   *
+   * Returns what the ledger actually holds, or null when crediting failed. A failure
+   * must not surface as a request error (the progress write did succeed); the next
+   * request for the same content retries the credit.
+   */
+  private async awardContentReward(
+    base: {
+      userId: string;
+      rewardId: string;
+      sourceType: RewardSourceType;
+      sourceId: string;
+      reason: string;
+    },
+    reward: { xp: number | null; points: number | null },
+  ): Promise<{ xp: number | null; points: number | null } | null> {
+    try {
+      let xp: number | null = null;
+      let points: number | null = null;
+
+      if (reward.xp) {
+        const { entry } = await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.XP,
+          amount: reward.xp,
+        });
+        xp = entry.amount;
+      }
+      if (reward.points) {
+        const { entry } = await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.POINTS,
+          amount: reward.points,
+        });
+        points = entry.amount;
+      }
+
+      return { xp, points };
+    } catch (error) {
+      this.logger.error(
+        `Failed to award ${base.sourceType} ${base.sourceId} reward to user ${base.userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+      return null;
+    }
+  }
 
   // ── Dimensions ──────────────────────────────────────────────
 
@@ -217,22 +275,17 @@ export class LearningService {
     });
 
     let earnedReward: FoodFactRewardDto | null = null;
-    if (!existing && foodFact.reward) {
-      const { reward } = foodFact;
-      const base = {
-        userId,
-        rewardId: reward.id,
-        sourceType: RewardSourceType.FOOD_FACT,
-        sourceId: foodFact.id,
-        reason: `Food fact ${foodFact.code} read`,
-      };
-      if (reward.xp) {
-        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
-      }
-      if (reward.points) {
-        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
-      }
-      earnedReward = { xp: reward.xp, points: reward.points };
+    if (foodFact.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: foodFact.reward.id,
+          sourceType: RewardSourceType.FOOD_FACT,
+          sourceId: foodFact.id,
+          reason: `Food fact ${foodFact.code} read`,
+        },
+        foodFact.reward,
+      );
     }
 
     return {
@@ -411,12 +464,6 @@ export class LearningService {
       );
     }
 
-    const existing = await this.prisma.quizProgress.findUnique({
-      where: { userId_quizId: { userId, quizId: quiz.id } },
-      select: { isCorrect: true },
-    });
-    const wasAlreadyCorrect = existing?.isCorrect === true;
-
     const now = new Date();
     const progress = await this.prisma.$transaction(async (tx) => {
       const previous = await tx.quizProgress.findUnique({
@@ -477,22 +524,17 @@ export class LearningService {
     });
 
     let earnedReward: QuizRewardDto | null = null;
-    if (option.isCorrect && !wasAlreadyCorrect && quiz.reward) {
-      const { reward } = quiz;
-      const base = {
-        userId,
-        rewardId: reward.id,
-        sourceType: RewardSourceType.QUIZ,
-        sourceId: quiz.id,
-        reason: `Quiz ${quiz.code} correct answer`,
-      };
-      if (reward.xp) {
-        await this.walletService.award({ ...base, currency: WalletCurrency.XP, amount: reward.xp });
-      }
-      if (reward.points) {
-        await this.walletService.award({ ...base, currency: WalletCurrency.POINTS, amount: reward.points });
-      }
-      earnedReward = { xp: reward.xp, points: reward.points };
+    if (option.isCorrect && quiz.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: quiz.reward.id,
+          sourceType: RewardSourceType.QUIZ,
+          sourceId: quiz.id,
+          reason: `Quiz ${quiz.code} correct answer`,
+        },
+        quiz.reward,
+      );
     }
 
     const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
@@ -765,12 +807,6 @@ export class LearningService {
       throw new NotFoundException('Quest not found');
     }
 
-    const existingProgress = await this.prisma.questProgress.findUnique({
-      where: { userId_questId: { userId, questId: quest.id } },
-      select: { completed: true },
-    });
-    const wasAlreadyCompleted = existingProgress?.completed === true;
-
     const progress = await this.prisma.$transaction(async (tx) => {
       const previous = await tx.questProgress.findUnique({
         where: { userId_questId: { userId, questId: quest.id } },
@@ -849,30 +885,17 @@ export class LearningService {
     });
 
     let earnedReward: QuestRewardDto | null = null;
-    if (progress.completed && !wasAlreadyCompleted && quest.reward) {
-      const { reward } = quest;
-      const base = {
-        userId,
-        rewardId: reward.id,
-        sourceType: RewardSourceType.QUEST,
-        sourceId: quest.id,
-        reason: `Quest ${quest.code} completed`,
-      };
-      if (reward.xp) {
-        await this.walletService.award({
-          ...base,
-          currency: WalletCurrency.XP,
-          amount: reward.xp,
-        });
-      }
-      if (reward.points) {
-        await this.walletService.award({
-          ...base,
-          currency: WalletCurrency.POINTS,
-          amount: reward.points,
-        });
-      }
-      earnedReward = { xp: reward.xp, points: reward.points };
+    if (progress.completed && quest.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: quest.reward.id,
+          sourceType: RewardSourceType.QUEST,
+          sourceId: quest.id,
+          reason: `Quest ${quest.code} completed`,
+        },
+        quest.reward,
+      );
     }
 
     const response = await this.mapQuestProgressResponse(
