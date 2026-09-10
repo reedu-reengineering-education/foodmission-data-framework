@@ -1,57 +1,112 @@
 # FoodEx2 food vocabulary
 
-The user-facing food search runs on **FoodEx2**, EFSA's food classification.
-**NEVO** remains the only source of nutritional values.
+The user-facing food search is `GET /generic-foods?search=`. It returns
+**NEVO** records — the only source of nutritional values — and uses
+**FoodEx2**, EFSA's food classification, to decide which of them collapse into
+one result.
 
 ```text
-user query
-    ↓
-FoodEx2 food name          foodex2_terms
-    ↓ canonical mapping    foodex2_nevo_mappings (isCanonical)
-NEVO generic food          generic_foods
-    ↓
-nutritional values
+NEVO generic food          generic_foods           ← every result is one of these
+    ↑ canonical mapping    foodex2_nevo_mappings (isCanonical)
+FoodEx2 food name          foodex2_terms           ← decides what collapses
 ```
 
-Searching `pasta` returns the concept **Dried pasta**, not the five NEVO pasta
-variants behind it. `GET /generic-foods` still lists the raw NEVO catalogue
-unchanged, for admin use and backwards compatibility.
+## One endpoint
 
-## Endpoints
+| Request                                | Returns                                    |
+| -------------------------------------- | ------------------------------------------ |
+| `GET /generic-foods?search=pasta`      | Ranked search, variants collapsed (below)  |
+| `GET /generic-foods?foodex2Code=A007L` | The NEVO records behind one result         |
+| `GET /generic-foods`                   | Plain NEVO catalogue in name order (admin) |
 
-| Endpoint                                 | Purpose                                      |
-| ---------------------------------------- | -------------------------------------------- |
-| `GET /generic-foods/search?search=pasta` | Primary user-facing food search (FoodEx2)    |
-| `GET /generic-foods/foodex2/:code`       | One FoodEx2 food and its canonical nutrients |
-| `GET /generic-foods`                     | Raw NEVO catalogue (unchanged)               |
+`lang`, `foodGroup`, `page` and `limit` work on all three.
 
-### Switching a client over
+## Collapse only into what the user named
 
-`GET /generic-foods/search` returns a **superset of the generic-food response**,
-so a client can move off `GET /generic-foods` without changing how it reads a
-result. Two guarantees make that safe:
+NEVO has five pasta records, so a plain search for _pasta_ is noisy — that is
+why FoodEx2 was brought in. But always answering with a FoodEx2 concept loses
+the food whenever the concept is broad: _Lasagne_ is filed under _Pasta based
+dishes_, whose canonical record is bami goreng. So search follows three rules:
 
-- **`id` is the canonical GenericFood id**, not the FoodEx2 term id. It stays
-  valid as `genericFoodId` when creating pantry or shopping items. The term id
-  is exposed separately as `foodex2Id`. Returning the term id here would break
-  the foreign key on every add-to-pantry call, which is why an e2e test asserts
-  `id !== foodex2Id` and that `id` resolves to a real `generic_foods` row.
-- **`foodName` is the FoodEx2 name** (localized when `lang` is set), so the UI
-  renders "Kartoffeln und ähnliche" unchanged. The NEVO name moves to
-  `source.foodName`.
+1. **The query names a FoodEx2 food** (in the requested locale or English):
+   one row for that food, carrying its canonical NEVO record. Every record
+   filed under it is hidden behind the row. _Kartoffeln_ → _Kartoffeln und
+   ähnliche_ standing for 12 potato records. Exception: when a record's
+   whole name is the query, the user named that record — _Banane_ answers
+   "Banane", not the plantain that represents _Bananen und ähnliche_.
+   And a concept with a single record collapses nothing, so that record
+   answers under its own name: _Nudeln ungefüllt ungekocht_ holds one record,
+   boiled pasta, which shows as "Weiße Nudeln, gekocht" (see Data quality).
+2. **The query names only a NEVO record**: that record. Records sharing a
+   FoodEx2 code fold into the best-matching one — _beef_ → "Beef av raw"
+   standing for the beef cuts filed with it.
+3. **Dishes never collapse.** Records of a concept of MTX term type `c`
+   (composite — _Pasta based dishes_, _Meat based dishes_, _Finger food_,
+   _Pizza and pizza-like dishes_, _Cakes_) are always returned individually,
+   even when they share an extended term: "Lasagne Bolognese" and "Lasagne
+   mit Gemüse" are two dishes, not variants of one food, and bami goreng is
+   no stand-in for either. The term types are configured in
+   `nonCollapsibleTermTypes`.
 
-Everything else the old endpoint returned is still there and still flat —
-`nevoCode`, `foodGroup`, `foodGroupSlug`, the diet flags
-(`vegan`/`vegetarian`/`meatOrFish`/`legume`) and all nutrient columns.
-Pagination (`items`/`total`/`page`/`limit`/`totalPages`) is identical. The
-additive fields are `foodex2Code`, `foodex2Id`, `nameEn`, `shortName`,
-`isCore`, `parentCode`, `variantCount` and `source`.
+Measured on NEVO 2025 against 37 everyday queries, this returns 489 rows
+that name the food, plus 184 ingredient mentions ranked last (tier 6 below).
+The raw NEVO search returns 1370 rows, an always-collapse search 361 — but
+that one answers _Lasagne_ with bami goreng.
 
-One caveat: `id` is **not stable across canonical re-selection**. Retuning
-`foodex2-canonical.config.ts` can elect a different NEVO record and change a
-concept's `id`. Persisted pantry rows are unaffected (they hold a real
-GenericFood foreign key that stays valid), but a client caching "this food's
-identity" should key on `foodex2Code`, not `id`.
+### Ranking
+
+A name is matched on its **head** — everything before the first comma or
+modifier word (`mit`, `with`, `w`, `wo`, `und`, `aus`, …) — because NEVO names
+are head-first and what follows is an ingredient. Tiers, best first:
+
+| Tier | Match                                                   | Example                    |
+| ---- | ------------------------------------------------------- | -------------------------- |
+| 0    | The whole name is the query                             | "Gulasch", "Banane"        |
+| 1    | Head is the query, or starts with it as a word          | "Kartoffeln, roh"          |
+| 2    | A head word is the query, or the last word ends with it | "Vollmilch", "Weißer Reis" |
+| 3    | Head starts with the query inside a compound            | "Milchschokolade"          |
+| 4    | A later head word starts with it                        | "Rohes Möhrenbündel"       |
+| 5    | Substring of the head                                   |                            |
+| 6    | Only mentioned after the head (an ingredient)           | "Omelett mit Kartoffeln"   |
+
+Tier 1 deliberately does not separate "Hummus mit Gemüse" (head cut to
+"hummus") from "Hummus natur": a shorter head is no better a match. Tier 2
+reads the _last_ word because the food is named last, in a German
+compound and in the phrase around it: "Vollmilch" is milk, "Alkoholfreier
+Wein" is not eggs. A hit through the English name while another locale was
+requested ranks after every hit in that locale.
+
+Ties break on: a concept before a single record; between concepts, the one
+with more NEVO records (the more common food: _Kuhmilch_ before
+_Muttermilch_); then the canonical-election score (plainer records first);
+then the shorter name. Ordering is fully deterministic.
+
+A trailing German plural `-n` is stripped before matching, so _Kartoffeln_
+reaches "Kartoffelpüree" and _Frühlingsrollen_ finds "Frühlingsrolle".
+
+The rules live in
+[`src/generic-foods/search/food-search.ranking.ts`](../src/generic-foods/search/food-search.ranking.ts)
+as a pure function; the repository only loads substring candidates from the
+2.3k records, and the service paginates the ranked list.
+
+### Response
+
+Every row is a real NEVO record: `id` is its GenericFood id, valid as
+`genericFoodId` for pantry and shopping items, and every nutrient is that
+record's value — never an average. Search rows add:
+
+| Field          | Meaning                                                         |
+| -------------- | --------------------------------------------------------------- |
+| `isConcept`    | Row stands for a FoodEx2 food the query named (rule 1)          |
+| `foodName`     | FoodEx2 name on a concept row, NEVO name otherwise (localized)  |
+| `nevoFoodName` | Name of the NEVO record whose values the row carries            |
+| `foodex2Code`  | Code the row collapses; `null` if not collapsed                 |
+| `variantCount` | Records `?foodex2Code=` lists for the row; 1 when not collapsed |
+
+A concept row's `id` follows the canonical record, so retuning
+`foodex2-canonical.config.ts` can change it. Persisted pantry rows keep a valid
+foreign key; a client caching a concept's identity should key on
+`foodex2Code`.
 
 ## Why a hierarchy walk is needed
 
@@ -71,7 +126,9 @@ Terms that have no core ancestor fall back to EFSA's `M`/`P` groupings
 
 ## Canonical selection
 
-A FoodEx2 concept maps to many NEVO records, so one is elected as canonical.
+A FoodEx2 concept maps to many NEVO records, so one is elected as canonical —
+the record a concept row carries (rule 1) and the order of a `?foodex2Code=`
+listing.
 Values are **never averaged** — dry and cooked pasta differ mostly in water
 content, so a mean would be misleading.
 
@@ -118,8 +175,8 @@ stale mapping behind.
 
 The same re-seed is what applies a change to `foodex2-canonical.config.ts`. The
 config is read only at import time — the search path just reads the stored
-`isCanonical` flag — so editing the rules changes nothing until the import runs
-again.
+`isCanonical` flag — so editing the rules changes nothing until
+the import runs again.
 
 ## Data quality
 
@@ -140,11 +197,17 @@ Known issues in that pair, all reported by the importer:
 - **4 codes missing from MTX** (`A18PR`, `A18PS`, `A18SV`, `A19EK`) — newer than
   MTX 12.0. They resolve once the catalogue is upgraded.
 - **2 codes with no usable concept** (`A00FJ`, `A026T`).
-- **29 concepts with tied canonical candidates** — resolved deterministically by
+- **27 concepts with tied canonical candidates** — resolved deterministically by
   the lowest NEVO code, but worth a curator's eye.
-- A concept whose only NEVO candidate contradicts its name (e.g. `A007E`
-  "Pasta, plain (not stuffed), uncooked" has just one mapped record, a boiled
-  one). The mapping is NEVO's own; there is no alternative to elect.
+- **A cooked record can sit under a raw-named concept.** NEVO codes a cooked
+  food as the raw commodity plus a FoodEx2 process facet (`F28`): "Pasta white
+  av boiled" is `A007E` _Pasta, plain (not stuffed), uncooked_ + `F28.A07GL`
+  _Boiling_. The importer reads only the base term, and `A007E` holds just that
+  one record — so search shows a single-record concept under the record's own
+  name (rule 1) rather than the misleading concept label. Facets are otherwise
+  ignored: records under one concept can differ in preparation, fat content,
+  added ingredients or fortification, and a concept row shows its canonical
+  record's values. `?foodex2Code=` lists the alternatives.
 
 ## Translations
 
@@ -152,47 +215,11 @@ MTX ships English names only, so a FoodEx2 concept is localized through the
 same `entity_translations` pipeline as everything else. `Foodex2Term` is a
 registered translatable entity with one field, `name`.
 
-Pass `lang` to search and it does two things:
-
-1. **Displays** the translated concept name, falling back to the English MTX
-   name. Both are returned — `name` (localized) and `nameEn` (canonical).
-2. **Matches** against the translated names of the concept's NEVO records. This
-   is why `?search=Nudeln&lang=de` finds _Dried pasta_ even before any FoodEx2
-   concept name has been translated: all 2328 NEVO records already carry German
-   names from `nevo_translations.csv`.
-
-Concept names, and the NEVO records of a plain concept, are matched in **every**
-locale, not just the requested one — "Möhren" finds the carrot whatever `lang`
-says. A composite concept is the exception: there the head rule below only holds
-in the language the name was written in, so its non-canonical records are
-matched in the requested locale only.
-
-A trailing German plural `-n` is stripped from the search term before matching,
-so _Frühlingsrollen_ finds "Frühlingsrolle" and _Kartoffeln_ reaches
-"Kartoffelpüree". Only the exact-name tier compares the term as typed.
-
-Ranking puts a match on the **canonical** NEVO name (tiers 7-8) above a match
-on any other variant (tier 9). Without that split, searching _Nudeln_ surfaced
-"Meat soup" ahead of "Dried pasta", because a soup variant is called
-_Klare Suppe mit Nudeln_.
-
-Under a **composite** concept — anything below `compositeFoodRootCode`
-(`A0BAG`), the recipe-based branch holding dishes, bakery wares and imitates —
-a non-canonical record has to be _named_ after the term rather than mention it:
-the term has to start the head. A dish is named after its recipe, so a word
-further along is an ingredient, and a single "Sweet pepper stuffed w cream
-cheese" filed under _Finger food_ was enough to make `?search=Paprika` return a
-frozen rice ball. Dropping these records outright was too strict — it also lost
-_Frühlingsrolle_, _Kroketten_, _Lasagne_ and _Gulasch_, which are exactly the
-names a user types for a dish.
-
-A NEVO name is matched on its **head** only — everything up to the first comma
-or modifier word (`mit`, `with`, `w`, `wo`, `und`, `ohne`, …). NEVO names are
-head-first, so what follows is an ingredient rather than the food itself.
-Without the cut, _Omelett mit Kartoffeln, spanische Tortilla_ made
-_Egg based dishes_ answer a search for _Kartoffeln_, high up, because a concept
-collapses every NEVO record filed under it. The head still contains the food:
-_Weiße Nudeln, roh_ keeps matching _Nudeln_.
+Pass `lang` and search matches names in that locale first, then the English
+source names at a penalty (see Ranking). A concept row shows the translated
+FoodEx2 name, falling back to the English MTX name. Until a concept name is
+translated, a German query cannot name the concept, so it answers with the
+matching NEVO records instead — _Nudeln_ still finds "Weiße Nudeln, roh".
 
 All 619 concept names ship translated into every supported locale
 (`no de el es it nl pl sl`) in
@@ -234,50 +261,26 @@ workbook: one sheet per entity type, with columns `key`, `en` and one column
 per locale, so a translator sees every language for a key side by side. The
 importer also still accepts the older one-sheet-per-locale files.
 
-## Vocabulary granularity: the extended-term question
+## Vocabulary granularity
 
-The vocabulary stops at **core** terms, so an MTX term that names a food well
-can be invisible. `A040F Spring rolls` is an extended term: its two NEVO records
-roll up into `A040C Finger food`, and a search for _Frühlingsrolle_ answers
-"Fingerfood". Extended terms carry **1059 of the 2317** mapped NEVO records
-across **447** terms (221 of them hold two records or more), so this is not a
-corner case.
-
-Three shapes were measured against NEVO 2025. None is free:
-
-| Option                                    | Concepts         | What it costs                                                                                                                                          |
-| ----------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Core only (today)                         | 619              | Dish and variety names stay collapsed                                                                                                                  |
-| `conceptDetailLevels: [C, E]`             | 859 (+447, −207) | Fragments plain foods too: _Spinaches and similar-_ (7 records), _Margarines and similar_ (33) disappear into varieties                                |
-| Extended inside the composite branch only | 719 (+131, −31)  | Loses headline concepts whose records all sit on children: _Dried pasta_, _Fresh pasta_, _Pizza_, _Egg based dishes_, _Lager beer_, _Coffee beverages_ |
-
-The absorbed rows are the problem in both wider options: a core concept vanishes
-when every record beneath it moves to a child. So the recommended shape is a
-fourth one, **additive** rather than a re-levelling:
-
-1. Keep the 619 concepts exactly as they are — nothing is absorbed, no client
-   sees a food disappear.
-2. Add the 447 extended terms that carry records as a second, finer level, each
-   pointing at its core concept as parent. Canonical election runs per extended
-   term, so nutrition still comes from one NEVO record.
-3. Search returns both levels, ranked with the concept first; a client that
-   wants only the coarse vocabulary keeps `coreOnly=true`.
-
-Cost to plan for: the 447 new names are English-only, so a translation run
-(`scripts/i18n/entity-translation-handoff.ts`, 447 × 8 locales) has to land
-before they are shown in a localized UI, and the partial unique index on
-canonical mappings has to key on the new level as well.
+The vocabulary of _named_ foods stops at **core** terms — only those carry
+translated names. Extended terms (`A040F Spring rolls`, `A040P Lasagna`) still
+shape results: records filed under one fold into a single row (rule 2), shown
+under the best-matching record's name. So _Frühlingsrolle_ answers "Frühlingsrolle,
+tiefgekühlt" rather than _Fingerfood_, without translating the 447 extended
+terms that carry records.
 
 ### Known gaps
 
-- Until concept names are translated, a German user matches on German NEVO
-  names but still sees English labels (`Dried pasta`). `nameEn` is always
-  returned so clients can decide how to present that.
+- Canonical election is heuristic, and a few picks are poor stand-ins:
+  _Butter_ carries "Herb butter", _Cow milk_ carries "Milk raw". This only
+  shows on concept rows — a query naming the specific record still finds it,
+  and `?foodex2Code=` lists the alternatives.
 - A food NEVO does not carry cannot be found under any name — NEVO 2025 has no
   _Sommerrolle_ in any language, so nothing matches it. The `synonyms` column on
   `foodex2_terms` is searched and would be the place for aliases, but MTX ships
   none and nothing else fills it.
 - NEVO's German vocabulary does not always match everyday usage: carrots are
-  `Karotte roh av`, so `Möhren` only matches an incidental variant and ranks
-  low. The `synonyms` column on `foodex2_terms` exists for exactly this kind of
+  `Karotte roh av`, so `Möhren` does not name _Karotten und ähnliche_ and only
+  finds the few records that say _Möhre_. The `synonyms` column on `foodex2_terms` exists for exactly this kind of
   curation and is searched, but MTX ships none.

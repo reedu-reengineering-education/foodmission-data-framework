@@ -23,6 +23,16 @@ export const FOODEX2_DETAIL_LEVEL = {
   PARENT: 'P',
 } as const;
 
+/** MTX `termType` codes, as published in the EFSA catalogue. */
+export const FOODEX2_TERM_TYPE = {
+  RAW: 'r',
+  DERIVATIVE: 'd',
+  SIMPLE_COMPOSITE: 's',
+  /** Recipe-based: dishes, cakes, soups. */
+  COMPOSITE: 'c',
+  GROUP: 'g',
+} as const;
+
 /** A single preparation-state rule. First match with the *lowest* score wins. */
 export interface PreparationRule {
   id: string;
@@ -59,12 +69,13 @@ export interface Foodex2CanonicalConfig {
   neutralPreparationScore: number;
   modifierRules: readonly ModifierRule[];
   /**
-   * Root of the composite (recipe-based) branch of the MTX hierarchy: dishes,
-   * bakery wares, imitates — foods defined by a recipe rather than by what
-   * they are. A concept below it names a dish, so the ingredients its NEVO
-   * records mention are not the food itself.
+   * MTX term types whose concepts are never collapsed into one search result.
+   *
+   * A composite concept (`c`) is a category of dishes — *Pasta based dishes*
+   * holds lasagne next to bami goreng — so no single NEVO record can stand in
+   * for it. Search returns its records individually instead.
    */
-  compositeFoodRootCode: string;
+  nonCollapsibleTermTypes: readonly string[];
   /** Penalty per hierarchy step between the NEVO term and the concept. */
   hierarchyDepthPenalty: number;
   /** Penalty per character of the NEVO name; longer names are more specific. */
@@ -92,11 +103,13 @@ export const FOODEX2_CANONICAL_CONFIG: Foodex2CanonicalConfig = {
     // `raw milk` is a milk type, not a preparation state, so it must not
     // promote e.g. "Cheese raw milk 48+" over a plain cheese entry.
     { id: 'raw', pattern: /\braw\b(?!\s+milk)/, score: 100 },
-    { id: 'unprepared', pattern: /\bunprepared\b/, score: 90 },
+    // NEVO abbreviates: "Sausage Dutch Frikandel frozen unprep".
+    { id: 'unprepared', pattern: /\bunprep(ared|red)?\b/, score: 90 },
+    { id: 'uncooked', pattern: /\buncooked\b/, score: 90 },
     { id: 'dried', pattern: /\bdried\b/, score: 55 },
     { id: 'boiled', pattern: /\bboiled\b/, score: 40 },
     { id: 'cooked', pattern: /\bcooked\b/, score: 40 },
-    { id: 'prepared', pattern: /\bprepared\b/, score: 35 },
+    { id: 'prepared', pattern: /\bprep(ared)?\b/, score: 35 },
     { id: 'steamed', pattern: /\bsteamed\b/, score: 30 },
     { id: 'stewed', pattern: /\bstewed\b/, score: 25 },
     { id: 'baked', pattern: /\bbaked\b/, score: 20 },
@@ -122,7 +135,7 @@ export const FOODEX2_CANONICAL_CONFIG: Foodex2CanonicalConfig = {
       delta: -25,
     },
   ],
-  compositeFoodRootCode: 'A0BAG',
+  nonCollapsibleTermTypes: [FOODEX2_TERM_TYPE.COMPOSITE],
   hierarchyDepthPenalty: -15,
   nameLengthPenalty: -0.5,
 };

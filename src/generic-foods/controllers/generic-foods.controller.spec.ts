@@ -7,14 +7,11 @@ import { GenericFoodService } from '../services/generic-food.service';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
-import { Foodex2FoodService } from '../services/foodex2-food.service';
-import { Foodex2SearchQueryDto } from '../dto/foodex2-search-query.dto';
 import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 
 describe('GenericFoodsController', () => {
   let controller: GenericFoodsController;
   let service: jest.Mocked<GenericFoodService>;
-  let foodex2Service: jest.Mocked<Foodex2FoodService>;
 
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'generic-123' };
 
@@ -27,11 +24,6 @@ describe('GenericFoodsController', () => {
     getAllFoodGroups: jest.fn(),
   };
 
-  const mockFoodex2ServiceMethods = {
-    search: jest.fn(),
-    findByFoodex2Code: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GenericFoodsController],
@@ -39,10 +31,6 @@ describe('GenericFoodsController', () => {
         {
           provide: GenericFoodService,
           useValue: mockServiceMethods,
-        },
-        {
-          provide: Foodex2FoodService,
-          useValue: mockFoodex2ServiceMethods,
         },
       ],
     })
@@ -54,7 +42,6 @@ describe('GenericFoodsController', () => {
 
     controller = module.get(GenericFoodsController);
     service = module.get(GenericFoodService);
-    foodex2Service = module.get(Foodex2FoodService);
   });
 
   afterEach(() => {
@@ -340,53 +327,6 @@ describe('GenericFoodsController', () => {
       const result = await controller.delete('generic-123');
 
       expect(result).toBeUndefined();
-    });
-  });
-
-  describe('searchFoodex2Foods', () => {
-    it('delegates the user-facing search to the FoodEx2 service', async () => {
-      const query: Foodex2SearchQueryDto = {
-        search: 'pasta',
-        page: 1,
-        limit: 20,
-      };
-      const result = {
-        items: [],
-        total: 0,
-        page: 1,
-        limit: 20,
-        totalPages: 0,
-      };
-      foodex2Service.search.mockResolvedValue(result);
-
-      await expect(controller.searchFoodex2Foods(query)).resolves.toBe(result);
-      expect(foodex2Service.search).toHaveBeenCalledWith(query);
-      // The NEVO catalogue listing must not serve the user-facing search.
-      expect(service.findAll).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('getFoodex2Food', () => {
-    it('resolves a FoodEx2 code through the FoodEx2 service', async () => {
-      const food = { foodex2Code: 'A007L', name: 'Dried pasta' };
-      foodex2Service.findByFoodex2Code.mockResolvedValue(food as never);
-
-      await expect(controller.getFoodex2Food('A007L')).resolves.toBe(food);
-      expect(foodex2Service.findByFoodex2Code).toHaveBeenCalledWith(
-        'A007L',
-        undefined,
-      );
-    });
-
-    it('forwards the requested locale', async () => {
-      foodex2Service.findByFoodex2Code.mockResolvedValue({} as never);
-
-      await controller.getFoodex2Food('A007L', 'de');
-
-      expect(foodex2Service.findByFoodex2Code).toHaveBeenCalledWith(
-        'A007L',
-        'de',
-      );
     });
   });
 });

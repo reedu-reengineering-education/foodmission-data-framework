@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { GenericFoodService } from './generic-food.service';
 import { GenericFoodRepository } from '../repositories/generic-food.repository';
+import { FoodSearchRepository } from '../repositories/food-search.repository';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
@@ -11,6 +12,7 @@ import { TEST_FOOD_CATEGORY } from '../../../test/fixtures/food.fixtures';
 describe('GenericFoodService', () => {
   let service: GenericFoodService;
   let repository: jest.Mocked<GenericFoodRepository>;
+  let searchRepository: jest.Mocked<FoodSearchRepository>;
   let translations: jest.Mocked<TranslationService>;
 
   const mockCategory: any = { ...TEST_FOOD_CATEGORY, id: 'generic-123' };
@@ -22,7 +24,13 @@ describe('GenericFoodService', () => {
     update: jest.fn(),
     delete: jest.fn(),
     findByNevoCode: jest.fn(),
+    findByNevoCodes: jest.fn(),
     getDistinctFoodGroups: jest.fn(),
+  };
+
+  const mockSearchRepositoryMethods = {
+    findCandidates: jest.fn(),
+    countRecordsByCode: jest.fn(),
   };
 
   const mockTranslationMethods = {
@@ -41,6 +49,10 @@ describe('GenericFoodService', () => {
           useValue: mockRepositoryMethods,
         },
         {
+          provide: FoodSearchRepository,
+          useValue: mockSearchRepositoryMethods,
+        },
+        {
           provide: TranslationService,
           useValue: mockTranslationMethods,
         },
@@ -49,6 +61,7 @@ describe('GenericFoodService', () => {
 
     service = module.get<GenericFoodService>(GenericFoodService);
     repository = module.get(GenericFoodRepository);
+    searchRepository = module.get(FoodSearchRepository);
     translations = module.get(TranslationService);
   });
 
@@ -132,42 +145,145 @@ describe('GenericFoodService', () => {
       expect(result.items[0].foodGroupSlug).toBe('vegetables');
     });
 
-    it('should search localized names when lang is set', async () => {
-      const query: GenericFoodQueryDto = {
-        search: 'tomaat',
-        lang: 'nl',
-        page: 1,
-        limit: 20,
+    describe('with a search term', () => {
+      const potatoesRaw: any = {
+        ...TEST_FOOD_CATEGORY,
+        id: 'generic-1',
+        nevoCode: 1,
+        foodName: 'Potatoes raw',
+        foodGroup: 'Potatoes and tubers',
+      };
+      const lasagne: any = {
+        ...TEST_FOOD_CATEGORY,
+        id: 'generic-2',
+        nevoCode: 2,
+        foodName: 'Lasagna bolognese ready to eat',
+        foodGroup: 'Mixed dishes',
       };
 
-      translations.resolveLocale.mockReturnValue('nl');
-      translations.findEntityIdsByValue.mockResolvedValue(['generic-123']);
-      repository.findAll.mockResolvedValue({
-        items: [mockCategory],
-        total: 1,
-        page: 1,
-        limit: 20,
-        totalPages: 1,
-      });
-      translations.resolveMany.mockResolvedValue({
-        'generic-123': {
-          foodName: 'Tomaat rauw',
-          foodGroup: 'Groenten',
-          remark: null,
-          synonym: null,
-        },
+      beforeEach(() => {
+        translations.resolveLocale.mockReturnValue('en');
+        searchRepository.findCandidates.mockResolvedValue({
+          records: [
+            {
+              nevoCode: 1,
+              displayName: 'Potatoes raw',
+              names: { local: ['Potatoes raw'], fallback: [] },
+              conceptCode: 'A0DPP',
+              conceptTermType: 'r',
+              sourceCode: 'A00ZX',
+              priority: 200,
+            },
+            {
+              nevoCode: 2,
+              displayName: 'Lasagna bolognese ready to eat',
+              names: {
+                local: ['Lasagna bolognese ready to eat'],
+                fallback: [],
+              },
+              conceptCode: 'A03VT',
+              conceptTermType: 'c',
+              sourceCode: 'A040P',
+              priority: 60,
+            },
+          ],
+          concepts: [
+            {
+              code: 'A0DPP',
+              termType: 'r',
+              displayName: 'Potatoes and similar-',
+              names: { local: ['Potatoes and similar-'], fallback: [] },
+              canonicalNevoCode: 1,
+              canonicalName: 'Potatoes raw',
+              priority: 200,
+              recordCount: 12,
+            },
+          ],
+        });
+        searchRepository.countRecordsByCode.mockResolvedValue(
+          new Map([['A0DPP', 12]]),
+        );
+        repository.findByNevoCodes.mockResolvedValue([potatoesRaw, lasagne]);
       });
 
-      await service.findAll(query);
+      it('returns a named concept as one row carrying its canonical record', async () => {
+        const result = await service.findAll({ search: 'potatoes' });
 
-      expect(translations.findEntityIdsByValue).toHaveBeenCalledWith(
-        'GenericFood',
-        'nl',
-        ['foodName', 'synonym'],
-        'tomaat',
-      );
-      expect(repository.findAll).toHaveBeenCalledWith(query, {
-        localizedSearchIds: ['generic-123'],
+        expect(repository.findAll).not.toHaveBeenCalled();
+        expect(result.total).toBe(1);
+        expect(result.items[0]).toMatchObject({
+          id: 'generic-1',
+          foodName: 'Potatoes and similar-',
+          nevoFoodName: 'Potatoes raw',
+          isConcept: true,
+          foodex2Code: 'A0DPP',
+          variantCount: 12,
+        });
+      });
+
+      it('returns the record itself when the query names it', async () => {
+        const result = await service.findAll({ search: 'lasagna' });
+
+        expect(result.items).toHaveLength(1);
+        expect(result.items[0]).toMatchObject({
+          id: 'generic-2',
+          foodName: 'Lasagna bolognese ready to eat',
+          isConcept: false,
+        });
+      });
+
+      it('paginates the ranked rows', async () => {
+        // "raw" is a word of both names, and names no concept.
+        searchRepository.findCandidates.mockResolvedValueOnce({
+          records: [
+            {
+              nevoCode: 1,
+              displayName: 'Potatoes raw',
+              names: { local: ['Potatoes raw'], fallback: [] },
+              conceptCode: null,
+              conceptTermType: null,
+              sourceCode: null,
+              priority: null,
+            },
+            {
+              nevoCode: 2,
+              displayName: 'Carrot raw',
+              names: { local: ['Carrot raw'], fallback: [] },
+              conceptCode: null,
+              conceptTermType: null,
+              sourceCode: null,
+              priority: null,
+            },
+          ],
+          concepts: [],
+        });
+
+        const result = await service.findAll({
+          search: 'raw',
+          page: 2,
+          limit: 1,
+        });
+
+        expect(result).toMatchObject({
+          total: 2,
+          page: 2,
+          limit: 1,
+          totalPages: 2,
+        });
+        // "Carrot raw" is shorter, so it takes page 1.
+        expect(repository.findByNevoCodes).toHaveBeenCalledWith([1]);
+      });
+
+      it('lists every record behind a code without collapsing', async () => {
+        await service.findAll({ foodex2Code: 'A0DPP' });
+
+        expect(searchRepository.findCandidates).toHaveBeenCalledWith(
+          expect.objectContaining({
+            stem: null,
+            foodex2Code: 'A0DPP',
+            includeConcepts: false,
+          }),
+        );
       });
     });
 

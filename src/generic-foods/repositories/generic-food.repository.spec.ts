@@ -47,7 +47,11 @@ describe('GenericFoodRepository', () => {
   });
 
   it('findAll uses genericFood filters/pagination', async () => {
-    const query: GenericFoodQueryDto = { search: 'tomato', page: 2, limit: 10 };
+    const query: GenericFoodQueryDto = {
+      foodGroup: 'Vegetables',
+      page: 2,
+      limit: 10,
+    };
     prisma.genericFood.findMany.mockResolvedValue([mockItem]);
     prisma.genericFood.count.mockResolvedValue(11);
 

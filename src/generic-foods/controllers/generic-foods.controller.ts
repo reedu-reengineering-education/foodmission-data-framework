@@ -27,9 +27,7 @@ import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { FoodGroupsQueryDto } from '../dto/food-groups-query.dto';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
 import { FoodGroupResponseDto } from '../dto/food-group-response.dto';
-import { Foodex2FoodService } from '../services/foodex2-food.service';
-import { Foodex2SearchQueryDto } from '../dto/foodex2-search-query.dto';
-import { Foodex2FoodResponseDto } from '../dto/foodex2-food-response.dto';
+import { PaginatedGenericFoodListResponseDto } from '../dto/generic-food-list-item.dto';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('generic-foods')
@@ -37,10 +35,7 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 @UseGuards(DataBaseAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class GenericFoodsController {
-  constructor(
-    private readonly genericFoodService: GenericFoodService,
-    private readonly foodex2FoodService: Foodex2FoodService,
-  ) {}
+  constructor(private readonly genericFoodService: GenericFoodService) {}
 
   @Post()
   @Roles('admin')
@@ -65,14 +60,22 @@ export class GenericFoodsController {
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get all generic foods (raw NEVO catalogue)',
+    summary: 'Search generic foods',
     description:
-      'Paginated list of the raw NEVO records with optional filtering and ' +
-      'locale overlay. Kept for backwards compatibility and admin use — the ' +
-      'user-facing food search is GET /generic-foods/search, which searches ' +
-      'FoodEx2 foods instead of individual NEVO variants.',
+      'With `search`, the user-facing food search: results are ranked by ' +
+      'relevance, and when the query names a FoodEx2 food ("Kartoffeln") its ' +
+      'NEVO variants collapse into one result carrying the canonical ' +
+      'record. A query naming something more specific ("Lasagne") returns ' +
+      'the NEVO records it names. `foodex2Code` lists the records behind one ' +
+      'result. Without either, the plain NEVO catalogue in name order.',
   })
   @ApiQuery({ name: 'search', required: false, description: 'Search term' })
+  @ApiQuery({
+    name: 'foodex2Code',
+    required: false,
+    description:
+      'List the NEVO records behind a search result (its `foodex2Code`)',
+  })
   @ApiQuery({
     name: 'foodGroup',
     required: false,
@@ -83,13 +86,14 @@ export class GenericFoodsController {
     name: 'lang',
     required: false,
     enum: SUPPORTED_LOCALES,
-    description: `Optional locale for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+    description: `Locale for translated labels and for matching translated names. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
-    description: 'Food categories retrieved successfully',
+    description: 'Generic foods retrieved successfully',
+    type: PaginatedGenericFoodListResponseDto,
   })
   findAll(@Query() query: GenericFoodQueryDto) {
     return this.genericFoodService.findAll(query);
@@ -111,76 +115,6 @@ export class GenericFoodsController {
     @Query() query: FoodGroupsQueryDto,
   ): Promise<FoodGroupResponseDto[]> {
     return this.genericFoodService.getAllFoodGroups(query.search, query.lang);
-  }
-
-  @Get('search')
-  @Public()
-  @ApiOperation({
-    summary: 'Search foods (FoodEx2)',
-    description:
-      'Primary user-facing food search. Matches FoodEx2 food names rather ' +
-      'than individual NEVO records, so "pasta" returns the concept "Dried ' +
-      'pasta" instead of every NEVO pasta variant. Each result resolves to a ' +
-      'single canonical NEVO record, whose nutritional values are returned ' +
-      'unchanged. Foods without a canonical NEVO record are never returned.',
-  })
-  @ApiQuery({
-    name: 'search',
-    required: false,
-    description: 'Search term (case-insensitive, partial match)',
-  })
-  @ApiQuery({
-    name: 'coreOnly',
-    required: false,
-    description: 'Restrict results to the FoodEx2 core list',
-  })
-  @ApiQuery({
-    name: 'lang',
-    required: false,
-    enum: SUPPORTED_LOCALES,
-    description:
-      `Locale for FoodEx2 names, and for matching translated food names ` +
-      `(searching "Nudeln" with lang=de finds the pasta concept). ` +
-      `Defaults to ${DEFAULT_LOCALE}.`,
-  })
-  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
-  @ApiResponse({
-    status: 200,
-    description: 'FoodEx2 foods retrieved successfully',
-  })
-  searchFoodex2Foods(@Query() query: Foodex2SearchQueryDto) {
-    return this.foodex2FoodService.search(query);
-  }
-
-  @Get('foodex2/:code')
-  @Public()
-  @ApiOperation({
-    summary: 'Get a FoodEx2 food by code',
-    description:
-      'Resolves a FoodEx2 code to its canonical NEVO record and returns that ' +
-      "record's nutritional values.",
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'FoodEx2 food retrieved successfully',
-    type: Foodex2FoodResponseDto,
-  })
-  @ApiQuery({
-    name: 'lang',
-    required: false,
-    enum: SUPPORTED_LOCALES,
-    description: `Locale for the FoodEx2 name. Defaults to ${DEFAULT_LOCALE}.`,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Unknown FoodEx2 code, or no canonical NEVO record',
-  })
-  getFoodex2Food(
-    @Param('code') code: string,
-    @Query('lang') lang?: string,
-  ): Promise<Foodex2FoodResponseDto> {
-    return this.foodex2FoodService.findByFoodex2Code(code, lang);
   }
 
   @Get(':id')

@@ -5,10 +5,8 @@ import { PrismaService } from '../../src/database/prisma.service';
 import { GenericFoodsController } from '../../src/generic-foods/controllers/generic-foods.controller';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
 import { GenericFoodService } from '../../src/generic-foods/services/generic-food.service';
-import { Foodex2FoodService } from '../../src/generic-foods/services/foodex2-food.service';
-import { Foodex2Repository } from '../../src/generic-foods/repositories/foodex2.repository';
+import { FoodSearchRepository } from '../../src/generic-foods/repositories/food-search.repository';
 import { TranslationService } from '../../src/translations/services/translation.service';
-import { FOODEX2_CANONICAL_CONFIG } from '../../src/generic-foods/foodex2/foodex2-canonical.config';
 import {
   createAuthGuardMock,
   createControllerE2eTestApp,
@@ -75,8 +73,8 @@ describe('GenericFoods endpoints (e2e)', () => {
           water: 11.2,
           proteins: 13.4,
         },
-        // Two NEVO records behind a *composite* concept: a dish is named after
-        // its recipe, so the second one mentions an ingredient it is not.
+        // Two NEVO records filed directly under a dish category; the second
+        // one mentions an ingredient it is not.
         {
           id: '00000000-0000-0000-0000-000000000306',
           nevoVersion: 'NEVO-Online 2025 9.0',
@@ -93,6 +91,25 @@ describe('GenericFoods endpoints (e2e)', () => {
           foodName: 'Omelette w potatoes Spanish tortilla',
           foodex2Codes: ['A908D'],
         },
+        // A dish category whose canonical record is not a lasagne.
+        {
+          id: '00000000-0000-0000-0000-000000000308',
+          nevoVersion: 'NEVO-Online 2025 9.0',
+          foodGroup: 'Mixed dishes',
+          nevoCode: 900011,
+          foodName: 'Lasagna bolognese ready to eat',
+          foodex2Codes: ['A909P'],
+          energyKcal: 150,
+        },
+        {
+          id: '00000000-0000-0000-0000-000000000309',
+          nevoVersion: 'NEVO-Online 2025 9.0',
+          foodGroup: 'Mixed dishes',
+          nevoCode: 900012,
+          foodName: 'Chinese noodle dish Bami goreng wo egg',
+          foodex2Codes: ['A909C'],
+          energyKcal: 180,
+        },
       ],
       skipDuplicates: true,
     });
@@ -101,8 +118,8 @@ describe('GenericFoods endpoints (e2e)', () => {
   }
 
   /**
-   * A miniature FoodEx2 tree: one hierarchy term, one core concept and the two
-   * extended terms the NEVO records above actually point at.
+   * A miniature FoodEx2 tree: a plain concept (*Dried pasta*) with two
+   * extended terms, and two dish categories (MTX term type `c`).
    */
   async function seedFoodex2Fixtures() {
     await prisma.foodex2Term.createMany({
@@ -146,24 +163,32 @@ describe('GenericFoods endpoints (e2e)', () => {
           parentCode: 'A907L',
           mtxVersion: 'test',
         },
-        // The composite (recipe-based) branch: concepts under it name dishes.
-        {
-          code: FOODEX2_CANONICAL_CONFIG.compositeFoodRootCode,
-          name: 'Composite food classes',
-          nameEn: 'Composite food classes',
-          detailLevel: 'H',
-          termType: 's',
-          isCore: false,
-          mtxVersion: 'test',
-        },
         {
           code: 'A908D',
           name: 'Egg based dishes',
           nameEn: 'Egg based dishes',
           detailLevel: 'C',
-          termType: 's',
+          termType: 'c',
           isCore: true,
-          parentCode: FOODEX2_CANONICAL_CONFIG.compositeFoodRootCode,
+          mtxVersion: 'test',
+        },
+        {
+          code: 'A909C',
+          name: 'Pasta based dishes, cooked',
+          nameEn: 'Pasta based dishes, cooked',
+          detailLevel: 'C',
+          termType: 'c',
+          isCore: true,
+          mtxVersion: 'test',
+        },
+        {
+          code: 'A909P',
+          name: 'Lasagna',
+          nameEn: 'Lasagna',
+          detailLevel: 'E',
+          termType: 'c',
+          isCore: false,
+          parentCode: 'A909C',
           mtxVersion: 'test',
         },
         // A concept with no NEVO mapping at all — must stay out of search.
@@ -223,6 +248,22 @@ describe('GenericFoods endpoints (e2e)', () => {
           isCanonical: false,
           priority: 60,
         },
+        {
+          foodex2Code: 'A909C',
+          nevoCode: 900011,
+          sourceFoodex2Code: 'A909P',
+          hierarchyDepth: 1,
+          isCanonical: false,
+          priority: 50,
+        },
+        {
+          foodex2Code: 'A909C',
+          nevoCode: 900012,
+          sourceFoodex2Code: 'A909C',
+          hierarchyDepth: 0,
+          isCanonical: true,
+          priority: 70,
+        },
       ],
       skipDuplicates: true,
     });
@@ -237,8 +278,7 @@ describe('GenericFoods endpoints (e2e)', () => {
       providers: [
         GenericFoodService,
         GenericFoodRepository,
-        Foodex2FoodService,
-        Foodex2Repository,
+        FoodSearchRepository,
         TranslationService,
         { provide: PrismaService, useValue: prisma },
       ],
@@ -387,24 +427,28 @@ describe('GenericFoods endpoints (e2e)', () => {
   });
 
   itIfDb(
-    'GET /generic-foods/search returns the FoodEx2 food, not each NEVO variant',
+    'search collapses the variants of a FoodEx2 food the query names',
     async () => {
       const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=pasta')
+        .get('/generic-foods?search=pasta')
         .expect(200);
 
-      expect(res.body.items).toHaveLength(1);
-      expect(res.body.items[0].foodName).toBe('Dried pasta');
-      expect(res.body.items[0].foodex2Code).toBe('A907L');
-      expect(res.body.items[0].variantCount).toBe(3);
+      expect(res.body.total).toBe(1);
+      expect(res.body.items[0]).toMatchObject({
+        foodName: 'Dried pasta',
+        nevoFoodName: 'Pasta white raw',
+        isConcept: true,
+        foodex2Code: 'A907L',
+        variantCount: 3,
+      });
     },
   );
 
-  itIfDb('GET /generic-foods/search is case-insensitive', async () => {
+  itIfDb('search is case-insensitive and matches partial words', async () => {
     const [lower, upper, partial] = await Promise.all([
-      request(app.getHttpServer()).get('/generic-foods/search?search=pasta'),
-      request(app.getHttpServer()).get('/generic-foods/search?search=Pasta'),
-      request(app.getHttpServer()).get('/generic-foods/search?search=past'),
+      request(app.getHttpServer()).get('/generic-foods?search=pasta'),
+      request(app.getHttpServer()).get('/generic-foods?search=Pasta'),
+      request(app.getHttpServer()).get('/generic-foods?search=past'),
     ]);
 
     for (const res of [lower, upper, partial]) {
@@ -416,106 +460,135 @@ describe('GenericFoods endpoints (e2e)', () => {
   });
 
   itIfDb(
-    'GET /generic-foods/search returns the canonical NEVO nutrients, not an average',
+    'a collapsed row carries the canonical NEVO record, verbatim',
     async () => {
       const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=pasta')
+        .get('/generic-foods?search=dried pasta')
         .expect(200);
 
       const [food] = res.body.items;
-      // The dry record, verbatim — not the mean of dry (361) and boiled (146).
+      // The dry record — not the mean of dry (361) and boiled (146).
       expect(food.energyKcal).toBe(361);
       expect(food.water).toBe(10.4);
-      expect(food.source.nevoCode).toBe(900004);
-      expect(food.source.foodName).toBe('Pasta white raw');
+      expect(food.nevoCode).toBe(900004);
+      // `id` is a real GenericFood id, valid as `genericFoodId`.
+      await expect(
+        prisma.genericFood.findUnique({ where: { id: food.id } }),
+      ).resolves.toMatchObject({ nevoCode: 900004 });
     },
   );
 
   itIfDb(
-    'GET /generic-foods/search hides FoodEx2 foods with no canonical NEVO item',
+    'search returns the record a query names, not its category canonical',
     async () => {
       const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=sauce')
+        .get('/generic-foods?search=lasagna')
         .expect(200);
 
-      expect(res.body.items).toEqual([]);
+      // "Pasta based dishes" is represented by bami goreng; a lasagne search
+      // must never land there.
+      expect(res.body.items).toHaveLength(1);
+      expect(res.body.items[0]).toMatchObject({
+        foodName: 'Lasagna bolognese ready to eat',
+        nevoCode: 900011,
+        energyKcal: 150,
+        isConcept: false,
+        // A dish never folds, so the row stands for this record alone.
+        foodex2Code: null,
+        variantCount: 1,
+      });
     },
   );
 
-  itIfDb(
-    'GET /generic-foods/search ranks exact matches above partial ones',
-    async () => {
-      const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=dried pasta')
-        .expect(200);
-
-      expect(res.body.items[0].foodName).toBe('Dried pasta');
-    },
-  );
-
-  itIfDb('GET /generic-foods/foodex2/:code resolves one food', async () => {
+  itIfDb('search never collapses a dish category', async () => {
     const res = await request(app.getHttpServer())
-      .get('/generic-foods/foodex2/A907L')
+      .get('/generic-foods?search=omelette')
       .expect(200);
 
-    expect(res.body.foodName).toBe('Dried pasta');
-    expect(res.body.isCore).toBe(true);
-    // The canonical GenericFood id keeps existing NEVO-based logic working.
-    expect(res.body.source.genericFoodId).toBe(
-      '00000000-0000-0000-0000-000000000303',
+    expect(
+      res.body.items.map((i: { foodName: string; isConcept: boolean }) => [
+        i.foodName,
+        i.isConcept,
+      ]),
+    ).toEqual([
+      // Both lead with the query; the plainer record comes first.
+      ['Omelette scrambled eggs', false],
+      ['Omelette w potatoes Spanish tortilla', false],
+    ]);
+  });
+
+  itIfDb(
+    'search ranks an ingredient mention below the food itself',
+    async () => {
+      await prisma.genericFood.create({
+        data: {
+          nevoVersion: 'NEVO-Online 2025 9.0',
+          foodGroup: 'Potatoes and tubers',
+          nevoCode: 900013,
+          foodName: 'Potatoes raw',
+        },
+      });
+
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods?search=potatoes')
+        .expect(200);
+
+      expect(
+        res.body.items.map((i: { foodName: string }) => i.foodName),
+      ).toEqual(['Potatoes raw', 'Omelette w potatoes Spanish tortilla']);
+    },
+  );
+
+  itIfDb('foodex2Code lists every record behind a row', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?foodex2Code=a907l')
+      .expect(200);
+
+    // Uncollapsed, and the most generic record first.
+    expect(res.body.total).toBe(3);
+    expect(res.body.items.map((i: { nevoCode: number }) => i.nevoCode)).toEqual(
+      [900004, 900006, 900005],
     );
+    expect(
+      res.body.items.every((i: { isConcept: boolean }) => !i.isConcept),
+    ).toBe(true);
   });
 
-  itIfDb(
-    'GET /generic-foods/search returns a superset of the generic-food shape',
-    async () => {
-      const [legacy, foodex2] = await Promise.all([
-        request(app.getHttpServer()).get(
-          '/generic-foods/00000000-0000-0000-0000-000000000303',
-        ),
-        request(app.getHttpServer()).get('/generic-foods/search?search=pasta'),
-      ]);
+  itIfDb('rejects a malformed foodex2Code', async () => {
+    await request(app.getHttpServer())
+      .get('/generic-foods?foodex2Code=A907L%25')
+      .expect(400);
+  });
 
-      const before = legacy.body;
-      const after = foodex2.body.items[0];
-
-      // Every key the legacy endpoint returns is still present, so a client can
-      // switch endpoints without changing how it reads a result.
-      for (const key of Object.keys(before)) {
-        expect(after).toHaveProperty(key);
-      }
-      // Same record, same id — only the user-facing name differs.
-      expect(after.id).toBe(before.id);
-      expect(after.nevoCode).toBe(before.nevoCode);
-      expect(after.energyKcal).toBe(before.energyKcal);
-      expect(after.foodGroupSlug).toBe(before.foodGroupSlug);
-      expect(before.foodName).toBe('Pasta white raw');
-      expect(after.foodName).toBe('Dried pasta');
-    },
-  );
-
-  itIfDb('search results can be used directly as genericFoodId', async () => {
+  itIfDb('search hides FoodEx2 foods with no canonical NEVO item', async () => {
     const res = await request(app.getHttpServer())
-      .get('/generic-foods/search?search=pasta')
+      .get('/generic-foods?search=sauce')
       .expect(200);
 
-    // The trap this shape exists to avoid: `id` must be the GenericFood id,
-    // never the FoodEx2 term id, or every add-to-pantry call would 400.
-    const food = res.body.items[0];
-    expect(food.id).not.toBe(food.foodex2Id);
-    await expect(
-      prisma.genericFood.findUnique({ where: { id: food.id } }),
-    ).resolves.toMatchObject({ nevoCode: 900004 });
+    expect(res.body.items).toEqual([]);
   });
 
-  itIfDb(
-    'GET /generic-foods/foodex2/:code 404s for a code with no canonical NEVO item',
-    async () => {
-      await request(app.getHttpServer())
-        .get('/generic-foods/foodex2/A907Z')
-        .expect(404);
-    },
-  );
+  itIfDb('search result is a superset of the generic-food shape', async () => {
+    const [single, search] = await Promise.all([
+      request(app.getHttpServer()).get(
+        '/generic-foods/00000000-0000-0000-0000-000000000303',
+      ),
+      request(app.getHttpServer()).get('/generic-foods?search=dried pasta'),
+    ]);
+
+    const before = single.body;
+    const after = search.body.items[0];
+
+    for (const key of Object.keys(before)) {
+      expect(after).toHaveProperty(key);
+    }
+    // Same record, same id — only the user-facing name differs.
+    expect(after.id).toBe(before.id);
+    expect(after.energyKcal).toBe(before.energyKcal);
+    expect(after.foodGroupSlug).toBe(before.foodGroupSlug);
+    expect(before.foodName).toBe('Pasta white raw');
+    expect(after.foodName).toBe('Dried pasta');
+  });
 
   itIfDb(
     'rejects a second canonical NEVO item for one FoodEx2 food',
@@ -532,139 +605,86 @@ describe('GenericFoods endpoints (e2e)', () => {
     },
   );
 
-  itIfDb('GET /generic-foods still lists the raw NEVO records', async () => {
-    const res = await request(app.getHttpServer())
-      .get('/generic-foods?search=Pasta')
-      .expect(200);
-
-    // Backwards compatible: the legacy listing is untouched and still returns
-    // every NEVO variant.
-    expect(res.body.items.length).toBe(3);
-  });
-
   itIfDb(
-    'GET /generic-foods/search?lang=de finds pasta by its German NEVO name',
+    'GET /generic-foods without search lists raw NEVO records',
     async () => {
-      // The concept name is still English; the NEVO variant is translated.
-      await prisma.entityTranslation.create({
-        data: {
-          entityType: 'GenericFood',
-          entityId: '00000000-0000-0000-0000-000000000303',
-          locale: 'de',
-          field: 'foodName',
-          value: 'Weiße Nudeln, roh',
-        },
-      });
-
       const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=Nudeln&lang=de')
+        .get('/generic-foods?foodGroup=Cereals')
         .expect(200);
 
-      expect(res.body.items).toHaveLength(1);
-      expect(res.body.items[0].foodex2Code).toBe('A907L');
-      expect(res.body.items[0].energyKcal).toBe(361);
+      expect(res.body.items).toHaveLength(3);
+      expect(res.body.items[0]).not.toHaveProperty('isConcept');
     },
   );
 
-  itIfDb(
-    'GET /generic-foods/search?lang=de returns the German concept name',
-    async () => {
+  itIfDb('search?lang=de finds a record by its German name', async () => {
+    // No German concept name yet, so "Nudeln" names no FoodEx2 food and the
+    // matching record answers — folded with its sibling variant.
+    await prisma.entityTranslation.create({
+      data: {
+        entityType: 'GenericFood',
+        entityId: '00000000-0000-0000-0000-000000000303',
+        locale: 'de',
+        field: 'foodName',
+        value: 'Weiße Nudeln, roh',
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?search=Nudeln&lang=de')
+      .expect(200);
+
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0]).toMatchObject({
+      foodName: 'Weiße Nudeln, roh',
+      isConcept: false,
+      foodex2Code: 'A907P',
+      variantCount: 2,
+      energyKcal: 361,
+    });
+  });
+
+  describe('with a German concept name', () => {
+    beforeEach(async () => {
+      const term = await prisma.foodex2Term.findUniqueOrThrow({
+        where: { code: 'A907L' },
+        select: { id: true },
+      });
       await prisma.entityTranslation.create({
         data: {
           entityType: 'Foodex2Term',
-          entityId: (
-            await prisma.foodex2Term.findUniqueOrThrow({
-              where: { code: 'A907L' },
-              select: { id: true },
-            })
-          ).id,
+          entityId: term.id,
           locale: 'de',
           field: 'name',
           value: 'Getrocknete Nudeln',
         },
       });
-
-      const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=Getrocknete&lang=de')
-        .expect(200);
-
-      expect(res.body.items[0].foodName).toBe('Getrocknete Nudeln');
-      expect(res.body.items[0].nameEn).toBe('Dried pasta');
-    },
-  );
-
-  itIfDb(
-    'finds a plain concept by a translated name in any locale',
-    async () => {
-      // A user typing German without ?lang should still find the food.
-      await prisma.entityTranslation.create({
-        data: {
-          entityType: 'GenericFood',
-          entityId: '00000000-0000-0000-0000-000000000303',
-          locale: 'de',
-          field: 'foodName',
-          value: 'Weiße Nudeln, roh',
-        },
-      });
-
-      const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=Nudeln')
-        .expect(200);
-
-      expect(
-        res.body.items.map((item: { foodex2Code: string }) => item.foodex2Code),
-      ).toEqual(['A907L']);
-    },
-  );
-
-  itIfDb('holds a composite concept to the requested locale', async () => {
-    // Word order differs per language, and the head rule below relies on it.
-    await prisma.entityTranslation.create({
-      data: {
-        entityType: 'GenericFood',
-        entityId: '00000000-0000-0000-0000-000000000307',
-        locale: 'de',
-        field: 'foodName',
-        value: 'Kartoffelomelett, spanische Tortilla',
-      },
     });
 
-    const german = await request(app.getHttpServer())
-      .get('/generic-foods/search?search=Kartoffelomelett&lang=de')
-      .expect(200);
-    expect(
-      german.body.items.map(
-        (item: { foodex2Code: string }) => item.foodex2Code,
-      ),
-    ).toEqual(['A908D']);
-
-    const english = await request(app.getHttpServer())
-      .get('/generic-foods/search?search=Kartoffelomelett')
-      .expect(200);
-    expect(english.body.items).toEqual([]);
-  });
-
-  itIfDb(
-    'never answers a composite concept with an ingredient it mentions',
-    async () => {
-      // "Omelett mit Kartoffeln" is filed under egg dishes; it is not a potato.
-      await prisma.entityTranslation.create({
-        data: {
-          entityType: 'GenericFood',
-          entityId: '00000000-0000-0000-0000-000000000307',
-          locale: 'de',
-          field: 'foodName',
-          value: 'Omelett mit Kartoffeln, spanische Tortilla',
-        },
-      });
-
+    itIfDb('collapses into the concept the German query names', async () => {
       const res = await request(app.getHttpServer())
-        .get('/generic-foods/search?search=Kartoffeln&lang=de')
+        .get('/generic-foods?search=Nudeln&lang=de')
         .expect(200);
 
-      expect(res.body.items).toEqual([]);
-    },
-  );
+      expect(res.body.items).toHaveLength(1);
+      expect(res.body.items[0]).toMatchObject({
+        foodName: 'Getrocknete Nudeln',
+        isConcept: true,
+        foodex2Code: 'A907L',
+      });
+    });
+
+    itIfDb('still finds the concept by its English name', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods?search=pasta&lang=de')
+        .expect(200);
+
+      expect(res.body.items[0]).toMatchObject({
+        foodName: 'Getrocknete Nudeln',
+        isConcept: true,
+      });
+    });
+  });
 
   itIfDb('DELETE /generic-foods/:id deletes one', async () => {
     await request(app.getHttpServer())
