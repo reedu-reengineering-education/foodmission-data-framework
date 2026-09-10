@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
-import { Prisma, WalletCurrency } from '@prisma/client';
+import { Prisma, RewardSourceType, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
@@ -256,6 +256,83 @@ describe('GamificationWalletService', () => {
       expect.objectContaining({
         eventType: EventType.WALLET_XP_AWARDED,
         idempotencyKey: 'award-xp-1',
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('derives an idempotency key from the reward source tuple when omitted', async () => {
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+    userEventService.record.mockResolvedValue({
+      event: {
+        id: 'evt-points',
+        userId: 'u1',
+        eventType: EventType.WALLET_POINTS_AWARDED,
+      } as any,
+      replayed: false,
+    });
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: { findUniqueOrThrow: jest.fn() },
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            }),
+            update: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 20,
+              updatedAt: new Date(),
+            }),
+          },
+          walletEntry: {
+            create: jest.fn().mockResolvedValue({
+              id: 'we-points',
+              userId: 'u1',
+              currency: WalletCurrency.POINTS,
+              amount: 20,
+              balanceAfter: 20,
+              reason: 'mission',
+              eventId: 'evt-points',
+            }),
+          },
+          $queryRaw: jest.fn().mockResolvedValue([
+            {
+              userId: 'u1',
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            },
+          ]),
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    await service.award({
+      userId: 'u1',
+      rewardId: 'reward-1',
+      sourceType: RewardSourceType.MISSION,
+      sourceId: 'mission-1',
+      currency: WalletCurrency.POINTS,
+      amount: 20,
+      reason: 'mission',
+    });
+
+    expect(userEventService.findByIdempotencyKey).toHaveBeenCalledWith(
+      'wallet-award:u1:MISSION:mission-1:reward-1:POINTS',
+      undefined,
+      { walletEntries: true },
+    );
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: EventType.WALLET_POINTS_AWARDED,
+        idempotencyKey: 'wallet-award:u1:MISSION:mission-1:reward-1:POINTS',
       }),
       expect.anything(),
     );

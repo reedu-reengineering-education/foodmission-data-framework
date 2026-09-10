@@ -5,6 +5,7 @@ import { GamificationWalletService } from './services/gamification-wallet.servic
 import { GamificationOnboardingService } from './services/gamification-onboarding.service';
 import { GamificationProfileService } from './services/gamification-profile.service';
 import { BadgeService } from './services/badge.service';
+import { RewardService } from './services/reward.service';
 
 @Module({
   imports: [DatabaseModule, EventsModule],
@@ -13,12 +14,14 @@ import { BadgeService } from './services/badge.service';
     GamificationOnboardingService,
     GamificationProfileService,
     BadgeService,
+    RewardService,
   ],
   exports: [
     GamificationWalletService,
     GamificationOnboardingService,
     GamificationProfileService,
     BadgeService,
+    RewardService,
   ],
 })
 export class GamificationModule {}

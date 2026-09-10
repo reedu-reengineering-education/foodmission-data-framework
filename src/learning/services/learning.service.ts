@@ -2,10 +2,12 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, QuestContentType } from '@prisma/client';
+import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningTranslationHelper } from './learning-translation.helper';
@@ -29,11 +31,17 @@ import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
 import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
+  QuizRewardDto,
   UpdateQuizProgressDto,
 } from '../dto/quiz-progress.dto';
+import {
+  FoodFactProgressResponseDto,
+  FoodFactRewardDto,
+} from '../dto/food-fact-progress.dto';
 import { QuestResponseDto } from '../dto/quest-response.dto';
 import {
   QuestProgressResponseDto,
+  QuestRewardDto,
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
@@ -42,14 +50,73 @@ import {
   EventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LearningService {
+  private readonly logger = new Logger(LearningService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly translations: LearningTranslationHelper,
+    private readonly walletService: GamificationWalletService,
     private readonly userEventService: UserEventService,
   ) {}
+
+  /**
+   * Credits a content reward after its progress transaction has committed.
+   *
+   * Safe to call on every eligible request: `award()` derives an idempotency key
+   * from (user, sourceType, sourceId, reward, currency), so repeat calls replay the
+   * original ledger entry instead of double-crediting. That is deliberate — gating
+   * the award on "first completion" would make a failed credit unrecoverable, since
+   * progress is already persisted by the time we get here and the next attempt would
+   * be skipped.
+   *
+   * Returns what the ledger actually holds, or null when crediting failed. A failure
+   * must not surface as a request error (the progress write did succeed); the next
+   * request for the same content retries the credit.
+   */
+  private async awardContentReward(
+    base: {
+      userId: string;
+      rewardId: string;
+      sourceType: RewardSourceType;
+      sourceId: string;
+      reason: string;
+    },
+    reward: { xp: number | null; points: number | null },
+  ): Promise<{ xp: number | null; points: number | null } | null> {
+    try {
+      let xp: number | null = null;
+      let points: number | null = null;
+
+      if (reward.xp) {
+        const { entry } = await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.XP,
+          amount: reward.xp,
+        });
+        xp = entry.amount;
+      }
+      if (reward.points) {
+        const { entry } = await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.POINTS,
+          amount: reward.points,
+        });
+        points = entry.amount;
+      }
+
+      return { xp, points };
+    } catch (error) {
+      this.logger.error(
+        `Failed to award ${base.sourceType} ${base.sourceId} reward to user ${base.userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+      return null;
+    }
+  }
 
   // ── Dimensions ──────────────────────────────────────────────
 
@@ -162,6 +229,74 @@ export class LearningService {
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
     return mapped;
+  }
+
+  async markFoodFactRead(
+    userId: string,
+    codeOrId: string,
+  ): Promise<FoodFactProgressResponseDto> {
+    const foodFact = await this.prisma.foodFact.findFirst({
+      where: { ...codeOrIdWhere(codeOrId), available: true },
+      include: { reward: true },
+    });
+    if (!foodFact) {
+      throw new NotFoundException('Food fact not found');
+    }
+
+    const existing = await this.prisma.foodFactProgress.findUnique({
+      where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+    });
+
+    const now = new Date();
+    const progress = await this.prisma.$transaction(async (tx) => {
+      const record = await tx.foodFactProgress.upsert({
+        where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
+        create: { userId, foodFactId: foodFact.id, readAt: now },
+        update: { readAt: now },
+      });
+
+      if (existing == null) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.LEARNING_FACT_READ,
+            source: EventSource.LEARNING,
+            metadata: {
+              foodFactId: foodFact.id,
+              foodFactCode: foodFact.code,
+              source: EventSource.API,
+            },
+            idempotencyKey: `food-fact-read:${userId}:${foodFact.id}`,
+          },
+          tx,
+        );
+      }
+
+      return record;
+    });
+
+    let earnedReward: FoodFactRewardDto | null = null;
+    if (foodFact.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: foodFact.reward.id,
+          sourceType: RewardSourceType.FOOD_FACT,
+          sourceId: foodFact.id,
+          reason: `Food fact ${foodFact.code} read`,
+        },
+        foodFact.reward,
+      );
+    }
+
+    return {
+      id: progress.id,
+      userId: progress.userId,
+      foodFactId: progress.foodFactId,
+      foodFactCode: foodFact.code,
+      readAt: progress.readAt,
+      reward: earnedReward,
+    };
   }
 
   private async mapFoodFacts(
@@ -347,7 +482,10 @@ export class LearningService {
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
       where: codeOrIdWhere(codeOrId),
-      include: { options: { orderBy: { sortOrder: 'asc' } } },
+      include: {
+        options: { orderBy: { sortOrder: 'asc' } },
+        reward: true,
+      },
     });
     if (!quiz) {
       throw new NotFoundException('Quiz not found');
@@ -419,7 +557,22 @@ export class LearningService {
       return next;
     });
 
-    return this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    let earnedReward: QuizRewardDto | null = null;
+    if (option.isCorrect && quiz.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: quiz.reward.id,
+          sourceType: RewardSourceType.QUIZ,
+          sourceId: quiz.id,
+          reason: `Quiz ${quiz.code} correct answer`,
+        },
+        quiz.reward,
+      );
+    }
+
+    const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    return { ...response, reward: earnedReward };
   }
 
   private async mapQuizProgressResponse(
@@ -682,6 +835,7 @@ export class LearningService {
   ): Promise<QuestProgressResponseDto> {
     const quest = await this.prisma.quest.findFirst({
       where: codeOrIdWhere(codeOrId),
+      include: { reward: true },
     });
     if (!quest) {
       throw new NotFoundException('Quest not found');
@@ -764,7 +918,30 @@ export class LearningService {
       return next;
     });
 
-    return this.mapQuestProgressResponse(userId, quest, progress, lang);
+    let earnedReward: QuestRewardDto | null = null;
+    if (progress.completed && quest.reward) {
+      earnedReward = await this.awardContentReward(
+        {
+          userId,
+          rewardId: quest.reward.id,
+          sourceType: RewardSourceType.QUEST,
+          sourceId: quest.id,
+          reason: `Quest ${quest.code} completed`,
+        },
+        quest.reward,
+      );
+    }
+
+    const response = await this.mapQuestProgressResponse(
+      userId,
+      quest,
+      progress,
+      lang,
+    );
+    return plainToInstance(QuestProgressResponseDto, {
+      ...response,
+      reward: earnedReward,
+    });
   }
 
   private async mapQuestProgressResponse(

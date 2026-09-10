@@ -32,6 +32,14 @@ enum WalletCurrency {
   POINTS
 }
 
+enum RewardSourceType {
+  MISSION
+  CHALLENGE
+  QUEST
+  QUIZ
+  FOOD_FACT
+}
+
 enum ContentLevel {
   BEGINNER
   INTERMEDIATE
@@ -60,17 +68,20 @@ model Mission {
   foodChoice   Boolean      @default(false)
   foodWaste    Boolean      @default(false)
   available    Boolean      @default(true)
+  rewardId     String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
   // Relations
   dimension         Dimension         @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
   topic             Topic?            @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  reward            Reward?           @relation("MissionReward", fields: [rewardId], references: [id], onDelete: SetNull)
   missionProgresses MissionProgress[]
 
   @@index([dimensionId])
   @@index([topicId])
   @@index([level])
+  @@index([rewardId])
   @@map("missions")
 }
 
@@ -101,17 +112,20 @@ model Challenge {
   foodChoice   Boolean      @default(false)
   foodWaste    Boolean      @default(false)
   available    Boolean      @default(true)
+  rewardId     String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
   // Relations
   dimension           Dimension           @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
   topic               Topic?              @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  reward              Reward?             @relation("ChallengeReward", fields: [rewardId], references: [id], onDelete: SetNull)
   challengeProgresses ChallengeProgress[]
 
   @@index([dimensionId])
   @@index([topicId])
   @@index([level])
+  @@index([rewardId])
   @@map("challenges")
 }
 
@@ -140,15 +154,37 @@ model FoodFact {
   foodChoice Boolean      @default(false)
   foodWaste  Boolean      @default(false)
   available  Boolean      @default(true)
+  rewardId   String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
 
   // Relations
-  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  reward   Reward?             @relation("FoodFactReward", fields: [rewardId], references: [id], onDelete: SetNull)
+  progress FoodFactProgress[]
 
   @@index([topicId])
   @@index([level])
+  @@index([rewardId])
   @@map("food_facts")
+}
+
+model FoodFactProgress {
+  id         String    @id @default(uuid())
+  userId     String
+  foodFactId String
+  readAt     DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodFact FoodFact @relation(fields: [foodFactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, foodFactId])
+  @@index([userId])
+  @@index([foodFactId])
+  @@map("food_fact_progress")
 }
 
 model Quiz {
@@ -163,16 +199,19 @@ model Quiz {
   foodChoice  Boolean      @default(false)
   foodWaste   Boolean      @default(false)
   available   Boolean      @default(true)
+  rewardId    String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
   // Relations
   topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  reward   Reward?             @relation("QuizReward", fields: [rewardId], references: [id], onDelete: SetNull)
   options  QuizOption[]
   progress QuizProgress[]
 
   @@index([topicId])
   @@index([level])
+  @@index([rewardId])
   @@map("quizzes")
 }
 
@@ -224,11 +263,13 @@ model Quest {
   title       String?
   description String?
   available   Boolean      @default(true)
+  rewardId    String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
   // Relations
   dimension      Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  reward         Reward?         @relation("QuestReward", fields: [rewardId], references: [id], onDelete: SetNull)
   items          QuestItem[]
   progress       QuestProgress[]
   currentUsers   User[]          @relation("UserCurrentQuest")
@@ -236,6 +277,7 @@ model Quest {
 
   @@index([dimensionId])
   @@index([dimensionId, level])
+  @@index([rewardId])
   @@map("quests")
 }
 
@@ -337,18 +379,43 @@ model Topic {
   @@map("topics")
 }
 
+model Badge {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rewards      Reward[]
+  earnedByUsers UserEarnedBadge[]
+
+  @@map("badges")
+}
+
 model Reward {
   id                   String   @id @default(uuid())
   name                 String   @unique
   points               Int?
   xp                   Int?
-  badge                String?
+  badgeId              String?
   avatarItem           String?
   petItem              String?
   collectible          String?
   collectibleShareable Boolean  @default(false)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  // Relations
+  badge         Badge?        @relation(fields: [badgeId], references: [id], onDelete: SetNull)
+  missions      Mission[]     @relation("MissionReward")
+  challenges    Challenge[]   @relation("ChallengeReward")
+  quests        Quest[]       @relation("QuestReward")
+  quizzes       Quiz[]        @relation("QuizReward")
+  foodFacts     FoodFact[]    @relation("FoodFactReward")
+  walletEntries WalletEntry[]
+  earnedBadges  UserEarnedBadge[]
 
   @@map("rewards")
 }
@@ -359,26 +426,52 @@ model UserGamificationWallet {
   points    Int      @default(0)
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  earnedBadges UserEarnedBadge[]
 
   @@map("user_gamification_wallets")
 }
 
+model UserEarnedBadge {
+  id         String            @id @default(uuid())
+  userId     String
+  badgeId    String
+  rewardId   String?
+  sourceType RewardSourceType?
+  sourceId   String?
+  earnedAt   DateTime          @default(now())
+
+  user                    User                   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_earned_badges_userId_user_fkey")
+  userGamificationWallet  UserGamificationWallet @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "user_earned_badges_userId_wallet_fkey")
+  badge                   Badge                  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  reward                  Reward?                @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@map("user_earned_badges")
+}
+
 /// Append-only history of wallet balance changes (XP / points).
 model WalletEntry {
-  id           String         @id @default(uuid())
+  id           String            @id @default(uuid())
   userId       String
   currency     WalletCurrency
-  amount       Int // signed: credit > 0, debit < 0
+  amount       Int               // signed: credit > 0, debit < 0
   balanceAfter Int
   reason       String
+  rewardId     String?           // set when credited by completing a content item
+  sourceType   RewardSourceType?
+  sourceId     String?           // id of the mission/challenge/quest/quiz
   eventId      String?
-  createdAt    DateTime       @default(now())
+  createdAt    DateTime          @default(now())
 
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event UserEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward Reward?    @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+  event  UserEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
+  @@index([rewardId])
   @@index([eventId])
   @@map("wallet_entries")
 }

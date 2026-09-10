@@ -5,6 +5,7 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { TranslationsModule } from '../translations/translations.module';
 import { EventsModule } from '../events/events.module';
+import { GamificationModule } from '../gamification/gamification.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { ChallengesController } from './controllers/challenges.controller';
 import { ChallengesService } from './services/challenges.service';
@@ -20,6 +21,7 @@ import { ChallengeProgressRepository } from './repositories/challenge-progress.r
     CommonModule,
     TranslationsModule,
     EventsModule,
+    GamificationModule,
   ],
   controllers: [ChallengesController, ChallengeProgressController],
   providers: [

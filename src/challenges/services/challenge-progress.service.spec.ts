@@ -5,15 +5,21 @@ import { NotFoundException } from '@nestjs/common';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { RewardSourceType, WalletCurrency } from '@prisma/client';
 
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
   let repository: ChallengeProgressRepository;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
+  let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
 
   beforeEach(async () => {
     userEventService = {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
+    walletService = {
+      award: jest.fn().mockResolvedValue({ replayed: false }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -37,6 +43,7 @@ describe('ChallengeProgressService', () => {
           },
         },
         { provide: UserEventService, useValue: userEventService },
+        { provide: GamificationWalletService, useValue: walletService },
       ],
     }).compile();
 
@@ -176,7 +183,81 @@ describe('ChallengeProgressService', () => {
         completed: true,
         progress: 1,
         challengeTitle: 'Test Challenge',
+        reward: null,
       });
+    });
+
+    it('awards the challenge reward on first completion', async () => {
+      const updated = {
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 1,
+        challenge: { title: 'Test Challenge' },
+      };
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        code: 'CH.A1.1',
+        title: 'Test Challenge',
+        reward: { id: 'r1', xp: 15, points: 20 },
+      });
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
+
+      const result = await service.update(
+        'c1',
+        { completed: true, progress: 1 },
+        'u1',
+      );
+
+      expect(walletService.award).toHaveBeenCalledTimes(2);
+      expect(walletService.award).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'u1',
+          rewardId: 'r1',
+          sourceType: RewardSourceType.CHALLENGE,
+          sourceId: 'c1',
+          currency: WalletCurrency.XP,
+          amount: 15,
+        }),
+      );
+      expect(walletService.award).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currency: WalletCurrency.POINTS,
+          amount: 20,
+        }),
+      );
+      expect(result.reward).toEqual({ xp: 15, points: 20 });
+    });
+
+    it('does not award the reward when the challenge was already completed', async () => {
+      const updated = {
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 1,
+        challenge: { title: 'Test Challenge' },
+      };
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        code: 'CH.A1.1',
+        title: 'Test Challenge',
+        reward: { id: 'r1', xp: 15, points: 20 },
+      });
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 1,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
+
+      const result = await service.update('c1', { completed: true }, 'u1');
+
+      expect(walletService.award).not.toHaveBeenCalled();
+      expect(result.reward).toBeNull();
     });
 
     it('resolves a challenge code and upserts by id', async () => {

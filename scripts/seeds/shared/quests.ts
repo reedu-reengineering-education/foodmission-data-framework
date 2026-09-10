@@ -30,6 +30,15 @@ export async function seedQuests(prisma: PrismaClient) {
   });
   const dimensionByCode = new Map(dimensions.map((d) => [d.code, d.id]));
 
+  const questReward = await prisma.reward.findUnique({
+    where: { name: 'Standard Quest Reward' },
+  });
+  if (!questReward) {
+    console.warn(
+      '   ⚠️  Standard Quest Reward not found – run seedStandardRewards first',
+    );
+  }
+
   let seeded = 0;
   let items = 0;
   let skipped = 0;
@@ -53,6 +62,7 @@ export async function seedQuests(prisma: PrismaClient) {
         title: row.title,
         description: row.description,
         available: true,
+        rewardId: questReward?.id ?? null,
       },
       create: {
         code: row.code,
@@ -62,6 +72,7 @@ export async function seedQuests(prisma: PrismaClient) {
         title: row.title,
         description: row.description,
         available: true,
+        rewardId: questReward?.id ?? null,
       },
     });
 

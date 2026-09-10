@@ -1,5 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+
+export class MissionRewardDto {
+  @ApiPropertyOptional({ example: 15 })
+  @Expose()
+  xp?: number | null;
+
+  @ApiPropertyOptional({ example: 20 })
+  @Expose()
+  points?: number | null;
+}
 
 export class MissionProgressResponseDto {
   @ApiProperty({ example: 'uuid-mission-id' })
@@ -21,4 +31,13 @@ export class MissionProgressResponseDto {
   @ApiProperty({ example: 'Bring Your Own Bag' })
   @Expose()
   missionTitle: string;
+
+  @ApiPropertyOptional({
+    type: MissionRewardDto,
+    description:
+      'Set only when this update first completed the mission and earned a reward',
+  })
+  @Expose()
+  @Type(() => MissionRewardDto)
+  reward?: MissionRewardDto | null;
 }
