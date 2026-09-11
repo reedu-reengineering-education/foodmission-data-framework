@@ -27,6 +27,7 @@ import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { FoodGroupsQueryDto } from '../dto/food-groups-query.dto';
 import { GenericFoodResponseDto } from '../dto/generic-food-response.dto';
 import { FoodGroupResponseDto } from '../dto/food-group-response.dto';
+import { PaginatedGenericFoodListResponseDto } from '../dto/generic-food-list-item.dto';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 
 @ApiTags('generic-foods')
@@ -59,11 +60,22 @@ export class GenericFoodsController {
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get all generic foods',
+    summary: 'Search generic foods',
     description:
-      'Get a paginated list of generic foods with optional filtering and locale overlay',
+      'With `search`, the user-facing food search: results are ranked by ' +
+      'relevance, and when the query names a FoodEx2 food ("Kartoffeln") its ' +
+      'NEVO variants collapse into one result carrying the canonical ' +
+      'record. A query naming something more specific ("Lasagne") returns ' +
+      'the NEVO records it names. `foodex2Code` lists the records behind one ' +
+      'result. Without either, the plain NEVO catalogue in name order.',
   })
   @ApiQuery({ name: 'search', required: false, description: 'Search term' })
+  @ApiQuery({
+    name: 'foodex2Code',
+    required: false,
+    description:
+      'List the NEVO records behind a search result (its `foodex2Code`)',
+  })
   @ApiQuery({
     name: 'foodGroup',
     required: false,
@@ -74,13 +86,14 @@ export class GenericFoodsController {
     name: 'lang',
     required: false,
     enum: SUPPORTED_LOCALES,
-    description: `Optional locale for translated labels. Defaults to ${DEFAULT_LOCALE}.`,
+    description: `Locale for translated labels and for matching translated names. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
   @ApiResponse({
     status: 200,
-    description: 'Food categories retrieved successfully',
+    description: 'Generic foods retrieved successfully',
+    type: PaginatedGenericFoodListResponseDto,
   })
   findAll(@Query() query: GenericFoodQueryDto) {
     return this.genericFoodService.findAll(query);

@@ -1,17 +1,44 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsIn, IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsIn,
+  IsOptional,
+  IsString,
+  IsInt,
+  Matches,
+  Min,
+  Max,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { TransformTrimLowercaseToUndefined } from '../../common/decorators/transformers';
 
 export class GenericFoodQueryDto {
   @ApiPropertyOptional({
-    description: 'Search query for food name or synonym',
+    description:
+      'Search query for food name or synonym. Results are ranked by relevance, ' +
+      'and the NEVO variants of a FoodEx2 food the query names collapse into ' +
+      'one result.',
     example: 'potato',
   })
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Lists the NEVO records behind one search result: pass its foodex2Code. ' +
+      'Results are never collapsed when this is set.',
+    example: 'A0DPP',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(/^[A-Za-z0-9]{5}$/, {
+    message: 'foodex2Code must be a FoodEx2 term code',
+  })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim().toUpperCase() : value,
+  )
+  foodex2Code?: string;
 
   @ApiPropertyOptional({
     description:

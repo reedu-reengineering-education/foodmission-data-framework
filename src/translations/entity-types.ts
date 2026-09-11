@@ -1,5 +1,6 @@
 export const TRANSLATABLE_ENTITY_TYPES = [
   'GenericFood',
+  'Foodex2Term',
   'Mission',
   'Challenge',
   'FoodFact',
@@ -17,6 +18,9 @@ export type TranslatableEntityType = (typeof TRANSLATABLE_ENTITY_TYPES)[number];
 
 export const ENTITY_TRANSLATABLE_FIELDS = {
   GenericFood: ['foodName', 'foodGroup', 'remark', 'synonym'] as const,
+  // FoodEx2 (MTX) ships English only, so the user-facing concept names are
+  // translated through the same pipeline as every other entity.
+  Foodex2Term: ['name'] as const,
   Mission: ['title', 'goal', 'whyItMatters'] as const,
   Challenge: ['title', 'task', 'whyItMatters'] as const,
   FoodFact: ['body'] as const,
