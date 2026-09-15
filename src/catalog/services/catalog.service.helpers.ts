@@ -16,6 +16,13 @@ export function titleCaseFromEnum(value: string): string {
     .join(' ');
 }
 
+/** Round to `digits` significant figures, e.g. 381 500 -> 380 000. */
+export function roundToSignificant(value: number, digits = 2): number {
+  if (value === 0) return 0;
+  const step = 10 ** (Math.floor(Math.log10(Math.abs(value))) - digits + 1);
+  return Math.round(value / step) * step;
+}
+
 export function normalizeSearch(s?: string): string | undefined {
   const v = (s ?? '').trim();
   return v.length ? v.toLowerCase() : undefined;
