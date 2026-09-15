@@ -243,6 +243,9 @@ export class FoodProductService {
       description: productInfo.genericName,
       barcode: productInfo.barcode,
       createdBy,
+      isVegan: productInfo.isVegan ?? undefined,
+      isVegetarian: productInfo.isVegetarian ?? undefined,
+      isPalmOilFree: productInfo.isPalmOilFree ?? undefined,
     });
 
     return this.transformToResponseDto(food);
@@ -309,6 +312,9 @@ export class FoodProductService {
         quantity: productInfo.quantity,
         servingSize: productInfo.servingSize,
         ingredientsText: productInfo.ingredients,
+        isVegan: productInfo.isVegan,
+        isVegetarian: productInfo.isVegetarian,
+        isPalmOilFree: productInfo.isPalmOilFree,
         allergens: productInfo.allergens,
         traces: productInfo.traces,
         countries: productInfo.countries,
