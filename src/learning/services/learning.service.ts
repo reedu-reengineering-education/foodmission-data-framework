@@ -54,6 +54,15 @@ import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { plainToInstance } from 'class-transformer';
 
+/** One LEARNING_FACT_VIEWED fact per user per food fact per UTC calendar day. */
+export function foodFactViewedIdempotencyKey(
+  userId: string,
+  foodFactId: string,
+  at: Date = new Date(),
+): string {
+  return `food-fact-view:${userId}:${foodFactId}:${at.toISOString().slice(0, 10)}`;
+}
+
 @Injectable()
 export class LearningService {
   private readonly logger = new Logger(LearningService.name);
@@ -221,9 +230,9 @@ export class LearningService {
 
   /**
    * Fetching a single food fact counts as reading it: an authenticated `GET`
-   * records progress, emits `LEARNING_FACT_READ` once, and credits the fact's
-   * reward. `userId` is omitted for unauthenticated/lookup reads, which stay
-   * pure.
+   * records progress, emits `LEARNING_FACT_VIEWED` (once per day) and
+   * `LEARNING_FACT_READ` (once ever), and credits the fact's reward. `userId`
+   * is omitted for unauthenticated/lookup reads, which stay pure.
    *
    * The read is a best-effort side effect: a failure is logged and the fact is
    * still returned, since the client asked for content, not for a write. Both
@@ -251,6 +260,7 @@ export class LearningService {
       // Keep the original `readAt` — a re-read is not a new read.
       const progress = await this.recordFoodFactRead(userId, row, {
         refreshReadAt: false,
+        emitViewed: true,
       });
       return { ...mapped, readAt: progress.readAt, reward: progress.reward };
     } catch (error) {
@@ -274,15 +284,24 @@ export class LearningService {
       throw new NotFoundException('Food fact not found');
     }
 
-    return this.recordFoodFactRead(userId, foodFact, { refreshReadAt: true });
+    return this.recordFoodFactRead(userId, foodFact, {
+      refreshReadAt: true,
+      emitViewed: false,
+    });
   }
 
   /**
-   * Persists read progress for a food fact, emits `LEARNING_FACT_READ` on the
-   * first read only, and credits the attached reward (idempotent per user+fact).
+   * Persists read progress for a food fact, emits its ledger events, and
+   * credits the attached reward (idempotent per user+fact).
    *
-   * `refreshReadAt` bumps `readAt` on repeat reads — used by the explicit
-   * `POST /:codeOrId/read` claim, not by `GET`.
+   * - `emitViewed` records `LEARNING_FACT_VIEWED` as an impression. The
+   *   idempotency key is bucketed per UTC day, so repeatedly opening the same
+   *   fact yields one row per user/fact/day instead of one per request. Set on
+   *   `GET`, where every fetch is a view.
+   * - `LEARNING_FACT_READ` is the engagement signal and fires once ever, on the
+   *   first read.
+   * - `refreshReadAt` bumps `readAt` on repeat reads — used by the explicit
+   *   `POST /:codeOrId/read` claim, not by `GET`.
    */
   private async recordFoodFactRead(
     userId: string,
@@ -291,7 +310,7 @@ export class LearningService {
       code: string;
       reward?: { id: string; xp: number | null; points: number | null } | null;
     },
-    options: { refreshReadAt: boolean },
+    options: { refreshReadAt: boolean; emitViewed: boolean },
   ): Promise<FoodFactProgressResponseDto> {
     const existing = await this.prisma.foodFactProgress.findUnique({
       where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
@@ -305,17 +324,36 @@ export class LearningService {
         update: options.refreshReadAt ? { readAt: now } : {},
       });
 
+      const metadata = {
+        foodFactId: foodFact.id,
+        foodFactCode: foodFact.code,
+        source: EventSource.API,
+      };
+
+      if (options.emitViewed) {
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.LEARNING_FACT_VIEWED,
+            source: EventSource.LEARNING,
+            metadata,
+            idempotencyKey: foodFactViewedIdempotencyKey(
+              userId,
+              foodFact.id,
+              now,
+            ),
+          },
+          tx,
+        );
+      }
+
       if (existing == null) {
         await this.userEventService.record(
           {
             userId,
             eventType: EventType.LEARNING_FACT_READ,
             source: EventSource.LEARNING,
-            metadata: {
-              foodFactId: foodFact.id,
-              foodFactCode: foodFact.code,
-              source: EventSource.API,
-            },
+            metadata,
             idempotencyKey: `food-fact-read:${userId}:${foodFact.id}`,
           },
           tx,

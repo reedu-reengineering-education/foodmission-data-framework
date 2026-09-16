@@ -903,7 +903,7 @@ describe('LearningService', () => {
       });
     });
 
-    it('records the read, emits the event once and credits the reward', async () => {
+    it('records the read, emits view + read events and credits the reward', async () => {
       const result = await service.getFoodFact(foodFact.code, {}, 'u1');
 
       expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
@@ -911,6 +911,17 @@ describe('LearningService', () => {
           where: { userId_foodFactId: { userId: 'u1', foodFactId: 'ff1' } },
           update: {},
         }),
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'u1',
+          eventType: EventType.LEARNING_FACT_VIEWED,
+          source: EventSource.LEARNING,
+          idempotencyKey: `food-fact-view:u1:ff1:${new Date()
+            .toISOString()
+            .slice(0, 10)}`,
+        }),
+        prisma,
       );
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -932,7 +943,7 @@ describe('LearningService', () => {
       );
     });
 
-    it('does not re-emit the event or bump readAt on a re-read', async () => {
+    it('re-emits only the view event and keeps readAt on a re-read', async () => {
       prisma.foodFactProgress.findUnique.mockResolvedValue({
         id: 'p1',
         userId: 'u1',
@@ -942,7 +953,12 @@ describe('LearningService', () => {
 
       const result = await service.getFoodFact(foodFact.code, {}, 'u1');
 
-      expect(userEventService.record).not.toHaveBeenCalled();
+      // The view key is bucketed per UTC day, so repeats within a day replay.
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({ eventType: EventType.LEARNING_FACT_VIEWED }),
+        prisma,
+      );
       expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
         expect.objectContaining({ update: {} }),
       );
@@ -972,11 +988,16 @@ describe('LearningService', () => {
       expect(result.readAt).toBeUndefined();
     });
 
-    it('bumps readAt on the explicit POST read claim', async () => {
+    it('bumps readAt and emits no view event on the explicit POST read claim', async () => {
       await service.markFoodFactRead('u1', foodFact.code);
 
       expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
         expect.objectContaining({ update: { readAt: expect.any(Date) } }),
+      );
+      expect(userEventService.record).toHaveBeenCalledTimes(1);
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({ eventType: EventType.LEARNING_FACT_READ }),
+        prisma,
       );
     });
   });
