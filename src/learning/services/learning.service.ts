@@ -5,7 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
+import {
+  Prisma,
+  QuestContentType,
+  WalletCurrency,
+  RewardSourceType,
+} from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
@@ -45,10 +50,7 @@ import {
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
-import {
-  EventSource,
-  EventType,
-} from '../../events/event-types';
+import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { plainToInstance } from 'class-transformer';
 
@@ -217,18 +219,47 @@ export class LearningService {
     return toPaginatedResponseDto(data, total, page, limit);
   }
 
+  /**
+   * Fetching a single food fact counts as reading it: an authenticated `GET`
+   * records progress, emits `LEARNING_FACT_READ` once, and credits the fact's
+   * reward. `userId` is omitted for unauthenticated/lookup reads, which stay
+   * pure.
+   *
+   * The read is a best-effort side effect: a failure is logged and the fact is
+   * still returned, since the client asked for content, not for a write. Both
+   * the event and the credit are idempotent, so the next `GET` retries them.
+   */
   async getFoodFact(
     codeOrId: string,
     query: LearningLangQueryDto,
+    userId?: string,
   ): Promise<FoodFactResponseDto> {
     const row = await this.prisma.foodFact.findFirst({
       where: { ...codeOrIdWhere(codeOrId), available: true },
+      include: { reward: true },
     });
     if (!row) {
       throw new NotFoundException('Food fact not found');
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
-    return mapped;
+
+    if (!userId) {
+      return mapped;
+    }
+
+    try {
+      // Keep the original `readAt` — a re-read is not a new read.
+      const progress = await this.recordFoodFactRead(userId, row, {
+        refreshReadAt: false,
+      });
+      return { ...mapped, readAt: progress.readAt, reward: progress.reward };
+    } catch (error) {
+      this.logger.error(
+        `Failed to record read of food fact ${row.id} for user ${userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+      return mapped;
+    }
   }
 
   async markFoodFactRead(
@@ -243,6 +274,25 @@ export class LearningService {
       throw new NotFoundException('Food fact not found');
     }
 
+    return this.recordFoodFactRead(userId, foodFact, { refreshReadAt: true });
+  }
+
+  /**
+   * Persists read progress for a food fact, emits `LEARNING_FACT_READ` on the
+   * first read only, and credits the attached reward (idempotent per user+fact).
+   *
+   * `refreshReadAt` bumps `readAt` on repeat reads — used by the explicit
+   * `POST /:codeOrId/read` claim, not by `GET`.
+   */
+  private async recordFoodFactRead(
+    userId: string,
+    foodFact: {
+      id: string;
+      code: string;
+      reward?: { id: string; xp: number | null; points: number | null } | null;
+    },
+    options: { refreshReadAt: boolean },
+  ): Promise<FoodFactProgressResponseDto> {
     const existing = await this.prisma.foodFactProgress.findUnique({
       where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
     });
@@ -252,7 +302,7 @@ export class LearningService {
       const record = await tx.foodFactProgress.upsert({
         where: { userId_foodFactId: { userId, foodFactId: foodFact.id } },
         create: { userId, foodFactId: foodFact.id, readAt: now },
-        update: { readAt: now },
+        update: options.refreshReadAt ? { readAt: now } : {},
       });
 
       if (existing == null) {
@@ -571,7 +621,12 @@ export class LearningService {
       );
     }
 
-    const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    const response = await this.mapQuizProgressResponse(
+      userId,
+      quiz,
+      progress,
+      lang,
+    );
     return { ...response, reward: earnedReward };
   }
 

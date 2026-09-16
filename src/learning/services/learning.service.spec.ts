@@ -11,6 +11,7 @@ import { GamificationWalletService } from '../../gamification/services/gamificat
 describe('LearningService', () => {
   let service: LearningService;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
+  let walletService: { award: jest.Mock };
   let prisma: {
     dimension: {
       findMany: jest.Mock;
@@ -18,6 +19,7 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
     };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
+    foodFactProgress: { findUnique: jest.Mock; upsert: jest.Mock };
     quiz: { findFirst: jest.Mock; findMany: jest.Mock; count: jest.Mock };
     quizProgress: {
       upsert: jest.Mock;
@@ -76,6 +78,10 @@ describe('LearningService', () => {
         count: jest.fn(),
         findFirst: jest.fn(),
       },
+      foodFactProgress: {
+        findUnique: jest.fn().mockResolvedValue(null),
+        upsert: jest.fn(),
+      },
       quiz: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -112,13 +118,15 @@ describe('LearningService', () => {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
 
-    const gamificationWalletService = {
-      award: jest.fn().mockResolvedValue({
-        wallet: { userId: 'u1', xp: 0, points: 0, updatedAt: new Date() },
-        entry: { id: 'we-1', balanceAfter: 0 },
-        event: null,
-        replayed: false,
-      }),
+    walletService = {
+      award: jest.fn().mockImplementation(({ amount }: { amount: number }) =>
+        Promise.resolve({
+          wallet: { userId: 'u1', xp: 0, points: 0, updatedAt: new Date() },
+          entry: { id: 'we-1', amount, balanceAfter: amount },
+          event: null,
+          replayed: false,
+        }),
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -127,7 +135,7 @@ describe('LearningService', () => {
         { provide: PrismaService, useValue: prisma },
         { provide: LearningTranslationHelper, useValue: mockTranslations },
         { provide: UserEventService, useValue: userEventService },
-        { provide: GamificationWalletService, useValue: gamificationWalletService },
+        { provide: GamificationWalletService, useValue: walletService },
       ],
     }).compile();
 
@@ -322,7 +330,9 @@ describe('LearningService', () => {
         dimensionCode: 'DIM.DIET',
       };
       const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.25);
-      prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'completed-1' }]);
+      prisma.quizProgress.findMany.mockResolvedValue([
+        { quizId: 'completed-1' },
+      ]);
       prisma.quiz.count.mockResolvedValue(2);
       prisma.quiz.findMany.mockResolvedValue([
         {
@@ -337,13 +347,15 @@ describe('LearningService', () => {
           foodChoice: false,
           foodWaste: false,
           available: true,
-          options: [{
-            id: 'opt-1',
-            label: 'A',
-            text: 'Lower impact',
-            isCorrect: true,
-            sortOrder: 0,
-          }],
+          options: [
+            {
+              id: 'opt-1',
+              label: 'A',
+              text: 'Lower impact',
+              isCorrect: true,
+              sortOrder: 0,
+            },
+          ],
         },
       ]);
 
@@ -395,7 +407,9 @@ describe('LearningService', () => {
       prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'q1' }]);
       prisma.quiz.count.mockResolvedValue(0);
 
-      await expect(service.getRandomQuiz('u1', { foodChoice: true }, 'fr')).resolves.toBeNull();
+      await expect(
+        service.getRandomQuiz('u1', { foodChoice: true }, 'fr'),
+      ).resolves.toBeNull();
       expect(prisma.quiz.findMany).not.toHaveBeenCalled();
 
       prisma.quiz.count.mockResolvedValue(3);
@@ -412,17 +426,23 @@ describe('LearningService', () => {
           foodChoice: true,
           foodWaste: false,
           available: true,
-          options: [{
-            id: 'opt-2',
-            label: 'A',
-            text: 'Seasonal',
-            isCorrect: false,
-            sortOrder: 0,
-          }],
+          options: [
+            {
+              id: 'opt-2',
+              label: 'A',
+              text: 'Seasonal',
+              isCorrect: false,
+              sortOrder: 0,
+            },
+          ],
         },
       ]);
 
-      const mapped = await service.getRandomQuiz('u1', { foodChoice: true }, 'fr');
+      const mapped = await service.getRandomQuiz(
+        'u1',
+        { foodChoice: true },
+        'fr',
+      );
 
       expect(mapped).toMatchObject({
         id: 'quiz-3',
@@ -854,6 +874,110 @@ describe('LearningService', () => {
       await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
 
       expect(userEventService.record).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getFoodFact read reward', () => {
+    const readAt = new Date('2024-01-01T00:00:00.000Z');
+    const foodFact = {
+      id: 'ff1',
+      code: 'FF1.1.1',
+      topicId: 't1',
+      body: 'Eat less red meat.',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+      reward: { id: 'r1', xp: 10, points: 5 },
+    };
+
+    beforeEach(() => {
+      prisma.foodFact.findFirst.mockResolvedValue(foodFact);
+      prisma.foodFactProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        foodFactId: foodFact.id,
+        readAt,
+      });
+    });
+
+    it('records the read, emits the event once and credits the reward', async () => {
+      const result = await service.getFoodFact(foodFact.code, {}, 'u1');
+
+      expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { userId_foodFactId: { userId: 'u1', foodFactId: 'ff1' } },
+          update: {},
+        }),
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'u1',
+          eventType: EventType.LEARNING_FACT_READ,
+          source: EventSource.LEARNING,
+          idempotencyKey: 'food-fact-read:u1:ff1',
+        }),
+        prisma,
+      );
+      expect(walletService.award).toHaveBeenCalledTimes(2);
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: 'ff1',
+          code: 'FF1.1.1',
+          readAt,
+          reward: { xp: 10, points: 5 },
+        }),
+      );
+    });
+
+    it('does not re-emit the event or bump readAt on a re-read', async () => {
+      prisma.foodFactProgress.findUnique.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        foodFactId: foodFact.id,
+        readAt,
+      });
+
+      const result = await service.getFoodFact(foodFact.code, {}, 'u1');
+
+      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ update: {} }),
+      );
+      // Award is replayed, not re-credited — idempotency lives in the wallet.
+      expect(walletService.award).toHaveBeenCalledTimes(2);
+      expect(result.readAt).toEqual(readAt);
+    });
+
+    it('leaves the fetch pure when there is no user', async () => {
+      const result = await service.getFoodFact(foodFact.code, {});
+
+      expect(prisma.foodFactProgress.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(walletService.award).not.toHaveBeenCalled();
+      expect(result.readAt).toBeUndefined();
+      expect(result.reward).toBeUndefined();
+    });
+
+    it('still returns the fact when recording the read fails', async () => {
+      prisma.foodFactProgress.upsert.mockRejectedValue(new Error('db down'));
+
+      const result = await service.getFoodFact(foodFact.code, {}, 'u1');
+
+      expect(result).toEqual(
+        expect.objectContaining({ id: 'ff1', code: 'FF1.1.1' }),
+      );
+      expect(result.readAt).toBeUndefined();
+    });
+
+    it('bumps readAt on the explicit POST read claim', async () => {
+      await service.markFoodFactRead('u1', foodFact.code);
+
+      expect(prisma.foodFactProgress.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ update: { readAt: expect.any(Date) } }),
+      );
     });
   });
 });
