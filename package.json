@@ -83,7 +83,9 @@
     "docker:down": "docker compose -f docker-compose.yml down",
     "docker:logs": "docker compose -f docker-compose.yml logs -f",
     "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
-    "docs:consent-forms": "ts-node scripts/dev/convert-consent-forms.ts"
+    "docs:consent-forms": "ts-node scripts/dev/convert-consent-forms.ts",
+    "rules:validate:draft": "ts-node scripts/rules/validate-rules-draft.ts",
+    "rules:validate:draft:strict": "ts-node scripts/rules/validate-rules-draft.ts --strict"
   },
   "dependencies": {
     "@cacheable/memory": "^2.2.0",
@@ -168,8 +170,5 @@
     "turndown": "^7.2.4",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.69.0"
-  },
-  "volta": {
-    "node": "24.0.0"
   }
 }
