@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealLogsRepository } from '../repositories/meal-logs.repository';
 import { MealsRepository } from '../../meals/repositories/meals.repository';
@@ -9,11 +9,23 @@ import {
   MultipleMealLogResponseDto,
 } from '../dto/meal-log-response.dto';
 import { QueryMealLogDto } from '../dto/query-meal-log.dto';
-import { Prisma } from '@prisma/client';
+import { MealLog, Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
-import { EventSource, EventType } from '../../events/event-types';
+import {
+  EventSource,
+  EventType,
+  EventTypeValue,
+  MealFlagEventType,
+  MealSwapEventType,
+} from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import {
+  conflictingFlags,
+  eventsForFlags,
+  eventsForSwaps,
+  swapSides,
+} from '../meal-log-events';
 
 @Injectable()
 export class MealLogsService {
@@ -49,14 +61,35 @@ export class MealLogsService {
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
+    const flags = createMealLogDto.flags ?? [];
+    const swaps = createMealLogDto.swaps ?? [];
+
+    // A log has to say *what* was eaten: either a linked meal or diet flags.
+    if (!createMealLogDto.mealId && flags.length === 0) {
+      throw new BadRequestException(
+        'Provide mealId or at least one diet flag in flags',
+      );
+    }
+
+    const conflicts = conflictingFlags(flags);
+    if (conflicts.length > 0) {
+      throw new BadRequestException(
+        `Flag ${EventType.MEAL_MEAT_CONSUMED} conflicts with ${conflicts.join(', ')}`,
+      );
+    }
+
     // Validate meal exists and belongs to user
-    await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
+    if (createMealLogDto.mealId) {
+      await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
+    }
 
     let mealLog;
     try {
       mealLog = await this.mealLogRepository.create({
         ...createMealLogDto,
         userId,
+        flags,
+        swaps,
         mealFromPantry: createMealLogDto.mealFromPantry ?? false,
         timestamp: createMealLogDto.timestamp
           ? new Date(createMealLogDto.timestamp)
@@ -79,8 +112,12 @@ export class MealLogsService {
           mealId: mealLog.mealId,
           source: EventSource.API,
           body: {
-            mealId: createMealLogDto.mealId,
+            ...(createMealLogDto.mealId !== undefined
+              ? { mealId: createMealLogDto.mealId }
+              : {}),
             typeOfMeal: createMealLogDto.typeOfMeal,
+            ...(flags.length > 0 ? { flags } : {}),
+            ...(swaps.length > 0 ? { swaps } : {}),
             ...(createMealLogDto.timestamp !== undefined
               ? { timestamp: createMealLogDto.timestamp }
               : {}),
@@ -101,7 +138,60 @@ export class MealLogsService {
       );
     }
 
+    await this.recordFlagEvents(mealLog, flags, swaps);
+
     return this.toResponse(mealLog);
+  }
+
+  /**
+   * One `MEAL_*` / `SWAP_*` fact per reported flag and swap. Keyed by meal log id
+   * so a retried create (same log) never double-counts toward missions or rewards.
+   * Best-effort for the same reason as `MEAL_LOGGED`.
+   */
+  private async recordFlagEvents(
+    mealLog: MealLog,
+    flags: MealFlagEventType[],
+    swaps: MealSwapEventType[],
+  ): Promise<void> {
+    for (const eventType of eventsForFlags(flags)) {
+      await this.recordBehaviouralEvent(mealLog, eventType, {
+        mealLogId: mealLog.id,
+        mealId: mealLog.mealId,
+        mealType: mealLog.typeOfMeal,
+        flags,
+      });
+    }
+
+    for (const eventType of eventsForSwaps(swaps)) {
+      await this.recordBehaviouralEvent(mealLog, eventType, {
+        mealLogId: mealLog.id,
+        mealId: mealLog.mealId,
+        mealType: mealLog.typeOfMeal,
+        ...swapSides(eventType),
+      });
+    }
+  }
+
+  private async recordBehaviouralEvent(
+    mealLog: MealLog,
+    eventType: EventTypeValue,
+    metadata: Record<string, unknown>,
+    idempotencyKey = `${eventType}:${mealLog.id}`,
+  ): Promise<void> {
+    try {
+      await this.userEventService.record({
+        userId: mealLog.userId,
+        eventType,
+        source: EventSource.MEAL_LOG,
+        metadata,
+        idempotencyKey,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to record ${eventType} event for meal log ${mealLog.id}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
   }
 
   async findAll(
@@ -174,6 +264,26 @@ export class MealLogsService {
     if (updateMealLogDto.mealId && updateMealLogDto.mealId !== mealLog.mealId) {
       await this.getOwnedMealOrThrow(updateMealLogDto.mealId, userId);
     }
+
+    if (updateMealLogDto.flags) {
+      const conflicts = conflictingFlags(updateMealLogDto.flags);
+      if (conflicts.length > 0) {
+        throw new BadRequestException(
+          `Flag MEAT conflicts with ${conflicts.join(', ')}`,
+        );
+      }
+      if (
+        updateMealLogDto.flags.length === 0 &&
+        !(updateMealLogDto.mealId ?? mealLog.mealId)
+      ) {
+        throw new BadRequestException(
+          'Provide mealId or at least one diet flag in flags',
+        );
+      }
+    }
+
+    // Events are an append-only ledger: facts already recorded on create are not
+    // re-derived here, so an edit changes the stored log but not what was counted.
 
     try {
       const updated = await this.mealLogRepository.update(id, {
