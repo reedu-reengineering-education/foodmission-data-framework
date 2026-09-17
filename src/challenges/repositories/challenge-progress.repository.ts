@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ProgressStatus } from '../../common/progress-status';
 import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
@@ -50,6 +51,11 @@ export class ChallengeProgressRepository {
   ) {
     const progress = updateDto.progress ?? 0;
     const completed = updateDto.completed ?? false;
+    const status = completed
+      ? ProgressStatus.COMPLETED
+      : progress > 0
+        ? ProgressStatus.IN_PROGRESS
+        : ProgressStatus.NOT_STARTED;
 
     return this.prisma.challengeProgress.upsert({
       where: { userId_challengeId: { userId, challengeId } },
@@ -58,6 +64,9 @@ export class ChallengeProgressRepository {
         challengeId,
         progress,
         completed,
+        status,
+        state: { source: 'manual', mode: 'api' },
+        startedAt: status === ProgressStatus.NOT_STARTED ? null : new Date(),
       },
       update: {
         ...(updateDto.progress !== undefined
@@ -66,6 +75,8 @@ export class ChallengeProgressRepository {
         ...(updateDto.completed !== undefined
           ? { completed: updateDto.completed }
           : {}),
+        status,
+        state: { source: 'manual', mode: 'api' },
       },
       include: { challenge: true },
     });

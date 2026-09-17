@@ -2,12 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../event-types';
+import { RulesService } from '../../rules/rules.service';
 import { UserEventService } from './user-event.service';
 
 describe('UserEventService', () => {
   let service: UserEventService;
   let prisma: {
     userEvent: { findUnique: jest.Mock; create: jest.Mock };
+  };
+  let rulesService: {
+    evaluateUserEvent: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -17,11 +21,15 @@ describe('UserEventService', () => {
         create: jest.fn(),
       },
     };
+    rulesService = {
+      evaluateUserEvent: jest.fn().mockResolvedValue(undefined),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserEventService,
         { provide: PrismaService, useValue: prisma },
+        { provide: RulesService, useValue: rulesService },
       ],
     }).compile();
 
@@ -57,6 +65,11 @@ describe('UserEventService', () => {
         }),
       }),
     );
+    expect(rulesService.evaluateUserEvent).toHaveBeenCalledWith(
+      'u1',
+      EventType.ONBOARDING_COMPLETED,
+      undefined,
+    );
   });
 
   it('replays on idempotencyKey', async () => {
@@ -71,6 +84,7 @@ describe('UserEventService', () => {
 
     expect(result.replayed).toBe(true);
     expect(prisma.userEvent.create).not.toHaveBeenCalled();
+    expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
   });
 
   it('replays on P2002 race', async () => {
@@ -93,5 +107,35 @@ describe('UserEventService', () => {
 
     expect(result.replayed).toBe(true);
     expect(result.event.id).toBe('evt-race');
+    expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
+  });
+
+  it('awaits derived progress evaluation when called with a transaction client', async () => {
+    const tx = {
+      userEvent: {
+        findUnique: jest.fn().mockResolvedValue(null),
+        create: jest.fn().mockResolvedValue({
+          id: 'evt-tx',
+          userId: 'u1',
+          eventType: EventType.ONBOARDING_COMPLETED,
+          source: EventSource.ONBOARDING,
+        }),
+      },
+    } as unknown as Prisma.TransactionClient;
+
+    await service.record(
+      {
+        userId: 'u1',
+        eventType: EventType.ONBOARDING_COMPLETED,
+        source: EventSource.ONBOARDING,
+      },
+      tx,
+    );
+
+    expect(rulesService.evaluateUserEvent).toHaveBeenCalledWith(
+      'u1',
+      EventType.ONBOARDING_COMPLETED,
+      tx,
+    );
   });
 });

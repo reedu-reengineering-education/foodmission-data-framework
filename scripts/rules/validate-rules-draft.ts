@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import yaml from 'js-yaml';
-import { rulesCoverageSchema } from './rule-schema';
+import { rulesCoverageSchema } from '../../src/rules/rule-schema';
 
 type CatalogItem = { code: string };
 

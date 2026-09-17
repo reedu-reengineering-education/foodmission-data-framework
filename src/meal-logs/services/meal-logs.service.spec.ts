@@ -70,13 +70,14 @@ describe('MealLogsService', () => {
   });
 
   it('should create meal log when authorized', async () => {
+    const loggedAt = new Date('2026-09-17T12:00:00.000Z');
     const mealLog = {
       id: 'm1',
       mealId: 'm1',
       userId,
       typeOfMeal: TypeOfMeal.LUNCH,
       eatenOut: false,
-      timestamp: new Date(),
+      timestamp: loggedAt,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -107,6 +108,7 @@ describe('MealLogsService', () => {
       metadata: {
         mealLogId: 'm1',
         mealId: 'm1',
+        mealDayBucket: '2026-09-17',
         source: EventSource.API,
         body: {
           mealId: 'm1',

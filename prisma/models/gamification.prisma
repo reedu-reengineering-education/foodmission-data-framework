@@ -54,9 +54,17 @@ enum QuestContentType {
   MICRO_LEARNING
 }
 
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
 model Mission {
   id           String       @id @default(uuid())
   code         String       @unique
+  ruleCode     String?
   dimensionId  String
   topicId      String?
   level        ContentLevel
@@ -82,14 +90,20 @@ model Mission {
   @@index([topicId])
   @@index([level])
   @@index([rewardId])
+  @@index([ruleCode])
   @@map("missions")
 }
 
 model MissionProgress {
-  userId    String
-  missionId String
-  completed Boolean @default(false)
-  progress  Float
+  userId      String
+  missionId   String
+  completed   Boolean        @default(false)
+  progress    Float
+  startedAt   DateTime?
+  status      ProgressStatus  @default(NOT_STARTED)
+  state       Json            @default("{}")
+  ruleHash    String?
+  evaluatedAt DateTime?
 
   // Relations
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -102,6 +116,7 @@ model MissionProgress {
 model Challenge {
   id           String       @id @default(uuid())
   code         String       @unique
+  ruleCode     String?
   dimensionId  String
   topicId      String?
   level        ContentLevel
@@ -126,14 +141,20 @@ model Challenge {
   @@index([topicId])
   @@index([level])
   @@index([rewardId])
+  @@index([ruleCode])
   @@map("challenges")
 }
 
 model ChallengeProgress {
   userId      String
   challengeId String
-  completed   Boolean @default(false)
+  completed   Boolean        @default(false)
   progress    Float
+  startedAt   DateTime?
+  status      ProgressStatus  @default(NOT_STARTED)
+  state       Json            @default("{}")
+  ruleHash    String?
+  evaluatedAt DateTime?
 
   // Relations
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)

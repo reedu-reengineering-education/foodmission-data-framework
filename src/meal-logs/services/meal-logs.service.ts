@@ -19,6 +19,34 @@ import { UserEventService } from '../../events/services/user-event.service';
 export class MealLogsService {
   private readonly logger = new Logger(MealLogsService.name);
 
+  private toDayBucket(date: Date): string {
+    return date.toISOString().slice(0, 10);
+  }
+
+  private resolveLoggedAt(
+    persistedTimestamp: unknown,
+    inputTimestamp?: string,
+  ): Date {
+    const fromPersisted =
+      persistedTimestamp instanceof Date
+        ? persistedTimestamp
+        : persistedTimestamp != null
+          ? new Date(persistedTimestamp as string)
+          : null;
+    if (fromPersisted && !Number.isNaN(fromPersisted.getTime())) {
+      return fromPersisted;
+    }
+
+    if (inputTimestamp) {
+      const fromInput = new Date(inputTimestamp);
+      if (!Number.isNaN(fromInput.getTime())) {
+        return fromInput;
+      }
+    }
+
+    return new Date();
+  }
+
   constructor(
     private readonly mealLogRepository: MealLogsRepository,
     private readonly mealRepository: MealsRepository,
@@ -70,6 +98,11 @@ export class MealLogsService {
     // the event must not surface as a create failure (the client would retry
     // a call that already succeeded, creating a duplicate meal log).
     try {
+      const loggedAt = this.resolveLoggedAt(
+        mealLog.timestamp,
+        createMealLogDto.timestamp,
+      );
+
       await this.userEventService.record({
         userId,
         eventType: EventType.MEAL_LOGGED,
@@ -77,6 +110,7 @@ export class MealLogsService {
         metadata: {
           mealLogId: mealLog.id,
           mealId: mealLog.mealId,
+          mealDayBucket: this.toDayBucket(loggedAt),
           source: EventSource.API,
           body: {
             mealId: createMealLogDto.mealId,

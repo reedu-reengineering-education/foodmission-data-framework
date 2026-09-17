@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma, UserEvent } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { buildEventMetadata } from '../user-event.utils';
 import { EventSourceValue, EventSubject, EventTypeValue } from '../event-types';
+import { RulesService } from '../../rules/rules.service';
 
 export interface RecordUserEventInput {
   userId: string;
@@ -16,7 +17,12 @@ export interface RecordUserEventInput {
 
 @Injectable()
 export class UserEventService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(UserEventService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rulesService: RulesService,
+  ) {}
 
   async findByIdempotencyKey(
     idempotencyKey: string,
@@ -62,6 +68,19 @@ export class UserEventService {
           idempotencyKey: input.idempotencyKey ?? null,
         },
       });
+
+      if (this.shouldEvaluateDerivedProgress(event.eventType)) {
+        if (tx) {
+          await this.runDerivedProgressEvaluation(
+            event.userId,
+            event.eventType,
+            tx,
+          );
+        } else {
+          void this.runDerivedProgressEvaluation(event.userId, event.eventType);
+        }
+      }
+
       return { event, replayed: false };
     } catch (error) {
       if (
@@ -78,5 +97,35 @@ export class UserEventService {
       }
       throw error;
     }
+  }
+
+  private async runDerivedProgressEvaluation(
+    userId: string,
+    eventType: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<void> {
+    try {
+      await this.rulesService.evaluateUserEvent(userId, eventType, tx);
+    } catch (error) {
+      this.logger.error(
+        `Derived progress evaluation failed for ${eventType} and user ${userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
+  }
+
+  private shouldEvaluateDerivedProgress(eventType: string): boolean {
+    return !this.shouldIgnoreDerivedProgressEvent(eventType);
+  }
+
+  private shouldIgnoreDerivedProgressEvent(eventType: string): boolean {
+    return (
+      eventType.startsWith('MISSION_') ||
+      eventType.startsWith('CHALLENGE_') ||
+      eventType.startsWith('QUEST_') ||
+      eventType.startsWith('WALLET_') ||
+      eventType.startsWith('BADGE_') ||
+      eventType.startsWith('PROGRESS_INDICATOR_')
+    );
   }
 }
