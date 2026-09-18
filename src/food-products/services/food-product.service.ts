@@ -290,6 +290,9 @@ export class FoodProductService {
       nutritionalInfo: productInfo.nutritionalInfo,
       imageUrl: productInfo.imageUrl,
       completeness: productInfo.completeness,
+      isVegan: productInfo.isVegan,
+      isVegetarian: productInfo.isVegetarian,
+      isPalmOilFree: productInfo.isPalmOilFree,
     });
   }
 
