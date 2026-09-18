@@ -29,6 +29,7 @@
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
+ * - **Foody** — `{ itemId, itemCode, type, cost? }` (purchase debits POINTS)
  * - **Onboarding** — `{ segment }`
  * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
  *   Client-submittable via `POST /events` (allowlisted). `sessionId` is required;
@@ -85,6 +86,13 @@ export const EventType = {
   // ==========================================
   BADGE_EARNED: 'BADGE_EARNED',
   PROGRESS_INDICATOR_UPDATED: 'PROGRESS_INDICATOR_UPDATED',
+
+  // ==========================================
+  // PERSONALIZATION (Foody cosmetics)
+  // ==========================================
+  FOODY_ITEM_PURCHASED: 'FOODY_ITEM_PURCHASED',
+  FOODY_ITEM_EQUIPPED: 'FOODY_ITEM_EQUIPPED',
+  FOODY_ITEM_UNEQUIPPED: 'FOODY_ITEM_UNEQUIPPED',
 
   // ==========================================
   // 1. MEAL & DIET PATTERNS
@@ -299,6 +307,7 @@ export const EventSource = {
   SHOPPING_LIST: 'shopping_list',
   LEARNING: 'learning',
   GAME: 'game',
+  FOODY: 'foody',
   QUEST: 'quest',
   MISSION: 'mission',
   CHALLENGE: 'challenge',
@@ -321,6 +330,7 @@ export const EventSubjectType = {
   CHALLENGE: 'CHALLENGE',
   QUEST: 'QUEST',
   BADGE: 'BADGE',
+  FOODY_ITEM: 'FOODY_ITEM',
   CONTENT: 'CONTENT',
   GROUP: 'GROUP',
   SEED: 'SEED',
