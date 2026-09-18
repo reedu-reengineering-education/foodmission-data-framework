@@ -110,6 +110,31 @@ describe('UserEventService', () => {
     expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
   });
 
+  // Rule completions credit the wallet, and the wallet records WALLET_* events
+  // through this service. Without this guard that loop is infinite, so pin it.
+  it.each([
+    EventType.WALLET_XP_AWARDED,
+    EventType.MISSION_COMPLETED,
+    EventType.CHALLENGE_COMPLETED,
+  ])('does not re-enter the evaluator for %s', async (eventType) => {
+    prisma.userEvent.findUnique.mockResolvedValue(null);
+    prisma.userEvent.create.mockResolvedValue({
+      id: 'evt-loop',
+      userId: 'u1',
+      eventType,
+      source: EventSource.WALLET,
+    });
+
+    await service.record({
+      userId: 'u1',
+      eventType,
+      source: EventSource.WALLET,
+    });
+
+    expect(prisma.userEvent.create).toHaveBeenCalled();
+    expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
+  });
+
   it('awaits derived progress evaluation when called with a transaction client', async () => {
     const tx = {
       userEvent: {

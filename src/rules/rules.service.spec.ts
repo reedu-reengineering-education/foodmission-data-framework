@@ -1,7 +1,7 @@
 import { RulesService } from './rules.service';
 
 describe('RulesService filterEvents', () => {
-  const service = new RulesService({} as never);
+  const service = new RulesService({} as never, {} as never);
 
   it('filters LEARNING_FACT_READ by metadata.foodFactId', () => {
     const evaluationAt = new Date('2026-01-04T00:00:00.000Z');

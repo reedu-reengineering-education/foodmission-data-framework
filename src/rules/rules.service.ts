@@ -1,12 +1,19 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import { runInNewContext } from 'node:vm';
 import yaml from 'js-yaml';
 import { PrismaService } from '../database/prisma.service';
 import { ProgressStatus } from '../common/progress-status';
-import { Prisma } from '@prisma/client';
+import {
+  COMPLETION_REWARD_AWARDER,
+  CompletionRewardAwarder,
+  CompletionRewardRef,
+} from '../gamification/completion-reward.types';
+import { Prisma, RewardSourceType } from '@prisma/client';
 import {
   RuleCounter,
   RuleDefinition,
@@ -25,12 +32,19 @@ type UserEventRow = {
 type CatalogItem = {
   id: string;
   code: string;
-  reward?: { id: string; xp: number | null; points: number | null } | null;
 };
 
 type ActiveQuestScope = {
   missionCodes: Set<string>;
   challengeCodes: Set<string>;
+};
+
+/** A mission/challenge the evaluator just moved to COMPLETED for the first time. */
+type CompletionAward = {
+  userId: string;
+  kind: 'mission' | 'challenge';
+  id: string;
+  code: string;
 };
 
 @Injectable()
@@ -49,8 +63,37 @@ export class RulesService implements OnModuleInit {
   private loadedRules?: RulesCoverageDoc;
   private missionCatalog?: CatalogItem[];
   private challengeCatalog?: CatalogItem[];
+  /** Serialises deferred award drains so they cannot interleave per process. */
+  private pendingAwards: Promise<void> = Promise.resolve();
+  private awarder?: CompletionRewardAwarder;
 
-  constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Backoff before giving up on confirming a completion that was written inside
+   * a caller-supplied transaction. See `scheduleCompletionAwards`.
+   */
+  private static readonly AWARD_CONFIRM_DELAYS_MS = [250, 1000, 3000];
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly moduleRef: ModuleRef,
+  ) {}
+
+  /**
+   * Resolves the reward awarder lazily rather than injecting it.
+   *
+   * The dependency is cyclic (rules -> gamification -> events -> rules: the
+   * wallet writes UserEvents and UserEvents drive rule evaluation). Declaring
+   * that cycle with `forwardRef` hangs Nest's resolver, because RulesModule is
+   * `@Global()`. A lazy cross-module lookup keeps RulesModule importing nothing
+   * but DatabaseModule, so there is no module cycle to resolve at all.
+   */
+  private getAwarder(): CompletionRewardAwarder {
+    this.awarder ??= this.moduleRef.get<CompletionRewardAwarder>(
+      COMPLETION_REWARD_AWARDER,
+      { strict: false },
+    );
+    return this.awarder;
+  }
 
   onModuleInit(): void {
     this.load();
@@ -145,6 +188,8 @@ export class RulesService implements OnModuleInit {
       activeScope,
     );
 
+    const completions: CompletionAward[] = [];
+
     for (const entry of missionRules) {
       const catalogItem = missionCatalog.find(
         (item) => item.code === entry.code,
@@ -155,7 +200,7 @@ export class RulesService implements OnModuleInit {
       if (completedMissionIds.has(catalogItem.id)) {
         continue;
       }
-      await this.syncProgress(
+      const completion = await this.syncProgress(
         db,
         events,
         userId,
@@ -163,6 +208,9 @@ export class RulesService implements OnModuleInit {
         entry,
         'mission',
       );
+      if (completion) {
+        completions.push(completion);
+      }
     }
 
     for (const entry of challengeRules) {
@@ -175,7 +223,7 @@ export class RulesService implements OnModuleInit {
       if (completedChallengeIds.has(catalogItem.id)) {
         continue;
       }
-      await this.syncProgress(
+      const completion = await this.syncProgress(
         db,
         events,
         userId,
@@ -183,7 +231,153 @@ export class RulesService implements OnModuleInit {
         entry,
         'challenge',
       );
+      if (completion) {
+        completions.push(completion);
+      }
     }
+
+    if (completions.length === 0) {
+      return;
+    }
+
+    if (tx) {
+      // The progress rows above were written inside the caller's open
+      // transaction. Awarding here would mean `GamificationWalletService.award`
+      // opening its own transaction on a second connection and blocking on the
+      // locks this one still holds (it takes `FOR UPDATE` on the wallet row) —
+      // a deadlock until the statement timeout. Hand the awards off instead.
+      this.scheduleCompletionAwards(completions);
+      return;
+    }
+
+    await this.drainCompletionAwards(completions, []);
+  }
+
+  /**
+   * Awards completions detected inside a caller's transaction, once that
+   * transaction has had a chance to commit. `drainCompletionAwards` reads the
+   * progress row back on the base client, so it will not see the write until
+   * the commit lands — hence the backoff rather than a single immediate check.
+   * A rolled-back transaction simply never confirms and nothing is paid.
+   */
+  private scheduleCompletionAwards(completions: CompletionAward[]): void {
+    this.pendingAwards = this.pendingAwards
+      .then(() =>
+        this.drainCompletionAwards(
+          completions,
+          RulesService.AWARD_CONFIRM_DELAYS_MS,
+        ),
+      )
+      .catch((error) => {
+        this.logger.error(
+          'Deferred completion award drain failed',
+          error instanceof Error ? error.stack : error,
+        );
+      });
+  }
+
+  /**
+   * Resolves once every award scheduled so far has settled. For tests and
+   * graceful shutdown — the request path never waits on this.
+   */
+  async awaitPendingAwards(): Promise<void> {
+    await this.pendingAwards;
+  }
+
+  private async drainCompletionAwards(
+    completions: CompletionAward[],
+    confirmDelaysMs: number[],
+  ): Promise<void> {
+    for (const completion of completions) {
+      try {
+        if (!(await this.confirmCompleted(completion, confirmDelaysMs))) {
+          this.logger.warn(
+            `Skipping ${completion.kind} ${completion.code} reward for user ${completion.userId}: completion never confirmed`,
+          );
+          continue;
+        }
+
+        const reward = await this.loadReward(completion);
+        await this.getAwarder().awardCompletion({
+          userId: completion.userId,
+          sourceType:
+            completion.kind === 'mission'
+              ? RewardSourceType.MISSION
+              : RewardSourceType.CHALLENGE,
+          sourceId: completion.id,
+          code: completion.code,
+          reward,
+        });
+      } catch (error) {
+        this.logger.error(
+          `Failed to award ${completion.kind} ${completion.code} reward to user ${completion.userId}`,
+          error instanceof Error ? error.stack : error,
+        );
+      }
+    }
+  }
+
+  /**
+   * Re-reads the progress row on the base client to confirm the completion is
+   * actually visible (i.e. committed) before any wallet credit.
+   */
+  private async confirmCompleted(
+    completion: CompletionAward,
+    confirmDelaysMs: number[],
+  ): Promise<boolean> {
+    for (let attempt = 0; attempt <= confirmDelaysMs.length; attempt += 1) {
+      if (attempt > 0) {
+        await delay(confirmDelaysMs[attempt - 1]);
+      }
+
+      const row =
+        completion.kind === 'mission'
+          ? await this.prisma.missionProgress.findUnique({
+              where: {
+                userId_missionId: {
+                  userId: completion.userId,
+                  missionId: completion.id,
+                },
+              },
+              select: { completed: true },
+            })
+          : await this.prisma.challengeProgress.findUnique({
+              where: {
+                userId_challengeId: {
+                  userId: completion.userId,
+                  challengeId: completion.id,
+                },
+              },
+              select: { completed: true },
+            });
+
+      if (row?.completed) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private async loadReward(
+    completion: CompletionAward,
+  ): Promise<CompletionRewardRef | null | undefined> {
+    const row =
+      completion.kind === 'mission'
+        ? await this.prisma.mission.findUnique({
+            where: { id: completion.id },
+            select: {
+              reward: { select: { id: true, xp: true, points: true } },
+            },
+          })
+        : await this.prisma.challenge.findUnique({
+            where: { id: completion.id },
+            select: {
+              reward: { select: { id: true, xp: true, points: true } },
+            },
+          });
+
+    return row?.reward;
   }
 
   private async getMissionCatalog(
@@ -193,12 +387,14 @@ export class RulesService implements OnModuleInit {
       return this.missionCatalog;
     }
 
+    // Rewards are deliberately not cached here: this catalog lives for the
+    // lifetime of the process, and a stale xp/points value would be credited
+    // for real. They are read fresh in `drainCompletionAwards`.
     const rows = await db.mission.findMany({
       where: { available: true },
       select: {
         id: true,
         code: true,
-        reward: { select: { id: true, xp: true, points: true } },
       },
     });
     this.missionCatalog = rows;
@@ -212,12 +408,12 @@ export class RulesService implements OnModuleInit {
       return this.challengeCatalog;
     }
 
+    // See `getMissionCatalog` on why rewards are not cached alongside the code.
     const rows = await db.challenge.findMany({
       where: { available: true },
       select: {
         id: true,
         code: true,
-        reward: { select: { id: true, xp: true, points: true } },
       },
     });
     this.challengeCatalog = rows;
@@ -231,7 +427,7 @@ export class RulesService implements OnModuleInit {
     catalogItem: CatalogItem,
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
-  ): Promise<void> {
+  ): Promise<CompletionAward | null> {
     const { completed, progress } = this.evaluateRule(
       entry.rule as RuleDefinition,
       events,
@@ -258,7 +454,7 @@ export class RulesService implements OnModuleInit {
             });
 
       if (!previous) {
-        return;
+        return null;
       }
     }
 
@@ -367,17 +563,21 @@ export class RulesService implements OnModuleInit {
       });
     }
 
-    if (firstCompletion) {
-      await this.emitDerivedEvent(db, {
-        userId,
-        kind,
-        event: kind === 'mission' ? 'MISSION_COMPLETED' : 'CHALLENGE_COMPLETED',
-        code: entry.code,
-        id: catalogItem.id,
-        progress,
-        completed,
-      });
+    if (!firstCompletion) {
+      return null;
     }
+
+    await this.emitDerivedEvent(db, {
+      userId,
+      kind,
+      event: kind === 'mission' ? 'MISSION_COMPLETED' : 'CHALLENGE_COMPLETED',
+      code: entry.code,
+      id: catalogItem.id,
+      progress,
+      completed,
+    });
+
+    return { userId, kind, id: catalogItem.id, code: entry.code };
   }
 
   private async emitDerivedEvent(

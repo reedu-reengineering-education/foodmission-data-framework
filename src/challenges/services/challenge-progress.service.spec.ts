@@ -6,6 +6,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { RewardSourceType, WalletCurrency } from '@prisma/client';
 
 describe('ChallengeProgressService', () => {
@@ -43,6 +44,9 @@ describe('ChallengeProgressService', () => {
           },
         },
         { provide: UserEventService, useValue: userEventService },
+        // Real CompletionRewardService over a mocked wallet, so these assertions keep
+        // covering the actual xp/points award mechanics.
+        CompletionRewardService,
         { provide: GamificationWalletService, useValue: walletService },
       ],
     }).compile();
@@ -279,7 +283,9 @@ describe('ChallengeProgressService', () => {
 
       await service.update('CH.A1.1', { progress: 10 }, 'u1');
 
-      expect(repository.findChallengeByCodeOrId).toHaveBeenCalledWith('CH.A1.1');
+      expect(repository.findChallengeByCodeOrId).toHaveBeenCalledWith(
+        'CH.A1.1',
+      );
       expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
         progress: 10,
       });

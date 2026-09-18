@@ -6,6 +6,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { RewardSourceType, WalletCurrency } from '@prisma/client';
 
 describe('MissionProgressService', () => {
@@ -43,6 +44,9 @@ describe('MissionProgressService', () => {
           },
         },
         { provide: UserEventService, useValue: userEventService },
+        // Real CompletionRewardService over a mocked wallet, so these assertions keep
+        // covering the actual xp/points award mechanics.
+        CompletionRewardService,
         { provide: GamificationWalletService, useValue: walletService },
       ],
     }).compile();
@@ -202,7 +206,9 @@ describe('MissionProgressService', () => {
         title: 'Test Mission',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(null);
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
       (repository.upsert as jest.Mock).mockResolvedValue(updated);
 
       const result = await service.update(
@@ -381,11 +387,7 @@ describe('MissionProgressService', () => {
         mission: { title: 'Test Mission' },
       });
 
-      await service.update(
-        'm1',
-        { completed: true, progress: 100 },
-        'u1',
-      );
+      await service.update('m1', { completed: true, progress: 100 }, 'u1');
 
       expect(userEventService.record).toHaveBeenCalledTimes(2);
       expect(userEventService.record.mock.calls[0][0]).toEqual(
