@@ -32,6 +32,11 @@ describe('OpenFoodFactsService', () => {
       origins: 'Italy',
       manufacturing_places: 'Italy',
       ingredients_text_en: 'Sugar, palm oil, hazelnuts, cocoa, milk powder',
+      ingredients_analysis_tags: [
+        'en:palm-oil',
+        'en:non-vegan',
+        'en:vegetarian',
+      ],
       allergens_tags: ['en:milk', 'en:nuts'],
       traces_tags: ['en:gluten'],
       nutrition_grades: 'e',
@@ -131,6 +136,9 @@ describe('OpenFoodFactsService', () => {
       expect(result?.name).toBe('Nutella');
       expect(result?.brands).toEqual(['Ferrero']);
       expect(result?.nutritionalInfo?.energyKcal).toBe(539);
+      expect(result?.isVegan).toBe(false);
+      expect(result?.isVegetarian).toBe(true);
+      expect(result?.isPalmOilFree).toBe(false);
       expect(httpService.get).toHaveBeenCalledWith(
         'https://world.openfoodfacts.org/api/v0/product/3017620422003.json',
         { params: { lc: 'en' } },
