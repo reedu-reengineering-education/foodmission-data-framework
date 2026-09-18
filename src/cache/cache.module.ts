@@ -26,7 +26,8 @@ import { CacheableMemory } from '@cacheable/memory';
           }),
         );
 
-        return { stores };
+        const options: Record<string, unknown> = { stores };
+        return options;
       },
       inject: [ConfigService],
       isGlobal: true,
