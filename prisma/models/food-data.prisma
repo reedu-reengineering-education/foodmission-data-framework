@@ -292,6 +292,7 @@ model GenericFood {
   mealItems         MealItem[]
   recipeIngredients RecipeIngredient[]
   foodWaste         FoodWaste[]
+  foodex2Mappings   Foodex2NevoMapping[]
 
   @@index([foodGroup])
   @@index([foodName])
@@ -324,4 +325,87 @@ model FoodShelfLife {
   @@index([name])
   @@index([categoryName])
   @@map("food_shelf_life")
+}
+
+// ============================================================
+// FoodEx2 - EFSA food classification used as the user-facing
+// food vocabulary. Terms come from the MTX catalogue; nutrition
+// still lives on GenericFood (NEVO).
+// ============================================================
+
+model Foodex2Term {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// FoodEx2 term code, e.g. "A007L". Stable identifier — never the name.
+  code String @unique
+
+  /// termExtendedName from the MTX catalogue (English; the catalogue is English-only).
+  name String
+  /// Kept explicit so a localized `name` can be layered on later without losing the source.
+  nameEn String
+  /// termShortName where the catalogue provides one.
+  shortName String?
+  /// Extra searchable labels. Empty for MTX, reserved for curated synonyms.
+  synonyms String[] @default([])
+
+  /// MTX detail level: C core, E extended, H hierarchy, F facet, M and P intermediate groupings.
+  detailLevel String
+  /// MTX term type: r raw, d derivative, s simple composite, c composite, g group, f facet, n non-food.
+  termType String
+  /// Convenience flag for `detailLevel == "C"` — the FoodEx2 core list.
+  isCore Boolean @default(false)
+  /// Whether the term may be reported against in the MTX master hierarchy.
+  reportable Boolean @default(true)
+  /// Sibling ordering within the parent, as published.
+  termOrder Int?
+  /// MTX catalogue version the row was imported from, e.g. "12.0".
+  mtxVersion String
+
+  // --- Hierarchy (MTX master hierarchy) ---
+  parentCode String?
+  parent     Foodex2Term?  @relation("Foodex2Hierarchy", fields: [parentCode], references: [code], onDelete: SetNull, onUpdate: Cascade)
+  children   Foodex2Term[] @relation("Foodex2Hierarchy")
+
+  // --- Relations ---
+  nevoMappings Foodex2NevoMapping[]
+
+  @@index([name])
+  @@index([parentCode])
+  @@index([detailLevel])
+  @@index([isCore])
+  @@map("foodex2_terms")
+}
+
+model Foodex2NevoMapping {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// Resolved FoodEx2 *concept* the NEVO item is exposed under.
+  foodex2Code String
+  term        Foodex2Term @relation(fields: [foodex2Code], references: [code], onDelete: Cascade, onUpdate: Cascade)
+
+  /// NEVO item carrying the nutritional values.
+  nevoCode    Int
+  genericFood GenericFood @relation(fields: [nevoCode], references: [nevoCode], onDelete: Cascade, onUpdate: Cascade)
+
+  /// FoodEx2 base code as published on the NEVO record, before hierarchy roll-up.
+  sourceFoodex2Code String
+  /// Steps walked up the MTX hierarchy from `sourceFoodex2Code` to `foodex2Code` (0 = direct hit).
+  hierarchyDepth Int @default(0)
+
+  /// Exactly one canonical NEVO item per FoodEx2 concept (enforced by a partial unique index).
+  isCanonical Boolean @default(false)
+  /// Deterministic candidate score; higher wins, `nevoCode` ascending breaks ties.
+  priority Int @default(0)
+  /// Human-readable justification for the score, for data-quality review.
+  selectionReason String?
+
+  @@unique([foodex2Code, nevoCode])
+  @@index([foodex2Code])
+  @@index([nevoCode])
+  @@index([isCanonical])
+  @@map("foodex2_nevo_mappings")
 }

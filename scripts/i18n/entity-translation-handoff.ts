@@ -1,10 +1,8 @@
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { PrismaClient } from '@prisma/client';
 import ExcelJS from 'exceljs';
-import {
-  DEFAULT_LOCALE,
-  SUPPORTED_LOCALES,
-} from '../../src/i18n/constants';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../src/i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
   isTranslatableEntityType,
@@ -12,7 +10,6 @@ import {
   type TranslatableEntityType,
 } from '../../src/translations/entity-types';
 import {
-  type LocaleSheetRow,
   parseCsvList,
   resolveTargetLocales,
   runScript,
@@ -47,6 +44,15 @@ export const LEARNING_ENTITY_TYPES = [
 ] as const satisfies readonly TranslatableEntityType[];
 
 /** Default entity set for `i18n:export:db`. */
+/**
+ * Default entity set for `i18n:export:db`.
+ *
+ * `Foodex2Term` is deliberately absent: FoodEx2 concept names are translated
+ * through the master partner workbook (`food-foodex2` sheet) and live in
+ * `prisma/seeds/data/foodex2/foodex2-translations.csv`. Exporting them here as
+ * well would give two write paths to the same `entity_translations` rows, and
+ * whichever ran last would silently win.
+ */
 export const DEFAULT_DB_HANDOFF_ENTITY_TYPES = [
   'GenericFood',
   ...LEARNING_ENTITY_TYPES,
@@ -175,9 +181,19 @@ function englishValueForFoodField(
   return '';
 }
 
-function emptyLocaleSheets(locales: string[]): Record<string, LocaleSheetRow[]> {
-  return Object.fromEntries(locales.map((locale) => [locale, []]));
-}
+/** One workbook row: a key with its English source and every locale column. */
+export type EntityWorkbookRow = {
+  key: string;
+  en: string;
+  /** locale -> current translation ('' when missing). */
+  translations: Record<string, string>;
+};
+
+/** One sheet per entity type, mirroring the partner translation workbook. */
+export type EntitySheet = {
+  name: string;
+  rows: EntityWorkbookRow[];
+};
 
 async function loadExistingTranslations(
   prisma: PrismaClient,
@@ -212,8 +228,14 @@ async function loadExistingTranslations(
   return map;
 }
 
+/**
+ * Turns one entity's exportable rows into workbook rows.
+ *
+ * A row carries every locale as its own column, so a translator sees all
+ * languages for a key side by side instead of one sheet per language.
+ */
 function pushBatch(args: {
-  sheets: Record<string, LocaleSheetRow[]>;
+  sheet: EntityWorkbookRow[];
   locales: string[];
   perLocale: EntityExportReport['perLocale'];
   rows: ExportableRow[];
@@ -221,7 +243,7 @@ function pushBatch(args: {
   skipEmptyEnglishWithoutTranslation?: boolean;
 }): number {
   const {
-    sheets,
+    sheet,
     locales,
     perLocale,
     rows,
@@ -230,26 +252,38 @@ function pushBatch(args: {
   } = args;
 
   let added = 0;
-  for (const locale of locales) {
-    for (const row of rows) {
+  for (const row of rows) {
+    const translations: Record<string, string> = {};
+    let keep = false;
+
+    for (const locale of locales) {
       const current =
         existingByKey.get(`${row.entityId}:${locale}:${row.field}`) ?? '';
-      if (skipEmptyEnglishWithoutTranslation && !row.en && !current) {
-        continue;
+      translations[locale] = current;
+      if (!skipEmptyEnglishWithoutTranslation || row.en || current) {
+        keep = true;
       }
+    }
+    if (!keep) {
+      continue;
+    }
+
+    for (const locale of locales) {
+      const current = translations[locale];
       if (!current) {
         perLocale[locale].emptyTranslations += 1;
       } else if (current === row.en) {
         perLocale[locale].sameAsEn += 1;
       }
-      sheets[locale].push({
-        key: toEntityTranslationKey(row.entityType, row.naturalKey, row.field),
-        en: row.en,
-        translation: current,
-      });
       perLocale[locale].exportedRows += 1;
-      added += 1;
     }
+
+    sheet.push({
+      key: toEntityTranslationKey(row.entityType, row.naturalKey, row.field),
+      en: row.en,
+      translations,
+    });
+    added += 1;
   }
   return added;
 }
@@ -258,21 +292,19 @@ function pushBatch(args: {
 export async function buildGenericFoodExportSheets(
   prisma: PrismaClient,
   options: EntityExportOptions,
-): Promise<{ sheets: Record<string, LocaleSheetRow[]>; report: EntityExportReport }> {
+): Promise<{ sheets: EntitySheet[]; report: EntityExportReport }> {
   return buildEntityExportSheets(prisma, {
     ...options,
     entityTypes: ['GenericFood'],
-    genericFoodFields:
-      options.genericFoodFields ??
-      options.fields ??
-      [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS],
+    genericFoodFields: options.genericFoodFields ??
+      options.fields ?? [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS],
   });
 }
 
 export async function buildEntityExportSheets(
   prisma: PrismaClient,
   options: EntityExportOptions,
-): Promise<{ sheets: Record<string, LocaleSheetRow[]>; report: EntityExportReport }> {
+): Promise<{ sheets: EntitySheet[]; report: EntityExportReport }> {
   const entityTypes: TranslatableEntityType[] = [
     ...(options.entityTypes ??
       (options.entityType
@@ -280,10 +312,8 @@ export async function buildEntityExportSheets(
         : [...DEFAULT_DB_HANDOFF_ENTITY_TYPES])),
   ];
 
-  const genericFoodFields =
-    options.genericFoodFields ??
-    options.fields ??
-    [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS];
+  const genericFoodFields = options.genericFoodFields ??
+    options.fields ?? [...DEFAULT_GENERIC_FOOD_EXPORT_FIELDS];
 
   for (const field of genericFoodFields) {
     if (!isValidFieldForEntity('GenericFood', field)) {
@@ -293,7 +323,7 @@ export async function buildEntityExportSheets(
     }
   }
 
-  const sheets = emptyLocaleSheets(options.locales);
+  const sheets: EntitySheet[] = [];
   const perLocale: EntityExportReport['perLocale'] = Object.fromEntries(
     options.locales.map((locale) => [
       locale,
@@ -311,14 +341,19 @@ export async function buildEntityExportSheets(
     skipEmptyEnglishWithoutTranslation = false,
   ) => {
     entitiesExported[entityType] = entityCount;
+    const sheet: EntityWorkbookRow[] = [];
     totalRows += pushBatch({
-      sheets,
+      sheet,
       locales: options.locales,
       perLocale,
       rows,
       existingByKey,
       skipEmptyEnglishWithoutTranslation,
     });
+    // Excel caps sheet names at 31 characters; entity type names are shorter.
+    if (sheet.length > 0) {
+      sheets.push({ name: entityType, rows: sheet });
+    }
   };
 
   if (entityTypes.includes('GenericFood')) {
@@ -676,8 +711,8 @@ export async function buildEntityExportSheets(
     );
   }
 
-  for (const locale of options.locales) {
-    sheets[locale].sort((a, b) => a.key.localeCompare(b.key));
+  for (const sheet of sheets) {
+    sheet.rows.sort((a, b) => a.key.localeCompare(b.key));
   }
 
   return {
@@ -698,7 +733,7 @@ export async function buildEntityExportSheets(
   };
 }
 
-async function readEntitySpreadsheet(
+export async function readEntitySpreadsheet(
   filePath: string,
 ): Promise<{ locale: string; key: string; en: string; translation: string }[]> {
   const rows: {
@@ -709,19 +744,28 @@ async function readEntitySpreadsheet(
   }[] = [];
 
   if (filePath.endsWith('.csv')) {
-    const localeMatch = path.basename(filePath).match(/\.([a-z]{2})\.csv$/i);
-    if (!localeMatch) {
-      throw new Error(
-        'CSV import expects one locale per file (e.g. entity-handoff.de.csv).',
-      );
-    }
-    const locale = localeMatch[1].toLowerCase();
     const workbook = new ExcelJS.Workbook();
     const worksheet = await workbook.csv.readFile(filePath);
-    rows.push(
-      ...worksheetToEntityRows(worksheet, locale, path.basename(filePath)),
+    const label = path.basename(filePath);
+    // Current format carries the locales as columns. Older exports were one
+    // file per locale (entity-handoff.de.csv), so fall back to the file name.
+    const localeColumns = localeColumnsOf(worksheet);
+    if (localeColumns.length > 0) {
+      return worksheetToEntityRows(worksheet, localeColumns, label);
+    }
+
+    const localeMatch = label.match(/\.([a-z]{2})\.csv$/i);
+    if (!localeMatch) {
+      throw new Error(
+        'CSV import expects locale columns, or one locale per file ' +
+          '(e.g. entity-handoff.de.csv).',
+      );
+    }
+    return legacyWorksheetToEntityRows(
+      worksheet,
+      localeMatch[1].toLowerCase(),
+      label,
     );
-    return rows;
   }
 
   const workbook = new ExcelJS.Workbook();
@@ -731,13 +775,112 @@ async function readEntitySpreadsheet(
   }
 
   for (const sheet of workbook.worksheets) {
-    const locale = sheet.name.trim().toLowerCase();
-    rows.push(...worksheetToEntityRows(sheet, locale, sheet.name));
+    const localeColumns = localeColumnsOf(sheet);
+    if (localeColumns.length > 0) {
+      rows.push(...worksheetToEntityRows(sheet, localeColumns, sheet.name));
+      continue;
+    }
+    // Legacy workbook: one sheet per locale, with a single `translation` column.
+    rows.push(
+      ...legacyWorksheetToEntityRows(
+        sheet,
+        sheet.name.trim().toLowerCase(),
+        sheet.name,
+      ),
+    );
   }
   return rows;
 }
 
+/**
+ * Reads a cell as plain text.
+ *
+ * Cells come back as rich text, hyperlinks or formula results depending on how
+ * the translator's editor saved the file, so a bare String() would yield
+ * "[object Object]" for exactly the rows a partner edited by hand.
+ */
+function entityCellText(value: ExcelJS.CellValue): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'object') {
+    if ('richText' in value) {
+      return value.richText.map((part) => part.text).join('');
+    }
+    if ('text' in value) return entityCellText(value.text);
+    if ('result' in value) {
+      return entityCellText(value.result);
+    }
+  }
+  return '';
+}
+
+function headerColumns(worksheet: ExcelJS.Worksheet): Map<string, number> {
+  const headerToCol = new Map<string, number>();
+  worksheet.getRow(1).eachCell((cell, colNumber) => {
+    const name = entityCellText(cell.value).trim().toLowerCase();
+    if (name) {
+      headerToCol.set(name, colNumber);
+    }
+  });
+  return headerToCol;
+}
+
+/** Non-English supported locales that appear as columns in the sheet. */
+function localeColumnsOf(worksheet: ExcelJS.Worksheet): string[] {
+  const headerToCol = headerColumns(worksheet);
+  return SUPPORTED_LOCALES.filter(
+    (locale) => locale !== DEFAULT_LOCALE && headerToCol.has(locale),
+  );
+}
+
+/** Reads a sheet whose locales are columns, flattening it to one row per cell. */
 function worksheetToEntityRows(
+  worksheet: ExcelJS.Worksheet,
+  locales: string[],
+  sheetLabel: string,
+): { locale: string; key: string; en: string; translation: string }[] {
+  const headerToCol = headerColumns(worksheet);
+  const keyCol = headerToCol.get('key');
+  const enCol = headerToCol.get('en');
+  if (!keyCol || !enCol) {
+    throw new Error(
+      `Sheet "${sheetLabel}" must have "key" and "en" columns in row 1`,
+    );
+  }
+
+  const out: {
+    locale: string;
+    key: string;
+    en: string;
+    translation: string;
+  }[] = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+    const key = entityCellText(row.getCell(keyCol).value).trim();
+    if (!key) return;
+    const en = entityCellText(row.getCell(enCol).value).trim();
+
+    for (const locale of locales) {
+      out.push({
+        locale,
+        key,
+        en,
+        translation: entityCellText(
+          row.getCell(headerToCol.get(locale)!).value,
+        ).trim(),
+      });
+    }
+  });
+
+  return out;
+}
+
+function legacyWorksheetToEntityRows(
   worksheet: ExcelJS.Worksheet,
   locale: string,
   sheetLabel: string,
@@ -745,9 +888,7 @@ function worksheetToEntityRows(
   const headerRow = worksheet.getRow(1);
   const headerToCol = new Map<string, number>();
   headerRow.eachCell((cell, colNumber) => {
-    const name = String(cell.value ?? '')
-      .trim()
-      .toLowerCase();
+    const name = entityCellText(cell.value).trim().toLowerCase();
     if (name) {
       headerToCol.set(name, colNumber);
     }
@@ -774,13 +915,13 @@ function worksheetToEntityRows(
 
   worksheet.eachRow((row, rowNumber) => {
     if (rowNumber === 1) return;
-    const key = String(row.getCell(keyCol).value ?? '').trim();
+    const key = entityCellText(row.getCell(keyCol).value).trim();
     if (!key) return;
     out.push({
       locale,
       key,
-      en: String(row.getCell(enCol).value ?? '').trim(),
-      translation: String(row.getCell(translationCol).value ?? '').trim(),
+      en: entityCellText(row.getCell(enCol).value).trim(),
+      translation: entityCellText(row.getCell(translationCol).value).trim(),
     });
   });
 
@@ -840,8 +981,7 @@ async function buildIdResolvers(
     },
     {
       type: 'Mission',
-      load: () =>
-        prisma.mission.findMany({ select: { id: true, code: true } }),
+      load: () => prisma.mission.findMany({ select: { id: true, code: true } }),
     },
     {
       type: 'Challenge',
@@ -993,13 +1133,133 @@ export function printEntityExportReport(report: EntityExportReport): void {
 }
 
 export function printEntityImportReport(report: EntityImportReport): void {
-  console.log(`\nEntity translation import${report.dryRun ? ' (dry-run)' : ''}`);
+  console.log(
+    `\nEntity translation import${report.dryRun ? ' (dry-run)' : ''}`,
+  );
   console.log(`  upserted: ${report.upserted}`);
   for (const [reason, ids] of Object.entries(report.skipped)) {
     if (ids.length > 0) {
       console.log(`  skipped.${reason}: ${ids.length}`);
     }
   }
+}
+
+const ENTITY_HEADER_FILL = 'FF1F3864';
+const ENTITY_READONLY_HEADER_FILL = 'FF7F7F7F';
+const ENTITY_MISSING_FILL = 'FFFFF2CC';
+
+function entityColumnLetter(index: number): string {
+  let letter = '';
+  let remaining = index;
+  while (remaining > 0) {
+    const rest = (remaining - 1) % 26;
+    letter = String.fromCharCode(65 + rest) + letter;
+    remaining = Math.floor((remaining - rest) / 26);
+  }
+  return letter;
+}
+
+function addEntitySheet(
+  workbook: ExcelJS.Workbook,
+  sheet: EntitySheet,
+  locales: string[],
+): void {
+  const worksheet = workbook.addWorksheet(sheet.name.slice(0, 31));
+  worksheet.columns = [
+    { header: 'key', key: 'key', width: 44 },
+    { header: 'en', key: 'en', width: 60 },
+    ...locales.map((locale) => ({ header: locale, key: locale, width: 48 })),
+  ];
+
+  for (const entry of sheet.rows) {
+    const row = worksheet.addRow({
+      key: entry.key,
+      en: entry.en,
+      ...Object.fromEntries(
+        locales.map((locale) => [locale, entry.translations[locale] ?? '']),
+      ),
+    });
+    row.alignment = { vertical: 'top', wrapText: true };
+    // Force text so codes like NEVO numbers survive the round trip.
+    row.getCell('key').numFmt = '@';
+  }
+
+  const headerRow = worksheet.getRow(1);
+  headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  headerRow.eachCell((cell, colNumber) => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: {
+        argb: colNumber <= 2 ? ENTITY_READONLY_HEADER_FILL : ENTITY_HEADER_FILL,
+      },
+    };
+    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+  });
+
+  worksheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 1 }];
+
+  const lastColumn = entityColumnLetter(2 + locales.length);
+  const lastRow = Math.max(sheet.rows.length + 1, 2);
+  worksheet.autoFilter = { from: 'A1', to: `${lastColumn}1` };
+
+  // Highlight untranslated cells so partners see the remaining work.
+  worksheet.addConditionalFormatting({
+    ref: `C2:${lastColumn}${lastRow}`,
+    rules: [
+      {
+        type: 'expression',
+        priority: 1,
+        formulae: ['LEN(TRIM(C2))=0'],
+        style: {
+          fill: {
+            type: 'pattern',
+            pattern: 'solid',
+            bgColor: { argb: ENTITY_MISSING_FILL },
+          },
+        },
+      },
+    ],
+  });
+}
+
+/**
+ * Writes the entity handoff workbook.
+ *
+ * Layout matches the partner translation workbook: one sheet per entity type,
+ * with `key`, `en` and one column per locale. CSV output keeps the same shape,
+ * one file per sheet, because the locales live in columns rather than sheets.
+ */
+export async function writeEntityWorkbook(
+  sheets: EntitySheet[],
+  locales: string[],
+  outputPath: string,
+  format: 'xlsx' | 'csv',
+): Promise<void> {
+  fs.mkdirSync(path.dirname(path.resolve(outputPath)), { recursive: true });
+
+  if (format === 'csv') {
+    const baseName = path.basename(outputPath, path.extname(outputPath));
+    const dir = path.dirname(outputPath);
+
+    for (const sheet of sheets) {
+      const workbook = new ExcelJS.Workbook();
+      addEntitySheet(workbook, sheet, locales);
+      await workbook.csv.writeFile(
+        path.join(dir, `${baseName}.${sheet.name}.csv`),
+        { sheetName: sheet.name.slice(0, 31) },
+      );
+    }
+    return;
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = 'foodmission-data-framework';
+  workbook.created = new Date();
+  for (const sheet of sheets) {
+    addEntitySheet(workbook, sheet, locales);
+  }
+  await workbook.xlsx.writeFile(outputPath);
 }
 
 export {

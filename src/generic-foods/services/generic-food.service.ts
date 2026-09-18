@@ -8,6 +8,16 @@ import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { toFoodGroupSlug } from '../utils/food-group-slug.util';
+import { FoodSearchRepository } from '../repositories/food-search.repository';
+import {
+  GenericFoodListItemDto,
+  PaginatedGenericFoodListResponseDto,
+} from '../dto/generic-food-list-item.dto';
+import {
+  parseSearchQuery,
+  rankFoodSearch,
+  SearchQuery,
+} from '../search/food-search.ranking';
 import type { GenericFood } from '@prisma/client';
 
 const GENERIC_FOOD_TRANSLATABLE_FIELDS = [
@@ -21,6 +31,7 @@ const GENERIC_FOOD_TRANSLATABLE_FIELDS = [
 export class GenericFoodService {
   constructor(
     private readonly genericFoodRepository: GenericFoodRepository,
+    private readonly foodSearchRepository: FoodSearchRepository,
     private readonly translationService: TranslationService,
   ) {}
 
@@ -31,37 +42,33 @@ export class GenericFoodService {
     return this.toResponse(category);
   }
 
-  async findAll(query: GenericFoodQueryDto) {
+  /**
+   * The generic-food catalogue. With `search` (or `foodex2Code`) it is the
+   * user-facing food search; without, the plain NEVO listing.
+   */
+  async findAll(
+    query: GenericFoodQueryDto,
+  ): Promise<PaginatedGenericFoodListResponseDto> {
     const locale = this.translationService.resolveLocale(query.lang);
-    const context: {
-      localizedSearchIds?: string[];
-      localizedFoodGroupIds?: string[];
-    } = {};
+    const searchQuery = parseSearchQuery(query.search);
 
-    if (locale !== DEFAULT_LOCALE) {
-      if (query.search) {
-        context.localizedSearchIds =
-          await this.translationService.findEntityIdsByValue(
-            'GenericFood',
-            locale,
-            ['foodName', 'synonym'],
-            query.search,
-          );
-      }
-      if (query.foodGroup) {
-        context.localizedFoodGroupIds =
-          await this.translationService.findEntityIdsByValue(
+    if (searchQuery || query.foodex2Code) {
+      return this.search(query, searchQuery, locale);
+    }
+
+    const localizedFoodGroupIds =
+      locale !== DEFAULT_LOCALE && query.foodGroup
+        ? await this.translationService.findEntityIdsByValue(
             'GenericFood',
             locale,
             ['foodGroup'],
             query.foodGroup,
-          );
-      }
-    }
+          )
+        : undefined;
 
     const result = await this.genericFoodRepository.findAll(
       query,
-      Object.keys(context).length > 0 ? context : undefined,
+      localizedFoodGroupIds ? { localizedFoodGroupIds } : undefined,
     );
 
     const items = await this.overlayTranslations(result.items, locale);
@@ -69,6 +76,75 @@ export class GenericFoodService {
     return {
       ...result,
       items,
+    };
+  }
+
+  /**
+   * Ranked search; see `rankFoodSearch` for the rules. Every row is a real
+   * NEVO record — a FoodEx2 concept the query named carries its canonical
+   * record, under the concept's name.
+   */
+  private async search(
+    query: GenericFoodQueryDto,
+    searchQuery: SearchQuery | null,
+    locale: string,
+  ): Promise<PaginatedGenericFoodListResponseDto> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+
+    const { records, concepts } =
+      await this.foodSearchRepository.findCandidates({
+        stem: searchQuery?.stem ?? null,
+        locale,
+        foodGroup: query.foodGroup,
+        foodex2Code: query.foodex2Code,
+        includeConcepts: !query.foodex2Code,
+      });
+    const hits = rankFoodSearch(records, concepts, searchQuery, {
+      collapse: !query.foodex2Code,
+    });
+    const pageHits = hits.slice((page - 1) * limit, page * limit);
+
+    const groupCodes = pageHits
+      .map((hit) => hit.groupCode)
+      .filter((code): code is string => code !== null);
+    const [foods, variantCounts] = await Promise.all([
+      this.genericFoodRepository.findByNevoCodes(
+        pageHits.map((hit) => hit.nevoCode),
+      ),
+      this.foodSearchRepository.countRecordsByCode([...new Set(groupCodes)]),
+    ]);
+    const localized = new Map(
+      (await this.overlayTranslations(foods, locale)).map((food) => [
+        food.nevoCode,
+        food,
+      ]),
+    );
+
+    const items = pageHits.flatMap((hit): GenericFoodListItemDto[] => {
+      const food = localized.get(hit.nevoCode);
+      // Deleted between the two reads; drop it rather than emit no values.
+      if (!food) return [];
+      return [
+        {
+          ...food,
+          foodName: hit.concept?.displayName ?? food.foodName,
+          isConcept: hit.concept !== null,
+          foodex2Code: hit.groupCode,
+          variantCount: hit.groupCode
+            ? (variantCounts.get(hit.groupCode) ?? 1)
+            : 1,
+          nevoFoodName: food.foodName,
+        },
+      ];
+    });
+
+    return {
+      items,
+      total: hits.length,
+      page,
+      limit,
+      totalPages: Math.ceil(hits.length / limit),
     };
   }
 

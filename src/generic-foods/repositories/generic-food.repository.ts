@@ -7,8 +7,6 @@ import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 export type GenericFoodFindAllContext = {
-  /** Entity IDs whose translated foodName/synonym match search (non-English). */
-  localizedSearchIds?: string[];
   /** Entity IDs whose translated foodGroup matches filter (non-English). */
   localizedFoodGroupIds?: string[];
 };
@@ -23,19 +21,18 @@ export class GenericFoodRepository {
     });
   }
 
+  /**
+   * The plain NEVO catalogue in name order. Text search does not go through
+   * here — see `FoodSearchRepository`.
+   */
   async findAll(
     query: GenericFoodQueryDto,
     context?: GenericFoodFindAllContext,
   ) {
-    const { search, foodGroup, page = 1, limit = 20, lang } = query;
+    const { foodGroup, page = 1, limit = 20, lang } = query;
     const skip = (page - 1) * limit;
     const locale = (lang ?? DEFAULT_LOCALE).toLowerCase();
-    const localizedSearchIds = context?.localizedSearchIds;
     const localizedFoodGroupIds = context?.localizedFoodGroupIds;
-    const useLocalizedSearch =
-      Boolean(search) &&
-      locale !== DEFAULT_LOCALE &&
-      Array.isArray(localizedSearchIds);
     const useLocalizedFoodGroup =
       Boolean(foodGroup) &&
       locale !== DEFAULT_LOCALE &&
@@ -43,28 +40,6 @@ export class GenericFoodRepository {
 
     const where: Prisma.GenericFoodWhereInput = {};
     const conditions: Prisma.GenericFoodWhereInput[] = [];
-
-    if (search) {
-      const englishMatch: Prisma.GenericFoodWhereInput = {
-        OR: [
-          { foodName: { contains: search, mode: 'insensitive' } },
-          {
-            AND: [
-              { synonym: { not: null } },
-              { synonym: { contains: search, mode: 'insensitive' } },
-            ],
-          },
-        ],
-      };
-
-      if (useLocalizedSearch && localizedSearchIds.length > 0) {
-        conditions.push({
-          OR: [englishMatch, { id: { in: localizedSearchIds } }],
-        });
-      } else {
-        conditions.push(englishMatch);
-      }
-    }
 
     if (foodGroup) {
       const englishFoodGroup: Prisma.GenericFoodWhereInput = {
@@ -125,6 +100,12 @@ export class GenericFoodRepository {
   findByNevoCode(nevoCode: number) {
     return this.prisma.genericFood.findUnique({
       where: { nevoCode },
+    });
+  }
+
+  findByNevoCodes(nevoCodes: number[]) {
+    return this.prisma.genericFood.findMany({
+      where: { nevoCode: { in: nevoCodes } },
     });
   }
 
