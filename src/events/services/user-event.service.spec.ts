@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../event-types';
 import { RulesService } from '../../rules/rules.service';
+import { QUEST_PROGRESS_RECOMPUTER } from '../../quests/quest-progress.types';
 import { UserEventService } from './user-event.service';
 
 describe('UserEventService', () => {
@@ -13,6 +14,7 @@ describe('UserEventService', () => {
   let rulesService: {
     evaluateUserEvent: jest.Mock;
   };
+  let questRecomputer: { onCompletionEvent: jest.Mock };
 
   beforeEach(async () => {
     prisma = {
@@ -24,12 +26,14 @@ describe('UserEventService', () => {
     rulesService = {
       evaluateUserEvent: jest.fn().mockResolvedValue(undefined),
     };
+    questRecomputer = { onCompletionEvent: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserEventService,
         { provide: PrismaService, useValue: prisma },
         { provide: RulesService, useValue: rulesService },
+        { provide: QUEST_PROGRESS_RECOMPUTER, useValue: questRecomputer },
       ],
     }).compile();
 
@@ -133,6 +137,43 @@ describe('UserEventService', () => {
 
     expect(prisma.userEvent.create).toHaveBeenCalled();
     expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
+  });
+
+  it('hands a fresh completion event to the quest recomputer', async () => {
+    prisma.userEvent.findUnique.mockResolvedValue(null);
+    prisma.userEvent.create.mockResolvedValue({
+      id: 'evt-quest',
+      userId: 'u1',
+      eventType: EventType.MISSION_COMPLETED,
+      source: EventSource.MISSION,
+    });
+
+    await service.record({
+      userId: 'u1',
+      eventType: EventType.MISSION_COMPLETED,
+      source: EventSource.MISSION,
+    });
+
+    expect(questRecomputer.onCompletionEvent).toHaveBeenCalledWith({
+      userId: 'u1',
+      eventId: 'evt-quest',
+      eventType: EventType.MISSION_COMPLETED,
+    });
+  });
+
+  // A replayed event means an earlier call already triggered the recompute, so
+  // the completion must count exactly once.
+  it('does not re-trigger the quest recomputer for a replayed event', async () => {
+    prisma.userEvent.findUnique.mockResolvedValue({ id: 'evt-existing' });
+
+    await service.record({
+      userId: 'u1',
+      eventType: EventType.MISSION_COMPLETED,
+      source: EventSource.MISSION,
+      idempotencyKey: 'mission-completed:u1:m1',
+    });
+
+    expect(questRecomputer.onCompletionEvent).not.toHaveBeenCalled();
   });
 
   it('awaits derived progress evaluation when called with a transaction client', async () => {

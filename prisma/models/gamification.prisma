@@ -318,11 +318,20 @@ model QuestItem {
 }
 
 model QuestProgress {
-  userId     String
-  questId    String
+  userId String
+  questId String
+  /// When this quest became active for the user. Doubles as the "started"
+  /// marker; there is deliberately no separate startedAt.
   unlockedAt DateTime?
-  completed  Boolean   @default(false)
-  progress   Float     @default(0)
+  completed Boolean @default(false)
+  /// Derived from item completion: finished / total * 100, rounded to 2dp.
+  /// Never written from a client request.
+  progress Float @default(0)
+  status ProgressStatus @default(NOT_STARTED)
+  /// Snapshot of the last derivation, so a surprising percentage can be
+  /// explained without replaying events. See QuestProgressService.
+  state Json @default("{}")
+  evaluatedAt DateTime?
 
   // Relations
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)

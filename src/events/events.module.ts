@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
 import { UserEventService } from './services/user-event.service';
+import { USER_EVENT_RECORDER } from './user-event-recorder.types';
 import { RulesModule } from '../rules/rules.module';
 
 /**
@@ -9,7 +10,12 @@ import { RulesModule } from '../rules/rules.module';
  */
 @Module({
   imports: [DatabaseModule, RulesModule],
-  providers: [UserEventService],
-  exports: [UserEventService],
+  providers: [
+    UserEventService,
+    // Token alias, so RulesService can record events without importing this
+    // module's implementation. See user-event-recorder.types.ts.
+    { provide: USER_EVENT_RECORDER, useExisting: UserEventService },
+  ],
+  exports: [UserEventService, USER_EVENT_RECORDER],
 })
 export class EventsModule {}

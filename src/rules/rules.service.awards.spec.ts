@@ -1,6 +1,12 @@
 import { ModuleRef } from '@nestjs/core';
+import { AfterCommitQueue } from '../common/after-commit/after-commit.queue';
 import { Prisma, RewardSourceType } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { EventSource, EventType } from '../events/event-types';
+import {
+  USER_EVENT_RECORDER,
+  UserEventRecorder,
+} from '../events/user-event-recorder.types';
 import { CompletionRewardAwarder } from '../gamification/completion-reward.types';
 import { RulesCoverageDoc } from './rule-schema';
 import { RulesService } from './rules.service';
@@ -95,6 +101,7 @@ function buildDb(): MockDb {
 describe('RulesService completion rewards', () => {
   let prisma: MockDb;
   let completionRewardService: jest.Mocked<CompletionRewardAwarder>;
+  let userEventService: jest.Mocked<UserEventRecorder>;
   let service: RulesService;
 
   beforeEach(() => {
@@ -102,11 +109,19 @@ describe('RulesService completion rewards', () => {
     completionRewardService = {
       awardCompletion: jest.fn().mockResolvedValue({ xp: 15, points: 20 }),
     };
+    userEventService = {
+      record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+    };
     service = new RulesService(
       prisma as unknown as PrismaService,
       {
-        get: jest.fn().mockReturnValue(completionRewardService),
+        get: jest.fn((token: unknown) =>
+          token === USER_EVENT_RECORDER
+            ? userEventService
+            : completionRewardService,
+        ),
       } as unknown as ModuleRef,
+      new AfterCommitQueue(),
     );
     // Bypass the YAML draft on disk; this suite is about the award path.
     (service as unknown as { loadedRules: RulesCoverageDoc }).loadedRules =
@@ -135,6 +150,41 @@ describe('RulesService completion rewards', () => {
       code: 'CH.A1.1',
       reward: { id: 'r1', xp: 15, points: 20 },
     });
+  });
+
+  // Regression: emitDerivedEvent used to call userEvent.create directly, which
+  // produced rows with no idempotency key (so a rule-completed challenge that
+  // was then PATCHed logged CHALLENGE_COMPLETED twice) and spelled `source` as
+  // 'CHALLENGE' where every other emitter writes 'challenge'.
+  it('records derived events through the ledger writer, keyed like the API path', async () => {
+    prisma.challengeProgress.findUnique
+      .mockResolvedValueOnce(null)
+      .mockResolvedValue({ completed: true });
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(prisma.userEvent.create).not.toHaveBeenCalled();
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: EventType.CHALLENGE_COMPLETED,
+        source: EventSource.CHALLENGE,
+        idempotencyKey: 'challenge-completed:u1:c1',
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('forwards the caller transaction to the ledger writer', async () => {
+    const tx = buildDb();
+    prisma.challengeProgress.findUnique.mockResolvedValue({ completed: true });
+
+    await service.evaluateUserEvent(
+      'u1',
+      'MEAL_LOGGED',
+      tx as unknown as Prisma.TransactionClient,
+    );
+
+    expect(userEventService.record).toHaveBeenCalledWith(expect.anything(), tx);
   });
 
   it('reads the reward fresh rather than from the cached catalog', async () => {

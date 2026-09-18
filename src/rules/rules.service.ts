@@ -3,11 +3,19 @@ import { ModuleRef } from '@nestjs/core';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { setTimeout as delay } from 'node:timers/promises';
 import { runInNewContext } from 'node:vm';
 import yaml from 'js-yaml';
 import { PrismaService } from '../database/prisma.service';
+import {
+  AfterCommitQueue,
+  AfterCommitTask,
+} from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
+import { EventSource, EventType, EventTypeValue } from '../events/event-types';
+import {
+  USER_EVENT_RECORDER,
+  UserEventRecorder,
+} from '../events/user-event-recorder.types';
 import {
   COMPLETION_REWARD_AWARDER,
   CompletionRewardAwarder,
@@ -63,19 +71,13 @@ export class RulesService implements OnModuleInit {
   private loadedRules?: RulesCoverageDoc;
   private missionCatalog?: CatalogItem[];
   private challengeCatalog?: CatalogItem[];
-  /** Serialises deferred award drains so they cannot interleave per process. */
-  private pendingAwards: Promise<void> = Promise.resolve();
   private awarder?: CompletionRewardAwarder;
-
-  /**
-   * Backoff before giving up on confirming a completion that was written inside
-   * a caller-supplied transaction. See `scheduleCompletionAwards`.
-   */
-  private static readonly AWARD_CONFIRM_DELAYS_MS = [250, 1000, 3000];
+  private recorder?: UserEventRecorder;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly moduleRef: ModuleRef,
+    private readonly afterCommit: AfterCommitQueue,
   ) {}
 
   /**
@@ -93,6 +95,15 @@ export class RulesService implements OnModuleInit {
       { strict: false },
     );
     return this.awarder;
+  }
+
+  /** Lazy for the same reason as `getAwarder` — see the comment above. */
+  private getRecorder(): UserEventRecorder {
+    this.recorder ??= this.moduleRef.get<UserEventRecorder>(
+      USER_EVENT_RECORDER,
+      { strict: false },
+    );
+    return this.recorder;
   }
 
   onModuleInit(): void {
@@ -240,40 +251,19 @@ export class RulesService implements OnModuleInit {
       return;
     }
 
+    const tasks = completions.map((completion) => this.toAwardTask(completion));
+
     if (tx) {
       // The progress rows above were written inside the caller's open
       // transaction. Awarding here would mean `GamificationWalletService.award`
       // opening its own transaction on a second connection and blocking on the
       // locks this one still holds (it takes `FOR UPDATE` on the wallet row) —
       // a deadlock until the statement timeout. Hand the awards off instead.
-      this.scheduleCompletionAwards(completions);
+      this.afterCommit.schedule(tasks);
       return;
     }
 
-    await this.drainCompletionAwards(completions, []);
-  }
-
-  /**
-   * Awards completions detected inside a caller's transaction, once that
-   * transaction has had a chance to commit. `drainCompletionAwards` reads the
-   * progress row back on the base client, so it will not see the write until
-   * the commit lands — hence the backoff rather than a single immediate check.
-   * A rolled-back transaction simply never confirms and nothing is paid.
-   */
-  private scheduleCompletionAwards(completions: CompletionAward[]): void {
-    this.pendingAwards = this.pendingAwards
-      .then(() =>
-        this.drainCompletionAwards(
-          completions,
-          RulesService.AWARD_CONFIRM_DELAYS_MS,
-        ),
-      )
-      .catch((error) => {
-        this.logger.error(
-          'Deferred completion award drain failed',
-          error instanceof Error ? error.stack : error,
-        );
-      });
+    await this.afterCommit.run(tasks);
   }
 
   /**
@@ -281,22 +271,14 @@ export class RulesService implements OnModuleInit {
    * graceful shutdown — the request path never waits on this.
    */
   async awaitPendingAwards(): Promise<void> {
-    await this.pendingAwards;
+    await this.afterCommit.awaitIdle();
   }
 
-  private async drainCompletionAwards(
-    completions: CompletionAward[],
-    confirmDelaysMs: number[],
-  ): Promise<void> {
-    for (const completion of completions) {
-      try {
-        if (!(await this.confirmCompleted(completion, confirmDelaysMs))) {
-          this.logger.warn(
-            `Skipping ${completion.kind} ${completion.code} reward for user ${completion.userId}: completion never confirmed`,
-          );
-          continue;
-        }
-
+  private toAwardTask(completion: CompletionAward): AfterCommitTask {
+    return {
+      label: `${completion.kind} ${completion.code} reward for user ${completion.userId}`,
+      confirm: () => this.confirmCompleted(completion),
+      run: async () => {
         const reward = await this.loadReward(completion);
         await this.getAwarder().awardCompletion({
           userId: completion.userId,
@@ -308,13 +290,8 @@ export class RulesService implements OnModuleInit {
           code: completion.code,
           reward,
         });
-      } catch (error) {
-        this.logger.error(
-          `Failed to award ${completion.kind} ${completion.code} reward to user ${completion.userId}`,
-          error instanceof Error ? error.stack : error,
-        );
-      }
-    }
+      },
+    };
   }
 
   /**
@@ -323,40 +300,29 @@ export class RulesService implements OnModuleInit {
    */
   private async confirmCompleted(
     completion: CompletionAward,
-    confirmDelaysMs: number[],
   ): Promise<boolean> {
-    for (let attempt = 0; attempt <= confirmDelaysMs.length; attempt += 1) {
-      if (attempt > 0) {
-        await delay(confirmDelaysMs[attempt - 1]);
-      }
-
-      const row =
-        completion.kind === 'mission'
-          ? await this.prisma.missionProgress.findUnique({
-              where: {
-                userId_missionId: {
-                  userId: completion.userId,
-                  missionId: completion.id,
-                },
+    const row =
+      completion.kind === 'mission'
+        ? await this.prisma.missionProgress.findUnique({
+            where: {
+              userId_missionId: {
+                userId: completion.userId,
+                missionId: completion.id,
               },
-              select: { completed: true },
-            })
-          : await this.prisma.challengeProgress.findUnique({
-              where: {
-                userId_challengeId: {
-                  userId: completion.userId,
-                  challengeId: completion.id,
-                },
+            },
+            select: { completed: true },
+          })
+        : await this.prisma.challengeProgress.findUnique({
+            where: {
+              userId_challengeId: {
+                userId: completion.userId,
+                challengeId: completion.id,
               },
-              select: { completed: true },
-            });
+            },
+            select: { completed: true },
+          });
 
-      if (row?.completed) {
-        return true;
-      }
-    }
-
-    return false;
+    return row?.completed === true;
   }
 
   private async loadReward(
@@ -545,7 +511,11 @@ export class RulesService implements OnModuleInit {
       await this.emitDerivedEvent(db, {
         userId,
         kind,
-        event: kind === 'mission' ? 'MISSION_STARTED' : 'CHALLENGE_STARTED',
+        event:
+          kind === 'mission'
+            ? EventType.MISSION_STARTED
+            : EventType.CHALLENGE_STARTED,
+        transition: 'started',
         code: entry.code,
         id: catalogItem.id,
         progress,
@@ -555,7 +525,11 @@ export class RulesService implements OnModuleInit {
       await this.emitDerivedEvent(db, {
         userId,
         kind,
-        event: kind === 'mission' ? 'MISSION_UPDATED' : 'CHALLENGE_UPDATED',
+        event:
+          kind === 'mission'
+            ? EventType.MISSION_UPDATED
+            : EventType.CHALLENGE_UPDATED,
+        transition: 'updated',
         code: entry.code,
         id: catalogItem.id,
         progress,
@@ -570,7 +544,11 @@ export class RulesService implements OnModuleInit {
     await this.emitDerivedEvent(db, {
       userId,
       kind,
-      event: kind === 'mission' ? 'MISSION_COMPLETED' : 'CHALLENGE_COMPLETED',
+      event:
+        kind === 'mission'
+          ? EventType.MISSION_COMPLETED
+          : EventType.CHALLENGE_COMPLETED,
+      transition: 'completed',
       code: entry.code,
       id: catalogItem.id,
       progress,
@@ -580,35 +558,61 @@ export class RulesService implements OnModuleInit {
     return { userId, kind, id: catalogItem.id, code: entry.code };
   }
 
+  /**
+   * Records a derived progress event through the shared ledger writer rather
+   * than writing `userEvent.create` directly.
+   *
+   * Going through `record` is what gives these events an idempotency key. The
+   * API path (`mission-progress.service.ts`) uses the same keys, so a mission
+   * completed here and then PATCHed produces one row, not two. It also keeps
+   * `source` spelled the same way as every other emitter.
+   *
+   * No recursion risk: `MISSION_*`/`CHALLENGE_*` are excluded from
+   * `shouldEvaluateDerivedProgress`, so recording them cannot re-enter
+   * evaluation.
+   */
   private async emitDerivedEvent(
     db: Prisma.TransactionClient | PrismaService,
     input: {
       userId: string;
       kind: 'mission' | 'challenge';
-      event: string;
+      event: EventTypeValue;
+      transition: 'started' | 'updated' | 'completed';
       code: string;
       id: string;
       progress: number;
       completed: boolean;
     },
   ): Promise<void> {
-    await db.userEvent.create({
-      data: {
+    const isMission = input.kind === 'mission';
+    // Byte-identical to the keys mission-/challenge-progress.service.ts build,
+    // so the two paths deduplicate against each other.
+    const idempotencyKey =
+      input.transition === 'updated'
+        ? `${input.kind}-updated:${input.userId}:${input.id}:${input.progress}:${input.completed}`
+        : `${input.kind}-${input.transition}:${input.userId}:${input.id}`;
+
+    await this.getRecorder().record(
+      {
         userId: input.userId,
         eventType: input.event,
-        source: input.kind === 'mission' ? 'MISSION' : 'CHALLENGE',
+        source: isMission ? EventSource.MISSION : EventSource.CHALLENGE,
         metadata: {
-          [input.kind === 'mission' ? 'missionId' : 'challengeId']: input.id,
-          [input.kind === 'mission' ? 'missionCode' : 'challengeCode']:
-            input.code,
+          [isMission ? 'missionId' : 'challengeId']: input.id,
+          [isMission ? 'missionCode' : 'challengeCode']: input.code,
           source: 'RULE_ENGINE',
           body: {
             progress: input.progress,
             completed: input.completed,
           },
         },
+        idempotencyKey,
       },
-    });
+      // Whatever client the evaluation is running on — the caller's transaction
+      // when there is one, so the event lands atomically with the progress row
+      // it describes.
+      db as Prisma.TransactionClient,
+    );
   }
 
   private evaluateRule(
