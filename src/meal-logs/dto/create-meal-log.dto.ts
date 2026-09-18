@@ -7,7 +7,6 @@ import {
   IsDateString,
   IsEnum,
   IsIn,
-  IsOptional,
   IsUUID,
 } from 'class-validator';
 import { TypeOfMeal } from '@prisma/client';
@@ -18,6 +17,7 @@ import {
   MealFlagEventType,
   MealSwapEventType,
 } from '../../events/event-types';
+import { IsOptionalNotNull } from '../../common/decorators/optional-not-null.decorator';
 
 export class CreateMealLogDto {
   @ApiPropertyOptional({
@@ -25,7 +25,7 @@ export class CreateMealLogDto {
       'Meal consumed. Omit for a quick log — then `flags` describes the meal instead.',
     format: 'uuid',
   })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsUUID()
   mealId?: string;
 
@@ -42,7 +42,7 @@ export class CreateMealLogDto {
     isArray: true,
     example: [EventType.MEAL_VEGAN, EventType.MEAL_LEGUME_CONSUMED],
   })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsArray()
   @ArrayUnique()
   @ArrayMaxSize(MEAL_FLAG_EVENT_TYPES.length)
@@ -56,7 +56,7 @@ export class CreateMealLogDto {
     isArray: true,
     example: [EventType.SWAP_BEEF_TO_LEGUMES],
   })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsArray()
   @ArrayUnique()
   @ArrayMaxSize(MEAL_SWAP_EVENT_TYPES.length)
@@ -66,17 +66,17 @@ export class CreateMealLogDto {
   @ApiPropertyOptional({
     description: 'Timestamp of consumption (ISO string)',
   })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsDateString()
   timestamp?: string;
 
   @ApiPropertyOptional({ description: 'Whether meal came from pantry' })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsBoolean()
   mealFromPantry?: boolean;
 
   @ApiPropertyOptional({ description: 'Whether meal was eaten out' })
-  @IsOptional()
+  @IsOptionalNotNull()
   @IsBoolean()
   eatenOut?: boolean;
 }

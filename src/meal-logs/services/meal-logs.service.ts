@@ -265,25 +265,9 @@ export class MealLogsService {
       await this.getOwnedMealOrThrow(updateMealLogDto.mealId, userId);
     }
 
-    if (updateMealLogDto.flags) {
-      const conflicts = conflictingFlags(updateMealLogDto.flags);
-      if (conflicts.length > 0) {
-        throw new BadRequestException(
-          `Flag MEAT conflicts with ${conflicts.join(', ')}`,
-        );
-      }
-      if (
-        updateMealLogDto.flags.length === 0 &&
-        !(updateMealLogDto.mealId ?? mealLog.mealId)
-      ) {
-        throw new BadRequestException(
-          'Provide mealId or at least one diet flag in flags',
-        );
-      }
-    }
-
-    // Events are an append-only ledger: facts already recorded on create are not
-    // re-derived here, so an edit changes the stored log but not what was counted.
+    // `flags` and `swaps` are not updatable (see UpdateMealLogDto): the events
+    // they recorded on create are an append-only ledger, so what a log claims
+    // and what was counted stay the same thing.
 
     try {
       const updated = await this.mealLogRepository.update(id, {
