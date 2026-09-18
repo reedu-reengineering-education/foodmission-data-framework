@@ -27,7 +27,10 @@
  * - **Meal** — `{ mealId, mealType?, tags? }`
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
- * - **Learning** — `{ contentId?, contentType? }`
+ * - **Learning** — `{ contentId?, contentType? }`. Food facts use
+ *   `{ foodFactId, foodFactCode }`: `LEARNING_FACT_VIEWED` is the impression
+ *   (server-emitted on `GET /food-facts/:codeOrId`, idempotent per user/fact/UTC
+ *   day), `LEARNING_FACT_READ` the engagement fact (once ever, reward-bearing).
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Onboarding** — `{ segment }`
  * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
