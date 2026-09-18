@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { TypeOfMeal } from '@prisma/client';
+import {
+  MEAL_FLAG_EVENT_TYPES,
+  MEAL_SWAP_EVENT_TYPES,
+  MealFlagEventType,
+  MealSwapEventType,
+} from '../../events/event-types';
 import { MealResponseDto } from '../../meals/dto/meal-response.dto';
 
 export class MealLogResponseDto {
@@ -12,9 +18,13 @@ export class MealLogResponseDto {
   @Expose()
   userId: string;
 
-  @ApiProperty({ description: 'Meal id', format: 'uuid' })
+  @ApiPropertyOptional({
+    description: 'Meal id — null for a quick log described by `flags` only',
+    format: 'uuid',
+    nullable: true,
+  })
   @Expose()
-  mealId: string;
+  mealId: string | null;
 
   @ApiProperty({ enum: TypeOfMeal })
   @Expose()
@@ -31,6 +41,22 @@ export class MealLogResponseDto {
   @ApiProperty({ description: 'Eaten out flag' })
   @Expose()
   eatenOut: boolean;
+
+  @ApiProperty({
+    description: 'Diet facts reported for this meal, as event types',
+    enum: [...MEAL_FLAG_EVENT_TYPES],
+    isArray: true,
+  })
+  @Expose()
+  flags: MealFlagEventType[];
+
+  @ApiProperty({
+    description: 'Substitutions reported for this meal, as event types',
+    enum: [...MEAL_SWAP_EVENT_TYPES],
+    isArray: true,
+  })
+  @Expose()
+  swaps: MealSwapEventType[];
 
   @ApiProperty({ description: 'Created at' })
   @Expose()

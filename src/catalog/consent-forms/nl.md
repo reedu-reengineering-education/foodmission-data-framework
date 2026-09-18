@@ -58,21 +58,10 @@ The planned end date of the project is 31.07.2029. All personal data will then b
 
 If you have questions about the project, or want to exercise your rights, contact:
 
-*   Project Leader Natalia Mæhle (Natalia.mehle@hvl.no) and Julia Kneer (kneer@eshcc.eur.nl).
+*   Project Leader Natalia Mæhle ([Natalia.mehle@hvl.no](mailto:Natalia.mehle@hvl.no)) and Julia Kneer ([kneer@eshcc.eur.nl](mailto:kneer@eshcc.eur.nl)).
 *   HVL’s Data Protection Officer: Trine Anniken Larsen ([personvernombud@hvl.no](mailto:personvernombud@hvl.no))
 *   Implementing partner Data Protection Officer: Tim Steenwijk ([privacy@eshcc.eur.nl](mailto:privacy@eshcc.eur.nl))
 
 If you have questions about how data protection has been assessed in this project, contact:
 
-Data Protection Services, by email: ([personverntjenester@sikt.no](mailto:personverntjenester@sikt.no)) or by telephone: +47 53 21 15 00.
-
-**Consent form used to document ethical consent**
-
-**\-------------------------------------------------------------------------------------------------------------------------**
-
-# Consent form
-
-I have received and understood information about the pilot of FOODMISSION and have been given the opportunity to ask questions via Email.
-
-*   I consent to participate in pilot and use FOODMISSION and that my personal data can be processed until the end of the project (31.07.2029).
-*   I do not consent to participate.
+Data Protection Services, by email: ([personverntjenester@sikt.no](mailto:personverntjenester@sikt.no)) or by telephone: [+47 53 21 15 00](tel:+4753211500).

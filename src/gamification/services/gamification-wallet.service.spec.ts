@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
 import { Prisma, RewardSourceType, WalletCurrency } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { EventType } from '../../events/event-types';
+import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import {
   defaultWalletAwardEventType,
@@ -18,7 +18,8 @@ describe('GamificationWalletService', () => {
     userEvent: { findUniqueOrThrow: jest.Mock };
     userGamificationWallet: {
       upsert: jest.Mock;
-      update: jest.Mock;
+      updateMany: jest.Mock;
+      findUniqueOrThrow: jest.Mock;
     };
     walletEntry: { create: jest.Mock };
     $transaction: jest.Mock;
@@ -36,7 +37,8 @@ describe('GamificationWalletService', () => {
       },
       userGamificationWallet: {
         upsert: jest.fn(),
-        update: jest.fn(),
+        updateMany: jest.fn(),
+        findUniqueOrThrow: jest.fn(),
       },
       walletEntry: {
         create: jest.fn(),
@@ -137,19 +139,12 @@ describe('GamificationWalletService', () => {
               points: 0,
               updatedAt: new Date(),
             }),
-            update: jest.fn().mockResolvedValue(updatedWallet),
+            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+            findUniqueOrThrow: jest.fn().mockResolvedValue(updatedWallet),
           },
           walletEntry: {
             create: jest.fn().mockResolvedValue(createdEntry),
           },
-          $queryRaw: jest.fn().mockResolvedValue([
-            {
-              userId: 'u1',
-              xp: 0,
-              points: 0,
-              updatedAt: new Date(),
-            },
-          ]),
         };
         return fn(tx as unknown as typeof prisma);
       },
@@ -168,7 +163,172 @@ describe('GamificationWalletService', () => {
     expect(result.wallet.points).toBe(10);
     expect(result.entry.balanceAfter).toBe(10);
     expect(result.event?.id).toBe('evt-2');
-    expect(userEventService.record).toHaveBeenCalled();
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({ source: EventSource.WALLET }),
+      expect.anything(),
+    );
+  });
+
+  it('uses an overridden event source when provided', async () => {
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+    userEventService.record.mockResolvedValue({
+      event: {
+        id: 'evt-foody',
+        userId: 'u1',
+        eventType: EventType.FOODY_ITEM_PURCHASED,
+      } as any,
+      replayed: false,
+    });
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: { findUniqueOrThrow: jest.fn() },
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 25,
+              updatedAt: new Date(),
+            }),
+            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+            findUniqueOrThrow: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 15,
+              updatedAt: new Date(),
+            }),
+          },
+          walletEntry: {
+            create: jest.fn().mockResolvedValue({
+              id: 'we-foody',
+              userId: 'u1',
+              currency: WalletCurrency.POINTS,
+              amount: -10,
+              balanceAfter: 15,
+              reason: 'Foody item purchased',
+              eventId: 'evt-foody',
+            }),
+          },
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    await service.award({
+      userId: 'u1',
+      currency: WalletCurrency.POINTS,
+      amount: -10,
+      reason: 'Foody item purchased',
+      eventType: EventType.FOODY_ITEM_PURCHASED,
+      source: EventSource.FOODY,
+      idempotencyKey: 'award-foody-1',
+    });
+
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({ source: EventSource.FOODY }),
+      expect.anything(),
+    );
+  });
+
+  it('rejects a debit the balance cannot cover', async () => {
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+    userEventService.record.mockResolvedValue({
+      event: { id: 'evt-poor', userId: 'u1' } as any,
+      replayed: false,
+    });
+
+    const walletUpdateMany = jest.fn().mockResolvedValue({ count: 0 });
+    const entryCreate = jest.fn();
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: { findUniqueOrThrow: jest.fn() },
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 5,
+              updatedAt: new Date(),
+            }),
+            updateMany: walletUpdateMany,
+            findUniqueOrThrow: jest.fn(),
+          },
+          walletEntry: { create: entryCreate },
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    await expect(
+      service.award({
+        userId: 'u1',
+        currency: WalletCurrency.POINTS,
+        amount: -10,
+        reason: 'too expensive',
+        idempotencyKey: 'award-poor',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+
+    // The guard lives in the UPDATE predicate, not in JS.
+    expect(walletUpdateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ points: { gte: 10 } }),
+        data: { points: { increment: -10 } },
+      }),
+    );
+    expect(entryCreate).not.toHaveBeenCalled();
+  });
+
+  it('allows a debit that spends the balance down to exactly zero', async () => {
+    userEventService.findByIdempotencyKey.mockResolvedValue(null);
+    userEventService.record.mockResolvedValue({
+      event: { id: 'evt-exact', userId: 'u1' } as any,
+      replayed: false,
+    });
+
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => {
+        const tx = {
+          userEvent: { findUniqueOrThrow: jest.fn() },
+          userGamificationWallet: {
+            upsert: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 10,
+              updatedAt: new Date(),
+            }),
+            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+            findUniqueOrThrow: jest.fn().mockResolvedValue({
+              userId: 'u1',
+              xp: 0,
+              points: 0,
+              updatedAt: new Date(),
+            }),
+          },
+          walletEntry: {
+            create: jest.fn().mockImplementation(({ data }: any) => ({
+              id: 'we-exact',
+              ...data,
+            })),
+          },
+        };
+        return fn(tx as unknown as typeof prisma);
+      },
+    );
+
+    const result = await service.award({
+      userId: 'u1',
+      currency: WalletCurrency.POINTS,
+      amount: -10,
+      reason: 'exact spend',
+      idempotencyKey: 'award-exact',
+    });
+
+    expect(result.wallet.points).toBe(0);
+    // balanceAfter comes from the row the increment wrote, not from JS arithmetic.
+    expect(result.entry.balanceAfter).toBe(0);
   });
 
   it('rejects zero amount', async () => {
@@ -218,7 +378,8 @@ describe('GamificationWalletService', () => {
               points: 0,
               updatedAt: new Date(),
             }),
-            update: jest.fn().mockResolvedValue(updatedWallet),
+            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+            findUniqueOrThrow: jest.fn().mockResolvedValue(updatedWallet),
           },
           walletEntry: {
             create: jest.fn().mockResolvedValue({
@@ -231,14 +392,6 @@ describe('GamificationWalletService', () => {
               eventId: 'evt-xp',
             }),
           },
-          $queryRaw: jest.fn().mockResolvedValue([
-            {
-              userId: 'u1',
-              xp: 0,
-              points: 0,
-              updatedAt: new Date(),
-            },
-          ]),
         };
         return fn(tx as unknown as typeof prisma);
       },
@@ -283,7 +436,8 @@ describe('GamificationWalletService', () => {
               points: 0,
               updatedAt: new Date(),
             }),
-            update: jest.fn().mockResolvedValue({
+            updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+            findUniqueOrThrow: jest.fn().mockResolvedValue({
               userId: 'u1',
               xp: 0,
               points: 20,
@@ -301,14 +455,6 @@ describe('GamificationWalletService', () => {
               eventId: 'evt-points',
             }),
           },
-          $queryRaw: jest.fn().mockResolvedValue([
-            {
-              userId: 'u1',
-              xp: 0,
-              points: 0,
-              updatedAt: new Date(),
-            },
-          ]),
         };
         return fn(tx as unknown as typeof prisma);
       },

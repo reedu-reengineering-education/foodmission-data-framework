@@ -126,6 +126,28 @@ describe('FoodProductService', () => {
     });
   });
 
+  describe('getOpenFoodFactsInfo', () => {
+    it('includes derived diet flags in the mapped DTO', async () => {
+      openFoodFacts.getProductByBarcode.mockResolvedValue({
+        barcode: '999',
+        name: 'Nutella',
+        isVegan: false,
+        isVegetarian: true,
+        isPalmOilFree: null,
+      });
+
+      const result = await service.getOpenFoodFactsInfo('999');
+
+      expect(result).toMatchObject({
+        barcode: '999',
+        name: 'Nutella',
+        isVegan: false,
+        isVegetarian: true,
+        isPalmOilFree: null,
+      });
+    });
+  });
+
   describe('remove', () => {
     it('deletes food product when it exists', async () => {
       repository.findById.mockResolvedValue(mockFood);

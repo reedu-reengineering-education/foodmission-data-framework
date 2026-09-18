@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MealLog, Prisma, TypeOfMeal } from '@prisma/client';
+import { MealFlagEventType, MealSwapEventType } from '../../events/event-types';
 import {
   BaseRepository,
   FindAllOptions,
@@ -10,11 +11,14 @@ import { normalizePagination } from '../../common/utils/pagination';
 
 export interface CreateMealLogData {
   userId: string;
-  mealId: string;
+  /** Omitted for quick logs — the meal is described by `flags` instead. */
+  mealId?: string | null;
   typeOfMeal: TypeOfMeal;
   timestamp?: Date;
   mealFromPantry?: boolean;
   eatenOut?: boolean;
+  flags?: MealFlagEventType[];
+  swaps?: MealSwapEventType[];
 }
 
 export type UpdateMealLogData = Partial<Omit<CreateMealLogData, 'userId'>>;

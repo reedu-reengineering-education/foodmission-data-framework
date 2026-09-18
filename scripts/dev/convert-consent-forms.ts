@@ -113,10 +113,130 @@ export function htmlToMarkdown(html: string): string {
   return turndown.turndown(html);
 }
 
-export async function docxToMarkdown(filePath: string): Promise<string> {
-  const { value: html } = await mammoth.convertToHtml({ path: filePath });
+/**
+ * The Word forms end with a dashed rule ("-----", which turndown emits as
+ * `**\-----**`) followed by the tick-box consent section. The app renders its
+ * own accept/decline actions, so that section is not part of the served text.
+ */
+export function isFooterSeparator(line: string): boolean {
+  return /^(-{5,}|_{5,})$/.test(line.replace(/[\s*\\]/g, ''));
+}
 
-  return htmlToMarkdown(html);
+/** A paragraph that is nothing but bold text, i.e. a section lead-in. */
+const BOLD_ONLY_LINE = /^\s*\*\*[^*]+\*\*\s*$/;
+
+/**
+ * Drop everything from the footer separator on. The lead-in right above it
+ * ("**Consent form used to document ethical consent**") introduces the removed
+ * section, so a trailing bold-only paragraph goes as well.
+ */
+export function stripFooter(markdown: string): string {
+  const lines = markdown.split('\n');
+  const separatorIndex = lines.findIndex(isFooterSeparator);
+
+  if (separatorIndex === -1) {
+    return markdown;
+  }
+
+  const kept = lines.slice(0, separatorIndex);
+
+  while (kept.length > 0 && kept[kept.length - 1].trim() === '') {
+    kept.pop();
+  }
+  if (kept.length > 0 && BOLD_ONLY_LINE.test(kept[kept.length - 1])) {
+    kept.pop();
+  }
+
+  return kept.join('\n');
+}
+
+// Turndown escapes underscores, so the local part may contain `\_`.
+const EMAIL = String.raw`(?:[A-Za-z0-9.%+-]|\\?_)+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}`;
+const EMAIL_ONLY = new RegExp(`^${EMAIL}$`);
+// International numbers only ("+47 53 21 15 00", "+49 (0) 251 123-45"): a
+// leading "+" is what separates a phone number from the grant numbers and
+// dates in the forms.
+const PHONE = String.raw`\+\d{1,3}(?:[ .\/-]?(?:\(\d{1,4}\)|\d{1,4}))+`;
+/** Fewer digits than this is not a dialable number. */
+const MIN_PHONE_DIGITS = 7;
+// An existing inline link or autolink, a bare email, a bare URL, or a phone
+// number.
+const LINK_OR_TARGET = new RegExp(
+  String.raw`(\[[^\]]*\]\([^)\s]*\)|<[^>\s]+>)|(${EMAIL})|((?:https?:\/\/|www\.)[^\s<>()\[\]]+)|(${PHONE})`,
+  'g',
+);
+const EXISTING_LINK = /^\[([^\]]*)\]\(([^)\s]*)\)$/;
+
+function unescapeMarkdown(value: string): string {
+  return value.replace(/\\(.)/g, '$1');
+}
+
+/** Point a link target that is really an email address at `mailto:`. */
+function fixHref(href: string): string {
+  const withoutScheme = href.replace(/^(?:https?:\/\/)/i, '');
+
+  return EMAIL_ONLY.test(withoutScheme)
+    ? `mailto:${unescapeMarkdown(withoutScheme)}`
+    : href;
+}
+
+/**
+ * RFC 3966 global number: "+" and digits only. A national trunk prefix written
+ * as "(0)" is not dialled after the country code, so it is dropped.
+ */
+function toTelHref(phone: string): string {
+  return `tel:${phone.replace(/\(0\)/g, '').replace(/[^\d+]/g, '')}`;
+}
+
+/**
+ * Make every email address, URL and phone number clickable. Bare emails become
+ * `[addr](mailto:addr)` (the form Word hyperlinks already convert to), bare
+ * URLs become links, international phone numbers become `tel:` links, and
+ * existing links whose target is an email without a `mailto:` scheme are
+ * repaired. Existing links are otherwise left untouched.
+ */
+export function fixLinks(markdown: string): string {
+  return markdown.replace(
+    LINK_OR_TARGET,
+    (match, link?: string, email?: string, url?: string, phone?: string) => {
+      if (link) {
+        const parts = EXISTING_LINK.exec(link);
+        return parts ? `[${parts[1]}](${fixHref(parts[2])})` : link;
+      }
+
+      if (email) {
+        return `[${email}](mailto:${unescapeMarkdown(email)})`;
+      }
+
+      if (url) {
+        // Sentence punctuation directly after a URL is not part of it.
+        const [, target, trailing] = /^(.*?)([.,;:!?]*)$/.exec(url)!;
+        const href = target.startsWith('www.') ? `https://${target}` : target;
+        return `[${target}](${unescapeMarkdown(href)})${trailing}`;
+      }
+
+      if (phone && phone.replace(/\D/g, '').length >= MIN_PHONE_DIGITS) {
+        return `[${phone}](${toTelHref(phone)})`;
+      }
+
+      return match;
+    },
+  );
+}
+
+/** Clean-up steps applied to every converted form, in order. */
+const MARKDOWN_PIPELINE: ((markdown: string) => string)[] = [
+  stripFooter,
+  fixLinks,
+];
+
+export function postProcessMarkdown(markdown: string): string {
+  const processed = MARKDOWN_PIPELINE.reduce(
+    (current, step) => step(current),
+    markdown,
+  );
+
+  return `${processed.trimEnd()}\n`;
 }
 
 async function findDocxFiles(folder: string): Promise<string[]> {
@@ -207,8 +327,15 @@ async function main(): Promise<void> {
     const outputPath = resolveOutputPath(filePath, relative, taken);
 
     try {
-      const markdown = await docxToMarkdown(filePath);
+      const { value: html } = await mammoth.convertToHtml({ path: filePath });
+      const rawMarkdown = htmlToMarkdown(html);
+      const markdown = postProcessMarkdown(rawMarkdown);
 
+      if (!rawMarkdown.split('\n').some(isFooterSeparator)) {
+        console.warn(
+          `  ! ${relative}: no "-----" footer separator found, kept as is`,
+        );
+      }
       await fs.mkdir(path.dirname(outputPath), { recursive: true });
       await fs.writeFile(outputPath, markdown, 'utf-8');
 

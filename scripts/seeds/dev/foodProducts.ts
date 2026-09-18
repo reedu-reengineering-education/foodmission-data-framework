@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { parseOffDietFlags } from '../../../src/food-products/utils/off-diet-flags';
 
 // Only verified working OpenFoodFacts barcodes - tested and confirmed 100% working
 export const openFoodFactsBarcodes: string[] = [
@@ -43,40 +44,6 @@ export const testOpenFoodFactsBarcodes: string[] = [
   '8712100849084', // Magnum Ice Cream (verified working)
   '8000500037560', // Kinder Bueno (verified working)
 ];
-
-/**
- * Derives boolean diet flags from ingredients_analysis_tags.
- *
- * Tags follow patterns like:
- *   "en:vegan" / "en:non-vegan" / "en:vegan-status-unknown"
- *   "en:vegetarian" / "en:non-vegetarian" / "en:vegetarian-status-unknown"
- *   "en:palm-oil-free" / "en:palm-oil" / "en:may-contain-palm-oil"
- */
-function parseDietFlags(tags?: string[]): {
-  isVegan: boolean | null;
-  isVegetarian: boolean | null;
-  isPalmOilFree: boolean | null;
-} {
-  const result = {
-    isVegan: null as boolean | null,
-    isVegetarian: null as boolean | null,
-    isPalmOilFree: null as boolean | null,
-  };
-  if (!tags || !Array.isArray(tags)) return result;
-
-  for (const tag of tags) {
-    if (tag === 'en:vegan') result.isVegan = true;
-    else if (tag === 'en:non-vegan') result.isVegan = false;
-
-    if (tag === 'en:vegetarian') result.isVegetarian = true;
-    else if (tag === 'en:non-vegetarian') result.isVegetarian = false;
-
-    if (tag === 'en:palm-oil-free') result.isPalmOilFree = true;
-    else if (tag === 'en:palm-oil') result.isPalmOilFree = false;
-  }
-
-  return result;
-}
 
 /**
  * Safely read a numeric nutriment value, returning undefined if absent/NaN.
@@ -142,7 +109,10 @@ export async function seedFoods(
 
       const p = data.product;
       const nutriments = p.nutriments || {};
-      const dietFlags = parseDietFlags(p.ingredients_analysis_tags);
+      const dietFlags = parseOffDietFlags(
+        p.ingredients_analysis_tags,
+        p.labels_tags,
+      );
 
       const food = await prisma.foodProduct.create({
         data: {

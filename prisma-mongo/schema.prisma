@@ -22,68 +22,69 @@ datasource db {
 // inconsistently as either a string or a bare number, and Prisma's MongoDB
 // connector throws (P2023) rather than coercing on a type mismatch.
 model OffProduct {
-  id                    String   @id @map("_id")
-  code                  String?
-  product_name          String?
-  product_name_en       String?
-  generic_name          String?
-  generic_name_en       String?
-  brands                String?
-  brands_tags           String[]
-  categories            String?
-  categories_tags       String[]
-  categories_hierarchy  String[]
-  labels                String?
-  labels_tags           String[]
-  packaging             String?
-  packaging_tags        String[]
-  origins               String?
-  origins_tags          String[]
-  manufacturing_places  String?
-  stores                String?
-  stores_tags           String[]
-  countries             String?
-  countries_tags        String[]
-  ingredients_text      String?
-  ingredients_text_en   String?
-  ingredients           Json?
-  allergens             String?
-  allergens_tags        String[]
-  traces                String?
-  traces_tags           String[]
-  additives_tags        String[]
-  nutriments            Json?
-  nutrient_levels       Json?
-  nutrition_data_per    String?
-  nutrition_grades      String?
-  nutriscore_grade      String?
-  nutriscore_score      Json?
-  nutriscore_data       Json?
-  nova_group            Json?
-  ecoscore_grade        String?
-  ecoscore_score        Json?
-  ecoscore_data         Json?
-  image_url             String?
-  image_front_url       String?
-  image_nutrition_url   String?
-  image_ingredients_url String?
-  images                Json?
-  quantity              Json?
-  serving_size          Json?
-  serving_quantity      Json?
-  completeness          Float?
-  created_t             Int?
-  last_modified_t       Int?
-  states                String?
-  states_tags           String[]
-  lang                  String?
-  unique_scans_n        Int?
-  scans_n               Int?
+  id                        String   @id @map("_id")
+  code                      String?
+  product_name              String?
+  product_name_en           String?
+  generic_name              String?
+  generic_name_en           String?
+  brands                    String?
+  brands_tags               String[]
+  categories                String?
+  categories_tags           String[]
+  categories_hierarchy      String[]
+  labels                    String?
+  labels_tags               String[]
+  packaging                 String?
+  packaging_tags            String[]
+  origins                   String?
+  origins_tags              String[]
+  manufacturing_places      String?
+  stores                    String?
+  stores_tags               String[]
+  countries                 String?
+  countries_tags            String[]
+  ingredients_text          String?
+  ingredients_text_en       String?
+  ingredients_analysis_tags String[]
+  ingredients               Json?
+  allergens                 String?
+  allergens_tags            String[]
+  traces                    String?
+  traces_tags               String[]
+  additives_tags            String[]
+  nutriments                Json?
+  nutrient_levels           Json?
+  nutrition_data_per        String?
+  nutrition_grades          String?
+  nutriscore_grade          String?
+  nutriscore_score          Json?
+  nutriscore_data           Json?
+  nova_group                Json?
+  ecoscore_grade            String?
+  ecoscore_score            Json?
+  ecoscore_data             Json?
+  image_url                 String?
+  image_front_url           String?
+  image_nutrition_url       String?
+  image_ingredients_url     String?
+  images                    Json?
+  quantity                  Json?
+  serving_size              Json?
+  serving_quantity          Json?
+  completeness              Float?
+  created_t                 Int?
+  last_modified_t           Int?
+  states                    String?
+  states_tags               String[]
+  lang                      String?
+  unique_scans_n            Int?
+  scans_n                   Int?
   // OFF's own precomputed lowercase search tokens (name/brands/categories).
   // Used for text search instead of regex on product_name: the collection
   // is already at Mongo's 64-index cap, but _keywords_1_* indexes exist and
   // this field lets search hit them instead of a full collection scan.
-  keywords              String[] @map("_keywords")
+  keywords                  String[] @map("_keywords")
 
   // Deliberately no @@index/@@fulltext declarations: this schema only
   // describes the shape of an existing, externally-managed database clone.
