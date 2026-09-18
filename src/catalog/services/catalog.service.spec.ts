@@ -178,6 +178,110 @@ describe('CatalogService', () => {
     expect(codes).toContain('SIDE_SNACK');
   });
 
+  describe('listAnnualIncomeLevels', () => {
+    // Intl separates digits and currency with (narrow) no-break spaces
+    const labels = (res: { data: { label: string }[] }) =>
+      res.data.map((x) => x.label.replace(/\s/g, ' '));
+
+    it('labels the EUR bands with currency and period by default', () => {
+      const res = service.listAnnualIncomeLevels();
+
+      expect(labels(res)).toEqual([
+        'Under €10,000 per year',
+        '€10,000 – €19,999 per year',
+        '€20,000 – €34,999 per year',
+        '€35,000 – €49,999 per year',
+        '€50,000 – €74,999 per year',
+        '€75,000 – €99,999 per year',
+        '€100,000 or more per year',
+      ]);
+      expect(res.data[1].meta).toEqual({
+        currency: 'EUR',
+        min: 10000,
+        max: 20000,
+      });
+    });
+
+    it('converts the bands to NOK for Norway', () => {
+      jest.spyOn(I18nContext, 'current').mockReturnValue({
+        lang: 'no',
+      } as unknown as I18nContext);
+
+      const res = service.listAnnualIncomeLevels('no');
+
+      expect(labels(res)).toEqual([
+        'Under 110 000 kr per year',
+        '110 000 kr – 219 999 kr per year',
+        '220 000 kr – 379 999 kr per year',
+        '380 000 kr – 549 999 kr per year',
+        '550 000 kr – 819 999 kr per year',
+        '820 000 kr – 1 099 999 kr per year',
+        '1 100 000 kr or more per year',
+      ]);
+      expect(res.data[6].meta).toEqual({
+        currency: 'NOK',
+        min: 1100000,
+        max: undefined,
+      });
+    });
+
+    it('converts the bands to PLN for Poland', () => {
+      jest.spyOn(I18nContext, 'current').mockReturnValue({
+        lang: 'pl',
+      } as unknown as I18nContext);
+
+      const res = service.listAnnualIncomeLevels('PL');
+
+      expect(labels(res)).toEqual([
+        'Under 43 000 zł per year',
+        '43 000 zł – 85 999 zł per year',
+        '86 000 zł – 149 999 zł per year',
+        '150 000 zł – 219 999 zł per year',
+        '220 000 zł – 319 999 zł per year',
+        '320 000 zł – 429 999 zł per year',
+        '430 000 zł or more per year',
+      ]);
+    });
+
+    it.each([
+      ['no', 'NOK'],
+      ['pl', 'PLN'],
+    ])('falls back to the country implied by locale %s', (lang, currency) => {
+      jest.spyOn(I18nContext, 'current').mockReturnValue({
+        lang,
+      } as unknown as I18nContext);
+
+      expect(service.listAnnualIncomeLevels().data[0].meta?.currency).toBe(
+        currency,
+      );
+    });
+
+    it('prefers an explicit country over the locale', () => {
+      jest.spyOn(I18nContext, 'current').mockReturnValue({
+        lang: 'no',
+      } as unknown as I18nContext);
+
+      expect(service.listAnnualIncomeLevels('DE').data[0].meta?.currency).toBe(
+        'EUR',
+      );
+    });
+
+    it('fills translated templates', () => {
+      jest.spyOn(I18nContext, 'current').mockReturnValue({
+        lang: 'de',
+      } as unknown as I18nContext);
+      i18n.translate.mockImplementation((key: string) =>
+        key === 'catalog.annualIncomeLevels.FROM_10000_TO_19999'
+          ? '{min} bis {max} pro Jahr'
+          : '',
+      );
+
+      expect(labels(service.listAnnualIncomeLevels())[1]).toBe(
+        '10.000 € bis 19.999 € pro Jahr',
+      );
+    });
+  });
+
   it('uses default locale when current i18n context has no language', () => {
     service.listGenders();
 
