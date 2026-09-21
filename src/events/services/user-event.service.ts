@@ -9,6 +9,10 @@ import {
   QuestProgressRecomputer,
 } from '../../quests/quest-progress.types';
 import {
+  BADGE_RULE_EVALUATOR,
+  BadgeRuleEvaluator,
+} from '../../badges/badge-rules.types';
+import {
   RecordUserEventInput,
   UserEventRecorder,
 } from '../user-event-recorder.types';
@@ -23,6 +27,7 @@ export class UserEventService implements UserEventRecorder {
 
   /** `undefined` = not looked up yet, `null` = not mounted in this app. */
   private questRecomputer?: QuestProgressRecomputer | null;
+  private badgeEvaluator?: BadgeRuleEvaluator | null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -47,6 +52,21 @@ export class UserEventService implements UserEventRecorder {
       }
     }
     return this.questRecomputer;
+  }
+
+  /** Resolved lazily by token, for the same reason as the quest recomputer. */
+  private getBadgeEvaluator(): BadgeRuleEvaluator | null {
+    if (this.badgeEvaluator === undefined) {
+      try {
+        this.badgeEvaluator = this.moduleRef.get<BadgeRuleEvaluator>(
+          BADGE_RULE_EVALUATOR,
+          { strict: false },
+        );
+      } catch {
+        this.badgeEvaluator = null;
+      }
+    }
+    return this.badgeEvaluator;
   }
 
   async findByIdempotencyKey(
@@ -106,6 +126,16 @@ export class UserEventService implements UserEventRecorder {
         }
       }
 
+      // Badges are evaluated separately and on a wider set of events: the
+      // MISSION_/QUEST_ completions excluded above are exactly what several
+      // badge rules count. BadgeRulesService keeps its own, narrower exclusion
+      // list, so there is no filtering to do here.
+      if (tx) {
+        await this.runBadgeEvaluation(event.userId, event.eventType, tx);
+      } else {
+        void this.runBadgeEvaluation(event.userId, event.eventType);
+      }
+
       // Only on a fresh write. A replayed event means some earlier call already
       // recomputed for it, so the completion is counted exactly once.
       this.getQuestRecomputer()?.onCompletionEvent({
@@ -142,6 +172,21 @@ export class UserEventService implements UserEventRecorder {
     } catch (error) {
       this.logger.error(
         `Derived progress evaluation failed for ${eventType} and user ${userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
+  }
+
+  private async runBadgeEvaluation(
+    userId: string,
+    eventType: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<void> {
+    try {
+      await this.getBadgeEvaluator()?.evaluateUserEvent(userId, eventType, tx);
+    } catch (error) {
+      this.logger.error(
+        `Badge evaluation failed for ${eventType} and user ${userId}`,
         error instanceof Error ? error.stack : error,
       );
     }
