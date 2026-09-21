@@ -369,19 +369,18 @@ missions:
         - 'Enforces one logged-meal day per day by counting distinct mealDayBucket values'
         - 'Relies on MEAL_LOGGED metadata.mealDayBucket (YYYY-MM-DD, UTC)'
   - code: M.B1.2
-    shape: one_shot_event
+    shape: count_at_least
     rule:
       window:
         type: since_start
         days: 7
       counters:
-        meatMeals:
-          event: MEAL_MEAT_CONSUMED
-          distinctBy: metadata.mealId
-      target: 'meatMeals >= 1'
-      progress: 'min(meatMeals, 1)'
+        mealLogs:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+      target: 'mealLogs >= 7'
+      progress: 'min(mealLogs / 7, 1)'
       notes:
-        - 'Uses explicit meat-meal tracking events as completion evidence'
         - 'Cannot prove completeness against all consumed meals without a denominator signal'
   - code: M.B1.3
     shape: composite_threshold
