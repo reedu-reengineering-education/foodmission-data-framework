@@ -29,7 +29,11 @@
  *   them as {@link MEAL_FLAG_EVENT_TYPES} values.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
- * - **Learning** — `{ contentId?, contentType? }`
+ * - **Learning** — `{ contentId?, contentType? }`. Recipe views come from
+ *   `GET /recipes/:id` as `LEARNING_RECIPE_EXPLORED` with `{ recipeId }`.
+ * - **Survey** — `{ surveyId, responseId }` on `SURVEY_COMPLETED`, recorded by
+ *   `POST /surveys/:id/responses`.
+ * - **Shopping list** — `{ shoppingListId }` on `SHOPPING_LIST_CREATED`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Progress indicator** — `{ actionCode, wheels: [{ kind, delta, level,
  *   accumulatedValue, targetValue, stagesCompleted }] }`
@@ -54,6 +58,7 @@ export const EventType = {
   // ==========================================
   // ACCOUNT
   // ==========================================
+  USER_REGISTERED: 'USER_REGISTERED',
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   ONBOARDING_COMPLETED: 'ONBOARDING_COMPLETED',
   USER_GROUP_JOINED: 'USER_GROUP_JOINED',
@@ -136,6 +141,7 @@ export const EventType = {
   SHOPPING_CERTIFICATION_CHOSEN: 'SHOPPING_CERTIFICATION_CHOSEN',
   SHOPPING_PACKAGING_INFO_CHECKED: 'SHOPPING_PACKAGING_INFO_CHECKED',
   SHOPPING_MULTICRITERIA_PURCHASE: 'SHOPPING_MULTICRITERIA_PURCHASE',
+  SHOPPING_LIST_CREATED: 'SHOPPING_LIST_CREATED',
 
   // ==========================================
   // 4. FOOD PROCESSING & SCORES
@@ -192,6 +198,11 @@ export const EventType = {
   LEARNING_RECIPE_SHARED: 'LEARNING_RECIPE_SHARED',
   QUIZ_ANSWERED: 'QUIZ_ANSWERED',
   QUIZ_UPDATED: 'QUIZ_UPDATED',
+
+  // ==========================================
+  // 9. SURVEYS
+  // ==========================================
+  SURVEY_COMPLETED: 'SURVEY_COMPLETED',
 } as const;
 
 export type EventTypeValue = (typeof EventType)[keyof typeof EventType];
@@ -353,6 +364,8 @@ export const EventSource = {
   CHALLENGE: 'challenge',
   GROUP: 'group',
   QUICK_ACTION: 'quick_action',
+  SURVEY: 'survey',
+  RECIPE: 'recipe',
 } as const;
 
 export type EventSourceValue = (typeof EventSource)[keyof typeof EventSource];
@@ -372,6 +385,9 @@ export const EventSubjectType = {
   BADGE: 'BADGE',
   FOODY_ITEM: 'FOODY_ITEM',
   CONTENT: 'CONTENT',
+  RECIPE: 'RECIPE',
+  SURVEY: 'SURVEY',
+  SHOPPING_LIST: 'SHOPPING_LIST',
   GROUP: 'GROUP',
   SEED: 'SEED',
 } as const;
