@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ContentLevel } from '@prisma/client';
 import { Expose } from 'class-transformer';
+import { FoodFactRewardDto } from './food-fact-progress.dto';
 
 export class FoodFactResponseDto {
   @ApiProperty({ example: 'uuid-food-fact-id' })
@@ -45,4 +46,21 @@ export class FoodFactResponseDto {
   @ApiProperty({ example: true })
   @Expose()
   available: boolean;
+
+  @ApiPropertyOptional({
+    example: '2024-01-01T00:00:00.000Z',
+    description:
+      'When the current user first read this fact. Set on authenticated single-fact GETs, which count as a read.',
+  })
+  @Expose()
+  readAt?: Date;
+
+  @ApiPropertyOptional({
+    type: FoodFactRewardDto,
+    nullable: true,
+    description:
+      'Reward credited to the current user for reading this fact (idempotent — a re-read replays the original credit). Null when the fact has no reward or crediting failed.',
+  })
+  @Expose()
+  reward?: FoodFactRewardDto | null;
 }

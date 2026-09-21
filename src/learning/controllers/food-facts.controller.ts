@@ -39,7 +39,11 @@ export class FoodFactsController {
   @Get('by-code/:code')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get a food fact by code' })
+  @ApiOperation({
+    summary: 'Get a food fact by code',
+    description:
+      'Counts as reading the fact: records read progress and credits the attached reward (idempotent).',
+  })
   @ApiParam({
     name: 'code',
     description: 'Food fact code (e.g. FF1.1.1)',
@@ -50,14 +54,19 @@ export class FoodFactsController {
   async getByCode(
     @Param('code') code: string,
     @Query() query: LearningLangQueryDto,
+    @CurrentUser('id') userId: string,
   ): Promise<FoodFactResponseDto> {
-    return this.learningService.getFoodFact(code, query);
+    return this.learningService.getFoodFact(code, query, userId);
   }
 
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get a food fact by UUID or code' })
+  @ApiOperation({
+    summary: 'Get a food fact by UUID or code',
+    description:
+      'Counts as reading the fact: records read progress and credits the attached reward (idempotent).',
+  })
   @ApiParam({
     name: 'codeOrId',
     description: 'Food fact UUID or code (e.g. FF1.1.1)',
@@ -68,8 +77,9 @@ export class FoodFactsController {
   async getOne(
     @Param('codeOrId') codeOrId: string,
     @Query() query: LearningLangQueryDto,
+    @CurrentUser('id') userId: string,
   ): Promise<FoodFactResponseDto> {
-    return this.learningService.getFoodFact(codeOrId, query);
+    return this.learningService.getFoodFact(codeOrId, query, userId);
   }
 
   @Post(':codeOrId/read')
