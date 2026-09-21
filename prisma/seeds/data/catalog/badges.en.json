@@ -1,0 +1,72 @@
+[
+  {
+    "code": "FIRST_STEP",
+    "name": "First Step",
+    "description": "Complete your user registration.",
+    "ruleCode": "FIRST_STEP",
+    "sortOrder": 1
+  },
+  {
+    "code": "STYLISH",
+    "name": "Stylish",
+    "description": "Personalize Foody with an accessory.",
+    "ruleCode": "STYLISH",
+    "sortOrder": 2
+  },
+  {
+    "code": "CURIOUS_FOODIE",
+    "name": "Curious Foodie",
+    "description": "View 5 Foodfacts.",
+    "ruleCode": "CURIOUS_FOODIE",
+    "sortOrder": 3
+  },
+  {
+    "code": "BRAINY",
+    "name": "Brainy",
+    "description": "Answer 10 quizzes correctly.",
+    "ruleCode": "BRAINY",
+    "sortOrder": 4
+  },
+  {
+    "code": "MISSIONARY",
+    "name": "Missionary",
+    "description": "Complete 3 missions.",
+    "ruleCode": "MISSIONARY",
+    "sortOrder": 5
+  },
+  {
+    "code": "ADVENTURER",
+    "name": "Adventurer",
+    "description": "Complete 1 quest.",
+    "ruleCode": "ADVENTURER",
+    "sortOrder": 6
+  },
+  {
+    "code": "LEGENDARY_ADVENTURER",
+    "name": "Legendary Adventurer",
+    "description": "Complete 5 quests.",
+    "ruleCode": "LEGENDARY_ADVENTURER",
+    "sortOrder": 7
+  },
+  {
+    "code": "SURVEY_BEGINNER",
+    "name": "Survey Beginner",
+    "description": "Complete 3 surveys.",
+    "ruleCode": "SURVEY_BEGINNER",
+    "sortOrder": 8
+  },
+  {
+    "code": "SHOPPING_LIST",
+    "name": "Shopping List",
+    "description": "Create 1 shopping list.",
+    "ruleCode": "SHOPPING_LIST",
+    "sortOrder": 9
+  },
+  {
+    "code": "CHEF",
+    "name": "Chef",
+    "description": "View 5 different recipes.",
+    "ruleCode": "CHEF",
+    "sortOrder": 10
+  }
+]
