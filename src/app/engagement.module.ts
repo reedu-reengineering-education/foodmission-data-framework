@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BadgesModule } from '../badges/badges.module';
 import { ChallengesModule } from '../challenges/challenges.module';
 import { EventsApiModule } from '../events/events-api.module';
 import { FoodyModule } from '../foody/foody.module';
@@ -11,6 +12,7 @@ import { QuestsModule } from '../quests/quests.module';
 @Module({
   imports: [
     EventsApiModule,
+    BadgesModule,
     ChallengesModule,
     MissionsModule,
     SurveysModule,
