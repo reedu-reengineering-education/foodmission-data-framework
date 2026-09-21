@@ -21,6 +21,18 @@ import { RulesService } from './rules.service';
  * at boot if one of those lookups is wrong — it fails the first time a real
  * completion happens. Check them here instead.
  */
+
+/**
+ * Reaches past a private method to check the lazy cross-module lookup it
+ * guards. Going through a function boundary (rather than an inline `as`)
+ * keeps eslint's `no-unnecessary-type-assertion` from treating the cast as
+ * redundant — it only sees the assertion's declared type, not tsc's
+ * unrelated privacy check on direct property access.
+ */
+function callPrivateMethod<R>(instance: object, method: string): R {
+  return (instance as unknown as Record<string, () => R>)[method]();
+}
+
 describe('cross-module lazy wiring', () => {
   let moduleRef: TestingModule;
 
@@ -42,29 +54,30 @@ describe('cross-module lazy wiring', () => {
   });
 
   it('RulesService resolves the completion reward awarder', () => {
-    const resolved = (
-      moduleRef.get(RulesService) as unknown as { getAwarder(): unknown }
-    ).getAwarder();
+    const resolved = callPrivateMethod<CompletionRewardService>(
+      moduleRef.get(RulesService),
+      'getAwarder',
+    );
 
     expect(resolved).toBe(moduleRef.get(CompletionRewardService));
     expect(resolved).toBe(moduleRef.get(COMPLETION_REWARD_AWARDER));
   });
 
   it('RulesService resolves the user event recorder', () => {
-    const resolved = (
-      moduleRef.get(RulesService) as unknown as { getRecorder(): unknown }
-    ).getRecorder();
+    const resolved = callPrivateMethod<UserEventService>(
+      moduleRef.get(RulesService),
+      'getRecorder',
+    );
 
     expect(resolved).toBe(moduleRef.get(UserEventService));
     expect(resolved).toBe(moduleRef.get(USER_EVENT_RECORDER));
   });
 
   it('UserEventService resolves the quest progress recomputer', () => {
-    const resolved = (
-      moduleRef.get(UserEventService) as unknown as {
-        getQuestRecomputer(): unknown;
-      }
-    ).getQuestRecomputer();
+    const resolved = callPrivateMethod<QuestProgressService | null>(
+      moduleRef.get(UserEventService),
+      'getQuestRecomputer',
+    );
 
     expect(resolved).toBe(moduleRef.get(QuestProgressService));
     expect(resolved).toBe(moduleRef.get(QUEST_PROGRESS_RECOMPUTER));
@@ -85,11 +98,10 @@ describe('cross-module lazy wiring', () => {
       .useValue({})
       .compile();
 
-    const resolved = (
-      lean.get(UserEventService) as unknown as {
-        getQuestRecomputer(): unknown;
-      }
-    ).getQuestRecomputer();
+    const resolved = callPrivateMethod<QuestProgressService | null>(
+      lean.get(UserEventService),
+      'getQuestRecomputer',
+    );
 
     expect(resolved).toBeNull();
   });

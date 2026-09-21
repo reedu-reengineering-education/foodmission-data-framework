@@ -611,7 +611,7 @@ export class RulesService implements OnModuleInit {
       // Whatever client the evaluation is running on — the caller's transaction
       // when there is one, so the event lands atomically with the progress row
       // it describes.
-      db as Prisma.TransactionClient,
+      db,
     );
   }
 

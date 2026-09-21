@@ -294,9 +294,7 @@ describe('UserGroupsService', () => {
         },
       };
 
-      prismaService.$transaction.mockImplementation(async (callback) =>
-        callback(tx),
-      );
+      prismaService.$transaction.mockImplementation((callback) => callback(tx));
       mockUserGroupsRepository.findById
         .mockResolvedValueOnce(currentGroup)
         .mockResolvedValueOnce(currentGroup)

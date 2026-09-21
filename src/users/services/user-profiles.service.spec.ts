@@ -94,7 +94,7 @@ describe('UserProfilesService updateProfile gamification', () => {
     gamificationOnboarding = module.get(GamificationOnboardingService);
 
     (prisma.$transaction as jest.Mock).mockImplementation(
-      async (callback: (tx: unknown) => unknown) => callback(prisma),
+      (callback: (tx: unknown) => unknown) => callback(prisma),
     );
   });
 

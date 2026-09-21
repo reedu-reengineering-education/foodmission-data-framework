@@ -12,8 +12,14 @@ describe('AfterCommitQueue', () => {
 
     queue.schedule(
       [
-        { label: 'first', run: async () => void order.push('first') },
-        { label: 'second', run: async () => void order.push('second') },
+        {
+          label: 'first',
+          run: () => Promise.resolve(void order.push('first')),
+        },
+        {
+          label: 'second',
+          run: () => Promise.resolve(void order.push('second')),
+        },
       ],
       [],
     );
@@ -48,7 +54,7 @@ describe('AfterCommitQueue', () => {
     const run = jest.fn().mockResolvedValue(undefined);
 
     await queue.run(
-      [{ label: 'task', confirm: async () => false, run }],
+      [{ label: 'task', confirm: () => Promise.resolve(false), run }],
       [1, 1],
     );
 
@@ -61,7 +67,7 @@ describe('AfterCommitQueue', () => {
     await queue.run([
       {
         label: 'boom',
-        run: async () => {
+        run: () => {
           throw new Error('boom');
         },
       },
@@ -76,7 +82,7 @@ describe('AfterCommitQueue', () => {
       [
         {
           label: 'boom',
-          run: async () => {
+          run: () => {
             throw new Error('boom');
           },
         },

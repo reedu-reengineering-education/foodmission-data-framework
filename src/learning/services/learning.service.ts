@@ -5,7 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma, QuestContentType, WalletCurrency, RewardSourceType } from '@prisma/client';
+import {
+  Prisma,
+  QuestContentType,
+  WalletCurrency,
+  RewardSourceType,
+} from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
@@ -45,10 +50,7 @@ import {
   UpdateQuestProgressDto,
 } from '../dto/quest-progress.dto';
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
-import {
-  EventSource,
-  EventType,
-} from '../../events/event-types';
+import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { plainToInstance } from 'class-transformer';
 
@@ -571,7 +573,12 @@ export class LearningService {
       );
     }
 
-    const response = await this.mapQuizProgressResponse(userId, quiz, progress, lang);
+    const response = await this.mapQuizProgressResponse(
+      userId,
+      quiz,
+      progress,
+      lang,
+    );
     return { ...response, reward: earnedReward };
   }
 

@@ -17,7 +17,7 @@ describe('learning translation files', () => {
     expect(file.quizzes?.['Q1.1.1']?.options?.A).toContain('Linsen');
     expect(file.missions?.['M.A1.1']?.title).toContain('grünen Zone');
     expect(file.challenges?.['CH.A1.1']?.title).toContain('Getreide');
-    expect(file.quests?.['QUEST.DIET_CHANGES.BEGINNER']?.title).toContain(
+    expect(file.quests?.['QUEST.DIET_CHANGES.BEGINNER.1']?.title).toContain(
       'Anfänger',
     );
   });
