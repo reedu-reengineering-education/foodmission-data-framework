@@ -1,9 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { runInNewContext } from 'node:vm';
 import yaml from 'js-yaml';
 import { PrismaService } from '../database/prisma.service';
 import {
@@ -23,19 +21,17 @@ import {
 } from '../gamification/completion-reward.types';
 import { Prisma, RewardSourceType } from '@prisma/client';
 import {
-  RuleCounter,
   RuleDefinition,
   RuleEntry,
   RulesCoverageDoc,
-  RuleWindow,
   rulesCoverageSchema,
 } from './rule-schema';
-
-type UserEventRow = {
-  eventType: string;
-  createdAt: Date;
-  metadata: Prisma.JsonValue;
-};
+import {
+  evaluateRule,
+  hashRule,
+  maxWindowDays,
+  UserEventRow,
+} from './rule-evaluator';
 
 type CatalogItem = {
   id: string;
@@ -156,9 +152,9 @@ export class RulesService implements OnModuleInit {
       return;
     }
 
-    const maxWindowDays = this.getMaxWindowDays(rules);
+    const windowDays = this.getMaxWindowDays(rules);
     const since = new Date();
-    since.setDate(since.getDate() - maxWindowDays);
+    since.setDate(since.getDate() - windowDays);
 
     const events = (await db.userEvent.findMany({
       where: {
@@ -394,11 +390,11 @@ export class RulesService implements OnModuleInit {
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
-    const { completed, progress } = this.evaluateRule(
+    const { completed, progress } = evaluateRule(
       entry.rule as RuleDefinition,
       events,
     );
-    const ruleHash = this.hashRule(entry);
+    const ruleHash = hashRule(entry.rule);
     const status = completed
       ? ProgressStatus.COMPLETED
       : progress > 0
@@ -615,29 +611,6 @@ export class RulesService implements OnModuleInit {
     );
   }
 
-  private evaluateRule(
-    rule: RuleDefinition,
-    events: UserEventRow[],
-  ): { progress: number; completed: boolean } {
-    const evaluationAt = new Date();
-    const counters = this.evaluateCounters(
-      rule.counters,
-      events,
-      rule.window,
-      evaluationAt,
-    );
-    const completed = this.asBoolean(
-      this.evaluateExpression(rule.target, counters),
-    );
-    const progressValue = completed
-      ? 100
-      : this.normalizeProgress(
-          this.evaluateExpression(rule.progress, counters),
-        );
-
-    return { progress: progressValue, completed };
-  }
-
   private buildState(
     entry: RuleEntry,
     status: ProgressStatus,
@@ -653,172 +626,6 @@ export class RulesService implements OnModuleInit {
       completed,
       ruleHash,
     };
-  }
-
-  private hashRule(entry: RuleEntry): string {
-    return createHash('sha256')
-      .update(JSON.stringify(entry.rule ?? {}))
-      .digest('hex');
-  }
-
-  private evaluateCounters(
-    counters: Record<string, RuleCounter>,
-    events: UserEventRow[],
-    ruleWindow: RuleWindow,
-    evaluationAt: Date,
-  ): Record<string, number> {
-    const values: Record<string, number> = {};
-    for (const [name, counter] of Object.entries(counters)) {
-      const matchedEvents = this.filterEvents(
-        counter,
-        events,
-        ruleWindow,
-        evaluationAt,
-      );
-      values[name] = matchedEvents.length;
-    }
-    return values;
-  }
-
-  private filterEvents(
-    counter: RuleCounter,
-    events: UserEventRow[],
-    ruleWindow: RuleWindow = { type: 'since_start', days: 7 },
-    evaluationAt: Date = new Date(),
-  ): UserEventRow[] {
-    const matched = events.filter((event) => {
-      if (counter.event) {
-        if (event.eventType !== counter.event) {
-          return false;
-        }
-      } else if (!(counter.anyOf?.includes(event.eventType) ?? false)) {
-        return false;
-      }
-
-      if (!counter.where) {
-        return true;
-      }
-
-      return Object.entries(counter.where).every(([path, expected]) => {
-        const value = this.getPathValue(event.metadata, path);
-        return value === expected;
-      });
-    });
-
-    const window = counter.window ?? ruleWindow;
-    const windowed = matched.filter((event) =>
-      this.isWithinWindow(event.createdAt, evaluationAt, window),
-    );
-
-    if (!counter.distinctBy) {
-      return windowed;
-    }
-
-    const seen = new Set<string>();
-    const deduped: UserEventRow[] = [];
-    for (const event of windowed) {
-      const distinctValue = this.getPathValue(
-        event.metadata,
-        counter.distinctBy,
-      );
-      if (distinctValue == null) {
-        deduped.push(event);
-        continue;
-      }
-      if (
-        typeof distinctValue !== 'string' &&
-        typeof distinctValue !== 'number' &&
-        typeof distinctValue !== 'boolean'
-      ) {
-        deduped.push(event);
-        continue;
-      }
-      const key = String(distinctValue);
-      if (seen.has(key)) {
-        continue;
-      }
-      seen.add(key);
-      deduped.push(event);
-    }
-    return deduped;
-  }
-
-  private isWithinWindow(
-    createdAt: Date,
-    evaluationAt: Date,
-    window?: RuleWindow,
-  ): boolean {
-    if (!window) {
-      return true;
-    }
-    const offsetDays = window.offsetDays ?? 0;
-    const windowEnd = new Date(evaluationAt);
-    windowEnd.setDate(windowEnd.getDate() - offsetDays);
-    const windowStart = new Date(windowEnd);
-    windowStart.setDate(windowStart.getDate() - window.days);
-    return createdAt >= windowStart && createdAt <= windowEnd;
-  }
-
-  private getPathValue(value: Prisma.JsonValue, path: string): unknown {
-    const normalizedPath = path.startsWith('metadata.')
-      ? path.slice('metadata.'.length)
-      : path;
-    const parts = normalizedPath.split('.');
-    let current: unknown = value;
-    for (const part of parts) {
-      if (current == null || typeof current !== 'object') {
-        return undefined;
-      }
-      current = (current as Record<string, unknown>)[part];
-    }
-    return current;
-  }
-
-  private evaluateExpression(
-    expression: string,
-    context: Record<string, number>,
-  ): unknown {
-    this.assertSafeExpression(expression);
-    const scope = {
-      ...context,
-      min: Math.min,
-      max: Math.max,
-      clamp: (value: number, lower: number, upper: number): number =>
-        Math.min(Math.max(value, lower), upper),
-    } as const;
-    return runInNewContext(
-      `'use strict'; (${expression});`,
-      { ...scope },
-      { timeout: 50 },
-    );
-  }
-
-  private assertSafeExpression(expression: string): void {
-    if (!/^[0-9A-Za-z_\s().,+\-*/%<>=!&|?:]+$/.test(expression)) {
-      throw new Error(`Unsafe rule expression rejected: ${expression}`);
-    }
-  }
-
-  private normalizeProgress(value: unknown): number {
-    const numeric = typeof value === 'number' ? value : Number(value);
-    if (!Number.isFinite(numeric)) {
-      return 0;
-    }
-    const scaled = numeric <= 1 ? numeric * 100 : numeric;
-    return Math.max(0, Math.min(100, scaled));
-  }
-
-  private asBoolean(value: unknown): boolean {
-    if (typeof value === 'boolean') {
-      return value;
-    }
-    if (typeof value === 'number') {
-      return value > 0;
-    }
-    if (typeof value === 'string') {
-      return value.toLowerCase() === 'true';
-    }
-    return Boolean(value);
   }
 
   private shouldIgnoreEventType(eventType: string): boolean {
@@ -930,20 +737,17 @@ export class RulesService implements OnModuleInit {
     return new Set(rows.map((row) => row.challengeId));
   }
 
+  /**
+   * The widest lookback any active rule needs. Bounds the single event query
+   * that feeds every rule in one evaluation, so one long window does not turn
+   * into a full-ledger scan for the short ones.
+   */
   private getMaxWindowDays(rules: RulesCoverageDoc): number {
-    const allRules = [...rules.missions, ...rules.challenges].filter(
-      (entry) => entry.shape !== 'undecided' && entry.rule,
-    );
-    const counterWindows = allRules.flatMap((entry) =>
-      Object.values(entry.rule?.counters ?? {}).map((counter) => {
-        const window = counter.window ?? entry.rule?.window;
-        return (window?.days ?? 7) + (window?.offsetDays ?? 0);
-      }),
-    );
-    return Math.max(
-      ...allRules.map((entry) => entry.rule?.window.days ?? 7),
-      ...counterWindows,
-      7,
-    );
+    const definitions = [...rules.missions, ...rules.challenges]
+      .filter((entry) => entry.shape !== 'undecided' && entry.rule)
+      .map((entry) => entry.rule as RuleDefinition);
+    // `lifetime` is rejected by the mission/challenge schema, so this is never
+    // null here; the fallback keeps the type honest.
+    return maxWindowDays(definitions) ?? 7;
   }
 }
