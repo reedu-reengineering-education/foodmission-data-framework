@@ -2,14 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MealLogsService } from './meal-logs.service';
 import { MealLogsRepository } from '../repositories/meal-logs.repository';
 import { MealsRepository } from '../../meals/repositories/meals.repository';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { TypeOfMeal } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   ResourceAlreadyExistsException,
   ResourceNotFoundException,
 } from '../../common/exceptions/business.exception';
-import { EventSource, EventType } from '../../events/event-types';
+import {
+  EventSource,
+  EventType,
+  MealFlagEventType,
+  MealSwapEventType,
+} from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 
 describe('MealLogsService', () => {
@@ -221,6 +230,108 @@ describe('MealLogsService', () => {
       },
       orderBy: { timestamp: 'desc' },
       include: { meal: true },
+    });
+  });
+
+  describe('quick logs (flags instead of a meal)', () => {
+    const quickLog = (
+      flags: MealFlagEventType[],
+      swaps: MealSwapEventType[] = [],
+    ) => ({
+      id: 'log-1',
+      mealId: null,
+      userId,
+      typeOfMeal: TypeOfMeal.LUNCH,
+      timestamp: new Date('2026-09-17T12:00:00.000Z'),
+      mealFromPantry: false,
+      eatenOut: false,
+      flags,
+      swaps,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const recordedTypes = () =>
+      userEventService.record.mock.calls.map((call) => call[0].eventType);
+
+    it('rejects a log with neither mealId nor flags', async () => {
+      await expect(
+        service.create({ typeOfMeal: TypeOfMeal.LUNCH }, userId),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockMealLogRepository.create).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('rejects MEAT combined with a meat-free flag', async () => {
+      await expect(
+        service.create(
+          {
+            typeOfMeal: TypeOfMeal.LUNCH,
+            flags: [EventType.MEAL_MEAT_CONSUMED, EventType.MEAL_VEGAN],
+          },
+          userId,
+        ),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockMealLogRepository.create).not.toHaveBeenCalled();
+    });
+
+    it('records one event per flag and swap, deduped', async () => {
+      const log = quickLog(
+        [
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_MEAT_FREE,
+          EventType.MEAL_LEGUME_CONSUMED,
+        ],
+        [EventType.SWAP_BEEF_TO_LEGUMES],
+      );
+      mockMealLogRepository.create.mockResolvedValue(log);
+
+      await service.create(
+        {
+          typeOfMeal: TypeOfMeal.LUNCH,
+          flags: [
+            EventType.MEAL_VEGAN,
+            EventType.MEAL_MEAT_FREE,
+            EventType.MEAL_LEGUME_CONSUMED,
+          ],
+          swaps: [EventType.SWAP_BEEF_TO_LEGUMES],
+        },
+        userId,
+      );
+
+      expect(mockMealRepository.findById).not.toHaveBeenCalled();
+      // MEAL_MEAT_FREE is implied by both VEGAN and VEGETARIAN — recorded once.
+      expect(recordedTypes()).toEqual([
+        EventType.MEAL_LOGGED,
+        EventType.MEAL_VEGAN,
+        EventType.MEAL_MEAT_FREE,
+        EventType.MEAL_LEGUME_CONSUMED,
+        EventType.SWAP_BEEF_TO_LEGUMES,
+      ]);
+
+      const swapCall = userEventService.record.mock.calls.find(
+        (call) => call[0].eventType === EventType.SWAP_BEEF_TO_LEGUMES,
+      );
+      expect(swapCall?.[0]).toEqual(
+        expect.objectContaining({
+          source: EventSource.MEAL_LOG,
+          idempotencyKey: 'SWAP_BEEF_TO_LEGUMES:log-1',
+          metadata: expect.objectContaining({ from: 'BEEF', to: 'LEGUMES' }),
+        }),
+      );
+    });
+
+    it('still returns the log when recording an event fails', async () => {
+      const log = quickLog([EventType.MEAL_MEAT_CONSUMED]);
+      mockMealLogRepository.create.mockResolvedValue(log);
+      userEventService.record.mockRejectedValue(new Error('ledger down'));
+
+      const result = await service.create(
+        { typeOfMeal: TypeOfMeal.LUNCH, flags: [EventType.MEAL_MEAT_CONSUMED] },
+        userId,
+      );
+
+      expect(result.id).toBe('log-1');
     });
   });
 });

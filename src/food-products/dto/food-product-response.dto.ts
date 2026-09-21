@@ -46,6 +46,18 @@ export class OpenFoodFactsInfoDto {
   @ApiProperty({ required: false })
   @Expose()
   completeness?: number;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  isVegan?: boolean | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  isVegetarian?: boolean | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  isPalmOilFree?: boolean | null;
 }
 
 export class FoodProductResponseDto {

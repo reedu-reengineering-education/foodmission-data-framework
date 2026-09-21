@@ -14,6 +14,7 @@ import {
 } from '../interfaces/openfoodfacts.interface';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { pickLocalizedString } from '../utils/off-locale';
+import { parseOffDietFlags } from '../utils/off-diet-flags';
 
 @Injectable()
 export class OpenFoodFactsService {
@@ -248,6 +249,8 @@ export class OpenFoodFactsService {
     const nutriments = product.nutriments as
       OpenFoodFactsNutriments | undefined;
     const id = this.toOptionalString(product._id) ?? '';
+    const ingredientsAnalysisTags =
+      (product.ingredients_analysis_tags as string[]) || [];
 
     return {
       id,
@@ -266,6 +269,8 @@ export class OpenFoodFactsService {
       origins: this.toOptionalString(product.origins),
       manufacturingPlaces: this.toOptionalString(product.manufacturing_places),
       ingredients: pickLocalizedString(product, 'ingredients_text', lang),
+      ingredientsAnalysisTags,
+      ...parseOffDietFlags(ingredientsAnalysisTags, product.labels_tags),
       allergens: (product.allergens_tags as string[]) || [],
       traces: (product.traces_tags as string[]) || [],
       nutritionGrade: this.toOptionalString(product.nutrition_grades),

@@ -148,6 +148,7 @@ model User {
   progressIndicators ProgressIndicator[]     @relation("UserProgressIndicators")
   userEvents         UserEvent[]             @relation("UserEvents")
   walletEntries      WalletEntry[]
+  foodyItems         UserFoodyItem[]
   legalConsents       UserConsent[]
 
   @@index([email])

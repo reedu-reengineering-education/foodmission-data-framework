@@ -17,13 +17,13 @@
     "VERY_ACTIVE": "Very active"
   },
   "annualIncomeLevels": {
-    "BELOW_10000": "Below 10000",
-    "FROM_10000_TO_19999": "From 10000 to 19999",
-    "FROM_20000_TO_34999": "From 20000 to 34999",
-    "FROM_35000_TO_49999": "From 35000 to 49999",
-    "FROM_50000_TO_74999": "From 50000 to 74999",
-    "FROM_75000_TO_99999": "From 75000 to 99999",
-    "ABOVE_100000": "Above 100000"
+    "BELOW_10000": "Under {max} per year",
+    "FROM_10000_TO_19999": "{min} – {max} per year",
+    "FROM_20000_TO_34999": "{min} – {max} per year",
+    "FROM_35000_TO_49999": "{min} – {max} per year",
+    "FROM_50000_TO_74999": "{min} – {max} per year",
+    "FROM_75000_TO_99999": "{min} – {max} per year",
+    "ABOVE_100000": "{min} or more per year"
   },
   "educationLevels": {
     "NO_FORMAL_EDUCATION": "No formal education",

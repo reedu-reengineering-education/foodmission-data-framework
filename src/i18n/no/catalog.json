@@ -18,13 +18,13 @@
     "VERY_ACTIVE": "Svært aktiv"
   },
   "annualIncomeLevels": {
-    "BELOW_10000": "Under 10 000",
-    "FROM_10000_TO_19999": "Fra 10 000 til 19 999",
-    "FROM_20000_TO_34999": "Fra 20 000 til 34 999",
-    "FROM_35000_TO_49999": "Fra 35 000 til 49 999",
-    "FROM_50000_TO_74999": "Fra 50 000 til 74 999",
-    "FROM_75000_TO_99999": "Fra 75 000 til 99 999",
-    "ABOVE_100000": "Over 100 000"
+    "BELOW_10000": "Under {max} per år",
+    "FROM_10000_TO_19999": "Fra {min} til {max} per år",
+    "FROM_20000_TO_34999": "Fra {min} til {max} per år",
+    "FROM_35000_TO_49999": "Fra {min} til {max} per år",
+    "FROM_50000_TO_74999": "Fra {min} til {max} per år",
+    "FROM_75000_TO_99999": "Fra {min} til {max} per år",
+    "ABOVE_100000": "{min} eller mer per år"
   },
   "educationLevels": {
     "NO_FORMAL_EDUCATION": "Ingen formell utdanning",

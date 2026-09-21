@@ -18,13 +18,13 @@
     "VERY_ACTIVE": "Zeer actief"
   },
   "annualIncomeLevels": {
-    "BELOW_10000": "Minder dan 10.000",
-    "FROM_10000_TO_19999": "Van 10.000 tot 19.999",
-    "FROM_20000_TO_34999": "Van 20.000 tot 34.999",
-    "FROM_35000_TO_49999": "Van 35.000 tot 49.999",
-    "FROM_50000_TO_74999": "Van 50.000 tot 74.999",
-    "FROM_75000_TO_99999": "Van 75.000 tot 99.999",
-    "ABOVE_100000": "Meer dan 100.000"
+    "BELOW_10000": "Minder dan {max} per jaar",
+    "FROM_10000_TO_19999": "Van {min} tot {max} per jaar",
+    "FROM_20000_TO_34999": "Van {min} tot {max} per jaar",
+    "FROM_35000_TO_49999": "Van {min} tot {max} per jaar",
+    "FROM_50000_TO_74999": "Van {min} tot {max} per jaar",
+    "FROM_75000_TO_99999": "Van {min} tot {max} per jaar",
+    "ABOVE_100000": "{min} of meer per jaar"
   },
   "educationLevels": {
     "NO_FORMAL_EDUCATION": "Geen formele opleiding",

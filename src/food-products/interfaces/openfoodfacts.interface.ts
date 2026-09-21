@@ -19,6 +19,7 @@ export interface OpenFoodFactsProduct {
     manufacturing_places?: string;
     ingredients_text?: string;
     ingredients_text_en?: string;
+    ingredients_analysis_tags?: string[];
     allergens?: string;
     allergens_tags?: string[];
     traces?: string;
@@ -157,6 +158,10 @@ export interface ProductInfo {
   origins?: string;
   manufacturingPlaces?: string;
   ingredients?: string;
+  ingredientsAnalysisTags?: string[];
+  isVegan?: boolean | null;
+  isVegetarian?: boolean | null;
+  isPalmOilFree?: boolean | null;
   allergens?: string[];
   traces?: string[];
   nutritionGrade?: string;

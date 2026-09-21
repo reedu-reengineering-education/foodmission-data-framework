@@ -531,3 +531,60 @@ model ProgressIndicator {
   @@index([groupId])
   @@map("progress_indicators")
 }
+
+// ============================================================
+// Foody personalization — cosmetic items for the Foody avatar
+// ============================================================
+
+enum FoodyItemType {
+  ANTENNAS
+  EARS
+  GLASSES
+}
+
+/// Global catalog of Foody cosmetics. Six items per type.
+/// `cost` describes the catalog entry; per-user ownership lives in
+/// UserFoodyItem, so "owned" is never stored on the catalog row. An item is
+/// locked for a user exactly while they do not own it.
+model FoodyItem {
+  id        String        @id @default(uuid())
+  code      String        @unique // e.g. ANTENNAS_1
+  type      FoodyItemType
+  /// Position within a type, unique per type; drives display order and the item code.
+  slot      Int
+  /// Points charged on purchase. 0 makes the item free to claim.
+  cost      Int           @default(0)
+  available Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Relations
+  ownedBy UserFoodyItem[]
+
+  @@unique([type, slot])
+  @@index([type])
+  @@map("foody_items")
+}
+
+/// A user owning a Foody item, and whether it is currently worn.
+/// At most one equipped item per type — enforced in FoodyService.equip(),
+/// which unequips the siblings of that type inside the same transaction
+/// (the type lives on FoodyItem, so a partial unique index here would need
+/// the column duplicated onto this table).
+model UserFoodyItem {
+  userId      String
+  foodyItemId String
+  equipped    Boolean  @default(false)
+  /// Points actually charged, kept for history: the catalog cost may change later.
+  pricePaid   Int      @default(0)
+  acquiredAt  DateTime @default(now())
+
+  // Relations
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item FoodyItem @relation(fields: [foodyItemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, foodyItemId])
+  @@index([userId])
+  @@index([foodyItemId])
+  @@map("user_foody_items")
+}

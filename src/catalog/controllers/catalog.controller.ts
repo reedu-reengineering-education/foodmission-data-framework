@@ -27,6 +27,7 @@ import {
 import { CatalogService } from '../services/catalog.service';
 import {
   RegionsQueryDto,
+  CatalogCountryQueryDto,
   CatalogPaginatedQueryDto,
 } from '../dto/catalog-query.dto';
 import { ConsentFormResponseDto } from '../dto/consent-form-response.dto';
@@ -90,8 +91,8 @@ export class CatalogController {
     type: CatalogStartupResponseDto,
   })
   @ApiCrudErrorResponses()
-  startup(): CatalogStartupResponseDto {
-    return this.catalogService.startup();
+  startup(@Query() query: CatalogCountryQueryDto): CatalogStartupResponseDto {
+    return this.catalogService.startup(query.country);
   }
 
   @Get('genders')
@@ -114,8 +115,10 @@ export class CatalogController {
 
   @Get('annual-income-levels')
   @PublicCatalogList('List annual income levels')
-  annualIncomeLevels(): CatalogListResponseDto {
-    return this.catalogService.listAnnualIncomeLevels();
+  annualIncomeLevels(
+    @Query() query: CatalogCountryQueryDto,
+  ): CatalogListResponseDto {
+    return this.catalogService.listAnnualIncomeLevels(query.country);
   }
 
   @Get('dietary-preferences')
