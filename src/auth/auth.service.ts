@@ -21,6 +21,7 @@ import {
 } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
 import { PrismaService } from '../database/prisma.service';
+import { userRegisteredIdempotencyKey } from './auth.constants';
 
 /** One USER_LOGGED_IN fact per user per UTC calendar day. */
 export function userLoggedInIdempotencyKey(
@@ -145,7 +146,37 @@ export class AuthService {
         details,
       });
     }
+
+    await this.recordRegistration(localUser.id);
+
     return { createdUser, localUser };
+  }
+
+  /**
+   * Records the one-per-user USER_REGISTERED fact the "First Step" badge rule
+   * counts. `getOrCreateProfile` records the same key for users who arrive via
+   * Keycloak without ever hitting this route, so whichever path creates the
+   * local row first wins and the other replays.
+   *
+   * Best-effort: the account exists either way, so a ledger failure must not
+   * fail registration.
+   */
+  private async recordRegistration(userId: string): Promise<void> {
+    try {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.USER_REGISTERED,
+        source: EventSource.API,
+        metadata: {},
+        subject: { type: EventSubjectType.USER, id: userId },
+        idempotencyKey: userRegisteredIdempotencyKey(userId),
+      });
+    } catch (error) {
+      this.logger.warn(
+        `Failed to record USER_REGISTERED for user ${userId}`,
+        error instanceof Error ? error.message : error,
+      );
+    }
   }
 
   /**

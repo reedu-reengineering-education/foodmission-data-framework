@@ -9,9 +9,10 @@ import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
 import { PantryModule } from '../pantry/pantry.module';
 import { UsersRepository } from '../users/repositories/users.repository';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, PantryModule],
+  imports: [DatabaseModule, CommonModule, PantryModule, EventsModule],
   controllers: [RecipeController, RecommendationsController],
   providers: [
     RecipesService,

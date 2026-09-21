@@ -12,6 +12,7 @@ import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
 import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ERROR_CODES } from '../../common/utils/error.utils';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('ShoppingListService', () => {
   let service: ShoppingListService;
@@ -52,6 +53,18 @@ describe('ShoppingListService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ShoppingListService,
+        {
+          // The badge rules count SURVEY_COMPLETED / SHOPPING_LIST_CREATED /
+          // LEARNING_RECIPE_EXPLORED / USER_REGISTERED; recording is
+          // best-effort in the service, so the stub only has to exist.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
         {
           provide: ShoppingListRepository,
           useValue: mockRepository,

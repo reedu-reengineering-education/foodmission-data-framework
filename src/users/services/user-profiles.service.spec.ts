@@ -12,6 +12,7 @@ import {
   WeeklyReusableRange,
   WeeklyUpfRange,
 } from '@prisma/client';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('UserProfilesService updateProfile gamification', () => {
   let service: UserProfilesService;
@@ -42,6 +43,18 @@ describe('UserProfilesService updateProfile gamification', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserProfilesService,
+        {
+          // The badge rules count SURVEY_COMPLETED / SHOPPING_LIST_CREATED /
+          // LEARNING_RECIPE_EXPLORED / USER_REGISTERED; recording is
+          // best-effort in the service, so the stub only has to exist.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
         {
           provide: UsersRepository,
           useValue: {
