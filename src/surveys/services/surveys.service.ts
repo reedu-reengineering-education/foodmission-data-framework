@@ -19,6 +19,12 @@ import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { toSurveySlug } from '../utils/survey-slug.util';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 type LocalizableQuestion = { id: string; text: string };
 
@@ -50,6 +56,7 @@ export class SurveysService {
     private readonly translationService: TranslationService,
     private readonly i18n: I18nService,
     private readonly walletService: GamificationWalletService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   /** Localized answer options, shared by all questions of all surveys. */
@@ -382,9 +389,40 @@ export class SurveysService {
     );
     if (isComplete) {
       await this.awardSurveyReward(userId, survey);
+      await this.recordSurveyCompleted(userId, surveyId, result.id);
     }
 
     return this.mapSurveyResponseToDto(result);
+  }
+
+  /**
+   * Records a SURVEY_COMPLETED event for a fully answered submission.
+   *
+   * Keyed on the response, not on (user, survey): a survey may be answered
+   * again on a later app use, and each attempt is its own completion. The
+   * "Survey Beginner" badge counts distinct surveys, so repeats do not
+   * shortcut it — see badges.rules.yml.
+   *
+   * Best-effort: the answers are already stored, so a ledger failure must
+   * not turn a successful submission into an error.
+   */
+  private async recordSurveyCompleted(
+    userId: string,
+    surveyId: string,
+    responseId: string,
+  ): Promise<void> {
+    try {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.SURVEY_COMPLETED,
+        source: EventSource.SURVEY,
+        metadata: { surveyId, responseId, source: EventSource.API },
+        subject: { type: EventSubjectType.SURVEY, id: surveyId },
+        idempotencyKey: `survey-completed:${userId}:${responseId}`,
+      });
+    } catch {
+      // Swallowed on purpose — see above.
+    }
   }
 
   /**

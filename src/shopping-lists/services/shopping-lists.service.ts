@@ -18,6 +18,12 @@ import {
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 @Injectable()
 export class ShoppingListService {
@@ -26,6 +32,7 @@ export class ShoppingListService {
   constructor(
     private readonly shoppingListRepository: ShoppingListRepository,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async create(
@@ -39,6 +46,31 @@ export class ShoppingListService {
         ...createShoppingListDto,
         userId,
       });
+
+      // Keyed on the list, so a retried request records one creation.
+      // Best-effort: the list exists either way.
+      try {
+        await this.userEventService.record({
+          userId,
+          eventType: EventType.SHOPPING_LIST_CREATED,
+          source: EventSource.SHOPPING_LIST,
+          metadata: {
+            shoppingListId: shoppingList.id,
+            source: EventSource.API,
+          },
+          subject: {
+            type: EventSubjectType.SHOPPING_LIST,
+            id: shoppingList.id,
+          },
+          idempotencyKey: `shopping-list-created:${userId}:${shoppingList.id}`,
+        });
+      } catch (eventError) {
+        this.logger.warn(
+          `Failed to record SHOPPING_LIST_CREATED for list ${shoppingList.id}`,
+          eventError instanceof Error ? eventError.message : eventError,
+        );
+      }
+
       return this.transformToResponseDto(shoppingList);
     } catch (error: any) {
       if (error instanceof PrismaClientKnownRequestError) {

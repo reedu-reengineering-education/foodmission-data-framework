@@ -11,6 +11,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { UserEventService } from '../../events/services/user-event.service';
 
 /** What the i18n mock resolves to for the default locale. */
 const ENGLISH_SCALE = [
@@ -74,6 +75,18 @@ describe('SurveysService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SurveysService,
+        {
+          // The badge rules count SURVEY_COMPLETED / SHOPPING_LIST_CREATED /
+          // LEARNING_RECIPE_EXPLORED / USER_REGISTERED; recording is
+          // best-effort in the service, so the stub only has to exist.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
         {
           provide: SurveysRepository,
           useValue: {

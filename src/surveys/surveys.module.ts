@@ -6,6 +6,7 @@ import { DatabaseModule } from '../database/database.module';
 import { UsersModule } from '../users/users.module';
 import { TranslationsModule } from '../translations/translations.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { GamificationModule } from '../gamification/gamification.module';
     UsersModule,
     TranslationsModule,
     GamificationModule,
+    EventsModule,
   ],
   controllers: [SurveysController],
   providers: [SurveysService, SurveysRepository],
