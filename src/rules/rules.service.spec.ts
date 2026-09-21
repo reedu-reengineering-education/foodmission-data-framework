@@ -1,11 +1,9 @@
-import { RulesService } from './rules.service';
+import { evaluateRule, filterEvents } from './rule-evaluator';
 
-describe('RulesService filterEvents', () => {
-  const service = new RulesService({} as never, {} as never, {} as never);
-
+describe('rule-evaluator filterEvents', () => {
   it('filters LEARNING_FACT_READ by metadata.foodFactId', () => {
     const evaluationAt = new Date('2026-01-04T00:00:00.000Z');
-    const filtered = (service as any).filterEvents(
+    const filtered = filterEvents(
       {
         event: 'LEARNING_FACT_READ',
         where: {
@@ -39,7 +37,7 @@ describe('RulesService filterEvents', () => {
 
   it('applies where filtering before distinctBy dedupe', () => {
     const evaluationAt = new Date('2026-01-04T00:00:00.000Z');
-    const filtered = (service as any).filterEvents(
+    const filtered = filterEvents(
       {
         event: 'LEARNING_FACT_READ',
         where: {
@@ -74,56 +72,54 @@ describe('RulesService filterEvents', () => {
 
   it('evaluates current and previous rolling windows independently', () => {
     const now = new Date('2026-09-17T12:00:00.000Z');
-    // evaluateRule reads the wall clock; pin it so the fixtures stay in-window.
-    jest.useFakeTimers({ now });
-    let evaluated: unknown;
-    try {
-      evaluated = (service as any).evaluateRule(
-        {
-          window: { type: 'rolling_lookback', days: 7 },
-          counters: {
-            currentMeatMeals: {
-              event: 'MEAL_MEAT_CONSUMED',
-              distinctBy: 'metadata.mealId',
-            },
-            previousMeatMeals: {
-              event: 'MEAL_MEAT_CONSUMED',
-              distinctBy: 'metadata.mealId',
-              window: {
-                type: 'rolling_lookback',
-                days: 7,
-                offsetDays: 7,
-              },
+    const evaluated = evaluateRule(
+      {
+        window: { type: 'rolling_lookback', days: 7 },
+        counters: {
+          currentMeatMeals: {
+            event: 'MEAL_MEAT_CONSUMED',
+            distinctBy: 'metadata.mealId',
+          },
+          previousMeatMeals: {
+            event: 'MEAL_MEAT_CONSUMED',
+            distinctBy: 'metadata.mealId',
+            window: {
+              type: 'rolling_lookback',
+              days: 7,
+              offsetDays: 7,
             },
           },
-          target:
-            'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1',
-          progress:
-            'previousMeatMeals > 0 ? clamp((previousMeatMeals - currentMeatMeals) / previousMeatMeals, 0, 1) : 0',
-          notes: ['test'],
         },
-        [
-          {
-            eventType: 'MEAL_MEAT_CONSUMED',
-            createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
-            metadata: { mealId: 'meal-current-1' },
-          },
-          {
-            eventType: 'MEAL_MEAT_CONSUMED',
-            createdAt: new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
-            metadata: { mealId: 'meal-previous-1' },
-          },
-          {
-            eventType: 'MEAL_MEAT_CONSUMED',
-            createdAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
-            metadata: { mealId: 'meal-previous-2' },
-          },
-        ],
-      );
-    } finally {
-      jest.useRealTimers();
-    }
+        target:
+          'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1',
+        progress:
+          'previousMeatMeals > 0 ? clamp((previousMeatMeals - currentMeatMeals) / previousMeatMeals, 0, 1) : 0',
+        notes: ['test'],
+      },
+      [
+        {
+          eventType: 'MEAL_MEAT_CONSUMED',
+          createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+          metadata: { mealId: 'meal-current-1' },
+        },
+        {
+          eventType: 'MEAL_MEAT_CONSUMED',
+          createdAt: new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
+          metadata: { mealId: 'meal-previous-1' },
+        },
+        {
+          eventType: 'MEAL_MEAT_CONSUMED',
+          createdAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+          metadata: { mealId: 'meal-previous-2' },
+        },
+      ],
+      now,
+    );
 
-    expect(evaluated).toEqual({ progress: 100, completed: true });
+    expect(evaluated).toEqual({
+      progress: 100,
+      completed: true,
+      counters: { currentMeatMeals: 1, previousMeatMeals: 2 },
+    });
   });
 });
