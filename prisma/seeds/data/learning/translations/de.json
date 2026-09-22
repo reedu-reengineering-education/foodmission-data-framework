@@ -2450,7 +2450,7 @@
     },
     "M.I5.3": {
       "title": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
-      "goal": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Nachverfolgungskomponente: Protokollieren Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“.",
+      "goal": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Protokollieren Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“.",
       "whyItMatters": "Verbraucher kaufen oft Produkte, die sie bereits besitzen."
     },
     "M.I5.4": {

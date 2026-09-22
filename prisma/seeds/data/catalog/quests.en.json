@@ -736,13 +736,8 @@
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q2.3.1",
-        "sortOrder": 14
-      },
-      {
-        "contentType": "QUIZ",
         "contentCode": "Q2.3.2",
-        "sortOrder": 15
+        "sortOrder": 14
       }
     ],
     "description": "Food systems generate about one-third of global greenhouse gas emissions. Then test what you have learned."
@@ -1228,7 +1223,7 @@
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.6",
-        "sortOrder": 2
+        "sortOrder": 12
       },
       {
         "contentType": "FOOD_FACT",
@@ -3383,7 +3378,7 @@
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q5.4.3",
+        "contentCode": "Q5.4.5",
         "sortOrder": 6
       }
     ],
@@ -3854,7 +3849,7 @@
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q5.7.1",
+        "contentCode": "Q6.7.1",
         "sortOrder": 3
       },
       {

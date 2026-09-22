@@ -2450,7 +2450,7 @@
     },
     "M.I5.3": {
       "title": "Missione 3: Controllo periodico del frigorifero",
-      "goal": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni \"Consumo di prodotti scaduti\" o 3 azioni \"Risparmio di un piatto pieno\".",
+      "goal": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Registra almeno 3 azioni \"Consumo di prodotti scaduti\" o 3 azioni \"Risparmio di un piatto pieno\".",
       "whyItMatters": "Spesso i consumatori acquistano prodotti che possiedono già."
     },
     "M.I5.4": {
