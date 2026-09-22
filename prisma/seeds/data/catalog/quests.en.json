@@ -69,7 +69,7 @@
         "sortOrder": 7
       }
     ],
-    "description": "Eat one fewer meat meal than during your previous week, while keeping in mind that eating less red meat is one of the most effective ways to reduce the."
+    "description": "Eat one fewer meat meal than during your previous week, while keeping in mind that eating less red meat is one of the most effective ways to reduce the environmental impact of your diet."
   },
   {
     "id": "1.3",
@@ -120,7 +120,7 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log 2 protein swap actions, while keeping in mind that replacing part of your meat intake with legumes can reduce the climate impact of."
+    "description": "Log 2 protein swap actions, while keeping in mind that replacing part of your meat intake with legumes can reduce the climate impact of your diet."
   },
   {
     "id": "1.4",
@@ -207,7 +207,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Complete two meat-free days, while keeping in mind that producing beef requires much more land than producing plant proteins such as peas or."
+    "description": "Complete two meat-free days, while keeping in mind that producing beef requires much more land than producing plant proteins such as peas or tofu."
   },
   {
     "id": "1.6",
@@ -324,7 +324,7 @@
         "sortOrder": 9
       }
     ],
-    "description": "Include legumes in four meals, while keeping in mind that millets are highly resilient crops that can grow in hot, dry conditions with little."
+    "description": "Include legumes in four meals, while keeping in mind that millets are highly resilient crops that can grow in hot, dry conditions with little water."
   },
   {
     "id": "1.8",
@@ -370,7 +370,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Remain below four meat meals per week, while keeping in mind that livestock production uses most agricultural land globally while supplying a much smaller share of."
+    "description": "Remain below four meat meals per week, while keeping in mind that livestock production uses most agricultural land globally while supplying a much smaller share of calories and protein."
   },
   {
     "id": "1.9",
@@ -416,7 +416,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Obtain most protein-containing meals from non-meat protein sources, while keeping in mind that pulses naturally improve soil fertility by fixing nitrogen from the air, reducing the need."
+    "description": "Obtain most protein-containing meals from non-meat protein sources, while keeping in mind that pulses naturally improve soil fertility by fixing nitrogen from the air, reducing the need for fertilizer."
   },
   {
     "id": "1.10",
@@ -572,7 +572,7 @@
   },
   {
     "id": "2.2",
-    "name": "Quiz: Two people eat the same number",
+    "name": "Water Behind Your Food",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -654,11 +654,11 @@
         "sortOrder": 14
       }
     ],
-    "description": "Around 70% of global freshwater withdrawals are used for agriculture, and reflect on two people eat the same number of calories each day."
+    "description": "Around 70% of global freshwater withdrawals are used for agriculture. Then test what you have learned."
   },
   {
     "id": "2.3",
-    "name": "Quiz: You are comparing four diets with",
+    "name": "Climate Cost of Meals",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -745,11 +745,11 @@
         "sortOrder": 15
       }
     ],
-    "description": "Food systems generate about one-third of global greenhouse gas emissions, and reflect on you are comparing four diets with the same calorie intake."
+    "description": "Food systems generate about one-third of global greenhouse gas emissions. Then test what you have learned."
   },
   {
     "id": "2.4",
-    "name": "Quiz: You want to lower your climate",
+    "name": "Food Miles Explained",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -831,7 +831,7 @@
         "sortOrder": 14
       }
     ],
-    "description": "Global food transport generates about 3 billion tonnes of CO\u2082-equivalent emissions each year, and reflect on you want to lower your climate impact but do not want to."
+    "description": "Global food transport generates about 3 billion tonnes of CO₂-equivalent emissions each year. Then test what you have learned."
   },
   {
     "id": "2.5",
@@ -987,7 +987,7 @@
   },
   {
     "id": "2.7",
-    "name": "Quiz: Which statement best reflects the evidence",
+    "name": "Wasted Food, Wasted Water",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -1069,11 +1069,11 @@
         "sortOrder": 14
       }
     ],
-    "description": "Food waste also wastes enormous amounts of water used to grow food, and reflect on statement best reflects the evidence on water use and sustainable diets."
+    "description": "Food waste also wastes enormous amounts of water used to grow food. Then test what you have learned."
   },
   {
     "id": "2.8",
-    "name": "Quiz: A consumer wants to reduce the",
+    "name": "Carbon Footprint of Meat",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -1155,11 +1155,11 @@
         "sortOrder": 14
       }
     ],
-    "description": "Meat, especially beef and lamb, has a much higher carbon footprint than most plant, and reflect on a consumer wants to reduce the energy footprint of their food purchases."
+    "description": "Meat, especially beef and lamb, has a much higher carbon footprint than most plant foods. Then test what you have learned."
   },
   {
     "id": "2.9",
-    "name": "Quiz: Which action reduces emissions without changing",
+    "name": "Transport Emissions Explorer",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -1246,7 +1246,7 @@
         "sortOrder": 15
       }
     ],
-    "description": "Nearly one-fifth of the greenhouse gas emissions from the global food system come from, and reflect on action reduces emissions without changing the foods you buy."
+    "description": "Nearly one-fifth of the greenhouse gas emissions from the global food system come from transporting food. Then test what you have learned."
   },
   {
     "id": "2.10",
@@ -1402,7 +1402,7 @@
   },
   {
     "id": "2.12",
-    "name": "Quiz: You want to reduce the water use",
+    "name": "Water Footprint Deep Dive",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1484,11 +1484,11 @@
         "sortOrder": 14
       }
     ],
-    "description": "The water footprint of your diet depends heavily on what you eat, and reflect on you want to reduce the water footprint of your meals."
+    "description": "The water footprint of your diet depends heavily on what you eat. Then test what you have learned."
   },
   {
     "id": "2.13",
-    "name": "Quiz: A development agency is deciding where to invest",
+    "name": "Emissions Beyond the Plate",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1570,11 +1570,11 @@
         "sortOrder": 14
       }
     ],
-    "description": "Food waste generates billions of tonnes of CO2-equivalent emissions annually, and reflect on a development agency is deciding where to invest to reduce food losses."
+    "description": "Food waste generates billions of tonnes of CO2-equivalent emissions annually. Then test what you have learned."
   },
   {
     "id": "2.14",
-    "name": "Quiz: A person focuses only on buying",
+    "name": "Cold Chain and Freight",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1651,7 +1651,7 @@
         "sortOrder": 13
       }
     ],
-    "description": "Although food accounts for only about 18% of global freight transport distances, it produces, and reflect on a person focuses only on buying local food but continues eating large."
+    "description": "Although food accounts for only about 18% of global freight transport distances, it produces around 27% of freight-related emissions. Then test what you have learned."
   },
   {
     "id": "2.15",
@@ -1797,7 +1797,7 @@
   },
   {
     "id": "3.2",
-    "name": "Quiz: You are comparing two local products.",
+    "name": "Local Food, Closer Look",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1829,7 +1829,7 @@
         "sortOrder": 4
       }
     ],
-    "description": "Short supply chains can support local economies and resilience, and reflect on you are comparing two local products."
+    "description": "Short supply chains can support local economies and resilience. Then test what you have learned."
   },
   {
     "id": "3.3",
@@ -1915,7 +1915,7 @@
   },
   {
     "id": "3.5",
-    "name": "Quiz: You are choosing between two chocolate",
+    "name": "Fair Trade Basics",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1952,7 +1952,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Agriculture accounts for most child labour cases worldwide, and reflect on you are choosing between two chocolate bars with similar nutritional value and."
+    "description": "Agriculture accounts for most child labour cases worldwide. Then test what you have learned."
   },
   {
     "id": "3.6",
@@ -2003,11 +2003,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Compare foods with different NOVA classifications on at least three products belonging to the same food category (e.g, while keeping in mind that different processing methods use very different amounts of energy."
+    "description": "Compare foods with different NOVA classifications on at least three products belonging to the same food category (e.g. three types of cheese), while keeping in mind that different processing methods use very different amounts of energy."
   },
   {
     "id": "3.7",
-    "name": "Quiz: A product is labelled local. What",
+    "name": "What Origin Labels Tell You",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -2044,7 +2044,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Food origin can provide useful information about traceability and sustainability, and reflect on a product is labelled \"local.\" What can you conclude from this information."
+    "description": "Food origin can provide useful information about traceability and sustainability. Then test what you have learned."
   },
   {
     "id": "3.8",
@@ -2090,11 +2090,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Use NOVA classification, Green-Score or ingredient-list information to guide at least five purchasing decisions.Where can I find this information?Use packaging, Open content or food-scanning applications, while keeping in mind that flower strips and pollinator habitats can support biodiversity on farms."
+    "description": "Use NOVA classification, Green-Score or ingredient-list information to guide at least five purchasing decisions. Use packaging, Open content or food-scanning applications, while keeping in mind that flower strips and pollinator habitats can support biodiversity on farms."
   },
   {
     "id": "3.9",
-    "name": "Quiz: You are comparing two tomato products.",
+    "name": "Breeding for Lower Impact",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -2131,11 +2131,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Breeding animals for lower methane emissions can reduce livestock impacts, and reflect on you are comparing two tomato products."
+    "description": "Breeding animals for lower methane emissions can reduce livestock impacts. Then test what you have learned."
   },
   {
     "id": "3.10",
-    "name": "Quiz: A consumer wants to consider both",
+    "name": "The Social Side of Food",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -2167,7 +2167,7 @@
         "sortOrder": 4
       }
     ],
-    "description": "Food-system sustainability includes social and labour conditions, and reflect on a consumer wants to consider both environmental and social sustainability when purchasing."
+    "description": "Food-system sustainability includes social and labour conditions. Then test what you have learned."
   },
   {
     "id": "3.11",
@@ -2288,7 +2288,7 @@
   },
   {
     "id": "3.13",
-    "name": "Quiz: Which transport method generally deserves the",
+    "name": "Distance Is Not Everything",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -2365,11 +2365,11 @@
         "sortOrder": 13
       }
     ],
-    "description": "Local food is not always the most sustainable option, and reflect on transport method generally deserves the most attention when assessing climate impacts."
+    "description": "Local food is not always the most sustainable option. Then test what you have learned."
   },
   {
     "id": "3.14",
-    "name": "Quiz: You are choosing between two apple",
+    "name": "Farming Methods That Help",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.3",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -2456,11 +2456,11 @@
         "sortOrder": 15
       }
     ],
-    "description": "Agroforestry combines trees with crops or livestock on the same land, and reflect on you are choosing between two apple products:Product A: \"Produced using Integrated Pest."
+    "description": "Agroforestry combines trees with crops or livestock on the same land. Then test what you have learned."
   },
   {
     "id": "3.15",
-    "name": "Quiz: You find a food product marketed",
+    "name": "Innovation on the Farm",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.4",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -2537,11 +2537,11 @@
         "sortOrder": 13
       }
     ],
-    "description": "Genome editing may help develop crops that are more resilient to climate stress, and reflect on you find a food product marketed as coming from a climate-resilient crop."
+    "description": "Genome editing may help develop crops that are more resilient to climate stress. Then test what you have learned."
   },
   {
     "id": "3.16",
-    "name": "Quiz: A coffee package highlights support for",
+    "name": "Who Grows Our Food",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -2618,7 +2618,7 @@
         "sortOrder": 13
       }
     ],
-    "description": "Women play a critical role in food production but often have less access to, and reflect on a coffee package highlights support for smallholder farmers."
+    "description": "Women play a critical role in food production but often have less access to resources. Then test what you have learned."
   },
   {
     "id": "4.1",
@@ -2689,7 +2689,7 @@
         "sortOrder": 11
       }
     ],
-    "description": "Identify the packaging material of at least five food products consumed during the week, while keeping in mind that food packaging protects products from contamination, moisture, oxygen and physical damage, helping maintain food."
+    "description": "Identify the packaging material of at least five food products consumed during the week, while keeping in mind that food packaging protects products from contamination, moisture, oxygen and physical damage, helping maintain food safety and quality."
   },
   {
     "id": "4.2",
@@ -2806,7 +2806,7 @@
         "sortOrder": 11
       }
     ],
-    "description": "Consider packaging characteristics when making at least three purchasing decisions, while keeping in mind that the environmental impact of producing food is often much greater than the impact of."
+    "description": "Consider packaging characteristics when making at least three purchasing decisions, while keeping in mind that the environmental impact of producing food is often much greater than the impact of the packaging used to protect it."
   },
   {
     "id": "4.4",
@@ -2928,7 +2928,7 @@
         "sortOrder": 11
       }
     ],
-    "description": "For at least three purchases, consider both packaging material and end-of-life options before making a choice, while keeping in mind that edible packaging can help reduce reliance on fossil-based plastics by replacing conventional packaging materials."
+    "description": "For at least three purchases, consider both packaging material and end-of-life options before making a choice, while keeping in mind that edible packaging can help reduce reliance on fossil-based plastics by replacing conventional packaging materials with biodegradable alternatives."
   },
   {
     "id": "4.6",
@@ -2984,7 +2984,7 @@
         "sortOrder": 8
       }
     ],
-    "description": "Use reusable or refillable packaging systems on at least five occasions.Look for products sold through deposit-return or refill systems, while keeping in mind that every reusable package has a break-even point where it becomes better than single-use alternatives."
+    "description": "Use reusable or refillable packaging systems on at least five occasions. Look for products sold through deposit-return or refill systems, while keeping in mind that every reusable package has a break-even point where it becomes better than single-use alternatives."
   },
   {
     "id": "5.1",
@@ -3188,7 +3188,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Before a meal, estimate how much food you think you will eat.After the meal, compare your estimate with what you actually consumed, while keeping in mind that portion sizes in many countries have increased substantially over recent decades."
+    "description": "Before a meal, estimate how much food you think you will eat. After the meal, compare your estimate with what you actually consumed, while keeping in mind that portion sizes in many countries have increased substantially over recent decades."
   },
   {
     "id": "5.5",
@@ -3234,7 +3234,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Perform a fridge or pantry check before a main shopping trip.Tracking ComponentLog at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that offering smaller portion sizes can reduce plate waste in canteens and restaurants."
+    "description": "Perform a fridge or pantry check before a main shopping trip. Log at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that offering smaller portion sizes can reduce plate waste in canteens and restaurants."
   },
   {
     "id": "5.6",
@@ -3341,7 +3341,7 @@
         "sortOrder": 7
       }
     ],
-    "description": "Perform a fridge or pantry check before a main shopping trip.Tracking ComponentLog at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that household food waste in Europe is estimated at around 69 million tonnes per year."
+    "description": "Perform a fridge or pantry check before a main shopping trip. Log at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that household food waste in Europe is estimated at around 69 million tonnes per year."
   },
   {
     "id": "5.8",
@@ -3387,7 +3387,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log at least Half Plate Saved actions, while keeping in mind that the environmental impact of a diet depends not only on what people eat but."
+    "description": "Log at least Half Plate Saved actions, while keeping in mind that the environmental impact of a diet depends not only on what people eat but also on how much they eat."
   },
   {
     "id": "5.9",
@@ -3484,7 +3484,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log 4 Expired Product Consumed actions, while keeping in mind that meat and dairy may be wasted less often but have a larger environmental footprint."
+    "description": "Log 4 Expired Product Consumed actions, while keeping in mind that meat and dairy may be wasted less often but have a larger environmental footprint when wasted."
   },
   {
     "id": "5.11",
@@ -3525,7 +3525,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Throughout the week, organize your fridge, freezer or pantry so that foods with the shortest remaining shelf life are always placed at the front and used first, while keeping in mind that multi-buy offers and bulk discounts can encourage consumers to purchase more food than they."
+    "description": "Throughout the week, organize your fridge, freezer or pantry so that foods with the shortest remaining shelf life are always placed at the front and used first, while keeping in mind that multi-buy offers and bulk discounts can encourage consumers to purchase more food than they can use."
   },
   {
     "id": "5.12",
@@ -3566,7 +3566,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Plan all main meals for the week before your first shopping trip and only purchase foods that have a planned use, while keeping in mind that eating more food than the body needs increases demand for agricultural resources such as."
+    "description": "Plan all main meals for the week before your first shopping trip and only purchase foods that have a planned use, while keeping in mind that eating more food than the body needs increases demand for agricultural resources such as land, water and energy."
   },
   {
     "id": "6.1",
@@ -3658,7 +3658,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Log 5 Snack \u2192 Fruit or Nuts swaps, while keeping in mind that unsaturated fats are generally healthier than saturated fats."
+    "description": "Log 5 Snack → Fruit or Nuts swaps, while keeping in mind that unsaturated fats are generally healthier than saturated fats."
   },
   {
     "id": "6.3",
@@ -3704,7 +3704,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log 3 Sugary Drink \u2192 Water swaps, while keeping in mind that sugary drinks are a major source of added sugar in many diets."
+    "description": "Log 3 Sugary Drink → Water swaps, while keeping in mind that sugary drinks are a major source of added sugar in many diets."
   },
   {
     "id": "6.4",
@@ -3786,7 +3786,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Choose a whole-grain product every day.How to do itSelect foods such as whole-grain bread, whole-wheat pasta, oats, brown rice, rye bread, quinoa or other whole grains, while keeping in mind that most Europeans consume less fibre than recommended."
+    "description": "Choose a whole-grain product every day. Select foods such as whole-grain bread, whole-wheat pasta, oats, brown rice, rye bread, quinoa or other whole grains, while keeping in mind that most Europeans consume less fibre than recommended."
   },
   {
     "id": "6.6",
@@ -3831,7 +3831,7 @@
   },
   {
     "id": "6.7",
-    "name": "Quiz: Which beverage choice is most likely",
+    "name": "Calories Are Not Everything",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.7",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -3863,7 +3863,7 @@
         "sortOrder": 4
       }
     ],
-    "description": "The world already produces enough calories to feed everyone, and reflect on beverage choice is most likely to reduce unnecessary calorie intake."
+    "description": "The world already produces enough calories to feed everyone. Then test what you have learned."
   },
   {
     "id": "6.8",
@@ -3914,7 +3914,7 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log 2 Processed Meat \u2192 Legumes swaps, while keeping in mind that most adults need about 0.83 g of protein per kilogram of body weight each."
+    "description": "Log 2 Processed Meat → Legumes swaps, while keeping in mind that most adults need about 0.83 g of protein per kilogram of body weight each day."
   },
   {
     "id": "6.9",
@@ -4102,7 +4102,7 @@
   },
   {
     "id": "6.13",
-    "name": "Quiz: You want to improve the vitamin",
+    "name": "Vitamins From Your Plate",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.6",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -4134,11 +4134,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Eating a diverse diet helps reduce the risk of vitamin deficiencies, and reflect on you want to improve the vitamin content of your diet without taking."
+    "description": "Eating a diverse diet helps reduce the risk of vitamin deficiencies. Then test what you have learned."
   },
   {
     "id": "6.14",
-    "name": "Quiz: Why can regularly eating highly processed",
+    "name": "Same Calories, Different Impact",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.7",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -4175,11 +4175,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Foods providing the same number of calories can have very different environmental impacts, and reflect on can regularly eating highly processed snack foods make calorie management more difficult."
+    "description": "Foods providing the same number of calories can have very different environmental impacts. Then test what you have learned."
   },
   {
     "id": "6.15",
-    "name": "Quiz: You are comparing two food products:Product",
+    "name": "Complete Plant Proteins",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.1",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -4211,11 +4211,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Eating a variety of plant proteins can provide all essential amino acids, and reflect on you are comparing two food products:Product A: \"Source of protein\"Product B: \"High."
+    "description": "Eating a variety of plant proteins can provide all essential amino acids. Then test what you have learned."
   },
   {
     "id": "6.16",
-    "name": "Quiz: You want to reduce the risk",
+    "name": "Understanding Dietary Fats",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.2",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -4247,7 +4247,7 @@
         "sortOrder": 4
       }
     ],
-    "description": "Fat should contribute no more than about 30% of total daily energy intake, and reflect on you want to reduce the risk associated with trans-fat intake."
+    "description": "Fat should contribute no more than about 30% of total daily energy intake. Then test what you have learned."
   },
   {
     "id": "6.17",
@@ -4375,7 +4375,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Start every day with a breakfast containing a meaningful source of fibre.Build breakfast around oats, whole grains, fruit, seeds, nuts or other fibre-rich foods, while keeping in mind that higher fibre intake is linked to lower risk of heart disease and type 2."
+    "description": "Start every day with a breakfast containing a meaningful source of fibre. Build breakfast around oats, whole grains, fruit, seeds, nuts or other fibre-rich foods, while keeping in mind that higher fibre intake is linked to lower risk of heart disease and type 2 diabetes."
   },
   {
     "id": "6.20",

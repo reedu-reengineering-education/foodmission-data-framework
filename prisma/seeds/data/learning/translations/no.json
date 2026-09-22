@@ -874,7 +874,8 @@
         "B": "Egg",
         "C": "Ost",
         "D": "Kyllingbryst"
-      }
+      },
+      "explanation": "Belgfrukter bedrer jordfruktbarheten gjennom nitrogenfiksering og gir samtidig protein, fiber, vitaminer og mineraler."
     },
     "Q1.2.5": {
       "question": "En familie ønsker å redusere inntaket av rødt kjøtt uten å kutte ut animalske produkter. Hvilken endring samsvarer best med forskningsresultatene?",
@@ -1003,7 +1004,8 @@
         "B": "Et kosthold med mer meieriprodukter og rødt kjøtt",
         "C": "Et kosthold som inneholder mer bearbeidede kjøttprodukter",
         "D": "Et kosthold der oksekjøtt utgjør den viktigste proteinkilden"
-      }
+      },
+      "explanation": "Vannforbruket går som regel ned når kostholdet dreies bort fra animalske og mot plantebaserte matvarer."
     },
     "Q2.2.3": {
       "question": "Du finner grønnsaker i kjøleskapet som er i ferd med å bli dårlige. Hva er den mest bærekraftige løsningen?",
@@ -1022,7 +1024,8 @@
         "B": "Vannforbruket avhenger av hvilke matvarer man velger, men å redusere inntaket av animalske matvarer er ofte en viktig faktor",
         "C": "Vannpåvirkningen avhenger hovedsakelig av transportavstanden for matvarer",
         "D": "Bearbeidede matvarer krever alltid mer vann enn ferske matvarer"
-      }
+      },
+      "explanation": "Studier viser at mindre animalsk mat ofte gir lavere vannavtrykk, men det samlede vannforbruket avhenger fortsatt av sammensetningen av kostholdet."
     },
     "Q2.2.5": {
       "question": "Hvilket måltid kan man generelt forvente at har det laveste vannavtrykket?",
@@ -1081,7 +1084,8 @@
         "B": "Matsystemene utøver et betydelig press på økosystemene gjennom ressurs- og energibehovet",
         "C": "Det meste av belastningen på økosystemene skyldes matemballasje, ikke matproduksjonen",
         "D": "Det forventes at etterspørselen etter mat vil gå betydelig ned innen 2050"
-      }
+      },
+      "explanation": "Menneskelig aktivitet, særlig jordbruk, skogbruk og matsystemer, legger beslag på om lag 30 % av den globale netto primærproduksjonen, langt over den foreslåtte trygge grensen på 10 %. Det tyder på betydelig press på økosystemer og biologisk mangfold."
     },
     "Q2.4.1": {
       "question": "Du ønsker å redusere ditt fotavtrykk, men vil ikke bli vegetarianer. Hvilken strategi vil trolig være mest effektiv?",
@@ -1090,7 +1094,7 @@
         "A": "Erstatt noen måltider med rødt kjøtt med belgfrukter",
         "B": "Kjøp kun kjøttprodukter av høyeste kvalitet",
         "C": "Slutt å kjøpe frosne grønnsaker",
-        "D": "Bytt kaffemerke Riktig svar"
+        "D": "Bytt kaffemerke"
       }
     },
     "Q2.4.2": {
@@ -1320,7 +1324,8 @@
         "B": "De kan bare dyrkes innendørs",
         "C": "De kan være en proteinkilde med mindre miljøpåvirkning",
         "D": "De gjør avlinger overflødige"
-      }
+      },
+      "explanation": "Alternative proteinkilder utforskes fordi de kan bidra til å redusere miljøbelastningen fra konvensjonell husdyrproduksjon og samtidig støtte framtidig matsikkerhet."
     },
     "Q3.4.5": {
       "question": "En kjøttprodusent opplyser at selskapets avlsprogram for husdyr er rettet mot fôrutnyttelse. Hvorfor kan dette være relevant for bærekraft?",
@@ -1329,7 +1334,8 @@
         "B": "Dyr kan kreve færre ressurser",
         "C": "Det sikrer lavere priser i detaljhandelen",
         "D": "Det eliminerer utslipp av klimagasser"
-      }
+      },
+      "explanation": "Dyr med bedre fôrutnyttelse gir samme mengde kjøtt med mindre fôr, og reduserer dermed miljøbelastningen per produsert enhet."
     },
     "Q3.5.1": {
       "question": "Du skal velge mellom to sjokoladebarer med tilnærmet samme næringsinnhold og miljøinformasjon. Den ene er merket med Fairtrade-merket. Hvilket ytterligere aspekt ved bærekraft er Fairtrade-merket først og fremst ment å fremheve?",
@@ -1528,7 +1534,8 @@
         "B": "Standardiserte porsjoner",
         "C": "Lokalt produserte råvarer",
         "D": "Næringsinformasjon på menyene"
-      }
+      },
+      "explanation": "Standardiserte porsjonsstørrelser tar ofte ikke hensyn til ulik appetitt og regnes som en systemisk årsak til matrester på tallerkenen."
     },
     "Q5.2.1": {
       "question": "Du har rester fra middagen som du har tenkt å spise i morgen. Hva er det beste første tiltaket for å forhindre både matsvinn og risikoer knyttet til mattrygghet?",
@@ -1687,7 +1694,8 @@
         "B": "Inkluder mer belgfrukter, nøtter og fullkorn som proteinkilder",
         "C": "Velg matvarer med høyest mulig proteininnhold, uavhengig av kilden",
         "D": "Erstatt måltider med proteintilskudd"
-      }
+      },
+      "explanation": "Belgfrukter, nøtter og fullkorn gir protein og har vanligvis lavere miljøpåvirkning enn mange animalske proteinkilder. Å variere proteinkildene er gunstig både for helsen og for bærekraften."
     },
     "Q6.1.2": {
       "question": "To lunsjer inneholder omtrent like mye protein: Lins- og quinoasalat, Smørbrød med bearbeidet kjøtt. Hvilket utsagn er mest korrekt?",
@@ -1705,8 +1713,9 @@
         "A": "Fortsett å spise kjøtt til hvert måltid",
         "B": "Stol utelukkende på én plantebasert proteinkilde",
         "C": "Spis en rekke ulike plantebaserte proteinkilder, som belgfrukter, korn, nøtter og frø",
-        "D": "Dobbelt så høyt samlet kaloriinntak Riktig svar C"
-      }
+        "D": "Dobbelt så høyt samlet kaloriinntak"
+      },
+      "explanation": "Ulike planteproteiner utfyller hverandre. I et variert kosthold gir kombinasjonen av flere plantebaserte proteinkilder vanligvis alle essensielle aminosyrer."
     },
     "Q6.1.4": {
       "question": "Du sammenligner to matvarer: Produkt A: «Proteinkilde» Produkt B: «Høyt proteininnhold» Hva kan du konkludere med?",
@@ -1714,8 +1723,9 @@
         "A": "Produkt B inneholder nødvendigvis dobbelt så mye protein",
         "B": "Produkt A er mindre sunt",
         "C": "En større andel av energien i produkt B kommer fra protein",
-        "D": "Produkt B inneholder animalsk protein. Riktig svar: C"
-      }
+        "D": "Produkt B inneholder animalsk protein"
+      },
+      "explanation": "Etter EUs regelverk om ernæringspåstander kan et produkt bare merkes «høyt proteininnhold» når minst 20 % av energiinnholdet kommer fra protein. «Kilde til protein» krever minst 12 %."
     },
     "Q6.1.5": {
       "question": "Hvilket kostholdsmønster stemmer best overens med både bærekraftsmålene og gjeldende ernæringsanbefalinger?",
@@ -1724,7 +1734,8 @@
         "B": "Å maksimere proteininntaket uavhengig av kilde",
         "C": "Å få i seg protein fra en blanding av belgfrukter, fisk, meieriprodukter, egg, nøtter og moderate mengder kjøtt",
         "D": "Hovedsakelig basert på proteinshakes og kosttilskudd"
-      }
+      },
+      "explanation": "Sunne og bærekraftige kosthold bygger som regel på varierte proteinkilder framfor én enkelt kilde. Belgfrukter, fisk, nøtter, meieriprodukter og moderate mengder kjøtt kan alle bidra til tilstrekkelig protein og god kostholdskvalitet."
     },
     "Q6.2.1": {
       "question": "Du ønsker å forbedre kvaliteten på fettstoffene i kostholdet ditt, samtidig som måltidene skal være mettende. Hvilket alternativ samsvarer best med gjeldende anbefalinger?",
@@ -1963,7 +1974,8 @@
         "B": "Hvitt brød med smør",
         "C": "Appelsinskiver og kiwi",
         "D": "Kokt ris"
-      }
+      },
+      "explanation": "Frukt som appelsiner, kiwi og bær, samt mange grønnsaker, er rike på vitamin C, som bidrar til immunforsvaret og til normal kollagendannelse."
     },
     "Q6.6.5": {
       "question": "Du velger mellom to tilbehør: Dampede grønnsaker Grønnsaker som har blitt kokt i svært lang tid ved høy temperatur Hvilket alternativ vil mest sannsynlig bevare vitaminene?",
@@ -2012,7 +2024,8 @@
         "B": "Hvordan maksimere kaloriinntaket fra alle typer matvarer",
         "C": "Å tilpasse kaloriinntaket til den enkeltes behov og samtidig prioritere næringsrike matvarer",
         "D": "Å fokusere utelukkende på kalorier og se bort fra matens kvalitet"
-      }
+      },
+      "explanation": "Et sunt og bærekraftig kosthold handler ikke bare om kalorier. Det handler om å dekke energibehovet med mat som gir viktige næringsstoffer, og om å unngå unødvendig overforbruk og svinn."
     },
     "Q6.7.5": {
       "question": "Fire mellommåltider inneholder omtrent like mange kalorier. Hvilket av dem vil mest sannsynlig holde deg mett lenger?",
@@ -2937,12 +2950,12 @@
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Kutt ut ett måltid med kjøtt",
       "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Spis ett kjøttmåltid mindre enn i forrige uke, og husk at å spise mindre rødt kjøtt er en av de mest effektive måtene å redusere [...]."
+      "description": "Spis ett kjøttmåltid mindre enn i forrige uke, og husk at å spise mindre rødt kjøtt er en av de mest effektive måtene å redusere miljøpåvirkningen fra kostholdet ditt på."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
       "name": "Første bærekraftige bytte",
       "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Noter ned to tiltak for å bytte ut proteinkilder, og husk samtidig at det å erstatte en del av kjøttinntaket ditt med belgfrukter kan redusere klimapåvirkningen fra."
+      "description": "Noter ned to tiltak for å bytte ut proteinkilder, og husk samtidig at å erstatte en del av kjøttinntaket ditt med belgfrukter kan redusere kostholdets klimapåvirkning."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Oppdag linser",
@@ -2952,7 +2965,7 @@
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "To kjøttfrie dager",
       "title": "Endringer i kostholdet – Mellomnivå",
-      "description": "Gjennomfør to kjøttfrie dager, og husk at produksjon av storfekjøtt krever mye mer areal enn produksjon av planteproteiner som erter eller."
+      "description": "Gjennomfør to kjøttfrie dager, og husk at produksjon av storfekjøtt krever mye mer areal enn produksjon av planteproteiner som erter eller tofu."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Verktøy for bærekraftig bytte",
@@ -2962,22 +2975,22 @@
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Treningsprogram for benkpress",
       "title": "Endringer i kostholdet – Mellomnivå",
-      "description": "Inkluder belgfrukter i fire måltider, og husk at hirse er svært motstandsdyktige avlinger som kan vokse under varme og tørre forhold med lite."
+      "description": "Inkluder belgfrukter i fire måltider, og husk at hirse er svært motstandsdyktige avlinger som kan vokse under varme, tørre forhold med lite vann."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
       "name": "Hold deg på den grønne siden",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Hold deg under fire kjøttmåltider per uke, og husk samtidig at husdyrproduksjonen opptar mesteparten av jordbruksarealet globalt, samtidig som den bidrar med en langt mindre andel av."
+      "description": "Hold deg under fire kjøttmåltider per uke, og husk samtidig at husdyrproduksjonen opptar størstedelen av jordbruksarealet globalt, samtidig som den bidrar med en langt mindre andel av kalorier og proteiner."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Flertall av planteproteiner",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Sørg for at de fleste proteinrike måltidene kommer fra proteinkilder som ikke er kjøtt, samtidig som du husker at belgfrukter naturlig forbedrer jordens fruktbarhet ved å binde nitrogen fra luften, noe som reduserer behovet."
+      "description": "Sørg for at de fleste proteinrike måltidene kommer fra proteinkilder som ikke er kjøtt, samtidig som du husker at belgfrukter forbedrer jordens fruktbarhet på naturlig vis ved å binde nitrogen fra luften, noe som reduserer behovet for gjødsel."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
       "name": "Alternativ vane når det gjelder basismatvarer",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Inkluder alternative basismatvarer i minst fem måltider, og husk at quinoa nå dyrkes i mer enn 70 land, noe som bidrar til å diversifisere den globale matproduksjonen."
+      "description": "Inkluder alternative basismatvarer i minst fem måltider, og husk at quinoa dyrkes nå i mer enn 70 land, noe som bidrar til å diversifisere den globale matproduksjonen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Opprinnelsessporing",
@@ -2985,19 +2998,19 @@
       "description": "Finn opprinnelseslandet til minst fem matvarer du har spist i løpet av uken, og husk samtidig at omtrent halvparten av verdens beboelige landareal brukes til jordbruk."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Quiz: To personer spiser like mye",
+      "name": "Vannet bak maten",
       "title": "Produktvalg – Nybegynner",
-      "description": "Omtrent 70 % av det globale ferskvannsforbruket går til landbruket, og dette gjenspeiler at to personer spiser like mange kalorier hver dag."
+      "description": "Omtrent 70 % av det globale ferskvannsforbruket går til landbruket. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Quiz: Du sammenligner fire dietter med",
+      "name": "Måltidenes klimakostnad",
       "title": "Produktvalg – Nybegynner",
-      "description": "Matsystemene står for omtrent en tredjedel av de globale klimagassutslippene, og dette gjelder når man sammenligner fire kosthold med samme kaloriinntak."
+      "description": "Matsystemene står for omtrent en tredjedel av de globale klimagassutslippene. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Quiz: Du ønsker å redusere ditt klimafotavtrykk",
+      "name": "Matens transportvei",
       "title": "Produktvalg – Nybegynner",
-      "description": "Den globale mattransporten genererer rundt 3 milliarder tonn CO₂-ekvivalente utslipp hvert år, og dette bør du tenke på hvis du ønsker å redusere ditt fotavtrykk, men ikke vil gjøre det."
+      "description": "Den globale mattransporten genererer om lag 3 milliarder tonn CO₂-ekvivalente utslipp hvert år. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Produktvalg – Nybegynner",
@@ -3007,22 +3020,22 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
       "name": "Mangfoldige opprinnelser",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Spor opprinnelsen til maten du spiser, og noter minst tre måltider med lokalt produserte produkter, samtidig som du husker at storfekjøtt er en av de matvarene som krever mest areal."
+      "description": "Spor opprinnelsen til maten du spiser, og noter minst tre måltider med lokalt produserte produkter, samtidig som du husker at oksekjøtt er en av de matvarene som krever mest areal av alt folk spiser."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Quiz: Hvilket utsagn gjenspeiler bevisene best?",
+      "name": "Bortkastet mat, bortkastet vann",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Matsvinn fører også til at enorme mengder vann som brukes til å dyrke mat går til spille. Velg det utsagnet som best gjenspeiler fakta om vannforbruk og bærekraftige kosthold."
+      "description": "Matsvinn fører også til at enorme mengder vann som brukes til å dyrke mat, går til spille. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Quiz: En forbruker ønsker å redusere",
+      "name": "Kjøttets karbonavtrykk",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Kjøtt, særlig storfekjøtt og lammekjøtt, har et mye større karbonavtrykk enn de fleste plantebaserte matvarer, og dette bør man tenke på hvis man som forbruker ønsker å redusere energiavtrykket fra sine matinnkjøp."
+      "description": "Kjøtt, særlig oksekjøtt og lammekjøtt, har et mye større karbonavtrykk enn de fleste plantebaserte matvarer. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Quiz: Hvilken tiltak reduserer utslippene uten å endre",
+      "name": "Utforsk transportutslipp",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Nesten en femtedel av klimagassutslippene fra det globale matsystemet stammer fra, og viser at tiltak kan redusere utslippene uten at du trenger å endre hva slags mat du kjøper."
+      "description": "Nesten en femtedel av klimagassutslippene fra det globale matsystemet stammer fra transport av mat. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Produktvalg – Mellomnivå",
@@ -3032,22 +3045,22 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Utover opprinnelseslandet",
       "title": "Produktvalg – Avansert",
-      "description": "Når du velger produkter til minst tre måltider, bør du ta hensyn til både opprinnelseslandet og én ytterligere bærekraftsindikator (f.eks. sertifisering, produksjonsmetode, sesongvariasjon), samtidig som du husker at det meste av jordbruksarealet brukes til beite for husdyr eller dyrking av dyrefôr."
+      "description": "Når du velger produkter til minst tre måltider, bør du ta hensyn til både opprinnelseslandet og én ytterligere bærekraftsindikator (f.eks. sertifisering, produksjonsmetode, sesongvariasjon), samtidig som du husker at det meste av jordbruksarealet brukes til beite for husdyr eller til dyrking av dyrefôr."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Quiz: Du ønsker å redusere vannforbruket",
+      "name": "Vannavtrykket i dybden",
       "title": "Produktvalg – Avansert",
-      "description": "Vannavtrykket til kostholdet ditt avhenger i stor grad av hva du spiser, og tenk gjennom hvordan du ønsker å redusere vannavtrykket til måltidene dine."
+      "description": "Vannavtrykket til kostholdet ditt avhenger i stor grad av hva du spiser. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Quiz: Et utviklingsbyrå skal bestemme hvor det skal investere",
+      "name": "Utslipp utenfor tallerkenen",
       "title": "Produktvalg – Avansert",
-      "description": "Matsvinn fører til utslipp på flere milliarder tonn CO₂-ekvivalenter hvert år, og dette har betydning for hvilke beslutninger et utviklingsbyrå tar når det gjelder hvor det skal investere for å redusere matsvinn."
+      "description": "Matsvinn fører til utslipp på flere milliarder tonn CO₂-ekvivalenter hvert år. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Quiz: En person tenker bare på å kjøpe",
+      "name": "Kjølekjede og frakt",
       "title": "Produktvalg – Avansert",
-      "description": "Selv om matvarer bare utgjør rundt 18 % av de globale godstransportavstandene, bidrar de til, og dette gjenspeiles i at en person som kun fokuserer på å kjøpe lokal mat, likevel fortsetter å spise store mengder."
+      "description": "Selv om matvarer bare utgjør rundt 18 % av de globale godstransportavstandene, står de for rundt 27 % av de godstransportrelaterte utslippene. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Produktvalg – Avansert",
@@ -3057,12 +3070,12 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
       "name": "NOVA Explorer",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Finn NOVA-klassifiseringen for minst tre matvarer, og husk samtidig at matforedling kan forbedre matsikkerheten og forlenge holdbarheten."
+      "description": "Finn NOVA-klassifiseringen for minst tre matvarer, og husk samtidig at næringsmiddelforedling kan forbedre matsikkerheten og forlenge holdbarheten."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Quiz: Du sammenligner to lokale produkter.",
+      "name": "Lokalmat på nært hold",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Korte forsyningskjeder kan styrke lokale økonomier og motstandskraft, og det gjelder også når du sammenligner to lokale produkter."
+      "description": "Korte forsyningskjeder kan styrke lokale økonomier og øke motstandskraften. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Observatør for produksjonsmetode",
@@ -3075,34 +3088,34 @@
       "description": "Velg en matvare og undersøk hva som kan ha skjedd mellom råvarene og det ferdige produktet du kjøpte, samtidig som du husker at diversifisering av avlinger og raser kan øke matsystemets motstandskraft."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Quiz: Du skal velge mellom to sjokolader",
+      "name": "Rettferdig handel: grunnlaget",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Landbruket står for de fleste tilfellene av barnearbeid på verdensbasis, og tenk på at du står overfor valget mellom to sjokoladebarer med tilnærmet lik næringsverdi og."
+      "description": "Landbruket står for de fleste tilfellene av barnearbeid på verdensbasis. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Sammenlign behandlingsnivåer",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Sammenlign matvarer med ulike NOVA-klassifiseringer for minst tre produkter som tilhører samme matvarekategori (f.eks. ved å ta hensyn til at ulike foredlingsmetoder krever svært forskjellige mengder energi)."
+      "description": "Sammenlign matvarer med ulike NOVA-klassifiseringer på minst tre produkter som tilhører samme matvarekategori (f.eks. tre ostetyper). Ulike prosesseringsmetoder bruker svært forskjellige mengder energi."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Quiz: Et produkt er merket som «lokalt». Hva",
+      "name": "Hva opprinnelse forteller",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Matvarens opprinnelse kan gi nyttig informasjon om sporbarhet og bærekraft, og si noe om hvorvidt et produkt er merket som «lokalt». Hva kan du slutte ut fra denne informasjonen?"
+      "description": "Matens opprinnelse kan gi nyttig informasjon om sporbarhet og bærekraft. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produksjonsbasert valg",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bruk NOVA-klassifiseringen, Green-Score eller informasjon fra ingredienslisten som veiledning når du skal ta minst fem kjøpsbeslutninger. Hvor finner jeg denne informasjonen? Bruk emballasjen, Open Content eller apper for skanning av matvarer, og husk samtidig at blomsterstriper og habitater for pollinatorer kan bidra til biologisk mangfold på gårder."
+      "description": "Bruk NOVA-klassifiseringen, Green-Score eller informasjon fra ingredienslisten som veiledning når du skal ta minst fem kjøpsbeslutninger. Hvor finner jeg denne informasjonen? Bruk emballasjen, Open Content eller apper for skanning av matvarer, og husk samtidig at blomsterstriper og habitater for bestøvere kan bidra til biologisk mangfold på gårder."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Quiz: Du sammenligner to tomatprodukter.",
+      "name": "Avl for lavere avtrykk",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Avl av dyr med lavere metanutslipp kan redusere husdyrholdets miljøpåvirkning, og det kan sammenlignes med å sammenligne to tomatprodukter."
+      "description": "Avl av dyr med lavere metanutslipp kan redusere husdyrholdets miljøpåvirkning. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Quiz: En forbruker ønsker å ta hensyn til begge deler",
+      "name": "Matens sosiale side",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bærekraft i matsystemet omfatter sosiale forhold og arbeidsforhold, og viser at forbrukerne ønsker å ta hensyn til både miljømessig og sosial bærekraft når de handler."
+      "description": "Bærekraft i matsystemet omfatter også sosiale forhold og arbeidsforhold. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Overvåking av flere indikatorer",
@@ -3115,39 +3128,39 @@
       "description": "Når du skal kjøpe minst tre varer, bør du vurdere både NOVA-klassifiseringen og Green-Score før du tar en beslutning, samtidig som du må huske på at ikke alle bearbeidede matvarer har stor miljøpåvirkning."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Quiz: Hvilken transportform fortjener generelt den",
+      "name": "Avstand er ikke alt",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Lokal mat er ikke alltid det mest bærekraftige alternativet, og det er generelt transportmåten man bør vurdere nøye når man skal vurdere klimapåvirkningen."
+      "description": "Lokal mat er ikke alltid det mest bærekraftige alternativet. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Quiz: Du skal velge mellom to epler",
+      "name": "Dyrkingsmetoder som hjelper",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Agroforestry innebærer å kombinere trær med avlinger eller husdyr på samme areal, og tenk deg at du skal velge mellom to epleprodukter: Produkt A: «Produsert ved hjelp av integrert skadedyrbekjempelse.»"
+      "description": "Agroforestry innebærer å kombinere trær med avlinger eller husdyr på samme areal. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Quiz: Du finner et matprodukt som markedsføres",
+      "name": "Innovasjon på gården",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Genomredigering kan bidra til å utvikle avlinger som er mer motstandsdyktige mot klimastress, og det er verdt å tenke over hva det innebærer når du ser et matprodukt som markedsføres som stammende fra en klimaresistent avling."
+      "description": "Genredigering kan bidra til å utvikle avlinger som er mer motstandsdyktige mot klimastress. Deretter følger en kort quiz."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Quiz: En kaffepakke fremhever støtten til",
+      "name": "Hvem dyrker maten vår",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Kvinner spiller en avgjørende rolle i matproduksjonen, men har ofte dårligere tilgang til – og dette fremheves på en kaffepakke som understreker støtten til småbønder."
+      "description": "Kvinner spiller en avgjørende rolle i matproduksjonen, men har ofte dårligere tilgang til ressurser. Deretter følger en kort quiz."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Observatør for emballasjemateriale",
       "title": "Emballasje – Nybegynner",
-      "description": "Identifiser emballasjematerialet til minst fem matvarer som er blitt spist i løpet av uken, og husk samtidig at matemballasjen beskytter produktene mot forurensning, fuktighet, oksygen og fysiske skader, og dermed bidrar til å bevare maten."
+      "description": "Identifiser emballasjematerialet til minst fem matvarer som er blitt spist i løpet av uken, og husk samtidig at matemballasje beskytter produktene mot forurensning, fuktighet, oksygen og fysiske skader, og bidrar dermed til å opprettholde matsikkerheten og kvaliteten."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Gjenbrukbar emballasjevurderer",
       "title": "Emballasje – Nybegynner",
-      "description": "Finn frem alternativer for gjenbrukbar eller påfyllbar matemballasje ved minst fem anledninger, og husk at gjenbrukbar emballasje først blir miljøvennlig etter at den har blitt gjenbrukt et tilstrekkelig antall ganger."
+      "description": "Finn frem alternativer for gjenbrukbar eller påfyllbar matemballasje ved minst fem anledninger, og husk at gjenbrukbar emballasje blir først miljøvennlig etter at den har blitt gjenbrukt et tilstrekkelig antall ganger."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Valg basert på emballasjeinformasjon",
       "title": "Emballasje – Mellomnivå",
-      "description": "Ta hensyn til emballasjens egenskaper når du skal ta minst tre kjøpsbeslutninger, og husk samtidig at miljøpåvirkningen fra matproduksjonen ofte er mye større enn påvirkningen fra."
+      "description": "Ta hensyn til emballasjens egenskaper når du skal ta minst tre kjøpsbeslutninger, og husk samtidig at miljøpåvirkningen fra matproduksjonen er ofte langt større enn påvirkningen fra emballasjen som brukes til å beskytte maten."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Søk etter gjenbruksmuligheter",
@@ -3157,7 +3170,7 @@
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Beslutninger om emballasje basert på flere kriterier",
       "title": "Emballasje – Avansert",
-      "description": "Når du skal kjøpe minst tre produkter, bør du vurdere både emballasjematerialet og avhendingsmulighetene før du tar en beslutning, samtidig som du husker at spiselig emballasje kan bidra til å redusere avhengigheten av fossilbasert plast ved å erstatte konvensjonelle emballasjematerialer."
+      "description": "Når du skal kjøpe minst tre produkter, bør du vurdere både emballasjematerialet og avhendingsmulighetene før du tar en beslutning, samtidig som du husker at spiselig emballasje kan bidra til å redusere avhengigheten av fossilbasert plast ved å erstatte konvensjonelle emballasjematerialer med biologisk nedbrytbare alternativer."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Verktøy for å utvikle vaner for gjenbruk",
@@ -3167,7 +3180,7 @@
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Smart serveringssett for nybegynnere",
       "title": "Matsvinn – Nybegynner",
-      "description": "Logg 5: «Half Plate Saved»-tiltak, samtidig som man må huske på at husholdningene genererer mer matsvinn enn noen annen sektor i EU."
+      "description": "Logg 5: «Half Plate Saved»-tiltak, samtidig som man må huske på at husholdningene produserer mer matsvinn enn noen annen sektor i Den europeiske unionen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Smartere lagring",
@@ -3182,12 +3195,12 @@
     "QUEST.FOOD_WASTE.BEGINNER.4": {
       "name": "Test for å forutsi porsjonsstørrelse",
       "title": "Matsvinn – Nybegynner",
-      "description": "Før et måltid bør du anslå hvor mye mat du tror du kommer til å spise. Etter måltidet bør du sammenligne anslaget ditt med det du faktisk har spist, samtidig som du må huske på at porsjonsstørrelsene i mange land har økt betydelig de siste tiårene."
+      "description": "Før et måltid bør du anslå hvor mye mat du tror du kommer til å spise. Etter måltidet bør du sammenligne anslaget ditt med det du faktisk har spist, samtidig som du må huske på at porsjonsstørrelsene har økt betydelig i mange land de siste tiårene."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
       "name": "Oppdrag 3: Sjekk kjøleskapet",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 handlinger av typen «Forbruk av utgåtte produkter» eller 3 handlinger av typen «Redusert matsvinn på tallerkenen», og husk at det å servere mindre porsjoner kan redusere matsvinnet i kantiner og restauranter."
+      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 handlinger av typen «Forbruk av utgåtte produkter» eller 3 handlinger av typen «Redusert matsvinn på tallerkenen», og husk at å tilby mindre porsjonsstørrelser kan redusere matsvinnet i kantiner og restauranter."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Vanen med å planlegge måltider",
@@ -3197,32 +3210,32 @@
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
       "name": "Oppdrag 3: Sjekk kjøleskapet",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 «Forbrukte utgåtte produkter»-handlinger eller 3 «Sparte fulle tallerkener»-handlinger, og husk at matsvinnet i husholdningene i Europa anslås til rundt 69 millioner tonn per år."
+      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 «Forbrukte utgåtte produkter»-handlinger eller 3 «Sparte fulle tallerkener»-handlinger, og husk at matavfallet fra husholdningene i Europa anslås til rundt 69 millioner tonn per år."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Noter ned minst «Half Plate Saved»-tiltak, og husk samtidig at miljøpåvirkningen av kostholdet ikke bare avhenger av hva folk spiser, men også av..."
+      "description": "Noter ned minst «Half Plate Saved»-tiltak, og husk samtidig at miljøpåvirkningen av kostholdet avhenger ikke bare av hva folk spiser, men også av hvor mye de spiser."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Fokus på null avfall fra tallerkenene",
       "title": "Matsvinn – Avansert",
-      "description": "Registrer minst 7 «Half Plate Saved»-handlinger, og husk at bortkastet kjøtt bidrar uforholdsmessig mye til klimapåvirkningen av matsvinn."
+      "description": "Registrer minst 7 «Half Plate Saved»-handlinger, og husk at kjøttsvinn bidrar i uforholdsmessig stor grad til matavfallets klimapåvirkning."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Ekspert på forebygging av utløp",
       "title": "Matsvinn – Avansert",
-      "description": "Registrer 4 handlinger knyttet til forbruk av utgåtte produkter, samtidig som man må huske på at kjøtt og meieriprodukter kanskje kastes sjeldnere, men har et større miljøavtrykk."
+      "description": "Registrer 4 handlinger knyttet til forbruk av utgåtte produkter, samtidig som man må huske på at kjøtt og meieriprodukter blir kanskje sjeldnere kastet, men har et større miljøavtrykk når de kastes."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Ekspert på «først inn, først ut»-prinsippet",
       "title": "Matsvinn – Avansert",
-      "description": "I løpet av uken bør du organisere kjøleskapet, fryseren eller spiskammeret slik at matvarer med kortest gjenværende holdbarhet alltid plasseres foran og brukes først, samtidig som du må huske på at tilbud på flere enheter og mengderabatter kan få forbrukerne til å kjøpe mer mat enn de trenger."
+      "description": "I løpet av uken bør du organisere kjøleskapet, fryseren eller spiskammeret slik at matvarer med kortest gjenværende holdbarhet alltid plasseres foran og brukes først, samtidig som du må huske på at tilbud på flerpakninger og mengderabatter kan få forbrukerne til å kjøpe mer mat enn de klarer å bruke."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Planleggingsuken for null avfall",
       "title": "Matsvinn – Avansert",
-      "description": "Planlegg alle hovedmåltidene for uken før du drar på din første handletur, og kjøp kun matvarer som du har planlagt å bruke, samtidig som du husker at å spise mer mat enn kroppen trenger øker etterspørselen etter landbruksressurser som f.eks."
+      "description": "Planlegg alle hovedmåltidene for uken før du drar på din første handletur, og kjøp kun matvarer som du har planlagt å bruke, samtidig som du husker at å spise mer mat enn kroppen trenger, øker etterspørselen etter landbruksressurser som jord, vann og energi."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Protein hver dag",
@@ -3232,7 +3245,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Smart snackbytte",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Logg 5: Mellommåltid → Bytt ut med frukt eller nøtter, og husk at umettet fett generelt sett er sunnere enn mettet fett."
+      "description": "Logg 5: Mellommåltid → Bytt ut med frukt eller nøtter, og husk at umettede fettstoffer er generelt sunnere enn mettede fettstoffer."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Oppgradering av drikke",
@@ -3252,62 +3265,62 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Legg til én frukt eller grønnsak til",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Legg til én ekstra porsjon frukt eller grønnsaker i kostholdet ditt hver dag, og husk samtidig at vitamin D-mangel er vanlig i hele Europa."
+      "description": "Legg til én ekstra porsjon frukt eller grønnsaker i kostholdet ditt hver dag, og husk samtidig at vitamin D-mangel er utbredt i hele Europa."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Quiz: Hvilken drikke er det mest sannsynlig at man velger?",
+      "name": "Kalorier er ikke alt",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Verden produserer allerede nok kalorier til å brødfø alle, og å tenke seg om når man velger drikkevarer vil mest sannsynlig redusere unødvendig kaloriinntak."
+      "description": "Verden produserer allerede nok kalorier til å brødfø alle. Deretter følger en kort quiz."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Erstatning for bearbeidet kjøtt",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Før inn 2 bytt av bearbeidet kjøtt mot belgfrukter, samtidig som du husker at de fleste voksne trenger omtrent 0,83 g protein per kilo kroppsvekt hver."
+      "description": "Før inn 2 bytt av bearbeidet kjøtt mot belgfrukter, samtidig som du husker at de fleste voksne trenger omtrent 0,83 g protein per kilo kroppsvekt hver dag."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Oppgradering til sunt fett",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Velg en kilde til umettet fett i stedet for en kilde til mettet fett ved minst fem anledninger, og husk at typen fett du spiser er like viktig som mengden."
+      "description": "Velg en kilde til umettet fett i stedet for en kilde til mettet fett ved minst fem anledninger, og husk at hvilken type fett du spiser, er like viktig som mengden."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Sammenligning av drikker",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Sammenlign to søte drikker som du liker å drikke, og finn ut hvilken som inneholder minst sukker per 100 ml. Husk samtidig at WHO anbefaler å begrense inntaket av fritt sukker til under 10 % av det daglige energiinntaket."
+      "description": "Sammenlign to søte drikker som du liker å drikke, og finn ut hvilken som inneholder minst sukker per 100 ml. Husk samtidig at wHO anbefaler å begrense inntaket av fritt sukker til under 10 % av det daglige energiinntaket."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Saltfritt bord",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Ikke tilsett salt i maten ved bordet i løpet av uken, og husk at WHO anbefaler å innta mindre enn 5 gram salt per dag."
+      "description": "Ikke tilsett salt i maten ved bordet i løpet av uken, og husk at wHO anbefaler å innta mindre enn 5 gram salt per dag."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Fiber til hvert måltid",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Inkluder minst én fiberrik matvare i hvert hovedmåltid, og husk at voksne bør ha som mål å få i seg minst 25 gram fiber per dag."
+      "description": "Inkluder minst én fiberrik matvare i hvert hovedmåltid, og husk at voksne bør ha som mål å få i seg minst 25 gram kostfiber per dag."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Quiz: Du ønsker å øke vitamininntaket",
+      "name": "Vitaminer fra tallerkenen",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Et variert kosthold bidrar til å redusere risikoen for vitaminmangel, og det er lurt å vurdere hvordan du kan øke vitamininnholdet i kostholdet ditt uten å ta kosttilskudd."
+      "description": "Et variert kosthold bidrar til å redusere risikoen for vitaminmangel. Deretter følger en kort quiz."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Quiz: Hvorfor kan det å spise svært bearbeidede matvarer regelmessig",
+      "name": "Samme kalorier, ulik påvirkning",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Matvarer med samme kaloriinnhold kan ha svært ulik miljøpåvirkning, og det er verdt å tenke over om det å spise høyt bearbeidede snacks regelmessig kan gjøre det vanskeligere å kontrollere kaloriinntaket."
+      "description": "Matvarer som inneholder like mange kalorier, kan ha svært ulik miljøpåvirkning. Deretter følger en kort quiz."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Quiz: Du sammenligner to matvarer: Produkt",
+      "name": "Fullverdige planteproteiner",
       "title": "Næringsverdier – Avansert",
-      "description": "Å spise en rekke ulike planteproteiner kan gi deg alle essensielle aminosyrer, og dette gjenspeiles i at du sammenligner to matvarer: Produkt A: «Proteinkilde» Produkt B: «Høyt innhold av...»"
+      "description": "Å spise en rekke ulike planteproteiner kan gi deg alle essensielle aminosyrer. Deretter følger en kort quiz."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Quiz: Du ønsker å redusere risikoen",
+      "name": "Forstå fettet i maten",
       "title": "Næringsverdier – Avansert",
-      "description": "Fett bør utgjøre høyst rundt 30 % av det totale daglige energiinntaket, og du bør vurdere om du ønsker å redusere risikoen forbundet med inntak av transfett."
+      "description": "Fett bør utgjøre ikke mer enn ca. 30 % av det totale daglige energiinntaket. Deretter følger en kort quiz."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Uken for bevisstgjøring om tilsatt sukker",
       "title": "Næringsverdier – Avansert",
-      "description": "Unngå mat og drikke der tilsatt sukker er blant de tre første ingrediensene gjennom hele uken, og husk at det er lettere å kontrollere innholdet av tilsatt sukker når du lager mat hjemme."
+      "description": "Unngå mat og drikke der tilsatt sukker er blant de tre første ingrediensene gjennom hele uken, og husk at når man lager mat hjemme, er det lettere å kontrollere innholdet av tilsatt sukker."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
       "name": "Natrium-hotspot",
@@ -3322,12 +3335,12 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Regnbueuken",
       "title": "Næringsverdier – Avansert",
-      "description": "Spis matvarer i minst fem forskjellige frukt- og grønnsaksfarger hver dag, og husk at vitamin B12 hovedsakelig finnes i animalske matvarer."
+      "description": "Spis matvarer i minst fem forskjellige frukt- og grønnsaksfarger hver dag, og husk at vitamin B12 finnes hovedsakelig i animalske matvarer."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Uken med næringsrike retter",
       "title": "Næringsverdier – Avansert",
-      "description": "Sørg for at hvert hovedmåltid inneholder minst tre av følgende: en proteinkilde, en fiberrik matvare, en frukt eller grønnsak, eller en kilde til sunne fettstoffer, samtidig som du må huske på at det fører til store kaloritap når man bruker avlingsprodukter som fôr til husdyr."
+      "description": "Sørg for at hvert hovedmåltid inneholder minst tre av følgende: en proteinkilde, en fiberrik matvare, en frukt eller grønnsak, eller en kilde til sunne fettstoffer, samtidig som du må huske på at når man bruker avlingsprodukter som fôr til husdyr, fører det til store kaloritap."
     }
   },
   "meta": {

@@ -874,7 +874,8 @@
         "B": "Uova",
         "C": "Formaggio",
         "D": "Petto di pollo"
-      }
+      },
+      "explanation": "I legumi migliorano la fertilità del suolo grazie alla fissazione dell'azoto e forniscono allo stesso tempo proteine, fibre, vitamine e minerali."
     },
     "Q1.2.5": {
       "question": "Una famiglia desidera ridurre il consumo di carne rossa senza eliminare del tutto i prodotti di origine animale. Quale cambiamento riflette meglio i dati disponibili?",
@@ -1003,7 +1004,8 @@
         "B": "Una dieta ricca di latticini e carne rossa",
         "C": "Una dieta ricca di prodotti a base di carne lavorata",
         "D": "Una dieta incentrata sulla carne bovina come principale fonte proteica"
-      }
+      },
+      "explanation": "Il consumo di acqua tende a diminuire quando l'alimentazione si sposta dagli alimenti di origine animale verso quelli di origine vegetale."
     },
     "Q2.2.3": {
       "question": "Nel frigorifero trovi delle verdure che stanno per andare a male. Qual è la scelta più sostenibile?",
@@ -1022,7 +1024,8 @@
         "B": "Il consumo idrico dipende dagli alimenti specifici scelti, ma ridurre il consumo di alimenti di origine animale è spesso un fattore importante",
         "C": "L'impatto idrico dipende principalmente dalle distanze di trasporto degli alimenti",
         "D": "Gli alimenti trasformati richiedono sempre più acqua rispetto a quelli freschi"
-      }
+      },
+      "explanation": "Gli studi mostrano che ridurre gli alimenti di origine animale abbassa spesso l'impronta idrica, ma il consumo complessivo di acqua dipende comunque dalla composizione della dieta."
     },
     "Q2.2.5": {
       "question": "Quale pasto si ritiene generalmente che abbia l'impronta idrica più bassa?",
@@ -1081,7 +1084,8 @@
         "B": "I sistemi alimentari esercitano una notevole pressione sugli ecosistemi a causa della domanda di risorse e di energia",
         "C": "La maggior parte della pressione sull’ecosistema deriva dagli imballaggi alimentari piuttosto che dalla produzione alimentare",
         "D": "Si prevede che la domanda di generi alimentari subirà un calo significativo entro il 2050"
-      }
+      },
+      "explanation": "L'attività umana, in particolare agricoltura, silvicoltura e sistemi alimentari, si appropria di circa il 30% della produzione primaria netta globale, ben oltre il limite di sicurezza proposto del 10%, segnalando una pressione notevole su ecosistemi e biodiversità."
     },
     "Q2.4.1": {
       "question": "Vuoi ridurre il tuo impatto sul clima, ma non vuoi diventare vegetariano. Quale strategia potrebbe rivelarsi più efficace?",
@@ -1090,7 +1094,7 @@
         "A": "Sostituisci alcuni pasti a base di carne rossa con i legumi",
         "B": "Acquista solo prodotti a base di carne di prima scelta",
         "C": "Smettete di comprare verdure surgelate",
-        "D": "Cambiare marca di caffè Risposta corretta"
+        "D": "Cambiare marca di caffè"
       }
     },
     "Q2.4.2": {
@@ -1320,7 +1324,8 @@
         "B": "Possono essere coltivati solo in ambiente chiuso",
         "C": "Potrebbero fornire proteine con un minore impatto ambientale",
         "D": "Eliminano la necessità di coltivare"
-      }
+      },
+      "explanation": "Le fonti proteiche alternative sono allo studio perché possono contribuire a ridurre le pressioni ambientali legate all'allevamento convenzionale, sostenendo al contempo la sicurezza alimentare futura."
     },
     "Q3.4.5": {
       "question": "Un produttore di carne afferma che il proprio programma di allevamento è incentrato sull'efficienza alimentare. Perché questo potrebbe essere rilevante ai fini della sostenibilità?",
@@ -1329,7 +1334,8 @@
         "B": "Gli animali potrebbero richiedere meno risorse",
         "C": "Garantisce prezzi al dettaglio più bassi",
         "D": "Elimina le emissioni di gas serra"
-      }
+      },
+      "explanation": "Gli animali con una migliore efficienza di conversione alimentare producono la stessa quantità di carne utilizzando meno mangime, riducendo le pressioni ambientali per unità di produzione."
     },
     "Q3.5.1": {
       "question": "Devi scegliere tra due barrette di cioccolato con valori nutrizionali e informazioni ambientali simili. Una delle due reca il marchio Fairtrade. Qual è l’aspetto aggiuntivo della sostenibilità che il marchio Fairtrade intende principalmente affrontare?",
@@ -1528,7 +1534,8 @@
         "B": "Porzioni standardizzate",
         "C": "Ingredienti di provenienza locale",
         "D": "Informazioni nutrizionali sui menu"
-      }
+      },
+      "explanation": "Le porzioni standardizzate spesso non tengono conto delle differenze di appetito e sono riconosciute come una causa sistemica degli avanzi nel piatto."
     },
     "Q5.2.1": {
       "question": "Ti sono avanzati degli avanzi della cena che intendi consumare domani. Qual è la prima cosa da fare per evitare sia lo spreco alimentare che i rischi per la sicurezza alimentare?",
@@ -1687,7 +1694,8 @@
         "B": "Includere più legumi, frutta secca e cereali integrali come fonti proteiche",
         "C": "Scegliete gli alimenti con il più alto contenuto proteico, indipendentemente dalla loro provenienza",
         "D": "Sostituire i pasti con integratori proteici"
-      }
+      },
+      "explanation": "Legumi, frutta secca e cereali integrali forniscono proteine e hanno in genere un impatto ambientale inferiore rispetto a molte fonti proteiche di origine animale. Diversificare le fonti proteiche è utile sia per la salute sia per la sostenibilità."
     },
     "Q6.1.2": {
       "question": "Due pranzi contengono una quantità simile di proteine: insalata di lenticchie e quinoa; panino con salumi. Quale delle seguenti affermazioni è più corretta?",
@@ -1705,8 +1713,9 @@
         "A": "Continua a mangiare carne a ogni pasto",
         "B": "Affidati a un’unica fonte di proteine vegetali",
         "C": "Consuma una varietà di fonti di proteine vegetali, come legumi, cereali, frutta secca e semi",
-        "D": "Raddoppiare l'apporto calorico totale. Risposta corretta: C"
-      }
+        "D": "Raddoppiare l'apporto calorico totale"
+      },
+      "explanation": "Le diverse proteine vegetali si completano a vicenda. In diete variate, combinare più fonti proteiche vegetali fornisce di norma tutti gli amminoacidi essenziali."
     },
     "Q6.1.4": {
       "question": "Stai mettendo a confronto due prodotti alimentari: Prodotto A: \"Fonte di proteine\" Prodotto B: \"Ad alto contenuto proteico\" Cosa puoi concludere?",
@@ -1714,8 +1723,9 @@
         "A": "Il prodotto B contiene necessariamente il doppio delle proteine",
         "B": "Il prodotto A è meno salutare",
         "C": "Una percentuale maggiore dell'apporto energetico del Prodotto B proviene dalle proteine",
-        "D": "Il prodotto B contiene proteine animali. Risposta corretta: C"
-      }
+        "D": "Il prodotto B contiene proteine animali"
+      },
+      "explanation": "In base alla normativa UE sulle indicazioni nutrizionali, un prodotto può essere etichettato «ad alto contenuto di proteine» solo se almeno il 20% del suo valore energetico proviene dalle proteine. «Fonte di proteine» richiede almeno il 12%."
     },
     "Q6.1.5": {
       "question": "Quale modello alimentare è più in linea sia con gli obiettivi di sostenibilità che con le attuali raccomandazioni nutrizionali?",
@@ -1724,7 +1734,8 @@
         "B": "Ottimizzare l'apporto proteico indipendentemente dalla fonte",
         "C": "Assumere proteine attraverso una combinazione di legumi, pesce, latticini, uova, frutta secca e quantità moderate di carne",
         "D": "Basandosi principalmente su frullati proteici e integratori"
-      }
+      },
+      "explanation": "Le diete sane e sostenibili si basano in genere su fonti proteiche diversificate piuttosto che su una sola. Legumi, pesce, frutta secca, latticini e quantità moderate di carne possono tutti contribuire a un apporto proteico adeguato, sostenendo la qualità della dieta."
     },
     "Q6.2.1": {
       "question": "Vuoi migliorare la qualità dei grassi nella tua alimentazione senza rinunciare alla soddisfazione dei pasti. Quale sostituzione è più in linea con le attuali raccomandazioni?",
@@ -1963,7 +1974,8 @@
         "B": "Pane bianco con burro",
         "C": "Fette d'arancia e kiwi",
         "D": "Riso lessato"
-      }
+      },
+      "explanation": "Frutta come arance, kiwi e frutti di bosco, insieme a molte verdure, è ricca di vitamina C, che contribuisce alla funzione immunitaria e alla normale formazione del collagene."
     },
     "Q6.6.5": {
       "question": "Puoi scegliere tra due contorni: verdure al vapore e verdure cotte a lungo ad alta temperatura. Quale delle due opzioni permette di preservare meglio le vitamine?",
@@ -2012,7 +2024,8 @@
         "B": "Ottimizzare l'apporto calorico da qualsiasi fonte alimentare",
         "C": "Adattare l'apporto calorico alle esigenze individuali, privilegiando gli alimenti ricchi di sostanze nutritive",
         "D": "Concentrarsi solo sulle calorie e trascurare la qualità del cibo"
-      }
+      },
+      "explanation": "Una dieta sana e sostenibile non riguarda solo le calorie. Significa soddisfare il fabbisogno energetico scegliendo alimenti che forniscono nutrienti essenziali e limitando consumi eccessivi e sprechi inutili."
     },
     "Q6.7.5": {
       "question": "Quattro spuntini apportano all’incirca lo stesso numero di calorie. Quale di questi è più probabile che ti faccia sentire sazio più a lungo?",
@@ -2937,12 +2950,12 @@
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Ridurre di un pasto a base di carne",
       "title": "Cambiamenti nell'alimentazione - Principianti",
-      "description": "Consuma un pasto a base di carne in meno rispetto alla settimana precedente, tenendo presente che ridurre il consumo di carne rossa è uno dei modi più efficaci per ridurre il."
+      "description": "Consuma un pasto a base di carne in meno rispetto alla settimana precedente, tenendo presente che mangiare meno carne rossa è uno dei modi più efficaci per ridurre l'impatto ambientale della propria alimentazione."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
       "name": "Primo \"Swap\" sostenibile",
       "title": "Cambiamenti nell'alimentazione - Principianti",
-      "description": "Registra le azioni relative alla sostituzione delle proteine (Log 2), tenendo presente che sostituire parte del consumo di carne con i legumi può ridurre l'impatto sul clima."
+      "description": "Registra le azioni relative alla sostituzione delle proteine (Log 2), tenendo presente che sostituire una parte del consumo di carne con i legumi può ridurre l'impatto climatico della propria alimentazione."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Scopri le lenticchie",
@@ -2952,32 +2965,32 @@
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "Due giorni senza carne",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Trascorri due giorni senza carne, tenendo presente che la produzione di carne bovina richiede molto più terreno rispetto alla produzione di proteine vegetali come i piselli o..."
+      "description": "Trascorri due giorni senza carne, tenendo presente che la produzione di carne bovina richiede una superficie molto maggiore rispetto alla produzione di proteine vegetali come i piselli o il tofu."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Generatore di scambi sostenibili",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Annota le 4 azioni per variare l'apporto proteico, tenendo presente che fagioli, lenticchie, piselli e ceci sono tra le fonti proteiche più sostenibili disponibili."
+      "description": "Annota le 4 azioni per variare l'apporto proteico, tenendo presente che i fagioli, le lenticchie, i piselli e i ceci sono tra le fonti proteiche più sostenibili disponibili."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Programma per i legumi",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Includete i legumi in quattro pasti, tenendo presente che i miglio sono colture estremamente resistenti, in grado di crescere in condizioni di caldo e siccità con poche risorse."
+      "description": "Includete i legumi in quattro pasti, tenendo presente che i miglio sono colture estremamente resistenti, in grado di crescere in condizioni di caldo e siccità con scarse risorse idriche."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
       "name": "Rimani nel verde",
       "title": "Cambiamenti nella dieta - Livello avanzato",
-      "description": "Limitate il consumo di carne a meno di quattro pasti a settimana, tenendo presente che l’allevamento occupa la maggior parte dei terreni agricoli a livello globale, pur fornendo una quota molto più ridotta di."
+      "description": "Limitate il consumo di carne a meno di quattro pasti a settimana, tenendo presente che la produzione zootecnica occupa la maggior parte dei terreni agricoli a livello mondiale, pur fornendo una quota molto più ridotta di calorie e proteine."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Maggioranza di proteine vegetali",
       "title": "Cambiamenti nella dieta - Livello avanzato",
-      "description": "Assicuratevi che la maggior parte dei pasti ricchi di proteine provenga da fonti proteiche non animali, tenendo presente che i legumi migliorano naturalmente la fertilità del suolo fissando l’azoto presente nell’aria, riducendone così la necessità."
+      "description": "Assicuratevi che la maggior parte dei pasti ricchi di proteine provenga da fonti proteiche non animali, tenendo presente che i legumi migliorano naturalmente la fertilità del suolo fissando l'azoto presente nell'aria, riducendo così la necessità di ricorrere ai fertilizzanti."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
       "name": "Abitudine alimentare alternativa",
       "title": "Cambiamenti nella dieta - Livello avanzato",
-      "description": "Includere alimenti di base alternativi in almeno cinque pasti, tenendo presente che la quinoa viene ormai coltivata in oltre 70 paesi, contribuendo così a diversificare la produzione alimentare mondiale."
+      "description": "Includere alimenti di base alternativi in almeno cinque pasti, tenendo presente che la quinoa viene oggi coltivata in oltre 70 paesi, contribuendo a diversificare la produzione alimentare mondiale."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Tracciatore di origine",
@@ -2985,19 +2998,19 @@
       "description": "Cerca di individuare il paese di origine di almeno 5 prodotti alimentari consumati durante la settimana, tenendo presente che circa la metà della superficie terrestre abitabile è destinata all'agricoltura."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Quiz: Due persone mangiano lo stesso numero",
+      "name": "L'acqua dietro il cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Circa il 70% dei prelievi globali di acqua dolce è destinato all'agricoltura e si riflette sul fatto che due persone assumono lo stesso numero di calorie al giorno."
+      "description": "Circa il 70% dei prelievi mondiali di acqua dolce è destinato all'agricoltura. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Quiz: Stai confrontando quattro diete con",
+      "name": "Il costo climatico dei pasti",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "I sistemi alimentari generano circa un terzo delle emissioni globali di gas serra; ciò va tenuto presente quando si mettono a confronto quattro regimi alimentari con lo stesso apporto calorico."
+      "description": "I sistemi alimentari generano circa un terzo delle emissioni globali di gas serra. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Quiz: Vuoi ridurre il tuo impatto sul clima",
+      "name": "I chilometri del cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Il trasporto alimentare a livello globale genera circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente ogni anno, e questo si riflette sul fatto che tu voglia ridurre il tuo impatto sul clima ma non voglia farlo."
+      "description": "Il trasporto alimentare a livello mondiale genera ogni anno circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Scelta dei prodotti - Principianti",
@@ -3007,22 +3020,22 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
       "name": "Origini diverse",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Cerca di risalire alle origini degli alimenti che consumi e registra almeno 3 pasti a base di prodotti locali, tenendo presente che la carne bovina è uno degli alimenti che richiedono il maggior impiego di terreno."
+      "description": "Cerca di risalire alle origini degli alimenti che consumi e registra almeno 3 pasti a base di prodotti locali, tenendo presente che la carne bovina è uno degli alimenti che richiedono il maggior impiego di terreno tra quelli consumati dall'uomo."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Quiz: Quale delle seguenti affermazioni riflette meglio i dati disponibili?",
+      "name": "Cibo sprecato, acqua sprecata",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Lo spreco alimentare comporta anche lo spreco di enormi quantità di acqua utilizzata per la coltivazione dei prodotti alimentari; scegli l’affermazione che meglio riflette i dati relativi al consumo idrico e alle diete sostenibili."
+      "description": "Lo spreco alimentare comporta anche lo spreco di enormi quantità di acqua utilizzata per la coltivazione dei prodotti alimentari. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Quiz: Un consumatore vuole ridurre il",
+      "name": "L'impronta di carbonio della carne",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "La carne, in particolare quella di manzo e di agnello, ha un’impronta di carbonio molto più elevata rispetto alla maggior parte dei prodotti vegetali, e questo è un aspetto da tenere presente per i consumatori che desiderano ridurre l’impronta energetica dei propri acquisti alimentari."
+      "description": "La carne, in particolare quella di manzo e di agnello, ha un’impronta di carbonio molto più elevata rispetto alla maggior parte degli alimenti di origine vegetale. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Quiz: Quale azione riduce le emissioni senza modificare",
+      "name": "Esplorare le emissioni dei trasporti",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Quasi un quinto delle emissioni di gas serra prodotte dal sistema alimentare globale proviene da… e le misure adottate in questo ambito consentono di ridurre le emissioni senza modificare le scelte alimentari."
+      "description": "Quasi un quinto delle emissioni di gas serra prodotte dal sistema alimentare globale è dovuto al trasporto dei prodotti alimentari. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Scelta dei prodotti - Livello intermedio",
@@ -3032,22 +3045,22 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Oltre il Paese di origine",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Quando si scelgono i prodotti per almeno 3 pasti, occorre tenere conto sia del paese di origine sia di un ulteriore indicatore di sostenibilità (ad esempio, certificazione, metodo di produzione, stagionalità), tenendo presente che la maggior parte dei terreni agricoli è destinata al pascolo del bestiame o alla coltivazione di mangimi."
+      "description": "Quando si scelgono i prodotti per almeno 3 pasti, occorre tenere conto sia del paese di origine sia di un ulteriore indicatore di sostenibilità (ad esempio, certificazione, metodo di produzione, stagionalità), tenendo presente che la maggior parte dei terreni agricoli è destinata al pascolo del bestiame o alla coltivazione di foraggio."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Quiz: Vuoi ridurre il consumo di acqua",
+      "name": "L'impronta idrica in profondità",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "L'impronta idrica della tua alimentazione dipende in larga misura da ciò che mangi; riflettici se desideri ridurre l'impronta idrica dei tuoi pasti."
+      "description": "L'impronta idrica della tua alimentazione dipende in larga misura da ciò che mangi. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Quiz: Un'agenzia di sviluppo sta decidendo dove investire",
+      "name": "Emissioni oltre il piatto",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Lo spreco alimentare genera ogni anno miliardi di tonnellate di emissioni di CO₂ equivalente e incide sulle decisioni di un'agenzia di sviluppo in merito a dove investire per ridurre le perdite alimentari."
+      "description": "Lo spreco alimentare genera ogni anno miliardi di tonnellate di emissioni di CO₂ equivalente. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Quiz: Una persona pensa solo a fare acquisti",
+      "name": "Catena del freddo e trasporti",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Sebbene i prodotti alimentari rappresentino solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, il loro impatto si riflette su una persona che, pur concentrandosi esclusivamente sull’acquisto di prodotti locali, continua a consumarne grandi quantità."
+      "description": "Sebbene il settore alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni legate al trasporto merci. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Scelta dei prodotti - Avanzate",
@@ -3060,9 +3073,9 @@
       "description": "Individua la classificazione NOVA di almeno 3 prodotti alimentari, tenendo presente che la trasformazione degli alimenti può migliorare la sicurezza alimentare e prolungarne la durata di conservazione."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Quiz: Stai mettendo a confronto due prodotti locali.",
+      "name": "Il locale, più da vicino",
       "title": "Metodi di produzione - Principianti",
-      "description": "Le catene di approvvigionamento brevi possono sostenere le economie locali e la resilienza; rifletti sul fatto che stai mettendo a confronto due prodotti locali."
+      "description": "Le catene di approvvigionamento corte possono sostenere le economie locali e favorirne la resilienza. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Osservatore del metodo di produzione",
@@ -3075,19 +3088,19 @@
       "description": "Scegli un prodotto alimentare e cerca di capire cosa possa essere successo tra le materie prime e il prodotto finale che hai acquistato, tenendo presente che la diversificazione delle colture e delle razze può aumentare la resilienza del sistema alimentare."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Quiz: Devi scegliere tra due tipi di cioccolato",
+      "name": "Basi del commercio equo",
       "title": "Metodi di produzione - Principianti",
-      "description": "Il settore agricolo rappresenta la maggior parte dei casi di lavoro minorile a livello mondiale, e pensa che stai scegliendo tra due barrette di cioccolato con un valore nutrizionale simile e..."
+      "description": "L'agricoltura rappresenta la maggior parte dei casi di lavoro minorile a livello mondiale. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Confronta i livelli di elaborazione",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Confronta alimenti con diverse classificazioni NOVA su almeno tre prodotti appartenenti alla stessa categoria alimentare (ad esempio, tenendo presente che metodi di lavorazione diversi comportano consumi energetici molto diversi)."
+      "description": "Confronta alimenti con diverse classificazioni NOVA su almeno tre prodotti appartenenti alla stessa categoria alimentare (ad esempio, tre tipi di formaggio). I diversi metodi di lavorazione comportano consumi energetici molto diversi tra loro."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Quiz: Un prodotto è etichettato come locale. Cosa",
+      "name": "Cosa dice l'origine",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "L'origine degli alimenti può fornire informazioni utili in merito alla tracciabilità e alla sostenibilità e influire sul fatto che un prodotto venga etichettato come \"locale\". Cosa si può dedurre da queste informazioni?"
+      "description": "L'origine degli alimenti può fornire informazioni utili in materia di tracciabilità e sostenibilità. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Scelta basata sui dati di produzione",
@@ -3095,14 +3108,14 @@
       "description": "Utilizza la classificazione NOVA, il Green-Score o le informazioni contenute nell’elenco degli ingredienti per orientare almeno cinque decisioni di acquisto. Dove posso trovare queste informazioni? Consulta le confezioni, i contenuti di Open o le app per la scansione degli alimenti, tenendo presente che le strisce fiorite e gli habitat per gli impollinatori possono favorire la biodiversità nelle aziende agricole."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Quiz: Stai confrontando due prodotti a base di pomodoro.",
+      "name": "Selezione a minore impatto",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "L'allevamento di animali che producono minori emissioni di metano può ridurre l'impatto del bestiame e si riflette sul fatto che si stanno confrontando due prodotti a base di pomodoro."
+      "description": "L'allevamento di animali che producono minori emissioni di metano può ridurre l'impatto del bestiame. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Quiz: Un consumatore vuole prendere in considerazione entrambi",
+      "name": "Il lato sociale del cibo",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "La sostenibilità del sistema alimentare comprende le condizioni sociali e lavorative e riflette il desiderio dei consumatori di tenere conto sia della sostenibilità ambientale che di quella sociale al momento dell'acquisto."
+      "description": "La sostenibilità del sistema alimentare comprende anche le condizioni sociali e lavorative. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Tracker a indicatori multipli",
@@ -3115,29 +3128,29 @@
       "description": "Per almeno tre acquisti, valuta sia la classificazione NOVA che il Green-Score prima di prendere una decisione, tenendo presente che non tutti gli alimenti trasformati hanno un impatto ambientale elevato."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Quiz: Quale mezzo di trasporto merita in genere il",
+      "name": "La distanza non è tutto",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Il cibo locale non è sempre l’opzione più sostenibile, e quando si valutano gli impatti sul clima è generalmente opportuno prestare particolare attenzione alle modalità di trasporto."
+      "description": "Il cibo locale non è sempre l'opzione più sostenibile. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Quiz: Devi scegliere tra due mele",
+      "name": "Metodi agricoli che aiutano",
       "title": "Metodi di produzione - Avanzato",
-      "description": "L'agroforestazione combina la coltivazione di alberi con quella di colture o l'allevamento di bestiame sullo stesso appezzamento di terreno; riflettete sulla scelta tra due prodotti a base di mele: Prodotto A: \"Prodotto utilizzando la gestione integrata dei parassiti\"."
+      "description": "L'agroforestazione consiste nel combinare la coltivazione di alberi con quella di colture agricole o l'allevamento di bestiame sullo stesso appezzamento di terreno. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Quiz: Trovi un prodotto alimentare in vendita",
+      "name": "Innovazione in campo",
       "title": "Metodi di produzione - Avanzato",
-      "description": "L'editing genomico potrebbe contribuire allo sviluppo di colture più resistenti allo stress climatico; riflettete quindi su cosa significa trovare un prodotto alimentare commercializzato come proveniente da una coltura resistente al clima."
+      "description": "La modifica del genoma potrebbe contribuire allo sviluppo di colture più resistenti allo stress climatico. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Quiz: Una confezione di caffè mette in evidenza il sostegno a",
+      "name": "Chi coltiva il nostro cibo",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Le donne svolgono un ruolo fondamentale nella produzione alimentare, ma spesso hanno un accesso più limitato a…; ciò viene sottolineato su una confezione di caffè che mette in evidenza il sostegno offerto ai piccoli agricoltori."
+      "description": "Le donne svolgono un ruolo fondamentale nella produzione alimentare, ma spesso hanno un accesso più limitato alle risorse. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Osservatorio sui materiali da imballaggio",
       "title": "Imballaggio - Livello principiante",
-      "description": "Indica il materiale di imballaggio di almeno cinque prodotti alimentari consumati durante la settimana, tenendo presente che gli imballaggi alimentari proteggono i prodotti da contaminazioni, umidità, ossigeno e danni fisici, contribuendo a preservarne la qualità."
+      "description": "Indica il materiale di imballaggio di almeno cinque prodotti alimentari consumati durante la settimana, tenendo presente che gli imballaggi alimentari proteggono i prodotti da contaminazioni, umidità, ossigeno e danni fisici, contribuendo a garantire la sicurezza e la qualità degli alimenti."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Guida agli imballaggi riutilizzabili",
@@ -3147,7 +3160,7 @@
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Scelte consapevoli in materia di imballaggi",
       "title": "Imballaggio - Livello intermedio",
-      "description": "Si tenga conto delle caratteristiche della confezione al momento di prendere almeno tre decisioni di acquisto, tenendo presente che l’impatto ambientale della produzione alimentare è spesso molto maggiore rispetto a quello della."
+      "description": "Si tenga conto delle caratteristiche della confezione al momento di prendere almeno tre decisioni di acquisto, tenendo presente che l'impatto ambientale della produzione alimentare è spesso molto maggiore di quello degli imballaggi utilizzati per proteggere i prodotti."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Strumento di ricerca delle opportunità di riutilizzo",
@@ -3157,7 +3170,7 @@
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Decisioni relative all'imballaggio basate su criteri multipli",
       "title": "Confezionamento - Avanzato",
-      "description": "Per almeno tre acquisti, valuta sia il materiale di imballaggio che le opzioni di smaltimento prima di effettuare una scelta, tenendo presente che gli imballaggi commestibili possono contribuire a ridurre la dipendenza dalla plastica di origine fossile, sostituendo i materiali di imballaggio convenzionali."
+      "description": "Per almeno tre acquisti, valuta sia il materiale di imballaggio che le opzioni di smaltimento prima di effettuare una scelta, tenendo presente che gli imballaggi commestibili possono contribuire a ridurre la dipendenza dalla plastica di origine fossile, sostituendo i materiali di imballaggio convenzionali con alternative biodegradabili."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Strumento per sviluppare l'abitudine al riutilizzo",
@@ -3167,27 +3180,27 @@
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Introduzione al servizio intelligente",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Registro 5: “Half Plate Saved” (Mezzo piatto salvato), tenendo presente che le famiglie generano più rifiuti alimentari di qualsiasi altro settore nell’Unione europea."
+      "description": "Registro 5: “Half Plate Saved” (Mezzo piatto salvato), tenendo presente che le famiglie generano più rifiuti alimentari di qualsiasi altro settore nell'Unione europea."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Archiviazione più intelligente",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Assicurati di leggere attentamente le istruzioni riportate sulla confezione relative alle modalità di conservazione degli alimenti dopo l’apertura della confezione per almeno cinque prodotti acquistati, tenendo presente che le famiglie sono responsabili di oltre la metà dello spreco alimentare generato nell’UE."
+      "description": "Assicurati di leggere attentamente le istruzioni riportate sulla confezione relative alle modalità di conservazione degli alimenti dopo l’apertura della confezione per almeno cinque prodotti acquistati, tenendo presente che le famiglie sono responsabili di oltre la metà degli sprechi alimentari generati nell'UE."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
       "name": "Esplora etichette data",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Registrare l'azione \"Consumo di prodotti scaduti\" (Log 1), tenendo presente che oltre la metà di tutti gli sprechi alimentari in Europa è generata dalle famiglie."
+      "description": "Registrare l'azione \"Consumo di prodotti scaduti\" (Log 1), tenendo presente che più della metà dello spreco alimentare totale in Europa è generato dalle famiglie."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
       "name": "Test di previsione delle porzioni",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Prima di un pasto, cerca di stimare la quantità di cibo che pensi di mangiare. Dopo il pasto, confronta la tua stima con ciò che hai effettivamente consumato, tenendo presente che in molti paesi le porzioni sono aumentate notevolmente negli ultimi decenni."
+      "description": "Prima di un pasto, cerca di stimare la quantità di cibo che pensi di mangiare. Dopo il pasto, confronta la tua stima con ciò che hai effettivamente consumato, tenendo presente che negli ultimi decenni, in molti paesi le porzioni sono aumentate in modo sostanziale."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
       "name": "Missione 3: Controllo del frigo",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative alla riduzione degli sprechi nel piatto, tenendo presente che servire porzioni più piccole può ridurre gli sprechi nei refettori e nei ristoranti."
+      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative alla riduzione degli sprechi nel piatto, tenendo presente che offrire porzioni più piccole può ridurre gli sprechi nei refettori e nei ristoranti."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "L'abitudine di pianificare i pasti",
@@ -3197,42 +3210,42 @@
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
       "name": "Missione 3: Controllo del frigo",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative al risparmio di cibo (piatti non sprecati), tenendo presente che lo spreco alimentare delle famiglie in Europa è stimato a circa 69 milioni di tonnellate all’anno."
+      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative al risparmio di cibo (piatti non sprecati), tenendo presente che si stima che in Europa i rifiuti alimentari prodotti dalle famiglie ammontino a circa 69 milioni di tonnellate all'anno."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Annotate almeno le azioni relative al programma “Half Plate Saved”, tenendo presente che l’impatto ambientale di una dieta non dipende solo da ciò che le persone mangiano, ma anche..."
+      "description": "Annotate almeno le azioni relative al programma “Half Plate Saved”, tenendo presente che l'impatto ambientale di una dieta dipende non solo da ciò che le persone mangiano, ma anche da quanto mangiano."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Attenzione allo spreco alimentare a tavola",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Registra almeno 7 azioni “Half Plate Saved”, tenendo presente che la carne sprecata incide in modo sproporzionato sull’impatto climatico dello spreco alimentare."
+      "description": "Registra almeno 7 azioni “Half Plate Saved”, tenendo presente che lo spreco di carne incide in misura sproporzionata sull'impatto climatico dello spreco alimentare."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Esperto nella prevenzione delle scadenze",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Registrare le azioni relative al consumo di 4 prodotti scaduti, tenendo presente che la carne e i latticini vengono sprecati meno spesso, ma hanno un impatto ambientale maggiore."
+      "description": "Registrare le azioni relative al consumo di 4 prodotti scaduti, tenendo presente che la carne e i latticini vengono sprecati meno spesso, ma quando vengono sprecati hanno un impatto ambientale maggiore."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Esperto in \"First-In, First-Out\"",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Durante la settimana, organizza il frigorifero, il congelatore o la dispensa in modo che gli alimenti con la durata di conservazione più breve siano sempre posizionati in primo piano e vengano consumati per primi, tenendo presente che le offerte \"paghi uno prendi due\" e gli sconti all'ingrosso possono indurre i consumatori ad acquistare più cibo del necessario."
+      "description": "Durante la settimana, organizza il frigorifero, il congelatore o la dispensa in modo che gli alimenti con la durata di conservazione più breve siano sempre posizionati in primo piano e vengano consumati per primi, tenendo presente che le offerte per acquisti multipli e gli sconti all’ingrosso possono indurre i consumatori ad acquistare più cibo di quanto ne possano consumare."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Settimana della pianificazione a rifiuti zero",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Pianifica tutti i pasti principali della settimana prima di andare a fare la spesa per la prima volta e acquista solo gli alimenti per cui hai già previsto un utilizzo, tenendo presente che consumare più cibo di quanto il corpo necessiti aumenta la domanda di risorse agricole quali, ad esempio."
+      "description": "Pianifica tutti i pasti principali della settimana prima di andare a fare la spesa per la prima volta e acquista solo gli alimenti per cui hai già previsto un utilizzo, tenendo presente che consumare più cibo di quanto il corpo necessiti aumenta la domanda di risorse agricole quali terra, acqua ed energia."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Proteine ogni giorno",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Includi un alimento ricco di proteine in almeno un pasto al giorno, tenendo presente che le proteine aiutano a costruire e a riparare muscoli, tessuti, enzimi e ormoni."
+      "description": "Includi un alimento ricco di proteine in almeno un pasto al giorno, tenendo presente che le proteine contribuiscono alla formazione e alla riparazione dei muscoli, dei tessuti, degli enzimi e degli ormoni."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Sostituzione intelligente degli snack",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Diario 5 - Spuntino → Sostituisci con frutta o frutta secca, tenendo presente che i grassi insaturi sono generalmente più salutari di quelli saturi."
+      "description": "Diario 5 - Spuntino → Sostituisci con frutta o frutta secca, tenendo presente che i grassi insaturi sono generalmente più salutari dei grassi saturi."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Aggiornamento bevanda",
@@ -3255,59 +3268,59 @@
       "description": "Aggiungi ogni giorno una porzione in più di frutta o verdura alla tua dieta, tenendo presente che la carenza di vitamina D è diffusa in tutta Europa."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Quiz: Qual è la bevanda più probabile?",
+      "name": "Le calorie non sono tutto",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Il mondo produce già calorie sufficienti per sfamare tutti, e riflettere sulle bevande che si scelgono è probabilmente il modo migliore per ridurre l’apporto calorico superfluo."
+      "description": "Il mondo produce già abbastanza calorie per sfamare tutti. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Sostituto della carne lavorata",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Registra 2 sostituzioni di carne lavorata → legumi, tenendo presente che la maggior parte degli adulti ha bisogno di circa 0,83 g di proteine per ogni chilogrammo di peso corporeo."
+      "description": "Registra 2 sostituzioni di carne lavorata → legumi, tenendo presente che la maggior parte degli adulti ha bisogno di circa 0,83 g di proteine al giorno per ogni chilogrammo di peso corporeo."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Aggiornamento sui grassi sani",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Scegli una fonte di grassi insaturi anziché una fonte di grassi saturi almeno cinque volte, tenendo presente che il tipo di grassi che consumi è importante tanto quanto la quantità."
+      "description": "Scegli una fonte di grassi insaturi anziché una fonte di grassi saturi almeno cinque volte, tenendo presente che il tipo di grassi che si consumano è importante tanto quanto la quantità."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Confronto tra bevande",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Confronta due bevande zuccherate che ti piace bere e individua quale delle due contiene meno zucchero per 100 ml, tenendo presente che l’OMS raccomanda di limitare gli zuccheri liberi a meno del 10% dell’apporto energetico giornaliero."
+      "description": "Confronta due bevande zuccherate che ti piace bere e individua quale delle due contiene meno zucchero per 100 ml, tenendo presente che l'OMS raccomanda di limitare l'assunzione di zuccheri liberi a meno del 10% dell'apporto energetico giornaliero."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Tavola senza sale",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Durante la settimana, non aggiungere sale ai cibi a tavola, tenendo presente che l’OMS raccomanda di consumare meno di 5 grammi di sale al giorno."
+      "description": "Durante la settimana, non aggiungere sale ai cibi a tavola, tenendo presente che l'OMS raccomanda di consumare meno di 5 grammi di sale al giorno."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Fibre ad ogni pasto",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Includete almeno un alimento ricco di fibre in ogni pasto principale, tenendo presente che gli adulti dovrebbero assumere almeno 25 grammi di fibre al giorno."
+      "description": "Includete almeno un alimento ricco di fibre in ogni pasto principale, tenendo presente che gli adulti dovrebbero mirare ad assumere almeno 25 grammi di fibre al giorno."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Quiz: Vuoi aumentare l'apporto di vitamine",
+      "name": "Vitamine nel piatto",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Seguire una dieta varia aiuta a ridurre il rischio di carenze vitaminiche; valuta se desideri aumentare l'apporto vitaminico della tua alimentazione senza ricorrere a integratori."
+      "description": "Seguire una dieta varia aiuta a ridurre il rischio di carenze vitaminiche. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Quiz: Perché consumare regolarmente alimenti altamente trasformati",
+      "name": "Stesse calorie, impatto diverso",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Gli alimenti che apportano lo stesso numero di calorie possono avere impatti ambientali molto diversi, e riflettere sul fatto che consumare regolarmente snack altamente trasformati possa rendere più difficile il controllo delle calorie."
+      "description": "Gli alimenti che apportano lo stesso numero di calorie possono avere impatti ambientali molto diversi. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Quiz: Stai confrontando due prodotti alimentari: Prodotto",
+      "name": "Proteine vegetali complete",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Un'alimentazione ricca di proteine vegetali di vario tipo può fornire tutti gli aminoacidi essenziali; ciò va tenuto presente quando si confrontano due prodotti alimentari: Prodotto A: \"Fonte di proteine\"; Prodotto B: \"Alto contenuto di proteine\"."
+      "description": "Un'alimentazione ricca di proteine vegetali di vario tipo può fornire tutti gli aminoacidi essenziali. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Quiz: Vuoi ridurre il rischio",
+      "name": "Capire i grassi alimentari",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "I grassi non dovrebbero rappresentare più del 30% circa dell'apporto energetico giornaliero totale; tieni presente che è opportuno ridurre il rischio associato al consumo di grassi trans."
+      "description": "I grassi non dovrebbero rappresentare più del 30% circa dell'apporto energetico giornaliero totale. Segue un breve quiz per mettere alla prova quanto appreso."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Settimana di sensibilizzazione sugli zuccheri aggiunti",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Durante la settimana, evita cibi o bevande che abbiano gli zuccheri aggiunti tra i primi tre ingredienti, tenendo presente che cucinare a casa rende più facile controllare la quantità di zuccheri aggiunti."
+      "description": "Durante la settimana, evita cibi o bevande che abbiano gli zuccheri aggiunti tra i primi tre ingredienti, tenendo presente che cucinare a casa permette di controllare più facilmente la quantità di zucchero aggiunto."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
       "name": "Punto caldo di sodio",
@@ -3322,12 +3335,12 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Settimana dell'arcobaleno",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Consuma ogni giorno alimenti di almeno cinque diversi colori tra frutta e verdura, tenendo presente che la vitamina B12 si trova principalmente negli alimenti di origine animale."
+      "description": "Consuma ogni giorno alimenti di almeno cinque diversi colori tra frutta e verdura, tenendo presente che la vitamina B12 è presente principalmente negli alimenti di origine animale."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Settimana del piatto ricco di nutrienti",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Assicurati che ogni pasto principale includa almeno tre dei seguenti elementi: una fonte proteica, un alimento ricco di fibre, un frutto o una verdura, oppure una fonte di grassi sani, tenendo presente che l’alimentazione del bestiame con le colture comporta notevoli perdite caloriche."
+      "description": "Assicurati che ogni pasto principale includa almeno tre dei seguenti elementi: una fonte proteica, un alimento ricco di fibre, un frutto o una verdura, oppure una fonte di grassi sani, tenendo presente che l'utilizzo delle colture come mangime per il bestiame comporta notevoli perdite caloriche."
     }
   },
   "meta": {
