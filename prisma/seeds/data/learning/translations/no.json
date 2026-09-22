@@ -2978,7 +2978,7 @@
       "description": "Inkluder belgfrukter i fire måltider, og husk at hirse er svært motstandsdyktige avlinger som kan vokse under varme, tørre forhold med lite vann."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Hold deg på den grønne siden",
+      "name": "Hold deg i den grønne sonen",
       "title": "Kostholdsendringer – Avansert",
       "description": "Hold deg under fire kjøttmåltider per uke, og husk samtidig at husdyrproduksjonen opptar størstedelen av jordbruksarealet globalt, samtidig som den bidrar med en langt mindre andel av kalorier og proteiner."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produksjonsbasert valg",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bruk NOVA-klassifiseringen, Green-Score eller informasjon fra ingredienslisten som veiledning når du skal ta minst fem kjøpsbeslutninger. Hvor finner jeg denne informasjonen? Bruk emballasjen, Open Content eller apper for skanning av matvarer, og husk samtidig at blomsterstriper og habitater for bestøvere kan bidra til biologisk mangfold på gårder."
+      "description": "Bruk NOVA-klassifiseringen, Green-Score eller informasjon fra ingredienslisten som veiledning når du skal ta minst fem kjøpsbeslutninger. Bruk emballasjen, Open Food Facts eller apper for skanning av matvarer, og husk samtidig at blomsterstriper og habitater for bestøvere kan bidra til biologisk mangfold på gårder."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Avl for lavere avtrykk",
@@ -3198,9 +3198,9 @@
       "description": "Før et måltid bør du anslå hvor mye mat du tror du kommer til å spise. Etter måltidet bør du sammenligne anslaget ditt med det du faktisk har spist, samtidig som du må huske på at porsjonsstørrelsene har økt betydelig i mange land de siste tiårene."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Oppdrag 3: Sjekk kjøleskapet",
+      "name": "Oppdrag 3: Rutine for kontroll av kjøleskapet",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 handlinger av typen «Forbruk av utgåtte produkter» eller 3 handlinger av typen «Redusert matsvinn på tallerkenen», og husk at å tilby mindre porsjonsstørrelser kan redusere matsvinnet i kantiner og restauranter."
+      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Registrer minst 3 handlinger av typen «Forbruk av utgåtte produkter» eller 3 handlinger av typen «Redusert matsvinn på tallerkenen», og husk at å tilby mindre porsjonsstørrelser kan redusere matsvinnet i kantiner og restauranter."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Vanen med å planlegge måltider",
@@ -3208,9 +3208,9 @@
       "description": "Lag en måltidsplan før du drar på en større handletur, og husk at «best før»-datoene angir kvaliteten."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Oppdrag 3: Sjekk kjøleskapet",
+      "name": "Oppdrag 3: Rutine for kontroll av kjøleskapet",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Oppfølgingskomponent: Registrer minst 3 «Forbrukte utgåtte produkter»-handlinger eller 3 «Sparte fulle tallerkener»-handlinger, og husk at matavfallet fra husholdningene i Europa anslås til rundt 69 millioner tonn per år."
+      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Registrer minst 3 «Forbrukte utgåtte produkter»-handlinger eller 3 «Sparte fulle tallerkener»-handlinger, og husk at matavfallet fra husholdningene i Europa anslås til rundt 69 millioner tonn per år."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Fullkornsuken",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Velg et fullkornsprodukt hver dag. Slik gjør du det: Velg matvarer som fullkornsbrød, fullkornspasta, havre, brun ris, rugbrød, quinoa eller andre fullkornsprodukter, og husk at de fleste europeere inntar mindre fiber enn det som anbefales."
+      "description": "Velg et fullkornsprodukt hver dag. Velg matvarer som fullkornsbrød, fullkornspasta, havre, brun ris, rugbrød, quinoa eller andre fullkornsprodukter, og husk at de fleste europeere inntar mindre fiber enn det som anbefales."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Legg til én frukt eller grønnsak til",
@@ -3285,12 +3285,12 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Sammenligning av drikker",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Sammenlign to søte drikker som du liker å drikke, og finn ut hvilken som inneholder minst sukker per 100 ml. Husk samtidig at wHO anbefaler å begrense inntaket av fritt sukker til under 10 % av det daglige energiinntaket."
+      "description": "Sammenlign to søte drikker som du liker å drikke, og finn ut hvilken som inneholder minst sukker per 100 ml. Husk samtidig at WHO anbefaler å begrense inntaket av fritt sukker til under 10 % av det daglige energiinntaket."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Saltfritt bord",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Ikke tilsett salt i maten ved bordet i løpet av uken, og husk at wHO anbefaler å innta mindre enn 5 gram salt per dag."
+      "description": "Ikke tilsett salt i maten ved bordet i løpet av uken, og husk at WHO anbefaler å innta mindre enn 5 gram salt per dag."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Fiber til hvert måltid",

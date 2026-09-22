@@ -2978,7 +2978,7 @@
       "description": "Włącz rośliny strączkowe do czterech posiłków, pamiętając przy tym, że proso to rośliny uprawne o dużej odporności, które mogą rosnąć w gorących i suchych warunkach, przy niewielkiej ilości wody."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Trzymaj się w zielonej strefie",
+      "name": "Zostań w Zielonej Strefie",
       "title": "Zmiany w diecie – poziom zaawansowany",
       "description": "Należy ograniczyć spożycie mięsa do mniej niż czterech posiłków tygodniowo, pamiętając jednocześnie, że produkcja zwierzęca zajmuje większość gruntów rolnych na świecie, dostarczając jednocześnie znacznie mniejszy udział kalorii i białka."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Wybór oparty na danych produkcyjnych",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Skorzystaj z klasyfikacji NOVA, systemu Green-Score lub informacji zawartych w wykazie składników, aby podjąć co najmniej pięć decyzji zakupowych. Gdzie mogę znaleźć te informacje? Skorzystaj z informacji na opakowaniach, serwisu Open Content lub aplikacji do skanowania produktów spożywczych, pamiętając jednocześnie, że paski kwiatowe i siedliska dla zapylaczy mogą sprzyjać różnorodności biologicznej na terenach rolniczych."
+      "description": "Skorzystaj z klasyfikacji NOVA, systemu Green-Score lub informacji zawartych w wykazie składników, aby podjąć co najmniej pięć decyzji zakupowych. Skorzystaj z informacji na opakowaniach, serwisu Open Food Facts lub aplikacji do skanowania produktów spożywczych, pamiętając jednocześnie, że paski kwiatowe i siedliska dla zapylaczy mogą sprzyjać różnorodności biologicznej na terenach rolniczych."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Hodowla o mniejszym wpływie",
@@ -3198,9 +3198,9 @@
       "description": "Przed posiłkiem spróbuj oszacować, ile jedzenia prawdopodobnie zjesz. Po posiłku porównaj swoje szacunki z tym, co faktycznie zjadłeś, pamiętając przy tym, że w ostatnich dziesięcioleciach wielkość porcji w wielu krajach znacznie wzrosła."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Misja 3: Sprawdzenie lodówki",
+      "name": "Zadanie 3: Rutynowa kontrola lodówki",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Element monitorowania: Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnotrawstwa jedzenia na talerzu, pamiętając jednocześnie, że oferowanie mniejszych porcji może ograniczyć marnotrawstwo żywności w stołówkach i restauracjach."
+      "description": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnotrawstwa jedzenia na talerzu, pamiętając jednocześnie, że oferowanie mniejszych porcji może ograniczyć marnotrawstwo żywności w stołówkach i restauracjach."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Nawyk planowania posiłków",
@@ -3208,9 +3208,9 @@
       "description": "Przed głównymi zakupami przygotuj plan posiłków, pamiętając, że daty „najlepiej spożyć przed” odnoszą się do jakości."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Misja 3: Kontrola lodówki",
+      "name": "Zadanie 3: Rutynowa kontrola lodówki",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed większymi zakupami sprawdź zawartość lodówki lub spiżarni. Element monitorowania: Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia, pamiętając, że szacuje się, że ilość odpadów spożywczych wytwarzanych przez gospodarstwa domowe w Europie wynosi około 69 milionów ton rocznie."
+      "description": "Przed większymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia, pamiętając, że szacuje się, że ilość odpadów spożywczych wytwarzanych przez gospodarstwa domowe w Europie wynosi około 69 milionów ton rocznie."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Tydzień pełnoziarnisty",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Codziennie wybieraj produkt pełnoziarnisty. Jak to zrobić? Wybieraj takie produkty jak chleb pełnoziarnisty, makaron pełnoziarnisty, płatki owsiane, brązowy ryż, chleb żytni, komosa ryżowa lub inne produkty pełnoziarniste, pamiętając przy tym, że większość Europejczyków spożywa mniej błonnika niż zalecane."
+      "description": "Codziennie wybieraj produkt pełnoziarnisty. Wybieraj takie produkty jak chleb pełnoziarnisty, makaron pełnoziarnisty, płatki owsiane, brązowy ryż, chleb żytni, komosa ryżowa lub inne produkty pełnoziarniste, pamiętając przy tym, że większość Europejczyków spożywa mniej błonnika niż zalecane."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Dodaj jeszcze jeden owoc lub warzywo",
@@ -3285,12 +3285,12 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Porównanie napojów",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Porównaj dwa słodkie napoje, które lubisz pić, i ustal, który z nich zawiera mniej cukru na 100 ml, pamiętając, że wHO zaleca ograniczenie spożycia cukrów wolnych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
+      "description": "Porównaj dwa słodkie napoje, które lubisz pić, i ustal, który z nich zawiera mniej cukru na 100 ml, pamiętając, że WHO zaleca ograniczenie spożycia cukrów wolnych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Stół bez soli",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Przez cały tydzień nie dodawaj soli do potraw przy stole, pamiętając, że wHO zaleca spożywanie mniej niż 5 gramów soli dziennie."
+      "description": "Przez cały tydzień nie dodawaj soli do potraw przy stole, pamiętając, że WHO zaleca spożywanie mniej niż 5 gramów soli dziennie."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Błonnik w każdym posiłku",

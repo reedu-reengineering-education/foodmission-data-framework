@@ -2978,7 +2978,7 @@
       "description": "Incluye legumbres en cuatro comidas, teniendo en cuenta que los mijo son cultivos muy resistentes que pueden crecer en condiciones de calor y sequía con poca agua."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Mantente en el verde",
+      "name": "Quédate en la Zona Verde",
       "title": "Cambios en la dieta - Nivel avanzado",
       "description": "Limítate a menos de cuatro comidas con carne a la semana, teniendo en cuenta que la producción ganadera ocupa la mayor parte de las tierras agrícolas a nivel mundial, mientras que aporta una proporción mucho menor de calorías y proteínas."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Decisión basada en datos de producción",
       "title": "Métodos de producción - Nivel intermedio",
-      "description": "Utiliza la clasificación NOVA, el Green-Score o la información de la lista de ingredientes para orientar al menos cinco decisiones de compra. ¿Dónde puedo encontrar esta información? Utiliza el envase, el contenido de Open o aplicaciones de escaneo de alimentos, sin olvidar que las franjas de flores y los hábitats para polinizadores pueden favorecer la biodiversidad en las explotaciones agrícolas."
+      "description": "Utiliza la clasificación NOVA, el Green-Score o la información de la lista de ingredientes para orientar al menos cinco decisiones de compra. Utiliza el envase, Open Food Facts o aplicaciones de escaneo de alimentos, sin olvidar que las franjas de flores y los hábitats para polinizadores pueden favorecer la biodiversidad en las explotaciones agrícolas."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Mejora genética de menor impacto",
@@ -3198,9 +3198,9 @@
       "description": "Antes de comer, calcula aproximadamente cuánta comida crees que vas a comer. Después de la comida, compara tu estimación con lo que has consumido realmente, teniendo en cuenta que el tamaño de las raciones ha aumentado considerablemente en muchos países durante las últimas décadas."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Misión 3: Revisión de la nevera",
+      "name": "Misión 3: Rutina de revisión de la nevera",
       "title": "Desperdicio alimentario - Nivel intermedio",
-      "description": "Revisa la nevera o la despensa antes de ir a hacer la compra principal. Componente de seguimiento: Registra al menos 3 acciones de «Consumo de productos caducados» o 3 acciones de «Platos sin desperdicio», teniendo en cuenta que ofrecer raciones más pequeñas puede reducir el desperdicio de comida en comedores y restaurantes."
+      "description": "Revisa la nevera o la despensa antes de ir a hacer la compra principal. Registra al menos 3 acciones de «Consumo de productos caducados» o 3 acciones de «Platos sin desperdicio», teniendo en cuenta que ofrecer raciones más pequeñas puede reducir el desperdicio de comida en comedores y restaurantes."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "El hábito de planificar las comidas",
@@ -3208,9 +3208,9 @@
       "description": "Elabora un plan de comidas antes de hacer la compra principal, teniendo en cuenta que las fechas de consumo preferente se refieren a la calidad."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Misión 3: Revisión de la nevera",
+      "name": "Misión 3: Rutina de revisión de la nevera",
       "title": "Desperdicio alimentario - Nivel intermedio",
-      "description": "Revisa la nevera o la despensa antes de ir a hacer la compra principal. Componente de seguimiento: Registra al menos 3 acciones de «Consumo de productos caducados» o 3 acciones de «Plato lleno aprovechado», teniendo en cuenta que se calcula que los residuos alimentarios domésticos en Europa ascienden a unos 69 millones de toneladas al año."
+      "description": "Revisa la nevera o la despensa antes de ir a hacer la compra principal. Registra al menos 3 acciones de «Consumo de productos caducados» o 3 acciones de «Plato lleno aprovechado», teniendo en cuenta que se calcula que los residuos alimentarios domésticos en Europa ascienden a unos 69 millones de toneladas al año."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Semana de los cereales integrales",
       "title": "Valores nutricionales - Nivel principiante",
-      "description": "Elige un producto integral cada día. Cómo hacerlo: Elige alimentos como pan integral, pasta de trigo integral, avena, arroz integral, pan de centeno, quinoa u otros cereales integrales, teniendo en cuenta que la mayoría de los europeos consumen menos fibra de la recomendada."
+      "description": "Elige un producto integral cada día. Elige alimentos como pan integral, pasta de trigo integral, avena, arroz integral, pan de centeno, quinoa u otros cereales integrales, teniendo en cuenta que la mayoría de los europeos consumen menos fibra de la recomendada."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Añade una fruta o verdura más",

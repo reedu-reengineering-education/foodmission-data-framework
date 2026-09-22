@@ -2978,7 +2978,7 @@
       "description": "Neem peulvruchten op in vier maaltijden. Gierstsoorten zijn zeer veerkrachtige gewassen die onder hete, droge omstandigheden met weinig water kunnen groeien."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Blijf in het groen",
+      "name": "Blijf in de Groene Zone",
       "title": "Veranderingen in het voedingspatroon - Gevorderd",
       "description": "Beperk het aantal vleesmaaltijden tot minder dan vier per week. De veeteelt neemt wereldwijd het grootste deel van de landbouwgrond in beslag, terwijl deze sector slechts een veel kleiner aandeel van de calorieën en eiwitten levert."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Op productie gebaseerde keuze",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "Gebruik de NOVA-classificatie, de Green-Score of informatie uit de ingrediëntenlijst als leidraad bij ten minste vijf aankoopbeslissingen. Waar kan ik deze informatie vinden? Maak gebruik van de verpakking, Open Content of apps voor het scannen van voedingsmiddelen. Bloemenstroken en leefgebieden voor bestuivers kunnen de biodiversiteit op landbouwbedrijven bevorderen."
+      "description": "Gebruik de NOVA-classificatie, de Green-Score of informatie uit de ingrediëntenlijst als leidraad bij ten minste vijf aankoopbeslissingen. Maak gebruik van de verpakking, Open Food Facts of apps voor het scannen van voedingsmiddelen. Bloemenstroken en leefgebieden voor bestuivers kunnen de biodiversiteit op landbouwbedrijven bevorderen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Veredelen voor minder impact",
@@ -3198,9 +3198,9 @@
       "description": "Schat vóór de maaltijd in hoeveel je denkt te gaan eten. Vergelijk na de maaltijd je schatting met wat je daadwerkelijk hebt gegeten. De portiegroottes zijn in veel landen de afgelopen decennia aanzienlijk toegenomen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Opdracht 3: De koelkast controleren",
+      "name": "Opdracht 3: Routine voor het controleren van de koelkast",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Bijhoudonderdeel: Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je hebt voorkomen dat er eten op je bord overbleef. Door kleinere porties aan te bieden, kan voedselverspilling in kantines en restaurants worden teruggedrongen."
+      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je hebt voorkomen dat er eten op je bord overbleef. Door kleinere porties aan te bieden, kan voedselverspilling in kantines en restaurants worden teruggedrongen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "De gewoonte om maaltijden te plannen",
@@ -3208,9 +3208,9 @@
       "description": "Stel een maaltijdplan op voordat je een grote boodschappenronde gaat doen, en houd daarbij in gedachten dat houdbaarheidsdata betrekking hebben op de kwaliteit."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Opdracht 3: De koelkast controleren",
+      "name": "Opdracht 3: Routine voor het controleren van de koelkast",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Bijhoudonderdeel: Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je een vol bord hebt gered. De hoeveelheid voedselafval van huishoudens in Europa wordt geschat op ongeveer 69 miljoen ton per jaar."
+      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je een vol bord hebt gered. De hoeveelheid voedselafval van huishoudens in Europa wordt geschat op ongeveer 69 miljoen ton per jaar."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Volkorenweek",
       "title": "Voedingswaarden - Beginners",
-      "description": "Kies elke dag een volkorenproduct. Hoe doe je dat? Kies voedingsmiddelen zoals volkorenbrood, volkorenpasta, havermout, bruine rijst, roggebrood, quinoa of andere volkorenproducten. De meeste Europeanen eten minder vezels dan wordt aanbevolen."
+      "description": "Kies elke dag een volkorenproduct. Kies voedingsmiddelen zoals volkorenbrood, volkorenpasta, havermout, bruine rijst, roggebrood, quinoa of andere volkorenproducten. De meeste Europeanen eten minder vezels dan wordt aanbevolen."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Voeg nog een stuk fruit of groente toe",

@@ -2978,7 +2978,7 @@
       "description": "Stročnice vključite v štiri obroke. Prosena žita so zelo odporne poljščine, ki lahko rastejo v vročih in suhih razmerah z malo vode."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Ostanite v zelenem",
+      "name": "Ostanite v zeleni coni",
       "title": "Spremembe prehrane – napredna raven",
       "description": "Ostanite pod štirimi mesnimi obroki na teden. Živinoreja uporablja večino kmetijskih zemljišč na svetu, prispeva pa veliko manjši delež kalorij in beljakovin."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Izbira na podlagi podatkov o pridelavi",
       "title": "Načini pridelave – srednja raven",
-      "description": "Pri vsaj petih nakupnih odločitvah si pomagajte z razvrstitvijo NOVA, oceno Green-Score ali seznamom sestavin. Kje najdem te podatke? Uporabite embalažo, odprte vsebine ali aplikacije za skeniranje živil. Cvetlični pasovi in habitati za opraševalce lahko podpirajo biotsko raznovrstnost na kmetijah."
+      "description": "Pri vsaj petih nakupnih odločitvah si pomagajte z razvrstitvijo NOVA, oceno Green-Score ali seznamom sestavin. Uporabite embalažo, Open Food Facts ali aplikacije za skeniranje živil. Cvetlični pasovi in habitati za opraševalce lahko podpirajo biotsko raznovrstnost na kmetijah."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Žlahtnjenje z manjšim vplivom",
@@ -3198,9 +3198,9 @@
       "description": "Pred obrokom ocenite, koliko hrane boste po vašem mnenju pojedli. Po obroku primerjajte svojo oceno s tem, kar ste dejansko pojedli. Velikosti porcij so se v mnogih državah v zadnjih desetletjih močno povečale."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Misija 3: pregled hladilnika",
+      "name": "Misija 3: rutina pregleda hladilnika",
       "title": "Zavržena hrana – srednja raven",
-      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Del za spremljanje: zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ponudba manjših porcij lahko zmanjša količino hrane, zavržene s krožnikov v menzah in restavracijah."
+      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ponudba manjših porcij lahko zmanjša količino hrane, zavržene s krožnikov v menzah in restavracijah."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Navada načrtovanja obrokov",
@@ -3208,9 +3208,9 @@
       "description": "Pred enim glavnim nakupom pripravite načrt obrokov in ne pozabite, da se oznaka „uporabno najmanj do“ nanaša na kakovost."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Misija 3: pregled hladilnika",
+      "name": "Misija 3: rutina pregleda hladilnika",
       "title": "Zavržena hrana – srednja raven",
-      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Del za spremljanje: zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ocenjuje se, da gospodinjstva v Evropi letno zavržejo približno 69 milijonov ton hrane."
+      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ocenjuje se, da gospodinjstva v Evropi letno zavržejo približno 69 milijonov ton hrane."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Mojster nadzora porcij",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Teden polnozrnatih žit",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Vsak dan izberite polnozrnat izdelek. Kako: izberite živila, kot so polnozrnat kruh, polnozrnate testenine, ovseni kosmiči, rjavi riž, rženi kruh, kvinoja ali druga polnozrnata žita. Večina Evropejcev zaužije manj vlaknin, kot je priporočeno."
+      "description": "Vsak dan izberite polnozrnat izdelek. Izberite živila, kot so polnozrnat kruh, polnozrnate testenine, ovseni kosmiči, rjavi riž, rženi kruh, kvinoja ali druga polnozrnata žita. Večina Evropejcev zaužije manj vlaknin, kot je priporočeno."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Dodajte še eno sadje ali zelenjavo",

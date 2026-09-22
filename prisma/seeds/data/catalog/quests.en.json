@@ -328,7 +328,7 @@
   },
   {
     "id": "1.8",
-    "name": "Stay in the Green",
+    "name": "Stay in the Green Zone",
     "code": "QUEST.DIET_CHANGES.ADVANCED.1",
     "dimensionCode": "DIET_CHANGES",
     "level": "ADVANCED",
@@ -2090,7 +2090,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Use NOVA classification, Green-Score or ingredient-list information to guide at least five purchasing decisions. Use packaging, Open content or food-scanning applications, while keeping in mind that flower strips and pollinator habitats can support biodiversity on farms."
+    "description": "Use NOVA classification, Green-Score or ingredient-list information to guide at least five purchasing decisions. Use packaging, Open Food Facts or food-scanning applications, while keeping in mind that flower strips and pollinator habitats can support biodiversity on farms."
   },
   {
     "id": "3.9",
@@ -3192,7 +3192,7 @@
   },
   {
     "id": "5.5",
-    "name": "Mission 3: Fridge Check",
+    "name": "Mission 3: Fridge Check Routine",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.1",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -3294,7 +3294,7 @@
   },
   {
     "id": "5.7",
-    "name": "Mission 3: Fridge Check",
+    "name": "Mission 3: Fridge Check Routine",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.3",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -4001,7 +4001,7 @@
         "sortOrder": 5
       }
     ],
-    "description": "Compare two sweet beverages that you enjoy drinking and identify which contains less sugar per 100 ml, while keeping in mind that wHO recommends limiting free sugars to less than 10% of daily energy intake."
+    "description": "Compare two sweet beverages that you enjoy drinking and identify which contains less sugar per 100 ml, while keeping in mind that WHO recommends limiting free sugars to less than 10% of daily energy intake."
   },
   {
     "id": "6.11",
@@ -4047,7 +4047,7 @@
         "sortOrder": 6
       }
     ],
-    "description": "Do not add salt to food at the table throughout the week, while keeping in mind that wHO recommends consuming less than 5 grams of salt per day."
+    "description": "Do not add salt to food at the table throughout the week, while keeping in mind that WHO recommends consuming less than 5 grams of salt per day."
   },
   {
     "id": "6.12",

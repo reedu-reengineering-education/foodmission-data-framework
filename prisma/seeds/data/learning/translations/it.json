@@ -2978,7 +2978,7 @@
       "description": "Includete i legumi in quattro pasti, tenendo presente che i miglio sono colture estremamente resistenti, in grado di crescere in condizioni di caldo e siccità con scarse risorse idriche."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Rimani nel verde",
+      "name": "Rimanete nella Zona Verde",
       "title": "Cambiamenti nella dieta - Livello avanzato",
       "description": "Limitate il consumo di carne a meno di quattro pasti a settimana, tenendo presente che la produzione zootecnica occupa la maggior parte dei terreni agricoli a livello mondiale, pur fornendo una quota molto più ridotta di calorie e proteine."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Scelta basata sui dati di produzione",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Utilizza la classificazione NOVA, il Green-Score o le informazioni contenute nell’elenco degli ingredienti per orientare almeno cinque decisioni di acquisto. Dove posso trovare queste informazioni? Consulta le confezioni, i contenuti di Open o le app per la scansione degli alimenti, tenendo presente che le strisce fiorite e gli habitat per gli impollinatori possono favorire la biodiversità nelle aziende agricole."
+      "description": "Utilizza la classificazione NOVA, il Green-Score o le informazioni contenute nell’elenco degli ingredienti per orientare almeno cinque decisioni di acquisto. Consulta le confezioni, il sito Open Food Facts o le app per la scansione degli alimenti, tenendo presente che le strisce fiorite e gli habitat per gli impollinatori possono favorire la biodiversità nelle aziende agricole."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Selezione a minore impatto",
@@ -3198,9 +3198,9 @@
       "description": "Prima di un pasto, cerca di stimare la quantità di cibo che pensi di mangiare. Dopo il pasto, confronta la tua stima con ciò che hai effettivamente consumato, tenendo presente che negli ultimi decenni, in molti paesi le porzioni sono aumentate in modo sostanziale."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Missione 3: Controllo del frigo",
+      "name": "Missione 3: Controllo periodico del frigorifero",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative alla riduzione degli sprechi nel piatto, tenendo presente che offrire porzioni più piccole può ridurre gli sprechi nei refettori e nei ristoranti."
+      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative alla riduzione degli sprechi nel piatto, tenendo presente che offrire porzioni più piccole può ridurre gli sprechi nei refettori e nei ristoranti."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "L'abitudine di pianificare i pasti",
@@ -3208,9 +3208,9 @@
       "description": "Prepara un menu prima di fare la spesa principale, tenendo presente che le date di scadenza si riferiscono alla qualità."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Missione 3: Controllo del frigo",
+      "name": "Missione 3: Controllo periodico del frigorifero",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Componente di monitoraggio: registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative al risparmio di cibo (piatti non sprecati), tenendo presente che si stima che in Europa i rifiuti alimentari prodotti dalle famiglie ammontino a circa 69 milioni di tonnellate all'anno."
+      "description": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Registra almeno 3 azioni relative al consumo di prodotti scaduti o 3 azioni relative al risparmio di cibo (piatti non sprecati), tenendo presente che si stima che in Europa i rifiuti alimentari prodotti dalle famiglie ammontino a circa 69 milioni di tonnellate all'anno."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Settimana dei cereali integrali",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Scegli ogni giorno un prodotto a base di cereali integrali. Come fare? Scegli alimenti come pane integrale, pasta integrale, avena, riso integrale, pane di segale, quinoa o altri cereali integrali, tenendo presente che la maggior parte degli europei consuma meno fibre di quanto raccomandato."
+      "description": "Scegli ogni giorno un prodotto a base di cereali integrali. Scegli alimenti come pane integrale, pasta integrale, avena, riso integrale, pane di segale, quinoa o altri cereali integrali, tenendo presente che la maggior parte degli europei consuma meno fibre di quanto raccomandato."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Aggiungi un altro frutto o ortaggio",

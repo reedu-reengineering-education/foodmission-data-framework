@@ -2978,7 +2978,7 @@
       "description": "Bauen Sie Hülsenfrüchte in vier Mahlzeiten ein. Hirse ist eine äußerst widerstandsfähige Kulturpflanze, die unter heißen, trockenen Bedingungen mit wenig Wasser wachsen kann."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Bleib im Grünen",
+      "name": "In der grünen Zone bleiben",
       "title": "Ernährungsumstellung – Fortgeschrittene",
       "description": "Beschränken Sie sich auf weniger als vier Fleischmahlzeiten pro Woche. Die Tierhaltung beansprucht weltweit den größten Teil der landwirtschaftlichen Nutzfläche, liefert dabei jedoch nur einen viel geringeren Anteil an Kalorien und Eiweiß."
     },
@@ -3105,7 +3105,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produktionsorientierte Entscheidung",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Nutzen Sie die NOVA-Klassifizierung, den Green-Score oder Angaben zur Zutatenliste, um mindestens fünf Kaufentscheidungen zu treffen. Wo finde ich diese Informationen? Nutzen Sie Verpackungen, „Open Content“ oder Apps zum Scannen von Lebensmitteln. Blumenstreifen und Lebensräume für Bestäuber können die Artenvielfalt auf landwirtschaftlichen Betrieben fördern."
+      "description": "Nutzen Sie die NOVA-Klassifizierung, den Green-Score oder Angaben zur Zutatenliste, um mindestens fünf Kaufentscheidungen zu treffen. Nutzen Sie Verpackungen, Open Food Facts oder Apps zum Scannen von Lebensmitteln. Blumenstreifen und Lebensräume für Bestäuber können die Artenvielfalt auf landwirtschaftlichen Betrieben fördern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Züchtung für weniger Wirkung",
@@ -3198,9 +3198,9 @@
       "description": "Schätzen Sie vor einer Mahlzeit ab, wie viel Sie voraussichtlich essen werden. Vergleichen Sie nach der Mahlzeit Ihre Schätzung mit der tatsächlich verzehrten Menge. Die Portionsgrößen haben in vielen Ländern in den letzten Jahrzehnten erheblich zugenommen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Mission 3: Kühlschrankkontrolle",
+      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Nachverfolgungskomponente: Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Das Anbieten kleinerer Portionen kann die Essensreste in Kantinen und Restaurants verringern."
+      "description": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Das Anbieten kleinerer Portionen kann die Essensreste in Kantinen und Restaurants verringern."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Gewohnheit der Essensplanung",
@@ -3208,9 +3208,9 @@
       "description": "Erstellen Sie vor einem größeren Einkauf einen Speiseplan und beachten Sie dabei, dass sich das Mindesthaltbarkeitsdatum auf die Qualität bezieht."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Mission 3: Kühlschrankkontrolle",
+      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf Ihren Kühlschrank oder Ihre Vorratskammer. Nachverfolgungskomponente: Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Die Lebensmittelabfälle der privaten Haushalte in Europa werden auf etwa 69 Millionen Tonnen pro Jahr geschätzt."
+      "description": "Überprüfen Sie vor dem großen Einkauf Ihren Kühlschrank oder Ihre Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Die Lebensmittelabfälle der privaten Haushalte in Europa werden auf etwa 69 Millionen Tonnen pro Jahr geschätzt."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
@@ -3260,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Vollkornwoche",
       "title": "Nährwerte – Anfänger",
-      "description": "Wählen Sie jeden Tag ein Vollkornprodukt. So geht’s: Entscheiden Sie sich für Lebensmittel wie Vollkornbrot, Vollkornnudeln, Haferflocken, braunen Reis, Roggenbrot, Quinoa oder andere Vollkornprodukte –. Die meisten Europäer nehmen weniger Ballaststoffe zu sich, als empfohlen wird."
+      "description": "Wählen Sie jeden Tag ein Vollkornprodukt. Entscheiden Sie sich für Lebensmittel wie Vollkornbrot, Vollkornnudeln, Haferflocken, braunen Reis, Roggenbrot, Quinoa oder andere Vollkornprodukte. Die meisten Europäer nehmen weniger Ballaststoffe zu sich, als empfohlen wird."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Füge noch eine Obst- oder Gemüsesorte hinzu",
