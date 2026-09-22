@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Vannet bak maten",
       "title": "Produktvalg – Nybegynner",
-      "description": "Omtrent 70 % av det globale ferskvannsforbruket går til landbruket. Deretter følger en kort quiz."
+      "description": "Omtrent 70 % av det globale ferskvannsforbruket går til landbruket."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "Måltidenes klimakostnad",
       "title": "Produktvalg – Nybegynner",
-      "description": "Matsystemene står for omtrent en tredjedel av de globale klimagassutslippene. Deretter følger en kort quiz."
+      "description": "Matsystemene står for omtrent en tredjedel av de globale klimagassutslippene."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Matens transportvei",
       "title": "Produktvalg – Nybegynner",
-      "description": "Den globale mattransporten genererer om lag 3 milliarder tonn CO₂-ekvivalente utslipp hvert år. Deretter følger en kort quiz."
+      "description": "Den globale mattransporten genererer om lag 3 milliarder tonn CO₂-ekvivalente utslipp hvert år."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Produktvalg – Nybegynner",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Bortkastet mat, bortkastet vann",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Matsvinn fører også til at enorme mengder vann som brukes til å dyrke mat, går til spille. Deretter følger en kort quiz."
+      "description": "Matsvinn fører også til at enorme mengder vann som brukes til å dyrke mat, går til spille."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "Kjøttets karbonavtrykk",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Kjøtt, særlig oksekjøtt og lammekjøtt, har et mye større karbonavtrykk enn de fleste plantebaserte matvarer. Deretter følger en kort quiz."
+      "description": "Kjøtt, særlig oksekjøtt og lammekjøtt, har et mye større karbonavtrykk enn de fleste plantebaserte matvarer."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Utforsk transportutslipp",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Nesten en femtedel av klimagassutslippene fra det globale matsystemet stammer fra transport av mat. Deretter følger en kort quiz."
+      "description": "Nesten en femtedel av klimagassutslippene fra det globale matsystemet stammer fra transport av mat."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Produktvalg – Mellomnivå",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Vannavtrykket i dybden",
       "title": "Produktvalg – Avansert",
-      "description": "Vannavtrykket til kostholdet ditt avhenger i stor grad av hva du spiser. Deretter følger en kort quiz."
+      "description": "Vannavtrykket til kostholdet ditt avhenger i stor grad av hva du spiser."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Utslipp utenfor tallerkenen",
       "title": "Produktvalg – Avansert",
-      "description": "Matsvinn fører til utslipp på flere milliarder tonn CO₂-ekvivalenter hvert år. Deretter følger en kort quiz."
+      "description": "Matsvinn fører til utslipp på flere milliarder tonn CO₂-ekvivalenter hvert år."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Kjølekjede og frakt",
       "title": "Produktvalg – Avansert",
-      "description": "Selv om matvarer bare utgjør rundt 18 % av de globale godstransportavstandene, står de for rundt 27 % av de godstransportrelaterte utslippene. Deretter følger en kort quiz."
+      "description": "Selv om matvarer bare utgjør rundt 18 % av de globale godstransportavstandene, står de for rundt 27 % av de godstransportrelaterte utslippene."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Produktvalg – Avansert",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Lokalmat på nært hold",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Korte forsyningskjeder kan styrke lokale økonomier og øke motstandskraften. Deretter følger en kort quiz."
+      "description": "Korte forsyningskjeder kan styrke lokale økonomier og øke motstandskraften."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Observatør for produksjonsmetode",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Rettferdig handel: grunnlaget",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Landbruket står for de fleste tilfellene av barnearbeid på verdensbasis. Deretter følger en kort quiz."
+      "description": "Landbruket står for de fleste tilfellene av barnearbeid på verdensbasis."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Sammenlign behandlingsnivåer",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Hva opprinnelse forteller",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Matens opprinnelse kan gi nyttig informasjon om sporbarhet og bærekraft. Deretter følger en kort quiz."
+      "description": "Matens opprinnelse kan gi nyttig informasjon om sporbarhet og bærekraft."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produksjonsbasert valg",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Avl for lavere avtrykk",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Avl av dyr med lavere metanutslipp kan redusere husdyrholdets miljøpåvirkning. Deretter følger en kort quiz."
+      "description": "Avl av dyr med lavere metanutslipp kan redusere husdyrholdets miljøpåvirkning."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Matens sosiale side",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bærekraft i matsystemet omfatter også sosiale forhold og arbeidsforhold. Deretter følger en kort quiz."
+      "description": "Bærekraft i matsystemet omfatter også sosiale forhold og arbeidsforhold."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Overvåking av flere indikatorer",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Avstand er ikke alt",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Lokal mat er ikke alltid det mest bærekraftige alternativet. Deretter følger en kort quiz."
+      "description": "Lokal mat er ikke alltid det mest bærekraftige alternativet."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Dyrkingsmetoder som hjelper",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Agroforestry innebærer å kombinere trær med avlinger eller husdyr på samme areal. Deretter følger en kort quiz."
+      "description": "Agroforestry innebærer å kombinere trær med avlinger eller husdyr på samme areal."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innovasjon på gården",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Genredigering kan bidra til å utvikle avlinger som er mer motstandsdyktige mot klimastress. Deretter følger en kort quiz."
+      "description": "Genredigering kan bidra til å utvikle avlinger som er mer motstandsdyktige mot klimastress."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Hvem dyrker maten vår",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Kvinner spiller en avgjørende rolle i matproduksjonen, men har ofte dårligere tilgang til ressurser. Deretter følger en kort quiz."
+      "description": "Kvinner spiller en avgjørende rolle i matproduksjonen, men har ofte dårligere tilgang til ressurser."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Observatør for emballasjemateriale",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Kalorier er ikke alt",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Verden produserer allerede nok kalorier til å brødfø alle. Deretter følger en kort quiz."
+      "description": "Verden produserer allerede nok kalorier til å brødfø alle."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Erstatning for bearbeidet kjøtt",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitaminer fra tallerkenen",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Et variert kosthold bidrar til å redusere risikoen for vitaminmangel. Deretter følger en kort quiz."
+      "description": "Et variert kosthold bidrar til å redusere risikoen for vitaminmangel."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Samme kalorier, ulik påvirkning",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Matvarer som inneholder like mange kalorier, kan ha svært ulik miljøpåvirkning. Deretter følger en kort quiz."
+      "description": "Matvarer som inneholder like mange kalorier, kan ha svært ulik miljøpåvirkning."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Fullverdige planteproteiner",
       "title": "Næringsverdier – Avansert",
-      "description": "Å spise en rekke ulike planteproteiner kan gi deg alle essensielle aminosyrer. Deretter følger en kort quiz."
+      "description": "Å spise en rekke ulike planteproteiner kan gi deg alle essensielle aminosyrer."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Forstå fettet i maten",
       "title": "Næringsverdier – Avansert",
-      "description": "Fett bør utgjøre ikke mer enn ca. 30 % av det totale daglige energiinntaket. Deretter følger en kort quiz."
+      "description": "Fett bør utgjøre ikke mer enn ca. 30 % av det totale daglige energiinntaket."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Uken for bevisstgjøring om tilsatt sukker",

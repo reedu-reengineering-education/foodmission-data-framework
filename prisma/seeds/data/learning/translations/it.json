@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "L'acqua dietro il cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Circa il 70% dei prelievi mondiali di acqua dolce è destinato all'agricoltura. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Circa il 70% dei prelievi mondiali di acqua dolce è destinato all'agricoltura."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "Il costo climatico dei pasti",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "I sistemi alimentari generano circa un terzo delle emissioni globali di gas serra. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "I sistemi alimentari generano circa un terzo delle emissioni globali di gas serra."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "I chilometri del cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Il trasporto alimentare a livello mondiale genera ogni anno circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Il trasporto alimentare a livello mondiale genera ogni anno circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Scelta dei prodotti - Principianti",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Cibo sprecato, acqua sprecata",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Lo spreco alimentare comporta anche lo spreco di enormi quantità di acqua utilizzata per la coltivazione dei prodotti alimentari. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Lo spreco alimentare comporta anche lo spreco di enormi quantità di acqua utilizzata per la coltivazione dei prodotti alimentari."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "L'impronta di carbonio della carne",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "La carne, in particolare quella di manzo e di agnello, ha un’impronta di carbonio molto più elevata rispetto alla maggior parte degli alimenti di origine vegetale. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "La carne, in particolare quella di manzo e di agnello, ha un’impronta di carbonio molto più elevata rispetto alla maggior parte degli alimenti di origine vegetale."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Esplorare le emissioni dei trasporti",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Quasi un quinto delle emissioni di gas serra prodotte dal sistema alimentare globale è dovuto al trasporto dei prodotti alimentari. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Quasi un quinto delle emissioni di gas serra prodotte dal sistema alimentare globale è dovuto al trasporto dei prodotti alimentari."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Scelta dei prodotti - Livello intermedio",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "L'impronta idrica in profondità",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "L'impronta idrica della tua alimentazione dipende in larga misura da ciò che mangi. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "L'impronta idrica della tua alimentazione dipende in larga misura da ciò che mangi."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Emissioni oltre il piatto",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Lo spreco alimentare genera ogni anno miliardi di tonnellate di emissioni di CO₂ equivalente. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Lo spreco alimentare genera ogni anno miliardi di tonnellate di emissioni di CO₂ equivalente."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Catena del freddo e trasporti",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Sebbene il settore alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni legate al trasporto merci. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Sebbene il settore alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni legate al trasporto merci."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Scelta dei prodotti - Avanzate",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Il locale, più da vicino",
       "title": "Metodi di produzione - Principianti",
-      "description": "Le catene di approvvigionamento corte possono sostenere le economie locali e favorirne la resilienza. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Le catene di approvvigionamento corte possono sostenere le economie locali e favorirne la resilienza."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Osservatore del metodo di produzione",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Basi del commercio equo",
       "title": "Metodi di produzione - Principianti",
-      "description": "L'agricoltura rappresenta la maggior parte dei casi di lavoro minorile a livello mondiale. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "L'agricoltura rappresenta la maggior parte dei casi di lavoro minorile a livello mondiale."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Confronta i livelli di elaborazione",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Cosa dice l'origine",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "L'origine degli alimenti può fornire informazioni utili in materia di tracciabilità e sostenibilità. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "L'origine degli alimenti può fornire informazioni utili in materia di tracciabilità e sostenibilità."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Scelta basata sui dati di produzione",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Selezione a minore impatto",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "L'allevamento di animali che producono minori emissioni di metano può ridurre l'impatto del bestiame. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "L'allevamento di animali che producono minori emissioni di metano può ridurre l'impatto del bestiame."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Il lato sociale del cibo",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "La sostenibilità del sistema alimentare comprende anche le condizioni sociali e lavorative. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "La sostenibilità del sistema alimentare comprende anche le condizioni sociali e lavorative."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Tracker a indicatori multipli",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "La distanza non è tutto",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Il cibo locale non è sempre l'opzione più sostenibile. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Il cibo locale non è sempre l'opzione più sostenibile."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Metodi agricoli che aiutano",
       "title": "Metodi di produzione - Avanzato",
-      "description": "L'agroforestazione consiste nel combinare la coltivazione di alberi con quella di colture agricole o l'allevamento di bestiame sullo stesso appezzamento di terreno. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "L'agroforestazione consiste nel combinare la coltivazione di alberi con quella di colture agricole o l'allevamento di bestiame sullo stesso appezzamento di terreno."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innovazione in campo",
       "title": "Metodi di produzione - Avanzato",
-      "description": "La modifica del genoma potrebbe contribuire allo sviluppo di colture più resistenti allo stress climatico. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "La modifica del genoma potrebbe contribuire allo sviluppo di colture più resistenti allo stress climatico."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Chi coltiva il nostro cibo",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Le donne svolgono un ruolo fondamentale nella produzione alimentare, ma spesso hanno un accesso più limitato alle risorse. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Le donne svolgono un ruolo fondamentale nella produzione alimentare, ma spesso hanno un accesso più limitato alle risorse."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Osservatorio sui materiali da imballaggio",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Le calorie non sono tutto",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Il mondo produce già abbastanza calorie per sfamare tutti. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Il mondo produce già abbastanza calorie per sfamare tutti."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Sostituto della carne lavorata",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitamine nel piatto",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Seguire una dieta varia aiuta a ridurre il rischio di carenze vitaminiche. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Seguire una dieta varia aiuta a ridurre il rischio di carenze vitaminiche."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Stesse calorie, impatto diverso",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Gli alimenti che apportano lo stesso numero di calorie possono avere impatti ambientali molto diversi. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Gli alimenti che apportano lo stesso numero di calorie possono avere impatti ambientali molto diversi."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Proteine vegetali complete",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Un'alimentazione ricca di proteine vegetali di vario tipo può fornire tutti gli aminoacidi essenziali. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "Un'alimentazione ricca di proteine vegetali di vario tipo può fornire tutti gli aminoacidi essenziali."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Capire i grassi alimentari",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "I grassi non dovrebbero rappresentare più del 30% circa dell'apporto energetico giornaliero totale. Segue un breve quiz per mettere alla prova quanto appreso."
+      "description": "I grassi non dovrebbero rappresentare più del 30% circa dell'apporto energetico giornaliero totale."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Settimana di sensibilizzazione sugli zuccheri aggiunti",

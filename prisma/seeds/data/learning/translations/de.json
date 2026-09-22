@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Wasser hinter dem Essen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Rund 70 % der weltweiten Süßwasserentnahmen werden für die Landwirtschaft genutzt. Danach folgt ein kurzer Wissenstest."
+      "description": "Rund 70 % der weltweiten Süßwasserentnahmen werden für die Landwirtschaft genutzt."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "Klimakosten der Mahlzeiten",
       "title": "Produktauswahl – Anfänger",
-      "description": "Die Ernährungssysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen. Danach folgt ein kurzer Wissenstest."
+      "description": "Die Ernährungssysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Transportwege erklärt",
       "title": "Produktauswahl – Anfänger",
-      "description": "Der weltweite Transport von Lebensmitteln verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen. Danach folgt ein kurzer Wissenstest."
+      "description": "Der weltweite Transport von Lebensmitteln verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Produktauswahl – Anfänger",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Verschwendetes Essen, verschwendetes Wasser",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wurde. Danach folgt ein kurzer Wissenstest."
+      "description": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wurde."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "CO₂-Fußabdruck von Fleisch",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel. Danach folgt ein kurzer Wissenstest."
+      "description": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Transportemissionen erkunden",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems entsteht durch den Transport von Lebensmitteln. Danach folgt ein kurzer Wissenstest."
+      "description": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems entsteht durch den Transport von Lebensmitteln."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Produktauswahl – Mittelstufe",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Wasserfußabdruck im Detail",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Der Wasserfußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen. Danach folgt ein kurzer Wissenstest."
+      "description": "Der Wasserfußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Emissionen über den Teller hinaus",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Lebensmittelverschwendung verursacht jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen. Danach folgt ein kurzer Wissenstest."
+      "description": "Lebensmittelverschwendung verursacht jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Kühlkette und Transport",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen. Danach folgt ein kurzer Wissenstest."
+      "description": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Produktauswahl – Fortgeschrittene",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Regional genauer betrachtet",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken. Danach folgt ein kurzer Wissenstest."
+      "description": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Beobachter der Produktionsmethode",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Fairer Handel: Grundlagen",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Die meisten Fälle von Kinderarbeit weltweit sind in der Landwirtschaft zu verzeichnen. Danach folgt ein kurzer Wissenstest."
+      "description": "Die meisten Fälle von Kinderarbeit weltweit sind in der Landwirtschaft zu verzeichnen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Verarbeitungsstufen vergleichen",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Was Herkunftsangaben verraten",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern. Danach folgt ein kurzer Wissenstest."
+      "description": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produktionsorientierte Entscheidung",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Züchtung für weniger Wirkung",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern. Danach folgt ein kurzer Wissenstest."
+      "description": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Die soziale Seite des Essens",
       "title": "Produktionsverfahren – Mittelstufe",
-      "description": "Zur Nachhaltigkeit des Ernährungssystems gehören auch soziale und arbeitsrechtliche Bedingungen. Danach folgt ein kurzer Wissenstest."
+      "description": "Zur Nachhaltigkeit des Ernährungssystems gehören auch soziale und arbeitsrechtliche Bedingungen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Tracker für mehrere Indikatoren",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Entfernung ist nicht alles",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Regionale Lebensmittel sind nicht immer die nachhaltigste Wahl. Danach folgt ein kurzer Wissenstest."
+      "description": "Regionale Lebensmittel sind nicht immer die nachhaltigste Wahl."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Anbaumethoden, die helfen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert. Danach folgt ein kurzer Wissenstest."
+      "description": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innovation auf dem Hof",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind. Danach folgt ein kurzer Wissenstest."
+      "description": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Wer unser Essen anbaut",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Frauen spielen eine entscheidende Rolle in der Nahrungsmittelproduktion, haben jedoch oft weniger Zugang zu Ressourcen. Danach folgt ein kurzer Wissenstest."
+      "description": "Frauen spielen eine entscheidende Rolle in der Nahrungsmittelproduktion, haben jedoch oft weniger Zugang zu Ressourcen."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Beobachter für Verpackungsmaterial",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Kalorien sind nicht alles",
       "title": "Nährwerte – Anfänger",
-      "description": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren. Danach folgt ein kurzer Wissenstest."
+      "description": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Ersatz für verarbeitetes Fleisch",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitamine vom Teller",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern. Danach folgt ein kurzer Wissenstest."
+      "description": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Gleiche Kalorien, andere Wirkung",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben. Danach folgt ein kurzer Wissenstest."
+      "description": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Vollständige pflanzliche Proteine",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern. Danach folgt ein kurzer Wissenstest."
+      "description": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Nahrungsfette verstehen",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen. Danach folgt ein kurzer Wissenstest."
+      "description": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Woche zur Sensibilisierung für zugesetzten Zucker",

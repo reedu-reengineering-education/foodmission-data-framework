@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Het water achter je eten",
       "title": "Productkeuzes - Beginners",
-      "description": "Ongeveer 70% van de wereldwijde zoetwateronttrekkingen wordt gebruikt voor de landbouw. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Ongeveer 70% van de wereldwijde zoetwateronttrekkingen wordt gebruikt voor de landbouw."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "De klimaatkosten van maaltijden",
       "title": "Productkeuzes - Beginners",
-      "description": "Voedselsystemen zijn verantwoordelijk voor ongeveer een derde van de wereldwijde uitstoot van broeikasgassen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Voedselsystemen zijn verantwoordelijk voor ongeveer een derde van de wereldwijde uitstoot van broeikasgassen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Voedselkilometers uitgelegd",
       "title": "Productkeuzes - Beginner",
-      "description": "Het wereldwijde voedseltransport veroorzaakt jaarlijks ongeveer 3 miljard ton CO₂-equivalente uitstoot. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Het wereldwijde voedseltransport veroorzaakt jaarlijks ongeveer 3 miljard ton CO₂-equivalente uitstoot."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Productkeuzes - Beginners",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Verspild eten, verspild water",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Door voedselverspilling gaan ook enorme hoeveelheden water verloren die voor de teelt van voedsel worden gebruikt. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Door voedselverspilling gaan ook enorme hoeveelheden water verloren die voor de teelt van voedsel worden gebruikt."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "De CO₂-voetafdruk van vlees",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Vlees, met name rundvlees en lamsvlees, heeft een veel grotere CO₂-voetafdruk dan de meeste plantaardige voedingsmiddelen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Vlees, met name rundvlees en lamsvlees, heeft een veel grotere CO₂-voetafdruk dan de meeste plantaardige voedingsmiddelen."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Transportemissies verkennen",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Bijna een vijfde van de uitstoot van broeikasgassen door het wereldwijde voedselsysteem is afkomstig van het vervoer van voedsel. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Bijna een vijfde van de uitstoot van broeikasgassen door het wereldwijde voedselsysteem is afkomstig van het vervoer van voedsel."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Productkeuzes - Gemiddeld niveau",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Watervoetafdruk in detail",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "De watervoetafdruk van je voedingspatroon hangt sterk af van wat je eet. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "De watervoetafdruk van je voedingspatroon hangt sterk af van wat je eet."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Uitstoot voorbij het bord",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Voedselverspilling leidt jaarlijks tot miljarden tonnen CO₂-equivalente uitstoot. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Voedselverspilling leidt jaarlijks tot miljarden tonnen CO₂-equivalente uitstoot."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Koelketen en transport",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Hoewel voedsel slechts ongeveer 18% van de totale vrachtvervoersafstanden wereldwijd uitmaakt, is het verantwoordelijk voor ongeveer 27% van de vrachtgerelateerde uitstoot. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Hoewel voedsel slechts ongeveer 18% van de totale vrachtvervoersafstanden wereldwijd uitmaakt, is het verantwoordelijk voor ongeveer 27% van de vrachtgerelateerde uitstoot."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Productkeuzes - Geavanceerd",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Lokaal, beter bekeken",
       "title": "Productiemethoden - Beginners",
-      "description": "Korte toeleveringsketens kunnen de lokale economieën en de veerkracht ondersteunen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Korte toeleveringsketens kunnen de lokale economieën en de veerkracht ondersteunen."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Waarnemer van de productiemethode",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Basis van fairtrade",
       "title": "Productiemethoden - Beginners",
-      "description": "De landbouwsector is wereldwijd verantwoordelijk voor het grootste deel van de gevallen van kinderarbeid. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "De landbouwsector is wereldwijd verantwoordelijk voor het grootste deel van de gevallen van kinderarbeid."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Vergelijk verwerkingsniveaus",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Wat herkomst je vertelt",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "De herkomst van levensmiddelen kan nuttige informatie opleveren over traceerbaarheid en duurzaamheid. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "De herkomst van levensmiddelen kan nuttige informatie opleveren over traceerbaarheid en duurzaamheid."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Op productie gebaseerde keuze",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Veredelen voor minder impact",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "Het fokken van dieren met een lagere methaanuitstoot kan de impact van de veehouderij verminderen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Het fokken van dieren met een lagere methaanuitstoot kan de impact van de veehouderij verminderen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "De sociale kant van voedsel",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "De duurzaamheid van het voedselsysteem omvat ook sociale en arbeidsomstandigheden. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "De duurzaamheid van het voedselsysteem omvat ook sociale en arbeidsomstandigheden."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Tracker voor meerdere indicatoren",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Afstand is niet alles",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Lokale voedingsmiddelen zijn niet altijd de meest duurzame keuze. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Lokale voedingsmiddelen zijn niet altijd de meest duurzame keuze."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Landbouwmethoden die helpen",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Bij agroforestry worden bomen gecombineerd met gewassen of vee op hetzelfde stuk land. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Bij agroforestry worden bomen gecombineerd met gewassen of vee op hetzelfde stuk land."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innovatie op de boerderij",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Genomische bewerking kan bijdragen aan de ontwikkeling van gewassen die beter bestand zijn tegen klimaatstress. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Genomische bewerking kan bijdragen aan de ontwikkeling van gewassen die beter bestand zijn tegen klimaatstress."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Wie ons voedsel verbouwt",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Vrouwen spelen een cruciale rol in de voedselproductie, maar hebben vaak minder toegang tot middelen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Vrouwen spelen een cruciale rol in de voedselproductie, maar hebben vaak minder toegang tot middelen."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Waarnemer voor verpakkingsmateriaal",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Calorieën zijn niet alles",
       "title": "Voedingswaarden - Beginners",
-      "description": "Er worden wereldwijd al genoeg calorieën geproduceerd om iedereen te voeden. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Er worden wereldwijd al genoeg calorieën geproduceerd om iedereen te voeden."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Vervanging van vleesverwerkte producten",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitamines van je bord",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Een gevarieerd eetpatroon helpt het risico op vitaminetekorten te verminderen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Een gevarieerd eetpatroon helpt het risico op vitaminetekorten te verminderen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Zelfde calorieën, andere impact",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Voedingsmiddelen die evenveel calorieën bevatten, kunnen zeer uiteenlopende gevolgen voor het milieu hebben. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Voedingsmiddelen die evenveel calorieën bevatten, kunnen zeer uiteenlopende gevolgen voor het milieu hebben."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Complete plantaardige eiwitten",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Door een gevarieerde hoeveelheid plantaardige eiwitten te eten, kun je alle essentiële aminozuren binnenkrijgen. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Door een gevarieerde hoeveelheid plantaardige eiwitten te eten, kun je alle essentiële aminozuren binnenkrijgen."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Voedingsvetten begrijpen",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Vet mag niet meer dan ongeveer 30% van de totale dagelijkse energie-inname uitmaken. Daarna volgt een korte quiz om de kennis te testen."
+      "description": "Vet mag niet meer dan ongeveer 30% van de totale dagelijkse energie-inname uitmaken."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Week van de bewustwording rond toegevoegde suikers",

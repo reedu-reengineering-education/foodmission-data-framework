@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "El agua detrás de los alimentos",
       "title": "Opciones de productos - Principiantes",
-      "description": "Alrededor del 70 % de las extracciones de agua dulce a nivel mundial se destinan a la agricultura. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Alrededor del 70 % de las extracciones de agua dulce a nivel mundial se destinan a la agricultura."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "El coste climático de las comidas",
       "title": "Opciones de productos - Principiantes",
-      "description": "Los sistemas alimentarios generan aproximadamente un tercio de las emisiones mundiales de gases de efecto invernadero. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Los sistemas alimentarios generan aproximadamente un tercio de las emisiones mundiales de gases de efecto invernadero."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Kilómetros de los alimentos",
       "title": "Opciones de productos - Principiantes",
-      "description": "El transporte mundial de alimentos genera cada año unas 3.000 millones de toneladas de emisiones equivalentes de CO₂. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El transporte mundial de alimentos genera cada año unas 3.000 millones de toneladas de emisiones equivalentes de CO₂."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Opciones de productos - Principiantes",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Comida desperdiciada, agua desperdiciada",
       "title": "Opciones de productos - Nivel intermedio",
-      "description": "El desperdicio de alimentos también supone un enorme desperdicio de agua utilizada para cultivarlos. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El desperdicio de alimentos también supone un enorme desperdicio de agua utilizada para cultivarlos."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "Huella de carbono de la carne",
       "title": "Opciones de productos - Nivel intermedio",
-      "description": "La carne, sobre todo la de vacuno y la de cordero, tiene una huella de carbono mucho mayor que la mayoría de los alimentos de origen vegetal. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La carne, sobre todo la de vacuno y la de cordero, tiene una huella de carbono mucho mayor que la mayoría de los alimentos de origen vegetal."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Explorar las emisiones del transporte",
       "title": "Opciones de productos - Nivel intermedio",
-      "description": "Casi una quinta parte de las emisiones de gases de efecto invernadero del sistema alimentario mundial provienen del transporte de alimentos. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Casi una quinta parte de las emisiones de gases de efecto invernadero del sistema alimentario mundial provienen del transporte de alimentos."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Opciones de productos - Nivel intermedio",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Huella hídrica en profundidad",
       "title": "Opciones de productos - Avanzado",
-      "description": "La huella hídrica de tu alimentación depende en gran medida de lo que comas. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La huella hídrica de tu alimentación depende en gran medida de lo que comas."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Emisiones más allá del plato",
       "title": "Opciones de productos - Avanzado",
-      "description": "El desperdicio de alimentos genera miles de millones de toneladas de emisiones equivalentes de CO₂ al año. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El desperdicio de alimentos genera miles de millones de toneladas de emisiones equivalentes de CO₂ al año."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Cadena de frío y transporte",
       "title": "Opciones de productos - Avanzado",
-      "description": "Aunque los alimentos solo representan alrededor del 18 % de las distancias recorridas en el transporte mundial de mercancías, generan aproximadamente el 27 % de las emisiones relacionadas con dicho transporte. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Aunque los alimentos solo representan alrededor del 18 % de las distancias recorridas en el transporte mundial de mercancías, generan aproximadamente el 27 % de las emisiones relacionadas con dicho transporte."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Opciones de productos - Avanzado",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Lo local, más de cerca",
       "title": "Métodos de producción - Nivel principiante",
-      "description": "Las cadenas de suministro cortas pueden contribuir al desarrollo de las economías locales y a su resiliencia. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Las cadenas de suministro cortas pueden contribuir al desarrollo de las economías locales y a su resiliencia."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Observador del método de producción",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Conceptos básicos del comercio justo",
       "title": "Métodos de producción - Nivel principiante",
-      "description": "La agricultura es el sector en el que se registran la mayoría de los casos de trabajo infantil en todo el mundo. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La agricultura es el sector en el que se registran la mayoría de los casos de trabajo infantil en todo el mundo."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Comparar niveles de procesamiento",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Qué indica el origen",
       "title": "Métodos de producción - Nivel intermedio",
-      "description": "El origen de los alimentos puede aportar información útil sobre la trazabilidad y la sostenibilidad. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El origen de los alimentos puede aportar información útil sobre la trazabilidad y la sostenibilidad."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Decisión basada en datos de producción",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Mejora genética de menor impacto",
       "title": "Métodos de producción - Nivel intermedio",
-      "description": "La cría de animales que generen menos emisiones de metano puede reducir el impacto de la ganadería. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La cría de animales que generen menos emisiones de metano puede reducir el impacto de la ganadería."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "La cara social de los alimentos",
       "title": "Métodos de producción - Nivel intermedio",
-      "description": "La sostenibilidad del sistema alimentario abarca las condiciones sociales y laborales. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La sostenibilidad del sistema alimentario abarca las condiciones sociales y laborales."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Seguidor de indicadores múltiples",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "La distancia no lo es todo",
       "title": "Métodos de producción - Nivel avanzado",
-      "description": "Los alimentos locales no siempre son la opción más sostenible. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Los alimentos locales no siempre son la opción más sostenible."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Métodos agrícolas que ayudan",
       "title": "Métodos de producción - Nivel avanzado",
-      "description": "La agrosilvicultura combina árboles con cultivos o ganado en una misma superficie. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La agrosilvicultura combina árboles con cultivos o ganado en una misma superficie."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innovación en el campo",
       "title": "Métodos de producción - Nivel avanzado",
-      "description": "La edición genómica podría contribuir al desarrollo de cultivos más resistentes al estrés climático. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "La edición genómica podría contribuir al desarrollo de cultivos más resistentes al estrés climático."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Quién cultiva nuestros alimentos",
       "title": "Métodos de producción - Nivel avanzado",
-      "description": "Las mujeres desempeñan un papel fundamental en la producción alimentaria, pero a menudo tienen menos acceso a los recursos. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Las mujeres desempeñan un papel fundamental en la producción alimentaria, pero a menudo tienen menos acceso a los recursos."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Observatorio de Materiales de Embalaje",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Las calorías no lo son todo",
       "title": "Valores nutricionales - Nivel principiante",
-      "description": "El mundo ya produce suficientes calorías para alimentar a toda la población. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El mundo ya produce suficientes calorías para alimentar a toda la población."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Sustituto de la carne procesada",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitaminas en tu plato",
       "title": "Valores nutricionales - Nivel intermedio",
-      "description": "Llevar una dieta variada ayuda a reducir el riesgo de sufrir carencias vitamínicas. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Llevar una dieta variada ayuda a reducir el riesgo de sufrir carencias vitamínicas."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Mismas calorías, distinto impacto",
       "title": "Valores nutricionales - Nivel intermedio",
-      "description": "Los alimentos que aportan el mismo número de calorías pueden tener un impacto medioambiental muy diferente. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Los alimentos que aportan el mismo número de calorías pueden tener un impacto medioambiental muy diferente."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Proteínas vegetales completas",
       "title": "Valores nutricionales - Avanzado",
-      "description": "El consumo de una variedad de proteínas vegetales puede aportar todos los aminoácidos esenciales. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "El consumo de una variedad de proteínas vegetales puede aportar todos los aminoácidos esenciales."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Entender las grasas alimentarias",
       "title": "Valores nutricionales - Avanzado",
-      "description": "Las grasas no deberían aportar más del 30 % aproximadamente de la ingesta energética diaria total. Después, un breve cuestionario para poner a prueba lo aprendido."
+      "description": "Las grasas no deberían aportar más del 30 % aproximadamente de la ingesta energética diaria total."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Semana de sensibilización sobre el azúcar añadido",

@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Voda za našo hrano",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Približno 70 % svetovnega odvzema sladke vode se porabi za kmetijstvo. Sledi kratek kviz za preverjanje znanja."
+      "description": "Približno 70 % svetovnega odvzema sladke vode se porabi za kmetijstvo."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "Podnebni strošek obrokov",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Prehranski sistemi ustvarijo približno tretjino svetovnih emisij toplogrednih plinov. Sledi kratek kviz za preverjanje znanja."
+      "description": "Prehranski sistemi ustvarijo približno tretjino svetovnih emisij toplogrednih plinov."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Kilometri hrane",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Svetovni prevoz hrane letno povzroči približno 3 milijarde ton emisij v ekvivalentu CO₂. Sledi kratek kviz za preverjanje znanja."
+      "description": "Svetovni prevoz hrane letno povzroči približno 3 milijarde ton emisij v ekvivalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Izbira izdelkov – začetnik",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Zavržena hrana, zavržena voda",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Z zavrženo hrano zapravimo tudi ogromne količine vode, porabljene za njeno pridelavo. Sledi kratek kviz za preverjanje znanja."
+      "description": "Z zavrženo hrano zapravimo tudi ogromne količine vode, porabljene za njeno pridelavo."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "Ogljični odtis mesa",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Meso, zlasti govedina in jagnjetina, ima veliko večji ogljični odtis kot večina rastlinskih živil. Sledi kratek kviz za preverjanje znanja."
+      "description": "Meso, zlasti govedina in jagnjetina, ima veliko večji ogljični odtis kot večina rastlinskih živil."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Emisije prevoza",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Skoraj petina emisij toplogrednih plinov svetovnega prehranskega sistema izvira iz prevoza hrane. Sledi kratek kviz za preverjanje znanja."
+      "description": "Skoraj petina emisij toplogrednih plinov svetovnega prehranskega sistema izvira iz prevoza hrane."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Izbira izdelkov – srednja raven",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Vodni odtis podrobno",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Vodni odtis vaše prehrane je močno odvisen od tega, kaj jeste. Sledi kratek kviz za preverjanje znanja."
+      "description": "Vodni odtis vaše prehrane je močno odvisen od tega, kaj jeste."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Emisije onkraj krožnika",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Zavržena hrana letno povzroči milijarde ton emisij v ekvivalentu CO2. Sledi kratek kviz za preverjanje znanja."
+      "description": "Zavržena hrana letno povzroči milijarde ton emisij v ekvivalentu CO2."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Hladna veriga in prevoz",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Čeprav hrana predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči približno 27 % emisij, povezanih s tovornim prometom. Sledi kratek kviz za preverjanje znanja."
+      "description": "Čeprav hrana predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči približno 27 % emisij, povezanih s tovornim prometom."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Izbira izdelkov – napredna raven",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Lokalno od blizu",
       "title": "Načini pridelave – začetnik",
-      "description": "Kratke dobavne verige lahko podpirajo lokalna gospodarstva in odpornost. Sledi kratek kviz za preverjanje znanja."
+      "description": "Kratke dobavne verige lahko podpirajo lokalna gospodarstva in odpornost."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Opazovalec načina pridelave",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Osnove pravične trgovine",
       "title": "Načini pridelave – začetnik",
-      "description": "V kmetijstvu je največ primerov dela otrok na svetu. Sledi kratek kviz za preverjanje znanja."
+      "description": "V kmetijstvu je največ primerov dela otrok na svetu."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Primerjajte stopnje predelave",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Kaj pove poreklo",
       "title": "Načini pridelave – srednja raven",
-      "description": "Poreklo hrane lahko daje koristne informacije o sledljivosti in trajnostnosti. Sledi kratek kviz za preverjanje znanja."
+      "description": "Poreklo hrane lahko daje koristne informacije o sledljivosti in trajnostnosti."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Izbira na podlagi podatkov o pridelavi",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Žlahtnjenje z manjšim vplivom",
       "title": "Načini pridelave – srednja raven",
-      "description": "Vzreja živali z manjšimi emisijami metana lahko zmanjša vplive živinoreje. Sledi kratek kviz za preverjanje znanja."
+      "description": "Vzreja živali z manjšimi emisijami metana lahko zmanjša vplive živinoreje."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Družbena plat hrane",
       "title": "Načini pridelave – srednja raven",
-      "description": "Trajnostnost prehranskega sistema vključuje socialne in delovne razmere. Sledi kratek kviz za preverjanje znanja."
+      "description": "Trajnostnost prehranskega sistema vključuje socialne in delovne razmere."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Sledilec več kazalnikov",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Razdalja ni vse",
       "title": "Načini pridelave – napredna raven",
-      "description": "Lokalna hrana ni vedno najbolj trajnostna izbira. Sledi kratek kviz za preverjanje znanja."
+      "description": "Lokalna hrana ni vedno najbolj trajnostna izbira."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Kmetijske metode, ki pomagajo",
       "title": "Načini pridelave – napredna raven",
-      "description": "Kmetijsko gozdarstvo združuje drevesa s poljščinami ali živino na istem zemljišču. Sledi kratek kviz za preverjanje znanja."
+      "description": "Kmetijsko gozdarstvo združuje drevesa s poljščinami ali živino na istem zemljišču."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Inovacije na kmetiji",
       "title": "Načini pridelave – napredna raven",
-      "description": "Urejanje genoma lahko pomaga razviti poljščine, ki so bolj odporne na podnebni stres. Sledi kratek kviz za preverjanje znanja."
+      "description": "Urejanje genoma lahko pomaga razviti poljščine, ki so bolj odporne na podnebni stres."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Kdo prideluje našo hrano",
       "title": "Načini pridelave – napredna raven",
-      "description": "Ženske imajo ključno vlogo pri pridelavi hrane, a imajo pogosto slabši dostop do virov. Sledi kratek kviz za preverjanje znanja."
+      "description": "Ženske imajo ključno vlogo pri pridelavi hrane, a imajo pogosto slabši dostop do virov."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Opazovalec embalažnega materiala",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Kalorije niso vse",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Svet že zdaj pridela dovolj kalorij, da bi nahranil vse. Sledi kratek kviz za preverjanje znanja."
+      "description": "Svet že zdaj pridela dovolj kalorij, da bi nahranil vse."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Nadomeščanje predelanega mesa",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Vitamini s krožnika",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Raznolika prehrana pomaga zmanjšati tveganje za pomanjkanje vitaminov. Sledi kratek kviz za preverjanje znanja."
+      "description": "Raznolika prehrana pomaga zmanjšati tveganje za pomanjkanje vitaminov."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Enake kalorije, drugačen vpliv",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Živila z enako količino kalorij imajo lahko zelo različne vplive na okolje. Sledi kratek kviz za preverjanje znanja."
+      "description": "Živila z enako količino kalorij imajo lahko zelo različne vplive na okolje."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Popolne rastlinske beljakovine",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Uživanje raznolikih rastlinskih beljakovin lahko zagotovi vse esencialne aminokisline. Sledi kratek kviz za preverjanje znanja."
+      "description": "Uživanje raznolikih rastlinskih beljakovin lahko zagotovi vse esencialne aminokisline."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Razumeti maščobe v prehrani",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Maščobe naj ne prispevajo več kot približno 30 % skupnega dnevnega energijskega vnosa. Sledi kratek kviz za preverjanje znanja."
+      "description": "Maščobe naj ne prispevajo več kot približno 30 % skupnega dnevnega energijskega vnosa."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Teden zavedanja o dodanem sladkorju",

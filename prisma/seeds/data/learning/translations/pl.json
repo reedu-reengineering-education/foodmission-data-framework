@@ -3000,17 +3000,17 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Woda ukryta w jedzeniu",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "Klimatyczny koszt posiłków",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Systemy żywnościowe odpowiadają za około jedną trzecią globalnej emisji gazów cieplarnianych. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Systemy żywnościowe odpowiadają za około jedną trzecią globalnej emisji gazów cieplarnianych."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Kilometry żywności",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Wybór produktów – dla początkujących",
@@ -3025,17 +3025,17 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Zmarnowane jedzenie, zmarnowana woda",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Marnowanie żywności powoduje również stratę ogromnych ilości wody wykorzystywanej do uprawy żywności. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Marnowanie żywności powoduje również stratę ogromnych ilości wody wykorzystywanej do uprawy żywności."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "Ślad węglowy mięsa",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Emisje z transportu",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Prawie jedna piąta emisji gazów cieplarnianych generowanych przez globalny system żywnościowy wynika z transportu żywności. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Prawie jedna piąta emisji gazów cieplarnianych generowanych przez globalny system żywnościowy wynika z transportu żywności."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Wybór produktów – poziom średniozaawansowany",
@@ -3050,17 +3050,17 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Ślad wodny w szczegółach",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Ślad wodny Twojej diety w dużym stopniu zależy od tego, co jesz. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Ślad wodny Twojej diety w dużym stopniu zależy od tego, co jesz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
       "name": "Emisje poza talerzem",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Łańcuch chłodniczy i transport",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to odpowiada on za około 27% emisji związanych z transportem towarowym. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to odpowiada on za około 27% emisji związanych z transportem towarowym."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Wybór produktów – zaawansowane",
@@ -3075,7 +3075,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Lokalne z bliska",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Obserwator metody produkcji",
@@ -3090,7 +3090,7 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
       "name": "Podstawy sprawiedliwego handlu",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Większość przypadków pracy dzieci na całym świecie dotyczy sektora rolnictwa. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Większość przypadków pracy dzieci na całym świecie dotyczy sektora rolnictwa."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Porównaj poziomy przetwarzania",
@@ -3100,7 +3100,7 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Co mówi pochodzenie",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Pochodzenie żywności może dostarczyć przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Pochodzenie żywności może dostarczyć przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Wybór oparty na danych produkcyjnych",
@@ -3110,12 +3110,12 @@
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Hodowla o mniejszym wpływie",
       "title": "Metody produkcji – Poziom średniozaawansowany",
-      "description": "Hodowla zwierząt o niższej emisji metanu może ograniczyć wpływ hodowli na środowisko. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Hodowla zwierząt o niższej emisji metanu może ograniczyć wpływ hodowli na środowisko."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Społeczna strona żywności",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Narzędzie do śledzenia wielu wskaźników",
@@ -3130,22 +3130,22 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Odległość to nie wszystko",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym wyborem. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym wyborem."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Metody uprawy, które pomagają",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Agroleśnictwo polega na łączeniu uprawy drzew z uprawami rolnymi lub hodowlą zwierząt na tym samym terenie. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Agroleśnictwo polega na łączeniu uprawy drzew z uprawami rolnymi lub hodowlą zwierząt na tym samym terenie."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Innowacje w gospodarstwie",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Edycja genomu może pomóc w opracowaniu roślin uprawnych, które będą bardziej odporne na stres klimatyczny. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Edycja genomu może pomóc w opracowaniu roślin uprawnych, które będą bardziej odporne na stres klimatyczny."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Kto uprawia naszą żywność",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają mniejszy dostęp do zasobów. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają mniejszy dostęp do zasobów."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Obserwator materiałów opakowaniowych",
@@ -3270,7 +3270,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Kalorie to nie wszystko",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich ludzi. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich ludzi."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Zamiennik przetworzonego mięsa",
@@ -3300,22 +3300,22 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Witaminy z talerza",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
       "name": "Te same kalorie, inny wpływ",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
       "name": "Pełnowartościowe białka roślinne",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Spożywanie różnorodnych białek pochodzenia roślinnego pozwala na dostarczenie organizmowi wszystkich niezbędnych aminokwasów. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Spożywanie różnorodnych białek pochodzenia roślinnego pozwala na dostarczenie organizmowi wszystkich niezbędnych aminokwasów."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Zrozumieć tłuszcze w diecie",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii. Następnie krótki quiz sprawdza zdobytą wiedzę."
+      "description": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Tydzień Świadomości na temat Cukru Dodanego",
