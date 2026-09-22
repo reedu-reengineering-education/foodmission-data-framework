@@ -148,6 +148,7 @@ model Recipe {
   user        User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   meals       Meal[]
   ingredients RecipeIngredient[]
+  ratings     RecipeRating[]
 
   @@index([userId])
   @@index([isPublic])
@@ -156,6 +157,24 @@ model Recipe {
   @@index([isPublic, category])
   @@index([origin])
   @@map("recipes")
+}
+
+model RecipeRating {
+  id        String   @id @default(uuid())
+  recipeId  String
+  userId    String
+  value     Int // 1..5 stars
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, userId]) // one rating per user per recipe
+  @@index([recipeId])
+  @@index([userId])
+  @@map("recipe_ratings")
 }
 
 model RecipeIngredient {
