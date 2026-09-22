@@ -45,6 +45,7 @@ export class SurveysRepository {
         questions: {
           orderBy: { order: 'asc' },
         },
+        reward: true,
       },
     });
   }

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { ContentLevel, PrismaClient } from '@prisma/client';
 
 interface RewardSeedData {
   name: string;
@@ -6,33 +6,44 @@ interface RewardSeedData {
   xp: number;
 }
 
-const standardRewards: RewardSeedData[] = [
-  {
-    name: 'Standard Quest Reward',
-    points: 50,
-    xp: 25,
-  },
-  {
-    name: 'Standard Mission Reward',
-    points: 120,
-    xp: 80,
-  },
-  {
-    name: 'Standard Challenge Reward',
-    points: 90,
-    xp: 60,
-  },
-  {
-    name: 'Standard Food Fact Reward',
-    points: 40,
-    xp: 30,
-  },
-  {
-    name: 'Standard Quiz Reward',
-    points: 20,
-    xp: 15,
-  },
+/**
+ * Base + difficulty-bonus points/xp per content type, as specified by the
+ * partners. Points and xp are equal at every tier.
+ */
+const scaledRewardValues: Record<
+  'Quest' | 'Mission' | 'Challenge' | 'Quiz' | 'Food Fact',
+  Record<ContentLevel, number>
+> = {
+  'Food Fact': { BEGINNER: 3, INTERMEDIATE: 4, ADVANCED: 5 },
+  Quiz: { BEGINNER: 5, INTERMEDIATE: 7, ADVANCED: 9 },
+  Challenge: { BEGINNER: 15, INTERMEDIATE: 20, ADVANCED: 25 },
+  Mission: { BEGINNER: 20, INTERMEDIATE: 30, ADVANCED: 40 },
+  Quest: { BEGINNER: 30, INTERMEDIATE: 45, ADVANCED: 60 },
+};
+
+const levelLabel: Record<ContentLevel, string> = {
+  BEGINNER: 'Beginner',
+  INTERMEDIATE: 'Intermediate',
+  ADVANCED: 'Advanced',
+};
+
+const scaledRewards: RewardSeedData[] = Object.entries(
+  scaledRewardValues,
+).flatMap(([type, byLevel]) =>
+  (Object.keys(byLevel) as ContentLevel[]).map((level) => ({
+    name: `Standard ${type} Reward - ${levelLabel[level]}`,
+    points: byLevel[level],
+    xp: byLevel[level],
+  })),
+);
+
+/** Badge and Survey have no difficulty tiers — one flat reward each. */
+const flatRewards: RewardSeedData[] = [
+  { name: 'Standard Badge Reward', points: 10, xp: 10 },
+  { name: 'Standard Survey Reward', points: 10, xp: 10 },
 ];
+
+const standardRewards: RewardSeedData[] = [...scaledRewards, ...flatRewards];
 
 export async function seedStandardRewards(prisma: PrismaClient) {
   console.log('🎁 Seeding standard rewards...');

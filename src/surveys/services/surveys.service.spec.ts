@@ -10,6 +10,7 @@ import {
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 
 /** What the i18n mock resolves to for the default locale. */
 const ENGLISH_SCALE = [
@@ -40,6 +41,8 @@ describe('SurveysService', () => {
     id: 'survey-1',
     title: 'Test Survey',
     description: 'A test survey',
+    rewardId: null,
+    reward: null,
     questions: [mockQuestion],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -98,6 +101,12 @@ describe('SurveysService', () => {
                   ? `${options.lang}:${key}`
                   : options?.defaultValue,
             ),
+          },
+        },
+        {
+          provide: GamificationWalletService,
+          useValue: {
+            award: jest.fn(),
           },
         },
       ],

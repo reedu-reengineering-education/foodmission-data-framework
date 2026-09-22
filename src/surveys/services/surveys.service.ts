@@ -1,8 +1,10 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { RewardSourceType, WalletCurrency } from '@prisma/client';
 import { SurveysRepository } from '../repositories/surveys.repository';
 import {
   AnswerOptionDto,
@@ -16,6 +18,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { toSurveySlug } from '../utils/survey-slug.util';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 
 type LocalizableQuestion = { id: string; text: string };
 
@@ -40,10 +43,13 @@ const LIKERT5_ENGLISH: Record<number, string> = {
 
 @Injectable()
 export class SurveysService {
+  private readonly logger = new Logger(SurveysService.name);
+
   constructor(
     private readonly surveysRepository: SurveysRepository,
     private readonly translationService: TranslationService,
     private readonly i18n: I18nService,
+    private readonly walletService: GamificationWalletService,
   ) {}
 
   /** Localized answer options, shared by all questions of all surveys. */
@@ -356,7 +362,68 @@ export class SurveysService {
       surveyId,
       { responses: data.responses },
     );
+
+    const answeredQuestionIds = new Set(
+      data.responses.map((r) => r.questionId),
+    );
+    const isComplete = survey.questions.every((q) =>
+      answeredQuestionIds.has(q.id),
+    );
+    if (isComplete) {
+      await this.awardSurveyReward(userId, survey);
+    }
+
     return this.mapSurveyResponseToDto(result);
+  }
+
+  /**
+   * Credits the survey's flat reward once all of its questions have been
+   * answered. Safe to call on every complete submission (including repeat
+   * attempts): `award()` derives an idempotency key from (user, sourceType,
+   * sourceId, reward, currency), so repeat calls replay the original ledger
+   * entry instead of double-crediting. A failure must not surface as a
+   * request error since the response was already persisted.
+   */
+  private async awardSurveyReward(
+    userId: string,
+    survey: {
+      id: string;
+      title: string;
+      reward?: { id: string; xp: number | null; points: number | null } | null;
+    },
+  ): Promise<void> {
+    if (!survey.reward) {
+      return;
+    }
+    const { reward } = survey;
+    const base = {
+      userId,
+      rewardId: reward.id,
+      sourceType: RewardSourceType.SURVEY,
+      sourceId: survey.id,
+      reason: `Survey "${survey.title}" completed`,
+    };
+    try {
+      if (reward.xp) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.XP,
+          amount: reward.xp,
+        });
+      }
+      if (reward.points) {
+        await this.walletService.award({
+          ...base,
+          currency: WalletCurrency.POINTS,
+          amount: reward.points,
+        });
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to award survey ${survey.id} reward to user ${userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
   }
 
   /** Latest attempt for this user + survey. */
