@@ -1,8 +1,11 @@
+import { RecipeOrigin } from '@prisma/client';
+
 export type RecipeFixture = {
   id: string;
   userId: string | null;
   title: string;
   isPublic: boolean;
+  origin: RecipeOrigin;
   createdAt: Date;
   updatedAt: Date;
   externalId?: string | null;
@@ -35,6 +38,7 @@ export function buildRecipe(
     userId: 'user-1',
     title: 'Test Recipe',
     isPublic: false,
+    origin: RecipeOrigin.USER,
     createdAt: new Date('2025-01-01T00:00:00Z'),
     updatedAt: new Date('2025-01-01T00:00:00Z'),
     externalId: null,

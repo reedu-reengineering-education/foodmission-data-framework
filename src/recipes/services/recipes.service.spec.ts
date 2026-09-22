@@ -6,6 +6,7 @@ import {
 import { RecipesService } from './recipes.service';
 import { RecipesRepository } from '../repositories/recipes.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { RecipeOrigin } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   ResourceAlreadyExistsException,
@@ -56,6 +57,7 @@ describe('RecipesService', () => {
       userId,
       allergens: [],
       isPublic: false,
+      origin: RecipeOrigin.USER,
     });
   });
 
@@ -198,6 +200,7 @@ describe('RecipesService', () => {
         ...dto,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
         userId,
       });
     });
@@ -215,6 +218,7 @@ describe('RecipesService', () => {
         userId,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
       });
     });
   });
@@ -385,6 +389,7 @@ describe('RecipesService', () => {
         ...createDto,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
         userId,
       });
     });

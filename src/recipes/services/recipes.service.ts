@@ -12,7 +12,7 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
@@ -44,6 +44,7 @@ export class RecipesService {
         ...createRecipeDto,
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
+        origin: RecipeOrigin.USER,
         userId,
       });
       return this.toResponse(recipe);
@@ -140,12 +141,14 @@ export class RecipesService {
       tags,
       allergens,
       difficulty,
+      origin,
       search,
     } = query;
     return {
       ...(category ? { category } : {}),
       ...(cuisineType ? { cuisineType } : {}),
       ...(difficulty ? { difficulty } : {}),
+      ...(origin ? { origin } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
         : {}),

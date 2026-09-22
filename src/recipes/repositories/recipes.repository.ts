@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Allergens, Prisma, Recipe } from '@prisma/client';
+import { Allergens, Prisma, Recipe, RecipeOrigin } from '@prisma/client';
 import { RecipeWithIngredients } from '../interfaces/recommendation-score.interface';
 import {
   BaseRepository,
@@ -44,6 +44,7 @@ export interface CreateRecipeData {
   category?: string;
   isPublic?: boolean;
   dietaryLabels?: string[];
+  origin?: RecipeOrigin;
   ingredients?: CreateRecipeIngredientData[];
 }
 
