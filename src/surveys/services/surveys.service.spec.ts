@@ -138,6 +138,8 @@ describe('SurveysService', () => {
       const result = await service.getAllSurveys();
 
       expect(result).toEqual([expectedSurveyDto]);
+      expect(result[0]).not.toHaveProperty('reward');
+      expect(result[0]).not.toHaveProperty('rewardId');
       expect(repository.getAllSurveys).toHaveBeenCalled();
     });
 
@@ -178,6 +180,8 @@ describe('SurveysService', () => {
       const result = await service.getSurveyBySlug('test-survey');
 
       expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
     });
 
     it('should throw NotFoundException when no survey matches the slug', async () => {
@@ -219,6 +223,8 @@ describe('SurveysService', () => {
       const result = await service.createSurvey(createDto);
 
       expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
       expect(repository.createSurvey).toHaveBeenCalledWith(createDto);
     });
 
