@@ -48,6 +48,7 @@ describe('ChallengeProgressRepository', () => {
       );
       expect(prisma.challenge.findFirst).toHaveBeenCalledWith({
         where: { id: '550e8400-e29b-41d4-a716-446655440000' },
+        include: { reward: { select: { id: true, xp: true, points: true } } },
       });
       expect(result).toBe(mockReturn);
     });
@@ -58,6 +59,7 @@ describe('ChallengeProgressRepository', () => {
       const result = await repository.findChallengeByCodeOrId('CH.A1.1');
       expect(prisma.challenge.findFirst).toHaveBeenCalledWith({
         where: { code: 'CH.A1.1' },
+        include: { reward: { select: { id: true, xp: true, points: true } } },
       });
       expect(result).toBe(mockReturn);
     });

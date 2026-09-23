@@ -17,6 +17,8 @@ describe('MealLogsController', () => {
     timestamp: new Date(),
     mealFromPantry: false,
     eatenOut: false,
+    flags: [],
+    swaps: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   };

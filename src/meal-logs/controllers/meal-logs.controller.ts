@@ -42,7 +42,15 @@ export class MealLogsController {
   @Post()
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Create a meal log' })
+  @ApiOperation({
+    summary: 'Create a meal log',
+    description:
+      'Logs a meal either by linking a Meal (mealId) or, for a quick log, by ' +
+      'reporting diet facts (flags) and substitutions (swaps) without one. ' +
+      'Flags and swaps are given as the event types they record (e.g. MEAL_VEGAN, ' +
+      'SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
+      'and swap — MEAL_VEGAN also records MEAL_MEAT_FREE.',
+  })
   @ApiBody({ type: CreateMealLogDto })
   @ApiResponse({
     status: 201,

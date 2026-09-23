@@ -36,9 +36,13 @@ import iso3166 from 'iso-3166-2';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
+  ANNUAL_INCOME_EUR_BANDS,
   CONSENT_FORM_COUNTRY_CODES,
   ConsentFormCountryCode,
   CONTENT_TAG_ENTRIES,
+  DEFAULT_INCOME_CURRENCY,
+  INCOME_COUNTRY_BY_LOCALE,
+  INCOME_CURRENCY_BY_COUNTRY,
   SHOPPING_RESPONSIBILITY_ENTRIES,
 } from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
@@ -51,6 +55,7 @@ import { ConsentFormResponseDto } from '../dto/consent-form-response.dto';
 import {
   filterLocalizedItems,
   normalizeSearch,
+  roundToSignificant,
   titleCaseFromEnum,
   toPaginatedResponse,
 } from './catalog.service.helpers';
@@ -275,11 +280,53 @@ export class CatalogService implements OnModuleInit {
     return this.enumSection(Object.values(EducationLevel), 'educationLevels');
   }
 
-  listAnnualIncomeLevels(): CatalogListResponseDto {
-    return this.enumSection(
-      Object.values(AnnualIncomeLevel),
-      'annualIncomeLevels',
-    );
+  /**
+   * Income bands are stored in EUR. Labels show them in the currency of
+   * `countryCode` (or of the country implied by the locale), converted at a
+   * fixed rate; the codes and their meaning never change.
+   */
+  listAnnualIncomeLevels(countryCode?: string): CatalogListResponseDto {
+    const lang = this.resolveLanguage();
+    const country =
+      countryCode?.trim().toUpperCase() || INCOME_COUNTRY_BY_LOCALE[lang];
+    const { currency, eurRate } =
+      (country && INCOME_CURRENCY_BY_COUNTRY[country]) ||
+      DEFAULT_INCOME_CURRENCY;
+    const money = new Intl.NumberFormat(lang, {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    });
+    const convert = (eur?: number) =>
+      eur === undefined ? undefined : roundToSignificant(eur * eurRate);
+
+    return {
+      data: Object.values(AnnualIncomeLevel).map((code) => {
+        const min = convert(ANNUAL_INCOME_EUR_BANDS[code].min);
+        const max = convert(ANNUAL_INCOME_EUR_BANDS[code].max);
+        const fallback =
+          min === undefined
+            ? 'Under {max} per year'
+            : max === undefined
+              ? '{min} or more per year'
+              : '{min} – {max} per year';
+        const template = this.translateCatalogKey(
+          `annualIncomeLevels.${code}`,
+          fallback,
+        );
+        // Closed ranges read "10 000 – 19 999", so show the inclusive upper bound
+        const shownMax =
+          max === undefined ? undefined : min === undefined ? max : max - 1;
+        const label = template
+          .replace('{min}', min === undefined ? '' : money.format(min))
+          .replace(
+            '{max}',
+            shownMax === undefined ? '' : money.format(shownMax),
+          );
+
+        return { code, label, meta: { currency, min, max } };
+      }),
+    };
   }
 
   listUnits(): CatalogListResponseDto {
@@ -494,13 +541,13 @@ export class CatalogService implements OnModuleInit {
     }));
   }
 
-  startup(): CatalogStartupResponseDto {
+  startup(countryCode?: string): CatalogStartupResponseDto {
     return {
       data: {
         genders: this.listGenders().data,
         activityLevels: this.listActivityLevels().data,
         educationLevels: this.listEducationLevels().data,
-        annualIncomeLevels: this.listAnnualIncomeLevels().data,
+        annualIncomeLevels: this.listAnnualIncomeLevels(countryCode).data,
         dietaryPreferences: this.listDietaryPreferences().data,
         shoppingResponsibilities: this.listShoppingResponsibilities().data,
         onboarding: {

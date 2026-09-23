@@ -73,21 +73,10 @@ Fino a quando può essere identificato nei dati raccolti, ha il diritto di:
 
 Se ha domande sul progetto o vuole esercitare i suoi diritti, contatti:
 
-*   Coordinatore del progetto Natalia Mæhle (Natalia.mehle@hvl.no) e il responsabile nazionale Elena Claire Ricci (elenaclaire.ricci@univr.it)
+*   Coordinatore del progetto Natalia Mæhle ([Natalia.mehle@hvl.no](mailto:Natalia.mehle@hvl.no)) e il responsabile nazionale Elena Claire Ricci ([elenaclaire.ricci@univr.it](mailto:elenaclaire.ricci@univr.it))
 *   Responsabile della Protezione dei Dati di HVL: Trine Anniken Larsen ([personvernombud@hvl.no](mailto:personvernombud@hvl.no))
-*   Responsabile della Protezione dei Dati di UNIVR: DPO (privacy@ateneo.univr.it)
+*   Responsabile della Protezione dei Dati di UNIVR: DPO ([privacy@ateneo.univr.it](mailto:privacy@ateneo.univr.it))
 
 Se ha domande su come è stata valutata la protezione dei dati in questo progetto, contatti:
 
-Servizi di Protezione dei Dati, via email: ([personverntjenester@sikt.no](mailto:personverntjenester@sikt.no)) o via telefono: +47 53 21 15 00.
-
-**Modulo di consenso utilizzato per documentare il consenso etico**
-
-**\-------------------------------------------------------------------------------------------------------------------------**
-
-# Modulo di consenso
-
-Ho ricevuto e compreso informazioni sulla fase pilota di FOODMISSION e ho avuto l'opportunità di porre domande via email.
-
-*   Acconsento a partecipare alla fase pilota e a utilizzare FOODMISSION e che i miei dati personali possano essere trattati fino alla fine del progetto (31.07.2029).
-*   Non acconsento a partecipare.
+Servizi di Protezione dei Dati, via email: ([personverntjenester@sikt.no](mailto:personverntjenester@sikt.no)) o via telefono: [+47 53 21 15 00](tel:+4753211500).

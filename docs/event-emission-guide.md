@@ -52,6 +52,7 @@ flowchart TD
    - **Behavioural** — evidence (`MEAL_*`, `SWAP_*`, `LEARNING_*`, …)  
    - **Progress** — `MISSION_STARTED` / `MISSION_COMPLETED`, `CHALLENGE_STARTED` / `CHALLENGE_COMPLETED`, `QUEST_*`  
    - **Achievements** — `BADGE_EARNED`, `PROGRESS_INDICATOR_UPDATED`  
+   - **Personalization** — `FOODY_ITEM_PURCHASED` / `FOODY_ITEM_EQUIPPED` / `FOODY_ITEM_UNEQUIPPED` (`EventSource.FOODY`; the purchase event is created by the points debit)  
    - **Wallet** — `WALLET_POINTS_AWARDED` / `WALLET_XP_AWARDED` / `WALLET_MANUAL_ADJUSTMENT`; link with `eventId` when a behavioural/progress event already exists
 
 5. **`source` = observing feature, not the consumer**  

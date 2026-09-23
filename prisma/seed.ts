@@ -22,6 +22,7 @@ import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
 import { seedDimensionsAndTopics } from '../scripts/seeds/shared/dimensions-topics';
 import { seedStandardRewards } from '../scripts/seeds/shared/rewards';
+import { seedFoodyItems } from '../scripts/seeds/shared/foody-items';
 import { seedFoodFacts } from '../scripts/seeds/shared/food-facts';
 import { seedQuizzes } from '../scripts/seeds/shared/quizzes';
 import { seedMissionsCatalog } from '../scripts/seeds/shared/missions-catalog';
@@ -51,6 +52,7 @@ function printTranslationsReminder(): void {
 async function seedProduction() {
   const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
+  const foodyItems = await seedFoodyItems(prisma);
 
   const foodFacts = await seedFoodFacts(prisma);
   const quizzes = await seedQuizzes(prisma);
@@ -81,6 +83,10 @@ async function seedProduction() {
       label: 'standardRewards',
       value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
+    {
+      label: 'foodyItems',
+      value: `${foodyItems.seeded} seeded (${foodyItems.total} total)`,
+    },
     { label: 'foodFacts', value: foodFacts.seeded },
     {
       label: 'quizzes',
@@ -94,7 +100,10 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
+    {
+      label: 'nevoLangualMapping',
+      value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
+    },
     {
       label: 'dietFlags',
       value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
@@ -126,6 +135,7 @@ async function seedProduction() {
 async function seedDevelopment() {
   const taxonomy = await seedDimensionsAndTopics(prisma);
   const standardRewards = await seedStandardRewards(prisma);
+  const foodyItems = await seedFoodyItems(prisma);
 
   // --- Educational catalog (Task 3.3; missions/challenges after users for demo progress) ---
   const foodFacts = await seedFoodFacts(prisma);
@@ -184,6 +194,10 @@ async function seedDevelopment() {
       label: 'standardRewards',
       value: `${standardRewards.seeded} seeded (${standardRewards.total} total)`,
     },
+    {
+      label: 'foodyItems',
+      value: `${foodyItems.seeded} seeded (${foodyItems.total} total)`,
+    },
     { label: 'foodFacts', value: foodFacts.seeded },
     {
       label: 'quizzes',
@@ -201,7 +215,10 @@ async function seedDevelopment() {
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'nevoLangualMapping', value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)` },
+    {
+      label: 'nevoLangualMapping',
+      value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
+    },
     { label: 'users', value: users.length },
     { label: 'shoppingList', value: shoppingList.length },
     { label: 'shoppingListItem', value: shoppingListItem.length },

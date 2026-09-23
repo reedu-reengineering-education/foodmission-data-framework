@@ -14,7 +14,8 @@ export class CatalogValueDto {
   label: string;
 
   @ApiPropertyOptional({
-    description: 'Optional metadata (e.g. countryCode for regions)',
+    description:
+      'Optional metadata (e.g. countryCode for regions; currency, min (inclusive) and max (exclusive) for annual income levels)',
     type: 'object',
     additionalProperties: true,
   })
