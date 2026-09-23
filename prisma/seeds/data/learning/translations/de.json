@@ -874,7 +874,8 @@
         "B": "Eier",
         "C": "Käse",
         "D": "Hähnchenbrust"
-      }
+      },
+      "explanation": "Hülsenfrüchte verbessern die Bodenfruchtbarkeit durch Stickstoffbindung und liefern zugleich Eiweiß, Ballaststoffe, Vitamine und Mineralstoffe."
     },
     "Q1.2.5": {
       "question": "Eine Familie möchte ihren Verzehr von rotem Fleisch reduzieren, ohne jedoch ganz auf tierische Produkte zu verzichten. Welche Änderung entspricht am ehesten den wissenschaftlichen Erkenntnissen?",
@@ -1003,7 +1004,8 @@
         "B": "Eine Ernährung mit mehr Milchprodukten und rotem Fleisch",
         "C": "Eine Ernährung, die mehr verarbeitete Fleischprodukte enthält",
         "D": "Eine Ernährung, bei der Rindfleisch als wichtigste Proteinquelle im Mittelpunkt steht"
-      }
+      },
+      "explanation": "Der Wasserverbrauch sinkt in der Regel, wenn die Ernährung weniger tierische und mehr pflanzliche Lebensmittel enthält."
     },
     "Q2.2.3": {
       "question": "Sie finden in Ihrem Kühlschrank Gemüse, das kurz vor dem Verderben steht. Was ist die nachhaltigste Vorgehensweise?",
@@ -1022,7 +1024,8 @@
         "B": "Der Wasserverbrauch hängt von der jeweiligen Auswahl der Lebensmittel ab, doch die Reduzierung des Verzehrs tierischer Lebensmittel ist oft ein wichtiger Faktor.",
         "C": "Die Auswirkungen auf den Wasserverbrauch hängen hauptsächlich von den Transportwegen der Lebensmittel ab",
         "D": "Verarbeitete Lebensmittel benötigen immer mehr Wasser als frische Lebensmittel"
-      }
+      },
+      "explanation": "Studien zeigen, dass weniger tierische Lebensmittel den Wasserfußabdruck häufig senken; der gesamte Wasserverbrauch hängt jedoch weiterhin von der Zusammensetzung der Ernährung ab."
     },
     "Q2.2.5": {
       "question": "Welche Mahlzeit hat in der Regel den geringsten Wasser-Fußabdruck?",
@@ -1081,7 +1084,8 @@
         "B": "Ernährungssysteme üben durch ihren Ressourcen- und Energiebedarf erheblichen Druck auf die Ökosysteme aus",
         "C": "Der größte Druck auf das Ökosystem geht eher von Lebensmittelverpackungen als von der Lebensmittelproduktion aus",
         "D": "Es wird erwartet, dass die Nachfrage nach Lebensmitteln bis 2050 deutlich zurückgehen wird"
-      }
+      },
+      "explanation": "Menschliche Aktivitäten, insbesondere Landwirtschaft, Forstwirtschaft und Ernährungssysteme, beanspruchen rund 30 % der weltweiten Nettoprimärproduktion – weit über der vorgeschlagenen sicheren Grenze von 10 %. Das deutet auf erheblichen Druck auf Ökosysteme und biologische Vielfalt hin."
     },
     "Q2.4.1": {
       "question": "Sie möchten Ihren ökologischen Fußabdruck verringern, wollen aber nicht Vegetarier werden. Welche Strategie dürfte am wirksamsten sein?",
@@ -1090,7 +1094,7 @@
         "A": "Ersetzen Sie einige Gerichte mit rotem Fleisch durch Hülsenfrüchte",
         "B": "Kaufen Sie ausschließlich hochwertige Fleischprodukte",
         "C": "Kaufen Sie kein Tiefkühlgemüse mehr",
-        "D": "Zu einer anderen Kaffeemarke wechseln – Richtige Antwort"
+        "D": "Zu einer anderen Kaffeemarke wechseln"
       }
     },
     "Q2.4.2": {
@@ -1320,7 +1324,8 @@
         "B": "Sie können nur in Innenräumen hergestellt werden",
         "C": "Sie könnten Protein mit geringeren Umweltauswirkungen liefern",
         "D": "Dadurch werden Anbaukulturen überflüssig"
-      }
+      },
+      "explanation": "Alternative Proteinquellen werden erforscht, weil sie helfen können, die Umweltbelastung der konventionellen Tierhaltung zu verringern und zugleich die künftige Ernährungssicherheit zu unterstützen."
     },
     "Q3.4.5": {
       "question": "Ein Fleischproduzent gibt an, dass sein Tierzuchtprogramm auf Futterverwertung ausgerichtet ist. Inwiefern könnte dies für die Nachhaltigkeit von Bedeutung sein?",
@@ -1329,7 +1334,8 @@
         "B": "Tiere benötigen möglicherweise weniger Ressourcen",
         "C": "Das garantiert niedrigere Verkaufspreise",
         "D": "Es verhindert die Entstehung von Treibhausgasemissionen"
-      }
+      },
+      "explanation": "Nutztiere mit besserer Futterverwertung liefern dieselbe Menge Fleisch mit weniger Futtermitteln und verringern so die Umweltbelastung je Produktionseinheit."
     },
     "Q3.5.1": {
       "question": "Sie haben die Wahl zwischen zwei Schokoladentafeln mit ähnlichen Nährwert- und Umweltangaben. Eine davon trägt das Fairtrade-Siegel. Welchen zusätzlichen Aspekt der Nachhaltigkeit soll das Fairtrade-Siegel in erster Linie berücksichtigen?",
@@ -1528,7 +1534,8 @@
         "B": "Standardisierte Portionen",
         "C": "Zutaten aus der Region",
         "D": "Nährwertangaben auf Speisekarten"
-      }
+      },
+      "explanation": "Einheitliche Portionsgrößen berücksichtigen unterschiedliche Appetitgrößen oft nicht und gelten als systemische Ursache von Tellerresten."
     },
     "Q5.2.1": {
       "question": "Sie haben Reste vom Abendessen, die Sie morgen essen möchten. Was ist der beste erste Schritt, um sowohl Lebensmittelverschwendung als auch Risiken für die Lebensmittelsicherheit zu vermeiden?",
@@ -1687,7 +1694,8 @@
         "B": "Nehmen Sie mehr Hülsenfrüchte, Nüsse und Vollkornprodukte als Proteinquellen in Ihren Speiseplan auf",
         "C": "Wählen Sie Lebensmittel mit dem höchsten Eiweißgehalt, unabhängig von ihrer Herkunft.",
         "D": "Mahlzeiten durch Proteinpräparate ersetzen"
-      }
+      },
+      "explanation": "Hülsenfrüchte, Nüsse und Vollkornprodukte liefern Eiweiß und haben in der Regel geringere Umweltauswirkungen als viele tierische Proteinquellen. Eine Vielfalt an Proteinquellen ist für Gesundheit und Nachhaltigkeit vorteilhaft."
     },
     "Q6.1.2": {
       "question": "Zwei Mittagessen enthalten eine ähnliche Menge an Eiweiß: Linsen-Quinoa-Salat, Sandwich mit Fleischprodukten. Welche Aussage ist am zutreffendsten?",
@@ -1705,8 +1713,9 @@
         "A": "Iss weiterhin zu jeder Mahlzeit Fleisch",
         "B": "Verlassen Sie sich ausschließlich auf eine einzige pflanzliche Proteinquelle",
         "C": "Nehmen Sie verschiedene pflanzliche Proteinquellen wie Hülsenfrüchte, Getreide, Nüsse und Samen zu sich",
-        "D": "Doppelte Gesamtkalorienzufuhr – Richtige Antwort: C"
-      }
+        "D": "Doppelte Gesamtkalorienzufuhr"
+      },
+      "explanation": "Verschiedene pflanzliche Proteine ergänzen einander. In einer abwechslungsreichen Ernährung liefert die Kombination unterschiedlicher pflanzlicher Proteinquellen in der Regel alle essenziellen Aminosäuren."
     },
     "Q6.1.4": {
       "question": "Sie vergleichen zwei Lebensmittel: Produkt A: „Proteinquelle“ Produkt B: „Proteinreich“ Welche Schlussfolgerung können Sie daraus ziehen?",
@@ -1714,8 +1723,9 @@
         "A": "Produkt B enthält zwangsläufig doppelt so viel Eiweiß",
         "B": "Produkt A ist weniger gesund",
         "C": "Ein größerer Anteil der Energie von Produkt B stammt aus Eiweiß",
-        "D": "Produkt B enthält tierisches Eiweiß. Richtige Antwort: C"
-      }
+        "D": "Produkt B enthält tierisches Eiweiß"
+      },
+      "explanation": "Nach der EU-Verordnung über nährwertbezogene Angaben darf ein Produkt nur dann als „proteinreich“ bezeichnet werden, wenn mindestens 20 % seines Energiegehalts aus Eiweiß stammen. Für „Proteinquelle“ sind mindestens 12 % erforderlich."
     },
     "Q6.1.5": {
       "question": "Welches Ernährungsmuster steht am ehesten im Einklang sowohl mit den Nachhaltigkeitszielen als auch mit den aktuellen Ernährungsempfehlungen?",
@@ -1724,7 +1734,8 @@
         "B": "Maximierung der Proteinaufnahme unabhängig von der Quelle",
         "C": "Protein aus einer Mischung aus Hülsenfrüchten, Fisch, Milchprodukten, Eiern, Nüssen und moderaten Mengen an Fleisch beziehen",
         "D": "Sich hauptsächlich auf Proteinshakes und Nahrungsergänzungsmittel verlassen"
-      }
+      },
+      "explanation": "Gesunde und nachhaltige Ernährung stützt sich in der Regel auf vielfältige Proteinquellen statt auf eine einzige. Hülsenfrüchte, Fisch, Nüsse, Milchprodukte und moderate Mengen Fleisch können alle zur ausreichenden Eiweißversorgung beitragen und zugleich die Ernährungsqualität fördern."
     },
     "Q6.2.1": {
       "question": "Sie möchten die Qualität der Fette in Ihrer Ernährung verbessern, ohne dabei auf genussvolle Mahlzeiten zu verzichten. Welche Alternative entspricht am ehesten den aktuellen Empfehlungen?",
@@ -1963,7 +1974,8 @@
         "B": "Weißbrot mit Butter",
         "C": "Orangenscheiben und Kiwis",
         "D": "Gekochter Reis"
-      }
+      },
+      "explanation": "Obst wie Orangen, Kiwis und Beeren sowie viele Gemüsesorten sind reich an Vitamin C, das zur Funktion des Immunsystems und zur normalen Kollagenbildung beiträgt."
     },
     "Q6.6.5": {
       "question": "Sie haben die Wahl zwischen zwei Beilagen: Gedünstetes Gemüse – Gemüse, das sehr lange bei hoher Temperatur gegart wurde. Bei welcher Variante bleiben die Vitamine eher erhalten?",
@@ -2012,7 +2024,8 @@
         "B": "Maximierung der Kalorienaufnahme aus beliebigen Nahrungsquellen",
         "C": "Die Kalorienzufuhr an den individuellen Bedarf anpassen und dabei nährstoffreichen Lebensmitteln den Vorrang geben",
         "D": "Sich ausschließlich auf Kalorien zu konzentrieren und die Qualität der Lebensmittel zu vernachlässigen"
-      }
+      },
+      "explanation": "Eine gesunde und nachhaltige Ernährung dreht sich nicht nur um Kalorien. Es geht darum, den Energiebedarf zu decken, dabei nährstoffreiche Lebensmittel zu wählen und unnötigen Überkonsum sowie Verschwendung zu vermeiden."
     },
     "Q6.7.5": {
       "question": "Vier Snacks liefern ungefähr die gleiche Anzahl an Kalorien. Welcher davon hält Sie wahrscheinlich länger satt?",
@@ -2437,7 +2450,7 @@
     },
     "M.I5.3": {
       "title": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
-      "goal": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Nachverfolgungskomponente: Protokollieren Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“.",
+      "goal": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Protokollieren Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“.",
       "whyItMatters": "Verbraucher kaufen oft Produkte, die sie bereits besitzen."
     },
     "M.I5.4": {
@@ -2937,67 +2950,67 @@
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Eine Fleischmahlzeit einsparen",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Essen Sie eine Fleischmahlzeit weniger als in der vergangenen Woche und denken Sie dabei daran, dass der Verzicht auf rotes Fleisch eine der wirksamsten Maßnahmen ist, um den zu senken."
+      "description": "Essen Sie eine Fleischmahlzeit weniger als in der vergangenen Woche. Weniger rotes Fleisch zu essen ist eine der wirksamsten Möglichkeiten, die Umweltauswirkungen der eigenen Ernährung zu verringern."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
       "name": "Erster „Sustainable Swap“",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Halten Sie zwei Maßnahmen zum Austausch von Proteinen fest und denken Sie dabei daran, dass der Ersatz eines Teils Ihres Fleischkonsums durch Hülsenfrüchte die Auswirkungen auf das Klima verringern kann."
+      "description": "Halten Sie zwei Maßnahmen zum Austausch von Proteinen fest. Wenn Sie einen Teil Ihres Fleischkonsums durch Hülsenfrüchte ersetzen, können Sie die Klimaauswirkungen Ihrer Ernährung verringern."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Entdecken Sie Linsen",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Setzen Sie sich mit dem Thema auseinander und nennen Sie zwei Vorteile von Linsen in Bezug auf Ernährung oder Umwelt. Berücksichtigen Sie dabei, dass Quinoa alle neun essentiellen Aminosäuren enthält und somit ein vollständiges pflanzliches Protein darstellt."
+      "description": "Setzen Sie sich mit dem Thema auseinander und nennen Sie zwei Vorteile von Linsen in Bezug auf Ernährung oder Umwelt. Quinoa enthält alle neun essentiellen Aminosäuren und ist damit ein vollständiges pflanzliches Protein."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "Zwei fleischfreie Tage",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Halten Sie zwei fleischfreie Tage ein und bedenken Sie dabei, dass die Produktion von Rindfleisch viel mehr Land erfordert als die Produktion von pflanzlichen Proteinen wie Erbsen oder."
+      "description": "Halten Sie zwei fleischfreie Tage ein. Die Produktion von Rindfleisch erfordert deutlich mehr Land als die Herstellung pflanzlicher Proteine wie Erbsen oder Tofu."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Nachhaltiger Swap-Generator",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Notieren Sie sich vier Maßnahmen zum Austausch von Proteinquellen und denken Sie dabei daran, dass Bohnen, Linsen, Erbsen und Kichererbsen zu den nachhaltigsten verfügbaren Proteinquellen gehören."
+      "description": "Notieren Sie sich vier Maßnahmen zum Austausch von Proteinquellen. Bohnen, Linsen, Erbsen und Kichererbsen gehören zu den nachhaltigsten Proteinquellen, die es gibt."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Hülsenfrüchte-Routine",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Bauen Sie Hülsenfrüchte in vier Mahlzeiten ein und bedenken Sie dabei, dass Hirse eine äußerst widerstandsfähige Kulturpflanze ist, die unter heißen, trockenen Bedingungen mit wenig Wasser gedeiht."
+      "description": "Bauen Sie Hülsenfrüchte in vier Mahlzeiten ein. Hirse ist eine äußerst widerstandsfähige Kulturpflanze, die unter heißen, trockenen Bedingungen mit wenig Wasser wachsen kann."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Bleib im Grünen",
+      "name": "In der grünen Zone bleiben",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beschränken Sie sich auf weniger als vier Fleischmahlzeiten pro Woche und bedenken Sie dabei, dass die Tierhaltung weltweit den größten Teil der landwirtschaftlichen Nutzfläche beansprucht, dabei aber nur einen viel geringeren Anteil der Nahrungsmittel liefert."
+      "description": "Beschränken Sie sich auf weniger als vier Fleischmahlzeiten pro Woche. Die Tierhaltung beansprucht weltweit den größten Teil der landwirtschaftlichen Nutzfläche, liefert dabei jedoch nur einen viel geringeren Anteil an Kalorien und Eiweiß."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Mehrheit aus pflanzlichem Eiweiß",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beziehen Sie den Großteil Ihrer proteinhaltigen Mahlzeiten aus nicht-fleischlichen Proteinquellen und bedenken Sie dabei, dass Hülsenfrüchte durch die Bindung von Stickstoff aus der Luft auf natürliche Weise die Bodenfruchtbarkeit verbessern und so den Bedarf verringern."
+      "description": "Beziehen Sie den Großteil Ihrer proteinhaltigen Mahlzeiten aus nicht-fleischlichen Proteinquellen. Hülsenfrüchte verbessern auf natürliche Weise die Bodenfruchtbarkeit, indem sie Stickstoff aus der Luft binden und so den Bedarf an Düngemitteln verringern."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
       "name": "Alternative Grundnahrungsmittel-Gewohnheit",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beziehen Sie alternative Grundnahrungsmittel in mindestens fünf Mahlzeiten ein und bedenken Sie dabei, dass Quinoa mittlerweile in mehr als 70 Ländern angebaut wird und so zur Diversifizierung der weltweiten Nahrungsmittelproduktion beiträgt."
+      "description": "Beziehen Sie alternative Grundnahrungsmittel in mindestens fünf Mahlzeiten ein. Quinoa wird mittlerweile in mehr als 70 Ländern angebaut und trägt so zur Diversifizierung der weltweiten Nahrungsmittelproduktion bei."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Herkunfts-Tracker",
       "title": "Produktauswahl – Anfänger",
-      "description": "Ermitteln Sie das Herkunftsland von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben, und bedenken Sie dabei, dass etwa die Hälfte der bewohnbaren Landfläche der Erde landwirtschaftlich genutzt wird."
+      "description": "Ermitteln Sie das Herkunftsland von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben. Etwa die Hälfte der weltweit bewohnbaren Landfläche wird landwirtschaftlich genutzt."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Quiz: Zwei Personen essen die gleiche Anzahl",
+      "name": "Wasser hinter dem Essen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Rund 70 % der weltweiten Süßwasserentnahmen entfallen auf die Landwirtschaft und spiegeln wider, dass zwei Menschen täglich die gleiche Anzahl an Kalorien zu sich nehmen."
+      "description": "Rund 70 % der weltweiten Süßwasserentnahmen werden für die Landwirtschaft genutzt."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Quiz: Du vergleichst vier Ernährungsweisen mit",
+      "name": "Klimakosten der Mahlzeiten",
       "title": "Produktauswahl – Anfänger",
-      "description": "Lebensmittelsysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen, und das wird deutlich, wenn man vier Ernährungsweisen mit derselben Kalorienzufuhr vergleicht."
+      "description": "Die Ernährungssysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Quiz: Du möchtest deinen CO₂-Fußabdruck verringern",
+      "name": "Transportwege erklärt",
       "title": "Produktauswahl – Anfänger",
-      "description": "Der weltweite Lebensmitteltransport verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen – und das sollte man bedenken, wenn man seinen Einfluss auf das Klima verringern möchte, es aber nicht wirklich will."
+      "description": "Der weltweite Transport von Lebensmitteln verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Produktauswahl – Anfänger",
@@ -3010,19 +3023,19 @@
       "description": "Verfolgen Sie die Herkunft der von Ihnen verzehrten Lebensmittel nach und notieren Sie mindestens drei Mahlzeiten mit lokal erzeugten Produkten, wobei Sie bedenken sollten, dass Rindfleisch zu den Lebensmitteln gehört, deren Produktion am meisten Land beansprucht."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Quiz: Welche Aussage spiegelt die Beweislage am besten wider?",
+      "name": "Verschwendetes Essen, verschwendetes Wasser",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wird. Wählen Sie die Aussage aus, die die Fakten zum Wasserverbrauch und zu einer nachhaltigen Ernährung am besten widerspiegelt."
+      "description": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wurde."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Quiz: Ein Verbraucher möchte die",
+      "name": "CO₂-Fußabdruck von Fleisch",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel, was Verbraucher berücksichtigen sollten, die den Energieverbrauch ihrer Lebensmitteleinkäufe senken möchten."
+      "description": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Quiz: Welche Maßnahme senkt die Emissionen, ohne dass sich etwas ändert?",
+      "name": "Transportemissionen erkunden",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems stammt aus diesem Bereich, und entsprechende Maßnahmen tragen zur Emissionsminderung bei, ohne dass Sie Ihre Einkaufsgewohnheiten ändern müssen."
+      "description": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems entsteht durch den Transport von Lebensmitteln."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Produktauswahl – Mittelstufe",
@@ -3032,22 +3045,22 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Über das Herkunftsland hinaus",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei der Auswahl von Produkten für mindestens drei Mahlzeiten sowohl das Herkunftsland als auch einen weiteren Nachhaltigkeitsindikator (z. B. Zertifizierung, Produktionsmethode, Saisonalität) und bedenken Sie dabei, dass der Großteil der landwirtschaftlichen Flächen für die Viehweide oder den Anbau von Tierfutter genutzt wird."
+      "description": "Berücksichtigen Sie bei der Auswahl von Produkten für mindestens drei Mahlzeiten sowohl das Herkunftsland als auch einen weiteren Nachhaltigkeitsindikator (z. B. Zertifizierung, Produktionsmethode, Saisonalität). Der Großteil der landwirtschaftlichen Flächen wird als Weideland für Vieh oder zum Anbau von Futtermitteln genutzt."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Quiz: Sie möchten den Wasserverbrauch senken",
+      "name": "Wasserfußabdruck im Detail",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Der Wasser-Fußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen. Überlegen Sie sich daher, wie Sie den Wasser-Fußabdruck Ihrer Mahlzeiten verringern möchten."
+      "description": "Der Wasserfußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Quiz: Eine Entwicklungsagentur entscheidet, wo sie investieren soll",
+      "name": "Emissionen über den Teller hinaus",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Lebensmittelabfälle verursachen jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen, was sich auf die Entscheidung einer Entwicklungsagentur auswirkt, wo sie investieren soll, um Lebensmittelverluste zu reduzieren."
+      "description": "Lebensmittelverschwendung verursacht jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Quiz: Eine Person konzentriert sich ausschließlich auf das Einkaufen",
+      "name": "Kühlkette und Transport",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Obwohl Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken ausmachen, verursachen sie dennoch einen hohen Transportaufwand – und das zeigt sich auch bei jemandem, der zwar darauf achtet, nur regionale Lebensmittel zu kaufen, aber weiterhin große Mengen isst."
+      "description": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Produktauswahl – Fortgeschrittene",
@@ -3057,52 +3070,52 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
       "name": "NOVA Explorer",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Suchen Sie nach der NOVA-Klassifizierung von mindestens drei Lebensmitteln und beachten Sie dabei, dass die Lebensmittelverarbeitung die Lebensmittelsicherheit verbessern und die Haltbarkeit verlängern kann."
+      "description": "Suchen Sie nach der NOVA-Klassifizierung von mindestens drei Lebensmitteln. Die Lebensmittelverarbeitung kann die Lebensmittelsicherheit verbessern und die Haltbarkeit verlängern."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Quiz: Du vergleichst zwei regionale Produkte.",
+      "name": "Regional genauer betrachtet",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken; das zeigt sich daran, dass Sie zwei lokale Produkte miteinander vergleichen."
+      "description": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Beobachter der Produktionsmethode",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Suchen Sie nach Informationen darüber, wie mindestens fünf Lebensmittel hergestellt wurden, sofern diese Informationen verfügbar sind, und bedenken Sie dabei, dass Biobetriebe eine größere Artenvielfalt fördern als konventionelle Betriebe."
+      "description": "Suchen Sie nach Informationen darüber, wie mindestens fünf Lebensmittel hergestellt wurden, sofern diese Informationen verfügbar sind. Biobetriebe tragen zu einer größeren Artenvielfalt bei als konventionelle Betriebe."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
       "name": "Ein Lebensmittel, viele Schritte",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Wählen Sie ein Lebensmittel aus und gehen Sie der Frage nach, was zwischen den Rohzutaten und dem von Ihnen gekauften Endprodukt alles passiert sein könnte. Berücksichtigen Sie dabei, dass die Diversifizierung von Anbaukulturen und Tierrassen die Widerstandsfähigkeit des Ernährungssystems erhöhen kann."
+      "description": "Wählen Sie ein Lebensmittel aus und gehen Sie der Frage nach, was zwischen den Rohzutaten und dem von Ihnen gekauften Endprodukt alles passiert sein könnte. Eine Diversifizierung der Kulturpflanzen und Tierrassen kann die Widerstandsfähigkeit des Ernährungssystems stärken."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Quiz: Du hast die Wahl zwischen zwei Schokoladensorten",
+      "name": "Fairer Handel: Grundlagen",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Die Landwirtschaft ist weltweit für die meisten Fälle von Kinderarbeit verantwortlich, und das zeigt sich daran, dass Sie zwischen zwei Schokoriegeln mit ähnlichem Nährwert wählen und."
+      "description": "Die meisten Fälle von Kinderarbeit weltweit sind in der Landwirtschaft zu verzeichnen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Verarbeitungsstufen vergleichen",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Vergleichen Sie Lebensmittel mit unterschiedlichen NOVA-Einstufungen anhand von mindestens drei Produkten derselben Lebensmittelkategorie (z. B. unter Berücksichtigung der Tatsache, dass bei verschiedenen Verarbeitungsverfahren sehr unterschiedliche Energiemengen verbraucht werden)."
+      "description": "Vergleiche Lebensmittel mit unterschiedlichen NOVA-Einstufungen anhand von mindestens drei Produkten derselben Lebensmittelkategorie (z. B. drei Käsesorten). Die verschiedenen Verarbeitungsverfahren verbrauchen sehr unterschiedliche Mengen an Energie."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Quiz: Ein Produkt ist als „regional“ gekennzeichnet. Was",
+      "name": "Was Herkunftsangaben verraten",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern und Aufschluss darüber geben, ob ein Produkt als „regional“ gekennzeichnet ist. Welche Schlussfolgerungen lassen sich aus diesen Informationen ziehen?"
+      "description": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Produktionsorientierte Entscheidung",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Nutzen Sie die NOVA-Klassifizierung, den Green-Score oder Angaben zur Zutatenliste, um mindestens fünf Kaufentscheidungen zu treffen. Wo finde ich diese Informationen? Nutzen Sie Verpackungen, „Open Content“ oder Apps zum Scannen von Lebensmitteln und denken Sie dabei daran, dass Blumenstreifen und Lebensräume für Bestäuber die Artenvielfalt auf landwirtschaftlichen Betrieben fördern können."
+      "description": "Nutzen Sie die NOVA-Klassifizierung, den Green-Score oder Angaben zur Zutatenliste, um mindestens fünf Kaufentscheidungen zu treffen. Nutzen Sie Verpackungen, Open Food Facts oder Apps zum Scannen von Lebensmitteln. Blumenstreifen und Lebensräume für Bestäuber können die Artenvielfalt auf landwirtschaftlichen Betrieben fördern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Quiz: Du vergleichst zwei Tomatenprodukte.",
+      "name": "Züchtung für weniger Wirkung",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern – das lässt sich mit dem Vergleich zweier Tomatenprodukte veranschaulichen."
+      "description": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Quiz: Ein Verbraucher möchte beides berücksichtigen",
+      "name": "Die soziale Seite des Essens",
       "title": "Produktionsverfahren – Mittelstufe",
-      "description": "Die Nachhaltigkeit des Ernährungssystems umfasst auch soziale und arbeitsrechtliche Bedingungen und spiegelt wider, dass Verbraucher beim Kauf sowohl ökologische als auch soziale Aspekte berücksichtigen möchten."
+      "description": "Zur Nachhaltigkeit des Ernährungssystems gehören auch soziale und arbeitsrechtliche Bedingungen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Tracker für mehrere Indikatoren",
@@ -3112,82 +3125,82 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
       "name": "Entscheidungen unter Berücksichtigung mehrerer Kriterien",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl die NOVA-Klassifizierung als auch den Green-Score, bevor Sie eine Entscheidung treffen, und bedenken Sie dabei, dass nicht alle verarbeiteten Lebensmittel hohe Umweltauswirkungen haben."
+      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl die NOVA-Klassifizierung als auch den Green-Score, bevor Sie eine Entscheidung treffen. Nicht alle verarbeiteten Lebensmittel haben erhebliche Auswirkungen auf die Umwelt."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Quiz: Welches Verkehrsmittel verdient im Allgemeinen die",
+      "name": "Entfernung ist nicht alles",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Regionale Lebensmittel sind nicht immer die nachhaltigste Option, und bei der Bewertung der Auswirkungen auf das Klima sollte der Transportweg im Allgemeinen die größte Beachtung finden."
+      "description": "Regionale Lebensmittel sind nicht immer die nachhaltigste Wahl."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Quiz: Du hast die Wahl zwischen zwei Äpfeln",
+      "name": "Anbaumethoden, die helfen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert. Stellen Sie sich vor, Sie hätten die Wahl zwischen zwei Apfelprodukten: Produkt A: „Hergestellt unter Anwendung integrierter Schädlingsbekämpfung.“"
+      "description": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Quiz: Du findest ein Lebensmittelprodukt, das vermarktet wird",
+      "name": "Innovation auf dem Hof",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind, und geben Sie an, ob Sie schon einmal ein Lebensmittelprodukt gesehen haben, das als aus einer klimaresistenten Nutzpflanze stammend vermarktet wurde."
+      "description": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Quiz: Auf einer Kaffeeverpackung wird die Unterstützung für … hervorgehoben",
+      "name": "Wer unser Essen anbaut",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Frauen spielen eine entscheidende Rolle in der Lebensmittelproduktion, haben jedoch oft weniger Zugang zu … – wie auf einer Kaffeeverpackung hervorgehoben wird, die die Unterstützung von Kleinbauern betont."
+      "description": "Frauen spielen eine entscheidende Rolle in der Nahrungsmittelproduktion, haben jedoch oft weniger Zugang zu Ressourcen."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Beobachter für Verpackungsmaterial",
       "title": "Verpackung – Für Anfänger",
-      "description": "Bestimmen Sie das Verpackungsmaterial von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben, und beachten Sie dabei, dass Lebensmittelverpackungen die Produkte vor Verunreinigungen, Feuchtigkeit, Sauerstoff und mechanischen Beschädigungen schützen und so zur Haltbarkeit der Lebensmittel beitragen."
+      "description": "Bestimmen Sie das Verpackungsmaterial von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben. Lebensmittelverpackungen schützen Produkte vor Verunreinigungen, Feuchtigkeit, Sauerstoff und mechanischen Beschädigungen und tragen so zur Gewährleistung der Lebensmittelsicherheit und -qualität bei."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Spotter für wiederverwendbare Verpackungen",
       "title": "Verpackung – Für Anfänger",
-      "description": "Finden Sie bei mindestens fünf Gelegenheiten Möglichkeiten für wiederverwendbare oder wiederbefüllbare Lebensmittelverpackungen, wobei Sie berücksichtigen sollten, dass wiederverwendbare Verpackungen erst dann umweltfreundlich sind, wenn sie ausreichend oft wiederverwendet wurden."
+      "description": "Finden Sie bei mindestens fünf Gelegenheiten Möglichkeiten für wiederverwendbare oder wiederbefüllbare Lebensmittelverpackungen. Wiederverwendbare Verpackungen sind erst dann umweltfreundlich, wenn sie ausreichend oft wiederverwendet wurden."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Entscheidungen auf der Grundlage der Verpackungsangaben",
       "title": "Verpackung – Mittelstufe",
-      "description": "Berücksichtigen Sie die Eigenschaften der Verpackung bei mindestens drei Kaufentscheidungen und bedenken Sie dabei, dass die Umweltauswirkungen der Lebensmittelproduktion oft weitaus größer sind als die Auswirkungen von."
+      "description": "Berücksichtigen Sie die Eigenschaften der Verpackung bei mindestens drei Kaufentscheidungen. Die Umweltauswirkungen der Lebensmittelproduktion sind oft weitaus größer als die der Verpackungen, die zum Schutz der Lebensmittel verwendet werden."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Suchfunktion für Wiederverwendungsmöglichkeiten",
       "title": "Verpackung – Mittelstufe",
-      "description": "Entscheiden Sie sich diese Woche mindestens zweimal für wiederverwendbare oder nachfüllbare Verpackungen und denken Sie dabei daran, dass wiederverwendbare Verpackungen den Bedarf an neuen Rohstoffen senken können."
+      "description": "Entscheiden Sie sich diese Woche mindestens zweimal für wiederverwendbare oder nachfüllbare Verpackungen. Wiederverwendbare Verpackungen können den Bedarf an neuen Rohstoffen senken."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Verpackungsentscheidungen unter Berücksichtigung mehrerer Kriterien",
       "title": "Verpackung – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl das Verpackungsmaterial als auch die Entsorgungsmöglichkeiten, bevor Sie eine Entscheidung treffen, und denken Sie dabei daran, dass essbare Verpackungen dazu beitragen können, die Abhängigkeit von Kunststoffen auf fossiler Basis zu verringern, indem sie herkömmliche Verpackungsmaterialien ersetzen."
+      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl das Verpackungsmaterial als auch die Entsorgungsmöglichkeiten, bevor Sie eine Entscheidung treffen. Essbare Verpackungen können dazu beitragen, die Abhängigkeit von Kunststoffen auf fossiler Basis zu verringern, indem herkömmliche Verpackungsmaterialien durch biologisch abbaubare Alternativen ersetzt werden."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Gewohnheitsbildner für Wiederverwendung",
       "title": "Verpackung – Fortgeschrittene",
-      "description": "Verwenden Sie mindestens fünfmal wiederverwendbare oder nachfüllbare Verpackungssysteme. Halten Sie Ausschau nach Produkten, die im Rahmen von Pfand- oder Nachfüllsystemen verkauft werden, und bedenken Sie dabei, dass jede wiederverwendbare Verpackung eine Schwelle hat, ab der sie vorteilhafter ist als Einwegalternativen."
+      "description": "Verwenden Sie mindestens fünfmal wiederverwendbare oder nachfüllbare Verpackungssysteme. Halten Sie Ausschau nach Produkten, die im Rahmen von Pfand- oder Nachfüllsystemen verkauft werden. Jede wiederverwendbare Verpackung hat einen Schwellenwert, ab dem sie vorteilhafter ist als Einwegalternativen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Einstieg in „Smart Serving“",
       "title": "Lebensmittelverschwendung – Für Anfänger",
-      "description": "Protokoll 5: „Half Plate Saved“-Maßnahmen, wobei zu berücksichtigen ist, dass Haushalte mehr Lebensmittelabfälle verursachen als jeder andere Sektor in der Europäischen Union."
+      "description": "Protokoll 5: „Half Plate Saved“-Maßnahmen. Haushalte verursachen mehr Lebensmittelabfälle als jeder andere Sektor in der Europäischen Union."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Intelligenter lagern",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Lesen Sie unbedingt sorgfältig die Verpackungshinweise zur Lagerung von Lebensmitteln nach dem Öffnen der Verpackung für mindestens fünf gekaufte Produkte durch und bedenken Sie dabei, dass mehr als die Hälfte der in der EU anfallenden Lebensmittelabfälle aus privaten Haushalten stammt."
+      "description": "Lesen Sie unbedingt sorgfältig die Verpackungshinweise zur Lagerung von Lebensmitteln nach dem Öffnen der Verpackung für mindestens fünf gekaufte Produkte durch. Mehr als die Hälfte der in der EU anfallenden Lebensmittelabfälle entfällt auf private Haushalte."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
       "name": "Datums-Label-Explorer",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Aktion „1 abgelaufenes Produkt verbraucht“ protokollieren, wobei zu berücksichtigen ist, dass mehr als die Hälfte aller Lebensmittelabfälle in Europa in Haushalten anfällt."
+      "description": "Aktion „1 abgelaufenes Produkt verbraucht“ protokollieren. Mehr als die Hälfte aller Lebensmittelabfälle in Europa fällt in den Haushalten an."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
       "name": "Test zur Portionsvorhersage",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Schätzen Sie vor einer Mahlzeit ab, wie viel Sie voraussichtlich essen werden. Vergleichen Sie nach der Mahlzeit Ihre Schätzung mit der tatsächlich verzehrten Menge und bedenken Sie dabei, dass die Portionsgrößen in vielen Ländern in den letzten Jahrzehnten erheblich zugenommen haben."
+      "description": "Schätzen Sie vor einer Mahlzeit ab, wie viel Sie voraussichtlich essen werden. Vergleichen Sie nach der Mahlzeit Ihre Schätzung mit der tatsächlich verzehrten Menge. Die Portionsgrößen haben in vielen Ländern in den letzten Jahrzehnten erheblich zugenommen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Mission 3: Kühlschrankkontrolle",
+      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Nachverfolgungskomponente: Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“, wobei Sie berücksichtigen sollten, dass kleinere Portionsgrößen die Essensreste in Kantinen und Restaurants reduzieren können."
+      "description": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Das Anbieten kleinerer Portionen kann die Essensreste in Kantinen und Restaurants verringern."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Gewohnheit der Essensplanung",
@@ -3195,14 +3208,14 @@
       "description": "Erstellen Sie vor einem größeren Einkauf einen Speiseplan und beachten Sie dabei, dass sich das Mindesthaltbarkeitsdatum auf die Qualität bezieht."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Mission 3: Kühlschrankkontrolle",
+      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf Ihren Kühlschrank oder Ihre Vorratskammer. Nachverfolgungskomponente: Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“, wobei Sie bedenken sollten, dass die Lebensmittelverschwendung in europäischen Haushalten auf etwa 69 Millionen Tonnen pro Jahr geschätzt wird."
+      "description": "Überprüfen Sie vor dem großen Einkauf Ihren Kühlschrank oder Ihre Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Die Lebensmittelabfälle der privaten Haushalte in Europa werden auf etwa 69 Millionen Tonnen pro Jahr geschätzt."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Erfassen Sie mindestens die „Half Plate Saved“-Maßnahmen und bedenken Sie dabei, dass die Umweltauswirkungen einer Ernährung nicht nur davon abhängen, was die Menschen essen, sondern auch von …"
+      "description": "Erfassen Sie mindestens die „Half Plate Saved“-Maßnahmen. Die Auswirkungen einer Ernährung auf die Umwelt hängen nicht nur davon ab, was Menschen essen, sondern auch davon, wie viel sie essen."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Fokus auf „Zero Plate Waste“",
@@ -3212,122 +3225,122 @@
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Experte für die Vermeidung von Verfallsdaten",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Erfassen Sie 4 Aktionen zum Verbrauch abgelaufener Produkte, wobei zu berücksichtigen ist, dass Fleisch und Milchprodukte zwar seltener weggeworfen werden, aber einen größeren ökologischen Fußabdruck haben."
+      "description": "Erfassen Sie 4 Aktionen zum Verbrauch abgelaufener Produkte. Fleisch und Milchprodukte werden zwar seltener weggeworfen, verursachen aber einen größeren ökologischen Fußabdruck, wenn sie weggeworfen werden."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Experte für „First-In, First-Out“",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Räumen Sie im Laufe der Woche Ihren Kühlschrank, Ihre Gefriertruhe oder Ihre Vorratskammer so auf, dass Lebensmittel mit der kürzesten Resthaltbarkeit immer ganz vorne stehen und zuerst verbraucht werden. Beachten Sie dabei, dass Mehrfachkaufangebote und Mengenrabatte Verbraucher dazu verleiten können, mehr Lebensmittel zu kaufen, als sie benötigen."
+      "description": "Räumen Sie im Laufe der Woche Ihren Kühlschrank, Ihre Gefriertruhe oder Ihre Vorratskammer so auf, dass Lebensmittel mit der kürzesten Resthaltbarkeit immer ganz vorne stehen und zuerst verbraucht werden. Mehrfachkaufangebote und Mengenrabatte können Verbraucher dazu verleiten, mehr Lebensmittel zu kaufen, als sie verbrauchen können."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Woche der Zero-Waste-Planung",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Planen Sie alle Hauptmahlzeiten der Woche vor Ihrem ersten Einkauf ein und kaufen Sie nur Lebensmittel, für die Sie bereits eine Verwendung geplant haben. Denken Sie dabei daran, dass der Verzehr von mehr Lebensmitteln, als der Körper benötigt, den Bedarf an landwirtschaftlichen Ressourcen erhöht, wie z. B."
+      "description": "Planen Sie alle Hauptmahlzeiten der Woche vor Ihrem ersten Einkauf ein und kaufen Sie nur Lebensmittel, für die Sie bereits eine Verwendung geplant haben. Wenn man mehr isst, als der Körper benötigt, steigt der Bedarf an landwirtschaftlichen Ressourcen wie Land, Wasser und Energie."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Jeden Tag Eiweiß",
       "title": "Nährwerte – Anfänger",
-      "description": "Nehmen Sie täglich zu mindestens einer Mahlzeit ein proteinreiches Lebensmittel zu sich und denken Sie dabei daran, dass Protein zum Aufbau und zur Regeneration von Muskeln, Gewebe, Enzymen und Hormonen beiträgt."
+      "description": "Nehmen Sie täglich zu mindestens einer Mahlzeit ein proteinreiches Lebensmittel zu sich. Protein trägt zum Aufbau und zur Regeneration von Muskeln, Gewebe, Enzymen und Hormonen bei."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Clevere Snack-Alternative",
       "title": "Nährwerte – Anfänger",
-      "description": "Tagebuch 5: Zwischenmahlzeit → Ersetzen durch Obst oder Nüsse, wobei zu beachten ist, dass ungesättigte Fette im Allgemeinen gesünder sind als gesättigte Fette."
+      "description": "Tagebuch 5: Zwischenmahlzeit → Ersetzen durch Obst oder Nüsse. Ungesättigte Fette sind im Allgemeinen gesünder als gesättigte Fette."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Getränke-Upgrade",
       "title": "Nährwerte – Anfänger",
-      "description": "Protokoll 3: Ersatz von zuckerhaltigen Getränken durch Wasser, wobei zu berücksichtigen ist, dass zuckerhaltige Getränke in vielen Ernährungsweisen eine wichtige Quelle für zugesetzten Zucker darstellen."
+      "description": "Protokoll 3: Ersatz von zuckerhaltigen Getränken durch Wasser. Zuckerhaltige Getränke sind in vielen Ernährungsweisen eine wichtige Quelle für zugesetzten Zucker."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
       "name": "Salz-Spürhund",
       "title": "Nährwerte – Anfänger",
-      "description": "Wählen Sie ein verpacktes Lebensmittel aus und ermitteln Sie, wie viel Salz es pro 100 Gramm enthält. Dabei sollten Sie bedenken, dass die meisten Menschen mehr als das Doppelte der empfohlenen Salzaufnahme zu sich nehmen."
+      "description": "Wählen Sie ein verpacktes Lebensmittel aus und ermitteln Sie, wie viel Salz es pro 100 Gramm enthält. Die meisten Menschen nehmen mehr als das Doppelte der empfohlenen Salzaufnahme zu sich."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Vollkornwoche",
       "title": "Nährwerte – Anfänger",
-      "description": "Wählen Sie jeden Tag ein Vollkornprodukt. So geht’s: Entscheiden Sie sich für Lebensmittel wie Vollkornbrot, Vollkornnudeln, Haferflocken, braunen Reis, Roggenbrot, Quinoa oder andere Vollkornprodukte – und denken Sie dabei daran, dass die meisten Europäer weniger Ballaststoffe zu sich nehmen, als empfohlen wird."
+      "description": "Wählen Sie jeden Tag ein Vollkornprodukt. Entscheiden Sie sich für Lebensmittel wie Vollkornbrot, Vollkornnudeln, Haferflocken, braunen Reis, Roggenbrot, Quinoa oder andere Vollkornprodukte. Die meisten Europäer nehmen weniger Ballaststoffe zu sich, als empfohlen wird."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Füge noch eine Obst- oder Gemüsesorte hinzu",
       "title": "Nährwerte – Anfänger",
-      "description": "Nehmen Sie täglich eine zusätzliche Portion Obst oder Gemüse in Ihren Speiseplan auf und denken Sie dabei daran, dass Vitamin-D-Mangel in ganz Europa weit verbreitet ist."
+      "description": "Nehmen Sie täglich eine zusätzliche Portion Obst oder Gemüse in Ihren Speiseplan auf. Ein Vitamin-D-Mangel ist in ganz Europa weit verbreitet."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Quiz: Welches Getränk wird am ehesten gewählt?",
+      "name": "Kalorien sind nicht alles",
       "title": "Nährwerte – Anfänger",
-      "description": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren, und ein bewusster Umgang mit der Getränkeauswahl ist der wahrscheinlichste Weg, um eine unnötige Kalorienaufnahme zu reduzieren."
+      "description": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Ersatz für verarbeitetes Fleisch",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Protokollieren Sie 2 Ersetzungen von Fleischprodukten durch Hülsenfrüchte, wobei zu beachten ist, dass die meisten Erwachsenen etwa 0,83 g Eiweiß pro Kilogramm Körpergewicht benötigen."
+      "description": "Protokollieren Sie 2 Ersetzungen von Fleischprodukten durch Hülsenfrüchte. Die meisten Erwachsenen benötigen täglich etwa 0,83 g Eiweiß pro Kilogramm Körpergewicht."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Mehr gesunde Fette",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Wählen Sie mindestens fünfmal eine Quelle für ungesättigte Fette anstelle einer Quelle für gesättigte Fette, wobei Sie bedenken sollten, dass die Art der Fette, die Sie zu sich nehmen, genauso wichtig ist wie die Menge."
+      "description": "Wählen Sie mindestens fünfmal eine Quelle für ungesättigte Fette anstelle einer Quelle für gesättigte Fette. Die Art des Fetts, das man zu sich nimmt, ist genauso wichtig wie die Menge."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Getränkevergleich",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Vergleichen Sie zwei süße Getränke, die Sie gerne trinken, und ermitteln Sie, welches davon pro 100 ml weniger Zucker enthält. Berücksichtigen Sie dabei, dass die WHO empfiehlt, die Aufnahme von freiem Zucker auf weniger als 10 % der täglichen Energiezufuhr zu begrenzen."
+      "description": "Vergleichen Sie zwei süße Getränke, die Sie gerne trinken, und ermitteln Sie, welches davon pro 100 ml weniger Zucker enthält. Die WHO empfiehlt, den Anteil an freiem Zucker auf weniger als 10 % der täglichen Energiezufuhr zu begrenzen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Salzfreier Tisch",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Fügen Sie den Speisen die ganze Woche über am Tisch kein Salz hinzu und denken Sie dabei daran, dass die WHO empfiehlt, weniger als 5 Gramm Salz pro Tag zu sich zu nehmen."
+      "description": "Fügen Sie den Speisen die ganze Woche über am Tisch kein Salz hinzu. Die WHO empfiehlt, weniger als 5 Gramm Salz pro Tag zu sich zu nehmen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Ballaststoffe zu jeder Mahlzeit",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Nehmen Sie zu jeder Hauptmahlzeit mindestens ein ballaststoffreiches Lebensmittel zu sich und denken Sie dabei daran, dass Erwachsene täglich mindestens 25 Gramm Ballaststoffe zu sich nehmen sollten."
+      "description": "Nehmen Sie zu jeder Hauptmahlzeit mindestens ein ballaststoffreiches Lebensmittel zu sich. Erwachsene sollten täglich mindestens 25 Gramm Ballaststoffe zu sich nehmen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Quiz: Du möchtest deinen Vitaminspiegel verbessern",
+      "name": "Vitamine vom Teller",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern. Überlegen Sie sich, wie Sie den Vitamingehalt Ihrer Ernährung verbessern können, ohne Nahrungsergänzungsmittel einzunehmen."
+      "description": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Quiz: Warum kann der regelmäßige Verzehr von stark verarbeiteten Lebensmitteln",
+      "name": "Gleiche Kalorien, andere Wirkung",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben, und es stellt sich die Frage, ob der regelmäßige Verzehr stark verarbeiteter Snacks die Kalorienkontrolle erschwert."
+      "description": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Quiz: Sie vergleichen zwei Lebensmittelprodukte: Produkt",
+      "name": "Vollständige pflanzliche Proteine",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern. Dies zeigt sich daran, dass Sie zwei Lebensmittelprodukte vergleichen: Produkt A: „Proteinquelle“ Produkt B: „Hoher Gehalt an …“."
+      "description": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Quiz: Sie möchten das Risiko verringern",
+      "name": "Nahrungsfette verstehen",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen; bedenken Sie dabei, dass Sie das mit dem Verzehr von Transfetten verbundene Risiko verringern möchten."
+      "description": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Woche zur Sensibilisierung für zugesetzten Zucker",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Vermeiden Sie die ganze Woche über Speisen und Getränke, bei denen zugesetzter Zucker zu den ersten drei Zutaten gehört, und denken Sie daran, dass Sie den Zuckergehalt besser kontrollieren können, wenn Sie zu Hause kochen."
+      "description": "Vermeiden Sie die ganze Woche über Speisen und Getränke, bei denen zugesetzter Zucker zu den ersten drei Zutaten gehört. Wenn man zu Hause kocht, lässt sich der Zuckerzusatz leichter kontrollieren."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
       "name": "Natrium-Hotspot",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Ermitteln Sie, welches Lebensmittel in Ihrer Küche den höchsten Salzgehalt pro 100 Gramm aufweist, und bedenken Sie dabei, dass Brot, Fleischwaren und Käse in Europa zu den wichtigsten Natriumquellen zählen."
+      "description": "Ermitteln Sie, welches Lebensmittel in Ihrer Küche den höchsten Salzgehalt pro 100 Gramm aufweist. Brot, Fleischwaren und Käse sind in Europa wichtige Natriumquellen."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
       "name": "Woche des ballaststoffreichen Frühstücks",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Beginnen Sie jeden Tag mit einem Frühstück, das reichlich Ballaststoffe enthält. Stellen Sie Ihr Frühstück vor allem aus Haferflocken, Vollkornprodukten, Obst, Samen, Nüssen oder anderen ballaststoffreichen Lebensmitteln zusammen und denken Sie dabei daran, dass eine höhere Ballaststoffzufuhr mit einem geringeren Risiko für Herzerkrankungen und Typ-2-Diabetes verbunden ist."
+      "description": "Beginnen Sie jeden Tag mit einem Frühstück, das reichlich Ballaststoffe enthält. Stellen Sie Ihr Frühstück vor allem aus Haferflocken, Vollkornprodukten, Obst, Samen, Nüssen oder anderen ballaststoffreichen Lebensmitteln zusammen. Eine höhere Ballaststoffzufuhr steht in Zusammenhang mit einem geringeren Risiko für Herzerkrankungen und Typ-2-Diabetes."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Regenbogenwoche",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Nehmen Sie täglich Lebensmittel aus mindestens fünf verschiedenen Obst- und Gemüsesorten in unterschiedlichen Farben zu sich und beachten Sie dabei, dass Vitamin B12 hauptsächlich in tierischen Lebensmitteln enthalten ist."
+      "description": "Nehmen Sie täglich Lebensmittel aus mindestens fünf verschiedenen Obst- und Gemüsesorten in unterschiedlichen Farben zu sich. Vitamin B12 kommt hauptsächlich in tierischen Lebensmitteln vor."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Woche der nährstoffreichen Mahlzeiten",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Achten Sie darauf, dass jede Hauptmahlzeit mindestens drei der folgenden Bestandteile enthält: eine Proteinquelle, ein ballaststoffreiches Lebensmittel, Obst oder Gemüse oder eine Quelle für gesunde Fette. Beachten Sie dabei, dass die Verfütterung von Getreide an Nutztiere zu erheblichen Kalorienverlusten führt."
+      "description": "Achten Sie darauf, dass jede Hauptmahlzeit mindestens drei der folgenden Bestandteile enthält: eine Proteinquelle, ein ballaststoffreiches Lebensmittel, Obst oder Gemüse oder eine Quelle für gesunde Fette. Die Verfütterung von Pflanzen an Nutztiere führt zu erheblichen Kalorienverlusten."
     }
   }
 }

@@ -874,7 +874,8 @@
         "B": "Jajka",
         "C": "Ser",
         "D": "Pierś z kurczaka"
-      }
+      },
+      "explanation": "Rośliny strączkowe poprawiają żyzność gleby dzięki wiązaniu azotu, a jednocześnie dostarczają białka, błonnika, witamin i składników mineralnych."
     },
     "Q1.2.5": {
       "question": "Pewna rodzina chce ograniczyć spożycie czerwonego mięsa, nie rezygnując jednak całkowicie z produktów pochodzenia zwierzęcego. Która zmiana najlepiej odzwierciedla wyniki badań?",
@@ -1003,7 +1004,8 @@
         "B": "Dieta zawierająca więcej produktów mlecznych i czerwonego mięsa",
         "C": "Dieta zawierająca więcej przetworzonych produktów mięsnych",
         "D": "Dieta oparta na wołowinie jako głównym źródle białka"
-      }
+      },
+      "explanation": "Zużycie wody zwykle spada, gdy dieta przesuwa się z produktów odzwierzęcych w stronę roślinnych."
     },
     "Q2.2.3": {
       "question": "W lodówce znalazłeś warzywa, które wkrótce się zepsują. Jakie działanie jest najbardziej zgodne z zasadami zrównoważonego rozwoju?",
@@ -1022,7 +1024,8 @@
         "B": "Zużycie wody zależy od konkretnych produktów spożywczych, ale ograniczenie spożycia produktów pochodzenia zwierzęcego jest często istotnym czynnikiem",
         "C": "Wpływ wody zależy głównie od odległości, na jaką transportowana jest żywność",
         "D": "Żywność przetworzona zawsze wymaga większej ilości wody niż żywność świeża"
-      }
+      },
+      "explanation": "Badania pokazują, że ograniczenie produktów odzwierzęcych często zmniejsza ślad wodny, ale całkowite zużycie wody nadal zależy od składu diety."
     },
     "Q2.2.5": {
       "question": "Który posiłek zazwyczaj charakteryzuje się najmniejszym śladem wodnym?",
@@ -1081,7 +1084,8 @@
         "B": "Systemy żywnościowe wywierają znaczną presję na ekosystemy poprzez zapotrzebowanie na zasoby i energię",
         "C": "Największy wpływ na ekosystem wywierają opakowania produktów spożywczych, a nie sama produkcja żywności",
         "D": "Przewiduje się, że do 2050 r. popyt na żywność znacznie spadnie"
-      }
+      },
+      "explanation": "Działalność człowieka, zwłaszcza rolnictwo, leśnictwo i systemy żywnościowe, pochłania około 30% globalnej produkcji pierwotnej netto, znacznie powyżej proponowanej bezpiecznej granicy 10%. Wskazuje to na znaczną presję na ekosystemy i różnorodność biologiczną."
     },
     "Q2.4.1": {
       "question": "Chcesz zmniejszyć swój wpływ na klimat, ale nie chcesz przejść na wegetarianizm. Która strategia będzie prawdopodobnie najskuteczniejsza?",
@@ -1090,7 +1094,7 @@
         "A": "Zastąp niektóre posiłki zawierające czerwone mięso potrawami z roślin strączkowych",
         "B": "Kupuj wyłącznie produkty mięsne najwyższej jakości",
         "C": "Przestań kupować mrożone warzywa",
-        "D": "Zmiana marki kawy – Prawidłowa odpowiedź"
+        "D": "Zmiana marki kawy"
       }
     },
     "Q2.4.2": {
@@ -1320,7 +1324,8 @@
         "B": "Można je uprawiać wyłącznie w pomieszczeniach",
         "C": "Mogą one dostarczać białko o mniejszym wpływie na środowisko",
         "D": "Dzięki nim nie ma potrzeby uprawiania roślin"
-      }
+      },
+      "explanation": "Alternatywne źródła białka są badane, ponieważ mogą pomóc ograniczyć presję środowiskową związaną z konwencjonalną hodowlą zwierząt, wspierając jednocześnie przyszłe bezpieczeństwo żywnościowe."
     },
     "Q3.4.5": {
       "question": "Producent mięsa twierdzi, że jego program hodowli zwierząt koncentruje się na efektywności wykorzystania paszy. Dlaczego może to mieć znaczenie z punktu widzenia zrównoważonego rozwoju?",
@@ -1329,7 +1334,8 @@
         "B": "Zwierzęta mogą potrzebować mniej zasobów",
         "C": "Gwarantuje to niższe ceny detaliczne",
         "D": "Eliminuje emisję gazów cieplarnianych"
-      }
+      },
+      "explanation": "Zwierzęta o lepszym wykorzystaniu paszy dostarczają tę samą ilość mięsa przy mniejszym zużyciu paszy, co zmniejsza presję środowiskową na jednostkę produkcji."
     },
     "Q3.5.1": {
       "question": "Masz do wyboru dwie tabliczki czekolady o podobnych wartościach odżywczych i informacjach dotyczących wpływu na środowisko. Jedna z nich posiada znak Fairtrade. Jaki dodatkowy aspekt zrównoważonego rozwoju ma na celu przede wszystkim znak Fairtrade?",
@@ -1528,7 +1534,8 @@
         "B": "Porcje o stałej wielkości",
         "C": "Składniki pochodzące z lokalnych upraw",
         "D": "Informacje o wartościach odżywczych w menu"
-      }
+      },
+      "explanation": "Ujednolicone wielkości porcji często nie uwzględniają różnic w apetycie i są uznawane za systemową przyczynę marnowania jedzenia na talerzu."
     },
     "Q5.2.1": {
       "question": "Zostały ci resztki z kolacji, które zamierzasz zjeść jutro. Jaki jest najlepszy pierwszy krok, aby zapobiec zarówno marnotrawstwu żywności, jak i zagrożeniom dla bezpieczeństwa żywności?",
@@ -1687,7 +1694,8 @@
         "B": "Włącz do diety więcej roślin strączkowych, orzechów i produktów pełnoziarnistych jako źródeł białka",
         "C": "Wybieraj produkty spożywcze o najwyższej zawartości białka, niezależnie od ich źródła",
         "D": "Zastąp posiłki suplementami białkowymi"
-      }
+      },
+      "explanation": "Rośliny strączkowe, orzechy i produkty pełnoziarniste dostarczają białka i zwykle mają mniejszy wpływ na środowisko niż wiele zwierzęcych źródeł białka. Różnicowanie źródeł białka sprzyja zarówno zdrowiu, jak i zrównoważonemu rozwojowi."
     },
     "Q6.1.2": {
       "question": "Dwa obiady zawierają podobną ilość białka: sałatka z soczewicy i komosy ryżowej oraz kanapka z wędliną. Które stwierdzenie jest najbardziej trafne?",
@@ -1705,8 +1713,9 @@
         "A": "Nadal jedz mięso przy każdym posiłku",
         "B": "Ogranicz się wyłącznie do jednego źródła białka roślinnego",
         "C": "Należy spożywać różnorodne źródła białka pochodzenia roślinnego, takie jak rośliny strączkowe, zboża, orzechy i nasiona",
-        "D": "Podwójne całkowite spożycie kalorii. Prawidłowa odpowiedź: C"
-      }
+        "D": "Podwójne całkowite spożycie kalorii"
+      },
+      "explanation": "Różne białka roślinne uzupełniają się wzajemnie. W urozmaiconej diecie łączenie wielu roślinnych źródeł białka zwykle dostarcza wszystkich niezbędnych aminokwasów."
     },
     "Q6.1.4": {
       "question": "Porównujesz dwa produkty spożywcze: Produkt A: „Źródło białka” Produkt B: „Wysoka zawartość białka” Jaki wniosek możesz wyciągnąć?",
@@ -1714,8 +1723,9 @@
         "A": "Produkt B zawiera z konieczności dwa razy więcej białka",
         "B": "Produkt A jest mniej zdrowy",
         "C": "Większa część wartości energetycznej produktu B pochodzi z białka",
-        "D": "Produkt B zawiera białko zwierzęce. Prawidłowa odpowiedź: C"
-      }
+        "D": "Produkt B zawiera białko zwierzęce"
+      },
+      "explanation": "Zgodnie z przepisami UE dotyczącymi oświadczeń żywieniowych produkt można oznaczyć jako „wysokobiałkowy” tylko wtedy, gdy co najmniej 20% jego wartości energetycznej pochodzi z białka. Oznaczenie „źródło białka” wymaga co najmniej 12%."
     },
     "Q6.1.5": {
       "question": "Który model żywieniowy jest najbardziej zgodny zarówno z celami zrównoważonego rozwoju, jak i aktualnymi zaleceniami żywieniowymi?",
@@ -1724,7 +1734,8 @@
         "B": "Maksymalizacja spożycia białka niezależnie od jego źródła",
         "C": "Pozyskiwanie białka z mieszanki roślin strączkowych, ryb, produktów mlecznych, jaj, orzechów oraz umiarkowanych ilości mięsa",
         "D": "Opierając się głównie na koktajlach białkowych i suplementach"
-      }
+      },
+      "explanation": "Zdrowe i zrównoważone diety opierają się zwykle na różnorodnych źródłach białka, a nie na jednym. Rośliny strączkowe, ryby, orzechy, nabiał i umiarkowane ilości mięsa mogą wspólnie zapewnić odpowiednią podaż białka i wspierać jakość diety."
     },
     "Q6.2.1": {
       "question": "Chcesz poprawić jakość tłuszczów w swojej diecie, jednocześnie dbając o to, by posiłki były sycące. Która zamiana najlepiej odpowiada aktualnym zaleceniom?",
@@ -1963,7 +1974,8 @@
         "B": "Biały chleb z masłem",
         "C": "Plasterki pomarańczy i kiwi",
         "D": "Ryż gotowany"
-      }
+      },
+      "explanation": "Owoce takie jak pomarańcze, kiwi i jagody oraz wiele warzyw są bogate w witaminę C, która wspiera funkcjonowanie układu odpornościowego i prawidłowe tworzenie kolagenu."
     },
     "Q6.6.5": {
       "question": "Masz do wyboru dwa dodatki: warzywa gotowane na parze oraz warzywa gotowane przez bardzo długi czas w wysokiej temperaturze. Która opcja z większym prawdopodobieństwem pozwoli zachować witaminy?",
@@ -2012,7 +2024,8 @@
         "B": "Maksymalizacja spożycia kalorii z dowolnego źródła pożywienia",
         "C": "Dostosowanie spożycia kalorii do indywidualnych potrzeb przy jednoczesnym priorytetowym traktowaniu produktów bogatych w składniki odżywcze",
         "D": "Skupianie się wyłącznie na kaloriach i ignorowanie jakości jedzenia"
-      }
+      },
+      "explanation": "Zdrowa i zrównoważona dieta to nie tylko kalorie. Chodzi o pokrycie zapotrzebowania energetycznego przy wyborze produktów bogatych w niezbędne składniki odżywcze oraz o ograniczanie zbędnej nadkonsumpcji i marnowania żywności."
     },
     "Q6.7.5": {
       "question": "Cztery przekąski dostarczają mniej więcej taką samą liczbę kalorii. Która z nich zapewni Ci dłuższe uczucie sytości?",
@@ -2437,7 +2450,7 @@
     },
     "M.I5.3": {
       "title": "Zadanie 3: Rutynowa kontrola lodówki",
-      "goal": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Element śledzenia: Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia.",
+      "goal": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia.",
       "whyItMatters": "Konsumenci często kupują produkty, które już mają."
     },
     "M.I5.4": {
@@ -2937,22 +2950,22 @@
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Ogranicz spożycie jednego posiłku mięsnego",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zjedz o jeden posiłek mięsny mniej niż w poprzednim tygodniu, pamiętając, że ograniczenie spożycia czerwonego mięsa jest jednym z najskuteczniejszych sposobów na zmniejszenie…"
+      "description": "Zjedz o jeden posiłek mięsny mniej niż w poprzednim tygodniu, pamiętając, że ograniczenie spożycia czerwonego mięsa to jeden z najskuteczniejszych sposobów na zmniejszenie wpływu Twojej diety na środowisko."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
       "name": "Pierwsza wymiana w ramach programu „Sustainable Swap”",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zapisz 2 działania związane z zamianą białka, pamiętając przy tym, że zastąpienie części spożywanego mięsa roślinami strączkowymi może zmniejszyć wpływ na klimat."
+      "description": "Zapisz 2 działania związane z zamianą białka, pamiętając przy tym, że zastąpienie części spożywanego mięsa roślinami strączkowymi może zmniejszyć wpływ Twojej diety na klimat."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Odkryj soczewicę",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zapoznaj się z materiałem i wskaż dwie zalety soczewicy pod względem wartości odżywczych lub wpływu na środowisko, pamiętając jednocześnie, że komosa ryżowa zawiera wszystkie dziewięć niezbędnych aminokwasów, co czyni ją kompletnym białkiem roślinnym."
+      "description": "Zapoznaj się z materiałem i wskaż dwie zalety soczewicy pod względem wartości odżywczych lub wpływu na środowisko, pamiętając jednocześnie, że komosa ryżowa zawiera wszystkie dziewięć niezbędnych aminokwasów, co czyni ją pełnowartościowym białkiem roślinnym."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "Dwa dni bezmięsne",
       "title": "Zmiany w diecie – poziom średniozaawansowany",
-      "description": "Przetrwaj dwa dni bezmięsne, pamiętając przy tym, że produkcja wołowiny wymaga znacznie więcej ziemi niż produkcja białek roślinnych, takich jak groch czy..."
+      "description": "Przetrwaj dwa dni bezmięsne, pamiętając przy tym, że produkcja wołowiny wymaga znacznie większej powierzchni niż produkcja białek pochodzenia roślinnego, takich jak groch czy tofu."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Kreator zrównoważonych zamian",
@@ -2962,12 +2975,12 @@
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Program ćwiczeń z wykorzystaniem sprzętu do ćwiczeń z oporem",
       "title": "Zmiany w diecie – poziom średniozaawansowany",
-      "description": "Włącz rośliny strączkowe do czterech posiłków, pamiętając przy tym, że proso to bardzo odporna roślina uprawna, która może rosnąć w gorących i suchych warunkach, wymagając niewielkiej ilości wody."
+      "description": "Włącz rośliny strączkowe do czterech posiłków, pamiętając przy tym, że proso to rośliny uprawne o dużej odporności, które mogą rosnąć w gorących i suchych warunkach, przy niewielkiej ilości wody."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Trzymaj się w zielonej strefie",
+      "name": "Zostań w Zielonej Strefie",
       "title": "Zmiany w diecie – poziom zaawansowany",
-      "description": "Należy ograniczyć spożycie mięsa do mniej niż czterech posiłków tygodniowo, pamiętając jednocześnie, że produkcja zwierzęca zajmuje większość gruntów rolnych na świecie, dostarczając przy tym znacznie mniejszy udział w..."
+      "description": "Należy ograniczyć spożycie mięsa do mniej niż czterech posiłków tygodniowo, pamiętając jednocześnie, że produkcja zwierzęca zajmuje większość gruntów rolnych na świecie, dostarczając jednocześnie znacznie mniejszy udział kalorii i białka."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Przewaga białka roślinnego",
@@ -2982,22 +2995,22 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Narzędzie do śledzenia pochodzenia",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Sprawdź kraj pochodzenia co najmniej 5 produktów spożywczych spożywanych w ciągu tygodnia, pamiętając przy tym, że około połowa powierzchni ziemi nadającej się do zamieszkania na świecie jest wykorzystywana pod uprawę."
+      "description": "Sprawdź kraj pochodzenia co najmniej 5 produktów spożywczych spożywanych w ciągu tygodnia, pamiętając przy tym, że około połowa powierzchni lądowej nadającej się do zamieszkania na świecie jest wykorzystywana do celów rolniczych."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Quiz: Dwie osoby zjadają taką samą liczbę",
+      "name": "Woda ukryta w jedzeniu",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa, co przekłada się na to, że dwie osoby spożywają codziennie taką samą liczbę kalorii."
+      "description": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Quiz: Porównujesz cztery diety z",
+      "name": "Klimatyczny koszt posiłków",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Systemy żywnościowe generują około jednej trzeciej globalnej emisji gazów cieplarnianych, co należy wziąć pod uwagę, porównując cztery diety o tej samej wartości kalorycznej."
+      "description": "Systemy żywnościowe odpowiadają za około jedną trzecią globalnej emisji gazów cieplarnianych."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Quiz: Chcesz zmniejszyć swój wpływ na klimat",
+      "name": "Kilometry żywności",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂, co ma wpływ na sytuację osób, które chcą zmniejszyć swój wpływ na klimat, ale nie chcą tego robić."
+      "description": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Wybór produktów – dla początkujących",
@@ -3007,22 +3020,22 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
       "name": "Różnorodne pochodzenie",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Sprawdź, skąd pochodzą spożywane przez Ciebie produkty spożywcze, i zapisz co najmniej 3 posiłki przygotowane z lokalnych produktów, pamiętając przy tym, że wołowina jest jednym z produktów spożywczych wymagających największej powierzchni uprawnej."
+      "description": "Sprawdź, skąd pochodzą spożywane przez Ciebie produkty spożywcze, i zapisz co najmniej 3 posiłki przygotowane z lokalnych produktów, pamiętając przy tym, że wołowina jest jednym z produktów spożywczych wymagających największej powierzchni uprawnej spośród tych, które spożywają ludzie."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Quiz: Które stwierdzenie najlepiej odzwierciedla dane?",
+      "name": "Zmarnowane jedzenie, zmarnowana woda",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Marnotrawstwo żywności wiąże się również z marnowaniem ogromnych ilości wody wykorzystywanej do uprawy żywności; proszę wybrać stwierdzenie, które najlepiej odzwierciedla dane dotyczące zużycia wody i zrównoważonej diety."
+      "description": "Marnowanie żywności powoduje również stratę ogromnych ilości wody wykorzystywanej do uprawy żywności."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Quiz: Konsument chce zmniejszyć",
+      "name": "Ślad węglowy mięsa",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego, co warto wziąć pod uwagę, jeśli konsument chce zmniejszyć ślad energetyczny swoich zakupów spożywczych."
+      "description": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Quiz: Które działanie pozwala ograniczyć emisje bez wprowadzania zmian",
+      "name": "Emisje z transportu",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Prawie jedna piąta emisji gazów cieplarnianych pochodzących z globalnego systemu żywnościowego wynika z działań, które pozwalają ograniczyć emisje bez zmiany asortymentu kupowanych produktów spożywczych."
+      "description": "Prawie jedna piąta emisji gazów cieplarnianych generowanych przez globalny system żywnościowy wynika z transportu żywności."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Wybór produktów – poziom średniozaawansowany",
@@ -3032,22 +3045,22 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Poza krajem pochodzenia",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Wybierając produkty na co najmniej 3 posiłki, należy wziąć pod uwagę zarówno kraj pochodzenia, jak i jeden dodatkowy wskaźnik zrównoważonego rozwoju (np. certyfikację, metodę produkcji, sezonowość), pamiętając jednocześnie, że większość gruntów rolnych jest wykorzystywana do wypasu zwierząt gospodarskich lub uprawy paszy dla zwierząt."
+      "description": "Wybierając produkty na co najmniej 3 posiłki, należy wziąć pod uwagę zarówno kraj pochodzenia, jak i jeden dodatkowy wskaźnik zrównoważonego rozwoju (np. certyfikację, metodę produkcji, sezonowość), pamiętając jednocześnie, że większość gruntów rolnych wykorzystuje się do wypasu zwierząt gospodarskich lub uprawy paszy dla zwierząt."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Quiz: Chcesz zmniejszyć zużycie wody",
+      "name": "Ślad wodny w szczegółach",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Ślad wodny Twojej diety zależy w dużej mierze od tego, co jesz, i warto zastanowić się, czy chcesz zmniejszyć ślad wodny swoich posiłków."
+      "description": "Ślad wodny Twojej diety w dużym stopniu zależy od tego, co jesz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Quiz: Agencja rozwoju podejmuje decyzję, gdzie zainwestować",
+      "name": "Emisje poza talerzem",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂, co ma wpływ na decyzje agencji rozwoju dotyczące tego, gdzie należy inwestować, aby ograniczyć straty żywności."
+      "description": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Quiz: Osoba ta skupia się wyłącznie na zakupach",
+      "name": "Łańcuch chłodniczy i transport",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Chociaż żywność stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to jednak jej produkcja i wpływ na środowisko są znaczne – nawet jeśli ktoś skupia się wyłącznie na kupowaniu lokalnej żywności, ale nadal spożywa jej duże ilości."
+      "description": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to odpowiada on za około 27% emisji związanych z transportem towarowym."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Wybór produktów – zaawansowane",
@@ -3057,12 +3070,12 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
       "name": "NOVA Explorer",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Znajdź klasyfikację NOVA dla co najmniej trzech produktów spożywczych, pamiętając jednocześnie, że przetwarzanie żywności może zwiększyć jej bezpieczeństwo i wydłużyć okres przydatności do spożycia."
+      "description": "Znajdź klasyfikację NOVA dla co najmniej trzech produktów spożywczych, pamiętając jednocześnie, że przetwórstwo spożywcze może zwiększyć bezpieczeństwo żywności i wydłużyć jej okres przydatności do spożycia."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Quiz: Porównujesz dwa lokalne produkty.",
+      "name": "Lokalne z bliska",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność, a także odzwierciedlać fakt, że porównujesz dwa lokalne produkty."
+      "description": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Obserwator metody produkcji",
@@ -3072,37 +3085,37 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
       "name": "Jedno danie, wiele etapów",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Wybierz jeden produkt spożywczy i zastanów się, co mogło się wydarzyć na etapie przetwarzania surowców do momentu powstania gotowego produktu, który kupiłeś, pamiętając jednocześnie, że dywersyfikacja upraw i ras może zwiększyć odporność systemu żywnościowego."
+      "description": "Wybierz jeden produkt spożywczy i zastanów się, co mogło się wydarzyć na etapie przetwarzania surowców do momentu powstania gotowego produktu, który kupiłeś, pamiętając jednocześnie, że zróżnicowanie upraw i ras może zwiększyć odporność systemu żywnościowego."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Quiz: Masz do wyboru dwie czekolady",
+      "name": "Podstawy sprawiedliwego handlu",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Rolnictwo stanowi największą część przypadków pracy dzieci na całym świecie, a to przypomina sytuację, w której wybierasz między dwiema tabliczkami czekolady o podobnej wartości odżywczej i…"
+      "description": "Większość przypadków pracy dzieci na całym świecie dotyczy sektora rolnictwa."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Porównaj poziomy przetwarzania",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Porównaj produkty spożywcze o różnych klasyfikacjach NOVA, wybierając co najmniej trzy produkty należące do tej samej kategorii żywności (np. pamiętając, że różne metody przetwarzania wymagają bardzo różnych ilości energii)."
+      "description": "Porównaj produkty spożywcze o różnych klasyfikacjach NOVA, wybierając co najmniej trzy produkty należące do tej samej kategorii żywności (np. trzy rodzaje sera). Różne metody przetwarzania wymagają bardzo zróżnicowanego zużycia energii."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Quiz: Produkt jest oznaczony jako lokalny. Co",
+      "name": "Co mówi pochodzenie",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Pochodzenie żywności może dostarczać przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju oraz mieć wpływ na to, czy produkt jest oznaczony jako „lokalny”. Jakie wnioski można wyciągnąć na podstawie tych informacji?"
+      "description": "Pochodzenie żywności może dostarczyć przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Wybór oparty na danych produkcyjnych",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Skorzystaj z klasyfikacji NOVA, systemu Green-Score lub informacji zawartych w wykazie składników, aby podjąć co najmniej pięć decyzji zakupowych. Gdzie mogę znaleźć te informacje? Skorzystaj z informacji na opakowaniach, serwisu Open Content lub aplikacji do skanowania produktów spożywczych, pamiętając jednocześnie, że pasy kwiatowe i siedliska zapylaczy mogą wspierać różnorodność biologiczną w gospodarstwach rolnych."
+      "description": "Skorzystaj z klasyfikacji NOVA, systemu Green-Score lub informacji zawartych w wykazie składników, aby podjąć co najmniej pięć decyzji zakupowych. Skorzystaj z informacji na opakowaniach, serwisu Open Food Facts lub aplikacji do skanowania produktów spożywczych, pamiętając jednocześnie, że paski kwiatowe i siedliska dla zapylaczy mogą sprzyjać różnorodności biologicznej na terenach rolniczych."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Quiz: Porównujesz dwa produkty z pomidorów.",
+      "name": "Hodowla o mniejszym wpływie",
       "title": "Metody produkcji – Poziom średniozaawansowany",
-      "description": "Hodowla zwierząt o niższej emisji metanu może zmniejszyć wpływ hodowli na środowisko i przypomina sytuację, w której porównuje się dwa produkty z pomidorów."
+      "description": "Hodowla zwierząt o niższej emisji metanu może ograniczyć wpływ hodowli na środowisko."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Quiz: Konsument chce wziąć pod uwagę zarówno…",
+      "name": "Społeczna strona żywności",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy, co skłania konsumentów do uwzględniania zarówno zrównoważonego rozwoju środowiskowego, jak i społecznego przy dokonywaniu zakupów."
+      "description": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Narzędzie do śledzenia wielu wskaźników",
@@ -3115,39 +3128,39 @@
       "description": "W przypadku co najmniej trzech zakupów przed podjęciem decyzji warto wziąć pod uwagę zarówno klasyfikację NOVA, jak i wskaźnik Green-Score, pamiętając jednocześnie, że nie wszystkie przetworzone produkty spożywcze mają duży wpływ na środowisko."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Quiz: Który środek transportu zasadniczo zasługuje na",
+      "name": "Odległość to nie wszystko",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym rozwiązaniem, a przy ocenie wpływu na klimat na ogół największą uwagę należy poświęcić sposobowi transportu."
+      "description": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym wyborem."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Quiz: Wybierasz jedno z dwóch jabłek",
+      "name": "Metody uprawy, które pomagają",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Agroleśnictwo polega na łączeniu upraw drzew z uprawami rolnymi lub hodowlą na tym samym terenie. Zastanów się, który z dwóch produktów jabłkowych wybierasz: Produkt A: „Wyprodukowany z wykorzystaniem zintegrowanej ochrony przed szkodnikami”."
+      "description": "Agroleśnictwo polega na łączeniu uprawy drzew z uprawami rolnymi lub hodowlą zwierząt na tym samym terenie."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Quiz: Znajdujesz produkt spożywczy wprowadzony na rynek",
+      "name": "Innowacje w gospodarstwie",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Edycja genomu może pomóc w opracowaniu roślin uprawnych bardziej odpornych na stres klimatyczny; warto więc zastanowić się, co oznacza, gdy na rynku pojawia się produkt spożywczy reklamowany jako pochodzący z upraw odpornych na zmiany klimatu."
+      "description": "Edycja genomu może pomóc w opracowaniu roślin uprawnych, które będą bardziej odporne na stres klimatyczny."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Quiz: Na opakowaniu kawy podkreślono wsparcie dla",
+      "name": "Kto uprawia naszą żywność",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają do niej mniejszy dostęp, co podkreślono na opakowaniu kawy, na którym zaznaczono wsparcie dla drobnych rolników."
+      "description": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają mniejszy dostęp do zasobów."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Obserwator materiałów opakowaniowych",
       "title": "Opakowania – poziom początkujący",
-      "description": "Określ, z jakiego materiału wykonane są opakowania co najmniej pięciu produktów spożywczych spożywanych w ciągu tygodnia, pamiętając, że opakowania spożywcze chronią produkty przed zanieczyszczeniem, wilgocią, tlenem i uszkodzeniami fizycznymi, przyczyniając się do zachowania świeżości żywności."
+      "description": "Określ, z jakiego materiału wykonane są opakowania co najmniej pięciu produktów spożywczych spożywanych w ciągu tygodnia, pamiętając, że opakowania do żywności chronią produkty przed zanieczyszczeniami, wilgocią, tlenem i uszkodzeniami fizycznymi, przyczyniając się do zachowania bezpieczeństwa i jakości żywności."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Przewodnik po opakowaniach wielokrotnego użytku",
       "title": "Opakowania – poziom początkujący",
-      "description": "Wskaż co najmniej pięć przykładów opakowań na żywność wielokrotnego użytku lub z możliwością ponownego napełnienia, pamiętając jednocześnie, że opakowania wielokrotnego użytku stają się korzystne dla środowiska dopiero po wystarczającej liczbie ponownych użyć."
+      "description": "Wskaż co najmniej pięć przykładów opakowań na żywność wielokrotnego użytku lub z możliwością ponownego napełnienia, pamiętając jednocześnie, że opakowania wielokrotnego użytku stają się korzystne dla środowiska dopiero po tym, jak zostaną ponownie wykorzystane wystarczającą liczbę razy."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Wybory oparte na informacjach o opakowaniach",
       "title": "Opakowanie – Poziom średniozaawansowany",
-      "description": "Przy podejmowaniu co najmniej trzech decyzji zakupowych należy wziąć pod uwagę cechy opakowań, pamiętając jednocześnie, że wpływ produkcji żywności na środowisko jest często znacznie większy niż wpływ..."
+      "description": "Przy podejmowaniu co najmniej trzech decyzji zakupowych należy wziąć pod uwagę cechy opakowań, pamiętając jednocześnie, że wpływ produkcji żywności na środowisko jest często znacznie większy niż wpływ opakowań stosowanych do jej zabezpieczenia."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Wyszukiwarka możliwości ponownego wykorzystania",
@@ -3157,22 +3170,22 @@
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Wielokryterialne decyzje dotyczące opakowań",
       "title": "Opakowania – zaawansowane",
-      "description": "W przypadku co najmniej trzech zakupów przed podjęciem decyzji warto rozważyć zarówno materiał opakowaniowy, jak i możliwości utylizacji po zakończeniu cyklu życia produktu, pamiętając jednocześnie, że opakowania jadalne mogą pomóc w ograniczeniu zależności od tworzyw sztucznych pochodzenia kopalnego poprzez zastąpienie nimi tradycyjnych materiałów opakowaniowych."
+      "description": "W przypadku co najmniej trzech zakupów przed podjęciem decyzji warto rozważyć zarówno materiał opakowaniowy, jak i możliwości utylizacji po zakończeniu cyklu życia produktu, pamiętając jednocześnie, że opakowania jadalne mogą przyczynić się do zmniejszenia zależności od tworzyw sztucznych pochodzenia kopalnego poprzez zastąpienie tradycyjnych materiałów opakowaniowych alternatywami ulegającymi biodegradacji."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Narzędzie do kształtowania nawyku ponownego wykorzystywania",
       "title": "Opakowania – zaawansowane",
-      "description": "Korzystaj z systemów opakowań wielokrotnego użytku lub z możliwością ponownego napełniania co najmniej pięć razy. Szukaj produktów sprzedawanych w ramach systemów kaucji zwrotnej lub ponownego napełniania, pamiętając jednocześnie, że każde opakowanie wielokrotnego użytku ma punkt progu opłacalności, powyżej którego staje się korzystniejsze od alternatywnych opakowań jednorazowych."
+      "description": "Korzystaj z systemów opakowań wielokrotnego użytku lub z możliwością ponownego napełniania co najmniej pięć razy. Szukaj produktów sprzedawanych w ramach systemów kaucji zwrotnej lub ponownego napełniania, pamiętając jednocześnie, że każde opakowanie wielokrotnego użytku ma punkt progu rentowności, w którym staje się bardziej opłacalne niż alternatywne rozwiązania jednorazowe."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Zestaw do serwowania „Smart Serving”",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Wpis nr 5: „Half Plate” – zapisane działania, przy czym należy pamiętać, że gospodarstwa domowe generują więcej odpadów spożywczych niż jakikolwiek inny sektor w Unii Europejskiej."
+      "description": "Wpis nr 5: „Half Plate” – zapisane działania, przy czym należy pamiętać, że gospodarstwa domowe wytwarzają więcej odpadów spożywczych niż jakikolwiek inny sektor w Unii Europejskiej."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Inteligentniejsze przechowywanie",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Należy uważnie zapoznać się z instrukcjami na opakowaniach dotyczącymi przechowywania żywności po otwarciu opakowania w przypadku co najmniej pięciu zakupionych produktów, pamiętając jednocześnie, że gospodarstwa domowe odpowiadają za ponad połowę marnotrawstwa żywności w UE."
+      "description": "Należy uważnie zapoznać się z instrukcjami na opakowaniach dotyczącymi przechowywania żywności po otwarciu opakowania w przypadku co najmniej pięciu zakupionych produktów, pamiętając jednocześnie, że gospodarstwa domowe odpowiadają za ponad połowę odpadów spożywczych powstających w UE."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
       "name": "Przeglądarka etykiet datowych",
@@ -3185,9 +3198,9 @@
       "description": "Przed posiłkiem spróbuj oszacować, ile jedzenia prawdopodobnie zjesz. Po posiłku porównaj swoje szacunki z tym, co faktycznie zjadłeś, pamiętając przy tym, że w ostatnich dziesięcioleciach wielkość porcji w wielu krajach znacznie wzrosła."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Misja 3: Sprawdzenie lodówki",
+      "name": "Zadanie 3: Rutynowa kontrola lodówki",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Element monitorowania: Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnotrawstwa jedzenia na talerzu, pamiętając jednocześnie, że serwowanie mniejszych porcji może ograniczyć marnotrawstwo jedzenia w stołówkach i restauracjach."
+      "description": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnotrawstwa jedzenia na talerzu, pamiętając jednocześnie, że oferowanie mniejszych porcji może ograniczyć marnotrawstwo żywności w stołówkach i restauracjach."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Nawyk planowania posiłków",
@@ -3195,34 +3208,34 @@
       "description": "Przed głównymi zakupami przygotuj plan posiłków, pamiętając, że daty „najlepiej spożyć przed” odnoszą się do jakości."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Misja 3: Kontrola lodówki",
+      "name": "Zadanie 3: Rutynowa kontrola lodówki",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed większymi zakupami sprawdź zawartość lodówki lub spiżarni. Element monitorowania: Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia, pamiętając, że ilość marnowanej żywności w gospodarstwach domowych w Europie szacowana jest na około 69 milionów ton rocznie."
+      "description": "Przed większymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia, pamiętając, że szacuje się, że ilość odpadów spożywczych wytwarzanych przez gospodarstwa domowe w Europie wynosi około 69 milionów ton rocznie."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Portion Control Pro",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Należy odnotować co najmniej połowę działań z programu „Half Plate Saved”, pamiętając jednocześnie, że wpływ diety na środowisko zależy nie tylko od tego, co ludzie jedzą, ale także od..."
+      "description": "Należy odnotować co najmniej połowę działań z programu „Half Plate Saved”, pamiętając jednocześnie, że wpływ diety na środowisko zależy nie tylko od tego, co ludzie jedzą, ale także od tego, ile jedzą."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Skupiamy się na eliminacji marnotrawstwa talerzowego",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Zarejestruj co najmniej 7 akcji „Half Plate Saved”, pamiętając, że zmarnowane mięso ma nieproporcjonalnie duży wpływ na skutki marnotrawstwa żywności dla klimatu."
+      "description": "Zarejestruj co najmniej 7 akcji „Half Plate Saved”, pamiętając, że marnotrawstwo mięsa ma nieproporcjonalnie duży wpływ na skutki marnotrawstwa żywności dla klimatu."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Ekspert ds. zapobiegania wygaśnięciu",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Należy rejestrować 4 działania związane z zużyciem produktów o upływającym terminie ważności, pamiętając jednocześnie, że mięso i nabiał mogą być marnowane rzadziej, ale mają większy wpływ na środowisko."
+      "description": "Należy rejestrować 4 działania związane z zużyciem produktów o upływającym terminie ważności, pamiętając jednocześnie, że mięso i nabiał są wprawdzie rzadziej marnowane, ale gdy już do tego dochodzi, ich wpływ na środowisko jest większy."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Ekspert ds. zasady „pierwsze weszło, pierwsze wyszło”",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "W ciągu tygodnia uporządkuj lodówkę, zamrażarkę lub spiżarnię tak, aby produkty o najkrótszym pozostałym terminie przydatności do spożycia zawsze znajdowały się z przodu i były zużywane w pierwszej kolejności, pamiętając jednocześnie, że promocje typu „kup więcej” i rabaty hurtowe mogą zachęcać konsumentów do kupowania większej ilości żywności, niż faktycznie potrzebują."
+      "description": "W ciągu tygodnia uporządkuj lodówkę, zamrażarkę lub spiżarnię tak, aby produkty o najkrótszym pozostałym terminie przydatności do spożycia zawsze znajdowały się z przodu i były zużywane w pierwszej kolejności, pamiętając jednocześnie, że oferty typu „kup więcej” i rabaty hurtowe mogą skłaniać konsumentów do kupowania większej ilości żywności, niż są w stanie zużyć."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Tydzień planowania bezodpadowego",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Zaplanuj wszystkie główne posiłki na cały tydzień przed pierwszą wyprawą na zakupy i kupuj wyłącznie produkty spożywcze, które masz w planach wykorzystać, pamiętając przy tym, że spożywanie większej ilości jedzenia niż potrzebuje organizm zwiększa zapotrzebowanie na zasoby rolnicze, takie jak..."
+      "description": "Zaplanuj wszystkie główne posiłki na cały tydzień przed pierwszą wyprawą na zakupy i kupuj wyłącznie produkty spożywcze, które masz w planach wykorzystać, pamiętając przy tym, że spożywanie większej ilości żywności niż potrzebuje organizm zwiększa zapotrzebowanie na zasoby rolnicze, takie jak ziemia, woda i energia."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Białko na co dzień",
@@ -3232,7 +3245,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Sprytna zamiana przekąsek",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Wpis nr 5: Przekąska → Zamiana na owoce lub orzechy, pamiętając przy tym, że tłuszcze nienasycone są generalnie zdrowsze niż tłuszcze nasycone."
+      "description": "Wpis nr 5: Przekąska → Zamiana na owoce lub orzechy, pamiętając przy tym, że tłuszcze nienasycone są na ogół zdrowsze niż tłuszcze nasycone."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Ulepszenie napoju",
@@ -3247,7 +3260,7 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Tydzień pełnoziarnisty",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Codziennie wybieraj produkt pełnoziarnisty. Jak to zrobić? Wybieraj takie produkty jak chleb pełnoziarnisty, makaron pełnoziarnisty, płatki owsiane, brązowy ryż, chleb żytni, komosa ryżowa lub inne produkty pełnoziarniste, pamiętając przy tym, że większość Europejczyków spożywa mniej błonnika niż zalecane."
+      "description": "Codziennie wybieraj produkt pełnoziarnisty. Wybieraj takie produkty jak chleb pełnoziarnisty, makaron pełnoziarnisty, płatki owsiane, brązowy ryż, chleb żytni, komosa ryżowa lub inne produkty pełnoziarniste, pamiętając przy tym, że większość Europejczyków spożywa mniej błonnika niż zalecane."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Dodaj jeszcze jeden owoc lub warzywo",
@@ -3255,14 +3268,14 @@
       "description": "Dodaj codziennie do swojej diety jedną dodatkową porcję owoców lub warzyw, pamiętając przy tym, że niedobór witaminy D jest powszechnym zjawiskiem w całej Europie."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Quiz: Który napój jest najbardziej prawdopodobnym wyborem?",
+      "name": "Kalorie to nie wszystko",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich, a przemyślany wybór napojów najprawdopodobniej pozwoli ograniczyć spożycie zbędnych kalorii."
+      "description": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich ludzi."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Zamiennik przetworzonego mięsa",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Zapisz 2 zamiany „mięso przetworzone” na „rośliny strączkowe”, pamiętając, że większość osób dorosłych potrzebuje około 0,83 g białka na każdy kilogram masy ciała."
+      "description": "Zapisz 2 zamiany „mięso przetworzone” na „rośliny strączkowe”, pamiętając, że większość osób dorosłych potrzebuje dziennie około 0,83 g białka na kilogram masy ciała."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Zwiększ spożycie zdrowych tłuszczów",
@@ -3272,7 +3285,7 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Porównanie napojów",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Porównaj dwa słodkie napoje, które lubisz pić, i ustal, który z nich zawiera mniej cukru na 100 ml, pamiętając, że WHO zaleca ograniczenie spożycia cukrów wolnych do mniej niż 10% dziennego zapotrzebowania energetycznego."
+      "description": "Porównaj dwa słodkie napoje, które lubisz pić, i ustal, który z nich zawiera mniej cukru na 100 ml, pamiętając, że WHO zaleca ograniczenie spożycia cukrów wolnych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Stół bez soli",
@@ -3285,24 +3298,24 @@
       "description": "W każdym głównym posiłku należy uwzględnić co najmniej jeden produkt bogaty w błonnik, pamiętając przy tym, że dorośli powinni spożywać co najmniej 25 gramów błonnika dziennie."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Quiz: Chcesz zwiększyć poziom witaminy",
+      "name": "Witaminy z talerza",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin i warto zastanowić się, jak zwiększyć zawartość witamin w swojej diecie bez konieczności przyjmowania suplementów."
+      "description": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Quiz: Dlaczego regularne spożywanie wysoko przetworzonych",
+      "name": "Te same kalorie, inny wpływ",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko, a zastanowienie się nad tym, czy regularne spożywanie wysoko przetworzonych przekąsek utrudnia kontrolowanie spożycia kalorii."
+      "description": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Quiz: Porównujesz dwa produkty spożywcze: Produkt",
+      "name": "Pełnowartościowe białka roślinne",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Spożywanie różnorodnych białek pochodzenia roślinnego może zapewnić organizmowi wszystkie niezbędne aminokwasy. Poniżej przedstawiono porównanie dwóch produktów spożywczych: Produkt A: „Źródło białka” Produkt B: „Wysoka zawartość”."
+      "description": "Spożywanie różnorodnych białek pochodzenia roślinnego pozwala na dostarczenie organizmowi wszystkich niezbędnych aminokwasów."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Quiz: Chcesz zmniejszyć ryzyko",
+      "name": "Zrozumieć tłuszcze w diecie",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii; warto o tym pamiętać, jeśli chcesz zmniejszyć ryzyko związane ze spożywaniem tłuszczów trans."
+      "description": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Tydzień Świadomości na temat Cukru Dodanego",
@@ -3312,12 +3325,12 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
       "name": "Obszar o wysokim stężeniu sodu",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Wskaż produkt spożywczy w swojej kuchni, który ma najwyższą zawartość soli na 100 gramów, pamiętając przy tym, że chleb, przetwory mięsne i sery są głównymi źródłami sodu w Europie."
+      "description": "Wskaż produkt spożywczy w swojej kuchni, który ma najwyższą zawartość soli na 100 gramów, pamiętając przy tym, że chleb, przetwory mięsne i sery stanowią główne źródła sodu w Europie."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
       "name": "Tydzień śniadań bogatych w błonnik",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Zacznij każdy dzień od śniadania zawierającego znaczące źródło błonnika. Oprzyj swoje śniadanie na płatkach owsianych, produktach pełnoziarnistych, owocach, nasionach, orzechach lub innych produktach bogatych w błonnik, pamiętając, że większe spożycie błonnika wiąże się z mniejszym ryzykiem chorób serca i cukrzycy typu 2."
+      "description": "Zacznij każdy dzień od śniadania zawierającego znaczące źródło błonnika. Oprzyj swoje śniadanie na płatkach owsianych, produktach pełnoziarnistych, owocach, nasionach, orzechach lub innych produktach bogatych w błonnik, pamiętając, że wyższe spożycie błonnika wiąże się z mniejszym ryzykiem chorób serca i cukrzycy typu 2."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Tydzień Tęczy",
@@ -3327,7 +3340,7 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Tydzień posiłków bogatych w składniki odżywcze",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Należy zadbać o to, aby każdy główny posiłek zawierał co najmniej trzy z poniższych składników: źródło białka, produkt bogaty w błonnik, owoce lub warzywa albo źródło zdrowych tłuszczów, pamiętając jednocześnie, że wykorzystywanie upraw jako paszy dla zwierząt hodowlanych powoduje znaczne straty kaloryczne."
+      "description": "Należy zadbać o to, aby każdy główny posiłek zawierał co najmniej trzy z poniższych składników: źródło białka, produkt bogaty w błonnik, owoce lub warzywa albo źródło zdrowych tłuszczów, pamiętając jednocześnie, że wykorzystanie upraw jako paszy dla zwierząt hodowlanych powoduje znaczne straty kaloryczne."
     }
   },
   "meta": {

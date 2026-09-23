@@ -874,7 +874,8 @@
         "B": "Jajca",
         "C": "Sir",
         "D": "Piščančje prsi"
-      }
+      },
+      "explanation": "Stročnice izboljšujejo rodovitnost tal z vezavo dušika, hkrati pa zagotavljajo beljakovine, vlaknine, vitamine in minerale."
     },
     "Q1.2.5": {
       "question": "Družina želi zmanjšati porabo rdečega mesa, ne da bi opustila živalske proizvode. Katera sprememba najbolje odraža dokaze?",
@@ -1003,7 +1004,8 @@
         "B": "Prehrana z več mlečnimi izdelki in rdečim mesom",
         "C": "Prehrana z več predelanimi mesnimi izdelki",
         "D": "Prehrana, ki temelji na govedini kot glavnem viru beljakovin"
-      }
+      },
+      "explanation": "Poraba vode se praviloma zmanjša, ko se prehrana premakne od živil živalskega izvora k rastlinskim."
     },
     "Q2.2.3": {
       "question": "V hladilniku najdete zelenjavo, ki se bo kmalu pokvarila. Kateri je najbolj trajnosten ukrep?",
@@ -1022,7 +1024,8 @@
         "B": "Poraba vode je odvisna od izbranih živil, pogosto pa je pomemben dejavnik zmanjšanje živil živalskega izvora",
         "C": "Vplivi na vodo so odvisni predvsem od prehranskih kilometrov",
         "D": "Predelana živila vedno zahtevajo več vode kot sveža"
-      }
+      },
+      "explanation": "Študije kažejo, da manj živil živalskega izvora pogosto zmanjša vodni odtis, vendar je skupna poraba vode še vedno odvisna od sestave prehrane."
     },
     "Q2.2.5": {
       "question": "Kateri obrok bi praviloma imel najmanjši vodni odtis?",
@@ -1081,7 +1084,8 @@
         "B": "Prehranski sistemi z zahtevami po virih in energiji močno obremenjujejo ekosisteme",
         "C": "Večina pritiska na ekosisteme izvira iz embalaže za živila in ne iz pridelave hrane",
         "D": "Pričakuje se, da bo povpraševanje po hrani do leta 2050 močno upadlo"
-      }
+      },
+      "explanation": "Človekove dejavnosti, zlasti kmetijstvo, gozdarstvo in prehranski sistemi, prisvojijo približno 30 % svetovne neto primarne proizvodnje, kar je daleč nad predlagano varno mejo 10 %. To kaže na velik pritisk na ekosisteme in biotsko raznovrstnost."
     },
     "Q2.4.1": {
       "question": "Želite zmanjšati svoj podnebni vpliv, a ne želite postati vegetarijanec. Katera strategija bo verjetno najučinkovitejša?",
@@ -1320,7 +1324,8 @@
         "B": "Pridelati jih je mogoče le v zaprtih prostorih",
         "C": "Lahko zagotavljajo beljakovine z manjšimi vplivi na okolje",
         "D": "Odpravijo potrebo po poljščinah"
-      }
+      },
+      "explanation": "Alternativne vire beljakovin raziskujejo, ker lahko pomagajo zmanjšati okoljske pritiske konvencionalne živinoreje in hkrati podpirajo prihodnjo prehransko varnost."
     },
     "Q3.4.5": {
       "question": "Proizvajalec mesa navaja, da je njegov program vzreje osredotočen na izkoristek krme. Zakaj bi bilo to lahko pomembno za trajnostnost?",
@@ -1329,7 +1334,8 @@
         "B": "Živali morda potrebujejo manj virov",
         "C": "Zagotavlja nižje maloprodajne cene",
         "D": "Odpravi emisije toplogrednih plinov"
-      }
+      },
+      "explanation": "Živali z boljšim izkoristkom krme dajo enako količino mesa z manj krme in tako zmanjšajo okoljski pritisk na enoto proizvodnje."
     },
     "Q3.5.1": {
       "question": "Izbirate med dvema čokoladnima ploščicama s podobno hranilno vrednostjo in okoljskimi podatki. Ena nosi oznako Fairtrade. Kateri dodatni vidik trajnostnosti naj bi oznaka Fairtrade predvsem naslavljala?",
@@ -1528,7 +1534,8 @@
         "B": "Standardizirane porcije",
         "C": "Lokalno pridobljene sestavine",
         "D": "Podatki o hranilnih vrednostih na jedilnikih"
-      }
+      },
+      "explanation": "Standardizirane velikosti porcij pogosto ne upoštevajo razlik v apetitu in veljajo za sistemski vzrok za ostanke na krožniku."
     },
     "Q5.2.1": {
       "question": "Od večerje so vam ostali ostanki, ki jih nameravate pojesti jutri. Kateri je najboljši prvi korak za preprečitev zavržene hrane in tveganj za varnost živil?",
@@ -1687,7 +1694,8 @@
         "B": "Kot vire beljakovin vključite več stročnic, oreškov in polnozrnatih žit",
         "C": "Izbirajte živila z največjo vsebnostjo beljakovin ne glede na vir",
         "D": "Obroke nadomestite z beljakovinskimi dopolnili"
-      }
+      },
+      "explanation": "Stročnice, oreški in polnozrnata žita zagotavljajo beljakovine in imajo običajno manjši okoljski vpliv kot številni živalski viri beljakovin. Raznolikost virov beljakovin koristi tako zdravju kot trajnosti."
     },
     "Q6.1.2": {
       "question": "Dve kosili vsebujeta podobno količino beljakovin: solata iz leče in kvinoje ter sendvič s predelanim mesom. Katera trditev je najbolj točna?",
@@ -1706,7 +1714,8 @@
         "B": "Zanašajte se le na en rastlinski vir beljakovin",
         "C": "Uživajte raznolike rastlinske vire beljakovin, kot so stročnice, žita, oreški in semena",
         "D": "Podvojite skupni vnos kalorij"
-      }
+      },
+      "explanation": "Različne rastlinske beljakovine se med seboj dopolnjujejo. V raznoliki prehrani kombinacija več rastlinskih virov beljakovin običajno zagotovi vse esencialne aminokisline."
     },
     "Q6.1.4": {
       "question": "Primerjate dve živili: izdelek A: „vir beljakovin“, izdelek B: „visoka vsebnost beljakovin“. Kaj lahko sklepate?",
@@ -1715,7 +1724,8 @@
         "B": "Izdelek A je manj zdrav",
         "C": "Večji delež energije izdelka B izvira iz beljakovin",
         "D": "Izdelek B vsebuje živalske beljakovine"
-      }
+      },
+      "explanation": "Po zakonodaji EU o prehranskih trditvah je izdelek lahko označen kot „z visoko vsebnostjo beljakovin“ le, če vsaj 20 % njegove energijske vrednosti izvira iz beljakovin. Za oznako „vir beljakovin“ je potrebnih vsaj 12 %."
     },
     "Q6.1.5": {
       "question": "Kateri prehranski vzorec je najbolj skladen tako s cilji trajnostnosti kot s sedanjimi prehranskimi priporočili?",
@@ -1724,7 +1734,8 @@
         "B": "Čim večji vnos beljakovin ne glede na vir",
         "C": "Beljakovine dobiti iz mešanice stročnic, rib, mlečnih izdelkov, jajc, oreškov in zmernih količin mesa",
         "D": "Zanašati se predvsem na beljakovinske napitke in dopolnila"
-      }
+      },
+      "explanation": "Zdrava in trajnostna prehrana se praviloma opira na raznolike vire beljakovin in ne le na enega samega. Stročnice, ribe, oreški, mlečni izdelki in zmerne količine mesa lahko vsi prispevajo k zadostnemu vnosu beljakovin in podpirajo kakovost prehrane."
     },
     "Q6.2.1": {
       "question": "Želite izboljšati kakovost maščob v svoji prehrani, hkrati pa ohraniti obroke okusne in sitne. Katera zamenjava je najbolj skladna s sedanjimi priporočili?",
@@ -1963,7 +1974,8 @@
         "B": "Bel kruh z maslom",
         "C": "Rezine pomaranče in kivi",
         "D": "Kuhan riž"
-      }
+      },
+      "explanation": "Sadje, kot so pomaranče, kivi in jagodičevje, ter številne vrste zelenjave so bogati z vitaminom C, ki prispeva k delovanju imunskega sistema in normalnemu nastajanju kolagena."
     },
     "Q6.6.5": {
       "question": "Izbirate med dvema prilogama: zelenjava, kuhana v sopari, in zelenjava, kuhana zelo dolgo pri visoki temperaturi. Katera možnost bo verjetneje ohranila vitamine?",
@@ -2012,7 +2024,8 @@
         "B": "Čim večji vnos kalorij iz katerega koli vira",
         "C": "Uskladiti vnos kalorij z osebnimi potrebami in dati prednost hranilno bogatim živilom",
         "D": "Osredotočiti se le na kalorije in prezreti kakovost živil"
-      }
+      },
+      "explanation": "Zdrava in trajnostna prehrana ni odvisna le od kalorij. Gre za pokrivanje energijskih potreb z živili, ki zagotavljajo esencialna hranila, in za zmanjševanje nepotrebne prekomerne porabe ter odpadkov."
     },
     "Q6.7.5": {
       "question": "Štirje prigrizki dajejo približno enako število kalorij. Kateri vas bo verjetneje dlje nasitil?",
@@ -2437,7 +2450,7 @@
     },
     "M.I5.3": {
       "title": "Misija 3: rutina pregleda hladilnika",
-      "goal": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Del za spremljanje: zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“.",
+      "goal": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“.",
       "whyItMatters": "Potrošniki pogosto kupujejo izdelke, ki jih že imajo."
     },
     "M.I5.4": {
@@ -2937,67 +2950,67 @@
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Opustite en mesni obrok",
       "title": "Spremembe prehrane – začetnik",
-      "description": "Zaužijte en mesni obrok manj kot pretekli teden in ne pozabite, da je uživanje manj rdečega mesa eden najučinkovitejših načinov za zmanjšanje."
+      "description": "Zaužijte en mesni obrok manj kot pretekli teden. Uživanje manj rdečega mesa je eden najučinkovitejših načinov za zmanjšanje vpliva vaše prehrane na okolje."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
       "name": "Prva trajnostna zamenjava",
       "title": "Spremembe prehrane – začetnik",
-      "description": "Zabeležite 2 dejanji zamenjave beljakovin in ne pozabite, da lahko nadomeščanje dela mesa s stročnicami zmanjša podnebni vpliv."
+      "description": "Zabeležite 2 dejanji zamenjave beljakovin. Nadomeščanje dela mesa s stročnicami lahko zmanjša vpliv vaše prehrane na podnebje."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Spoznajte lečo",
       "title": "Spremembe prehrane – začetnik",
-      "description": "Raziščite vsebine in poiščite dve prehranski ali okoljski prednosti leče ter ne pozabite, da kvinoja vsebuje vseh devet esencialnih aminokislin, zato je popolna rastlinska beljakovina."
+      "description": "Raziščite vsebine in poiščite dve prehranski ali okoljski prednosti leče. Kvinoja vsebuje vseh devet esencialnih aminokislin, zato je popolna rastlinska beljakovina."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "Dva dneva brez mesa",
       "title": "Spremembe prehrane – srednja raven",
-      "description": "Opravite dva dneva brez mesa in ne pozabite, da pridelava govedine zahteva veliko več zemljišč kot pridelava rastlinskih beljakovin, kot sta grah ali."
+      "description": "Opravite dva dneva brez mesa. Pridelava govedine zahteva veliko več zemljišč kot pridelava rastlinskih beljakovin, kot sta grah ali tofu."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Graditelj trajnostnih zamenjav",
       "title": "Spremembe prehrane – srednja raven",
-      "description": "Zabeležite 4 dejanja zamenjave beljakovin in ne pozabite, da so fižol, leča, grah in čičerika med najbolj trajnostnimi razpoložljivimi viri beljakovin."
+      "description": "Zabeležite 4 dejanja zamenjave beljakovin. Fižol, leča, grah in čičerika so med najbolj trajnostnimi razpoložljivimi viri beljakovin."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Rutina s stročnicami",
       "title": "Spremembe prehrane – srednja raven",
-      "description": "Stročnice vključite v štiri obroke in ne pozabite, da so prosena žita zelo odporne poljščine, ki lahko rastejo v vročih in suhih razmerah z malo."
+      "description": "Stročnice vključite v štiri obroke. Prosena žita so zelo odporne poljščine, ki lahko rastejo v vročih in suhih razmerah z malo vode."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Ostanite v zelenem",
+      "name": "Ostanite v zeleni coni",
       "title": "Spremembe prehrane – napredna raven",
-      "description": "Ostanite pod štirimi mesnimi obroki na teden in ne pozabite, da živinoreja uporablja večino kmetijskih zemljišč na svetu, prispeva pa veliko manjši delež."
+      "description": "Ostanite pod štirimi mesnimi obroki na teden. Živinoreja uporablja večino kmetijskih zemljišč na svetu, prispeva pa veliko manjši delež kalorij in beljakovin."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Večina beljakovin iz rastlin",
       "title": "Spremembe prehrane – napredna raven",
-      "description": "Večino obrokov z beljakovinami pripravite iz nemesnih virov beljakovin in ne pozabite, da stročnice naravno izboljšujejo rodovitnost tal, saj vežejo dušik iz zraka in zmanjšujejo potrebo."
+      "description": "Večino obrokov z beljakovinami pripravite iz nemesnih virov beljakovin. Stročnice naravno izboljšujejo rodovitnost tal, saj vežejo dušik iz zraka in tako zmanjšujejo potrebo po gnojilih."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
       "name": "Navada alternativnih osnovnih živil",
       "title": "Spremembe prehrane – napredna raven",
-      "description": "V vsaj pet obrokov vključite alternativna osnovna živila in ne pozabite, da kvinojo danes gojijo v več kot 70 državah, kar pripomore k raznolikosti svetovne pridelave hrane."
+      "description": "V vsaj pet obrokov vključite alternativna osnovna živila. Kvinojo danes gojijo v več kot 70 državah, kar pripomore k raznolikosti svetovne pridelave hrane."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Sledilec porekla",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Pri vsaj 5 živilih, zaužitih med tednom, poiščite državo porekla in ne pozabite, da se približno polovica svetovnih naseljivih zemljišč uporablja za kmetijstvo."
+      "description": "Pri vsaj 5 živilih, zaužitih med tednom, poiščite državo porekla. Približno polovica svetovnih naseljivih zemljišč se uporablja za kmetijstvo."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Kviz: Dve osebi zaužijeta enako število",
+      "name": "Voda za našo hrano",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Približno 70 % svetovnega odvzema sladke vode se porabi za kmetijstvo; premislite o primeru, ko dve osebi vsak dan zaužijeta enako število kalorij."
+      "description": "Približno 70 % svetovnega odvzema sladke vode se porabi za kmetijstvo."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Kviz: Primerjate štiri načine prehrane z",
+      "name": "Podnebni strošek obrokov",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Prehranski sistemi ustvarijo približno tretjino svetovnih emisij toplogrednih plinov; premislite o primeru, ko primerjate štiri načine prehrane z enakim vnosom kalorij."
+      "description": "Prehranski sistemi ustvarijo približno tretjino svetovnih emisij toplogrednih plinov."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Kviz: Želite zmanjšati svoj podnebni",
+      "name": "Kilometri hrane",
       "title": "Izbira izdelkov – začetnik",
-      "description": "Svetovni prevoz hrane letno povzroči približno 3 milijarde ton emisij v ekvivalentu CO₂; premislite o primeru, ko želite zmanjšati svoj podnebni vpliv, a ne želite."
+      "description": "Svetovni prevoz hrane letno povzroči približno 3 milijarde ton emisij v ekvivalentu CO₂."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Izbira izdelkov – začetnik",
@@ -3007,22 +3020,22 @@
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
       "name": "Raznolika porekla",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Spremljajte poreklo zaužitih živil in zabeležite vsaj 3 obroke z lokalno pridelanimi izdelki ter ne pozabite, da je govedina eno od živil, ki za pridelavo zahtevajo največ zemljišč."
+      "description": "Spremljajte poreklo zaužitih živil in zabeležite vsaj 3 obroke z lokalno pridelanimi izdelki. Govedina je eno od živil, ki za pridelavo zahtevajo največ zemljišč."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Kviz: Katera trditev najbolje odraža dokaze",
+      "name": "Zavržena hrana, zavržena voda",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Z zavrženo hrano zapravimo tudi ogromne količine vode, porabljene za njeno pridelavo; premislite, katera trditev najbolje odraža dokaze o porabi vode in trajnostni prehrani."
+      "description": "Z zavrženo hrano zapravimo tudi ogromne količine vode, porabljene za njeno pridelavo."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Kviz: Potrošnik želi zmanjšati",
+      "name": "Ogljični odtis mesa",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Meso, zlasti govedina in jagnjetina, ima veliko večji ogljični odtis kot večina rastlinskih; premislite o primeru, ko potrošnik želi zmanjšati energijski odtis svojih nakupov hrane."
+      "description": "Meso, zlasti govedina in jagnjetina, ima veliko večji ogljični odtis kot večina rastlinskih živil."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Kviz: Katero dejanje zmanjša emisije brez spreminjanja",
+      "name": "Emisije prevoza",
       "title": "Izbira izdelkov – srednja raven",
-      "description": "Skoraj petina emisij toplogrednih plinov svetovnega prehranskega sistema izvira iz; premislite, katero dejanje zmanjša emisije, ne da bi spremenili živila, ki jih kupujete."
+      "description": "Skoraj petina emisij toplogrednih plinov svetovnega prehranskega sistema izvira iz prevoza hrane."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Izbira izdelkov – srednja raven",
@@ -3032,22 +3045,22 @@
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Več kot le država porekla",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Pri izbiri izdelkov za vsaj 3 obroke upoštevajte tako državo porekla kot še en kazalnik trajnostnosti (npr. certifikat, način pridelave, sezonskost) in ne pozabite, da se večina kmetijskih zemljišč uporablja za pašo živine ali pridelavo krme."
+      "description": "Pri izbiri izdelkov za vsaj 3 obroke upoštevajte tako državo porekla kot še en kazalnik trajnostnosti (npr. certifikat, način pridelave, sezonskost). Večina kmetijskih zemljišč se uporablja za pašo živine ali pridelavo krme."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Kviz: Želite zmanjšati porabo vode",
+      "name": "Vodni odtis podrobno",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Vodni odtis vaše prehrane je močno odvisen od tega, kaj jeste; premislite o primeru, ko želite zmanjšati vodni odtis svojih obrokov."
+      "description": "Vodni odtis vaše prehrane je močno odvisen od tega, kaj jeste."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Kviz: Razvojna agencija se odloča, kam vložiti",
+      "name": "Emisije onkraj krožnika",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Zavržena hrana letno povzroči milijarde ton emisij v ekvivalentu CO2; premislite o primeru, ko se razvojna agencija odloča, kam vložiti sredstva za zmanjšanje izgub hrane."
+      "description": "Zavržena hrana letno povzroči milijarde ton emisij v ekvivalentu CO2."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Kviz: Oseba se osredotoča le na nakup",
+      "name": "Hladna veriga in prevoz",
       "title": "Izbira izdelkov – napredna raven",
-      "description": "Čeprav hrana predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči; premislite o primeru, ko se oseba osredotoča le na nakup lokalne hrane, a še naprej uživa velike."
+      "description": "Čeprav hrana predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči približno 27 % emisij, povezanih s tovornim prometom."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Izbira izdelkov – napredna raven",
@@ -3057,52 +3070,52 @@
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
       "name": "Raziskovalec NOVA",
       "title": "Načini pridelave – začetnik",
-      "description": "Pri vsaj 3 živilih poiščite razvrstitev NOVA in ne pozabite, da lahko predelava hrane izboljša varnost živil in podaljša njihov rok uporabnosti."
+      "description": "Pri vsaj 3 živilih poiščite razvrstitev NOVA. Predelava hrane lahko izboljša varnost živil in podaljša njihov rok uporabnosti."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Kviz: Primerjate dva lokalna izdelka.",
+      "name": "Lokalno od blizu",
       "title": "Načini pridelave – začetnik",
-      "description": "Kratke dobavne verige lahko podpirajo lokalna gospodarstva in odpornost; premislite o primeru, ko primerjate dva lokalna izdelka."
+      "description": "Kratke dobavne verige lahko podpirajo lokalna gospodarstva in odpornost."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "Opazovalec načina pridelave",
       "title": "Načini pridelave – začetnik",
-      "description": "Pri vsaj petih živilih poiščite podatke o tem, kako so bila pridelana, kadar so ti podatki na voljo, in ne pozabite, da ekološke kmetije podpirajo večjo biotsko raznovrstnost kot konvencionalne."
+      "description": "Pri vsaj petih živilih poiščite podatke o tem, kako so bila pridelana, kadar so ti podatki na voljo. Ekološke kmetije podpirajo večjo biotsko raznovrstnost kot konvencionalne kmetije."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
       "name": "Eno živilo, veliko korakov",
       "title": "Načini pridelave – začetnik",
-      "description": "Izberite eno živilo in raziščite, kaj se je morda zgodilo med surovinami in končnim izdelkom, ki ste ga kupili, ter ne pozabite, da lahko večja raznolikost poljščin in pasem poveča odpornost prehranskega sistema."
+      "description": "Izberite eno živilo in raziščite, kaj se je morda zgodilo med surovinami in končnim izdelkom, ki ste ga kupili. Večja raznolikost poljščin in pasem lahko poveča odpornost prehranskega sistema."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Kviz: Izbirate med dvema čokoladnima",
+      "name": "Osnove pravične trgovine",
       "title": "Načini pridelave – začetnik",
-      "description": "V kmetijstvu je največ primerov dela otrok na svetu; premislite o primeru, ko izbirate med dvema čokoladnima ploščicama s podobno hranilno vrednostjo in."
+      "description": "V kmetijstvu je največ primerov dela otrok na svetu."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
       "name": "Primerjajte stopnje predelave",
       "title": "Načini pridelave – srednja raven",
-      "description": "Primerjajte živila z različnimi razvrstitvami NOVA pri vsaj treh izdelkih iz iste kategorije živil (npr. in ne pozabite, da različni načini predelave porabijo zelo različne količine energije."
+      "description": "Primerjajte živila z različnimi razvrstitvami NOVA pri vsaj treh izdelkih iz iste kategorije živil (npr. tri vrste sira). Različni načini predelave porabijo zelo različne količine energije."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Kviz: Izdelek je označen kot lokalen. Kaj",
+      "name": "Kaj pove poreklo",
       "title": "Načini pridelave – srednja raven",
-      "description": "Poreklo hrane lahko daje koristne informacije o sledljivosti in trajnostnosti; premislite o primeru, ko je izdelek označen kot „lokalen“. Kaj lahko iz tega podatka sklepate."
+      "description": "Poreklo hrane lahko daje koristne informacije o sledljivosti in trajnostnosti."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Izbira na podlagi podatkov o pridelavi",
       "title": "Načini pridelave – srednja raven",
-      "description": "Pri vsaj petih nakupnih odločitvah si pomagajte z razvrstitvijo NOVA, oceno Green-Score ali seznamom sestavin. Kje najdem te podatke? Uporabite embalažo, odprte vsebine ali aplikacije za skeniranje živil in ne pozabite, da lahko cvetlični pasovi in habitati za opraševalce podpirajo biotsko raznovrstnost na kmetijah."
+      "description": "Pri vsaj petih nakupnih odločitvah si pomagajte z razvrstitvijo NOVA, oceno Green-Score ali seznamom sestavin. Uporabite embalažo, Open Food Facts ali aplikacije za skeniranje živil. Cvetlični pasovi in habitati za opraševalce lahko podpirajo biotsko raznovrstnost na kmetijah."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Kviz: Primerjate dva izdelka iz paradižnika.",
+      "name": "Žlahtnjenje z manjšim vplivom",
       "title": "Načini pridelave – srednja raven",
-      "description": "Vzreja živali z manjšimi emisijami metana lahko zmanjša vplive živinoreje; premislite o primeru, ko primerjate dva izdelka iz paradižnika."
+      "description": "Vzreja živali z manjšimi emisijami metana lahko zmanjša vplive živinoreje."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Kviz: Potrošnik želi upoštevati oboje",
+      "name": "Družbena plat hrane",
       "title": "Načini pridelave – srednja raven",
-      "description": "Trajnostnost prehranskega sistema vključuje socialne in delovne razmere; premislite o primeru, ko želi potrošnik pri nakupu upoštevati okoljsko in družbeno trajnostnost."
+      "description": "Trajnostnost prehranskega sistema vključuje socialne in delovne razmere."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Sledilec več kazalnikov",
@@ -3112,82 +3125,82 @@
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
       "name": "Odločitve po več merilih",
       "title": "Načini pridelave – napredna raven",
-      "description": "Pri vsaj treh nakupih pred odločitvijo upoštevajte tako razvrstitev NOVA kot Green-Score in ne pozabite, da nimajo vsa predelana živila velikega vpliva na okolje."
+      "description": "Pri vsaj treh nakupih pred odločitvijo upoštevajte tako razvrstitev NOVA kot Green-Score. Nimajo vsa predelana živila velikega vpliva na okolje."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Kviz: Kateri način prevoza si praviloma zasluži",
+      "name": "Razdalja ni vse",
       "title": "Načini pridelave – napredna raven",
-      "description": "Lokalna hrana ni vedno najbolj trajnostna izbira; premislite, kateri način prevoza si pri ocenjevanju podnebnih vplivov praviloma zasluži največ pozornosti."
+      "description": "Lokalna hrana ni vedno najbolj trajnostna izbira."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Kviz: Izbirate med dvema izdelkoma iz jabolk",
+      "name": "Kmetijske metode, ki pomagajo",
       "title": "Načini pridelave – napredna raven",
-      "description": "Kmetijsko gozdarstvo združuje drevesa s poljščinami ali živino na istem zemljišču; premislite o primeru, ko izbirate med dvema izdelkoma iz jabolk: izdelek A: „Pridelano z integriranim varstvom."
+      "description": "Kmetijsko gozdarstvo združuje drevesa s poljščinami ali živino na istem zemljišču."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Kviz: Najdete živilo, ki se trži",
+      "name": "Inovacije na kmetiji",
       "title": "Načini pridelave – napredna raven",
-      "description": "Urejanje genoma lahko pomaga razviti poljščine, ki so bolj odporne na podnebni stres; premislite o primeru, ko najdete živilo, ki se trži kot pridelano iz podnebno odporne poljščine."
+      "description": "Urejanje genoma lahko pomaga razviti poljščine, ki so bolj odporne na podnebni stres."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Kviz: Embalaža kave poudarja podporo",
+      "name": "Kdo prideluje našo hrano",
       "title": "Načini pridelave – napredna raven",
-      "description": "Ženske imajo ključno vlogo pri pridelavi hrane, a imajo pogosto slabši dostop do; premislite o primeru, ko embalaža kave poudarja podporo malim kmetom."
+      "description": "Ženske imajo ključno vlogo pri pridelavi hrane, a imajo pogosto slabši dostop do virov."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Opazovalec embalažnega materiala",
       "title": "Embalaža – začetnik",
-      "description": "Pri vsaj petih živilih, zaužitih med tednom, ugotovite embalažni material in ne pozabite, da embalaža za živila ščiti izdelke pred onesnaženjem, vlago, kisikom in fizičnimi poškodbami ter tako pomaga ohranjati."
+      "description": "Pri vsaj petih živilih, zaužitih med tednom, ugotovite embalažni material. Embalaža za živila ščiti izdelke pred onesnaženjem, vlago, kisikom in fizičnimi poškodbami ter tako pomaga ohranjati varnost in kakovost hrane."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Iskalec embalaže za večkratno uporabo",
       "title": "Embalaža – začetnik",
-      "description": "Vsaj petkrat poiščite možnosti embalaže za večkratno uporabo ali ponovno polnjenje in ne pozabite, da embalaža za večkratno uporabo postane okoljsko koristna šele, ko je uporabljena dovolj velikokrat."
+      "description": "Vsaj petkrat poiščite možnosti embalaže za večkratno uporabo ali ponovno polnjenje. Embalaža za večkratno uporabo postane okoljsko koristna šele, ko je uporabljena dovolj velikokrat."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Izbire na podlagi podatkov o embalaži",
       "title": "Embalaža – srednja raven",
-      "description": "Pri vsaj treh nakupnih odločitvah upoštevajte lastnosti embalaže in ne pozabite, da je vpliv pridelave hrane na okolje pogosto veliko večji od vpliva."
+      "description": "Pri vsaj treh nakupnih odločitvah upoštevajte lastnosti embalaže. Vpliv pridelave hrane na okolje je pogosto veliko večji od vpliva embalaže, ki jo ščiti."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Iskalec priložnosti za ponovno uporabo",
       "title": "Embalaža – srednja raven",
-      "description": "Ta teden vsaj dvakrat izberite embalažo za večkratno uporabo ali ponovno polnjenje in ne pozabite, da lahko embalaža za večkratno uporabo zmanjša povpraševanje po primarnih surovinah."
+      "description": "Ta teden vsaj dvakrat izberite embalažo za večkratno uporabo ali ponovno polnjenje. Embalaža za večkratno uporabo lahko zmanjša povpraševanje po primarnih surovinah."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Odločitve o embalaži po več merilih",
       "title": "Embalaža – napredna raven",
-      "description": "Pri vsaj treh nakupih pred odločitvijo upoštevajte tako embalažni material kot možnosti ravnanja z odpadno embalažo in ne pozabite, da lahko užitna embalaža pomaga zmanjšati odvisnost od plastike iz fosilnih virov, saj nadomešča konvencionalne embalažne materiale."
+      "description": "Pri vsaj treh nakupih pred odločitvijo upoštevajte tako embalažni material kot možnosti ravnanja z odpadno embalažo. Užitna embalaža lahko pomaga zmanjšati odvisnost od plastike iz fosilnih virov, saj konvencionalne embalažne materiale nadomesti z biološko razgradljivimi alternativami."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Graditelj navade ponovne uporabe",
       "title": "Embalaža – napredna raven",
-      "description": "Vsaj petkrat uporabite sisteme embalaže za večkratno uporabo ali ponovno polnjenje. Poiščite izdelke, ki se prodajajo v sistemih s kavcijo ali ponovnim polnjenjem, in ne pozabite, da ima vsaka embalaža za večkratno uporabo prag, po katerem postane boljša od alternativ za enkratno uporabo."
+      "description": "Vsaj petkrat uporabite sisteme embalaže za večkratno uporabo ali ponovno polnjenje. Poiščite izdelke, ki se prodajajo v sistemih s kavcijo ali ponovnim polnjenjem. Vsaka embalaža za večkratno uporabo ima prag, po katerem postane boljša od alternativ za enkratno uporabo."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Začetek pametne postrežbe",
       "title": "Zavržena hrana – začetnik",
-      "description": "Zabeležite 5 dejanj „prihranjen pol krožnika“ in ne pozabite, da gospodinjstva v Evropski uniji ustvarijo več zavržene hrane kot kateri koli drug sektor."
+      "description": "Zabeležite 5 dejanj „prihranjen pol krožnika“. Gospodinjstva v Evropski uniji ustvarijo več zavržene hrane kot kateri koli drug sektor."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Pametnejše shranjevanje",
       "title": "Zavržena hrana – začetnik",
-      "description": "Pri vsaj petih kupljenih izdelkih natančno preberite navodila na embalaži o shranjevanju hrane po odprtju in ne pozabite, da gospodinjstva predstavljajo več kot polovico zavržene hrane v EU."
+      "description": "Pri vsaj petih kupljenih izdelkih natančno preberite navodila na embalaži o shranjevanju hrane po odprtju. Gospodinjstva predstavljajo več kot polovico zavržene hrane v EU."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
       "name": "Raziskovalec datumskih oznak",
       "title": "Zavržena hrana – začetnik",
-      "description": "Zabeležite 1 dejanje „zaužit izdelek pred potekom roka“ in ne pozabite, da več kot polovico vse zavržene hrane v Evropi ustvarijo gospodinjstva."
+      "description": "Zabeležite 1 dejanje „zaužit izdelek pred potekom roka“. Več kot polovico vse zavržene hrane v Evropi ustvarijo gospodinjstva."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
       "name": "Preizkus napovedi porcije",
       "title": "Zavržena hrana – začetnik",
-      "description": "Pred obrokom ocenite, koliko hrane boste po vašem mnenju pojedli. Po obroku primerjajte svojo oceno s tem, kar ste dejansko pojedli, in ne pozabite, da so se velikosti porcij v mnogih državah v zadnjih desetletjih močno povečale."
+      "description": "Pred obrokom ocenite, koliko hrane boste po vašem mnenju pojedli. Po obroku primerjajte svojo oceno s tem, kar ste dejansko pojedli. Velikosti porcij so se v mnogih državah v zadnjih desetletjih močno povečale."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Misija 3: pregled hladilnika",
+      "name": "Misija 3: rutina pregleda hladilnika",
       "title": "Zavržena hrana – srednja raven",
-      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Del za spremljanje: zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“ in ne pozabite, da lahko ponudba manjših porcij zmanjša količino hrane, zavržene s krožnikov v menzah in restavracijah."
+      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ponudba manjših porcij lahko zmanjša količino hrane, zavržene s krožnikov v menzah in restavracijah."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Navada načrtovanja obrokov",
@@ -3195,139 +3208,139 @@
       "description": "Pred enim glavnim nakupom pripravite načrt obrokov in ne pozabite, da se oznaka „uporabno najmanj do“ nanaša na kakovost."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Misija 3: pregled hladilnika",
+      "name": "Misija 3: rutina pregleda hladilnika",
       "title": "Zavržena hrana – srednja raven",
-      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Del za spremljanje: zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“ in ne pozabite, da gospodinjstva v Evropi po ocenah letno zavržejo približno 69 milijonov ton hrane."
+      "description": "Pred glavnim nakupom preglejte hladilnik ali shrambo. Zabeležite vsaj 3 dejanja „zaužit izdelek pred potekom roka“ ali 3 dejanja „prihranjen cel krožnik“. Ocenjuje se, da gospodinjstva v Evropi letno zavržejo približno 69 milijonov ton hrane."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Mojster nadzora porcij",
       "title": "Zavržena hrana – srednja raven",
-      "description": "Zabeležite vsaj dejanja „prihranjen pol krožnika“ in ne pozabite, da okoljski vpliv prehrane ni odvisen le od tega, kaj ljudje jedo, temveč."
+      "description": "Zabeležite vsaj dejanja „prihranjen pol krožnika“. Okoljski vpliv prehrane ni odvisen le od tega, kaj ljudje jedo, temveč tudi od tega, koliko pojedo."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Osredotočenost na prazen krožnik brez odpadkov",
       "title": "Zavržena hrana – napredna raven",
-      "description": "Zabeležite vsaj 7 dejanj „prihranjen pol krožnika“ in ne pozabite, da zavrženo meso nesorazmerno prispeva k podnebnemu vplivu zavržene hrane."
+      "description": "Zabeležite vsaj 7 dejanj „prihranjen pol krožnika“. Zavrženo meso nesorazmerno prispeva k podnebnemu vplivu zavržene hrane."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Strokovnjak za preprečevanje poteka roka",
       "title": "Zavržena hrana – napredna raven",
-      "description": "Zabeležite 4 dejanja „zaužit izdelek pred potekom roka“ in ne pozabite, da sta meso in mlečni izdelki morda redkeje zavržena, a imata takrat večji okoljski odtis."
+      "description": "Zabeležite 4 dejanja „zaužit izdelek pred potekom roka“. Meso in mlečni izdelki so morda redkeje zavrženi, a imajo takrat večji okoljski odtis."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Strokovnjak za načelo „prvi noter, prvi ven“",
       "title": "Zavržena hrana – napredna raven",
-      "description": "Ves teden urejajte hladilnik, zamrzovalnik ali shrambo tako, da bodo živila z najkrajšim preostalim rokom vedno spredaj in porabljena prva, ter ne pozabite, da lahko akcije z več izdelki in količinski popusti potrošnike spodbudijo k nakupu več hrane, kot jo."
+      "description": "Ves teden urejajte hladilnik, zamrzovalnik ali shrambo tako, da bodo živila z najkrajšim preostalim rokom vedno spredaj in porabljena prva. Akcije z več izdelki in količinski popusti lahko potrošnike spodbudijo k nakupu več hrane, kot jo lahko porabijo."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Teden načrtovanja brez odpadkov",
       "title": "Zavržena hrana – napredna raven",
-      "description": "Pred prvim nakupom načrtujte vse glavne obroke za teden in kupite le živila, za katera imate načrtovano uporabo, ter ne pozabite, da uživanje več hrane, kot jo telo potrebuje, povečuje povpraševanje po kmetijskih virih, kot so."
+      "description": "Pred prvim nakupom načrtujte vse glavne obroke za teden in kupite le živila, za katera imate načrtovano uporabo. Uživanje več hrane, kot jo telo potrebuje, povečuje povpraševanje po kmetijskih virih, kot so zemljišča, voda in energija."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Beljakovine vsak dan",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Vsak dan v vsaj en obrok vključite živilo, bogato z beljakovinami, in ne pozabite, da beljakovine pomagajo graditi in obnavljati mišice, tkiva, encime in hormone."
+      "description": "Vsak dan v vsaj en obrok vključite živilo, bogato z beljakovinami. Beljakovine pomagajo graditi in obnavljati mišice, tkiva, encime in hormone."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Pametna zamenjava prigrizka",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Zabeležite 5 zamenjav prigrizka s sadjem ali oreški in ne pozabite, da so nenasičene maščobe na splošno bolj zdrave od nasičenih."
+      "description": "Zabeležite 5 zamenjav prigrizka s sadjem ali oreški. Nenasičene maščobe so na splošno bolj zdrave od nasičenih."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Nadgradnja pijače",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Zabeležite 3 zamenjave sladke pijače z vodo in ne pozabite, da so sladke pijače glavni vir dodanega sladkorja v številnih prehranskih navadah."
+      "description": "Zabeležite 3 zamenjave sladke pijače z vodo. Sladke pijače so glavni vir dodanega sladkorja v številnih prehranskih navadah."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
       "name": "Iskalec soli",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Izberite eno pakirano živilo in ugotovite, koliko soli vsebuje na 100 gramov, ter ne pozabite, da večina ljudi zaužije več kot dvakrat toliko soli, kot je priporočeno."
+      "description": "Izberite eno pakirano živilo in ugotovite, koliko soli vsebuje na 100 gramov. Večina ljudi zaužije več kot dvakrat toliko soli, kot je priporočeno."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
       "name": "Teden polnozrnatih žit",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Vsak dan izberite polnozrnat izdelek. Kako: izberite živila, kot so polnozrnat kruh, polnozrnate testenine, ovseni kosmiči, rjavi riž, rženi kruh, kvinoja ali druga polnozrnata žita, in ne pozabite, da večina Evropejcev zaužije manj vlaknin, kot je priporočeno."
+      "description": "Vsak dan izberite polnozrnat izdelek. Izberite živila, kot so polnozrnat kruh, polnozrnate testenine, ovseni kosmiči, rjavi riž, rženi kruh, kvinoja ali druga polnozrnata žita. Večina Evropejcev zaužije manj vlaknin, kot je priporočeno."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
       "name": "Dodajte še eno sadje ali zelenjavo",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Vsak dan v prehrano dodajte eno dodatno porcijo sadja ali zelenjave in ne pozabite, da je pomanjkanje vitamina D v Evropi pogosto."
+      "description": "Vsak dan v prehrano dodajte eno dodatno porcijo sadja ali zelenjave. Pomanjkanje vitamina D je v Evropi pogosto."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Kviz: Katera izbira pijače najverjetneje",
+      "name": "Kalorije niso vse",
       "title": "Hranilne vrednosti – začetnik",
-      "description": "Svet že zdaj pridela dovolj kalorij, da bi nahranil vse; premislite, katera izbira pijače najverjetneje zmanjša nepotreben vnos kalorij."
+      "description": "Svet že zdaj pridela dovolj kalorij, da bi nahranil vse."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Nadomeščanje predelanega mesa",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Zabeležite 2 zamenjavi predelanega mesa s stročnicami in ne pozabite, da večina odraslih potrebuje približno 0,83 g beljakovin na kilogram telesne teže na."
+      "description": "Zabeležite 2 zamenjavi predelanega mesa s stročnicami. Večina odraslih potrebuje približno 0,83 g beljakovin na kilogram telesne teže na dan."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Nadgradnja z zdravimi maščobami",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Vsaj petkrat izberite vir nenasičenih maščob namesto vira nasičenih maščob in ne pozabite, da je vrsta maščobe, ki jo zaužijete, prav tako pomembna kot količina."
+      "description": "Vsaj petkrat izberite vir nenasičenih maščob namesto vira nasičenih maščob. Vrsta maščobe, ki jo zaužijete, je prav tako pomembna kot količina."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Primerjava pijač",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Primerjajte dve sladki pijači, ki ju radi pijete, in ugotovite, katera vsebuje manj sladkorja na 100 ml, ter ne pozabite, da SZO priporoča, da prosti sladkorji predstavljajo manj kot 10 % dnevnega energijskega vnosa."
+      "description": "Primerjajte dve sladki pijači, ki ju radi pijete, in ugotovite, katera vsebuje manj sladkorja na 100 ml. SZO priporoča, da prosti sladkorji predstavljajo manj kot 10 % dnevnega energijskega vnosa."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Miza brez soli",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Ves teden hrane pri mizi ne dosoljujte in ne pozabite, da SZO priporoča uživanje manj kot 5 gramov soli na dan."
+      "description": "Ves teden hrane pri mizi ne dosoljujte. SZO priporoča uživanje manj kot 5 gramov soli na dan."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Vlaknine v vsakem obroku",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "V vsak glavni obrok vključite vsaj eno živilo, bogato z vlakninami, in ne pozabite, da naj odrasli zaužijejo vsaj 25 gramov vlaknin na dan."
+      "description": "V vsak glavni obrok vključite vsaj eno živilo, bogato z vlakninami. Odrasli naj zaužijejo vsaj 25 gramov vlaknin na dan."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Kviz: Želite izboljšati vsebnost vitaminov",
+      "name": "Vitamini s krožnika",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Raznolika prehrana pomaga zmanjšati tveganje za pomanjkanje vitaminov; premislite o primeru, ko želite izboljšati vsebnost vitaminov v svoji prehrani brez jemanja."
+      "description": "Raznolika prehrana pomaga zmanjšati tveganje za pomanjkanje vitaminov."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Kviz: Zakaj lahko redno uživanje visoko predelanih",
+      "name": "Enake kalorije, drugačen vpliv",
       "title": "Hranilne vrednosti – srednja raven",
-      "description": "Živila z enako količino kalorij imajo lahko zelo različne vplive na okolje; premislite, zakaj lahko redno uživanje visoko predelanih prigrizkov oteži nadzor nad kalorijami."
+      "description": "Živila z enako količino kalorij imajo lahko zelo različne vplive na okolje."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Kviz: Primerjate dve živili: izdelek",
+      "name": "Popolne rastlinske beljakovine",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Uživanje raznolikih rastlinskih beljakovin lahko zagotovi vse esencialne aminokisline; premislite o primeru, ko primerjate dve živili: izdelek A: „vir beljakovin“, izdelek B: „visoka."
+      "description": "Uživanje raznolikih rastlinskih beljakovin lahko zagotovi vse esencialne aminokisline."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Kviz: Želite zmanjšati tveganje",
+      "name": "Razumeti maščobe v prehrani",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Maščobe naj ne prispevajo več kot približno 30 % skupnega dnevnega energijskega vnosa; premislite o primeru, ko želite zmanjšati tveganje, povezano z vnosom transmaščob."
+      "description": "Maščobe naj ne prispevajo več kot približno 30 % skupnega dnevnega energijskega vnosa."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Teden zavedanja o dodanem sladkorju",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Ves teden se izogibajte živilom ali pijačam, pri katerih je dodani sladkor med prvimi tremi sestavinami, in ne pozabite, da kuhanje doma olajša nadzor nad dodanim sladkorjem."
+      "description": "Ves teden se izogibajte živilom ali pijačam, pri katerih je dodani sladkor med prvimi tremi sestavinami. Kuhanje doma olajša nadzor nad dodanim sladkorjem."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
       "name": "Žarišče natrija",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Poiščite živilo v svoji kuhinji z največjo vsebnostjo soli na 100 gramov in ne pozabite, da so kruh, predelano meso in sir v Evropi glavni viri natrija."
+      "description": "Poiščite živilo v svoji kuhinji z največjo vsebnostjo soli na 100 gramov. Kruh, predelano meso in sir so v Evropi glavni viri natrija."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
       "name": "Teden zajtrkov, bogatih z vlakninami",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Vsak dan začnite z zajtrkom, ki vsebuje pomemben vir vlaknin. Zajtrk sestavite iz ovsenih kosmičev, polnozrnatih žit, sadja, semen, oreškov ali drugih z vlakninami bogatih živil in ne pozabite, da je večji vnos vlaknin povezan z manjšim tveganjem za bolezni srca in tip 2."
+      "description": "Vsak dan začnite z zajtrkom, ki vsebuje pomemben vir vlaknin. Zajtrk sestavite iz ovsenih kosmičev, polnozrnatih žit, sadja, semen, oreškov ali drugih z vlakninami bogatih živil. Večji vnos vlaknin je povezan z manjšim tveganjem za bolezni srca in sladkorno bolezen tipa 2."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Mavrični teden",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Vsak dan zaužijte sadje in zelenjavo vsaj petih različnih barv in ne pozabite, da vitamin B12 najdemo predvsem v živilih živalskega izvora."
+      "description": "Vsak dan zaužijte sadje in zelenjavo vsaj petih različnih barv. Vitamin B12 najdemo predvsem v živilih živalskega izvora."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Teden hranilno bogatega krožnika",
       "title": "Hranilne vrednosti – napredna raven",
-      "description": "Poskrbite, da vsak glavni obrok vsebuje vsaj tri od naslednjega: vir beljakovin, živilo, bogato z vlakninami, sadje ali zelenjavo ali vir zdravih maščob, in ne pozabite, da krmljenje živine s poljščinami povzroči velike izgube kalorij."
+      "description": "Poskrbite, da vsak glavni obrok vsebuje vsaj tri od naslednjega: vir beljakovin, živilo, bogato z vlakninami, sadje ali zelenjavo ali vir zdravih maščob. Krmljenje živine s poljščinami povzroči velike izgube kalorij."
     }
   },
   "meta": {
