@@ -14,7 +14,8 @@
     },
     "@nestjs/platform-express": {
       "multer": "2.4.0"
-    }
+    },
+    "deepmerge-ts": "^8.0.2"
   },
   "scripts": {
     "build": "nest build",
