@@ -67,7 +67,18 @@ export class SurveysService {
   }
 
   private mapSurveyToDto(survey: any): SurveyDto {
-    return survey as SurveyDto;
+    const { id, slug, title, description, questions, createdAt, updatedAt } =
+      survey;
+
+    return {
+      id,
+      slug,
+      title,
+      description: description ?? undefined,
+      questions,
+      createdAt,
+      updatedAt,
+    };
   }
 
   private mapSurveyResponseToDto(response: any): SurveyResponseDto {

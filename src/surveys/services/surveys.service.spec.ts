@@ -48,6 +48,16 @@ describe('SurveysService', () => {
     updatedAt: new Date(),
   };
 
+  const expectedSurveyDto = {
+    id: mockSurvey.id,
+    slug: 'test-survey',
+    title: mockSurvey.title,
+    description: mockSurvey.description,
+    questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
+    createdAt: mockSurvey.createdAt,
+    updatedAt: mockSurvey.updatedAt,
+  };
+
   type ResolvedTranslations = Record<
     string,
     Record<string, Record<string, string | null>>
@@ -127,13 +137,7 @@ describe('SurveysService', () => {
 
       const result = await service.getAllSurveys();
 
-      expect(result).toEqual([
-        {
-          ...mockSurvey,
-          slug: 'test-survey',
-          questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-        },
-      ]);
+      expect(result).toEqual([expectedSurveyDto]);
       expect(repository.getAllSurveys).toHaveBeenCalled();
     });
 
@@ -152,11 +156,9 @@ describe('SurveysService', () => {
 
       const result = await service.getSurveyById('survey-1');
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
       expect(repository.getSurveyById).toHaveBeenCalledWith('survey-1');
     });
 
@@ -175,11 +177,7 @@ describe('SurveysService', () => {
 
       const result = await service.getSurveyBySlug('test-survey');
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
     });
 
     it('should throw NotFoundException when no survey matches the slug', async () => {
@@ -220,11 +218,7 @@ describe('SurveysService', () => {
 
       const result = await service.createSurvey(createDto);
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
       expect(repository.createSurvey).toHaveBeenCalledWith(createDto);
     });
 
