@@ -54,6 +54,12 @@ describe('RecipesRepository', () => {
       recipeIngredient: {
         deleteMany: jest.fn(),
       },
+      recipeRating: {
+        findUnique: jest.fn(),
+        upsert: jest.fn(),
+        deleteMany: jest.fn(),
+        aggregate: jest.fn(),
+      },
       $transaction: jest.fn((callback) => callback(mockPrismaService)),
     };
 
@@ -387,6 +393,71 @@ describe('RecipesRepository', () => {
         where: { isPublic: true },
       });
       expect(result).toBe(42);
+    });
+  });
+
+  describe('ratings', () => {
+    it('should upsert the rating and write back the recomputed aggregate', async () => {
+      mockPrismaService.recipeRating.upsert.mockResolvedValueOnce({
+        id: 'rating-1',
+      });
+      mockPrismaService.recipeRating.aggregate.mockResolvedValueOnce({
+        _avg: { value: 4.5 },
+        _count: { value: 2 },
+      });
+
+      const result = await repository.upsertRating('recipe-1', 'user-1', 5);
+
+      expect(mockPrismaService.recipeRating.upsert).toHaveBeenCalledWith({
+        where: { recipeId_userId: { recipeId: 'recipe-1', userId: 'user-1' } },
+        create: { recipeId: 'recipe-1', userId: 'user-1', value: 5 },
+        update: { value: 5 },
+      });
+      expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
+        where: { id: 'recipe-1' },
+        data: { rating: 4.5, ratingCount: 2 },
+      });
+      expect(result).toEqual({
+        recipeId: 'recipe-1',
+        rating: 4.5,
+        ratingCount: 2,
+        myRating: 5,
+      });
+    });
+
+    it('should reset the aggregate to zero when the last rating is removed', async () => {
+      mockPrismaService.recipeRating.deleteMany.mockResolvedValueOnce({
+        count: 1,
+      });
+      mockPrismaService.recipeRating.aggregate.mockResolvedValueOnce({
+        _avg: { value: null },
+        _count: { value: 0 },
+      });
+
+      const result = await repository.deleteRating('recipe-1', 'user-1');
+
+      expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
+        where: { id: 'recipe-1' },
+        data: { rating: 0, ratingCount: 0 },
+      });
+      expect(result).toEqual({
+        recipeId: 'recipe-1',
+        rating: 0,
+        ratingCount: 0,
+        myRating: null,
+      });
+    });
+
+    it('should return null and leave the aggregate untouched when nothing was deleted', async () => {
+      mockPrismaService.recipeRating.deleteMany.mockResolvedValueOnce({
+        count: 0,
+      });
+
+      const result = await repository.deleteRating('recipe-1', 'user-1');
+
+      expect(result).toBeNull();
+      expect(mockPrismaService.recipeRating.aggregate).not.toHaveBeenCalled();
+      expect(mockPrismaService.recipe.update).not.toHaveBeenCalled();
     });
   });
 });

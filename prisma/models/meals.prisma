@@ -56,6 +56,11 @@ enum DietaryLabel {
   KOSHER
 }
 
+enum RecipeOrigin {
+  THEMEALDB // Imported from TheMealDB
+  USER // Created by a user through the API
+}
+
 model Meal {
   id                  String         @id @default(uuid())
   name                String?
@@ -112,7 +117,7 @@ model MealItem {
 }
 
 model Recipe {
-  id                  String      @id @default(uuid())
+  id                  String       @id @default(uuid())
   userId              String? // Nullable for system recipes (TheMealDB, etc.)
   title               String
   description         String?
@@ -126,29 +131,50 @@ model Recipe {
   sustainabilityScore Float?
   price               Float?
   allergens           Allergens[]
-  rating              Float       @default(0)
-  ratingCount         Int         @default(0)
-  externalId          String?     @unique // TheMealDB idMeal
+  rating              Float        @default(0)
+  ratingCount         Int          @default(0)
+  externalId          String?      @unique // TheMealDB idMeal
   imageUrl            String?
   videoUrl            String?
   cuisineType         String? // Japanese, Italian, Mexican, etc.
   category            String? // Chicken, Seafood, Dessert, etc.
-  isPublic            Boolean     @default(false)
+  isPublic            Boolean      @default(false)
   dietaryLabels       String[] // ["vegan", "vegetarian", "gluten-free"]
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
+  origin              RecipeOrigin @default(USER) // Where the recipe came from
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
 
   // Relations
   user        User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   meals       Meal[]
   ingredients RecipeIngredient[]
+  ratings     RecipeRating[]
 
   @@index([userId])
   @@index([isPublic])
   @@index([category])
   @@index([cuisineType])
   @@index([isPublic, category])
+  @@index([origin])
   @@map("recipes")
+}
+
+model RecipeRating {
+  id        String   @id @default(uuid())
+  recipeId  String
+  userId    String
+  value     Int // 1..5 stars
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, userId]) // one rating per user per recipe
+  @@index([recipeId])
+  @@index([userId])
+  @@map("recipe_ratings")
 }
 
 model RecipeIngredient {

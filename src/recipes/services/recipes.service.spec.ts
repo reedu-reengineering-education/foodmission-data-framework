@@ -6,6 +6,7 @@ import {
 import { RecipesService } from './recipes.service';
 import { RecipesRepository } from '../repositories/recipes.repository';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { RecipeOrigin } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   ResourceAlreadyExistsException,
@@ -27,6 +28,9 @@ describe('RecipesService', () => {
     findById: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    findRating: jest.fn(),
+    upsertRating: jest.fn(),
+    deleteRating: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -56,6 +60,7 @@ describe('RecipesService', () => {
       userId,
       allergens: [],
       isPublic: false,
+      origin: RecipeOrigin.USER,
     });
   });
 
@@ -198,6 +203,7 @@ describe('RecipesService', () => {
         ...dto,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
         userId,
       });
     });
@@ -215,6 +221,7 @@ describe('RecipesService', () => {
         userId,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
       });
     });
   });
@@ -385,6 +392,7 @@ describe('RecipesService', () => {
         ...createDto,
         allergens: [],
         isPublic: false,
+        origin: RecipeOrigin.USER,
         userId,
       });
     });
@@ -503,6 +511,109 @@ describe('RecipesService', () => {
 
       expect(result.ingredients![0].foodProductId).toBe('food-1');
       expect(result.ingredients![0].foodProduct).toBeDefined();
+    });
+  });
+
+  describe('ratings', () => {
+    it('should return the aggregate and null myRating when user has not rated', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId, rating: 4.5, ratingCount: 2 }),
+      );
+      mockRecipeRepository.findRating.mockResolvedValue(null);
+
+      const result = await service.getRating('r1', userId);
+
+      expect(result).toEqual({
+        recipeId: 'r1',
+        rating: 4.5,
+        ratingCount: 2,
+        myRating: null,
+      });
+    });
+
+    it("should return the user's own rating when present", async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId, rating: 4, ratingCount: 1 }),
+      );
+      mockRecipeRepository.findRating.mockResolvedValue({ value: 4 });
+
+      const result = await service.getRating('r1', userId);
+
+      expect(result.myRating).toBe(4);
+    });
+
+    it('should allow rating a public recipe owned by someone else', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId: 'other-user', isPublic: true }),
+      );
+      mockRecipeRepository.upsertRating.mockResolvedValue({
+        recipeId: 'r1',
+        rating: 4,
+        ratingCount: 1,
+        myRating: 4,
+      });
+
+      const result = await service.rate('r1', { value: 4 }, userId);
+
+      expect(mockRecipeRepository.upsertRating).toHaveBeenCalledWith(
+        'r1',
+        userId,
+        4,
+      );
+      expect(result.rating).toBe(4);
+      expect(result.ratingCount).toBe(1);
+      expect(result.myRating).toBe(4);
+    });
+
+    it('should reject rating a private recipe of another user', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId: 'other-user', isPublic: false }),
+      );
+
+      await expect(service.rate('r1', { value: 4 }, userId)).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(mockRecipeRepository.upsertRating).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFound when rating a missing recipe', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(null);
+
+      await expect(service.rate('r1', { value: 4 }, userId)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should remove the rating and return the recomputed aggregate', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+      mockRecipeRepository.deleteRating.mockResolvedValue({
+        recipeId: 'r1',
+        rating: 0,
+        ratingCount: 0,
+        myRating: null,
+      });
+
+      const result = await service.removeRating('r1', userId);
+
+      expect(mockRecipeRepository.deleteRating).toHaveBeenCalledWith(
+        'r1',
+        userId,
+      );
+      expect(result.ratingCount).toBe(0);
+      expect(result.myRating).toBeNull();
+    });
+
+    it('should throw NotFound when removing a rating the user never gave', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+      mockRecipeRepository.deleteRating.mockResolvedValue(null);
+
+      await expect(service.removeRating('r1', userId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

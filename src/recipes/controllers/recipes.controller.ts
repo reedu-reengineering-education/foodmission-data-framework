@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -32,6 +33,10 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
+import {
+  RateRecipeDto,
+  RecipeRatingResponseDto,
+} from '../dto/recipe-rating.dto';
 
 @ApiTags('recipes')
 @Controller('recipes')
@@ -119,6 +124,66 @@ export class RecipeController {
     @CurrentUser('id') userId: string,
   ): Promise<RecipeResponseDto> {
     return this.recipeService.findOne(id, userId);
+  }
+
+  @Get(':id/rating')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: "Get a recipe's aggregate rating and the current user's rating",
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rating retrieved successfully',
+    type: RecipeRatingResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  getRating(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    return this.recipeService.getRating(id, userId);
+  }
+
+  @Put(':id/rating')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: "Rate a recipe (replaces the current user's previous rating)",
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: RateRecipeDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Rating saved successfully',
+    type: RecipeRatingResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  rate(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() rateRecipeDto: RateRecipeDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    return this.recipeService.rate(id, rateRecipeDto, userId);
+  }
+
+  @Delete(':id/rating')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: "Remove the current user's rating from a recipe" })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rating removed successfully',
+    type: RecipeRatingResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  removeRating(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    return this.recipeService.removeRating(id, userId);
   }
 
   @Patch(':id')

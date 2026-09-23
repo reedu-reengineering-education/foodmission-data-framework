@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Allergens, Prisma, Recipe } from '@prisma/client';
+import {
+  Allergens,
+  Prisma,
+  Recipe,
+  RecipeOrigin,
+  RecipeRating,
+} from '@prisma/client';
 import { RecipeWithIngredients } from '../interfaces/recommendation-score.interface';
 import {
   BaseRepository,
@@ -44,7 +50,15 @@ export interface CreateRecipeData {
   category?: string;
   isPublic?: boolean;
   dietaryLabels?: string[];
+  origin?: RecipeOrigin;
   ingredients?: CreateRecipeIngredientData[];
+}
+
+export interface RecipeAggregateRating {
+  recipeId: string;
+  rating: number;
+  ratingCount: number;
+  myRating: number | null;
 }
 
 export interface UpdateRecipeData extends Partial<
@@ -190,6 +204,78 @@ export class RecipesRepository implements BaseRepository<
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {
     return this.prisma.recipe.count({ where });
+  }
+
+  async findRating(
+    recipeId: string,
+    userId: string,
+  ): Promise<RecipeRating | null> {
+    return this.prisma.recipeRating.findUnique({
+      where: { recipeId_userId: { recipeId, userId } },
+    });
+  }
+
+  /**
+   * Upserts the user's rating and recomputes the recipe aggregate in one
+   * transaction, so rating/ratingCount never drift from the stored ratings.
+   */
+  async upsertRating(
+    recipeId: string,
+    userId: string,
+    value: number,
+  ): Promise<RecipeAggregateRating> {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.recipeRating.upsert({
+        where: { recipeId_userId: { recipeId, userId } },
+        create: { recipeId, userId, value },
+        update: { value },
+      });
+
+      return this.recomputeRatingAggregate(tx, recipeId, value);
+    });
+  }
+
+  /**
+   * Removes the user's rating and recomputes the recipe aggregate.
+   * Returns null when the user had not rated the recipe.
+   */
+  async deleteRating(
+    recipeId: string,
+    userId: string,
+  ): Promise<RecipeAggregateRating | null> {
+    return this.prisma.$transaction(async (tx) => {
+      const deleted = await tx.recipeRating.deleteMany({
+        where: { recipeId, userId },
+      });
+
+      if (deleted.count === 0) {
+        return null;
+      }
+
+      return this.recomputeRatingAggregate(tx, recipeId, null);
+    });
+  }
+
+  private async recomputeRatingAggregate(
+    tx: Prisma.TransactionClient,
+    recipeId: string,
+    myRating: number | null,
+  ): Promise<RecipeAggregateRating> {
+    const aggregate = await tx.recipeRating.aggregate({
+      where: { recipeId },
+      _avg: { value: true },
+      _count: { value: true },
+    });
+
+    const rating = aggregate._avg.value ?? 0;
+    const ratingCount = aggregate._count.value;
+
+    await tx.recipe.update({
+      where: { id: recipeId },
+      data: { rating, ratingCount },
+    });
+
+    return { recipeId, rating, ratingCount, myRating };
   }
 
   async findCandidatesForRecommendation(
