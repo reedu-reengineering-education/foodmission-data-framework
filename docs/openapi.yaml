@@ -466,6 +466,97 @@ paths:
         - JWT-auth: []
       summary: Delete user
       tags: *ref_1
+  /api/v1/users/me/gamification/progress-wheels:
+    get:
+      description: >-
+        CO2 reduction, energy reduction, water savings, land use reduction. Each
+        wheel tracks the current stage (1-5) of the sustainability profile
+        chosen at onboarding; empty until the user has a profile.
+      operationId: getMyProgressWheels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProgressWheelDto'
+      security:
+        - JWT-auth: []
+      summary: Get the four sustainability progress wheels
+      tags: *ref_1
+  /api/v1/users/me/gamification/progress-wheels/impact:
+    post:
+      description: >-
+        Adds the action's impact to every wheel it affects. A wheel that
+        crosses 100% archives its stage, rolls any excess into the next stage,
+        and starts a new cycle. First draft: only VEGETARIAN_SERVING_100G is
+        defined; more actions land as their impact values are supplied.
+      operationId: recordProgressWheelImpact
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordWheelImpactDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordWheelImpactResultDto'
+      security:
+        - JWT-auth: []
+      summary: Record a validated action against the progress wheels
+      tags: *ref_1
+  /api/v1/users/me/gamification/onboarding-survey:
+    get:
+      description: >-
+        Static 5-question survey (habit frequency, 4 options each). Answers map
+        1:1 to preferences.onboardingSurvey / the fields submitted via POST of
+        this same route.
+      operationId: getOnboardingSurvey
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingSurveyDto'
+      security:
+        - JWT-auth: []
+      summary: Get the onboarding survey questions for the progress wheels
+      tags: *ref_1
+    post:
+      description: >-
+        Computes the sustainability profile (dimension) from the 5 answers,
+        persists it, applies first-time onboarding side effects (wallet +
+        progress wheels, idempotent), and returns the computed segment together
+        with the resulting progress wheels.
+      operationId: submitOnboardingSurvey
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingSurveyAnswersDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingSurveyResultDto'
+      security:
+        - JWT-auth: []
+      summary: Submit onboarding survey answers
+      tags: *ref_1
   /api/v1/profile/me:
     get:
       operationId: getMyProfile
@@ -3927,6 +4018,258 @@ components:
         nutritionTargets:
           type: object
           description: Nutrition targets (JSON)
+    ProgressWheelDto:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+            - CO2_REDUCTION
+            - ENERGY_REDUCTION
+            - WATER_SAVINGS
+            - LAND_USE_REDUCTION
+        label:
+          type: string
+          description: Display label, e.g. "CO₂ Reduction"
+        unit:
+          type: string
+          description: Unit for accumulatedValue/targetValue
+        profile:
+          type: string
+          description: Profile the current stage targets are drawn from
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+        stage:
+          type: number
+          minimum: 1
+          maximum: 5
+          description: Current stage within the profile (1-5)
+        stageTitle:
+          type: string
+          description: Display title, e.g. "Getting Started"
+        sustainabilityTargetPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Overall sustainability target for the current stage, as a percentage
+        accumulatedValue:
+          type: number
+          description: Amount accumulated in the current cycle
+        targetValue:
+          type: number
+          description: Amount needed to complete the current stage
+        percentComplete:
+          type: number
+          minimum: 0
+          maximum: 100
+        allTimeTotal:
+          type: number
+          description: Lifetime accumulated amount, across cycles
+        cycleStartedAt:
+          format: date-time
+          type: string
+        lastUpdatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - kind
+        - label
+        - unit
+        - profile
+        - stage
+        - stageTitle
+        - sustainabilityTargetPercent
+        - accumulatedValue
+        - targetValue
+        - percentComplete
+        - allTimeTotal
+        - cycleStartedAt
+        - lastUpdatedAt
+    RecordWheelImpactDto:
+      type: object
+      properties:
+        actionCode:
+          type: string
+          description: Code of the validated action to apply to the wheels
+          enum:
+            - VEGETARIAN_SERVING_100G
+            - VEGAN_SERVING_100G
+            - BEEF_TO_PORK_100G
+            - BEEF_TO_CHICKEN_100G
+            - BEEF_TO_LEGUMES_100G
+            - PORK_TO_CHICKEN_100G
+            - PORK_TO_LEGUMES_100G
+            - CHICKEN_TO_LEGUMES_100G
+            - HALF_PLATE_SAVED
+            - FULL_PLATE_SAVED
+            - EXPIRED_PRODUCT_CONSUMED
+            - SNACK_TO_FRUIT_OR_NUTS_30G
+            - SUGARY_CEREAL_TO_OATS_FRUIT_30G
+            - SUGARY_DRINK_TO_WATER_250ML
+            - READY_MEAL_TO_HOME_COOKED_400G
+            - PROCESSED_MEAT_TO_LEGUMES_50G
+      required:
+        - actionCode
+    WheelImpactAchievementDto:
+      type: object
+      properties:
+        kind:
+          type: string
+        stagesCompleted:
+          type: number
+          description: How many stages this action completed
+      required:
+        - kind
+        - stagesCompleted
+    DimensionPromotionDto:
+      type: object
+      properties:
+        from:
+          type: string
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+        to:
+          type: string
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+      required:
+        - from
+        - to
+    RecordWheelImpactResultDto:
+      type: object
+      properties:
+        actionCode:
+          type: string
+        wheels:
+          description: >-
+            The wheels this action touched — or, on a dimension promotion, all
+            four wheels reset to stage 1 of the new dimension.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressWheelDto'
+        achievements:
+          description: Wheels that hit 100% and rolled over to a new stage/goal
+          type: array
+          items:
+            $ref: '#/components/schemas/WheelImpactAchievementDto'
+        dimensionPromotion:
+          nullable: true
+          description: >-
+            Set when a wheel completed stage 5 and the user's overall
+            sustainability dimension advanced (BEGINNER -> INTERMEDIATE ->
+            ADVANCED; all wheels reset to stage 1 of the new dimension). Null
+            otherwise, and always null once already at ADVANCED.
+          allOf:
+            - $ref: '#/components/schemas/DimensionPromotionDto'
+      required:
+        - actionCode
+        - wheels
+        - achievements
+    OnboardingSurveyOptionDto:
+      type: object
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+        - value
+        - label
+    OnboardingSurveyQuestionDto:
+      type: object
+      properties:
+        field:
+          type: string
+          description: preferences.onboardingSurvey / PATCH /users/me field name
+        text:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingSurveyOptionDto'
+      required:
+        - field
+        - text
+        - options
+    OnboardingSurveyDto:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OnboardingSurveyQuestionDto'
+      required:
+        - questions
+    OnboardingSurveyAnswersDto:
+      type: object
+      properties:
+        weeklyMeatConsumption:
+          type: string
+          enum:
+            - ZERO_TO_FOUR
+            - FIVE_TO_NINE
+            - TEN_TO_FOURTEEN
+            - FIFTEEN_PLUS
+        weeklyBeefConsumption:
+          type: string
+          enum:
+            - NEVER
+            - LESS_THAN_ONCE_PER_WEEK
+            - ONE_TO_TWO_TIMES_PER_WEEK
+            - THREE_PLUS_TIMES_PER_WEEK
+        weeklyFoodWaste:
+          type: string
+          enum:
+            - ZERO
+            - ONE_TO_TWO
+            - THREE_TO_FOUR
+            - FIVE_PLUS
+        weeklyUpfConsumption:
+          type: string
+          enum:
+            - ZERO_TO_THREE
+            - FOUR_TO_NINE
+            - TEN_TO_FOURTEEN
+            - FIFTEEN_PLUS
+        weeklyReusableOrRefill:
+          type: string
+          enum:
+            - ZERO_TO_TWO
+            - THREE_TO_SIX
+            - SEVEN_TO_NINE
+            - TEN_PLUS
+      required:
+        - weeklyMeatConsumption
+        - weeklyBeefConsumption
+        - weeklyFoodWaste
+        - weeklyUpfConsumption
+        - weeklyReusableOrRefill
+    OnboardingSurveyResultDto:
+      type: object
+      properties:
+        segment:
+          type: string
+          description: Sustainability profile computed from the answers
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+        progressWheels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressWheelDto'
+      required:
+        - segment
+        - progressWheels
     CreateFoodDto:
       type: object
       properties:
