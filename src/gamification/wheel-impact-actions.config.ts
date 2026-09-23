@@ -14,10 +14,9 @@ export interface WheelImpactAction {
 
 /**
  * Catalog of validated actions and their impact on the 4 sustainability
- * wheels. First draft: only the one example action product supplied
- * (vegetarian serving). More actions get added here as their impact values
- * are provided — the recording mechanism (ProgressWheelService.recordImpact)
- * doesn't change when new entries are added.
+ * wheels. Add new actions here as their impact values are provided; the
+ * recording mechanism (ProgressWheelService.recordImpact) does not change
+ * when new entries are added.
  */
 export const WHEEL_IMPACT_ACTIONS = {
   VEGETARIAN_SERVING_100G: {
