@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -11,10 +11,12 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { LearningPaginatedQueryDto } from '../dto/learning-list-query.dto';
 import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
+import { FoodFactProgressResponseDto } from '../dto/food-fact-progress.dto';
 
 @ApiTags('food-facts')
 @Controller('food-facts')
@@ -68,5 +70,23 @@ export class FoodFactsController {
     @Query() query: LearningLangQueryDto,
   ): Promise<FoodFactResponseDto> {
     return this.learningService.getFoodFact(codeOrId, query);
+  }
+
+  @Post(':codeOrId/read')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Mark a food fact as read and claim reward' })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Food fact UUID or code (e.g. FF1.1.1)',
+    example: 'FF1.1.1',
+  })
+  @ApiResponse({ status: 201, type: FoodFactProgressResponseDto })
+  @ApiCrudErrorResponses()
+  async markAsRead(
+    @Param('codeOrId') codeOrId: string,
+    @CurrentUser('id') userId: string,
+  ): Promise<FoodFactProgressResponseDto> {
+    return this.learningService.markFoodFactRead(userId, codeOrId);
   }
 }

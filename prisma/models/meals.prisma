@@ -179,17 +179,23 @@ model RecipeIngredient {
 model MealLog {
   id             String     @id @default(uuid())
   userId         String
-  mealId         String
+  // Null for quick logs: the user reported diet flags without picking a Meal.
+  mealId         String?
   typeOfMeal     TypeOfMeal
   timestamp      DateTime   @default(now())
   mealFromPantry Boolean    @default(false)
   eatenOut       Boolean    @default(false)
+  // EventType values — see MEAL_FLAG_EVENT_TYPES / MEAL_SWAP_EVENT_TYPES in
+  // src/events/event-types.ts. Kept as text for the same reason as
+  // `user_events.eventType`: the event catalog lives in TypeScript.
+  flags          String[]
+  swaps          String[]
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meal Meal? @relation(fields: [mealId], references: [id], onDelete: Cascade)
 
   @@index([userId, timestamp])
   @@index([typeOfMeal])

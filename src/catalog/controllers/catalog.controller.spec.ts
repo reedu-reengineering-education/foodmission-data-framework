@@ -82,9 +82,14 @@ describe('CatalogController', () => {
     jest.clearAllMocks();
   });
 
-  it('startup should delegate to service', () => {
-    controller.startup();
-    expect(service.startup).toHaveBeenCalled();
+  it('startup should delegate to service with the country', () => {
+    controller.startup({ country: 'NO' });
+    expect(service.startup).toHaveBeenCalledWith('NO');
+  });
+
+  it('annualIncomeLevels should delegate to service with the country', () => {
+    controller.annualIncomeLevels({ country: 'NO', lang: 'no' });
+    expect(service.listAnnualIncomeLevels).toHaveBeenCalledWith('NO');
   });
 
   it('consentForm should delegate to service with the country code', () => {

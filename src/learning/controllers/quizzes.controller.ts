@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Query,
@@ -24,7 +25,9 @@ import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
-import { LearningPaginatedQueryDto } from '../dto/learning-list-query.dto';
+import {
+  LearningPaginatedQueryDto,
+} from '../dto/learning-list-query.dto';
 import { QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
@@ -50,6 +53,30 @@ export class QuizzesController {
     @Query() query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<QuizResponseDto>> {
     return this.learningService.listQuizzes(query);
+  }
+
+  @Get('random')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get a random quiz not yet completed by the current user',
+    description:
+      'Filters by dimensionCode, topicCode, and/or level. Returns 404 when no unseen quiz matches.',
+  })
+  @ApiResponse({ status: 200, type: QuizResponseDto })
+  @ApiResponse({ status: 404, description: 'No unseen quiz found' })
+  @ApiCrudErrorResponses()
+  async getRandom(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningPaginatedQueryDto,
+  ): Promise<QuizResponseDto> {
+    const quiz = await this.learningService.getRandomQuiz(
+      userId,
+      query,
+      query.lang,
+    );
+    if (!quiz) throw new NotFoundException('No unseen quiz found');
+    return quiz;
   }
 
   @Get('progress')

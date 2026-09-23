@@ -11,6 +11,7 @@ export class ChallengeProgressRepository {
   async findChallengeByCodeOrId(codeOrId: string) {
     return this.prisma.challenge.findFirst({
       where: codeOrIdWhere(codeOrId),
+      include: { reward: { select: { id: true, xp: true, points: true } } },
     });
   }
 

@@ -11,7 +11,12 @@ export class MissionProgressRepository {
   async findMissionByCodeOrId(codeOrId: string) {
     return this.prisma.mission.findFirst({
       where: codeOrIdWhere(codeOrId),
-      select: { id: true, code: true, title: true },
+      select: {
+        id: true,
+        code: true,
+        title: true,
+        reward: { select: { id: true, xp: true, points: true } },
+      },
     });
   }
 

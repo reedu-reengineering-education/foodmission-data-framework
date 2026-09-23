@@ -24,13 +24,16 @@
  * | `groupId` | Optional group scope. |
  *
  * ## Metadata shapes by family
- * - **Meal** — `{ mealId, mealType?, tags? }`
+ * - **Meal** — `{ mealLogId?, mealId?, mealType?, flags?, tags? }`. Per-meal facts
+ *   (`MEAL_VEGAN`, `MEAL_MEAT_FREE`, …) come from `POST /meal-logs`, which takes
+ *   them as {@link MEAL_FLAG_EVENT_TYPES} values.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Progress indicator** — `{ actionCode, wheels: [{ kind, delta, level,
  *   accumulatedValue, targetValue, stagesCompleted }] }`
+ * - **Foody** — `{ itemId, itemCode, type, cost? }` (purchase debits POINTS)
  * - **Onboarding** — `{ segment }`
  * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.
  *   Client-submittable via `POST /events` (allowlisted). `sessionId` is required;
@@ -87,6 +90,13 @@ export const EventType = {
   // ==========================================
   BADGE_EARNED: 'BADGE_EARNED',
   PROGRESS_INDICATOR_UPDATED: 'PROGRESS_INDICATOR_UPDATED',
+
+  // ==========================================
+  // PERSONALIZATION (Foody cosmetics)
+  // ==========================================
+  FOODY_ITEM_PURCHASED: 'FOODY_ITEM_PURCHASED',
+  FOODY_ITEM_EQUIPPED: 'FOODY_ITEM_EQUIPPED',
+  FOODY_ITEM_UNEQUIPPED: 'FOODY_ITEM_UNEQUIPPED',
 
   // ==========================================
   // 1. MEAL & DIET PATTERNS
@@ -176,6 +186,7 @@ export const EventType = {
   // 8. LEARNING
   // ==========================================
   LEARNING_FACT_VIEWED: 'LEARNING_FACT_VIEWED',
+  LEARNING_FACT_READ: 'LEARNING_FACT_READ',
   LEARNING_FOOTPRINT_COMPARED: 'LEARNING_FOOTPRINT_COMPARED',
   LEARNING_RECIPE_EXPLORED: 'LEARNING_RECIPE_EXPLORED',
   LEARNING_RECIPE_SHARED: 'LEARNING_RECIPE_SHARED',
@@ -272,6 +283,42 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
 export type ClientRecordableEventType =
   (typeof CLIENT_RECORDABLE_EVENT_TYPES)[number];
 
+/**
+ * Per-meal diet facts a client may report as `flags` on `POST /meal-logs`.
+ *
+ * The wire value *is* the event type, so the meal log stores exactly what the
+ * ledger records and there is no second vocabulary to keep in sync.
+ * `MEAL_LOGGED` is excluded: the route records it for every log.
+ */
+export const MEAL_FLAG_EVENT_TYPES = [
+  EventType.MEAL_MEAT_CONSUMED,
+  EventType.MEAL_MEAT_FREE,
+  EventType.MEAL_VEGAN,
+  EventType.MEAL_LEGUME_CONSUMED,
+  EventType.MEAL_ALTERNATIVE_STAPLE,
+  EventType.MEAL_ANCIENT_GRAIN,
+  EventType.MEAL_SUSTAINABLE_PLATE,
+] as const;
+
+export type MealFlagEventType = (typeof MEAL_FLAG_EVENT_TYPES)[number];
+
+/** Substitutions a client may report as `swaps` on `POST /meal-logs`. */
+export const MEAL_SWAP_EVENT_TYPES = [
+  EventType.SWAP_BEEF_TO_PORK,
+  EventType.SWAP_BEEF_TO_CHICKEN,
+  EventType.SWAP_BEEF_TO_LEGUMES,
+  EventType.SWAP_PORK_TO_CHICKEN,
+  EventType.SWAP_PORK_TO_LEGUMES,
+  EventType.SWAP_CHICKEN_TO_LEGUMES,
+  EventType.SWAP_SUGARY_DRINK_TO_WATER,
+  EventType.SWAP_SNACK_TO_FRUIT_NUTS,
+  EventType.SWAP_SUGARY_CEREAL_TO_OATS,
+  EventType.SWAP_READY_MEAL_TO_HOMECOOKED,
+  EventType.SWAP_PROCESSED_MEAT_TO_LEGUMES,
+] as const;
+
+export type MealSwapEventType = (typeof MEAL_SWAP_EVENT_TYPES)[number];
+
 /** App session event types — require `metadata.sessionId` (UUID) so the server
  * can build a stable idempotency key (see `buildClientEventIdempotencyKey`). */
 export const APP_SESSION_EVENT_TYPES: ReadonlySet<string> = new Set([
@@ -300,6 +347,7 @@ export const EventSource = {
   SHOPPING_LIST: 'shopping_list',
   LEARNING: 'learning',
   GAME: 'game',
+  FOODY: 'foody',
   QUEST: 'quest',
   MISSION: 'mission',
   CHALLENGE: 'challenge',
@@ -322,6 +370,7 @@ export const EventSubjectType = {
   CHALLENGE: 'CHALLENGE',
   QUEST: 'QUEST',
   BADGE: 'BADGE',
+  FOODY_ITEM: 'FOODY_ITEM',
   CONTENT: 'CONTENT',
   GROUP: 'GROUP',
   SEED: 'SEED',
