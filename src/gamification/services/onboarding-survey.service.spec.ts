@@ -1,3 +1,4 @@
+import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   UserSegment,
@@ -15,7 +16,7 @@ import { ONBOARDING_SURVEY_QUESTIONS } from '../onboarding-survey.config';
 
 describe('OnboardingSurveyService', () => {
   let service: OnboardingSurveyService;
-  let prisma: { user: { update: jest.Mock } };
+  let prisma: { user: { update: jest.Mock }; $transaction: jest.Mock };
   let gamificationOnboardingService: jest.Mocked<
     Pick<GamificationOnboardingService, 'applyOnboardingSideEffects'>
   >;
@@ -32,7 +33,10 @@ describe('OnboardingSurveyService', () => {
   };
 
   beforeEach(async () => {
-    prisma = { user: { update: jest.fn() } };
+    prisma = {
+      user: { update: jest.fn() },
+      $transaction: jest.fn(),
+    };
     gamificationOnboardingService = {
       applyOnboardingSideEffects: jest.fn().mockResolvedValue({
         segment: UserSegment.ADVANCED,
@@ -58,6 +62,9 @@ describe('OnboardingSurveyService', () => {
     }).compile();
 
     service = module.get(OnboardingSurveyService);
+    prisma.$transaction.mockImplementation(
+      async (fn: (tx: typeof prisma) => Promise<unknown>) => fn(prisma),
+    );
   });
 
   it('returns the static survey questions', () => {
@@ -78,12 +85,27 @@ describe('OnboardingSurveyService', () => {
     });
     expect(
       gamificationOnboardingService.applyOnboardingSideEffects,
-    ).toHaveBeenCalledWith(updatedUser, UserSegment.ADVANCED);
+    ).toHaveBeenCalledWith(updatedUser, UserSegment.ADVANCED, prisma);
     expect(progressWheelService.getWheelsForUser).toHaveBeenCalledWith('u1');
     expect(result).toEqual({
       segment: UserSegment.ADVANCED,
       progressWheels: wheels,
     });
+  });
+
+  it('rejects repeat submissions without returning wheels', async () => {
+    prisma.user.update.mockResolvedValue({ id: 'u1' });
+    gamificationOnboardingService.applyOnboardingSideEffects.mockResolvedValue({
+      segment: UserSegment.ADVANCED,
+      walletEnsured: false,
+      onboardingEventRecorded: false,
+      skipped: true,
+    });
+
+    await expect(service.submitSurvey('u1', answers)).rejects.toThrow(
+      ConflictException,
+    );
+    expect(progressWheelService.getWheelsForUser).not.toHaveBeenCalled();
   });
 
   it('derives BEGINNER for low-sustainability answers', async () => {

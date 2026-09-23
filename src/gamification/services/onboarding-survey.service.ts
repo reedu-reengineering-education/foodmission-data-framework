@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { OnboardingBaselines } from '../onboarding.utils';
 import { deriveUserSegment } from '../onboarding-scoring';
@@ -33,19 +33,29 @@ export class OnboardingSurveyService {
   ): Promise<OnboardingSurveyResultDto> {
     const segment = deriveUserSegment(answers);
 
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: { ...answers, segment },
-    });
+    const onboardingResult = await this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.update({
+        where: { id: userId },
+        data: { ...answers, segment },
+      });
 
-    await this.gamificationOnboardingService.applyOnboardingSideEffects(
-      user,
-      segment,
-    );
+      const result =
+        await this.gamificationOnboardingService.applyOnboardingSideEffects(
+          user,
+          segment,
+          tx,
+        );
+
+      if (result.skipped) {
+        throw new ConflictException('Onboarding survey already submitted');
+      }
+
+      return result;
+    });
 
     const progressWheels =
       await this.progressWheelService.getWheelsForUser(userId);
 
-    return { segment, progressWheels };
+    return { segment: onboardingResult.segment, progressWheels };
   }
 }

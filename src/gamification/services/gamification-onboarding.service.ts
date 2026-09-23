@@ -34,6 +34,7 @@ export class GamificationOnboardingService {
   async applyOnboardingSideEffects(
     user: Pick<User, 'id'>,
     segment: UserSegment,
+    tx?: Prisma.TransactionClient,
   ): Promise<CompleteOnboardingResult> {
     const idempotencyKey = onboardingCompletedIdempotencyKey(user.id);
     const skipped = {
@@ -43,15 +44,17 @@ export class GamificationOnboardingService {
       skipped: true as const,
     };
 
-    const existing =
-      await this.userEventService.findByIdempotencyKey(idempotencyKey);
+    const existing = await this.userEventService.findByIdempotencyKey(
+      idempotencyKey,
+      tx,
+    );
     if (existing) {
       return skipped;
     }
 
     try {
-      return await this.prisma.$transaction(async (tx) => {
-        await tx.userGamificationWallet.upsert({
+      const apply = async (txClient: Prisma.TransactionClient) => {
+        await txClient.userGamificationWallet.upsert({
           where: { userId: user.id },
           update: {},
           create: { userId: user.id, xp: 0, points: 0 },
@@ -60,7 +63,7 @@ export class GamificationOnboardingService {
         await this.progressWheelService.ensureWheelsForUser(
           user.id,
           segment,
-          tx,
+          txClient,
         );
 
         await this.userEventService.record(
@@ -72,7 +75,7 @@ export class GamificationOnboardingService {
             idempotencyKey,
             subject: { type: 'USER', id: user.id },
           },
-          tx,
+          txClient,
         );
 
         return {
@@ -81,7 +84,13 @@ export class GamificationOnboardingService {
           onboardingEventRecorded: true,
           skipped: false,
         };
-      });
+      };
+
+      if (tx) {
+        return await apply(tx);
+      }
+
+      return await this.prisma.$transaction(apply);
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
