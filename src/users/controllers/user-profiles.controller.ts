@@ -27,8 +27,6 @@ import { OnboardingSurveyService } from '../../gamification/services/onboarding-
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
-  WalletBalanceDto,
-  UserEarnedRewardsDto,
 } from '../../gamification/dto/gamification-profile.dto';
 import { ProgressWheelDto } from '../../gamification/dto/progress-wheel.dto';
 import {
