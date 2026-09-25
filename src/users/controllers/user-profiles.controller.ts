@@ -27,6 +27,8 @@ import { OnboardingSurveyService } from '../../gamification/services/onboarding-
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
+  WalletBalanceDto,
+  UserEarnedRewardsDto,
 } from '../../gamification/dto/gamification-profile.dto';
 import { ProgressWheelDto } from '../../gamification/dto/progress-wheel.dto';
 import {
@@ -184,6 +186,35 @@ export class UserProfilesController {
     @Body() answers: OnboardingSurveyAnswersDto,
   ): Promise<OnboardingSurveyResultDto> {
     return this.onboardingSurveyService.submitSurvey(userId, answers);
+  }
+
+  @Get('me/wallet')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user wallet balance',
+    description: 'Returns current XP and points balance.',
+  })
+  @ApiOkResponse({ type: WalletBalanceDto })
+  async getMyWallet(
+    @CurrentUser('id') userId: string,
+  ): Promise<WalletBalanceDto> {
+    return this.gamificationProfileService.getWalletBalance(userId);
+  }
+
+  @Get('me/rewards')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get current user earned rewards',
+    description:
+      'Returns all earned badges/rewards with full reward details (points, XP, items, etc.) sorted by most recent.',
+  })
+  @ApiOkResponse({ type: UserEarnedRewardsDto })
+  async getMyEarnedRewards(
+    @CurrentUser('id') userId: string,
+  ): Promise<UserEarnedRewardsDto> {
+    return this.gamificationProfileService.getEarnedRewards(userId);
   }
 
   @Patch('me')
