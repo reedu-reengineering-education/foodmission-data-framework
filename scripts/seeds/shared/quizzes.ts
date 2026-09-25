@@ -1,5 +1,5 @@
 import { ContentLevel, PrismaClient } from '@prisma/client';
-import { loadCatalogJson } from './food-facts';
+import { loadCatalogJson, loadRewardsByLevel } from './food-facts';
 
 interface QuizOptionSeed {
   label: string;
@@ -29,13 +29,12 @@ export async function seedQuizzes(prisma: PrismaClient) {
     return { seeded: 0, options: 0, needingCuration: 0 };
   }
 
-  const topics = await prisma.topic.findMany({ select: { id: true, code: true } });
+  const topics = await prisma.topic.findMany({
+    select: { id: true, code: true },
+  });
   const topicByCode = new Map(topics.map((t) => [t.code, t.id]));
 
-  const quizReward = await prisma.reward.findUnique({ where: { name: 'Standard Quiz Reward' } });
-  if (!quizReward) {
-    console.warn('   ⚠️  Standard Quiz Reward not found – run seedStandardRewards first');
-  }
+  const rewardsByLevel = await loadRewardsByLevel(prisma, 'Quiz');
 
   let seeded = 0;
   let optionsUpserted = 0;
@@ -54,6 +53,9 @@ export async function seedQuizzes(prisma: PrismaClient) {
       needingCuration += 1;
     }
 
+    const level = row.level as ContentLevel;
+    const rewardId = rewardsByLevel.get(level)?.id ?? null;
+
     const quiz = await prisma.quiz.upsert({
       where: { code: row.code },
       update: {
@@ -61,12 +63,12 @@ export async function seedQuizzes(prisma: PrismaClient) {
         question: row.question,
         explanation: row.explanation,
         source: row.source,
-        level: row.level as ContentLevel,
+        level,
         health: row.health ?? false,
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: true,
-        rewardId: quizReward?.id ?? null,
+        rewardId,
       },
       create: {
         code: row.code,
@@ -74,12 +76,12 @@ export async function seedQuizzes(prisma: PrismaClient) {
         question: row.question,
         explanation: row.explanation,
         source: row.source,
-        level: row.level as ContentLevel,
+        level,
         health: row.health ?? false,
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: true,
-        rewardId: quizReward?.id ?? null,
+        rewardId,
       },
     });
 

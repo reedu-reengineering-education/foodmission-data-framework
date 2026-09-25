@@ -38,6 +38,7 @@ enum RewardSourceType {
   QUEST
   QUIZ
   FOOD_FACT
+  SURVEY
 }
 
 enum ContentLevel {
@@ -159,8 +160,8 @@ model FoodFact {
   updatedAt  DateTime     @updatedAt
 
   // Relations
-  topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  reward   Reward?             @relation("FoodFactReward", fields: [rewardId], references: [id], onDelete: SetNull)
+  topic    Topic              @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  reward   Reward?            @relation("FoodFactReward", fields: [rewardId], references: [id], onDelete: SetNull)
   progress FoodFactProgress[]
 
   @@index([topicId])
@@ -170,12 +171,12 @@ model FoodFact {
 }
 
 model FoodFactProgress {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   userId     String
   foodFactId String
-  readAt     DateTime  @default(now())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  readAt     DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -204,8 +205,8 @@ model Quiz {
   updatedAt   DateTime     @updatedAt
 
   // Relations
-  topic    Topic               @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  reward   Reward?             @relation("QuizReward", fields: [rewardId], references: [id], onDelete: SetNull)
+  topic    Topic          @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  reward   Reward?        @relation("QuizReward", fields: [rewardId], references: [id], onDelete: SetNull)
   options  QuizOption[]
   progress QuizProgress[]
 
@@ -224,7 +225,7 @@ model QuizOption {
   sortOrder Int     @default(0)
 
   // Relations
-  quiz               Quiz                @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quiz               Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
   selectedInProgress QuizProgress[]
 
   @@unique([quizId, label])
@@ -268,12 +269,12 @@ model Quest {
   updatedAt   DateTime     @updatedAt
 
   // Relations
-  dimension      Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
-  reward         Reward?         @relation("QuestReward", fields: [rewardId], references: [id], onDelete: SetNull)
-  items          QuestItem[]
-  progress       QuestProgress[]
-  currentUsers   User[]          @relation("UserCurrentQuest")
-  currentGroups  UserGroup[]     @relation("GroupCurrentQuest")
+  dimension     Dimension       @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  reward        Reward?         @relation("QuestReward", fields: [rewardId], references: [id], onDelete: SetNull)
+  items         QuestItem[]
+  progress      QuestProgress[]
+  currentUsers  User[]          @relation("UserCurrentQuest")
+  currentGroups UserGroup[]     @relation("GroupCurrentQuest")
 
   @@index([dimensionId])
   @@index([dimensionId, level])
@@ -388,7 +389,7 @@ model Badge {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  rewards      Reward[]
+  rewards       Reward[]
   earnedByUsers UserEarnedBadge[]
 
   @@map("badges")
@@ -408,12 +409,13 @@ model Reward {
   updatedAt            DateTime @updatedAt
 
   // Relations
-  badge         Badge?        @relation(fields: [badgeId], references: [id], onDelete: SetNull)
-  missions      Mission[]     @relation("MissionReward")
-  challenges    Challenge[]   @relation("ChallengeReward")
-  quests        Quest[]       @relation("QuestReward")
-  quizzes       Quiz[]        @relation("QuizReward")
-  foodFacts     FoodFact[]    @relation("FoodFactReward")
+  badge         Badge?            @relation(fields: [badgeId], references: [id], onDelete: SetNull)
+  missions      Mission[]         @relation("MissionReward")
+  challenges    Challenge[]       @relation("ChallengeReward")
+  quests        Quest[]           @relation("QuestReward")
+  quizzes       Quiz[]            @relation("QuizReward")
+  foodFacts     FoodFact[]        @relation("FoodFactReward")
+  surveys       Survey[]          @relation("SurveyReward")
   walletEntries WalletEntry[]
   earnedBadges  UserEarnedBadge[]
 
@@ -426,7 +428,7 @@ model UserGamificationWallet {
   points    Int      @default(0)
   updatedAt DateTime @updatedAt
 
-  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   earnedBadges UserEarnedBadge[]
 
   @@map("user_gamification_wallets")
@@ -441,10 +443,10 @@ model UserEarnedBadge {
   sourceId   String?
   earnedAt   DateTime          @default(now())
 
-  user                    User                   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_earned_badges_userId_user_fkey")
-  userGamificationWallet  UserGamificationWallet @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "user_earned_badges_userId_wallet_fkey")
-  badge                   Badge                  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
-  reward                  Reward?                @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+  user                   User                   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_earned_badges_userId_user_fkey")
+  userGamificationWallet UserGamificationWallet @relation(fields: [userId], references: [userId], onDelete: Cascade, map: "user_earned_badges_userId_wallet_fkey")
+  badge                  Badge                  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  reward                 Reward?                @relation(fields: [rewardId], references: [id], onDelete: SetNull)
 
   @@unique([userId, badgeId])
   @@index([userId])
@@ -457,12 +459,12 @@ model WalletEntry {
   id           String            @id @default(uuid())
   userId       String
   currency     WalletCurrency
-  amount       Int               // signed: credit > 0, debit < 0
+  amount       Int // signed: credit > 0, debit < 0
   balanceAfter Int
   reason       String
-  rewardId     String?           // set when credited by completing a content item
+  rewardId     String? // set when credited by completing a content item
   sourceType   RewardSourceType?
-  sourceId     String?           // id of the mission/challenge/quest/quiz
+  sourceId     String? // id of the mission/challenge/quest/quiz
   eventId      String?
   createdAt    DateTime          @default(now())
 

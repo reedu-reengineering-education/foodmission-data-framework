@@ -1,5 +1,5 @@
 import { ContentLevel, Mission, PrismaClient } from '@prisma/client';
-import { loadCatalogJson } from './food-facts';
+import { loadCatalogJson, loadRewardsByLevel } from './food-facts';
 
 export interface MissionCatalogSeedRow {
   code: string;
@@ -30,17 +30,12 @@ export async function seedMissionsCatalog(
     select: { id: true, code: true },
   });
   const dimensionByCode = new Map(dimensions.map((d) => [d.code, d.id]));
-  const topics = await prisma.topic.findMany({ select: { id: true, code: true } });
+  const topics = await prisma.topic.findMany({
+    select: { id: true, code: true },
+  });
   const topicByCode = new Map(topics.map((t) => [t.code, t.id]));
 
-  const missionReward = await prisma.reward.findUnique({
-    where: { name: 'Standard Mission Reward' },
-  });
-  if (!missionReward) {
-    console.warn(
-      '   ⚠️  Standard Mission Reward not found – run seedStandardRewards first',
-    );
-  }
+  const rewardsByLevel = await loadRewardsByLevel(prisma, 'Mission');
 
   const missions: Mission[] = [];
   let skipped = 0;
@@ -55,17 +50,22 @@ export async function seedMissionsCatalog(
       continue;
     }
 
-    const topicId = row.topicCode ? topicByCode.get(row.topicCode) ?? null : null;
+    const topicId = row.topicCode
+      ? (topicByCode.get(row.topicCode) ?? null)
+      : null;
     if (row.topicCode && !topicId) {
       console.warn(`   ⚠️  Unknown topic ${row.topicCode} for ${row.code}`);
     }
+
+    const level = row.level as ContentLevel;
+    const rewardId = rewardsByLevel.get(level)?.id ?? null;
 
     const mission = await prisma.mission.upsert({
       where: { code: row.code },
       update: {
         dimensionId,
         topicId,
-        level: row.level as ContentLevel,
+        level,
         title: row.title,
         duration: row.duration,
         goal: row.goal,
@@ -74,13 +74,13 @@ export async function seedMissionsCatalog(
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: row.available ?? true,
-        rewardId: missionReward?.id ?? null,
+        rewardId,
       },
       create: {
         code: row.code,
         dimensionId,
         topicId,
-        level: row.level as ContentLevel,
+        level,
         title: row.title,
         duration: row.duration,
         goal: row.goal,
@@ -89,7 +89,7 @@ export async function seedMissionsCatalog(
         foodChoice: row.foodChoice ?? false,
         foodWaste: row.foodWaste ?? false,
         available: row.available ?? true,
-        rewardId: missionReward?.id ?? null,
+        rewardId,
       },
     });
     missions.push(mission);
