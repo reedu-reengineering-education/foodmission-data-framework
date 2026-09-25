@@ -127,8 +127,9 @@ export class UserProfilesController {
     description:
       "Adds the action's impact to every wheel it affects. A wheel that " +
       'crosses 100% archives its stage, rolls any excess into the next ' +
-      'stage, and starts a new cycle. First draft: only VEGETARIAN_SERVING_100G ' +
-      'is defined; more actions land as their impact values are supplied.',
+      'stage, and starts a new cycle. Completing stage 5 promotes the user ' +
+      'segment (BEGINNER -> INTERMEDIATE -> ADVANCED) and resets all wheels ' +
+      'to stage 1. Valid actionCodes are listed in the request body schema.',
   })
   @ApiOkResponse({ type: RecordWheelImpactResultDto })
   @UsePipes(
@@ -142,6 +143,10 @@ export class UserProfilesController {
     @CurrentUser('id') userId: string,
     @Body() body: RecordWheelImpactDto,
   ): Promise<RecordWheelImpactResultDto> {
+    // TODO: Temporary. Any client can submit any actionCode any number of
+    // times, so users can farm wheel progress and trigger segment promotion.
+    // Replace with automatic recordImpact() calls from meal-log / challenge
+    // completion, then remove this endpoint or restrict it (admin/feature flag).
     return this.progressWheelService.recordImpact(userId, body.actionCode);
   }
 
