@@ -5,6 +5,7 @@ import {
   Gender,
   Motivation,
   PrismaClient,
+  ProgressPrecision,
   User,
   UserSegment,
   WeeklyBeefFrequency,
@@ -15,6 +16,51 @@ import {
 } from '@prisma/client';
 import { randomInt as cryptoRandomInt } from 'crypto';
 import { KEYCLOAK_DEV_USER_IDS } from './keycloak-dev-user-ids';
+import { deriveUserSegment } from '../../../src/gamification/onboarding-scoring';
+import { OnboardingBaselines } from '../../../src/gamification/onboarding.utils';
+import {
+  getStageTarget,
+  SUSTAINABILITY_WHEEL_KINDS,
+} from '../../../src/gamification/progress-wheels.config';
+
+/** `userInfo.segment` overrides; otherwise derived from the five baselines. */
+function resolveSeedSegment(userInfo: UserSeedData): UserSegment | undefined {
+  if (userInfo.segment) return userInfo.segment;
+
+  const baselines: Partial<OnboardingBaselines> = {
+    weeklyMeatConsumption: userInfo.weeklyMeatConsumption,
+    weeklyBeefConsumption: userInfo.weeklyBeefConsumption,
+    weeklyFoodWaste: userInfo.weeklyFoodWaste,
+    weeklyUpfConsumption: userInfo.weeklyUpfConsumption,
+    weeklyReusableOrRefill: userInfo.weeklyReusableOrRefill,
+  };
+  const complete = Object.values(baselines).every((v) => v != null);
+  return complete
+    ? deriveUserSegment(baselines as OnboardingBaselines)
+    : undefined;
+}
+
+/** Same first-cycle seeding ProgressWheelService.ensureWheelsForUser does. */
+async function seedSustainabilityWheels(
+  prisma: PrismaClient,
+  userId: string,
+  segment: UserSegment,
+): Promise<void> {
+  for (const kind of SUSTAINABILITY_WHEEL_KINDS) {
+    await prisma.progressIndicator.upsert({
+      where: { userId_kind: { userId, kind } },
+      update: {},
+      create: {
+        userId,
+        kind,
+        precision: ProgressPrecision.SOFT,
+        level: 1,
+        accumulatedValue: 0,
+        targetValue: getStageTarget(kind, segment, 1),
+      },
+    });
+  }
+}
 
 export interface UserSeedData {
   keycloakId: string;
@@ -58,7 +104,7 @@ export const userData: UserSeedData[] = [
     weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
     weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
     weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
-    segment: UserSegment.INTERMEDIATE,
+    // segment: derived from the baselines above, see resolveSeedSegment()
     lastLoginAt: new Date(),
   },
   {
@@ -85,7 +131,6 @@ export const userData: UserSeedData[] = [
     weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
     weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
     weeklyReusableOrRefill: WeeklyReusableRange.SEVEN_TO_NINE,
-    segment: UserSegment.ADVANCED,
     lastLoginAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
   },
   {
@@ -112,7 +157,6 @@ export const userData: UserSeedData[] = [
     weeklyFoodWaste: WeeklyFoodWasteRange.THREE_TO_FOUR,
     weeklyUpfConsumption: WeeklyUpfRange.TEN_TO_FOURTEEN,
     weeklyReusableOrRefill: WeeklyReusableRange.ZERO_TO_TWO,
-    segment: UserSegment.BEGINNER,
     lastLoginAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
   },
   {
@@ -139,7 +183,6 @@ export const userData: UserSeedData[] = [
     weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
     weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
     weeklyReusableOrRefill: WeeklyReusableRange.THREE_TO_SIX,
-    segment: UserSegment.INTERMEDIATE,
     lastLoginAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
   },
   {
@@ -172,7 +215,6 @@ export const userData: UserSeedData[] = [
     weeklyFoodWaste: WeeklyFoodWasteRange.ONE_TO_TWO,
     weeklyUpfConsumption: WeeklyUpfRange.FOUR_TO_NINE,
     weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
-    segment: UserSegment.ADVANCED,
     lastLoginAt: new Date(),
   },
 ];
@@ -184,7 +226,7 @@ function gamificationFieldsFromSeed(userInfo: UserSeedData) {
     weeklyFoodWaste: userInfo.weeklyFoodWaste,
     weeklyUpfConsumption: userInfo.weeklyUpfConsumption,
     weeklyReusableOrRefill: userInfo.weeklyReusableOrRefill,
-    segment: userInfo.segment,
+    segment: resolveSeedSegment(userInfo),
     currentQuestId: userInfo.currentQuestId,
     lastLoginAt: userInfo.lastLoginAt,
     ...(userInfo.settings !== undefined
@@ -237,6 +279,10 @@ export async function seedUsers(prisma: PrismaClient) {
         });
 
     users.push(user);
+
+    if (user.segment) {
+      await seedSustainabilityWheels(prisma, user.id, user.segment);
+    }
   }
 
   console.log(`✅ Created/updated ${users.length} users with preferences`);
@@ -342,7 +388,6 @@ export async function seedUsers(prisma: PrismaClient) {
   const foodWasteRanges = Object.values(WeeklyFoodWasteRange);
   const upfRanges = Object.values(WeeklyUpfRange);
   const reusableRanges = Object.values(WeeklyReusableRange);
-  const segments = Object.values(UserSegment);
   const motivations = Object.values(Motivation);
 
   for (let i = 1; i <= 400; i++) {
@@ -354,17 +399,22 @@ export async function seedUsers(prisma: PrismaClient) {
     const region = pick(regions);
     const zip = String(cryptoRandomInt(10000, 100000));
     const yearOfBirth = cryptoRandomInt(1950, 2009);
-    const segment = pick(segments);
-    const profileEnums = {
-      gender: pick(genders),
-      activityLevel: pick(activityLevels),
-      annualIncome: pick(incomeLevels),
-      educationLevel: pick(educationLevels),
+    const baselines: OnboardingBaselines = {
       weeklyMeatConsumption: pick(meatRanges),
       weeklyBeefConsumption: pick(beefFrequencies),
       weeklyFoodWaste: pick(foodWasteRanges),
       weeklyUpfConsumption: pick(upfRanges),
       weeklyReusableOrRefill: pick(reusableRanges),
+    };
+    // Segment derived from the baselines, same rubric as the onboarding
+    // survey would use, so generated users stay internally consistent too.
+    const segment = deriveUserSegment(baselines);
+    const profileEnums = {
+      gender: pick(genders),
+      activityLevel: pick(activityLevels),
+      annualIncome: pick(incomeLevels),
+      educationLevel: pick(educationLevels),
+      ...baselines,
       segment,
       lastLoginAt: new Date(
         Date.now() - cryptoRandomInt(0, 14) * 24 * 60 * 60 * 1000,

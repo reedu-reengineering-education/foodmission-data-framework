@@ -14,10 +14,11 @@ export const ONBOARDING_BASELINE_FIELDS = [
   'weeklyReusableOrRefill',
 ] as const;
 
-type OnboardingBaselineField = (typeof ONBOARDING_BASELINE_FIELDS)[number];
+export type OnboardingBaselineField =
+  (typeof ONBOARDING_BASELINE_FIELDS)[number];
 
 const ONBOARDING_FIELD_ENUMS: Record<
-  OnboardingBaselineField,
+  OnboardingBaselineField, 
   readonly string[]
 > = {
   weeklyMeatConsumption: Object.values(WeeklyMeatRange),

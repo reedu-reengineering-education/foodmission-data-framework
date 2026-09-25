@@ -5,12 +5,20 @@ import { NotFoundException } from '@nestjs/common';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
+import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
   let service: jest.Mocked<UserProfilesService>;
   let gamificationProfileService: jest.Mocked<
     Pick<GamificationProfileService, 'getProfileForUserId'>
+  >;
+  let progressWheelService: jest.Mocked<
+    Pick<ProgressWheelService, 'getWheelsForUser' | 'recordImpact'>
+  >;
+  let onboardingSurveyService: jest.Mocked<
+    Pick<OnboardingSurveyService, 'getSurveyQuestions' | 'submitSurvey'>
   >;
 
   const mockUserProfile = {
@@ -33,6 +41,14 @@ describe('UserProfilesController', () => {
     gamificationProfileService = {
       getProfileForUserId: jest.fn(),
     };
+    progressWheelService = {
+      getWheelsForUser: jest.fn(),
+      recordImpact: jest.fn(),
+    };
+    onboardingSurveyService = {
+      getSurveyQuestions: jest.fn().mockReturnValue([]),
+      submitSurvey: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
@@ -49,6 +65,14 @@ describe('UserProfilesController', () => {
         {
           provide: GamificationProfileService,
           useValue: gamificationProfileService,
+        },
+        {
+          provide: ProgressWheelService,
+          useValue: progressWheelService,
+        },
+        {
+          provide: OnboardingSurveyService,
+          useValue: onboardingSurveyService,
         },
       ],
     })
@@ -137,6 +161,60 @@ describe('UserProfilesController', () => {
         mockUserProfile,
       );
       expect(service.updateProfile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('recordProgressWheelImpact', () => {
+    it('delegates to ProgressWheelService', async () => {
+      const result = {
+        actionCode: 'VEGETARIAN_SERVING_100G',
+        wheels: [],
+        achievements: [],
+      } as any;
+      progressWheelService.recordImpact.mockResolvedValue(result);
+
+      await expect(
+        controller.recordProgressWheelImpact('user-1', {
+          actionCode: 'VEGETARIAN_SERVING_100G',
+        }),
+      ).resolves.toEqual(result);
+      expect(progressWheelService.recordImpact).toHaveBeenCalledWith(
+        'user-1',
+        'VEGETARIAN_SERVING_100G',
+      );
+    });
+  });
+
+  describe('getOnboardingSurvey', () => {
+    it('returns the survey questions wrapped in { questions }', () => {
+      const questions = [
+        { field: 'weeklyMeatConsumption', text: 'q1', options: [] },
+      ] as any;
+      onboardingSurveyService.getSurveyQuestions.mockReturnValue(questions);
+
+      expect(controller.getOnboardingSurvey()).toEqual({ questions });
+    });
+  });
+
+  describe('submitOnboardingSurvey', () => {
+    it('delegates to OnboardingSurveyService', async () => {
+      const answers = {
+        weeklyMeatConsumption: 'ZERO_TO_FOUR',
+        weeklyBeefConsumption: 'NEVER',
+        weeklyFoodWaste: 'ZERO',
+        weeklyUpfConsumption: 'ZERO_TO_THREE',
+        weeklyReusableOrRefill: 'TEN_PLUS',
+      } as any;
+      const result = { segment: 'ADVANCED', progressWheels: [] } as any;
+      onboardingSurveyService.submitSurvey.mockResolvedValue(result);
+
+      await expect(
+        controller.submitOnboardingSurvey('user-1', answers),
+      ).resolves.toEqual(result);
+      expect(onboardingSurveyService.submitSurvey).toHaveBeenCalledWith(
+        'user-1',
+        answers,
+      );
     });
   });
 });
