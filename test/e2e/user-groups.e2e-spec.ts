@@ -10,6 +10,7 @@ import { GroupMembershipRepository } from '../../src/user-groups/repositories/gr
 import { UserGroupRepository } from '../../src/user-groups/repositories/user-groups.repository';
 import { UserGroupService } from '../../src/user-groups/services/user-groups.service';
 import { UserEventService } from '../../src/events/services/user-event.service';
+import { RulesService } from '../../src/rules/rules.service';
 import { closeTestApp, createTestApp } from './helpers/app-e2e-helpers';
 import { createTestPrismaClient } from './helpers/prisma-e2e-helpers';
 
@@ -32,6 +33,7 @@ describe('User Groups (e2e)', () => {
         UserGroupRepository,
         GroupMembershipRepository,
         UserEventService,
+        { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],
     })

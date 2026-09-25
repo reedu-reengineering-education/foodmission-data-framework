@@ -9,6 +9,7 @@ import { FoodyService } from '../../src/foody/services/foody.service';
 import { BadgeService } from '../../src/gamification/services/badge.service';
 import { GamificationProfileService } from '../../src/gamification/services/gamification-profile.service';
 import { GamificationWalletService } from '../../src/gamification/services/gamification-wallet.service';
+import { RulesService } from '../../src/rules/rules.service';
 import { createTestPrismaClient } from './helpers/prisma-e2e-helpers';
 
 /**
@@ -36,6 +37,7 @@ describe('Foody purchases and loadout (e2e)', () => {
         GamificationProfileService,
         BadgeService,
         UserEventService,
+        { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],
     }).compile();

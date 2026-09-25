@@ -1,0 +1,1052 @@
+schemaVersion: 1
+status: draft
+purpose: 'Coverage-first inventory for rule-driven mission/challenge progress'
+
+ruleTemplate:
+  window:
+    type: since_start
+    days: 7
+  counters: {}
+  target: 'false'
+  progress: '0'
+  notes:
+    - 'TODO: map to concrete EventType counters'
+    - 'TODO: replace placeholder target/progress expressions'
+
+missions:
+  - code: M.A1.1
+    shape: bounded_max_with_fail
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        meatMeals:
+          event: MEAL_MEAT_CONSUMED
+          distinctBy: metadata.mealId
+      target: 'meatMeals <= 4'
+      fail: 'meatMeals > 4'
+      resolveAt: window_end
+      progress: 'max(0, min(1 - (meatMeals / 5), 1))'
+      notes:
+        - 'Interprets mission as: stay at or below 4 meat meals for the window'
+  - code: M.A1.2
+    shape: ratio_majority
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        plantProteinMeals:
+          event: MEAL_LEGUME_CONSUMED
+          distinctBy: metadata.mealId
+        meatMeals:
+          event: MEAL_MEAT_CONSUMED
+          distinctBy: metadata.mealId
+      target: 'plantProteinMeals > meatMeals && (plantProteinMeals + meatMeals) >= 5'
+      progress: 'min(plantProteinMeals / max(plantProteinMeals + meatMeals, 1), 1)'
+      notes:
+        - 'Proxy for non-meat protein majority using currently available event types'
+        - 'May need additional non-meat protein events beyond legumes'
+  - code: M.A1.3
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        legumeMeals:
+          event: MEAL_LEGUME_CONSUMED
+          distinctBy: metadata.mealId
+      target: 'legumeMeals >= 5'
+      progress: 'min(legumeMeals / 5, 1)'
+      notes:
+        - 'Direct mapping from mission goal'
+  - code: M.A1.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        alternativeStapleMeals:
+          event: MEAL_ALTERNATIVE_STAPLE
+          distinctBy: metadata.mealId
+      target: 'alternativeStapleMeals >= 5'
+      progress: 'min(alternativeStapleMeals / 5, 1)'
+      notes:
+        - 'Direct mapping from mission goal'
+  - code: M.A1.5
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        sustainablePlateMeals:
+          event: MEAL_SUSTAINABLE_PLATE
+          distinctBy: metadata.mealId
+      target: 'sustainablePlateMeals >= 10'
+      progress: 'min(sustainablePlateMeals / 10, 1)'
+      notes:
+        - 'Depends on consistent emission of MEAL_SUSTAINABLE_PLATE'
+  - code: M.A2.1
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        originChecks:
+          event: SHOPPING_ORIGIN_CHECKED
+          distinctBy: metadata.mealId
+        multiCriteriaPurchases:
+          event: SHOPPING_MULTICRITERIA_PURCHASE
+          distinctBy: metadata.mealId
+      target: 'originChecks >= 3 && multiCriteriaPurchases >= 3'
+      progress: '(min(originChecks / 3, 1) + min(multiCriteriaPurchases / 3, 1)) / 2'
+      notes:
+        - 'Approximates: origin plus one additional indicator for at least 3 meal decisions'
+        - 'Assumes SHOPPING_MULTICRITERIA_PURCHASE means at least two criteria were considered'
+  - code: M.A2.2
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        certificationChoices:
+          event: SHOPPING_CERTIFICATION_CHOSEN
+      target: 'certificationChoices >= 1'
+      progress: 'min(certificationChoices, 1)'
+      notes:
+        - 'Tracks selecting a certified product'
+        - 'Current event model does not prove two distinct labels or recorded label meanings'
+  - code: M.A2.3
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        multiCriteriaPurchases:
+          event: SHOPPING_MULTICRITERIA_PURCHASE
+          distinctBy: metadata.productId
+      target: 'multiCriteriaPurchases >= 3'
+      progress: 'min(multiCriteriaPurchases / 3, 1)'
+      notes:
+        - 'Direct mapping for at least 3 purchase decisions with multiple environmental dimensions'
+  - code: M.A2.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        seasonalChoices:
+          event: SHOPPING_SEASONAL_CHOSEN
+          distinctBy: metadata.mealId
+      target: 'seasonalChoices >= 4'
+      progress: 'min(seasonalChoices / 4, 1)'
+      notes:
+        - 'Tracks seasonal product inclusion frequency'
+        - 'Reason capture is not represented in current event metadata'
+  - code: M.A2.5
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        informedChoices:
+          event: SHOPPING_MULTICRITERIA_PURCHASE
+          distinctBy: metadata.productId
+      target: 'informedChoices >= 4'
+      progress: 'min(informedChoices / 4, 1)'
+      notes:
+        - 'Maps to repeated multi-factor decision making across food choices'
+        - 'Exact three-aspect threshold must be enforced at event emission time'
+  - code: M.A3.1
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaChecks:
+          event: PROCESSING_NOVA_CHECKED
+          distinctBy: metadata.productId
+        greenScoreChecks:
+          event: PROCESSING_GREENSCORE_CHECKED
+          distinctBy: metadata.productId
+      target: 'novaChecks >= 3 && greenScoreChecks >= 3'
+      progress: '(min(novaChecks / 3, 1) + min(greenScoreChecks / 3, 1)) / 2'
+      notes:
+        - 'Maps to at least three purchases with both NOVA and Green-Score considered'
+  - code: M.A3.2
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        indicatorComparisons:
+          event: PROCESSING_INDICATORS_COMPARED
+          distinctBy: metadata.productId
+        novaChecks:
+          event: PROCESSING_NOVA_CHECKED
+          distinctBy: metadata.productId
+        greenScoreChecks:
+          event: PROCESSING_GREENSCORE_CHECKED
+          distinctBy: metadata.productId
+      target: 'indicatorComparisons >= 3 && novaChecks >= 3 && greenScoreChecks >= 3'
+      progress: '(min(indicatorComparisons / 3, 1) + min(novaChecks / 3, 1) + min(greenScoreChecks / 3, 1)) / 3'
+      notes:
+        - 'Uses indicator-comparison event as proxy for tri-indicator evaluation'
+        - 'Nutri-Score has no dedicated event type in current catalog'
+  - code: M.A3.3
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaChecks:
+          event: PROCESSING_NOVA_CHECKED
+          distinctBy: metadata.productId
+        ingredientReviews:
+          event: PROCESSING_INGREDIENTS_REVIEWED
+          distinctBy: metadata.productId
+        packagingChecks:
+          event: SHOPPING_PACKAGING_INFO_CHECKED
+          distinctBy: metadata.productId
+      target: 'novaChecks >= 3 && ingredientReviews >= 3 && packagingChecks >= 3'
+      progress: '(min(novaChecks / 3, 1) + min(ingredientReviews / 3, 1) + min(packagingChecks / 3, 1)) / 3'
+      notes:
+        - 'Approximates identifying trade-offs across three foods with multiple evidence sources'
+  - code: M.A3.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        indicatorComparisons:
+          event: PROCESSING_INDICATORS_COMPARED
+          distinctBy: metadata.productId
+      target: 'indicatorComparisons >= 3'
+      progress: 'min(indicatorComparisons / 3, 1)'
+      notes:
+        - 'Tracks three multi-indicator observations across products'
+        - 'Documented differences are not directly represented in current events'
+  - code: M.A3.5
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        productionAwarePurchases:
+          anyOf:
+            - PROCESSING_NOVA_CHECKED
+            - PROCESSING_GREENSCORE_CHECKED
+            - PROCESSING_PRODUCTION_METHOD_CHECKED
+            - PROCESSING_INDICATORS_COMPARED
+          distinctBy: metadata.productId
+      target: 'productionAwarePurchases >= 5'
+      progress: 'min(productionAwarePurchases / 5, 1)'
+      notes:
+        - 'Counts purchases where at least one production-related indicator was checked'
+  - code: M.A4.1
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        materialObservations:
+          event: PACKAGING_MATERIAL_OBSERVED
+          distinctBy: metadata.productId
+        endOfLifeChecks:
+          event: PACKAGING_RECYCLING_LABEL_READ
+          distinctBy: metadata.productId
+      target: 'materialObservations >= 3 && endOfLifeChecks >= 3'
+      progress: '(min(materialObservations / 3, 1) + min(endOfLifeChecks / 3, 1)) / 2'
+      notes:
+        - 'Represents considering packaging material and end-of-life for at least three purchases'
+  - code: M.A4.2
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        reusableChoices:
+          event: PACKAGING_REUSABLE_SPOT_CHOSEN
+      target: 'reusableChoices >= 5'
+      progress: 'min(reusableChoices / 5, 1)'
+      notes:
+        - 'Direct mapping to reusable/refill occasions'
+  - code: M.A4.3
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingTradeoffObservations:
+          event: PACKAGING_COMPARISON_MADE
+          distinctBy: metadata.productId
+      target: 'packagingTradeoffObservations >= 5'
+      progress: 'min(packagingTradeoffObservations / 5, 1)'
+      notes:
+        - 'Uses explicit packaging comparisons as proxy for trade-off reflection on five products'
+  - code: M.A4.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        smartPackagingFindings:
+          event: PACKAGING_SMART_OBSERVED
+          distinctBy: metadata.productId
+      target: 'smartPackagingFindings >= 2'
+      progress: 'min(smartPackagingFindings / 2, 1)'
+      notes:
+        - 'Maps to identifying at least two packaging innovations'
+  - code: M.A4.5
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingAwarePurchases:
+          anyOf:
+            - PACKAGING_MATERIAL_OBSERVED
+            - PACKAGING_RECYCLING_LABEL_READ
+            - PACKAGING_REUSABLE_SPOT_CHOSEN
+            - PACKAGING_RECYCLABILITY_EVALUATED
+          distinctBy: metadata.productId
+      target: 'packagingAwarePurchases >= 5'
+      progress: 'min(packagingAwarePurchases / 5, 1)'
+      notes:
+        - 'Captures repeated use of packaging criteria in purchase decisions'
+  - code: M.A5.1
+    shape: undecided
+  - code: M.A5.2
+    shape: undecided
+  - code: M.A5.3
+    shape: undecided
+  - code: M.A5.4
+    shape: undecided
+  - code: M.A5.5
+    shape: undecided
+  - code: M.A6.1
+    shape: undecided
+  - code: M.A6.2
+    shape: undecided
+  - code: M.A6.3
+    shape: undecided
+  - code: M.A6.4
+    shape: undecided
+  - code: M.A6.5
+    shape: undecided
+  - code: M.B1.1
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        mealLogs:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+      target: 'mealLogs >= 7'
+      progress: 'min(mealLogs / 7, 1)'
+      notes:
+        - 'Enforces one logged-meal day per day by counting distinct mealDayBucket values'
+        - 'Relies on MEAL_LOGGED metadata.mealDayBucket (YYYY-MM-DD, UTC)'
+  - code: M.B1.2
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        mealLogs:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+      target: 'mealLogs >= 7'
+      progress: 'min(mealLogs / 7, 1)'
+      notes:
+        - 'Cannot prove completeness against all consumed meals without a denominator signal'
+  - code: M.B1.3
+    shape: composite_threshold
+    rule:
+      window:
+        type: rolling_lookback
+        days: 7
+      counters:
+        currentMeatMeals:
+          event: MEAL_MEAT_CONSUMED
+          distinctBy: metadata.mealId
+        previousMeatMeals:
+          event: MEAL_MEAT_CONSUMED
+          distinctBy: metadata.mealId
+          window:
+            type: rolling_lookback
+            days: 7
+            offsetDays: 7
+      target: 'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1'
+      progress: 'previousMeatMeals > 0 ? clamp((previousMeatMeals - currentMeatMeals) / previousMeatMeals, 0, 1) : 0'
+      notes:
+        - 'Compares the current 7-day meat-meal count against the previous 7 days'
+        - 'Needs counter-specific windows so the baseline week is evaluated separately'
+  - code: M.B1.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        proteinSwaps:
+          anyOf:
+            - SWAP_BEEF_TO_PORK
+            - SWAP_BEEF_TO_CHICKEN
+            - SWAP_BEEF_TO_LEGUMES
+            - SWAP_PORK_TO_CHICKEN
+            - SWAP_PORK_TO_LEGUMES
+            - SWAP_CHICKEN_TO_LEGUMES
+      target: 'proteinSwaps >= 2'
+      progress: 'min(proteinSwaps / 2, 1)'
+      notes:
+        - 'Direct mapping from the swap-based mission goal'
+  - code: M.B1.5
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        beefReductionSwaps:
+          anyOf:
+            - SWAP_BEEF_TO_CHICKEN
+            - SWAP_BEEF_TO_LEGUMES
+      target: 'beefReductionSwaps >= 2'
+      progress: 'min(beefReductionSwaps / 2, 1)'
+      notes:
+        - 'Direct mapping from the beef-reduction mission goal'
+  - code: M.B2.1
+    shape: undecided
+  - code: M.B2.2
+    shape: undecided
+  - code: M.B2.3
+    shape: undecided
+  - code: M.B2.4
+    shape: undecided
+  - code: M.B2.5
+    shape: undecided
+  - code: M.B3.1
+    shape: undecided
+  - code: M.B3.2
+    shape: undecided
+  - code: M.B3.3
+    shape: undecided
+  - code: M.B3.4
+    shape: undecided
+  - code: M.B3.5
+    shape: undecided
+  - code: M.B4.1
+    shape: undecided
+  - code: M.B4.2
+    shape: undecided
+  - code: M.B4.3
+    shape: undecided
+  - code: M.B4.4
+    shape: undecided
+  - code: M.B4.5
+    shape: undecided
+  - code: M.B5.1
+    shape: undecided
+  - code: M.B5.2
+    shape: undecided
+  - code: M.B5.3
+    shape: undecided
+  - code: M.B5.4
+    shape: undecided
+  - code: M.B5.5
+    shape: undecided
+  - code: M.B6.1
+    shape: undecided
+  - code: M.B6.2
+    shape: undecided
+  - code: M.B6.3
+    shape: undecided
+  - code: M.B6.4
+    shape: undecided
+  - code: M.B6.5
+    shape: undecided
+  - code: M.I1.1
+    shape: undecided
+  - code: M.I1.2
+    shape: undecided
+  - code: M.I1.3
+    shape: undecided
+  - code: M.I1.4
+    shape: undecided
+  - code: M.I1.5
+    shape: undecided
+  - code: M.I2.1
+    shape: undecided
+  - code: M.I2.2
+    shape: undecided
+  - code: M.I2.3
+    shape: undecided
+  - code: M.I2.4
+    shape: undecided
+  - code: M.I2.5
+    shape: undecided
+  - code: M.I3.1
+    shape: undecided
+  - code: M.I3.2
+    shape: undecided
+  - code: M.I3.3
+    shape: undecided
+  - code: M.I3.4
+    shape: undecided
+  - code: M.I3.5
+    shape: undecided
+  - code: M.I4.1
+    shape: undecided
+  - code: M.I4.2
+    shape: undecided
+  - code: M.I4.3
+    shape: undecided
+  - code: M.I4.4
+    shape: undecided
+  - code: M.I4.5
+    shape: undecided
+  - code: M.I5.1
+    shape: undecided
+  - code: M.I5.2
+    shape: undecided
+  - code: M.I5.3
+    shape: undecided
+  - code: M.I5.4
+    shape: undecided
+  - code: M.I5.5
+    shape: undecided
+  - code: M.I6.1
+    shape: undecided
+  - code: M.I6.2
+    shape: undecided
+  - code: M.I6.3
+    shape: undecided
+  - code: M.I6.4
+    shape: undecided
+  - code: M.I6.5
+    shape: undecided
+
+challenges:
+  - code: CH.A1.1
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        ancientGrainActions:
+          event: MEAL_ANCIENT_GRAIN
+          distinctBy: metadata.mealId
+      target: 'ancientGrainActions >= 1'
+      progress: 'min(ancientGrainActions, 1)'
+      notes:
+        - 'One-shot completion based on trying an ancient grain'
+  - code: CH.A1.2
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        legumeMeals:
+          event: MEAL_LEGUME_CONSUMED
+          distinctBy: metadata.mealId
+        alternativeStapleMeals:
+          event: MEAL_ALTERNATIVE_STAPLE
+          distinctBy: metadata.mealId
+        meatMeals:
+          event: MEAL_MEAT_CONSUMED
+          distinctBy: metadata.mealId
+      target: 'legumeMeals >= 1 && alternativeStapleMeals >= 1 && meatMeals <= 1'
+      progress: '(min(legumeMeals, 1) + min(alternativeStapleMeals, 1) + max(0, min(1 - meatMeals, 1))) / 3'
+      notes:
+        - 'Captures menu composition constraints from challenge task'
+  - code: CH.A1.3
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        recipeShares:
+          event: LEARNING_RECIPE_SHARED
+      target: 'recipeShares >= 1'
+      progress: 'min(recipeShares, 1)'
+      notes:
+        - 'Self-attested challenge directly mapped to existing learning event'
+  - code: CH.A1.4
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        factReads:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.3.7
+      target: 'factReads >= 1'
+      progress: 'min(factReads, 1)'
+      notes:
+        - 'Requires reading the quest-linked soil-fertility food fact (FF1.3.7)'
+  - code: CH.A1.5
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        footprintComparisons:
+          event: LEARNING_FOOTPRINT_COMPARED
+      target: 'footprintComparisons >= 1'
+      progress: 'min(footprintComparisons, 1)'
+      notes:
+        - 'Uses comparison event as evidence for ranking/impact exploration'
+  - code: CH.A2.1
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        seasonalProduct:
+          event: SHOPPING_SEASONAL_CHOSEN
+        localProduct:
+          event: SHOPPING_LOCAL_CHOSEN
+        certifiedProduct:
+          event: SHOPPING_CERTIFICATION_CHOSEN
+        lowerCarbonProteinSource:
+          anyOf:
+            - SWAP_BEEF_TO_CHICKEN
+            - SWAP_BEEF_TO_LEGUMES
+            - SWAP_PORK_TO_CHICKEN
+            - SWAP_PORK_TO_LEGUMES
+            - SWAP_CHICKEN_TO_LEGUMES
+            - SWAP_PROCESSED_MEAT_TO_LEGUMES
+      target: 'seasonalProduct >= 1 && localProduct >= 1 && certifiedProduct >= 1 && lowerCarbonProteinSource >= 1'
+      progress: '(min(seasonalProduct, 1) + min(localProduct, 1) + min(certifiedProduct, 1) + min(lowerCarbonProteinSource, 1)) / 4'
+      notes:
+        - 'Composes the four basket elements as one-shot evidences'
+        - 'Hypothetical basket intent is approximated by observed choice events'
+  - code: CH.A2.2
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        footprintComparisons:
+          event: LEARNING_FOOTPRINT_COMPARED
+      target: 'footprintComparisons >= 4'
+      progress: 'min(footprintComparisons / 4, 1)'
+      notes:
+        - 'Uses comparison actions as proxy for ranking four foods by land use'
+        - 'No land-use specific event dimension exists yet'
+  - code: CH.A2.3
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        sustainabilityFactReads:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF2.1.8
+      target: 'sustainabilityFactReads >= 1'
+      progress: 'min(sustainabilityFactReads, 1)'
+      notes:
+        - 'Requires reading one specific water-footprint-related food fact (FF2.1.8)'
+  - code: CH.A2.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        certificationChoices:
+          event: SHOPPING_CERTIFICATION_CHOSEN
+      target: 'certificationChoices >= 2'
+      progress: 'min(certificationChoices / 2, 1)'
+      notes:
+        - 'Approximates comparing two certifications through repeated certified-product checks'
+        - 'Cannot yet verify explicit comparison outcome without dedicated event/metadata'
+  - code: CH.A2.5
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        multiCriteriaReflection:
+          event: SHOPPING_MULTICRITERIA_PURCHASE
+        impactExploration:
+          event: LEARNING_FOOTPRINT_COMPARED
+      target: 'multiCriteriaReflection >= 1 && impactExploration >= 1'
+      progress: '(min(multiCriteriaReflection, 1) + min(impactExploration, 1)) / 2'
+      notes:
+        - 'Combines decision event and impact exploration as evidence for multidimensional reflection'
+  - code: CH.A3.1
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        indicatorComparison:
+          event: PROCESSING_INDICATORS_COMPARED
+        ingredientReview:
+          event: PROCESSING_INGREDIENTS_REVIEWED
+      target: 'indicatorComparison >= 1 && ingredientReview >= 1'
+      progress: '(min(indicatorComparison, 1) + min(ingredientReview, 1)) / 2'
+      notes:
+        - 'One-shot reflection evidence using indicator comparison plus ingredient inspection'
+        - 'Challenge wording likely intends to question one-indicator sufficiency'
+  - code: CH.A3.2
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaCheck:
+          event: PROCESSING_NOVA_CHECKED
+        ingredientReview:
+          event: PROCESSING_INGREDIENTS_REVIEWED
+      target: 'novaCheck >= 1 && ingredientReview >= 1'
+      progress: '(min(novaCheck, 1) + min(ingredientReview, 1)) / 2'
+      notes:
+        - 'Captures the NOVA-versus-ingredients comparison for one product'
+  - code: CH.A3.3
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        productionMethodCheck:
+          event: PROCESSING_PRODUCTION_METHOD_CHECKED
+        ingredientReview:
+          event: PROCESSING_INGREDIENTS_REVIEWED
+        packagingCheck:
+          event: SHOPPING_PACKAGING_INFO_CHECKED
+      target: 'productionMethodCheck >= 1 && ingredientReview >= 1 && packagingCheck >= 1'
+      progress: '(min(productionMethodCheck, 1) + min(ingredientReview, 1) + min(packagingCheck, 1)) / 3'
+      notes:
+        - 'Approximates analyzing convenience, shelf-life and broader processing impacts'
+  - code: CH.A3.4
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        indicatorConflictExploration:
+          event: PROCESSING_INDICATORS_COMPARED
+      target: 'indicatorConflictExploration >= 1'
+      progress: 'min(indicatorConflictExploration, 1)'
+      notes:
+        - 'Uses indicator comparison as evidence for identifying conflicting performance'
+  - code: CH.A3.5
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        indicatorComparison:
+          event: PROCESSING_INDICATORS_COMPARED
+        greenScoreCheck:
+          event: PROCESSING_GREENSCORE_CHECKED
+        novaCheck:
+          event: PROCESSING_NOVA_CHECKED
+      target: 'indicatorComparison >= 1 && greenScoreCheck >= 1 && novaCheck >= 1'
+      progress: '(min(indicatorComparison, 1) + min(greenScoreCheck, 1) + min(novaCheck, 1)) / 3'
+      notes:
+        - 'Represents reflection after reviewing multiple indicators'
+  - code: CH.A4.1
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingDilemmaObserved:
+          event: PACKAGING_MATERIAL_OBSERVED
+      target: 'packagingDilemmaObserved >= 1'
+      progress: 'min(packagingDilemmaObserved, 1)'
+      notes:
+        - 'One-shot evidence for noticing a heavily packaged product'
+        - 'Discussion quality is not represented in current telemetry'
+  - code: CH.A4.2
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingComparison:
+          event: PACKAGING_COMPARISON_MADE
+      target: 'packagingComparison >= 1'
+      progress: 'min(packagingComparison, 1)'
+      notes:
+        - 'Tracks one explicit comparison between packaging options'
+  - code: CH.A4.3
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        circularityEvaluation:
+          event: PACKAGING_RECYCLABILITY_EVALUATED
+      target: 'circularityEvaluation >= 1'
+      progress: 'min(circularityEvaluation, 1)'
+      notes:
+        - "Maps to evaluating a package's circular-economy path"
+  - code: CH.A4.4
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingInnovationExplored:
+          event: PACKAGING_SMART_OBSERVED
+      target: 'packagingInnovationExplored >= 1'
+      progress: 'min(packagingInnovationExplored, 1)'
+      notes:
+        - 'Direct mapping to investigating one packaging innovation'
+  - code: CH.A4.5
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        resourcePerspective:
+          event: PACKAGING_MATERIAL_OBSERVED
+        protectionPerspective:
+          event: PACKAGING_COMPARISON_MADE
+        endOfLifePerspective:
+          event: PACKAGING_RECYCLABILITY_EVALUATED
+      target: 'resourcePerspective >= 1 && protectionPerspective >= 1 && endOfLifePerspective >= 1'
+      progress: '(min(resourcePerspective, 1) + min(protectionPerspective, 1) + min(endOfLifePerspective, 1)) / 3'
+      notes:
+        - 'Approximates three-perspective package evaluation'
+  - code: CH.A5.1
+    shape: undecided
+  - code: CH.A5.2
+    shape: undecided
+  - code: CH.A5.3
+    shape: undecided
+  - code: CH.A5.4
+    shape: undecided
+  - code: CH.A5.5
+    shape: undecided
+  - code: CH.A6.1
+    shape: undecided
+  - code: CH.A6.2
+    shape: undecided
+  - code: CH.A6.3
+    shape: undecided
+  - code: CH.A6.4
+    shape: undecided
+  - code: CH.A6.5
+    shape: undecided
+  - code: CH.B1.1
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        footprintComparisons:
+          event: LEARNING_FOOTPRINT_COMPARED
+      target: 'footprintComparisons >= 1'
+      progress: 'min(footprintComparisons, 1)'
+      notes:
+        - 'Direct proxy for the protein footprint comparison challenge'
+  - code: CH.B1.2
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        proteinFactRead1:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.2.1
+        proteinFactRead2:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.2.2
+        proteinFactRead3:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.2.3
+      target: 'proteinFactRead1 >= 1 && proteinFactRead2 >= 1 && proteinFactRead3 >= 1'
+      progress: '(min(proteinFactRead1, 1) + min(proteinFactRead2, 1) + min(proteinFactRead3, 1)) / 3'
+      notes:
+        - 'This challenge needs some form a validation. no events match. Uses the three beginner protein-source facts as evidence for the challenge'
+  - code: CH.B1.3
+    shape: undecided
+  - code: CH.B1.4
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        meatReductionFactRead1:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.1.1
+        meatReductionFactRead2:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.1.2
+        meatReductionFactRead3:
+          event: LEARNING_FACT_READ
+          where:
+            metadata.foodFactCode: FF1.1.3
+      target: 'meatReductionFactRead1 >= 1 && meatReductionFactRead2 >= 1 && meatReductionFactRead3 >= 1'
+      progress: '(min(meatReductionFactRead1, 1) + min(meatReductionFactRead2, 1) + min(meatReductionFactRead3, 1)) / 3'
+      notes:
+        - 'This challenge needs some form a validation. no events match. Proxy for the processed-meat awareness challenge using the beginner meat-reduction facts'
+  - code: CH.B1.5
+    shape: undecided
+  - code: CH.B2.1
+    shape: undecided
+  - code: CH.B2.2
+    shape: undecided
+  - code: CH.B2.3
+    shape: undecided
+  - code: CH.B2.4
+    shape: undecided
+  - code: CH.B2.5
+    shape: undecided
+  - code: CH.B3.1
+    shape: undecided
+  - code: CH.B3.2
+    shape: undecided
+  - code: CH.B3.3
+    shape: undecided
+  - code: CH.B3.4
+    shape: undecided
+  - code: CH.B3.5
+    shape: undecided
+  - code: CH.B4.1
+    shape: undecided
+  - code: CH.B4.2
+    shape: undecided
+  - code: CH.B4.3
+    shape: undecided
+  - code: CH.B4.4
+    shape: undecided
+  - code: CH.B4.5
+    shape: undecided
+  - code: CH.B5.1
+    shape: undecided
+  - code: CH.B5.2
+    shape: undecided
+  - code: CH.B5.3
+    shape: undecided
+  - code: CH.B5.4
+    shape: undecided
+  - code: CH.B5.5
+    shape: undecided
+  - code: CH.B6.1
+    shape: undecided
+  - code: CH.B6.2
+    shape: undecided
+  - code: CH.B6.3
+    shape: undecided
+  - code: CH.B6.4
+    shape: undecided
+  - code: CH.B6.5
+    shape: undecided
+  - code: CH.I1.1
+    shape: undecided
+  - code: CH.I1.2
+    shape: undecided
+  - code: CH.I1.3
+    shape: undecided
+  - code: CH.I1.4
+    shape: undecided
+  - code: CH.I1.5
+    shape: undecided
+  - code: CH.I2.1
+    shape: undecided
+  - code: CH.I2.2
+    shape: undecided
+  - code: CH.I2.3
+    shape: undecided
+  - code: CH.I2.4
+    shape: undecided
+  - code: CH.I2.5
+    shape: undecided
+  - code: CH.I3.1
+    shape: undecided
+  - code: CH.I3.2
+    shape: undecided
+  - code: CH.I3.3
+    shape: undecided
+  - code: CH.I3.4
+    shape: undecided
+  - code: CH.I3.5
+    shape: undecided
+  - code: CH.I4.1
+    shape: undecided
+  - code: CH.I4.2
+    shape: undecided
+  - code: CH.I4.3
+    shape: undecided
+  - code: CH.I4.4
+    shape: undecided
+  - code: CH.I4.5
+    shape: undecided
+  - code: CH.I5.1
+    shape: undecided
+  - code: CH.I5.2
+    shape: undecided
+  - code: CH.I5.3
+    shape: undecided
+  - code: CH.I5.4
+    shape: undecided
+  - code: CH.I5.5
+    shape: undecided
+  - code: CH.I6.1
+    shape: undecided
+  - code: CH.I6.2
+    shape: undecided
+  - code: CH.I6.3
+    shape: undecided
+  - code: CH.I6.4
+    shape: undecided
+  - code: CH.I6.5
+    shape: undecided

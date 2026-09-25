@@ -10,6 +10,7 @@ import { FoodWasteRepository } from '../../src/foodWaste/repositories/food-waste
 import { FoodWasteService } from '../../src/foodWaste/services/food-waste.service';
 import { UserEventService } from '../../src/events/services/user-event.service';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
+import { RulesService } from '../../src/rules/rules.service';
 import { PantryController } from '../../src/pantry/controllers/pantry.controller';
 import { PantryItemsController } from '../../src/pantry/controllers/pantry-items.controller';
 import { PantryItemRepository } from '../../src/pantry/repositories/pantry-items.repository';
@@ -47,6 +48,7 @@ describe('Pantry (e2e)', () => {
         FoodWasteService,
         FoodWasteRepository,
         UserEventService,
+        { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],
     })

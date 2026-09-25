@@ -38,14 +38,22 @@ describe('MissionProgressRepository', () => {
 
   describe('findMissionByCodeOrId', () => {
     it('should look up by id when the param is a UUID', async () => {
-      const mockReturn = { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Mission' };
+      const mockReturn = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        title: 'Mission',
+      };
       (prisma.mission.findFirst as jest.Mock).mockResolvedValue(mockReturn);
       const result = await repository.findMissionByCodeOrId(
         '550e8400-e29b-41d4-a716-446655440000',
       );
       expect(prisma.mission.findFirst).toHaveBeenCalledWith({
         where: { id: '550e8400-e29b-41d4-a716-446655440000' },
-        select: { id: true, code: true, title: true, reward: { select: { id: true, xp: true, points: true } } },
+        select: {
+          id: true,
+          code: true,
+          title: true,
+          reward: { select: { id: true, xp: true, points: true } },
+        },
       });
       expect(result).toBe(mockReturn);
     });
@@ -56,7 +64,12 @@ describe('MissionProgressRepository', () => {
       const result = await repository.findMissionByCodeOrId('M.A1.1');
       expect(prisma.mission.findFirst).toHaveBeenCalledWith({
         where: { code: 'M.A1.1' },
-        select: { id: true, code: true, title: true, reward: { select: { id: true, xp: true, points: true } } },
+        select: {
+          id: true,
+          code: true,
+          title: true,
+          reward: { select: { id: true, xp: true, points: true } },
+        },
       });
       expect(result).toBe(mockReturn);
     });
@@ -109,10 +122,15 @@ describe('MissionProgressRepository', () => {
           missionId: 'm1',
           progress: 50,
           completed: true,
+          status: 'COMPLETED',
+          state: { source: 'manual', mode: 'api' },
+          startedAt: expect.any(Date),
         },
         update: {
           progress: 50,
           completed: true,
+          status: 'COMPLETED',
+          state: { source: 'manual', mode: 'api' },
         },
         include: { mission: true },
       });

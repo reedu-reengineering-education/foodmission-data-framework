@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { GroupRole } from '@prisma/client';
+import { GroupRole, Prisma } from '@prisma/client';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { PrismaService } from '../../database/prisma.service';
 import { UserGroupRepository } from '../repositories/user-groups.repository';
 import { GroupMembershipRepository } from '../repositories/group-memberships.repository';
 import { CreateUserGroupDto } from '../dto/create-user-group.dto';
@@ -28,12 +29,19 @@ import {
   GroupMembershipWithUser,
   UserGroupWithRelations,
 } from '../../common/types/prisma-relations';
+import { ProgressStatus } from '../../common/progress-status';
+
+type QuestContentScopeItem = {
+  contentType: 'MISSION' | 'CHALLENGE';
+  contentCode: string;
+};
 
 @Injectable()
 export class UserGroupService {
   private readonly logger = new Logger(UserGroupService.name);
 
   constructor(
+    private readonly prisma: PrismaService,
     private readonly userGroupRepository: UserGroupRepository,
     private readonly membershipRepository: GroupMembershipRepository,
     private readonly userEventService: UserEventService,
@@ -102,8 +110,216 @@ export class UserGroupService {
 
     await this.requireAdmin(userId, groupId);
 
-    const group = await this.userGroupRepository.update(groupId, updateDto);
-    return this.transformToGroupDto(group);
+    const currentGroup = await this.getGroupOrThrow(groupId);
+    const currentQuestChanged =
+      updateDto.currentQuestId !== undefined &&
+      updateDto.currentQuestId !== currentGroup.currentQuestId;
+
+    if (!currentQuestChanged) {
+      const group = await this.userGroupRepository.update(groupId, updateDto);
+      return this.transformToGroupDto(group);
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await this.updateGroupWithQuestTransition(tx, currentGroup, updateDto);
+    });
+
+    const refreshedGroup = await this.userGroupRepository.findById(groupId);
+    return this.transformToGroupDto(refreshedGroup);
+  }
+
+  private async updateGroupWithQuestTransition(
+    tx: Prisma.TransactionClient,
+    currentGroup: UserGroupWithRelations,
+    updateDto: UpdateUserGroupDto,
+  ): Promise<void> {
+    const previousQuestId = currentGroup.currentQuestId;
+    const nextQuestId = updateDto.currentQuestId ?? null;
+
+    const oldQuestItems = previousQuestId
+      ? await this.getQuestMissionChallengeItems(tx, previousQuestId)
+      : [];
+    const newQuestItems = nextQuestId
+      ? await this.getQuestMissionChallengeItems(tx, nextQuestId, true)
+      : [];
+
+    await tx.userGroup.update({
+      where: { id: currentGroup.id },
+      data: updateDto,
+    });
+
+    const memberRows = await tx.groupMembership.findMany({
+      where: {
+        groupId: currentGroup.id,
+        userId: { not: null },
+      },
+      select: { userId: true },
+    });
+    const memberUserIds = memberRows
+      .map((row) => row.userId)
+      .filter((memberUserId): memberUserId is string => memberUserId !== null);
+
+    if (memberUserIds.length === 0) {
+      return;
+    }
+
+    if (previousQuestId && previousQuestId !== nextQuestId) {
+      await this.removeQuestProgressRows(tx, memberUserIds, oldQuestItems);
+    }
+
+    if (nextQuestId) {
+      await this.seedQuestProgressRows(tx, memberUserIds, newQuestItems);
+    }
+  }
+
+  private async getQuestMissionChallengeItems(
+    tx: Prisma.TransactionClient,
+    questId: string,
+    requireAvailable = false,
+  ): Promise<QuestContentScopeItem[]> {
+    const quest = await tx.quest.findUnique({
+      where: { id: questId },
+      select: {
+        available: true,
+        items: {
+          where: {
+            contentType: {
+              in: ['MISSION', 'CHALLENGE'],
+            },
+          },
+          select: {
+            contentType: true,
+            contentCode: true,
+          },
+        },
+      },
+    });
+
+    if (!quest || (requireAvailable && !quest.available)) {
+      throw new BadRequestException('Invalid currentQuestId');
+    }
+
+    return quest.items as QuestContentScopeItem[];
+  }
+
+  private async seedQuestProgressRows(
+    tx: Prisma.TransactionClient,
+    userIds: string[],
+    questItems: QuestContentScopeItem[],
+  ): Promise<void> {
+    const missionCodes = [
+      ...new Set(
+        questItems
+          .filter((item) => item.contentType === 'MISSION')
+          .map((item) => item.contentCode),
+      ),
+    ];
+    const challengeCodes = [
+      ...new Set(
+        questItems
+          .filter((item) => item.contentType === 'CHALLENGE')
+          .map((item) => item.contentCode),
+      ),
+    ];
+
+    if (missionCodes.length > 0) {
+      const missions = await tx.mission.findMany({
+        where: { code: { in: missionCodes } },
+        select: { id: true },
+      });
+      const missionRows = userIds.flatMap((memberUserId) =>
+        missions.map((mission) => ({
+          userId: memberUserId,
+          missionId: mission.id,
+          progress: 0,
+          completed: false,
+          status: ProgressStatus.NOT_STARTED,
+          state: {},
+        })),
+      );
+      if (missionRows.length > 0) {
+        await tx.missionProgress.createMany({
+          data: missionRows,
+          skipDuplicates: true,
+        });
+      }
+    }
+
+    if (challengeCodes.length > 0) {
+      const challenges = await tx.challenge.findMany({
+        where: { code: { in: challengeCodes } },
+        select: { id: true },
+      });
+      const challengeRows = userIds.flatMap((memberUserId) =>
+        challenges.map((challenge) => ({
+          userId: memberUserId,
+          challengeId: challenge.id,
+          progress: 0,
+          completed: false,
+          status: ProgressStatus.NOT_STARTED,
+          state: {},
+        })),
+      );
+      if (challengeRows.length > 0) {
+        await tx.challengeProgress.createMany({
+          data: challengeRows,
+          skipDuplicates: true,
+        });
+      }
+    }
+  }
+
+  private async removeQuestProgressRows(
+    tx: Prisma.TransactionClient,
+    userIds: string[],
+    questItems: QuestContentScopeItem[],
+  ): Promise<void> {
+    const missionCodes = [
+      ...new Set(
+        questItems
+          .filter((item) => item.contentType === 'MISSION')
+          .map((item) => item.contentCode),
+      ),
+    ];
+    const challengeCodes = [
+      ...new Set(
+        questItems
+          .filter((item) => item.contentType === 'CHALLENGE')
+          .map((item) => item.contentCode),
+      ),
+    ];
+
+    if (missionCodes.length > 0) {
+      const missions = await tx.mission.findMany({
+        where: { code: { in: missionCodes } },
+        select: { id: true },
+      });
+      if (missions.length > 0) {
+        await tx.missionProgress.deleteMany({
+          where: {
+            userId: { in: userIds },
+            missionId: { in: missions.map((mission) => mission.id) },
+            status: { not: ProgressStatus.COMPLETED },
+          },
+        });
+      }
+    }
+
+    if (challengeCodes.length > 0) {
+      const challenges = await tx.challenge.findMany({
+        where: { code: { in: challengeCodes } },
+        select: { id: true },
+      });
+      if (challenges.length > 0) {
+        await tx.challengeProgress.deleteMany({
+          where: {
+            userId: { in: userIds },
+            challengeId: { in: challenges.map((challenge) => challenge.id) },
+            status: { not: ProgressStatus.COMPLETED },
+          },
+        });
+      }
+    }
   }
 
   async remove(groupId: string, userId: string): Promise<void> {

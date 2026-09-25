@@ -2,7 +2,14 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const CSV_PATH = path.join(process.cwd(), 'prisma', 'seeds', 'data', 'nevo', 'NEVO2025_v9.0.csv');
+const CSV_PATH = path.join(
+  process.cwd(),
+  'prisma',
+  'seeds',
+  'data',
+  'nevo',
+  'NEVO2025_v9.0.with_diet_flags.csv',
+);
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
@@ -158,6 +165,10 @@ const COL = {
   F24_1TRS: 145,
   FAMSTXR: 146,
   FAUN: 147,
+  VEGAN: 148,
+  VEGETARIAN: 149,
+  MEAT_OR_FISH: 150,
+  LEGUME: 151,
 } as const;
 
 /**
@@ -184,6 +195,10 @@ function parseStringOrNull(raw: string): string | null {
 function parseInt_(raw: string): number {
   const cleaned = raw.replace(/"/g, '').trim();
   return parseInt(cleaned, 10);
+}
+
+function parseYesNo(raw?: string): boolean {
+  return parseString(raw ?? '').toLowerCase() === 'yes';
 }
 
 export type SeedGenericFoodsOptions = {
@@ -232,6 +247,11 @@ export async function seedGenericFoods(
     if (isNaN(nevoCode)) continue;
 
     const data = {
+      vegan: parseYesNo(cols[COL.VEGAN]),
+      vegetarian: parseYesNo(cols[COL.VEGETARIAN]),
+      meatOrFish: parseYesNo(cols[COL.MEAT_OR_FISH]),
+      legume: parseYesNo(cols[COL.LEGUME]),
+
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),

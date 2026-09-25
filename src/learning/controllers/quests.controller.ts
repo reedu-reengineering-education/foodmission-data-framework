@@ -128,9 +128,17 @@ export class QuestsController {
   }
 
   @Patch('by-code/:code/progress')
-  @Roles('user', 'admin')
+  // Admin-only: quest progress is derived from item completion by
+  // QuestProgressService. This route is a manual override for support, not a
+  // normal write path. Note the override is transient — the next completion
+  // event recomputes the quest and replaces whatever was written here.
+  @Roles('admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Upsert quest progress by code for current user' })
+  @ApiOperation({
+    summary: 'Admin override of quest progress by code',
+    description:
+      'Quest progress is normally derived from item completion. This route overwrites it manually and is superseded by the next recompute.',
+  })
   @ApiParam({
     name: 'code',
     description: 'Quest code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',
@@ -195,9 +203,14 @@ export class QuestsController {
   }
 
   @Patch(':codeOrId/progress')
-  @Roles('user', 'admin')
+  // Admin-only for the same reason as the by-code route above.
+  @Roles('admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Upsert quest progress for current user' })
+  @ApiOperation({
+    summary: 'Admin override of quest progress',
+    description:
+      'Quest progress is normally derived from item completion. This route overwrites it manually and is superseded by the next recompute.',
+  })
   @ApiParam({
     name: 'codeOrId',
     description: 'Quest UUID or code (e.g. QUEST.DIET_CHANGES.BEGINNER.1)',

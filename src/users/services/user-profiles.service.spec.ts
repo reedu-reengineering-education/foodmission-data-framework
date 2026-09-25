@@ -33,6 +33,7 @@ describe('UserProfilesService updateProfile gamification', () => {
     language: 'en',
     preferences: {},
     settings: {},
+    currentQuestId: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -53,7 +54,21 @@ describe('UserProfilesService updateProfile gamification', () => {
         },
         {
           provide: PrismaService,
-          useValue: { user: { update: jest.fn() } },
+          useValue: {
+            user: { update: jest.fn() },
+            quest: { findUnique: jest.fn() },
+            mission: { findMany: jest.fn() },
+            challenge: { findMany: jest.fn() },
+            missionProgress: {
+              createMany: jest.fn(),
+              deleteMany: jest.fn(),
+            },
+            challengeProgress: {
+              createMany: jest.fn(),
+              deleteMany: jest.fn(),
+            },
+            $transaction: jest.fn(),
+          },
         },
         {
           provide: KeycloakAdminService,
@@ -77,6 +92,10 @@ describe('UserProfilesService updateProfile gamification', () => {
     userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
     gamificationOnboarding = module.get(GamificationOnboardingService);
+
+    (prisma.$transaction as jest.Mock).mockImplementation(
+      (callback: (tx: unknown) => unknown) => callback(prisma),
+    );
   });
 
   afterEach(() => {
@@ -212,5 +231,84 @@ describe('UserProfilesService updateProfile gamification', () => {
         }),
       }),
     );
+  });
+
+  it('seeds new quest rows and removes old non-completed rows on quest change', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      currentQuestId: 'quest-old',
+    });
+
+    (prisma.quest.findUnique as jest.Mock)
+      .mockResolvedValueOnce({
+        available: true,
+        items: [
+          { contentType: 'MISSION', contentCode: 'M.A1.1' },
+          { contentType: 'CHALLENGE', contentCode: 'CH.A1.1' },
+        ],
+      })
+      .mockResolvedValueOnce({
+        available: true,
+        items: [
+          { contentType: 'MISSION', contentCode: 'M.A1.2' },
+          { contentType: 'CHALLENGE', contentCode: 'CH.A1.2' },
+        ],
+      });
+
+    (prisma.mission.findMany as jest.Mock)
+      .mockResolvedValueOnce([{ id: 'mission-old-1' }])
+      .mockResolvedValueOnce([{ id: 'mission-new-1' }]);
+    (prisma.challenge.findMany as jest.Mock)
+      .mockResolvedValueOnce([{ id: 'challenge-old-1' }])
+      .mockResolvedValueOnce([{ id: 'challenge-new-1' }]);
+
+    (prisma.user.update as jest.Mock).mockResolvedValueOnce({
+      ...mockUser,
+      currentQuestId: 'quest-new',
+    });
+
+    await service.updateProfile('kc-1', { currentQuestId: 'quest-new' });
+
+    expect(prisma.missionProgress.deleteMany).toHaveBeenCalledWith({
+      where: {
+        userId: 'user-1',
+        missionId: { in: ['mission-old-1'] },
+        status: { not: 'COMPLETED' },
+      },
+    });
+    expect(prisma.challengeProgress.deleteMany).toHaveBeenCalledWith({
+      where: {
+        userId: 'user-1',
+        challengeId: { in: ['challenge-old-1'] },
+        status: { not: 'COMPLETED' },
+      },
+    });
+
+    expect(prisma.missionProgress.createMany).toHaveBeenCalledWith({
+      data: [
+        {
+          userId: 'user-1',
+          missionId: 'mission-new-1',
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          state: {},
+        },
+      ],
+      skipDuplicates: true,
+    });
+    expect(prisma.challengeProgress.createMany).toHaveBeenCalledWith({
+      data: [
+        {
+          userId: 'user-1',
+          challengeId: 'challenge-new-1',
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          state: {},
+        },
+      ],
+      skipDuplicates: true,
+    });
   });
 });
