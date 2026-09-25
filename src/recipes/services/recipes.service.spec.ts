@@ -16,6 +16,7 @@ import {
   buildRecipeIngredient,
   emptyPaginationMock,
 } from '../../../test/fixtures/recipe.fixtures';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('RecipesService', () => {
   let service: RecipesService;
@@ -33,6 +34,18 @@ describe('RecipesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RecipesService,
+        {
+          // The badge rules count SURVEY_COMPLETED / SHOPPING_LIST_CREATED /
+          // LEARNING_RECIPE_EXPLORED / USER_REGISTERED; recording is
+          // best-effort in the service, so the stub only has to exist.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
         { provide: RecipesRepository, useValue: mockRecipeRepository },
       ],
     }).compile();

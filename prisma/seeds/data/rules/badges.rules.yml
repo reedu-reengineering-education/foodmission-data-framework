@@ -1,0 +1,177 @@
+schemaVersion: 1
+status: ready
+purpose: >-
+  Event-driven badge awarding. Same rule dialect as
+  drafts/rules-coverage.draft.yml, evaluated by BadgeRulesService against the
+  whole user_events ledger instead of a quest's active missions.
+#
+# `code` is the Badge.ruleCode a row in `badges` points at; a badge whose
+# ruleCode matches no entry here is simply never awarded automatically.
+#
+# Badges are account-wide and permanent, so every window is `lifetime` — no
+# lower bound on the event query at all. Keep it that way: a dated window would
+# mean a badge could be "un-earned" by the clock, and UserEarnedBadge has no
+# way to express that.
+#
+# Every counter that can see the same subject twice sets `distinctBy`, so
+# re-reading one food fact or re-answering one quiz never advances a badge.
+
+badges:
+  - code: FIRST_STEP
+    shape: one_shot_event
+    rule:
+      window:
+        type: lifetime
+      counters:
+        registrations:
+          anyOf:
+            - USER_REGISTERED
+            - ONBOARDING_COMPLETED
+      target: 'registrations >= 1'
+      progress: 'min(registrations, 1)'
+      notes:
+        - 'USER_REGISTERED covers both signup paths (see auth.constants.ts)'
+        - >-
+          ONBOARDING_COMPLETED is accepted too so users created before
+          USER_REGISTERED existed still earn this on their next event
+
+  - code: STYLISH
+    shape: one_shot_event
+    rule:
+      window:
+        type: lifetime
+      counters:
+        accessoriesEquipped:
+          event: FOODY_ITEM_EQUIPPED
+      target: 'accessoriesEquipped >= 1'
+      progress: 'min(accessoriesEquipped, 1)'
+      notes:
+        - 'Equipping, not buying: the badge is for personalizing Foody'
+
+  - code: CURIOUS_FOODIE
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        factsRead:
+          anyOf:
+            - LEARNING_FACT_READ
+            - LEARNING_FACT_VIEWED
+          distinctBy: metadata.foodFactId
+      target: 'factsRead >= 5'
+      progress: 'min(factsRead / 5, 1)'
+      notes:
+        - 'Five *different* food facts; re-reading one does not count twice'
+
+  - code: BRAINY
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        correctQuizzes:
+          anyOf:
+            - QUIZ_ANSWERED
+            - QUIZ_UPDATED
+          where:
+            metadata.isCorrect: true
+          distinctBy: metadata.quizId
+      target: 'correctQuizzes >= 10'
+      progress: 'min(correctQuizzes / 10, 1)'
+      notes:
+        - >-
+          QUIZ_UPDATED is included so a quiz first answered wrong and later
+          corrected counts; distinctBy quizId keeps it to one per quiz
+
+  - code: MISSIONARY
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        missionsCompleted:
+          event: MISSION_COMPLETED
+          distinctBy: metadata.missionId
+      target: 'missionsCompleted >= 3'
+      progress: 'min(missionsCompleted / 3, 1)'
+      notes:
+        - >-
+          MISSION_COMPLETED is emitted by both the rule engine and the PATCH
+          path under one idempotency key, so a mission yields exactly one event
+
+  - code: ADVENTURER
+    shape: one_shot_event
+    rule:
+      window:
+        type: lifetime
+      counters:
+        questsCompleted:
+          event: QUEST_COMPLETED
+          distinctBy: metadata.questId
+      target: 'questsCompleted >= 1'
+      progress: 'min(questsCompleted, 1)'
+      notes:
+        - 'First finished quest'
+
+  - code: LEGENDARY_ADVENTURER
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        questsCompleted:
+          event: QUEST_COMPLETED
+          distinctBy: metadata.questId
+      target: 'questsCompleted >= 5'
+      progress: 'min(questsCompleted / 5, 1)'
+      notes:
+        - 'Same counter as ADVENTURER, higher bar — both can be earned'
+
+  - code: SURVEY_BEGINNER
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        surveysCompleted:
+          event: SURVEY_COMPLETED
+          distinctBy: metadata.surveyId
+      target: 'surveysCompleted >= 3'
+      progress: 'min(surveysCompleted / 3, 1)'
+      notes:
+        - >-
+          Distinct surveys: the app re-offers surveys on later uses, and
+          answering one survey three times is not three surveys
+
+  - code: SHOPPING_LIST
+    shape: one_shot_event
+    rule:
+      window:
+        type: lifetime
+      counters:
+        listsCreated:
+          event: SHOPPING_LIST_CREATED
+          distinctBy: metadata.shoppingListId
+      target: 'listsCreated >= 1'
+      progress: 'min(listsCreated, 1)'
+      notes:
+        - >-
+          Counts creations, not surviving lists: deleting the list does not
+          take the badge back
+
+  - code: CHEF
+    shape: count_at_least
+    rule:
+      window:
+        type: lifetime
+      counters:
+        recipesViewed:
+          event: LEARNING_RECIPE_EXPLORED
+          distinctBy: metadata.recipeId
+      target: 'recipesViewed >= 5'
+      progress: 'min(recipesViewed / 5, 1)'
+      notes:
+        - >-
+          GET /recipes/:id records one event per (user, recipe), so this is
+          already five different recipes

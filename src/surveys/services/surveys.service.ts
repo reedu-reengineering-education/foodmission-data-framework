@@ -16,6 +16,12 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { toSurveySlug } from '../utils/survey-slug.util';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 type LocalizableQuestion = { id: string; text: string };
 
@@ -44,6 +50,7 @@ export class SurveysService {
     private readonly surveysRepository: SurveysRepository,
     private readonly translationService: TranslationService,
     private readonly i18n: I18nService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   /** Localized answer options, shared by all questions of all surveys. */
@@ -356,6 +363,31 @@ export class SurveysService {
       surveyId,
       { responses: data.responses },
     );
+
+    // Keyed on the response, not on (user, survey): a survey may be answered
+    // again on a later app use, and each attempt is its own completion. The
+    // "Survey Beginner" badge counts distinct surveys, so repeats do not
+    // shortcut it — see badges.rules.yml.
+    //
+    // Best-effort: the answers are already stored, so a ledger failure must
+    // not turn a successful submission into an error.
+    try {
+      await this.userEventService.record({
+        userId,
+        eventType: EventType.SURVEY_COMPLETED,
+        source: EventSource.SURVEY,
+        metadata: {
+          surveyId,
+          responseId: result.id,
+          source: EventSource.API,
+        },
+        subject: { type: EventSubjectType.SURVEY, id: surveyId },
+        idempotencyKey: `survey-completed:${userId}:${result.id}`,
+      });
+    } catch {
+      // Swallowed on purpose — see above.
+    }
+
     return this.mapSurveyResponseToDto(result);
   }
 

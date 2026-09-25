@@ -139,8 +139,8 @@ export class GamificationProfileResponseDto {
   @ApiProperty({
     type: [String],
     description:
-      'Earned badge ids from BadgeService (empty until Badge catalog exists)',
-    example: [],
+      'Codes of the badges this user has earned, oldest first. The full catalog with progress is GET /badges/me.',
+    example: ['FIRST_STEP', 'CHEF'],
   })
   badges!: string[];
 

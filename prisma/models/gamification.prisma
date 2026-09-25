@@ -38,6 +38,7 @@ enum RewardSourceType {
   QUEST
   QUIZ
   FOOD_FACT
+  BADGE
 }
 
 enum ContentLevel {
@@ -412,16 +413,52 @@ model Topic {
 model Badge {
   id          String   @id @default(uuid())
   code        String   @unique
+  /// Entry in prisma/seeds/data/rules/badges.rules.yml that awards this badge.
+  /// Null means nothing awards it automatically — it is granted by hand.
+  ruleCode    String?  @unique
   name        String
   description String?
   imageUrl    String?
+  /// Display order in the badge gallery.
+  sortOrder   Int      @default(0)
+  available   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  rewards      Reward[]
+  rewards       Reward[]
   earnedByUsers UserEarnedBadge[]
+  progress      BadgeProgress[]
 
+  @@index([ruleCode])
+  @@index([sortOrder])
   @@map("badges")
+}
+
+/// Per-user progress toward a rule-driven badge, so "3 of 5 quests" can be
+/// shown before the badge is earned. Mirrors MissionProgress: written only by
+/// BadgeRulesService from the event ledger, never from a client request.
+/// The terminal state lives in UserEarnedBadge, which is what "earned" means;
+/// a row here with completed = true but no UserEarnedBadge sibling only
+/// happens between the evaluation and the after-commit award.
+model BadgeProgress {
+  userId      String
+  badgeId     String
+  progress    Float          @default(0)
+  completed   Boolean        @default(false)
+  status      ProgressStatus @default(NOT_STARTED)
+  /// Snapshot of the last evaluation (counters, target, rule hash), so a
+  /// surprising percentage can be explained without replaying the ledger.
+  state       Json           @default("{}")
+  ruleHash    String?
+  evaluatedAt DateTime?
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+  @@index([badgeId])
+  @@map("badge_progress")
 }
 
 model Reward {

@@ -81,8 +81,8 @@ Configure your `.env` file:
 
 ```env
 # Database
-DATABASE_URL="postgresql://postgres:password@localhost:5434/foodmission_db?schema=public"
-DATABASE_URL_TEST="postgresql://postgres:password@localhost:5434/foodmission_test_db?schema=public"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/foodmission_db?schema=public"
+DATABASE_URL_TEST="postgresql://postgres:password@localhost:5432/foodmission_test_db?schema=public"
 
 # Cache
 CACHE_URL="redis://localhost:6379"

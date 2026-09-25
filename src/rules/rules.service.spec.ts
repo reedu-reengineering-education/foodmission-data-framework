@@ -1,11 +1,9 @@
-import { RulesService } from './rules.service';
+import { evaluateRule, filterEvents } from './rule-evaluator';
 
-describe('RulesService filterEvents', () => {
-  const service = new RulesService({} as never, {} as never, {} as never);
-
+describe('rule-evaluator filterEvents', () => {
   it('filters LEARNING_FACT_READ by metadata.foodFactId', () => {
     const evaluationAt = new Date('2026-01-04T00:00:00.000Z');
-    const filtered = (service as any).filterEvents(
+    const filtered = filterEvents(
       {
         event: 'LEARNING_FACT_READ',
         where: {
@@ -39,7 +37,7 @@ describe('RulesService filterEvents', () => {
 
   it('applies where filtering before distinctBy dedupe', () => {
     const evaluationAt = new Date('2026-01-04T00:00:00.000Z');
-    const filtered = (service as any).filterEvents(
+    const filtered = filterEvents(
       {
         event: 'LEARNING_FACT_READ',
         where: {
@@ -74,7 +72,7 @@ describe('RulesService filterEvents', () => {
 
   it('evaluates current and previous rolling windows independently', () => {
     const now = new Date('2026-09-17T12:00:00.000Z');
-    const evaluated = (service as any).evaluateRule(
+    const evaluated = evaluateRule(
       {
         window: { type: 'rolling_lookback', days: 7 },
         counters: {
@@ -115,8 +113,13 @@ describe('RulesService filterEvents', () => {
           metadata: { mealId: 'meal-previous-2' },
         },
       ],
+      now,
     );
 
-    expect(evaluated).toEqual({ progress: 100, completed: true });
+    expect(evaluated).toEqual({
+      progress: 100,
+      completed: true,
+      counters: { currentMeatMeals: 1, previousMeatMeals: 2 },
+    });
   });
 });

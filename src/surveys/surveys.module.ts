@@ -5,9 +5,10 @@ import { SurveysRepository } from './repositories/surveys.repository';
 import { DatabaseModule } from '../database/database.module';
 import { UsersModule } from '../users/users.module';
 import { TranslationsModule } from '../translations/translations.module';
+import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, TranslationsModule],
+  imports: [DatabaseModule, UsersModule, TranslationsModule, EventsModule],
   controllers: [SurveysController],
   providers: [SurveysService, SurveysRepository],
   exports: [SurveysService],

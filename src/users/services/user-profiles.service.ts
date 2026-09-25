@@ -11,6 +11,13 @@ import {
   EducationLevel,
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
+import { userRegisteredIdempotencyKey } from '../../auth/auth.constants';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   buildUserPreferences,
@@ -56,6 +63,7 @@ export class UserProfilesService {
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -88,6 +96,24 @@ export class UserProfilesService {
         lastName: keycloakUser.family_name || '',
         preferences: {},
       });
+
+      // Users who register in Keycloak directly never pass through
+      // AuthService.register, so this is the only place their account creation
+      // becomes a ledger fact. Shares that route's idempotency key, so a user
+      // who took both paths is counted once. Best-effort: the account exists
+      // regardless, and login must not fail on a ledger write.
+      try {
+        await this.userEventService.record({
+          userId: user.id,
+          eventType: EventType.USER_REGISTERED,
+          source: EventSource.API,
+          metadata: {},
+          subject: { type: EventSubjectType.USER, id: user.id },
+          idempotencyKey: userRegisteredIdempotencyKey(user.id),
+        });
+      } catch {
+        // Swallowed on purpose — see above.
+      }
     }
 
     return this.formatUserProfile(user);
