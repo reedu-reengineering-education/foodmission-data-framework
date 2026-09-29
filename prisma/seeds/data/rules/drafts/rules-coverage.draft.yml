@@ -91,37 +91,9 @@ missions:
       notes:
         - 'Depends on consistent emission of MEAL_SUSTAINABLE_PLATE'
   - code: M.A2.1
-    shape: composite_threshold
-    rule:
-      window:
-        type: since_start
-        days: 7
-      counters:
-        originChecks:
-          event: SHOPPING_ORIGIN_CHECKED
-          distinctBy: metadata.mealId
-        multiCriteriaPurchases:
-          event: SHOPPING_MULTICRITERIA_PURCHASE
-          distinctBy: metadata.mealId
-      target: 'originChecks >= 3 && multiCriteriaPurchases >= 3'
-      progress: '(min(originChecks / 3, 1) + min(multiCriteriaPurchases / 3, 1)) / 2'
-      notes:
-        - 'Approximates: origin plus one additional indicator for at least 3 meal decisions'
-        - 'Assumes SHOPPING_MULTICRITERIA_PURCHASE means at least two criteria were considered'
+    shape: undecided
   - code: M.A2.2
-    shape: one_shot_event
-    rule:
-      window:
-        type: since_start
-        days: 7
-      counters:
-        certificationChoices:
-          event: SHOPPING_CERTIFICATION_CHOSEN
-      target: 'certificationChoices >= 1'
-      progress: 'min(certificationChoices, 1)'
-      notes:
-        - 'Tracks selecting a certified product'
-        - 'Current event model does not prove two distinct labels or recorded label meanings'
+    shape: undecided
   - code: M.A2.3
     shape: count_at_least
     rule:
@@ -136,36 +108,11 @@ missions:
       progress: 'min(multiCriteriaPurchases / 3, 1)'
       notes:
         - 'Direct mapping for at least 3 purchase decisions with multiple environmental dimensions'
+        - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.A2.4
-    shape: count_at_least
-    rule:
-      window:
-        type: since_start
-        days: 7
-      counters:
-        seasonalChoices:
-          event: SHOPPING_SEASONAL_CHOSEN
-          distinctBy: metadata.mealId
-      target: 'seasonalChoices >= 4'
-      progress: 'min(seasonalChoices / 4, 1)'
-      notes:
-        - 'Tracks seasonal product inclusion frequency'
-        - 'Reason capture is not represented in current event metadata'
+    shape: undecided
   - code: M.A2.5
-    shape: count_at_least
-    rule:
-      window:
-        type: since_start
-        days: 7
-      counters:
-        informedChoices:
-          event: SHOPPING_MULTICRITERIA_PURCHASE
-          distinctBy: metadata.productId
-      target: 'informedChoices >= 4'
-      progress: 'min(informedChoices / 4, 1)'
-      notes:
-        - 'Maps to repeated multi-factor decision making across food choices'
-        - 'Exact three-aspect threshold must be enforced at event emission time'
+    shape: undecided
   - code: M.A3.1
     shape: undecided
   - code: M.A3.2
@@ -469,15 +416,56 @@ missions:
       notes:
         - 'Direct mapping from the beef-reduction mission goal'
   - code: M.B2.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        originChecks:
+          event: SHOPPING_ORIGIN_CHECKED
+          distinctBy: metadata.productId
+      target: 'originChecks >= 5'
+      progress: 'min(originChecks / 5, 1)'
+      notes:
+        - 'Counts distinct products whose country of origin was looked up'
+        - 'Client must send metadata.productId; events without it are each counted separately'
+        - 'Cannot verify the product was actually consumed this week; self-attested'
   - code: M.B2.2
     shape: undecided
   - code: M.B2.3
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        certifiedChoices:
+          event: SHOPPING_CERTIFICATION_CHOSEN
+      target: 'certifiedChoices >= 3'
+      progress: 'min(certifiedChoices / 3, 1)'
+      notes:
+        - 'Counts occasions where a product with a sustainability certification was chosen'
+        - 'No distinctBy: the goal counts occasions, so rebuying the same certified product counts again'
   - code: M.B2.4
     shape: undecided
   - code: M.B2.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingInfoChecks:
+          event: SHOPPING_PACKAGING_INFO_CHECKED
+          distinctBy: metadata.productId
+      target: 'packagingInfoChecks >= 5'
+      progress: 'min(packagingInfoChecks / 5, 1)'
+      notes:
+        - 'Counts distinct products where sustainability-related information on the packaging was looked for'
+        - 'Deliberately excludes SHOPPING_ORIGIN_CHECKED and SHOPPING_CERTIFICATION_CHOSEN to avoid overlap with M.B2.1/M.B2.3 in the same quests'
+        - 'Client must send metadata.productId; events without it are each counted separately'
+        - 'Cannot verify the product was actually consumed this week; self-attested'
   - code: M.B3.1
     shape: count_at_least
     rule:
@@ -844,7 +832,20 @@ missions:
   - code: M.I2.4
     shape: undecided
   - code: M.I2.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        informedSelections:
+          event: SHOPPING_PACKAGING_INFO_CHECKED
+      target: 'informedSelections >= 5'
+      progress: 'min(informedSelections / 5, 1)'
+      notes:
+        - 'Counts occasions where a product was selected after examining environmental information on its package'
+        - 'No distinctBy: the goal counts occasions, not distinct products'
+        - 'Keep SHOPPING_PACKAGING_INFO_CHECKED out of M.I2.4 (same quests) to avoid overlap'
   - code: M.I3.1
     shape: count_at_least
     rule:
