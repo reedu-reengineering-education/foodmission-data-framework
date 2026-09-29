@@ -69,11 +69,7 @@ type MockDb = {
   badge: { findMany: jest.Mock };
   userEvent: { findMany: jest.Mock; findUnique: jest.Mock };
   userEarnedBadge: { findMany: jest.Mock; upsert: jest.Mock };
-  badgeProgress: {
-    findUnique: jest.Mock;
-    findMany: jest.Mock;
-    upsert: jest.Mock;
-  };
+  badgeProgress: { findUnique: jest.Mock; upsert: jest.Mock };
   userGamificationWallet: { upsert: jest.Mock };
   reward: { findFirst: jest.Mock };
 };
@@ -94,7 +90,6 @@ function buildDb(): MockDb {
     },
     badgeProgress: {
       findUnique: jest.fn().mockResolvedValue(null),
-      findMany: jest.fn().mockResolvedValue([]),
       upsert: jest.fn().mockResolvedValue({}),
     },
     userGamificationWallet: { upsert: jest.fn().mockResolvedValue({}) },
@@ -296,39 +291,38 @@ describe('BadgeRulesService', () => {
     expect(prisma.userEarnedBadge.upsert).toHaveBeenCalledTimes(1);
   });
 
-  it('retries stuck grants on login even though no rule counts it', async () => {
-    prisma.badgeProgress.findMany.mockResolvedValue([
-      { badgeId: 'badge-list', badge: { code: 'SHOPPING_LIST' } },
+  it('rescores every badge on login, even though no rule counts it', async () => {
+    // History no new event has triggered yet, e.g. evaluations lost to a
+    // restart: five recipe views and a shopping list, no progress rows.
+    prisma.userEvent.findMany.mockResolvedValue([
+      ...recipeViews(5),
+      {
+        eventType: EventType.SHOPPING_LIST_CREATED,
+        createdAt: new Date('2026-09-10T00:00:00.000Z'),
+        metadata: {},
+      },
     ]);
 
     await service.evaluateUserEvent(trigger(EventType.USER_LOGGED_IN));
 
-    expect(prisma.badgeProgress.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: {
-          userId: 'u1',
-          completed: true,
-          badge: { available: true, earnedByUsers: { none: { userId: 'u1' } } },
-        },
-      }),
+    const where = prisma.userEvent.findMany.mock.calls[0][0]
+      .where as Prisma.UserEventWhereInput;
+    expect((where.eventType as { in: string[] }).in.sort()).toEqual(
+      [
+        EventType.LEARNING_RECIPE_EXPLORED,
+        EventType.SHOPPING_LIST_CREATED,
+      ].sort(),
     );
-    // Nothing to score, so the ledger is never read — only the grant runs.
-    expect(prisma.userEvent.findMany).not.toHaveBeenCalled();
-    expect(prisma.userEarnedBadge.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        create: expect.objectContaining({ badgeId: 'badge-list' }),
-      }),
+    const granted = prisma.userEarnedBadge.upsert.mock.calls.map(
+      ([args]) => args.create.badgeId,
     );
+    expect(granted.sort()).toEqual(['badge-chef', 'badge-list']);
   });
 
-  it('does not look for stuck grants on ordinary events', async () => {
-    prisma.userEvent.findMany.mockResolvedValue(recipeViews(3));
+  it('rescores every badge on app open too', async () => {
+    await service.evaluateUserEvent(trigger(EventType.APP_SESSION_OPENED));
 
-    await service.evaluateUserEvent(
-      trigger(EventType.LEARNING_RECIPE_EXPLORED),
-    );
-
-    expect(prisma.badgeProgress.findMany).not.toHaveBeenCalled();
+    expect(prisma.userEvent.findMany).toHaveBeenCalledTimes(1);
   });
 
   it('does not cache an empty catalog', async () => {

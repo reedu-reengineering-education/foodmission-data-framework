@@ -78,14 +78,19 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
   );
 
   /**
-   * Events that also retry grants left stuck by an earlier failure. A retry
-   * normally rides on the next event the badge's rule counts, but some rules
-   * (FIRST_STEP) only ever see one. Login is recorded at most once per user per
-   * UTC day, but only on `/auth/login`; app opens cover users who sign in with
-   * Keycloak directly. Client-posted is fine here: a retry only grants what the
-   * server already scored as complete.
+   * Events that rescore every badge, not just those whose rule counts them.
+   * This is the recovery path: it grants badges whose earlier grant failed,
+   * scores events whose evaluation was lost before it wrote anything (e.g.
+   * to a restart), and picks up history a rule can already see but no new
+   * event has triggered yet — such as ONBOARDING_COMPLETED for FIRST_STEP.
+   *
+   * Login is recorded at most once per user per UTC day, but only on
+   * `/auth/login`; app opens cover users who sign in with Keycloak directly.
+   * Client-posted is fine here: rescoring only reads the server's ledger.
+   * Cost is one ledger read across the badge event types plus a progress
+   * lookup per unearned badge.
    */
-  static readonly GRANT_RETRY_EVENTS: ReadonlySet<string> = new Set([
+  static readonly RESCORE_ALL_EVENTS: ReadonlySet<string> = new Set([
     EventType.USER_LOGGED_IN,
     EventType.APP_SESSION_OPENED,
   ]);
@@ -142,19 +147,19 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       return;
     }
 
-    // Only badges whose counters can actually see this event can have moved,
-    // and this costs nothing — it is a scan of the loaded YAML. Most events
-    // leave here without touching the database at all.
-    const triggered = this.load().badges.filter((entry) =>
-      this.countsEventType(entry, eventType),
-    );
-    const retryStuck = BadgeRulesService.GRANT_RETRY_EVENTS.has(eventType);
-    if (triggered.length === 0 && !retryStuck) {
+    // Otherwise only badges whose counters can actually see this event can
+    // have moved, and this costs nothing — it is a scan of the loaded YAML.
+    // Most events leave here without touching the database at all.
+    const rules = this.load().badges;
+    const triggered = BadgeRulesService.RESCORE_ALL_EVENTS.has(eventType)
+      ? rules
+      : rules.filter((entry) => this.countsEventType(entry, eventType));
+    if (triggered.length === 0) {
       return;
     }
 
     if (!options.afterCommit) {
-      await this.evaluate(userId, triggered, retryStuck);
+      await this.evaluate(userId, triggered);
       return;
     }
 
@@ -167,15 +172,14 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       {
         label: `badges on ${eventType} for user ${userId}`,
         confirm: () => this.isEventCommitted(eventId),
-        run: () => this.evaluate(userId, triggered, retryStuck),
+        run: () => this.evaluate(userId, triggered),
       },
     ]);
   }
 
   /**
-   * Scores `entries` for the user and grants whatever is complete. With
-   * `retryStuck`, also grants badges an earlier evaluation completed but never
-   * managed to grant, whichever rule they belong to.
+   * Scores `entries` for the user and grants whatever is complete, including
+   * badges an earlier evaluation completed but failed to grant.
    *
    * Scoring holds a per-user advisory lock, so two evaluations for the same
    * user run one after the other and the later one always reads a ledger at
@@ -186,20 +190,11 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
   private async evaluate(
     userId: string,
     entries: BadgeRuleEntry[],
-    retryStuck = false,
   ): Promise<void> {
     const awards = await this.prisma.$transaction(
       async (tx) => {
         await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`badges:${userId}`}, 0))`;
-        const scored = await this.scoreBadges(tx, userId, entries);
-        if (!retryStuck) {
-          return scored;
-        }
-        const stuck = await this.findStuckAwards(tx, userId);
-        const byBadgeId = new Map(
-          [...scored, ...stuck].map((award) => [award.badgeId, award]),
-        );
-        return [...byBadgeId.values()];
+        return this.scoreBadges(tx, userId, entries);
       },
       // Waiting for the lock counts against the timeout, and a burst of events
       // for one user queues several evaluations behind each other.
@@ -219,29 +214,6 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
         );
       }
     }
-  }
-
-  /**
-   * Completed progress rows with no earned sibling: a grant that failed or
-   * was lost to a restart. Retired badges stay ungranted.
-   */
-  private async findStuckAwards(
-    db: Prisma.TransactionClient,
-    userId: string,
-  ): Promise<BadgeAward[]> {
-    const rows = await db.badgeProgress.findMany({
-      where: {
-        userId,
-        completed: true,
-        badge: { available: true, earnedByUsers: { none: { userId } } },
-      },
-      select: { badgeId: true, badge: { select: { code: true } } },
-    });
-    return rows.map((row) => ({
-      userId,
-      badgeId: row.badgeId,
-      code: row.badge.code,
-    }));
   }
 
   private async scoreBadges(

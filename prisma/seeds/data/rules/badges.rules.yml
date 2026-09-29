@@ -33,7 +33,8 @@ badges:
         - 'USER_REGISTERED covers both signup paths (see auth.constants.ts)'
         - >-
           ONBOARDING_COMPLETED is accepted too so users created before
-          USER_REGISTERED existed still earn this on their next event
+          USER_REGISTERED existed still earn this: every login and app open
+          rescores all badges against the whole ledger
 
   - code: STYLISH
     shape: one_shot_event
